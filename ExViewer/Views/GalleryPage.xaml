@@ -1,0 +1,105 @@
+﻿<Page x:Class="ExViewer.Views.GalleryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:ExViewer.Views"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      NavigationCacheMode="Enabled">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <ContinuumNavigationTransitionInfo />
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
+
+    <RelativePanel>
+        <CommandBar x:Name="cb_top"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignRightWithPanel="True"
+                    HorizontalContentAlignment="Stretch">
+            <CommandBar.Content>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{StaticResource NavigationBackButtonNormalStyle}"
+                            Content="&#xE700;"
+                            Height="48"
+                            Width="48"
+                            Click="btn_pane_Click" />
+                    <TextBlock Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Margin="8,0"
+                               Grid.Column="1"
+                               VerticalAlignment="Center"
+                               ContinuumNavigationTransitionInfo.IsEntranceElement="True"
+                               MaxLines="1"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap" />
+                </Grid>
+            </CommandBar.Content>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="abb_open"
+                              Label="Open in browser"
+                              Click="abb_open_Click" />
+                <AppBarButton x:Name="abb_save"
+                              Label="Save this gallery"
+                              Click="abb_save_Click" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+        <Grid x:Name="gd_info"
+              RelativePanel.Below="cb_top"
+              RelativePanel.AlignLeftWithPanel="True"
+              Height="200"
+              RelativePanel.AlignRightWithPanel="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="pb_save"
+                         Grid.ColumnSpan="2" />
+            <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay}"
+                   Grid.Row="1" 
+                   Margin="4"/>
+            <RelativePanel Margin="4"
+                           Grid.Row="1"
+                           Grid.Column="1">
+                <Image x:Name="Category"
+                       Source="{x:Bind Gallery.Category, Mode=OneWay, Converter={StaticResource CategoryToImageConverter}}"
+                       RelativePanel.AlignLeftWithPanel="True"
+                       Stretch="None" />
+                <TextBlock x:Name="RecordCount"
+                           RelativePanel.RightOf="Category"
+                           RelativePanel.AlignVerticalCenterWith="Category"
+                           Text="{x:Bind Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
+                <TextBlock x:Name="Rating"
+                           RelativePanel.Below="Category"
+                           Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
+                           FontFamily="Segoe MDL2 Assets" />
+            </RelativePanel>
+        </Grid>
+        <GridView x:Name="gv"
+                  IsItemClickEnabled="True"
+                  ItemClick="gv_ItemClick"
+                  ItemsSource="{x:Bind Gallery, Mode=OneWay}"
+                  RelativePanel.Below="gd_info"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.AlignRightWithPanel="True"
+                  RelativePanel.AlignBottomWithPanel="True">
+            <GridView.ItemTemplate>
+                <DataTemplate xmlns:c="using:ExClient"
+                              x:DataType="c:GalleryImage">
+                    <Image Source="{x:Bind Thumb}"
+                           Width="100"/>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+    </RelativePanel>
+</Page>

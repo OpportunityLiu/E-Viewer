@@ -1,0 +1,93 @@
+﻿<Page x:Class="ExViewer.Views.ImagePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:ExViewer.Views"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      NavigationCacheMode="Enabled">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <EntranceNavigationTransitionInfo/>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
+    <Page.Resources>
+        <local:LoadStateToVisualStateConverter x:Key="LoadStateToVisualStateConverter"/>
+    </Page.Resources>
+    <RelativePanel>
+        <CommandBar x:Name="cb_top"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignRightWithPanel="True"
+                    HorizontalContentAlignment="Stretch">
+            <CommandBar.Content>
+                <RelativePanel>
+                    <Button x:Name="btn_pane"
+                            Style="{StaticResource NavigationBackButtonNormalStyle}"
+                            Content="&#xE700;"
+                            Height="48"
+                            Width="48"
+                            Click="btn_pane_Click" />
+                    <TextBlock x:Name="tb_Title"
+                               Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Grid.Column="1"
+                               Margin="8,0"
+                               VerticalAlignment="Center"
+                               MaxLines="1"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap"
+                               RelativePanel.RightOf="btn_pane"
+                               RelativePanel.AlignVerticalCenterWithPanel="True"
+                               RelativePanel.LeftOf="tb_si" />
+                    <TextBlock x:Name="tb_si"
+                               Text="{Binding ElementName=fv, Path=SelectedItem.Page, Mode=OneWay, UpdateSourceTrigger=Explicit}"
+                               Style="{StaticResource SubtitleTextBlockStyle}"
+                               RelativePanel.AlignVerticalCenterWithPanel="True"
+                               RelativePanel.LeftOf="tb_sep" />
+                    <TextBlock x:Name="tb_sep"
+                               Text="/"
+                               Style="{StaticResource SubtitleTextBlockStyle}"
+                               Margin="4,0"
+                               RelativePanel.AlignVerticalCenterWithPanel="True"
+                               RelativePanel.LeftOf="tb_rc" />
+                    <TextBlock x:Name="tb_rc"
+                               Text="{x:Bind Gallery.RecordCount, Mode=OneWay}"
+                               Style="{StaticResource SubtitleTextBlockStyle}"
+                               RelativePanel.AlignRightWithPanel="True"
+                               RelativePanel.AlignVerticalCenterWithPanel="True" />
+                </RelativePanel>
+            </CommandBar.Content>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="abb_reload"
+                              Label="Reload"
+                              Click="abb_reload_Click" />
+                <AppBarButton x:Name="abb_open"
+                              Label="Open in browser"
+                              Click="abb_open_Click" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+        <FlipView x:Name="fv"
+                  Background="{x:Null}"
+                  EntranceNavigationTransitionInfo.IsTargetElement="True"
+                  SelectionChanged="fv_SelectionChanged"
+                  RelativePanel.Below="cb_top"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.AlignRightWithPanel="True">
+            <FlipView.ItemTemplate>
+                <DataTemplate xmlns:c="using:ExClient"
+                              x:DataType="c:GalleryImage">
+                    <Grid>
+                        <Image Source="{x:Bind Image, Mode=OneWay}" />
+                        <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
+                                     Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     IsIndeterminate="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     VerticalAlignment="Top"/>
+                    </Grid>
+                </DataTemplate>
+            </FlipView.ItemTemplate>
+        </FlipView>
+    </RelativePanel>
+</Page>
