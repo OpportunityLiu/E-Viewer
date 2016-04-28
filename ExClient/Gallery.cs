@@ -22,12 +22,12 @@ namespace ExClient
     {
         public int ImageLoaded
         {
-            get;internal set;
+            get; internal set;
         }
 
         public int ImageCount
         {
-            get;internal set;
+            get; internal set;
         }
     }
 
@@ -49,6 +49,11 @@ namespace ExClient
             ["Asian Porn"] = Category.AsianPorn,
             ["Misc"] = Category.Misc
         };
+
+        public static IAsyncOperation<Gallery> LoadGalleryAsync(long id)
+        {
+            return LoadGalleryAsync(id, Client.Current);
+        }
 
         public static IAsyncOperation<Gallery> LoadGalleryAsync(long id, Client owner)
         {
@@ -87,51 +92,55 @@ namespace ExClient
                 gallery.Thumb = thumb;
                 for(int i = 0; i < cache.ImageKeys.Count; i++)
                 {
-                    gallery.Add(await GalleryImage.LoadCachedImageAsync(gallery, i, cache.ImageKeys[i]));
+                    gallery.Add(await GalleryImage.LoadCachedImageAsync(gallery, i + 1, cache.ImageKeys[i]));
                 }
                 return gallery;
             });
         }
 
+        private IAsyncActionWithProgress<SaveGalleryProgress> saveTask;
+
         public IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync()
         {
-            return Run<SaveGalleryProgress>(async (token, progress) =>
-            {
-                var loadThumb = Owner.HttpClient.GetBufferAsync(((BitmapImage)Thumb).UriSource);
-                var toReport = new SaveGalleryProgress
-                {
-                    ImageCount = this.RecordCount,
-                    ImageLoaded = -1
-                };
-                progress.Report(toReport);
-                while(this.HasMoreItems)
-                {
-                    await this.LoadMoreItemsAsync(40);
-                }
-                toReport.ImageLoaded = 0;
-                progress.Report(toReport);
-                for(int i = 0; i < this.Count; i++)
-                {
-                    var image = this[i];
-                    if(image.State == ImageLoadingState.Loaded)
-                    {
-                        toReport.ImageLoaded++;
-                        progress.Report(toReport);
-                        continue;
-                    }
-                    var load = image.LoadImage(false);
-                    await load;
-                    toReport.ImageLoaded++;
-                    progress.Report(toReport);
-                }
-                var cache = new GalleryCache(this);
-                var cacheThumb = CacheHelper.SaveFileAsync(this.Id.ToString(), thumbFileName, await loadThumb);
-                await cache.SaveCacheAsync();
-                await cacheThumb;
-            });
+            if(saveTask?.Status != AsyncStatus.Started)
+                saveTask = Run<SaveGalleryProgress>(async (token, progress) =>
+                 {
+                     var loadThumb = Owner.HttpClient.GetBufferAsync(((BitmapImage)Thumb).UriSource);
+                     var toReport = new SaveGalleryProgress
+                     {
+                         ImageCount = this.RecordCount,
+                         ImageLoaded = -1
+                     };
+                     progress.Report(toReport);
+                     while(this.HasMoreItems)
+                     {
+                         await this.LoadMoreItemsAsync(40);
+                     }
+                     toReport.ImageLoaded = 0;
+                     progress.Report(toReport);
+                     for(int i = 0; i < this.Count; i++)
+                     {
+                         var image = this[i];
+                         if(image.State == ImageLoadingState.Loaded)
+                         {
+                             toReport.ImageLoaded++;
+                             progress.Report(toReport);
+                             continue;
+                         }
+                         var load = image.LoadImage(false);
+                         await load;
+                         toReport.ImageLoaded++;
+                         progress.Report(toReport);
+                     }
+                     var cache = new GalleryCache(this);
+                     var cacheThumb = CacheHelper.SaveFileAsync(this.Id.ToString(), thumbFileName, await loadThumb);
+                     await cache.SaveCacheAsync();
+                     await cacheThumb;
+                 });
+            return saveTask;
         }
 
-        private Gallery(long id,string token,int loadedPageCount)
+        private Gallery(long id, string token, int loadedPageCount)
             : base(loadedPageCount)
         {
             this.Id = id;
@@ -308,13 +317,18 @@ namespace ExClient
                 var res = await request;
                 var html = new HtmlDocument();
                 html.LoadHtml(res);
-                var ptt = html.DocumentNode.Descendants("table").Where(node => node.GetAttributeValue("class", null) == "ptt").First();
-                var pages = from node in ptt.Descendants("td")
-                            select Regex.Match(node.GetAttributeValue("onclick", ""), @"sp\((\d+)\)");
-                var pageCount = from match in pages
-                                where match.Success
-                                select int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Integer);
-                PageCount = pageCount.DefaultIfEmpty().Max() + 1;
+                var pcNodes = html.DocumentNode.Descendants("td")
+                            .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
+                            .Select(node =>
+                            {
+                                int i;
+                                var su = int.TryParse(node.InnerText, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out i);
+                                return Tuple.Create(su, i);
+                            })
+                            .Where(select => select.Item1)
+                            .DefaultIfEmpty(Tuple.Create(true, 1))
+                            .Max(select => select.Item2);
+                PageCount = pcNodes;
                 var pics = (from node in html.GetElementbyId("gdt").Descendants("div")
                             where node.GetAttributeValue("class", null) == "gdtm"
                             let nodeBackGround = node.Descendants("div").Single()

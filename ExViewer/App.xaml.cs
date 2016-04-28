@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExClient;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Security.Credentials;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -46,6 +48,20 @@ namespace ExViewer
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            if(Client.Current == null)
+            {
+                var pv = new PasswordVault();
+                try
+                {
+                    var pass = pv.FindAllByResource("ex").First();
+                    pass.RetrievePassword();
+                    await Client.CreateClient(pass.UserName, pass.Password);
+                }
+                catch(Exception ex) when(ex.HResult == -2147023728)
+                {
+                }
+            }
+
             var current = Window.Current;
             ExClient.DispatcherHelper.Dispatcher = current.Dispatcher;
             if(current.Content == null)
@@ -54,16 +70,7 @@ namespace ExViewer
                 {
                     //TODO: 从之前挂起的应用程序加载状态
                 }
-
                 current.Content = new Views.MainPage();
-            }
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-                var pi = statusBar.ProgressIndicator;
-                pi.ProgressValue = 0;
-                pi.Text = " ";
-                await pi.ShowAsync();
             }
             current.Activate();
         }

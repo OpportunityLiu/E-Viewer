@@ -6,8 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              Loaded="Page_Loaded">
-    <SplitView x:Name="sv_root"
-               Grid.Row="1">
+    <SplitView x:Name="sv_root">
         <SplitView.Pane>
             <StackPanel>
                 <Button Style="{StaticResource NavigationBackButtonNormalStyle}"

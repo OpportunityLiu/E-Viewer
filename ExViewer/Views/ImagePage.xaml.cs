@@ -54,18 +54,44 @@ namespace ExViewer.Views
             CommandExecuted?.Invoke(this, MainPageControlCommand.SwitchSplitView);
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             var param = (ExClient.Gallery)e.Parameter;
-            fv.ItemsSource= Gallery = param;
+            fv.ItemsSource = Gallery = param;
             base.OnNavigatedTo(e);
             fv.SelectedIndex = Gallery.CurrentPage;
+            await Task.Delay(10);
+            setScale(true);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             Gallery.CurrentPage = fv.SelectedIndex;
             base.OnNavigatingFrom(e);
+        }
+
+        private void setScale(bool init)
+        {
+            int lb = fv.SelectedIndex - 2;
+            int ub = fv.SelectedIndex + 3;
+            lb = lb < 0 ? 0 : lb;
+            ub = ub > Gallery.Count ? Gallery.Count : ub;
+            for(int i = lb; i < ub; i++)
+            {
+                if(!init && i == fv.SelectedIndex)
+                    continue;
+                var selected = ((FlipViewItem)fv.ContainerFromIndex(i));
+                if(selected == null)
+                    continue;
+                var inner = (Grid)selected.ContentTemplateRoot;
+                var sv = (ScrollViewer)inner.FindName("sv");
+                var img = (Image)sv.Content;
+                var factor = Math.Min(fv.ActualHeight / img.ActualHeight, fv.ActualWidth / img.ActualWidth);
+                if(double.IsInfinity(factor) || double.IsNaN(factor))
+                    factor = Math.Min(fv.ActualHeight / 1000, fv.ActualWidth / 1000);
+                sv.MinZoomFactor = (float)factor;
+                sv.ZoomToFactor(sv.MinZoomFactor);
+            }
         }
 
         private void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -88,6 +114,7 @@ namespace ExViewer.Views
             {
                 var ignore = Gallery[i].LoadImage(false);
             }
+            setScale(false);
         }
 
         private async void abb_reload_Click(object sender, RoutedEventArgs e)

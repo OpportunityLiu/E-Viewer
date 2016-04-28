@@ -9,12 +9,12 @@
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
-                <EntranceNavigationTransitionInfo/>
+                <EntranceNavigationTransitionInfo />
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
-        <local:LoadStateToVisualStateConverter x:Key="LoadStateToVisualStateConverter"/>
+        <local:LoadStateToVisualStateConverter x:Key="LoadStateToVisualStateConverter" />
     </Page.Resources>
     <RelativePanel>
         <CommandBar x:Name="cb_top"
@@ -69,22 +69,29 @@
             </CommandBar.SecondaryCommands>
         </CommandBar>
         <FlipView x:Name="fv"
+                  RelativePanel.Below="cb_top"
+                  RelativePanel.AlignRightWithPanel="True"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.AlignBottomWithPanel="True"
                   Background="{x:Null}"
                   EntranceNavigationTransitionInfo.IsTargetElement="True"
-                  SelectionChanged="fv_SelectionChanged"
-                  RelativePanel.Below="cb_top"
-                  RelativePanel.AlignLeftWithPanel="True"
-                  RelativePanel.AlignRightWithPanel="True">
+                  SelectionChanged="fv_SelectionChanged">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
                     <Grid>
-                        <Image Source="{x:Bind Image, Mode=OneWay}" />
                         <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
                                      Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
                                      Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
                                      IsIndeterminate="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                     VerticalAlignment="Top"/>
+                                     VerticalAlignment="Top" />
+                        <ScrollViewer x:Name="sv"
+                                      ZoomMode="Enabled"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Auto"
+                                      MinZoomFactor="1">
+                            <Image Source="{x:Bind Image, Mode=OneWay}" />
+                        </ScrollViewer>
                     </Grid>
                 </DataTemplate>
             </FlipView.ItemTemplate>

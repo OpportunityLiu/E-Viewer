@@ -32,6 +32,11 @@ namespace ExClient
             return CacheHelper.SaveStringAsync(Id.ToString(), cacheFileName, str);
         }
 
+        [JsonConstructor]
+        internal GalleryCache()
+        {
+        }
+
         public GalleryCache(Gallery toCache)
         {
             this.Id = toCache.Id;
@@ -68,7 +73,7 @@ namespace ExClient
 
         public string Token
         {
-            get; private set;
+            get; set;
         }
 
         public string ArchiverKey

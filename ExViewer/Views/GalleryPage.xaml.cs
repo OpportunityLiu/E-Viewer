@@ -22,7 +22,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class GalleryPage : Page,IMainPageController
+    public sealed partial class GalleryPage : Page, IMainPageController
     {
         public GalleryPage()
         {
@@ -32,17 +32,22 @@ namespace ExViewer.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            Gallery = (ExClient.Gallery)e.Parameter;
-            pb_save.Maximum = Gallery.RecordCount;
-            pb_save.Value = 0;
-            pb_save.Visibility = Visibility.Collapsed;
-            if(e.NavigationMode == NavigationMode.Back)
+            if(e.NavigationMode == NavigationMode.New)
+            {
+                Gallery = (ExClient.Gallery)e.Parameter;
+                pb_save.Maximum = Gallery.RecordCount;
+                pb_save.Value = 0;
+                pb_save.Visibility = Visibility.Collapsed;
+            }
+            else if(e.NavigationMode == NavigationMode.Back)
             {
                 gv.SelectedIndex = Gallery.CurrentPage;
                 gv.ScrollIntoView(Gallery[Gallery.CurrentPage]);
-                entranceElement=(UIElement)gv.ContainerFromIndex(Gallery.CurrentPage);
+                entranceElement = (UIElement)gv.ContainerFromIndex(Gallery.CurrentPage);
                 EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
             }
+            var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+            view.VisibleBoundsChanged += View_VisibleBoundsChanged;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -50,6 +55,21 @@ namespace ExViewer.Views
             base.OnNavigatingFrom(e);
             if(entranceElement != null)
                 EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, false);
+            var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+            view.VisibleBoundsChanged -= View_VisibleBoundsChanged;
+        }
+
+        private async void View_VisibleBoundsChanged(Windows.UI.ViewManagement.ApplicationView sender, object args)
+        {
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+                var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+                if(view.Orientation == Windows.UI.ViewManagement.ApplicationViewOrientation.Landscape)
+                    await statusBar.HideAsync();
+                else
+                    await statusBar.ShowAsync();
+            }
         }
 
         UIElement entranceElement;

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Display;
 using Windows.Security.Credentials;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -32,23 +33,38 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            var pv = new PasswordVault();
-            try
-            {
-                var pass = pv.FindAllByResource("ex").First();
-                pass.RetrievePassword();
-                await Client.CreateClient(pass.UserName, pass.Password);
-            }
-            catch(Exception ex) when(ex.HResult == -2147023728)
-            {
-                await logOn.ShowAsync();
-            }
+            var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+            view.VisibleBoundsChanged += View_VisibleBoundsChanged;
             if(Client.Current != null)
             {
                 x = Client.Current;
                 asb.IsEnabled = true;
                 var r = await x.SearchAsync(searchKeyWord, Category.All);
                 lv.ItemsSource = r;
+            }
+            else
+            {
+                await logOn.ShowAsync();
+            }
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+            view.VisibleBoundsChanged -= View_VisibleBoundsChanged;
+        }
+
+        private async void View_VisibleBoundsChanged(Windows.UI.ViewManagement.ApplicationView sender, object args)
+        {
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+                var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+                if(view.Orientation == Windows.UI.ViewManagement.ApplicationViewOrientation.Landscape)
+                    await statusBar.HideAsync();
+                else
+                    await statusBar.ShowAsync();
             }
         }
 

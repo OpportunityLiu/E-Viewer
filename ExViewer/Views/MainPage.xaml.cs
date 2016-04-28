@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.Data.Json;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media.Imaging;
+using ExClient;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -37,10 +38,12 @@ namespace ExViewer.Views
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
+            //var g = await Gallery.LoadGalleryAsync(928299, null);
+            //fm_inner.Navigate(typeof(GalleryPage), g);
             fm_inner.Navigate(typeof(SearchPage));
         }
 
