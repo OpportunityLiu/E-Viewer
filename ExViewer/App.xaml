@@ -1,4 +1,5 @@
 ﻿<Application x:Class="ExViewer.App"
+             RequestedTheme="Light" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:ExViewer.Views">
@@ -6,5 +7,17 @@
         <local:RateStringConverter x:Key="RateStringConverter" />
         <local:CategoryToImageConverter x:Key="CategoryToImageConverter" />
         <local:StringConverter x:Key="StringConverter" />
+        <local:BooleanToVisibilityConverter x:Key="TrueToVisibleConverter"
+                                            BoolearForVisible="True" />
+        <local:BooleanToVisibilityConverter x:Key="FalseToVisibleConverter"
+                                            BoolearForVisible="False" />
+        <local:ObjectToBooleanConverter x:Key="NullToVisibleConverter"
+                                        Default="True"
+                                        Others="False">
+            <local:ObjectToBooleanConverter.InnerConverter>
+                <local:BooleanToVisibilityConverter BoolearForVisible="True" />
+            </local:ObjectToBooleanConverter.InnerConverter>
+        </local:ObjectToBooleanConverter>
+        <local:LengthConverter x:Key="LengthConverter" />
     </Application.Resources>
 </Application>

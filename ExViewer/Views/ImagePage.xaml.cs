@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,7 +28,13 @@ namespace ExViewer.Views
         public ImagePage()
         {
             this.InitializeComponent();
-            LoadStateToVisualStateConverter.AccentBrush = (Brush)this.Resources["SystemControlForegroundAccentBrush"];
+            var backColor = ((SolidColorBrush)Resources["ApplicationPageBackgroundThemeBrush"]).Color;
+            var needColor = (Color)Resources["SystemChromeMediumColor"];
+            var toColor = Color.FromArgb(255,
+                (byte)(backColor.R - 2 * (backColor.R - needColor.R)),
+                (byte)(backColor.G - 2 * (backColor.G - needColor.G)),
+                (byte)(backColor.B - 2 * (backColor.B - needColor.B)));
+            cb_top.Background = new SolidColorBrush(toColor) { Opacity = 0.3 };
         }
 
         public ExClient.Gallery Gallery
@@ -56,21 +63,36 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            if(e.NavigationMode == NavigationMode.New)
+            {
+                cb_top.Visibility = Visibility.Visible;
+            }
             var param = (ExClient.Gallery)e.Parameter;
             fv.ItemsSource = Gallery = param;
             base.OnNavigatedTo(e);
             fv.SelectedIndex = Gallery.CurrentPage;
             await Task.Delay(10);
-            setScale(true);
+            fv.SelectionChanged += fv_SelectionChanged;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             Gallery.CurrentPage = fv.SelectedIndex;
+            fv.SelectionChanged -= fv_SelectionChanged;
             base.OnNavigatingFrom(e);
         }
 
-        private void setScale(bool init)
+        private void setScaleCore(ScrollViewer sv, Image img)
+        {
+            var factor = Math.Min(fv.ActualHeight / img.ActualHeight, fv.ActualWidth / img.ActualWidth);
+            if(double.IsInfinity(factor) || double.IsNaN(factor))
+                factor = Math.Min(fv.ActualHeight / 1000, fv.ActualWidth / 1000);
+            sv.MinZoomFactor = (float)factor;
+            sv.MaxZoomFactor = (float)factor * 8;
+            sv.ZoomToFactor(sv.MinZoomFactor);
+        }
+
+        private void setScale()
         {
             int lb = fv.SelectedIndex - 2;
             int ub = fv.SelectedIndex + 3;
@@ -78,18 +100,13 @@ namespace ExViewer.Views
             ub = ub > Gallery.Count ? Gallery.Count : ub;
             for(int i = lb; i < ub; i++)
             {
-                if(!init && i == fv.SelectedIndex)
+                if(i == fv.SelectedIndex)
                     continue;
                 var selected = ((FlipViewItem)fv.ContainerFromIndex(i));
                 if(selected == null)
                     continue;
                 var inner = (Grid)selected.ContentTemplateRoot;
                 var sv = (ScrollViewer)inner.FindName("sv");
-                var img = (Image)sv.Content;
-                var factor = Math.Min(fv.ActualHeight / img.ActualHeight, fv.ActualWidth / img.ActualWidth);
-                if(double.IsInfinity(factor) || double.IsNaN(factor))
-                    factor = Math.Min(fv.ActualHeight / 1000, fv.ActualWidth / 1000);
-                sv.MinZoomFactor = (float)factor;
                 sv.ZoomToFactor(sv.MinZoomFactor);
             }
         }
@@ -114,7 +131,7 @@ namespace ExViewer.Views
             {
                 var ignore = Gallery[i].LoadImage(false);
             }
-            setScale(false);
+            setScale();
         }
 
         private async void abb_reload_Click(object sender, RoutedEventArgs e)
@@ -126,46 +143,61 @@ namespace ExViewer.Views
         {
             await Launcher.LaunchUriAsync(Gallery[fv.SelectedIndex].PageUri);
         }
-    }
 
-    public class LoadStateToVisualStateConverter : IValueConverter
-    {
-        public static Brush AccentBrush
+        private System.Threading.CancellationTokenSource change_cb_topVisibility;
+
+        private void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            get;
-            set;
+            if(e.Handled)
+                return;
+            change_cb_topVisibility = new System.Threading.CancellationTokenSource();
+            Task.Delay(500, change_cb_topVisibility.Token).ContinueWith(async t =>
+            {
+                if(t.IsCanceled)
+                    return;
+                await cb_top.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    switch(cb_top.Visibility)
+                    {
+                    case Visibility.Visible:
+                        cb_top.Visibility = Visibility.Collapsed;
+                        break;
+                    case Visibility.Collapsed:
+                        cb_top.Visibility = Visibility.Visible;
+                        break;
+                    }
+                });
+            });
+            e.Handled = true;
         }
 
-        public object Convert(object value, Type targetType, object parameter, string language)
+        private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            var state = (ExClient.ImageLoadingState)value;
-            if(targetType == typeof(Visibility))
+            if(e.Handled)
+                return;
+            change_cb_topVisibility?.Cancel();
+            var sv = (ScrollViewer)((FrameworkElement)sender).FindName("sv");
+            var fa = sv.ZoomFactor;
+            if(fa == sv.MinZoomFactor)
             {
-                if(state == ExClient.ImageLoadingState.Loaded)
-                    return Visibility.Collapsed;
-                else
-                    return Visibility.Visible;
+                var pi = e.GetPosition((UIElement)sv.Content);
+                pi.X *= fa;
+                pi.Y *= fa;
+                var ps = e.GetPosition(sv);
+                sv.ZoomToFactor(fa * 2);
+                sv.ScrollToHorizontalOffset(pi.X * 2 - ps.X);
+                sv.ScrollToVerticalOffset(pi.Y * 2 - ps.Y);
             }
-            if(targetType == typeof(Brush))
-            {
-                if(state == ExClient.ImageLoadingState.Failed)
-                    return new SolidColorBrush(Windows.UI.Colors.Red);
-                else
-                    return AccentBrush;
-            }
-            if(targetType == typeof(bool))
-            {
-                if(state == ExClient.ImageLoadingState.Waiting || state == ExClient.ImageLoadingState.Preparing)
-                    return true;
-                else
-                    return false;
-            }
-            throw new NotImplementedException();
+            else
+                sv.ZoomToFactor(sv.MinZoomFactor);
+            e.Handled = true;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        private void Image_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            var s = (Image)sender;
+            var p = (ScrollViewer)s.Parent;
+            setScaleCore(p, s);
         }
     }
 }

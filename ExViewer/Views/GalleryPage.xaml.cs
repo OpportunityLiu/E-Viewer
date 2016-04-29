@@ -46,8 +46,6 @@ namespace ExViewer.Views
                 entranceElement = (UIElement)gv.ContainerFromIndex(Gallery.CurrentPage);
                 EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
             }
-            var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
-            view.VisibleBoundsChanged += View_VisibleBoundsChanged;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -55,21 +53,6 @@ namespace ExViewer.Views
             base.OnNavigatingFrom(e);
             if(entranceElement != null)
                 EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, false);
-            var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
-            view.VisibleBoundsChanged -= View_VisibleBoundsChanged;
-        }
-
-        private async void View_VisibleBoundsChanged(Windows.UI.ViewManagement.ApplicationView sender, object args)
-        {
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-                var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
-                if(view.Orientation == Windows.UI.ViewManagement.ApplicationViewOrientation.Landscape)
-                    await statusBar.HideAsync();
-                else
-                    await statusBar.ShowAsync();
-            }
         }
 
         UIElement entranceElement;

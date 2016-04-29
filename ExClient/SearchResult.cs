@@ -105,7 +105,12 @@ namespace ExClient
                 {
                     var doc = new HtmlDocument();
                     doc.Load(stream);
-                    var rcNode = doc.DocumentNode.Descendants("p").Where(node => node.GetAttributeValue("class", null) == "ip").Single();
+                    var rcNode = doc.DocumentNode.Descendants("p").Where(node => node.GetAttributeValue("class", null) == "ip").SingleOrDefault();
+                    if(rcNode == null)
+                    {
+                        RecordCount = 0;
+                        return;
+                    }
                     var match = Regex.Match(rcNode.InnerText, @"Showing.+of\s+([0-9,]+)");
                     if(match.Success)
                         RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);

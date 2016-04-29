@@ -114,6 +114,7 @@
     <Compile Include="GalleryImage.cs" />
     <Compile Include="IncrementalLoadingCollection{T}.cs" />
     <Compile Include="IOHelper.cs" />
+    <Compile Include="ObservableObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client-Search.cs" />
     <Compile Include="SearchResult.cs" />

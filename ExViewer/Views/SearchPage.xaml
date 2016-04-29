@@ -252,6 +252,7 @@
         </AppBar>
         <ListView x:Name="lv"
                   ContinuumNavigationTransitionInfo.ExitElementContainer="True"
+                  ItemsSource="{x:Bind SearchResult, Mode=OneWay}"
                   IncrementalLoadingThreshold="0.5"
                   IsItemClickEnabled="True"
                   ItemClick="lv_ItemClick"
@@ -259,7 +260,7 @@
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignRightWithPanel="True"
                   RelativePanel.Below="ab"
-                  Margin="0,4,0,0">
+                  VerticalAlignment="Top">
             <ListView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:Gallery">
@@ -303,11 +304,30 @@
             </ListView.ItemTemplate>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment"
+                            Value="Stretch" />
+                    <Setter Property="Padding"
+                            Value="0" />
                 </Style>
             </ListView.ItemContainerStyle>
+            <ListView.Footer>
+                <TextBlock HorizontalAlignment="Center"
+                           Margin="12"
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           Visibility="{x:Bind SearchResult.HasMoreItems, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more galleries...</TextBlock>
+            </ListView.Footer>
         </ListView>
+        <TextBlock Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                   RelativePanel.Below="ab"
+                   RelativePanel.AlignHorizontalCenterWithPanel="True">No hits found</TextBlock>
+        <TextBlock Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind SearchResult, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
+                   RelativePanel.Below="ab"
+                   RelativePanel.AlignHorizontalCenterWithPanel="True">Searching...</TextBlock>
     </RelativePanel>
 </Page>

@@ -9,6 +9,8 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Credentials;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -70,6 +72,22 @@ namespace ExViewer
                 {
                     //TODO: 从之前挂起的应用程序加载状态
                 }
+                var tb = ApplicationView.GetForCurrentView().TitleBar;
+
+                tb.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                tb.InactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                tb.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                tb.ButtonHoverBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
+                tb.ButtonInactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                tb.ButtonPressedBackgroundColor = (Color)Resources["SystemChromeHighColor"];
+
+                tb.ForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+                tb.InactiveForegroundColor = (Color)Resources["SystemChromeDisabledLowColor"];
+                tb.ButtonForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+                tb.ButtonHoverForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+                tb.ButtonInactiveForegroundColor = (Color)Resources["SystemChromeDisabledLowColor"];
+                tb.ButtonPressedForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+
                 current.Content = new Views.MainPage();
             }
             current.Activate();

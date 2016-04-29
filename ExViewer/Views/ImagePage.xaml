@@ -17,10 +17,65 @@
         <local:LoadStateToVisualStateConverter x:Key="LoadStateToVisualStateConverter" />
     </Page.Resources>
     <RelativePanel>
+        <FlipView x:Name="fv"
+                  Background="{x:Null}"
+                  RelativePanel.AlignRightWithPanel="True"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.AlignBottomWithPanel="True"
+                  EntranceNavigationTransitionInfo.IsTargetElement="True"
+                  RelativePanel.AlignTopWithPanel="True">
+            <FlipView.ItemTemplate>
+                <DataTemplate xmlns:c="using:ExClient"
+                              x:DataType="c:GalleryImage">
+                    <Grid Tapped="fvi_Tapped"
+                          DoubleTapped="fvi_DoubleTapped">
+                        <Grid.Resources>
+                            <local:InvertConverter x:Key="con">
+                                <local:InvertConverter.Raw>
+                                    <local:ObjectToBooleanConverter>
+                                        <local:ObjectToBooleanConverter.ValueForTrue>
+                                            <GridLength>48</GridLength>
+                                        </local:ObjectToBooleanConverter.ValueForTrue>
+                                        <local:ObjectToBooleanConverter.ValueForFalse>
+                                            <GridLength>0</GridLength>
+                                        </local:ObjectToBooleanConverter.ValueForFalse>
+                                        <local:ObjectToBooleanConverter.InnerConverter>
+                                            <local:BooleanToVisibilityConverter />
+                                        </local:ObjectToBooleanConverter.InnerConverter>
+                                    </local:ObjectToBooleanConverter>
+                                </local:InvertConverter.Raw>
+                            </local:InvertConverter>
+                        </Grid.Resources>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="{Binding Visibility, ElementName=cb_top, Converter={StaticResource con}}" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
+                                     Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     IsIndeterminate="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     VerticalAlignment="Top"
+                                     Grid.Row="1" />
+                        <ScrollViewer x:Name="sv"
+                                      ZoomMode="Enabled" 
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Auto"
+                                      MinZoomFactor="1"
+                                      Grid.RowSpan="2">
+                            <Image Source="{x:Bind Image, Mode=OneWay}" SizeChanged="Image_SizeChanged"/>
+                        </ScrollViewer>
+                    </Grid>
+                </DataTemplate>
+            </FlipView.ItemTemplate>
+        </FlipView>
         <CommandBar x:Name="cb_top"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True"
                     HorizontalContentAlignment="Stretch">
+            <CommandBar.Background>
+                <SolidColorBrush Color="{ThemeResource SystemChromeMediumColor}"
+                                 Opacity="0.5" />
+            </CommandBar.Background>
             <CommandBar.Content>
                 <RelativePanel>
                     <Button x:Name="btn_pane"
@@ -31,7 +86,7 @@
                             Click="btn_pane_Click" />
                     <TextBlock x:Name="tb_Title"
                                Text="{x:Bind Gallery.Title, Mode=OneWay}"
-                               Style="{StaticResource TitleTextBlockStyle}"
+                               Style="{StaticResource BaseTextBlockStyle}"
                                Grid.Column="1"
                                Margin="8,0"
                                VerticalAlignment="Center"
@@ -43,18 +98,18 @@
                                RelativePanel.LeftOf="tb_si" />
                     <TextBlock x:Name="tb_si"
                                Text="{Binding ElementName=fv, Path=SelectedItem.Page, Mode=OneWay, UpdateSourceTrigger=Explicit}"
-                               Style="{StaticResource SubtitleTextBlockStyle}"
+                               Style="{StaticResource BodyTextBlockStyle}"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_sep" />
                     <TextBlock x:Name="tb_sep"
                                Text="/"
-                               Style="{StaticResource SubtitleTextBlockStyle}"
+                               Style="{StaticResource BodyTextBlockStyle}"
                                Margin="4,0"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_rc" />
                     <TextBlock x:Name="tb_rc"
                                Text="{x:Bind Gallery.RecordCount, Mode=OneWay}"
-                               Style="{StaticResource SubtitleTextBlockStyle}"
+                               Style="{StaticResource BodyTextBlockStyle}"
                                RelativePanel.AlignRightWithPanel="True"
                                RelativePanel.AlignVerticalCenterWithPanel="True" />
                 </RelativePanel>
@@ -68,33 +123,5 @@
                               Click="abb_open_Click" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
-        <FlipView x:Name="fv"
-                  RelativePanel.Below="cb_top"
-                  RelativePanel.AlignRightWithPanel="True"
-                  RelativePanel.AlignLeftWithPanel="True"
-                  RelativePanel.AlignBottomWithPanel="True"
-                  Background="{x:Null}"
-                  EntranceNavigationTransitionInfo.IsTargetElement="True"
-                  SelectionChanged="fv_SelectionChanged">
-            <FlipView.ItemTemplate>
-                <DataTemplate xmlns:c="using:ExClient"
-                              x:DataType="c:GalleryImage">
-                    <Grid>
-                        <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
-                                     Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                     Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                     IsIndeterminate="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                     VerticalAlignment="Top" />
-                        <ScrollViewer x:Name="sv"
-                                      ZoomMode="Enabled"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Auto"
-                                      MinZoomFactor="1">
-                            <Image Source="{x:Bind Image, Mode=OneWay}" />
-                        </ScrollViewer>
-                    </Grid>
-                </DataTemplate>
-            </FlipView.ItemTemplate>
-        </FlipView>
     </RelativePanel>
 </Page>

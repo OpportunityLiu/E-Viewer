@@ -31,7 +31,7 @@
                             Width="48"
                             Click="btn_pane_Click" />
                     <TextBlock Text="{x:Bind Gallery.Title, Mode=OneWay}"
-                               Style="{StaticResource TitleTextBlockStyle}"
+                               Style="{StaticResource BaseTextBlockStyle}"
                                Margin="8,0"
                                Grid.Column="1"
                                VerticalAlignment="Center"
@@ -56,18 +56,18 @@
               Height="200"
               RelativePanel.AlignRightWithPanel="True">
             <Grid.RowDefinitions>
-                <RowDefinition Height="4"/>
-                <RowDefinition/>
+                <RowDefinition Height="4" />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150" />
-                <ColumnDefinition/>
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <ProgressBar x:Name="pb_save"
                          Grid.ColumnSpan="2" />
             <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay}"
-                   Grid.Row="1" 
-                   Margin="4"/>
+                   Grid.Row="1"
+                   Margin="4" />
             <RelativePanel Margin="4"
                            Grid.Row="1"
                            Grid.Column="1">
@@ -92,14 +92,20 @@
                   RelativePanel.Below="gd_info"
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignRightWithPanel="True"
-                  RelativePanel.AlignBottomWithPanel="True">
+                  RelativePanel.AlignBottomWithPanel="True"
+                  VerticalAlignment="Top">
             <GridView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
                     <Image Source="{x:Bind Thumb}"
-                           Width="100"/>
+                           Width="100" />
                 </DataTemplate>
             </GridView.ItemTemplate>
+            <GridView.Footer>
+                <TextBlock HorizontalAlignment="Center"
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           Visibility="{x:Bind Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more items...</TextBlock>
+            </GridView.Footer>
         </GridView>
     </RelativePanel>
 </Page>

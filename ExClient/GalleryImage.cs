@@ -23,7 +23,7 @@ namespace ExClient
         Failed
     }
 
-    public class GalleryImage : INotifyPropertyChanged
+    public class GalleryImage : ObservableObject
     {
 
         private static string showKey
@@ -142,7 +142,7 @@ namespace ExClient
         }
 
         internal GalleryImage(Gallery owner, int page, string imageKey, ImageSource thumb)
-            : this(owner, page,imageKey)
+            : this(owner, page, imageKey)
         {
             this.Thumb = thumb;
         }
@@ -154,7 +154,7 @@ namespace ExClient
                 var file = await CacheHelper.LoadFileAsync(owner.Id.ToString(), page.ToString());
                 if(file == null)
                     return null;
-                var image = new GalleryImage(owner, page,imageKey);
+                var image = new GalleryImage(owner, page, imageKey);
                 var thumb = new BitmapImage();
                 thumb.DecodePixelWidth = 100;
                 thumb.DecodePixelType = DecodePixelType.Logical;
@@ -284,7 +284,7 @@ namespace ExClient
             set
             {
                 _imageFile = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Image)));
+                RaisePropertyChanged(nameof(Image));
             }
         }
 
@@ -300,11 +300,20 @@ namespace ExClient
                 if(this.image != null && this.image.TryGetTarget(out image))
                     return image;
                 image = new BitmapImage();
-                using(var stream = imageFile.OpenReadAsync().AsTask().Result)
-                {
-                    image.SetSource(stream);
-                }
                 this.image = new WeakReference<BitmapImage>(image);
+                var loadStream = imageFile.OpenReadAsync();
+                loadStream.Completed = async (op, e) =>
+                {
+                    if(e != AsyncStatus.Completed)
+                        return;
+                    await DispatcherHelper.RunLowAsync(() =>
+                    {
+                        using(var stream = op.GetResults())
+                        {
+                            image.SetSource(stream);
+                        }
+                    });
+                };
                 return image;
             }
         }
@@ -314,15 +323,5 @@ namespace ExClient
         private string imageKey;
 
         internal string ImageKey => imageKey;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void Set<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
-        {
-            if(Equals(field, value))
-                return;
-            field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

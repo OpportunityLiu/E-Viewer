@@ -23,6 +23,11 @@ namespace ExClient
             if(Equals(field, value))
                 return;
             field = value;
+            OnPropertyChanged(propertyName);
+        }
+
+        protected void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
             OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
 
@@ -37,7 +42,7 @@ namespace ExClient
             protected set
             {
                 Set(ref rc, value);
-                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(IsEmpty)));
+                OnPropertyChanged(nameof(IsEmpty));
             }
         }
 
@@ -50,7 +55,7 @@ namespace ExClient
             protected set
             {
                 Set(ref pc, value);
-                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(HasMoreItems)));
+                OnPropertyChanged(nameof(HasMoreItems));
             }
         }
 
@@ -73,7 +78,7 @@ namespace ExClient
                 var lp = LoadPage(loadedPageCount++);
                 token.Register(lp.Cancel);
                 var re = await lp;
-                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(nameof(HasMoreItems)));
+                OnPropertyChanged(nameof(HasMoreItems));
                 return new LoadMoreItemsResult() { Count = re };
             });
         }

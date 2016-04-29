@@ -1,6 +1,7 @@
 ﻿using ExClient;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -33,44 +34,29 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
-            view.VisibleBoundsChanged += View_VisibleBoundsChanged;
-            if(Client.Current != null)
+            if(e.NavigationMode == NavigationMode.New)
             {
-                x = Client.Current;
-                asb.IsEnabled = true;
-                var r = await x.SearchAsync(searchKeyWord, Category.All);
-                lv.ItemsSource = r;
-            }
-            else
-            {
-                await logOn.ShowAsync();
+                if(Client.Current != null)
+                {
+                    client = Client.Current;
+                    asb.IsEnabled = true;
+                    SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
+                }
+                else
+                {
+                    await logOn.ShowAsync();
+                }
             }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
-            view.VisibleBoundsChanged -= View_VisibleBoundsChanged;
-        }
-
-        private async void View_VisibleBoundsChanged(Windows.UI.ViewManagement.ApplicationView sender, object args)
-        {
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-                var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
-                if(view.Orientation == Windows.UI.ViewManagement.ApplicationViewOrientation.Landscape)
-                    await statusBar.HideAsync();
-                else
-                    await statusBar.ShowAsync();
-            }
         }
 
         LogOnDialog logOn = new LogOnDialog();
 
-        Client x;
+        Client client;
 
         string searchKeyWord = "";
 
@@ -113,9 +99,25 @@ namespace ExViewer.Views
                 return;
             searchKeyWord = args.QueryText;
             searchFilter = category;
-            var r = await x.SearchAsync(searchKeyWord, searchFilter);
-            lv.ItemsSource = r;
+            SearchResult = null;
+            SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
         }
+
+        public SearchResult SearchResult
+        {
+            get
+            {
+                return (SearchResult)GetValue(SearchResultProperty);
+            }
+            set
+            {
+                SetValue(SearchResultProperty, value);
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for SearchResult.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SearchResultProperty =
+            DependencyProperty.Register("SearchResult", typeof(SearchResult), typeof(SearchPage), new PropertyMetadata(null));
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {

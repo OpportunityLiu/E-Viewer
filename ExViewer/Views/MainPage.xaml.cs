@@ -29,6 +29,13 @@ namespace ExViewer.Views
         public MainPage()
         {
             this.InitializeComponent();
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+                var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+                var ignore = statusBar.HideAsync();
+            }
+
         }
 
         SystemNavigationManager manager;
@@ -38,7 +45,7 @@ namespace ExViewer.Views
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
 
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
@@ -84,34 +91,6 @@ namespace ExViewer.Views
             default:
                 break;
             }
-        }
-    }
-
-    internal class CategoryToImageConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            var cata = (ExClient.Category)value;
-            var uri = new Uri($"ms-appx:///CategoryImage/{cata.ToString()}.png");
-            return new BitmapImage(uri);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    internal class StringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            return string.Format(parameter.ToString(), value.ToString());
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
         }
     }
 }
