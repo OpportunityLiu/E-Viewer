@@ -118,6 +118,9 @@
     <Compile Include="Views\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SplashControl.xaml.cs">
+      <DependentUpon>SplashControl.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -126,6 +129,21 @@
     <None Include="ExViewer_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Medium.scale-400.png" />
+    <Content Include="Assets\Small.scale-400.png" />
+    <Content Include="Assets\Splashes\botm0.scale-200.png" />
+    <Content Include="Assets\Splashes\botm1.scale-200.png" />
+    <Content Include="Assets\Splashes\botm2.scale-200.png" />
+    <Content Include="Assets\Splashes\botm3.scale-200.png" />
+    <Content Include="Assets\Splashes\botm4.scale-200.png" />
+    <Content Include="Assets\Splashes\botm5.scale-200.png" />
+    <Content Include="Assets\Splashes\botm6.scale-200.png" />
+    <Content Include="Assets\Splashes\botm7.scale-200.png" />
+    <Content Include="Assets\Store.scale-400.png" />
+    <Content Include="Assets\Taskbar.scale-400.png" />
+    <Content Include="Assets\TaskBar.targetsize-256.png" />
+    <Content Include="Assets\TaskBar.targetsize-256_altform-unplated.png" />
+    <Content Include="Assets\Wide.scale-400.png" />
     <Content Include="CategoryImage\ArtistCG.png" />
     <Content Include="CategoryImage\ArtistCG_d.png" />
     <Content Include="CategoryImage\AsianPorn.png" />
@@ -147,13 +165,7 @@
     <Content Include="CategoryImage\Western.png" />
     <Content Include="CategoryImage\Western_d.png" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -177,6 +189,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SearchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SplashControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

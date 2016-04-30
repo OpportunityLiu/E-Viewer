@@ -17,7 +17,7 @@ namespace ExClient
             if(Equals(field, value))
                 return;
             field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            RaisePropertyChanged(propertyName);
         }
 
         protected async void RaisePropertyChanged([CallerMemberName]string propertyName = null)
@@ -25,7 +25,7 @@ namespace ExClient
             var temp = PropertyChanged;
             if(temp == null)
                 return;
-            await DispatcherHelper.RunNormalAsync(() => temp(this, new PropertyChangedEventArgs(propertyName)));
+            await DispatcherHelper.RunLowAsync(() => temp(this, new PropertyChangedEventArgs(propertyName)));
         }
     }
 }

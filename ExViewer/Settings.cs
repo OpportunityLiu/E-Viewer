@@ -21,6 +21,28 @@ namespace ExViewer
             }
         }
 
+        [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+        sealed class TestingValueAttribute : Attribute
+        {
+            // See the attribute guidelines at 
+            //  http://go.microsoft.com/fwlink/?LinkId=85236
+            readonly object value;
+
+            // This is a positional argument
+            public TestingValueAttribute(object value)
+            {
+                this.value = value;
+            }
+
+            public object Value
+            {
+                get
+                {
+                    return value;
+                }
+            }
+        }
+
         public static Settings Current
         {
             get;
@@ -33,9 +55,19 @@ namespace ExViewer
             roamingProperties = (from property in this.GetType().GetRuntimeProperties()
                                  where property.CustomAttributes.Any(data => data.AttributeType == typeof(RoamingAttribute))
                                  select property.Name).ToList();
+#if DEBUG
+            testingProperties = (from property in this.GetType().GetRuntimeProperties()
+                                 let t = property.GetCustomAttribute<TestingValueAttribute>()
+                                 where t != null
+                                 select Tuple.Create(property.Name, t.Value)).ToDictionary(p => p.Item1, p => p.Item2);
+#endif
         }
 
         private List<string> roamingProperties;
+
+#if DEBUG
+        private Dictionary<string, object> testingProperties;
+#endif
 
         private void DataChanged(ApplicationData sender, object args)
         {
@@ -50,6 +82,10 @@ namespace ExViewer
 
         private T Get<T>(IPropertySet cotainer, T def, string key)
         {
+#if DEBUG
+            if(testingProperties.ContainsKey(key))
+                return (T)testingProperties[key];
+#endif
             object v;
             if(cotainer.TryGetValue(key, out v))
             {
@@ -68,6 +104,7 @@ namespace ExViewer
                 cotainer[key] = enu.ToString();
             else
                 cotainer[key] = value;
+            RaisePropertyChanged(key);
         }
 
         protected T GetLocal<T>(string key)
@@ -149,12 +186,37 @@ namespace ExViewer
                 SetLocal(value);
             }
         }
-
+        
         public float MaxFactor
         {
             get
             {
                 return GetLocal(8f);
+            }
+            set
+            {
+                SetLocal(value);
+            }
+        }
+
+        [TestingValue(0.1)]
+        public double MouseInertialFactor
+        {
+            get
+            {
+                return GetLocal(0.5);
+            }
+            set
+            {
+                SetLocal(value);
+            }
+        }
+
+        public int ChangeCommandBarDelay
+        {
+            get
+            {
+                return GetLocal(150);
             }
             set
             {

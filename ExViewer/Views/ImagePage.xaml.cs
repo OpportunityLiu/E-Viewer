@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI;
+using Color = Windows.UI.Color;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.ViewManagement;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -67,6 +68,9 @@ namespace ExViewer.Views
             {
                 cb_top.Visibility = Visibility.Visible;
             }
+            mouseInertialFactor = Settings.Current.MouseInertialFactor;
+            enableMouseInertia = mouseInertialFactor > 0.05;
+
             var param = (ExClient.Gallery)e.Parameter;
             fv.ItemsSource = Gallery = param;
             base.OnNavigatedTo(e);
@@ -143,10 +147,10 @@ namespace ExViewer.Views
 
         private System.Threading.CancellationTokenSource changeCbVisibility;
 
-        private async void fv_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
             changeCbVisibility = new System.Threading.CancellationTokenSource();
-            await Task.Delay(200, changeCbVisibility.Token).ContinueWith(async t =>
+            await Task.Delay(Settings.Current.ChangeCommandBarDelay, changeCbVisibility.Token).ContinueWith(async t =>
             {
                 if(t.IsCanceled)
                     return;
@@ -215,6 +219,81 @@ namespace ExViewer.Views
             var s = (ScrollViewer)sender;
             var p = (Image)s.Content;
             setFactor(s, p);
+        }
+
+        private bool enableMouseInertia;
+        private double mouseInertialFactor;
+
+        private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            if(e.Handled)
+                return;
+            if(!enableMouseInertia && e.IsInertial)
+                return;
+            var dx = e.Delta.Translation.X;
+            var dy = e.Delta.Translation.Y;
+            if(e.IsInertial)
+            {
+                dx *= mouseInertialFactor;
+                dy *= mouseInertialFactor;
+            }
+            var sv = (ScrollViewer)sender;
+            sv.ScrollToHorizontalOffset(sv.HorizontalOffset - dx);
+            sv.ScrollToVerticalOffset(sv.VerticalOffset - dy);
+        }
+
+        private void setSvManipulationMode(object sender, PointerRoutedEventArgs e)
+        {
+            var sv = (ScrollViewer)sender;
+            switch(e.Pointer.PointerDeviceType)
+            {
+            case Windows.Devices.Input.PointerDeviceType.Touch:
+                sv.ManipulationMode = ManipulationModes.System;
+                break;
+            case Windows.Devices.Input.PointerDeviceType.Pen:
+            case Windows.Devices.Input.PointerDeviceType.Mouse:
+                var mode = ManipulationModes.System | ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+                if(enableMouseInertia)
+                    mode |= ManipulationModes.TranslateInertia;
+                sv.ManipulationMode = mode;
+                break;
+            default:
+                break;
+            }
+        }
+
+        private void sv_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            setSvManipulationMode(sender, e);
+        }
+
+        private void sv_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            setSvManipulationMode(sender, e);
+        }
+
+        private void sv_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            setSvManipulationMode(sender, e);
+        }
+
+        private void abb_fullScreen_Click(object sender, RoutedEventArgs e)
+        {
+            var av = ApplicationView.GetForCurrentView();
+            if(!av.IsFullScreenMode)
+            {
+                if(av.TryEnterFullScreenMode())
+                {
+                    abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
+                    abb_fullScreen.Label = "Back to window";
+                }
+            }
+            else
+            {
+                av.ExitFullScreenMode();
+                abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
+                abb_fullScreen.Label = "Full screen";
+            }
         }
     }
 }

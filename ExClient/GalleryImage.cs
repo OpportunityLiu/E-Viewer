@@ -234,14 +234,14 @@ namespace ExClient
                     await load;
                     var imageLoad = Owner.Owner.HttpClient.GetBufferAsync(imageUri);
                     this.State = ImageLoadingState.Loading;
-                    imageLoad.Progress = async (sender, progress) =>
+                    imageLoad.Progress = (sender, progress) =>
                     {
                         if(progress.TotalBytesToReceive == null || progress.TotalBytesToReceive == 0)
-                            await DispatcherHelper.RunLowAsync(() => this.Progress = 0);
+                            this.Progress = 0;
                         else
                         {
                             var pro = (int)(progress.BytesReceived * 100 / ((ulong)progress.TotalBytesToReceive));
-                            await DispatcherHelper.RunLowAsync(() => this.Progress = pro);
+                            this.Progress = pro;
                         }
                     };
                     var buffer = await imageLoad;

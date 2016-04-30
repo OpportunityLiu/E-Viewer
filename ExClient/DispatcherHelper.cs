@@ -11,33 +11,34 @@ namespace ExClient
 {
     public static class DispatcherHelper
     {
-        public static CoreDispatcher Dispatcher
+        private static CoreDispatcher dispatcher;
+
+        public static void SetDispatcher(CoreDispatcher dispatcher)
         {
-            get; set;
+            DispatcherHelper.dispatcher = dispatcher;
         }
 
-        public static IAsyncAction RunIdleAsync(Action action)
+        public static IAsyncAction RunIdleAsync(DispatchedHandler action)
         {
-            if(Dispatcher == null)
-                return Task.Run(action).AsAsyncAction();
-            else
-                return Dispatcher.RunIdleAsync(e => action());
+            return RunAsync(action, CoreDispatcherPriority.Idle);
         }
 
-        public static IAsyncAction RunNormalAsync(Action action)
+        public static IAsyncAction RunLowAsync(DispatchedHandler action)
         {
-            if(Dispatcher == null)
-                return Task.Run(action).AsAsyncAction();
-            else
-                return Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action());
+            return RunAsync(action, CoreDispatcherPriority.Low);
         }
 
-        public static IAsyncAction RunLowAsync(Action action)
+        public static IAsyncAction RunNormalAsync(DispatchedHandler action)
         {
-            if(Dispatcher == null)
-                return Task.Run(action).AsAsyncAction();
+            return RunAsync(action, CoreDispatcherPriority.Normal);
+        }
+
+        public static IAsyncAction RunAsync(DispatchedHandler action, CoreDispatcherPriority priority)
+        {
+            if(dispatcher == null)
+                return Task.Run(() => action()).AsAsyncAction();
             else
-                return Dispatcher.RunAsync(CoreDispatcherPriority.Low, () => action());
+                return dispatcher.RunAsync(priority, action);
         }
     }
 }

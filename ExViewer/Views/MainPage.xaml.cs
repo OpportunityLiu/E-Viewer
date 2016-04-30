@@ -29,13 +29,6 @@ namespace ExViewer.Views
         public MainPage()
         {
             this.InitializeComponent();
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-                var view = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
-                var ignore = statusBar.HideAsync();
-            }
-
         }
 
         SystemNavigationManager manager;

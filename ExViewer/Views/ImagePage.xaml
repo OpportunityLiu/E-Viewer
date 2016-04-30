@@ -24,12 +24,12 @@
                   RelativePanel.AlignBottomWithPanel="True"
                   EntranceNavigationTransitionInfo.IsTargetElement="True"
                   RelativePanel.AlignTopWithPanel="True"
-                  SelectionChanged="fv_SelectionChanged"
-                  Tapped="fv_Tapped">
+                  SelectionChanged="fv_SelectionChanged">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
-                    <Grid DoubleTapped="fvi_DoubleTapped">
+                    <Grid DoubleTapped="fvi_DoubleTapped"
+                          Tapped="fvi_Tapped">
                         <Grid.Resources>
                             <local:InvertConverter x:Key="con">
                                 <local:InvertConverter.Raw>
@@ -59,11 +59,15 @@
                                      Grid.Row="1" />
                         <ScrollViewer x:Name="sv"
                                       ZoomMode="Enabled"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
                                       MinZoomFactor="1"
                                       Grid.RowSpan="2"
-                                      SizeChanged="sv_SizeChanged">
+                                      SizeChanged="sv_SizeChanged"
+                                      ManipulationDelta="sv_ManipulationDelta"
+                                      PointerMoved="sv_PointerMoved"
+                                      PointerEntered="sv_PointerEntered"
+                                      PointerPressed="sv_PointerPressed">
                             <Image Source="{x:Bind Image, Mode=OneWay}"
                                    SizeChanged="Image_SizeChanged" />
                         </ScrollViewer>
@@ -98,7 +102,12 @@
                                TextWrapping="NoWrap"
                                RelativePanel.RightOf="btn_pane"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
-                               RelativePanel.LeftOf="tb_si" />
+                               RelativePanel.LeftOf="tb_si">
+                        <ToolTipService.ToolTip>
+                            <TextBlock Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                                       TextWrapping="WrapWholeWords" />
+                        </ToolTipService.ToolTip>
+                    </TextBlock>
                     <TextBlock x:Name="tb_si"
                                Text="{Binding ElementName=fv, Path=SelectedItem.Page, Mode=OneWay, UpdateSourceTrigger=Explicit}"
                                Style="{StaticResource BodyTextBlockStyle}"
@@ -107,16 +116,23 @@
                     <TextBlock x:Name="tb_sep"
                                Text="/"
                                Style="{StaticResource BodyTextBlockStyle}"
-                               Margin="4,0"
+                               Margin="0,0"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_rc" />
                     <TextBlock x:Name="tb_rc"
                                Text="{x:Bind Gallery.RecordCount, Mode=OneWay}"
                                Style="{StaticResource BodyTextBlockStyle}"
                                RelativePanel.AlignRightWithPanel="True"
-                               RelativePanel.AlignVerticalCenterWithPanel="True" />
+                               RelativePanel.AlignVerticalCenterWithPanel="True"
+                               Margin="0,0,8,0" />
                 </RelativePanel>
             </CommandBar.Content>
+            <CommandBar.PrimaryCommands>
+                <AppBarButton x:Name="abb_fullScreen"
+                              Label="Full screen"
+                              Click="abb_fullScreen_Click"
+                              Icon="FullScreen" />
+            </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_reload"
                               Label="Reload"

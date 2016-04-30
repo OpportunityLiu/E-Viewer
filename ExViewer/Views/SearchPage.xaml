@@ -100,12 +100,12 @@
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
-                <DrillInNavigationTransitionInfo/>
+                <DrillInNavigationTransitionInfo />
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
 
-    <RelativePanel >
+    <RelativePanel>
         <AppBar x:Name="ab"
                 ClosedDisplayMode="Compact"
                 Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
@@ -285,7 +285,12 @@
                                        TextTrimming="CharacterEllipsis"
                                        RelativePanel.AlignLeftWithPanel="True"
                                        RelativePanel.AlignRightWithPanel="True"
-                                       RelativePanel.AlignTopWithPanel="True" />
+                                       RelativePanel.AlignTopWithPanel="True">
+                                <ToolTipService.ToolTip>
+                                    <TextBlock Text="{x:Bind Title, Mode=OneWay}"
+                                               TextWrapping="WrapWholeWords" />
+                                </ToolTipService.ToolTip>
+                            </TextBlock>
                             <Image x:Name="Category"
                                    Source="{x:Bind Category, Converter={StaticResource CategoryToImageConverter}}"
                                    RelativePanel.Below="Title"
