@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
@@ -40,6 +41,20 @@ namespace ExViewer.Views
                 {
                     client = Client.Current;
                     asb.IsEnabled = true;
+                    asb.Text = searchKeyWord;
+                    FindName(nameof(gv_AdvancedSearch));
+
+                    tb_Doujinshi.IsChecked = searchFilter.HasFlag(Category.Doujinshi);
+                    tb_Manga.IsChecked = searchFilter.HasFlag(Category.Manga);
+                    tb_ArtistCG.IsChecked = searchFilter.HasFlag(Category.ArtistCG);
+                    tb_GameCG.IsChecked = searchFilter.HasFlag(Category.GameCG);
+                    tb_Western.IsChecked = searchFilter.HasFlag(Category.Western);
+                    tb_NonH.IsChecked = searchFilter.HasFlag(Category.NonH);
+                    tb_ImageSet.IsChecked = searchFilter.HasFlag(Category.ImageSet);
+                    tb_Cosplay.IsChecked = searchFilter.HasFlag(Category.Cosplay);
+                    tb_AsianPorn.IsChecked = searchFilter.HasFlag(Category.AsianPorn);
+                    tb_Misc.IsChecked = searchFilter.HasFlag(Category.Misc);
+
                     SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
                 }
                 else
@@ -58,9 +73,9 @@ namespace ExViewer.Views
 
         Client client;
 
-        string searchKeyWord = "";
+        string searchKeyWord = Settings.Current.DefaultSearchString;
 
-        Category searchFilter = Category.Unspecified;
+        Category searchFilter = Settings.Current.DefaultSearchCategory;
 
         public event EventHandler<MainPageControlCommand> CommandExecuted;
 
@@ -99,6 +114,8 @@ namespace ExViewer.Views
                 return;
             searchKeyWord = args.QueryText;
             searchFilter = category;
+            Settings.Current.DefaultSearchCategory = category;
+            Settings.Current.DefaultSearchString = searchKeyWord;
             SearchResult = null;
             SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
         }
@@ -132,6 +149,10 @@ namespace ExViewer.Views
 
         bool isWideState;
 
+#pragma warning disable UWP001 // Platform-specific
+        Thickness mouseThickness = new Thickness(0), touchThickness = new Thickness(8);
+#pragma warning restore UWP001 // Platform-specific
+
         private void ab_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var newState = e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch;
@@ -144,14 +165,14 @@ namespace ExViewer.Views
                 {
                     foreach(FrameworkElement item in gv_AdvancedSearch.Items)
                     {
-                        item.Margin = new Thickness(8);
+                        item.Margin = touchThickness;
                     }
                 }
                 else
                 {
                     foreach(FrameworkElement item in gv_AdvancedSearch.Items)
                     {
-                        item.Margin = new Thickness(0);
+                        item.Margin = mouseThickness;
                     }
                 }
                 isWideState = newState;

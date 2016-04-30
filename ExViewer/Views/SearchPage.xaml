@@ -100,7 +100,7 @@
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
-                <DrillInNavigationTransitionInfo />
+                <DrillInNavigationTransitionInfo/>
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
@@ -279,6 +279,7 @@
                             <TextBlock x:Name="Title"
                                        Text="{x:Bind Title}"
                                        Style="{StaticResource SubtitleTextBlockStyle}"
+                                       ContinuumNavigationTransitionInfo.IsExitElement="True"
                                        TextWrapping="WrapWholeWords"
                                        MaxLines="3"
                                        TextTrimming="CharacterEllipsis"

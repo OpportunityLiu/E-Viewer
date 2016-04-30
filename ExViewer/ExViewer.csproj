@@ -99,6 +99,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Views\Converters.cs" />
     <Compile Include="Views\GalleryPage.xaml.cs">
       <DependentUpon>GalleryPage.xaml</DependentUpon>

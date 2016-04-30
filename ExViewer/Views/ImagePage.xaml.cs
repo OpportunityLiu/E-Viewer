@@ -31,10 +31,10 @@ namespace ExViewer.Views
             var backColor = ((SolidColorBrush)Resources["ApplicationPageBackgroundThemeBrush"]).Color;
             var needColor = (Color)Resources["SystemChromeMediumColor"];
             var toColor = Color.FromArgb(255,
-                (byte)(backColor.R - 2 * (backColor.R - needColor.R)),
-                (byte)(backColor.G - 2 * (backColor.G - needColor.G)),
-                (byte)(backColor.B - 2 * (backColor.B - needColor.B)));
-            cb_top.Background = new SolidColorBrush(toColor) { Opacity = 0.3 };
+                (byte)(backColor.R - 1.5 * (backColor.R - needColor.R)),
+                (byte)(backColor.G - 1.5 * (backColor.G - needColor.G)),
+                (byte)(backColor.B - 1.5 * (backColor.B - needColor.B)));
+            cb_top.Background = new SolidColorBrush(toColor) { Opacity = 0.41 };
         }
 
         public ExClient.Gallery Gallery
@@ -61,7 +61,7 @@ namespace ExViewer.Views
             CommandExecuted?.Invoke(this, MainPageControlCommand.SwitchSplitView);
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             if(e.NavigationMode == NavigationMode.New)
             {
@@ -71,24 +71,21 @@ namespace ExViewer.Views
             fv.ItemsSource = Gallery = param;
             base.OnNavigatedTo(e);
             fv.SelectedIndex = Gallery.CurrentPage;
-            await Task.Delay(10);
-            fv.SelectionChanged += fv_SelectionChanged;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             Gallery.CurrentPage = fv.SelectedIndex;
-            fv.SelectionChanged -= fv_SelectionChanged;
             base.OnNavigatingFrom(e);
         }
 
-        private void setScaleCore(ScrollViewer sv, Image img)
+        private void setFactor(ScrollViewer sv, Image img)
         {
             var factor = Math.Min(fv.ActualHeight / img.ActualHeight, fv.ActualWidth / img.ActualWidth);
             if(double.IsInfinity(factor) || double.IsNaN(factor))
                 factor = Math.Min(fv.ActualHeight / 1000, fv.ActualWidth / 1000);
             sv.MinZoomFactor = (float)factor;
-            sv.MaxZoomFactor = (float)factor * 8;
+            sv.MaxZoomFactor = (float)factor * Settings.Current.MaxFactor;
             sv.ZoomToFactor(sv.MinZoomFactor);
         }
 
@@ -144,19 +141,18 @@ namespace ExViewer.Views
             await Launcher.LaunchUriAsync(Gallery[fv.SelectedIndex].PageUri);
         }
 
-        private System.Threading.CancellationTokenSource change_cb_topVisibility;
+        private System.Threading.CancellationTokenSource changeCbVisibility;
 
-        private void fvi_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void fv_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if(e.Handled)
-                return;
-            change_cb_topVisibility = new System.Threading.CancellationTokenSource();
-            Task.Delay(500, change_cb_topVisibility.Token).ContinueWith(async t =>
+            changeCbVisibility = new System.Threading.CancellationTokenSource();
+            await Task.Delay(200, changeCbVisibility.Token).ContinueWith(async t =>
             {
                 if(t.IsCanceled)
                     return;
                 await cb_top.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
+                    changeCbVisibility.Cancel();
                     switch(cb_top.Visibility)
                     {
                     case Visibility.Visible:
@@ -168,14 +164,27 @@ namespace ExViewer.Views
                     }
                 });
             });
-            e.Handled = true;
         }
 
         private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             if(e.Handled)
                 return;
-            change_cb_topVisibility?.Cancel();
+            if(changeCbVisibility != null)
+            {
+                if(changeCbVisibility.IsCancellationRequested)
+                    switch(cb_top.Visibility)
+                    {
+                    case Visibility.Visible:
+                        cb_top.Visibility = Visibility.Collapsed;
+                        break;
+                    case Visibility.Collapsed:
+                        cb_top.Visibility = Visibility.Visible;
+                        break;
+                    }
+                else
+                    changeCbVisibility.Cancel();
+            }
             var sv = (ScrollViewer)((FrameworkElement)sender).FindName("sv");
             var fa = sv.ZoomFactor;
             if(fa == sv.MinZoomFactor)
@@ -184,9 +193,10 @@ namespace ExViewer.Views
                 pi.X *= fa;
                 pi.Y *= fa;
                 var ps = e.GetPosition(sv);
-                sv.ZoomToFactor(fa * 2);
-                sv.ScrollToHorizontalOffset(pi.X * 2 - ps.X);
-                sv.ScrollToVerticalOffset(pi.Y * 2 - ps.Y);
+                var df = Settings.Current.DefaultFactor;
+                sv.ZoomToFactor(fa * df);
+                sv.ScrollToHorizontalOffset(pi.X * df - ps.X);
+                sv.ScrollToVerticalOffset(pi.Y * df - ps.Y);
             }
             else
                 sv.ZoomToFactor(sv.MinZoomFactor);
@@ -197,7 +207,14 @@ namespace ExViewer.Views
         {
             var s = (Image)sender;
             var p = (ScrollViewer)s.Parent;
-            setScaleCore(p, s);
+            setFactor(p, s);
+        }
+
+        private void sv_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var s = (ScrollViewer)sender;
+            var p = (Image)s.Content;
+            setFactor(s, p);
         }
     }
 }

@@ -23,12 +23,13 @@
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignBottomWithPanel="True"
                   EntranceNavigationTransitionInfo.IsTargetElement="True"
-                  RelativePanel.AlignTopWithPanel="True">
+                  RelativePanel.AlignTopWithPanel="True"
+                  SelectionChanged="fv_SelectionChanged"
+                  Tapped="fv_Tapped">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
-                    <Grid Tapped="fvi_Tapped"
-                          DoubleTapped="fvi_DoubleTapped">
+                    <Grid DoubleTapped="fvi_DoubleTapped">
                         <Grid.Resources>
                             <local:InvertConverter x:Key="con">
                                 <local:InvertConverter.Raw>
@@ -57,12 +58,14 @@
                                      VerticalAlignment="Top"
                                      Grid.Row="1" />
                         <ScrollViewer x:Name="sv"
-                                      ZoomMode="Enabled" 
+                                      ZoomMode="Enabled"
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Auto"
                                       MinZoomFactor="1"
-                                      Grid.RowSpan="2">
-                            <Image Source="{x:Bind Image, Mode=OneWay}" SizeChanged="Image_SizeChanged"/>
+                                      Grid.RowSpan="2"
+                                      SizeChanged="sv_SizeChanged">
+                            <Image Source="{x:Bind Image, Mode=OneWay}"
+                                   SizeChanged="Image_SizeChanged" />
                         </ScrollViewer>
                     </Grid>
                 </DataTemplate>

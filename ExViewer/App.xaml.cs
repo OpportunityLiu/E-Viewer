@@ -34,6 +34,7 @@ namespace ExViewer
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            this.RequestedTheme = Settings.Current.Theme;
         }
 
         /// <summary>
