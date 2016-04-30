@@ -42,7 +42,7 @@ namespace ExViewer
         /// 将在启动应用程序以打开特定文件等情况下使用。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 
 #if DEBUG
@@ -51,45 +51,45 @@ namespace ExViewer
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            if(Client.Current == null)
-            {
-                var pv = new PasswordVault();
-                try
-                {
-                    var pass = pv.FindAllByResource("ex").First();
-                    pass.RetrievePassword();
-                    await Client.CreateClient(pass.UserName, pass.Password);
-                }
-                catch(Exception ex) when(ex.HResult == -2147023728)
-                {
-                }
-            }
-
             var current = Window.Current;
-            ExClient.DispatcherHelper.Dispatcher = current.Dispatcher;
+            DispatcherHelper.SetDispatcher(current.Dispatcher);
+            Views.SplashControl splash = null;
             if(current.Content == null)
             {
                 if(e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     //TODO: 从之前挂起的应用程序加载状态
                 }
-                var tb = ApplicationView.GetForCurrentView().TitleBar;
+                var view = ApplicationView.GetForCurrentView();
+                if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    var statusBar = StatusBar.GetForCurrentView();
+                    var ignore = statusBar.HideAsync();
+                }
+                var tb = view.TitleBar;
+                if(tb != null)
+                {
+                    tb.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                    tb.InactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                    tb.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                    tb.ButtonHoverBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
+                    tb.ButtonInactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
+                    tb.ButtonPressedBackgroundColor = (Color)Resources["SystemChromeHighColor"];
 
-                tb.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                tb.InactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                tb.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                tb.ButtonHoverBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
-                tb.ButtonInactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                tb.ButtonPressedBackgroundColor = (Color)Resources["SystemChromeHighColor"];
-
-                tb.ForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
-                tb.InactiveForegroundColor = (Color)Resources["SystemChromeDisabledLowColor"];
-                tb.ButtonForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
-                tb.ButtonHoverForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
-                tb.ButtonInactiveForegroundColor = (Color)Resources["SystemChromeDisabledLowColor"];
-                tb.ButtonPressedForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
-
-                current.Content = new Views.MainPage();
+                    tb.ForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+                    tb.InactiveForegroundColor = (Color)Resources["SystemChromeDisabledLowColor"];
+                    tb.ButtonForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+                    tb.ButtonHoverForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+                    tb.ButtonInactiveForegroundColor = (Color)Resources["SystemChromeDisabledLowColor"];
+                    tb.ButtonPressedForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
+                }
+                splash = new Views.SplashControl(e.SplashScreen);
+                current.Content = splash;
+            }
+            if(!e.PrelaunchActivated)
+            {
+                splash = splash ?? (current.Content as Views.SplashControl);
+                splash?.GoToContent();
             }
             current.Activate();
         }

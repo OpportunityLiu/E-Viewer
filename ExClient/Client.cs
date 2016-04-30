@@ -36,8 +36,15 @@ namespace ExClient
                 throw new ArgumentNullException(nameof(userName));
             if(string.IsNullOrWhiteSpace(password))
                 throw new ArgumentNullException(nameof(password));
-            Current = new Client();
-            return Current.initAsync(userName, password);
+            return Run(async token =>
+            {
+                var c = new Client();
+                var init= c.initAsync(userName, password);
+                token.Register(init.Cancel);
+                await init;
+                Current = c;
+                return c;
+            });
         }
 
         internal static readonly Uri RootUri = new Uri("http://exhentai.org/");

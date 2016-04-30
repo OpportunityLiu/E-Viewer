@@ -5,7 +5,7 @@
   <Properties>
     <DisplayName>ExViewer</DisplayName>
     <PublisherDisplayName>liuzh</PublisherDisplayName>
-    <Logo>Assets\StoreLogo.png</Logo>
+    <Logo>Assets/Store.png</Logo>
   </Properties>
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
@@ -15,10 +15,14 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="ExViewer.App">
-      <uap:VisualElements DisplayName="ExViewer" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="ExViewer" BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
+      <uap:VisualElements DisplayName="E-Viewer" Square150x150Logo="Assets/Medium.png" Square44x44Logo="Assets/TaskBar.png" Description="E-Viewer is a client for e-hentai.org and exhentai.org." BackgroundColor="transparent">
+        <uap:DefaultTile Square71x71Logo="Assets/Small.png" Wide310x150Logo="Assets/Wide.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+          </uap:ShowNameOnTiles>
         </uap:DefaultTile>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets/SplashScreen.png" BackgroundColor="#e7dfca" />
       </uap:VisualElements>
     </Application>
   </Applications>

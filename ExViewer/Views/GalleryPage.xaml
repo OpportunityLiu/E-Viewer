@@ -38,7 +38,12 @@
                                ContinuumNavigationTransitionInfo.IsEntranceElement="True"
                                MaxLines="1"
                                TextTrimming="CharacterEllipsis"
-                               TextWrapping="NoWrap" />
+                               TextWrapping="NoWrap">
+                        <ToolTipService.ToolTip>
+                            <TextBlock Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                                       TextWrapping="WrapWholeWords" />
+                        </ToolTipService.ToolTip>
+                    </TextBlock>
                 </Grid>
             </CommandBar.Content>
             <CommandBar.SecondaryCommands>
@@ -58,6 +63,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="4" />
                 <RowDefinition />
+                <RowDefinition Height="4" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150" />
@@ -94,6 +100,12 @@
                   RelativePanel.AlignRightWithPanel="True"
                   RelativePanel.AlignBottomWithPanel="True"
                   VerticalAlignment="Top">
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid HorizontalAlignment="Center"
+                                   Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
             <GridView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
