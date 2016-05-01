@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace ExViewer.Views
 {
-    public enum MainPageControlCommand
+    public enum RootControlCommand
     {
         SwitchSplitView
     }
 
-    internal interface IMainPageController
+    internal interface IRootController
     {
-        event EventHandler<MainPageControlCommand> CommandExecuted;
+        event EventHandler<RootControlCommand> CommandExecuted;
     }
 }

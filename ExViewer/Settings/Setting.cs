@@ -9,52 +9,29 @@ using Windows.Storage;
 using System.Reflection;
 using Windows.UI.Xaml;
 
-namespace ExViewer
+namespace ExViewer.Settings
 {
-    public class Settings : ExClient.ObservableObject
+
+    public class Setting : ExClient.ObservableObject
     {
-        [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-        sealed class RoamingAttribute : Attribute
-        {
-            public RoamingAttribute()
-            {
-            }
-        }
-
-        [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-        sealed class TestingValueAttribute : Attribute
-        {
-            // See the attribute guidelines at 
-            //  http://go.microsoft.com/fwlink/?LinkId=85236
-            readonly object value;
-
-            // This is a positional argument
-            public TestingValueAttribute(object value)
-            {
-                this.value = value;
-            }
-
-            public object Value
-            {
-                get
-                {
-                    return value;
-                }
-            }
-        }
-
-        public static Settings Current
+        public static Setting Current
         {
             get;
             private set;
-        } = new Settings();
+        } = new Setting();
 
-        private Settings()
+        private Setting()
         {
             ApplicationData.Current.DataChanged += DataChanged;
             roamingProperties = (from property in this.GetType().GetRuntimeProperties()
                                  where property.CustomAttributes.Any(data => data.AttributeType == typeof(RoamingAttribute))
                                  select property.Name).ToList();
+            groupedProperties = (from property in this.GetType().GetRuntimeProperties()
+                                 where property.GetCustomAttribute<SettingAttribute>() != null
+                                 select new SettingInfo(property) into setting
+                                 orderby setting.Index
+                                 group setting by setting.Category into grouped
+                                 select new GroupedSettings(grouped.Key, grouped)).ToList();
 #if DEBUG
             testingProperties = (from property in this.GetType().GetRuntimeProperties()
                                  let t = property.GetCustomAttribute<TestingValueAttribute>()
@@ -64,10 +41,13 @@ namespace ExViewer
         }
 
         private List<string> roamingProperties;
+        private List<GroupedSettings> groupedProperties;
 
 #if DEBUG
         private Dictionary<string, object> testingProperties;
 #endif
+
+        public List<GroupedSettings> GroupedSettings => groupedProperties;
 
         private void DataChanged(ApplicationData sender, object args)
         {
@@ -138,6 +118,7 @@ namespace ExViewer
         }
 
         [Roaming]
+        [Setting("Searching", "Default keywords on the fount page", Index = 10)]
         public string DefaultSearchString
         {
             get
@@ -151,6 +132,7 @@ namespace ExViewer
         }
 
         [Roaming]
+        [Setting("Searching", "Default categories on the front page", Index = 20)]
         public ExClient.Category DefaultSearchCategory
         {
             get
@@ -163,6 +145,7 @@ namespace ExViewer
             }
         }
 
+        [Setting("Overall", "The theme of the app", Index = 10)]
         public ApplicationTheme Theme
         {
             get
@@ -175,6 +158,8 @@ namespace ExViewer
             }
         }
 
+        [Setting("Image viewing", "Zoom factor for double tapping", Index = 10)]
+        [SingleRange(1, 4, Small = 0.1)]
         public float DefaultFactor
         {
             get
@@ -186,7 +171,9 @@ namespace ExViewer
                 SetLocal(value);
             }
         }
-        
+
+        [Setting("Image viewing","Maximum zoom factor", Index = 20)]
+        [SingleRange(4, 8, Small = 0.1)]
         public float MaxFactor
         {
             get
@@ -199,7 +186,8 @@ namespace ExViewer
             }
         }
 
-        [TestingValue(0.1)]
+        [Setting("Image viewing","Factor for inertia of mouse dragging, set to 0 to disable", Index = 30)]
+        [DoubleRange(0, 1, Small = 0.05)]
         public double MouseInertialFactor
         {
             get
@@ -212,6 +200,8 @@ namespace ExViewer
             }
         }
 
+        [Setting("Image viewing", "The latency for the command bar to hide or show after tapping", Index = 40)]
+        [Int32Range(0, 1000, Tick = 100, Small = 10, Large = 100)]
         public int ChangeCommandBarDelay
         {
             get

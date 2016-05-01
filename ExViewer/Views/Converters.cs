@@ -11,6 +11,51 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace ExViewer.Views
 {
+    public class InvertConverter : IValueConverter
+    {
+        public IValueConverter Raw
+        {
+            get;
+            set;
+        }
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            return Raw.ConvertBack(value, targetType, parameter, language);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return Raw.Convert(value, targetType, parameter, language);
+        }
+    }
+
+    public class EmptyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return value;
+        }
+    }
+
+    public class DefaultConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            return System.Convert.ChangeType(value, targetType);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return System.Convert.ChangeType(value, targetType);
+        }
+    }
+
     public abstract class ValueConverterChain : IValueConverter
     {
         public IValueConverter InnerConverter
@@ -38,25 +83,6 @@ namespace ExViewer.Views
             else
                 convertedByInner = value;
             return ConvertBackImplementation(convertedByInner, targetType, parameter, language);
-        }
-    }
-
-    public class InvertConverter : IValueConverter
-    {
-        public IValueConverter Raw
-        {
-            get;
-            set;
-        }
-
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            return Raw.ConvertBack(value, targetType, parameter, language);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            return Raw.Convert(value, targetType, parameter, language);
         }
     }
 

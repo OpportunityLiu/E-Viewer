@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="ca5aef37-1465-47a1-bdae-765a5500456f" Publisher="CN=liuzh" Version="1.0.16.0" />
+  <Identity Name="ca5aef37-1465-47a1-bdae-765a5500456f" Publisher="CN=liuzh" Version="1.0.20.0" />
   <mp:PhoneIdentity PhoneProductId="ca5aef37-1465-47a1-bdae-765a5500456f" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ExViewer</DisplayName>

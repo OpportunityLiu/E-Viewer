@@ -43,7 +43,7 @@ namespace ExViewer.Views
         public void GoToContent()
         {
             if(loaded)
-                Window.Current.Content = new MainPage();
+                Window.Current.Content = new RootControl();
             else
                 goToContent = true;
         }
