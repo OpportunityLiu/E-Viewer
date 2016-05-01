@@ -183,7 +183,7 @@ namespace ExClient
                 this.TitleJpn = WebUtility.HtmlDecode(title_jpn);
                 Category ca;
                 if(!categories.TryGetValue(category, out ca))
-                    ca = Category.Unknown;
+                    ca = Category.Unspecified;
                 this.Category = ca;
                 this.Thumb = new BitmapImage(new Uri(thumb));
                 this.Uploader = WebUtility.HtmlDecode(uploader);

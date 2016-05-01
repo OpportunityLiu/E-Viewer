@@ -24,9 +24,9 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class MainPage : UserControl
+    public sealed partial class RootControl : UserControl
     {
-        public MainPage()
+        public RootControl()
         {
             this.InitializeComponent();
         }
@@ -38,7 +38,7 @@ namespace ExViewer.Views
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private void Control_Loaded(object sender, RoutedEventArgs e)
         {
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
@@ -58,7 +58,7 @@ namespace ExViewer.Views
 
         private void fm_inner_Navigated(object sender, NavigationEventArgs e)
         {
-            var page = e.Content as IMainPageController;
+            var page = e.Content as IRootController;
             if(page != null)
                 page.CommandExecuted += Page_CommandExecuted;
             if(fm_inner.CanGoBack)
@@ -69,21 +69,26 @@ namespace ExViewer.Views
 
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-            var page = fm_inner.Content as IMainPageController;
+            var page = fm_inner.Content as IRootController;
             if(page != null)
                 page.CommandExecuted -= Page_CommandExecuted;
         }
 
-        private void Page_CommandExecuted(object sender, MainPageControlCommand e)
+        private void Page_CommandExecuted(object sender, RootControlCommand e)
         {
             switch(e)
             {
-            case MainPageControlCommand.SwitchSplitView:
+            case RootControlCommand.SwitchSplitView:
                 sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
                 break;
             default:
                 break;
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            fm_inner.Navigate(typeof(SettingsPage));
         }
     }
 }

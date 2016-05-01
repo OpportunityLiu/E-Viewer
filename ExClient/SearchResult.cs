@@ -31,7 +31,6 @@ namespace ExClient
         Cosplay = 0x80,
         AsianPorn = 0x100,
         Misc = 0x200,
-        Unknown = 0x80000000,
         All = Doujinshi | Manga | ArtistCG | GameCG | Western | NonH | ImageSet | Cosplay | AsianPorn | Misc
     }
 

@@ -64,6 +64,7 @@ namespace ExClient
 
         private class showImgApiResult
         {
+#pragma warning disable CS0649 //Field is never assigned to, and will always have its default value 0
             public int p;
             public string s;
             public string n;
@@ -77,6 +78,7 @@ namespace ExClient
             public string x;
             public string y;
             public string error;
+#pragma warning restore CS0649 //Field is never assigned to, and will always have its default value 0
         }
 
         private IAsyncAction loadImageUri(bool firstChance)

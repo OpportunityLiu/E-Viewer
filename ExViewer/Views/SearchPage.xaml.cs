@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExViewer.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +26,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SearchPage : Page, IMainPageController
+    public sealed partial class SearchPage : Page, IRootController
     {
         public SearchPage()
         {
@@ -73,11 +74,11 @@ namespace ExViewer.Views
 
         Client client;
 
-        string searchKeyWord = Settings.Current.DefaultSearchString;
+        string searchKeyWord = Setting.Current.DefaultSearchString;
 
-        Category searchFilter = Settings.Current.DefaultSearchCategory;
+        Category searchFilter = Setting.Current.DefaultSearchCategory;
 
-        public event EventHandler<MainPageControlCommand> CommandExecuted;
+        public event EventHandler<RootControlCommand> CommandExecuted;
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -114,8 +115,8 @@ namespace ExViewer.Views
                 return;
             searchKeyWord = args.QueryText;
             searchFilter = category;
-            Settings.Current.DefaultSearchCategory = category;
-            Settings.Current.DefaultSearchString = searchKeyWord;
+            Setting.Current.DefaultSearchCategory = category;
+            Setting.Current.DefaultSearchString = searchKeyWord;
             SearchResult = null;
             SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
         }
@@ -139,7 +140,7 @@ namespace ExViewer.Views
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
             ab.IsOpen = false;
-            CommandExecuted?.Invoke(this, MainPageControlCommand.SwitchSplitView);
+            CommandExecuted?.Invoke(this, RootControlCommand.SwitchSplitView);
         }
 
         private void ab_Opening(object sender, object e)

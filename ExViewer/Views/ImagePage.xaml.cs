@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.ViewManagement;
+using ExViewer.Settings;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -24,7 +25,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class ImagePage : Page, IMainPageController
+    public sealed partial class ImagePage : Page, IRootController
     {
         public ImagePage()
         {
@@ -54,12 +55,12 @@ namespace ExViewer.Views
         public static readonly DependencyProperty GalleryProperty =
             DependencyProperty.Register("Gallery", typeof(ExClient.Gallery), typeof(ImagePage), new PropertyMetadata(null));
 
-        public event EventHandler<MainPageControlCommand> CommandExecuted;
+        public event EventHandler<RootControlCommand> CommandExecuted;
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
             cb_top.IsOpen = false;
-            CommandExecuted?.Invoke(this, MainPageControlCommand.SwitchSplitView);
+            CommandExecuted?.Invoke(this, RootControlCommand.SwitchSplitView);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -68,7 +69,7 @@ namespace ExViewer.Views
             {
                 cb_top.Visibility = Visibility.Visible;
             }
-            mouseInertialFactor = Settings.Current.MouseInertialFactor;
+            mouseInertialFactor = Setting.Current.MouseInertialFactor;
             enableMouseInertia = mouseInertialFactor > 0.05;
 
             var param = (ExClient.Gallery)e.Parameter;
@@ -89,7 +90,7 @@ namespace ExViewer.Views
             if(double.IsInfinity(factor) || double.IsNaN(factor))
                 factor = Math.Min(fv.ActualHeight / 1000, fv.ActualWidth / 1000);
             sv.MinZoomFactor = (float)factor;
-            sv.MaxZoomFactor = (float)factor * Settings.Current.MaxFactor;
+            sv.MaxZoomFactor = (float)factor * Setting.Current.MaxFactor;
             sv.ZoomToFactor(sv.MinZoomFactor);
         }
 
@@ -150,7 +151,7 @@ namespace ExViewer.Views
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
             changeCbVisibility = new System.Threading.CancellationTokenSource();
-            await Task.Delay(Settings.Current.ChangeCommandBarDelay, changeCbVisibility.Token).ContinueWith(async t =>
+            await Task.Delay(Setting.Current.ChangeCommandBarDelay, changeCbVisibility.Token).ContinueWith(async t =>
             {
                 if(t.IsCanceled)
                     return;
@@ -197,7 +198,7 @@ namespace ExViewer.Views
                 pi.X *= fa;
                 pi.Y *= fa;
                 var ps = e.GetPosition(sv);
-                var df = Settings.Current.DefaultFactor;
+                var df = Setting.Current.DefaultFactor;
                 sv.ZoomToFactor(fa * df);
                 sv.ScrollToHorizontalOffset(pi.X * df - ps.X);
                 sv.ScrollToVerticalOffset(pi.Y * df - ps.Y);
