@@ -12,9 +12,14 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace ExClient
 {
+    /// <summary>
+    /// 用于操作缓存文件夹的辅助类
+    /// </summary>
     internal static class CacheHelper
     {
-        private static IStorageFolder localCache = ApplicationData.Current.LocalCacheFolder;
+        private static StorageFolder localCache = ApplicationData.Current.LocalCacheFolder;
+
+        public static StorageFolder LocalCache => localCache;
 
         public static IAsyncOperation<StorageFile> SaveFileAsync(string folderName, string fileName, IBuffer buffer)
         {

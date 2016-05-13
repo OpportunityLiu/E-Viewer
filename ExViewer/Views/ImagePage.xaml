@@ -17,6 +17,19 @@
         <local:LoadStateToVisualStateConverter x:Key="LoadStateToVisualStateConverter" />
     </Page.Resources>
     <RelativePanel>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <local:DeviceTrigger ActiveType="Windows.Mobile" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="abb_fullScreen.Visibility"
+                                Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <FlipView x:Name="fv"
                   Background="{x:Null}"
                   RelativePanel.AlignRightWithPanel="True"
@@ -86,7 +99,7 @@
             <CommandBar.Content>
                 <RelativePanel>
                     <Button x:Name="btn_pane"
-                            Style="{StaticResource NavigationBackButtonNormalStyle}"
+                            Style="{StaticResource NavigationBackButtonSmallStyle}"
                             Content="&#xE700;"
                             Height="48"
                             Width="48"

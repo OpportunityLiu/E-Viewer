@@ -17,9 +17,18 @@
         </DataTemplate>
         <DataTemplate x:Name="Number"
                       x:DataType="settings:SettingInfo">
-            <local:SettingSlider Header="{x:Bind FriendlyName}"
-                                 SettingValue="{x:Bind}">
-            </local:SettingSlider>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="{x:Bind FriendlyName}"
+                           FontWeight="{ThemeResource SliderHeaderThemeFontWeight}"
+                           TextWrapping="Wrap" />
+                <local:SettingSlider Grid.Row="1"
+                                     SettingValue="{x:Bind}">
+                </local:SettingSlider>
+            </Grid>
         </DataTemplate>
         <DataTemplate x:Name="Enum"
                       x:DataType="settings:SettingInfo">
@@ -28,39 +37,62 @@
                                    HorizontalAlignment="Stretch" />
         </DataTemplate>
     </Page.Resources>
-
-    <Pivot x:Name="pv_root">
-        <Pivot.HeaderTemplate>
-            <DataTemplate x:DataType="settings:GroupedSettings">
-                <TextBlock Text="{x:Bind GroupName}" />
-            </DataTemplate>
-        </Pivot.HeaderTemplate>
-        <Pivot.ItemTemplate>
-            <DataTemplate x:DataType="settings:GroupedSettings">
-                <ListView ItemTemplateSelector="{StaticResource SettingTemplateSelector}"
-                          ItemsSource="{x:Bind}">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListViewItem">
-                                        <ContentPresenter HorizontalAlignment="Stretch"
-                                                          Margin="{TemplateBinding Margin}"
-                                                          Padding="{TemplateBinding Padding}"
-                                                          Foreground="{TemplateBinding Foreground}"
-                                                          Background="{TemplateBinding Background}"
-                                                          BorderBrush="{TemplateBinding BorderBrush}" />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="MinHeight"
-                                    Value="0" />
-                            <Setter Property="Padding"
-                                    Value="8,4" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-            </DataTemplate>
-        </Pivot.ItemTemplate>
-    </Pivot>
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <SlideNavigationTransitionInfo />
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
+    <Grid>
+        <Rectangle Height="48"
+                   Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                   VerticalAlignment="Top"
+                   StrokeThickness="0" />
+        <Pivot x:Name="pv_root">
+            <Pivot.LeftHeader>
+                <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
+                        Content="&#xE700;"
+                        Height="48"
+                        Width="48"
+                        Click="btn_Click" />
+            </Pivot.LeftHeader>
+            <Pivot.HeaderTemplate>
+                <DataTemplate x:DataType="settings:GroupedSettings">
+                    <TextBlock Text="{x:Bind GroupName}" />
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+            <Pivot.ItemTemplate>
+                <DataTemplate  x:DataType="settings:GroupedSettings">
+                    <ListView ItemTemplateSelector="{StaticResource SettingTemplateSelector}"
+                              ItemsSource="{x:Bind}"
+                              Margin="4">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <ContentPresenter HorizontalAlignment="Stretch"
+                                                              Margin="{TemplateBinding Margin}"
+                                                              Padding="{TemplateBinding Padding}"
+                                                              Foreground="{TemplateBinding Foreground}"
+                                                              Background="{TemplateBinding Background}"
+                                                              BorderBrush="{TemplateBinding BorderBrush}" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="MinHeight"
+                                        Value="0" />
+                                <Setter Property="Padding"
+                                        Value="4" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemContainerTransitions>
+                            <TransitionCollection />
+                        </ListView.ItemContainerTransitions>
+                    </ListView>
+                </DataTemplate>
+            </Pivot.ItemTemplate>
+        </Pivot>
+    </Grid>
 </Page>

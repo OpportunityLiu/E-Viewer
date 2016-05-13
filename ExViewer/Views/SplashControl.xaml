@@ -32,7 +32,6 @@
     </UserControl.Resources>
     <Grid Background="#ffe7dfca">
         <Image x:Name="img_splash"
-               Source="ms-appx:///Assets/SplashScreen.png"
                HorizontalAlignment="Center"
                VerticalAlignment="Center"
                RenderTransformOrigin="0.5,0.5">

@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -38,12 +39,16 @@ namespace ExViewer.Views
                 pb_save.Maximum = Gallery.RecordCount;
                 pb_save.Value = 0;
                 pb_save.Visibility = Visibility.Collapsed;
+                pb_save.ClearValue(ForegroundProperty);
+                var save = Gallery.SaveGalleryAction;
+                if(save != null)
+                    saveProgressHandler(save);
             }
             else if(e.NavigationMode == NavigationMode.Back)
             {
-                gv.SelectedIndex = Gallery.CurrentPage;
-                gv.ScrollIntoView(Gallery[Gallery.CurrentPage]);
-                entranceElement = (UIElement)gv.ContainerFromIndex(Gallery.CurrentPage);
+                gv.SelectedIndex = Gallery.CurrentImage;
+                gv.ScrollIntoView(Gallery[Gallery.CurrentImage]);
+                entranceElement = (UIElement)gv.ContainerFromIndex(Gallery.CurrentImage);
                 EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
             }
         }
@@ -59,7 +64,7 @@ namespace ExViewer.Views
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Gallery.CurrentPage = Gallery.IndexOf((ExClient.GalleryImage)e.ClickedItem);
+            Gallery.CurrentImage = Gallery.IndexOf((ExClient.GalleryImage)e.ClickedItem);
             Frame.Navigate(typeof(ImagePage), Gallery);
         }
 
@@ -95,19 +100,58 @@ namespace ExViewer.Views
         private async void abb_save_Click(object sender, RoutedEventArgs e)
         {
             var save = Gallery.SaveGalleryAsync();
+            saveProgressHandler(save);
+            await save;
+        }
+
+        private void saveProgressHandler(IAsyncActionWithProgress<ExClient.SaveGalleryProgress> save)
+        {
             var gid = Gallery.Id;
             this.pb_save.Visibility = Visibility.Visible;
-            save.Progress = async (s, p) =>
+            switch(save.Status)
             {
-                if(this.Gallery.Id != gid)
-                    return;
-                await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
-                {
-                    this.pb_save.Visibility = Visibility.Visible;
-                    this.pb_save.Value = p.ImageLoaded;
-                });
-            };
-            await save;
+            case AsyncStatus.Error:
+            case AsyncStatus.Canceled:
+                this.pb_save.Foreground = new SolidColorBrush(Colors.Red);
+                this.pb_save.Value = Gallery.RecordCount;
+                break;
+            case AsyncStatus.Completed:
+                this.pb_save.Foreground = new SolidColorBrush(Colors.Green);
+                this.pb_save.Value = Gallery.RecordCount;
+                break;
+            case AsyncStatus.Started:
+                if(save.Progress == null)
+                    save.Progress = async (s, p) =>
+                    {
+                        if(this.Gallery.Id != gid)
+                            return;
+                        await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                        {
+                            this.pb_save.Value = p.ImageLoaded;
+                        });
+                    };
+                if(save.Completed == null)
+                    save.Completed = async (s, p) =>
+                    {
+                        if(this.Gallery.Id != gid)
+                            return;
+                        await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                        {
+                            this.pb_save.Value = Gallery.RecordCount;
+                            switch(p)
+                            {
+                            case AsyncStatus.Error:
+                            case AsyncStatus.Canceled:
+                                this.pb_save.Foreground = new SolidColorBrush(Colors.Red);
+                                break;
+                            case AsyncStatus.Completed:
+                                this.pb_save.Foreground = new SolidColorBrush(Colors.Green);
+                                break;
+                            }
+                        });
+                    };
+                break;
+            }
         }
     }
 }

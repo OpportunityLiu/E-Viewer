@@ -22,7 +22,6 @@ namespace ExViewer.Settings
 
         private Setting()
         {
-            ApplicationData.Current.DataChanged += DataChanged;
             roamingProperties = (from property in this.GetType().GetRuntimeProperties()
                                  where property.CustomAttributes.Any(data => data.AttributeType == typeof(RoamingAttribute))
                                  select property.Name).ToList();
@@ -38,6 +37,7 @@ namespace ExViewer.Settings
                                  where t != null
                                  select Tuple.Create(property.Name, t.Value)).ToDictionary(p => p.Item1, p => p.Item2);
 #endif
+            ApplicationData.Current.DataChanged += DataChanged;
         }
 
         private List<string> roamingProperties;
@@ -145,7 +145,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Overall", "The theme of the app", Index = 10)]
+        [Setting("Overall", "The theme of the app (need restart the app)", Index = 10)]
         public ApplicationTheme Theme
         {
             get

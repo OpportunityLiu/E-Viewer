@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CachedGallery.cs" />
     <Compile Include="CacheHelper.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="DispatcherHelper.cs" />

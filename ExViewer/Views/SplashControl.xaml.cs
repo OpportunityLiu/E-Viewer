@@ -29,8 +29,19 @@ namespace ExViewer.Views
         public SplashControl()
         {
             this.InitializeComponent();
-            var imgN = new Random().Next(8);
-            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Assets/Splashes/botm{imgN}.png"));
+        }
+
+        public IAsyncAction InitAsync()
+        {
+            return AsyncInfo.Run(async token =>
+            {
+                var imgN = new Random().Next(8);
+                this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Assets/Splashes/botm{imgN}.png"));
+                var pic = new BitmapImage();
+                var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/SplashScreen.png"));
+                await pic.SetSourceAsync(await file.OpenReadAsync());
+                this.img_splash.Source = pic;
+            });
         }
 
         public SplashControl(SplashScreen splashScreen) : this()
@@ -71,6 +82,8 @@ namespace ExViewer.Views
 
         private void splash_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            if(DeviceTrigger.IsMobile)
+                return;
             var l = splashScreen.ImageLocation;
             this.img_splash.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
             this.img_splash.Width = l.Width;

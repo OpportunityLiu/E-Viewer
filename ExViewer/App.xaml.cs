@@ -42,7 +42,7 @@ namespace ExViewer
         /// 将在启动应用程序以打开特定文件等情况下使用。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 
 #if DEBUG
@@ -53,8 +53,9 @@ namespace ExViewer
 #endif
             var current = Window.Current;
             DispatcherHelper.SetDispatcher(current.Dispatcher);
-            Views.SplashControl splash = null;
-            if(current.Content == null)
+            var currentContent = current.Content;
+            var splash = currentContent as Views.SplashControl;
+            if(currentContent == null)
             {
                 if(e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -84,11 +85,11 @@ namespace ExViewer
                     tb.ButtonPressedForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
                 }
                 splash = new Views.SplashControl(e.SplashScreen);
+                await splash.InitAsync();
                 current.Content = splash;
             }
             if(!e.PrelaunchActivated)
             {
-                splash = splash ?? (current.Content as Views.SplashControl);
                 splash?.GoToContent();
             }
             current.Activate();

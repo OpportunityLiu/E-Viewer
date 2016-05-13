@@ -1,0 +1,120 @@
+﻿<Page x:Class="ExViewer.Views.CachePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:ExViewer.Views"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      NavigationCacheMode="Enabled"
+      mc:Ignorable="d">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <DrillInNavigationTransitionInfo />
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
+
+    <RelativePanel>
+        <CommandBar x:Name="cb_top"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignRightWithPanel="True"
+                    HorizontalContentAlignment="Stretch">
+            <CommandBar.Content>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
+                            Content="&#xE700;"
+                            Height="48"
+                            Width="48"
+                            Click="btn_Pane_Click" />
+                </Grid>
+            </CommandBar.Content>
+            <CommandBar.PrimaryCommands>
+                <AppBarButton x:Name="abb_Refresh"
+                              Click="abb_Refresh_Click"
+                              Icon="Refresh"
+                              Label="Refresh" />
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="abb_ClearCache"
+                              Click="abb_ClearCache_Click"
+                              Icon="Clear"
+                              Label="Clear cache" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+        <ListView x:Name="lv"
+                  ContinuumNavigationTransitionInfo.ExitElementContainer="True"
+                  IsItemClickEnabled="True"
+                  ItemClick="lv_ItemClick"
+                  RelativePanel.AlignBottomWithPanel="True"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.AlignRightWithPanel="True"
+                  RelativePanel.Below="cb_top"
+                  VerticalAlignment="Top">
+            <ListView.ItemTemplate>
+                <DataTemplate xmlns:c="using:ExClient"
+                              x:DataType="c:Gallery">
+                    <Grid Padding="8,4"
+                          Height="200">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}">
+                            <Image Source="{x:Bind Thumb}"
+                                   Stretch="Uniform" />
+                        </ContentPresenter>
+                        <RelativePanel Padding="8,4,4,4"
+                                       Grid.Column="1">
+                            <TextBlock x:Name="Title"
+                                       Text="{x:Bind Title}"
+                                       Style="{StaticResource SubtitleTextBlockStyle}"
+                                       ContinuumNavigationTransitionInfo.IsExitElement="True"
+                                       TextWrapping="WrapWholeWords"
+                                       MaxLines="3"
+                                       TextTrimming="CharacterEllipsis"
+                                       RelativePanel.AlignLeftWithPanel="True"
+                                       RelativePanel.AlignRightWithPanel="True"
+                                       RelativePanel.AlignTopWithPanel="True">
+                                <ToolTipService.ToolTip>
+                                    <TextBlock Text="{x:Bind Title, Mode=OneWay}"
+                                               TextWrapping="WrapWholeWords" />
+                                </ToolTipService.ToolTip>
+                            </TextBlock>
+                            <Image x:Name="Category"
+                                   Source="{x:Bind Category, Converter={StaticResource CategoryToImageConverter}}"
+                                   RelativePanel.Below="Title"
+                                   RelativePanel.AlignLeftWithPanel="True"
+                                   Stretch="None" />
+                            <TextBlock x:Name="RecordCount"
+                                       RelativePanel.RightOf="Category"
+                                       RelativePanel.AlignVerticalCenterWith="Category"
+                                       Text="{x:Bind RecordCount, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
+                            <TextBlock x:Name="Rating"
+                                       RelativePanel.Below="Category"
+                                       Text="{x:Bind Rating, Converter={StaticResource RateStringConverter}}"
+                                       FontFamily="Segoe MDL2 Assets" />
+                        </RelativePanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment"
+                            Value="Stretch" />
+                    <Setter Property="Padding"
+                            Value="0" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <TextBlock x:Name="tb_Empty" Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   RelativePanel.Below="cb_top"
+                   RelativePanel.AlignHorizontalCenterWithPanel="True">No cached galleries</TextBlock>
+    </RelativePanel>
+</Page>
