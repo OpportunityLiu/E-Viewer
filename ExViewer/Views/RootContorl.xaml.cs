@@ -29,7 +29,23 @@ namespace ExViewer.Views
         public RootControl()
         {
             this.InitializeComponent();
+            tabs = new Dictionary<Controls.SplitViewTab, Type>()
+            {
+                [this.svt_Cache] = typeof(CachePage),
+                [this.svt_Search] = typeof(SearchPage),
+                [this.svt_Settings] = typeof(SettingsPage)
+            };
+
+            pages = new Dictionary<Type, Controls.SplitViewTab>()
+            {
+                [typeof(CachePage)] = this.svt_Cache,
+                [typeof(SearchPage)] = this.svt_Search,
+                [typeof(SettingsPage)] = this.svt_Settings
+            };
         }
+
+        private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
+        private readonly Dictionary<Type, Controls.SplitViewTab> pages;
 
         SystemNavigationManager manager;
 
@@ -42,8 +58,6 @@ namespace ExViewer.Views
         {
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
-            //var g = await Gallery.LoadGalleryAsync(928299, null);
-            //fm_inner.Navigate(typeof(GalleryPage), g);
             fm_inner.Navigate(typeof(SearchPage));
         }
 
@@ -65,13 +79,26 @@ namespace ExViewer.Views
                 manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             else
                 manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            Controls.SplitViewTab tab;
+            if(pages.TryGetValue(e.Content.GetType(), out tab))
+            {
+                tab.IsChecked = true;
+            }
         }
 
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-            var page = fm_inner.Content as IRootController;
+            var content = fm_inner.Content;
+            if(content == null)
+                return;
+            var page = content as IRootController;
             if(page != null)
                 page.CommandExecuted -= Page_CommandExecuted;
+            Controls.SplitViewTab tab;
+            if(this.pages.TryGetValue(content.GetType(), out tab))
+            {
+                tab.IsChecked = false;
+            }
         }
 
         private void Page_CommandExecuted(object sender, RootControlCommand e)
@@ -86,9 +113,20 @@ namespace ExViewer.Views
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void fm_inner_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            fm_inner.Navigate(typeof(SettingsPage));
+            e.Handled = true;
+            throw e.Exception;
+        }
+
+        private void svt_Click(object sender, RoutedEventArgs e)
+        {
+            var s = (Controls.SplitViewTab)sender;
+            if(s.IsChecked)
+                return;
+            fm_inner.SetNavigationState("1,0");
+            fm_inner.Navigate(tabs[s]);
+            sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
     }
 }

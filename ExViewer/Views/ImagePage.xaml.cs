@@ -33,10 +33,10 @@ namespace ExViewer.Views
             var backColor = ((SolidColorBrush)Resources["ApplicationPageBackgroundThemeBrush"]).Color;
             var needColor = (Color)Resources["SystemChromeMediumColor"];
             var toColor = Color.FromArgb(255,
-                (byte)(backColor.R - 1.5 * (backColor.R - needColor.R)),
-                (byte)(backColor.G - 1.5 * (backColor.G - needColor.G)),
-                (byte)(backColor.B - 1.5 * (backColor.B - needColor.B)));
-            cb_top.Background = new SolidColorBrush(toColor) { Opacity = 0.41 };
+                (byte)(backColor.R - 2 * (backColor.R - needColor.R)),
+                (byte)(backColor.G - 2 * (backColor.G - needColor.G)),
+                (byte)(backColor.B - 2 * (backColor.B - needColor.B)));
+            cb_top.Background = new SolidColorBrush(toColor) { Opacity = 0.29 };
         }
 
         public ExClient.Gallery Gallery
@@ -50,6 +50,8 @@ namespace ExViewer.Views
                 SetValue(GalleryProperty, value);
             }
         }
+
+        ApplicationView av = ApplicationView.GetForCurrentView();
 
         // Using a DependencyProperty as the backing store for Gallery.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GalleryProperty =
@@ -75,13 +77,31 @@ namespace ExViewer.Views
             var param = (ExClient.Gallery)e.Parameter;
             fv.ItemsSource = Gallery = param;
             base.OnNavigatedTo(e);
-            fv.SelectedIndex = Gallery.CurrentPage;
+            fv.SelectedIndex = Gallery.CurrentImage;
+
+            av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
+            Av_VisibleBoundsChanged(av, null);
+        }
+
+        private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
+        {
+            if(av.IsFullScreenMode)
+            {
+                abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
+                abb_fullScreen.Label = "Back to window";
+            }
+            else
+            {
+                abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
+                abb_fullScreen.Label = "Full screen";
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            Gallery.CurrentPage = fv.SelectedIndex;
+            Gallery.CurrentImage = fv.SelectedIndex;
             base.OnNavigatingFrom(e);
+            av.VisibleBoundsChanged -= Av_VisibleBoundsChanged;
         }
 
         private void setFactor(ScrollViewer sv, Image img)
@@ -131,14 +151,14 @@ namespace ExViewer.Views
             }
             for(int i = start; i < end; i++)
             {
-                var ignore = Gallery[i].LoadImage(false);
+                var ignore = Gallery[i].LoadImage(false, false);
             }
             setScale();
         }
 
         private async void abb_reload_Click(object sender, RoutedEventArgs e)
         {
-            await Gallery[fv.SelectedIndex].LoadImage(true);
+            await Gallery[fv.SelectedIndex].LoadImage(true, false);
         }
 
         private async void abb_open_Click(object sender, RoutedEventArgs e)
@@ -280,20 +300,13 @@ namespace ExViewer.Views
 
         private void abb_fullScreen_Click(object sender, RoutedEventArgs e)
         {
-            var av = ApplicationView.GetForCurrentView();
             if(!av.IsFullScreenMode)
             {
-                if(av.TryEnterFullScreenMode())
-                {
-                    abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
-                    abb_fullScreen.Label = "Back to window";
-                }
+                av.TryEnterFullScreenMode();
             }
             else
             {
                 av.ExitFullScreenMode();
-                abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
-                abb_fullScreen.Label = "Full screen";
             }
         }
     }

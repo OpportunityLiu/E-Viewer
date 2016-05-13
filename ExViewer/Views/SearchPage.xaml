@@ -124,7 +124,7 @@
                     <ColumnDefinition Width="48" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Style="{StaticResource NavigationBackButtonNormalStyle}"
+                <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
                         Content="&#xE700;"
                         Height="48"
                         Width="48"

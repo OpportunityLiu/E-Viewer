@@ -34,7 +34,7 @@ namespace ExClient
     [JsonObject]
     public class Gallery : IncrementalLoadingCollection<GalleryImage>
     {
-        private const string thumbFileName = "thumb.jpg";
+        protected const string thumbFileName = "thumb.jpg";
 
         private static readonly Dictionary<string, Category> categories = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
@@ -50,57 +50,81 @@ namespace ExClient
             ["Misc"] = Category.Misc
         };
 
+        /// <summary>
+        /// 查询已缓存的 <see cref="Gallery"/> 列表
+        /// </summary>
+        /// <returns>包含已缓存的 <see cref="Id"/> 列表</returns>
+        public static IAsyncOperation<ICollection<long>> GetCachedGalleriesAsync()
+        {
+            return Run<ICollection<long>>(async token =>
+            {
+                var option = new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.DefaultQuery, new string[] { ".json" })
+                {
+                    FolderDepth = Windows.Storage.Search.FolderDepth.Deep,
+                    ApplicationSearchFilter = "info"
+                };
+                var query = CacheHelper.LocalCache.CreateFileQueryWithOptions(option);
+                var files = await query.GetFilesAsync();
+                var list = new List<long>();
+                foreach(var item in files)
+                {
+                    var d = Path.GetFileName(Path.GetDirectoryName(item.Path));
+                    long id;
+                    if(long.TryParse(d, out id))
+                        list.Add(id);
+                }
+                return list;
+            });
+        }
+
+        /// <summary>
+        /// 清空缓存（包含自动缓存的文件）
+        /// </summary>
+        public static IAsyncAction ClearCachedGalleriesAsync()
+        {
+            return Run(async token =>
+            {
+                foreach(var item in await CacheHelper.LocalCache.GetItemsAsync())
+                {
+                    await item.DeleteAsync();
+                }
+            });
+        }
+
+        /// <summary>
+        /// 从缓存中载入相应的 <see cref="Gallery"/>
+        /// </summary>
+        /// <param name="id">要载入的 <see cref="Id"/></param>
+        /// <returns>相应的 <see cref="Gallery"/></returns>
         public static IAsyncOperation<Gallery> LoadGalleryAsync(long id)
         {
             return LoadGalleryAsync(id, Client.Current);
         }
 
+        /// <summary>
+        /// 从缓存中载入相应的 <see cref="Gallery"/>
+        /// </summary>
+        /// <param name="id">要载入的 <see cref="Id"/></param>
+        /// <param name="owner">要设置的 <see cref="Owner"/></param>
+        /// <returns>相应的 <see cref="Gallery"/></returns>
         public static IAsyncOperation<Gallery> LoadGalleryAsync(long id, Client owner)
         {
-            return Run(async token =>
+            return Run<Gallery>(async token =>
             {
                 var cache = await GalleryCache.LoadCacheAsync(id);
                 if(cache == null)
                     return null;
-                var gallery = new Gallery(cache.Id, cache.Token, 1)
-                {
-                    ArchiverKey = cache.ArchiverKey,
-                    Available = cache.Available,
-                    Category = (Category)cache.Category,
-                    Expunged = cache.Expunged,
-                    FileSize = cache.FileSize,
-                    Owner = owner,
-                    PageCount = 1,
-                    Posted = DateTimeOffset.FromUnixTimeSeconds(cache.Posted),
-                    Rating = cache.Rating,
-                    RecordCount = cache.RecordCount,
-                    Tags = new ReadOnlyCollection<string>(cache.Tags),
-                    Title = cache.Title,
-                    TitleJpn = cache.TitleJpn,
-                    Uploader = cache.Uploader
-                };
-                BitmapImage thumb;
-                var thumbFile = await CacheHelper.LoadFileAsync(cache.Id.ToString(), thumbFileName);
-                if(thumbFile == null)
-                    thumb = new BitmapImage(new Uri(cache.Thumb));
-                else
-                    using(var source = await thumbFile.OpenReadAsync())
-                    {
-                        thumb = new BitmapImage();
-                        await thumb.SetSourceAsync(source);
-                    }
-                gallery.Thumb = thumb;
-                for(int i = 0; i < cache.ImageKeys.Count; i++)
-                {
-                    gallery.Add(await GalleryImage.LoadCachedImageAsync(gallery, i + 1, cache.ImageKeys[i]));
-                }
+                var gallery = new CachedGallery(cache, owner);
+                await gallery.InitAsync();
                 return gallery;
             });
         }
 
         private IAsyncActionWithProgress<SaveGalleryProgress> saveTask;
 
-        public IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync()
+        public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAction => saveTask;
+
+        public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync()
         {
             if(saveTask?.Status != AsyncStatus.Started)
                 saveTask = Run<SaveGalleryProgress>(async (token, progress) =>
@@ -121,14 +145,11 @@ namespace ExClient
                      for(int i = 0; i < this.Count; i++)
                      {
                          var image = this[i];
-                         if(image.State == ImageLoadingState.Loaded)
+                         if(image.State != ImageLoadingState.Loaded)
                          {
-                             toReport.ImageLoaded++;
-                             progress.Report(toReport);
-                             continue;
+                             var load = image.LoadImage(false, true);
+                             await load;
                          }
-                         var load = image.LoadImage(false);
-                         await load;
                          toReport.ImageLoaded++;
                          progress.Report(toReport);
                      }
@@ -140,7 +161,7 @@ namespace ExClient
             return saveTask;
         }
 
-        private Gallery(long id, string token, int loadedPageCount)
+        protected Gallery(long id, string token, int loadedPageCount)
             : base(loadedPageCount)
         {
             this.Id = id;
@@ -207,91 +228,91 @@ namespace ExClient
 
         public long Id
         {
-            get; private set;
+            get; protected set;
         }
 
         public bool Available
         {
-            get; private set;
+            get; protected set;
         }
 
         public string Token
         {
-            get; private set;
+            get; protected set;
         }
 
         public string ArchiverKey
         {
-            get; private set;
+            get; protected set;
         }
 
         public string Title
         {
-            get; private set;
+            get; protected set;
         }
 
         public string TitleJpn
         {
-            get; private set;
+            get; protected set;
         }
 
         public Category Category
         {
-            get; private set;
+            get; protected set;
         }
 
         public ImageSource Thumb
         {
-            get; private set;
+            get; protected set;
         }
 
         public string Uploader
         {
-            get; private set;
+            get; protected set;
         }
 
         public DateTimeOffset Posted
         {
-            get; private set;
+            get; protected set;
         }
 
         public long FileSize
         {
-            get; private set;
+            get; protected set;
         }
 
         public bool Expunged
         {
-            get; private set;
+            get; protected set;
         }
 
         public double Rating
         {
-            get; private set;
+            get; protected set;
         }
 
         public int TorrentCount
         {
-            get; private set;
+            get; protected set;
         }
 
         public IReadOnlyList<string> Tags
         {
-            get; private set;
+            get; protected set;
         }
 
         #endregion
-        private int currentPage;
+        private int currentImage;
 
-        public int CurrentPage
+        public int CurrentImage
         {
             get
             {
-                return currentPage;
+                return currentImage;
             }
             set
             {
-                Set(ref currentPage, value);
+                Set(ref currentImage, value);
             }
         }
 

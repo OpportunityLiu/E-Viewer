@@ -75,9 +75,10 @@ namespace ExClient
             {
                 if(!HasMoreItems)
                     return new LoadMoreItemsResult();
-                var lp = LoadPage(loadedPageCount++);
+                var lp = LoadPage(loadedPageCount);
                 token.Register(lp.Cancel);
                 var re = await lp;
+                loadedPageCount++;
                 OnPropertyChanged(nameof(HasMoreItems));
                 return new LoadMoreItemsResult() { Count = re };
             });

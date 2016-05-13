@@ -5,26 +5,47 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             Loaded="Control_Loaded">
+             Loaded="Control_Loaded"
+             xmlns:controls="using:ExViewer.Controls">
     <SplitView x:Name="sv_root"
                Grid.Row="1">
         <SplitView.Pane>
             <StackPanel>
-                <Button Style="{StaticResource NavigationBackButtonNormalStyle}"
+                <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
                         Content="&#xE700;"
                         Height="48"
                         Width="48"
                         Click="btn_pane_Click" />
-                <Button Style="{StaticResource NavigationBackButtonNormalStyle}"
-                        Content="&#xE700;"
-                        Height="48"
-                        Width="48"
-                        Click="Button_Click" />
+                <controls:SplitViewTab x:Name="svt_Search"
+                                       Content="Search"
+                                       Click="svt_Click">
+                    <controls:SplitViewTab.Icon>
+                        <FontIcon Glyph="&#xE7C5;"
+                                  FontSize="16" />
+                    </controls:SplitViewTab.Icon>
+                </controls:SplitViewTab>
+                <controls:SplitViewTab x:Name="svt_Cache"
+                                       Content="Saved galleries"
+                                       Click="svt_Click">
+                    <controls:SplitViewTab.Icon>
+                        <FontIcon Glyph="&#xE8B7;"
+                                  FontSize="16" />
+                    </controls:SplitViewTab.Icon>
+                </controls:SplitViewTab>
+                <controls:SplitViewTab x:Name="svt_Settings"
+                                       Content="Settings"
+                                       Click="svt_Click">
+                    <controls:SplitViewTab.Icon>
+                        <FontIcon Glyph="&#xE713;"
+                                  FontSize="16" />
+                    </controls:SplitViewTab.Icon>
+                </controls:SplitViewTab>
             </StackPanel>
         </SplitView.Pane>
         <Frame x:Name="fm_inner"
                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                Navigating="fm_inner_Navigating"
-               Navigated="fm_inner_Navigated" />
+               Navigated="fm_inner_Navigated"
+               NavigationFailed="fm_inner_NavigationFailed" />
     </SplitView>
 </UserControl>

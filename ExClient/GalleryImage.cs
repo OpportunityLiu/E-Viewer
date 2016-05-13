@@ -207,7 +207,7 @@ namespace ExClient
             get; private set;
         }
 
-        public IAsyncAction LoadImage(bool reload)
+        public IAsyncAction LoadImage(bool reload,bool throwIfFailed)
         {
             return Run(async token =>
             {
@@ -255,6 +255,8 @@ namespace ExClient
                 {
                     this.Progress = 100;
                     State = ImageLoadingState.Failed;
+                    if(throwIfFailed)
+                        throw;
                 }
             });
         }
@@ -286,6 +288,7 @@ namespace ExClient
             set
             {
                 _imageFile = value;
+                image = null;
                 RaisePropertyChanged(nameof(Image));
             }
         }

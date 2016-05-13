@@ -40,23 +40,26 @@ namespace ExViewer.Views
             {
                 if(Client.Current != null)
                 {
-                    client = Client.Current;
-                    asb.IsEnabled = true;
-                    asb.Text = searchKeyWord;
-                    FindName(nameof(gv_AdvancedSearch));
+                    if(client == null)
+                    {
+                        client = Client.Current;
+                        asb.IsEnabled = true;
+                        asb.Text = searchKeyWord;
+                        FindName(nameof(gv_AdvancedSearch));
 
-                    tb_Doujinshi.IsChecked = searchFilter.HasFlag(Category.Doujinshi);
-                    tb_Manga.IsChecked = searchFilter.HasFlag(Category.Manga);
-                    tb_ArtistCG.IsChecked = searchFilter.HasFlag(Category.ArtistCG);
-                    tb_GameCG.IsChecked = searchFilter.HasFlag(Category.GameCG);
-                    tb_Western.IsChecked = searchFilter.HasFlag(Category.Western);
-                    tb_NonH.IsChecked = searchFilter.HasFlag(Category.NonH);
-                    tb_ImageSet.IsChecked = searchFilter.HasFlag(Category.ImageSet);
-                    tb_Cosplay.IsChecked = searchFilter.HasFlag(Category.Cosplay);
-                    tb_AsianPorn.IsChecked = searchFilter.HasFlag(Category.AsianPorn);
-                    tb_Misc.IsChecked = searchFilter.HasFlag(Category.Misc);
+                        tb_Doujinshi.IsChecked = searchFilter.HasFlag(Category.Doujinshi);
+                        tb_Manga.IsChecked = searchFilter.HasFlag(Category.Manga);
+                        tb_ArtistCG.IsChecked = searchFilter.HasFlag(Category.ArtistCG);
+                        tb_GameCG.IsChecked = searchFilter.HasFlag(Category.GameCG);
+                        tb_Western.IsChecked = searchFilter.HasFlag(Category.Western);
+                        tb_NonH.IsChecked = searchFilter.HasFlag(Category.NonH);
+                        tb_ImageSet.IsChecked = searchFilter.HasFlag(Category.ImageSet);
+                        tb_Cosplay.IsChecked = searchFilter.HasFlag(Category.Cosplay);
+                        tb_AsianPorn.IsChecked = searchFilter.HasFlag(Category.AsianPorn);
+                        tb_Misc.IsChecked = searchFilter.HasFlag(Category.Misc);
 
-                    SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
+                        SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
+                    }
                 }
                 else
                 {
