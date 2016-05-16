@@ -33,12 +33,13 @@ namespace ExClient
         }
         private static int serverIndex;
 
-        private IAsyncOperation<bool> loadShowKey(bool reload)
+        private IAsyncOperation<bool> loadShowKey()
         {
             return Run(async token =>
             {
                 try
                 {
+                    var reload = true;
                     if(showKey == null)
                         reload = false;
                     var posturi = reload ? new Uri(this.PageUri, $"?nl={serverIndex.ToString()}-{showKey.Split('-')[0]}") : this.PageUri;
@@ -92,15 +93,12 @@ namespace ExClient
                     lShowKey?.Cancel();
                     lApi?.Cancel();
                 });
-                if(!firstChance || showKey == null)
+                lShowKey = loadShowKey();
+                if(!await lShowKey)
                 {
-                    lShowKey = loadShowKey(!firstChance);
-                    if(!await lShowKey)
-                    {
-                        if(!firstChance)
-                            throw new InvalidOperationException("Can't load uri.");
-                        await loadImageUri(false);
-                    }
+                    if(!firstChance)
+                        throw new InvalidOperationException("Can't load uri.");
+                    await loadImageUri(false);
                 }
                 var req = new
                 {
@@ -207,7 +205,7 @@ namespace ExClient
             get; private set;
         }
 
-        public IAsyncAction LoadImage(bool reload,bool throwIfFailed)
+        public IAsyncAction LoadImage(bool reload, bool throwIfFailed)
         {
             return Run(async token =>
             {

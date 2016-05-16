@@ -8,6 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Reflection;
 
 namespace ExViewer.Views
 {
@@ -123,21 +124,6 @@ namespace ExViewer.Views
                     return false;
             }
             throw new NotImplementedException();
-        }
-
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class CategoryToImageConverter : ValueConverterChain
-    {
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
-        {
-            var cata = (Category)value;
-            var uri = new Uri($"ms-appx:///CategoryImage/{cata.ToString()}.png");
-            return new BitmapImage(uri);
         }
 
         public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
@@ -265,6 +251,58 @@ namespace ExViewer.Views
         public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
         {
             return ConvertBackImplementation(value, targetType, parameter, language);
+        }
+    }
+
+    public class RateStringConverter : ValueConverterChain
+    {
+        const char halfL = '\xE7C6';
+        const char full = '\xE00A';
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            var rating = ((double)value) * 2;
+            var x = (int)Math.Round(rating);
+            var fullCount = x / 2;
+            var halfCount = x - 2 * fullCount;
+            return new string(full, fullCount) + new string(halfL, halfCount);
+        }
+
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class NullableConverter : ValueConverterChain
+    {
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return convert(value, targetType, parameter, language);
+        }
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return convert(value, targetType, parameter, language);
+        }
+
+        static Type NullableType = typeof(Nullable<>);
+
+        private object convert(object value, Type targetType, object parameter, string language)
+        {
+            var nullableInner = Nullable.GetUnderlyingType(targetType);
+            if(nullableInner == null)
+            {
+                // target is not Nullable
+                var nullableType = NullableType.MakeGenericType(targetType);
+                var m = nullableType.GetMethod("GetValueOrDefault", new Type[0]);
+                return m.Invoke(value, null);
+            }
+            else
+            {
+                // target is Nullable
+                return Activator.CreateInstance(targetType, value);
+            }
         }
     }
 }

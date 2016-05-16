@@ -11,9 +11,13 @@
         <local:SettingTemplateSelector x:Key="SettingTemplateSelector" />
         <DataTemplate x:Name="String"
                       x:DataType="settings:SettingInfo">
-            <TextBox Header="{x:Bind FriendlyName}"
-                     Text="{x:Bind Value, Converter={StaticResource EmptyConverter}, Mode=TwoWay}"
-                     MinHeight="50" />
+            <TextBox Text="{x:Bind Value, Converter={StaticResource EmptyConverter}, Mode=TwoWay}"
+                     MinHeight="50">
+                <TextBox.Header>
+                    <TextBlock Text="{x:Bind FriendlyName}"
+                               TextWrapping="WrapWholeWords" />
+                </TextBox.Header>
+            </TextBox>
         </DataTemplate>
         <DataTemplate x:Name="Number"
                       x:DataType="settings:SettingInfo">
@@ -24,7 +28,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Text="{x:Bind FriendlyName}"
                            FontWeight="{ThemeResource SliderHeaderThemeFontWeight}"
-                           TextWrapping="Wrap" />
+                           TextWrapping="WrapWholeWords" />
                 <local:SettingSlider Grid.Row="1"
                                      SettingValue="{x:Bind}">
                 </local:SettingSlider>
@@ -32,9 +36,13 @@
         </DataTemplate>
         <DataTemplate x:Name="Enum"
                       x:DataType="settings:SettingInfo">
-            <local:SettingComboBox Header="{x:Bind FriendlyName}"
-                                   SettingValue="{x:Bind}"
-                                   HorizontalAlignment="Stretch" />
+            <local:SettingComboBox SettingValue="{x:Bind}"
+                                   HorizontalAlignment="Stretch">
+                <local:SettingComboBox.Header>
+                    <TextBlock Text="{x:Bind FriendlyName}"
+                               TextWrapping="WrapWholeWords" />
+                </local:SettingComboBox.Header>
+            </local:SettingComboBox>
         </DataTemplate>
     </Page.Resources>
     <Page.Transitions>

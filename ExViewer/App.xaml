@@ -3,22 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:ExViewer.Views">
     <Application.Resources>
-        <local:RateStringConverter x:Key="RateStringConverter" />
-        <local:CategoryToImageConverter x:Key="CategoryToImageConverter" />
-        <local:StringConverter x:Key="StringConverter" />
-        <local:BooleanToVisibilityConverter x:Key="TrueToVisibleConverter"
-                                            BoolearForVisible="True" />
-        <local:BooleanToVisibilityConverter x:Key="FalseToVisibleConverter"
-                                            BoolearForVisible="False" />
-        <local:ObjectToBooleanConverter x:Key="NullToVisibleConverter"
-                                        Default="True"
-                                        Others="False">
-            <local:ObjectToBooleanConverter.InnerConverter>
-                <local:BooleanToVisibilityConverter BoolearForVisible="True" />
-            </local:ObjectToBooleanConverter.InnerConverter>
-        </local:ObjectToBooleanConverter>
-        <local:LengthConverter x:Key="LengthConverter" />
-        <local:EmptyConverter x:Key="EmptyConverter" />
-        <local:DefaultConverter x:Key="DefaultConverter" />
+        <ResourceDictionary>
+            <local:RateStringConverter x:Key="RateStringConverter" />
+            <local:StringConverter x:Key="StringConverter" />
+            <local:BooleanToVisibilityConverter x:Key="TrueToVisibleConverter"
+                                                BoolearForVisible="True" />
+            <local:BooleanToVisibilityConverter x:Key="FalseToVisibleConverter"
+                                                BoolearForVisible="False" />
+            <local:ObjectToBooleanConverter x:Key="NullToVisibleConverter"
+                                            Default="True"
+                                            Others="False">
+                <local:ObjectToBooleanConverter.InnerConverter>
+                    <local:BooleanToVisibilityConverter BoolearForVisible="True" />
+                </local:ObjectToBooleanConverter.InnerConverter>
+            </local:ObjectToBooleanConverter>
+            <local:LengthConverter x:Key="LengthConverter" />
+            <local:EmptyConverter x:Key="EmptyConverter" />
+            <local:DefaultConverter x:Key="DefaultConverter" />
+            <local:NullableConverter x:Key="NullableConverter" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="ExViewer.Controls.GalleryViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:ExViewer.Controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="200"
+             d:DesignWidth="400">
+    <Grid Padding="8,4"
+          Height="200">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <ContentPresenter Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}">
+            <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay}"
+                   Stretch="Uniform" />
+        </ContentPresenter>
+        <RelativePanel Padding="8,4,4,4"
+                       Grid.Column="1">
+            <TextBlock x:Name="Title"
+                       Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                       Style="{StaticResource SubtitleTextBlockStyle}"
+                       ContinuumNavigationTransitionInfo.IsExitElement="True"
+                       TextWrapping="WrapWholeWords"
+                       MaxLines="3"
+                       TextTrimming="CharacterEllipsis"
+                       RelativePanel.AlignLeftWithPanel="True"
+                       RelativePanel.AlignRightWithPanel="True"
+                       RelativePanel.AlignTopWithPanel="True">
+                                <ToolTipService.ToolTip>
+                                    <TextBlock Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                                               TextWrapping="WrapWholeWords" />
+                                </ToolTipService.ToolTip>
+                            </TextBlock>
+            <local:CategoryTag x:Name="Category"
+                               Width="80"
+                               Category="{x:Bind Gallery.Category, Mode=OneWay}"
+                               RelativePanel.Below="Title"
+                               RelativePanel.AlignLeftWithPanel="True" />
+            <TextBlock x:Name="RecordCount"
+                       RelativePanel.RightOf="Category"
+                       RelativePanel.AlignVerticalCenterWith="Category"
+                       Text="{x:Bind Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
+            <TextBlock x:Name="Rating"
+                       RelativePanel.Below="Category"
+                       Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
+                       FontFamily="Segoe MDL2 Assets" />
+        </RelativePanel>
+    </Grid>
+</UserControl>

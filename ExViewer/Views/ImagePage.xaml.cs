@@ -71,7 +71,7 @@ namespace ExViewer.Views
             {
                 cb_top.Visibility = Visibility.Visible;
             }
-            mouseInertialFactor = Setting.Current.MouseInertialFactor;
+            this.mouseInertialFactor = Settings.Settings.Current.MouseInertialFactor;
             enableMouseInertia = mouseInertialFactor > 0.05;
 
             var param = (ExClient.Gallery)e.Parameter;
@@ -81,6 +81,13 @@ namespace ExViewer.Views
 
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(av, null);
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            Gallery.CurrentImage = fv.SelectedIndex;
+            base.OnNavigatingFrom(e);
+            av.VisibleBoundsChanged -= Av_VisibleBoundsChanged;
         }
 
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
@@ -97,20 +104,13 @@ namespace ExViewer.Views
             }
         }
 
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            Gallery.CurrentImage = fv.SelectedIndex;
-            base.OnNavigatingFrom(e);
-            av.VisibleBoundsChanged -= Av_VisibleBoundsChanged;
-        }
-
         private void setFactor(ScrollViewer sv, Image img)
         {
             var factor = Math.Min(fv.ActualHeight / img.ActualHeight, fv.ActualWidth / img.ActualWidth);
             if(double.IsInfinity(factor) || double.IsNaN(factor))
                 factor = Math.Min(fv.ActualHeight / 1000, fv.ActualWidth / 1000);
             sv.MinZoomFactor = (float)factor;
-            sv.MaxZoomFactor = (float)factor * Setting.Current.MaxFactor;
+            sv.MaxZoomFactor = (float)factor * Settings.Settings.Current.MaxFactor;
             sv.ZoomToFactor(sv.MinZoomFactor);
         }
 
@@ -171,20 +171,20 @@ namespace ExViewer.Views
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
             changeCbVisibility = new System.Threading.CancellationTokenSource();
-            await Task.Delay(Setting.Current.ChangeCommandBarDelay, changeCbVisibility.Token).ContinueWith(async t =>
+            await Task.Delay(Settings.Settings.Current.ChangeCommandBarDelay, this.changeCbVisibility.Token).ContinueWith(async t =>
             {
                 if(t.IsCanceled)
                     return;
-                await cb_top.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                await this.cb_top.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    changeCbVisibility.Cancel();
-                    switch(cb_top.Visibility)
+                    this.changeCbVisibility.Cancel();
+                    switch(this.cb_top.Visibility)
                     {
                     case Visibility.Visible:
-                        cb_top.Visibility = Visibility.Collapsed;
+                        this.cb_top.Visibility = Visibility.Collapsed;
                         break;
                     case Visibility.Collapsed:
-                        cb_top.Visibility = Visibility.Visible;
+                        this.cb_top.Visibility = Visibility.Visible;
                         break;
                     }
                 });
@@ -218,7 +218,7 @@ namespace ExViewer.Views
                 pi.X *= fa;
                 pi.Y *= fa;
                 var ps = e.GetPosition(sv);
-                var df = Setting.Current.DefaultFactor;
+                var df = Settings.Settings.Current.DefaultFactor;
                 sv.ZoomToFactor(fa * df);
                 sv.ScrollToHorizontalOffset(pi.X * df - ps.X);
                 sv.ScrollToVerticalOffset(pi.Y * df - ps.Y);

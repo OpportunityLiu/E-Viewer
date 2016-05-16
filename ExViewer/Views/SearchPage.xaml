@@ -5,98 +5,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
+      xmlns:controls="using:ExViewer.Controls"
+      xmlns:client="using:ExClient"
       NavigationCacheMode="Enabled">
-    <Page.Resources>
-        <Style x:Key="Fliter"
-               TargetType="ToggleButton">
-            <Setter Property="IsThreeState"
-                    Value="False" />
-            <Setter Property="IsChecked"
-                    Value="True" />
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Stretch" />
-            <Setter Property="HorizontalContentAlignment"
-                    Value="Stretch" />
-            <Setter Property="VerticalContentAlignment"
-                    Value="Stretch" />
-            <Setter Property="Padding"
-                    Value="0" />
-            <Setter Property="Template"
-                    Value="{StaticResource ToggleButtonControlTemplate}" />
-        </Style>
-        <ControlTemplate x:Key="ToggleButtonControlTemplate"
-                         TargetType="ToggleButton">
-            <Grid x:Name="RootGrid"
-                  Background="{TemplateBinding Background}">
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup x:Name="CommonStates">
-                        <VisualState x:Name="Normal">
-                            <VisualState.Setters>
-                                <Setter Target="ContentPresenter.(UIElement.Opacity)"
-                                        Value="0" />
-                            </VisualState.Setters>
-                            <Storyboard>
-                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                            </Storyboard>
-                        </VisualState>
-                        <VisualState x:Name="PointerOver">
-                            <VisualState.Setters>
-                                <Setter Target="ContentPresenter.(UIElement.Opacity)"
-                                        Value="0.3" />
-                            </VisualState.Setters>
-                            <Storyboard>
-                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                            </Storyboard>
-                        </VisualState>
-                        <VisualState x:Name="Pressed">
-                            <VisualState.Setters>
-                                <Setter Target="ContentPresenter.(UIElement.Opacity)"
-                                        Value="0.2" />
-                            </VisualState.Setters>
-                            <Storyboard>
-                                <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
-                            </Storyboard>
-                        </VisualState>
-                        <VisualState x:Name="Checked">
-                            <Storyboard>
-                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                            </Storyboard>
-                        </VisualState>
-                        <VisualState x:Name="CheckedPointerOver">
-                            <VisualState.Setters>
-                                <Setter Target="ContentPresenter.(UIElement.Opacity)"
-                                        Value="0.9" />
-                            </VisualState.Setters>
-                            <Storyboard>
-                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                            </Storyboard>
-                        </VisualState>
-                        <VisualState x:Name="CheckedPressed">
-                            <VisualState.Setters>
-                                <Setter Target="ContentPresenter.(UIElement.Opacity)"
-                                        Value="0.7" />
-                            </VisualState.Setters>
-                            <Storyboard>
-                                <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
-                            </Storyboard>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
-                <ContentPresenter x:Name="ContentPresenter"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  BorderThickness="{TemplateBinding BorderThickness}"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTransitions="{TemplateBinding ContentTransitions}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Padding="{TemplateBinding Padding}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  AutomationProperties.AccessibilityView="Raw" />
-            </Grid>
-        </ControlTemplate>
-    </Page.Resources>
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -141,7 +52,9 @@
                           Margin="0,0,0,0"
                           x:Name="gv_AdvancedSearch"
                           x:DeferLoadStrategy="Lazy"
-                          HorizontalAlignment="Center">
+                          HorizontalAlignment="Center"
+                          ItemsSource="{x:Bind filter}"
+                          Loaded="gv_AdvancedSearch_Loaded">
                     <GridView.ItemContainerStyle>
                         <Style TargetType="GridViewItem">
                             <Setter Property="MinHeight"
@@ -151,102 +64,18 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="GridViewItem">
-                                        <ContentPresenter Content="{TemplateBinding Content}" />
+                                        <ContentPresenter Content="{TemplateBinding Content}"/>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
                         </Style>
                     </GridView.ItemContainerStyle>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_Doujinshi">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/Doujinshi_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/Doujinshi.png"
-                               Stretch="None" />
-                    </ToggleButton>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_Manga">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/Manga_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/Manga.png"
-                               Stretch="None" />
-                    </ToggleButton>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_ArtistCG">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/ArtistCG_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/ArtistCG.png"
-                               Stretch="None" />
-                    </ToggleButton>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_GameCG">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/GameCG_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/GameCG.png"
-                               Stretch="None" />
-                    </ToggleButton>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_Western">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/Western_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/Western.png"
-                               Stretch="None" />
-                    </ToggleButton>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_NonH">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/NonH_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/NonH.png"
-                               Stretch="None" />
-                    </ToggleButton>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_ImageSet">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/ImageSet_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/ImageSet.png"
-                               Stretch="None" />
-                    </ToggleButton>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_Cosplay">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/Cosplay_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/Cosplay.png"
-                               Stretch="None" />
-                    </ToggleButton>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_AsianPorn">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/AsianPorn_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/AsianPorn.png"
-                               Stretch="None" />
-                    </ToggleButton>
-                    <ToggleButton Style="{StaticResource Fliter}"
-                                  x:Name="tb_Misc">
-                        <ToggleButton.Background>
-                            <ImageBrush Stretch="None"
-                                        ImageSource="ms-appx:///CategoryImage/Misc_d.png" />
-                        </ToggleButton.Background>
-                        <Image Source="ms-appx:///CategoryImage/Misc.png"
-                               Stretch="None" />
-                    </ToggleButton>
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="local:FilterRecord">
+                            <controls:CategoryToggleButton Category="{x:Bind Category}"
+                                                           IsChecked="{x:Bind IsChecked, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
                 </GridView>
             </Grid>
         </AppBar>
@@ -263,49 +92,9 @@
                   VerticalAlignment="Top">
             <ListView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
+                              xmlns:controls="using:ExViewer.Controls"
                               x:DataType="c:Gallery">
-                    <Grid Padding="8,4"
-                          Height="200">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <ContentPresenter Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}">
-                            <Image Source="{x:Bind Thumb}"
-                                   Stretch="Uniform" />
-                        </ContentPresenter>
-                        <RelativePanel Padding="8,4,4,4"
-                                       Grid.Column="1">
-                            <TextBlock x:Name="Title"
-                                       Text="{x:Bind Title}"
-                                       Style="{StaticResource SubtitleTextBlockStyle}"
-                                       ContinuumNavigationTransitionInfo.IsExitElement="True"
-                                       TextWrapping="WrapWholeWords"
-                                       MaxLines="3"
-                                       TextTrimming="CharacterEllipsis"
-                                       RelativePanel.AlignLeftWithPanel="True"
-                                       RelativePanel.AlignRightWithPanel="True"
-                                       RelativePanel.AlignTopWithPanel="True">
-                                <ToolTipService.ToolTip>
-                                    <TextBlock Text="{x:Bind Title, Mode=OneWay}"
-                                               TextWrapping="WrapWholeWords" />
-                                </ToolTipService.ToolTip>
-                            </TextBlock>
-                            <Image x:Name="Category"
-                                   Source="{x:Bind Category, Converter={StaticResource CategoryToImageConverter}}"
-                                   RelativePanel.Below="Title"
-                                   RelativePanel.AlignLeftWithPanel="True"
-                                   Stretch="None" />
-                            <TextBlock x:Name="RecordCount"
-                                       RelativePanel.RightOf="Category"
-                                       RelativePanel.AlignVerticalCenterWith="Category"
-                                       Text="{x:Bind RecordCount, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
-                            <TextBlock x:Name="Rating"
-                                       RelativePanel.Below="Category"
-                                       Text="{x:Bind Rating, Converter={StaticResource RateStringConverter}}"
-                                       FontFamily="Segoe MDL2 Assets" />
-                        </RelativePanel>
-                    </Grid>
+                    <controls:GalleryViewer Gallery="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemContainerStyle>
