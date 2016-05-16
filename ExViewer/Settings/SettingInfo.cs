@@ -15,7 +15,8 @@ namespace ExViewer.Settings
         Single,
         Double,
         String,
-        Enum
+        Enum,
+        Custom
     }
 
     public class SettingInfo
@@ -31,7 +32,12 @@ namespace ExViewer.Settings
             Range = info.GetCustomAttributes().Select(a => a as IValueRange).SingleOrDefault(a => a != null);
 
             var type = info.PropertyType;
-            if(type == typeof(float))
+            if(setting.SettingPresenterTemplate != null)
+            {
+                Type = SettingType.Custom;
+                SettingPresenterTemplate = setting.SettingPresenterTemplate;
+            }
+            else if(type == typeof(float))
                 Type = SettingType.Single;
             else if(type == typeof(double))
                 Type = SettingType.Double;
@@ -87,17 +93,23 @@ namespace ExViewer.Settings
             private set;
         }
 
+        public string SettingPresenterTemplate
+        {
+            get;
+            private set;
+        }
+
         public object Value
         {
             get
             {
-                return PropertyInfo.GetValue(Setting.Current);
+                return PropertyInfo.GetValue(Settings.Current);
             }
             set
             {
                 if(value == null)
                     return;
-                PropertyInfo.SetValue(Setting.Current, value);
+                PropertyInfo.SetValue(Settings.Current, value);
             }
         }
     }

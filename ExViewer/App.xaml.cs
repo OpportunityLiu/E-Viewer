@@ -34,7 +34,7 @@ namespace ExViewer
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            this.RequestedTheme = Settings.Setting.Current.Theme;
+            this.RequestedTheme = Settings.Settings.Current.Theme;
         }
 
         /// <summary>
@@ -62,6 +62,7 @@ namespace ExViewer
                     //TODO: 从之前挂起的应用程序加载状态
                 }
                 var view = ApplicationView.GetForCurrentView();
+                view.SetPreferredMinSize(new Size(320, 500));
                 if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                 {
                     var statusBar = StatusBar.GetForCurrentView();

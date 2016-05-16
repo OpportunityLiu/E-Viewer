@@ -36,7 +36,7 @@ namespace ExViewer.Settings
         readonly string category;
         readonly string name;
 
-        public SettingAttribute(string category,string friendlyName)
+        public SettingAttribute(string category, string friendlyName)
         {
             this.category = category;
             this.name = friendlyName;
@@ -47,6 +47,11 @@ namespace ExViewer.Settings
         public string FriendlyName => name;
 
         public int Index
+        {
+            get; set;
+        }
+
+        public string SettingPresenterTemplate
         {
             get; set;
         }

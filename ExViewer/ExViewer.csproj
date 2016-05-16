@@ -99,12 +99,18 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CategoryTag.cs" />
+    <Compile Include="Controls\CategoryToogleButton.cs" />
+    <Compile Include="Controls\GalleryViewer.xaml.cs">
+      <DependentUpon>GalleryViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SplitViewButton.cs" />
     <Compile Include="Controls\SplitViewTab.cs" />
     <Compile Include="Settings\Attributes.cs" />
     <Compile Include="Settings\GroupedSettings.cs" />
-    <Compile Include="Settings\Setting.cs" />
+    <Compile Include="Settings\Settings.cs" />
     <Compile Include="Settings\SettingInfo.cs" />
+    <Compile Include="Settings\Settings-Core.cs" />
     <Compile Include="Views\CachePage.xaml.cs">
       <DependentUpon>CachePage.xaml</DependentUpon>
     </Compile>
@@ -169,26 +175,6 @@
     <Content Include="Assets\TaskBar.targetsize-256_altform-unplated.png" />
     <Content Include="Assets\Wide.scale-200.png" />
     <Content Include="Assets\Wide.scale-400.png" />
-    <Content Include="CategoryImage\ArtistCG.png" />
-    <Content Include="CategoryImage\ArtistCG_d.png" />
-    <Content Include="CategoryImage\AsianPorn.png" />
-    <Content Include="CategoryImage\AsianPorn_d.png" />
-    <Content Include="CategoryImage\Cosplay.png" />
-    <Content Include="CategoryImage\Cosplay_d.png" />
-    <Content Include="CategoryImage\Doujinshi.png" />
-    <Content Include="CategoryImage\Doujinshi_d.png" />
-    <Content Include="CategoryImage\GameCG.png" />
-    <Content Include="CategoryImage\GameCG_d.png" />
-    <Content Include="CategoryImage\ImageSet.png" />
-    <Content Include="CategoryImage\ImageSet_d.png" />
-    <Content Include="CategoryImage\Manga.png" />
-    <Content Include="CategoryImage\Manga_d.png" />
-    <Content Include="CategoryImage\Misc.png" />
-    <Content Include="CategoryImage\Misc_d.png" />
-    <Content Include="CategoryImage\NonH.png" />
-    <Content Include="CategoryImage\NonH_d.png" />
-    <Content Include="CategoryImage\Western.png" />
-    <Content Include="CategoryImage\Western_d.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
   </ItemGroup>
@@ -197,6 +183,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\GalleryViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Settings\SettingPresenterTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

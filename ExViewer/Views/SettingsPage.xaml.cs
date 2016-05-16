@@ -26,7 +26,7 @@ namespace ExViewer.Views
         public SettingsPage()
         {
             this.InitializeComponent();
-            this.pv_root.ItemsSource = Settings.Setting.Current.GroupedSettings;
+            this.pv_root.ItemsSource = Settings.Settings.Current.GroupedSettings;
             SettingTemplateSelector.Parent = this;
         }
 
@@ -40,6 +40,8 @@ namespace ExViewer.Views
 
     class SettingTemplateSelector : DataTemplateSelector
     {
+        ResourceDictionary templateDictionary = new ResourceDictionary() { Source = new Uri("ms-appx:///Settings/SettingPresenterTemplates.xaml") };
+
         internal static SettingsPage Parent
         {
             get; set;
@@ -59,6 +61,8 @@ namespace ExViewer.Views
                 return (DataTemplate)Parent.Resources["String"];
             case SettingType.Enum:
                 return (DataTemplate)Parent.Resources["Enum"];
+            case SettingType.Custom:
+                return (DataTemplate)templateDictionary[i.SettingPresenterTemplate];
             default:
                 return base.SelectTemplateCore(item);
             }

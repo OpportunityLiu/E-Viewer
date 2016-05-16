@@ -2,6 +2,7 @@
 using ExViewer.Settings;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -45,19 +46,6 @@ namespace ExViewer.Views
                         client = Client.Current;
                         asb.IsEnabled = true;
                         asb.Text = searchKeyWord;
-                        FindName(nameof(gv_AdvancedSearch));
-
-                        tb_Doujinshi.IsChecked = searchFilter.HasFlag(Category.Doujinshi);
-                        tb_Manga.IsChecked = searchFilter.HasFlag(Category.Manga);
-                        tb_ArtistCG.IsChecked = searchFilter.HasFlag(Category.ArtistCG);
-                        tb_GameCG.IsChecked = searchFilter.HasFlag(Category.GameCG);
-                        tb_Western.IsChecked = searchFilter.HasFlag(Category.Western);
-                        tb_NonH.IsChecked = searchFilter.HasFlag(Category.NonH);
-                        tb_ImageSet.IsChecked = searchFilter.HasFlag(Category.ImageSet);
-                        tb_Cosplay.IsChecked = searchFilter.HasFlag(Category.Cosplay);
-                        tb_AsianPorn.IsChecked = searchFilter.HasFlag(Category.AsianPorn);
-                        tb_Misc.IsChecked = searchFilter.HasFlag(Category.Misc);
-
                         SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
                     }
                 }
@@ -73,53 +61,62 @@ namespace ExViewer.Views
             base.OnNavigatingFrom(e);
         }
 
-        LogOnDialog logOn = new LogOnDialog();
+        private LogOnDialog logOn = new LogOnDialog();
 
-        Client client;
+        private Client client;
 
-        string searchKeyWord = Setting.Current.DefaultSearchString;
+        private string searchKeyWord = Settings.Settings.Current.DefaultSearchString;
 
-        Category searchFilter = Setting.Current.DefaultSearchCategory;
+        private Category searchFilter = Settings.Settings.Current.DefaultSearchCategory;
 
         public event EventHandler<RootControlCommand> CommandExecuted;
+
+        private ObservableCollection<FilterRecord> filter;
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             Frame.Navigate(typeof(GalleryPage), e.ClickedItem);
         }
 
+        private bool init_gv_AdvancedSearch()
+        {
+            if(gv_AdvancedSearch != null)
+                return false;
+            filter = new ObservableCollection<FilterRecord>()
+            {
+                new FilterRecord(Category.Doujinshi,searchFilter.HasFlag(Category.Doujinshi)),
+                new FilterRecord(Category.Manga, searchFilter.HasFlag(Category.Manga)),
+                new FilterRecord(Category.ArtistCG, searchFilter.HasFlag(Category.ArtistCG)),
+                new FilterRecord(Category.GameCG, searchFilter.HasFlag(Category.GameCG)),
+                new FilterRecord(Category.Western, searchFilter.HasFlag(Category.Western)),
+                new FilterRecord(Category.NonH, searchFilter.HasFlag(Category.NonH)),
+                new FilterRecord(Category.ImageSet, searchFilter.HasFlag(Category.ImageSet)),
+                new FilterRecord(Category.Cosplay, searchFilter.HasFlag(Category.Cosplay)),
+                new FilterRecord(Category.AsianPorn, searchFilter.HasFlag(Category.AsianPorn)),
+                new FilterRecord(Category.Misc, searchFilter.HasFlag(Category.Misc))
+            };
+            FindName(nameof(gv_AdvancedSearch));
+            Bindings.Update();
+            return true;
+        }
+
         private async void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             ab.IsOpen = false;
-            FindName(nameof(gv_AdvancedSearch));
+            init_gv_AdvancedSearch();
             var category = Category.Unspecified;
-            if(tb_Doujinshi.IsChecked == true)
-                category |= Category.Doujinshi;
-            if(tb_Manga.IsChecked == true)
-                category |= Category.Manga;
-            if(tb_ArtistCG.IsChecked == true)
-                category |= Category.ArtistCG;
-            if(tb_GameCG.IsChecked == true)
-                category |= Category.GameCG;
-            if(tb_Western.IsChecked == true)
-                category |= Category.Western;
-            if(tb_NonH.IsChecked == true)
-                category |= Category.NonH;
-            if(tb_ImageSet.IsChecked == true)
-                category |= Category.ImageSet;
-            if(tb_Cosplay.IsChecked == true)
-                category |= Category.Cosplay;
-            if(tb_AsianPorn.IsChecked == true)
-                category |= Category.AsianPorn;
-            if(tb_Misc.IsChecked == true)
-                category |= Category.Misc;
+            foreach(var item in filter)
+            {
+                if(item.IsChecked)
+                    category |= item.Category;
+            }
             this.Focus(FocusState.Pointer);
             if(category == searchFilter && args.QueryText == searchKeyWord)
                 return;
             searchKeyWord = args.QueryText;
             searchFilter = category;
-            Setting.Current.DefaultSearchCategory = category;
-            Setting.Current.DefaultSearchString = searchKeyWord;
+            Settings.Settings.Current.DefaultSearchCategory = category;
+            Settings.Settings.Current.DefaultSearchString = this.searchKeyWord;
             SearchResult = null;
             SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
         }
@@ -148,35 +145,39 @@ namespace ExViewer.Views
 
         private void ab_Opening(object sender, object e)
         {
-            FindName(nameof(gv_AdvancedSearch));
+            //init_gv_AdvancedSearch();
         }
 
         bool isWideState;
 
 #pragma warning disable UWP001 // Platform-specific
-        Thickness mouseThickness = new Thickness(0), touchThickness = new Thickness(8);
+        Thickness mouseThickness = new Thickness(4), touchThickness = new Thickness(12);
 #pragma warning restore UWP001 // Platform-specific
 
         private void ab_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            var gvLoaded = !init_gv_AdvancedSearch();
             var newState = e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch;
             if(newState == isWideState)
                 return;
             if(!abOpened)
             {
-                FindName(nameof(gv_AdvancedSearch));
-                if(newState)
+                if(gvLoaded)
                 {
-                    foreach(FrameworkElement item in gv_AdvancedSearch.Items)
+                    if(newState)
                     {
-                        item.Margin = touchThickness;
+                        for(int i = 0; i < filter.Count; i++)
+                        {
+                            ((FrameworkElement)gv_AdvancedSearch.ContainerFromIndex(i)).Margin = touchThickness;
+                        }
                     }
-                }
-                else
-                {
-                    foreach(FrameworkElement item in gv_AdvancedSearch.Items)
+                    else
                     {
-                        item.Margin = mouseThickness;
+                        for(int i = 0; i < filter.Count; i++)
+                        {
+                            ((FrameworkElement)gv_AdvancedSearch.ContainerFromIndex(i)).Margin = mouseThickness;
+
+                        }
                     }
                 }
                 isWideState = newState;
@@ -194,25 +195,36 @@ namespace ExViewer.Views
         {
             abOpened = false;
         }
+
+        private void gv_AdvancedSearch_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(isWideState)
+            {
+                for(int i = 0; i < filter.Count; i++)
+                {
+                    ((FrameworkElement)gv_AdvancedSearch.ContainerFromIndex(i)).Margin = touchThickness;
+                }
+            }
+            else
+            {
+                for(int i = 0; i < filter.Count; i++)
+                {
+                    ((FrameworkElement)gv_AdvancedSearch.ContainerFromIndex(i)).Margin = mouseThickness;
+
+                }
+            }
+        }
     }
 
-    internal class RateStringConverter : IValueConverter
+    internal class FilterRecord
     {
-        const char halfL = '\xE7C6';
-        const char full = '\xE00A';
-
-        public object Convert(object value, Type targetType, object parameter, string language)
+        public FilterRecord(Category category, bool isChecked)
         {
-            var rating = ((double)value) * 2;
-            var x = (int)Math.Round(rating);
-            var fullCount = x / 2;
-            var halfCount = x - 2 * fullCount;
-            return new string(full, fullCount) + new string(halfL, halfCount);
+            Category = category;
+            IsChecked = isChecked;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
+        public readonly Category Category;
+        public bool IsChecked;
     }
 }

@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="CachedGallery.cs" />
     <Compile Include="CacheHelper.cs" />
+    <Compile Include="Category.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="DispatcherHelper.cs" />
     <Compile Include="GalleryCache.cs" />

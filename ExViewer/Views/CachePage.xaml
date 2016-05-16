@@ -56,49 +56,9 @@
                   VerticalAlignment="Top">
             <ListView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
+                              xmlns:controls="using:ExViewer.Controls"
                               x:DataType="c:Gallery">
-                    <Grid Padding="8,4"
-                          Height="200">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <ContentPresenter Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}">
-                            <Image Source="{x:Bind Thumb}"
-                                   Stretch="Uniform" />
-                        </ContentPresenter>
-                        <RelativePanel Padding="8,4,4,4"
-                                       Grid.Column="1">
-                            <TextBlock x:Name="Title"
-                                       Text="{x:Bind Title}"
-                                       Style="{StaticResource SubtitleTextBlockStyle}"
-                                       ContinuumNavigationTransitionInfo.IsExitElement="True"
-                                       TextWrapping="WrapWholeWords"
-                                       MaxLines="3"
-                                       TextTrimming="CharacterEllipsis"
-                                       RelativePanel.AlignLeftWithPanel="True"
-                                       RelativePanel.AlignRightWithPanel="True"
-                                       RelativePanel.AlignTopWithPanel="True">
-                                <ToolTipService.ToolTip>
-                                    <TextBlock Text="{x:Bind Title, Mode=OneWay}"
-                                               TextWrapping="WrapWholeWords" />
-                                </ToolTipService.ToolTip>
-                            </TextBlock>
-                            <Image x:Name="Category"
-                                   Source="{x:Bind Category, Converter={StaticResource CategoryToImageConverter}}"
-                                   RelativePanel.Below="Title"
-                                   RelativePanel.AlignLeftWithPanel="True"
-                                   Stretch="None" />
-                            <TextBlock x:Name="RecordCount"
-                                       RelativePanel.RightOf="Category"
-                                       RelativePanel.AlignVerticalCenterWith="Category"
-                                       Text="{x:Bind RecordCount, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
-                            <TextBlock x:Name="Rating"
-                                       RelativePanel.Below="Category"
-                                       Text="{x:Bind Rating, Converter={StaticResource RateStringConverter}}"
-                                       FontFamily="Segoe MDL2 Assets" />
-                        </RelativePanel>
-                    </Grid>
+                    <controls:GalleryViewer Gallery="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemContainerStyle>
