@@ -108,9 +108,10 @@
     <Compile Include="Controls\SplitViewTab.cs" />
     <Compile Include="Settings\Attributes.cs" />
     <Compile Include="Settings\GroupedSettings.cs" />
-    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingInfo.cs" />
-    <Compile Include="Settings\Settings-Core.cs" />
+    <Compile Include="Settings\SettingCollection-Core.cs" />
+    <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Views\CachePage.xaml.cs">
       <DependentUpon>CachePage.xaml</DependentUpon>
     </Compile>

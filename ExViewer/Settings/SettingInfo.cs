@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,10 +17,11 @@ namespace ExViewer.Settings
         Double,
         String,
         Enum,
+        Boolean,
         Custom
     }
 
-    public class SettingInfo
+    public class SettingInfo : ObservableObject
     {
         internal SettingInfo(PropertyInfo info)
         {
@@ -30,6 +32,7 @@ namespace ExViewer.Settings
             Category = setting.Category;
             Index = setting.Index;
             Range = info.GetCustomAttributes().Select(a => a as IValueRange).SingleOrDefault(a => a != null);
+            BooleanRepresent = info.GetCustomAttributes<BooleanRepresentAttribute>().SingleOrDefault() ?? BooleanRepresentAttribute.Default;
 
             var type = info.PropertyType;
             if(setting.SettingPresenterTemplate != null)
@@ -45,71 +48,77 @@ namespace ExViewer.Settings
                 Type = SettingType.Int32;
             else if(type == typeof(long))
                 Type = SettingType.Int64;
+            else if(type == typeof(bool))
+                Type = SettingType.Boolean;
             else if(type == typeof(string))
                 Type = SettingType.String;
             else if(type.GetTypeInfo().IsEnum)
                 Type = SettingType.Enum;
+            SettingCollection.Current.PropertyChanged += SettingsChanged;
+        }
+
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == Name)
+                RaisePropertyChanged(nameof(Value));
         }
 
         public PropertyInfo PropertyInfo
         {
             get;
-            private set;
         }
 
         public string Category
         {
             get;
-            private set;
         }
 
         public string Name
         {
             get;
-            private set;
         }
 
         public string FriendlyName
         {
             get;
-            private set;
         }
 
         public SettingType Type
         {
             get;
-            private set;
         }
 
         public int Index
         {
             get;
-            private set;
         }
 
         public IValueRange Range
         {
             get;
-            private set;
+        }
+
+        public BooleanRepresentAttribute BooleanRepresent
+        {
+            get;
         }
 
         public string SettingPresenterTemplate
         {
             get;
-            private set;
         }
 
         public object Value
         {
             get
             {
-                return PropertyInfo.GetValue(Settings.Current);
+                return PropertyInfo.GetValue(SettingCollection.Current);
             }
             set
             {
                 if(value == null)
                     return;
-                PropertyInfo.SetValue(Settings.Current, value);
+                PropertyInfo.SetValue(SettingCollection.Current, value);
             }
         }
     }

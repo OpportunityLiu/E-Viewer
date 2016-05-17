@@ -240,4 +240,29 @@ namespace ExViewer.Settings
             get; set;
         } = double.NaN;
     }
+
+    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class BooleanRepresentAttribute : Attribute
+    {
+        public static BooleanRepresentAttribute Default
+        {
+            get;
+        } = new BooleanRepresentAttribute("On", "Off");
+
+        public BooleanRepresentAttribute(string trueString, string falseString)
+        {
+            TrueString = trueString;
+            FalseString = falseString;
+        }
+
+        public string TrueString
+        {
+            get;
+        }
+
+        public string FalseString
+        {
+            get;
+        }
+    }
 }

@@ -124,7 +124,7 @@ namespace ExClient
 
         public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAction => saveTask;
 
-        public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync()
+        public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync(ConnectionStrategy strategy)
         {
             if(saveTask?.Status != AsyncStatus.Started)
                 saveTask = Run<SaveGalleryProgress>(async (token, progress) =>
@@ -147,7 +147,7 @@ namespace ExClient
                          var image = this[i];
                          if(image.State != ImageLoadingState.Loaded)
                          {
-                             var load = image.LoadImage(false, true);
+                             var load = image.LoadImage(false, strategy, true);
                              await load;
                          }
                          toReport.ImageLoaded++;

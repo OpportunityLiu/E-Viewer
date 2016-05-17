@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using ExViewer.Settings;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -99,7 +100,7 @@ namespace ExViewer.Views
 
         private async void abb_save_Click(object sender, RoutedEventArgs e)
         {
-            var save = Gallery.SaveGalleryAsync();
+            var save = Gallery.SaveGalleryAsync(SettingCollection.Current.GetStrategy());
             saveProgressHandler(save);
             await save;
         }
@@ -125,7 +126,7 @@ namespace ExViewer.Views
                     {
                         if(this.Gallery.Id != gid)
                             return;
-                        await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                        await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                         {
                             this.pb_save.Value = p.ImageLoaded;
                         });
@@ -135,7 +136,7 @@ namespace ExViewer.Views
                     {
                         if(this.Gallery.Id != gid)
                             return;
-                        await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () =>
+                        await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                         {
                             this.pb_save.Value = Gallery.RecordCount;
                             switch(p)

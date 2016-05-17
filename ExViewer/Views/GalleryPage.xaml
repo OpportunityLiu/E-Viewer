@@ -89,6 +89,11 @@
                            RelativePanel.Below="Category"
                            Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
                            FontFamily="Segoe MDL2 Assets" />
+                <ListView x:Name="lv_Tags"
+                          RelativePanel.Below="Rating"
+                          ItemsSource="{x:Bind Gallery.Tags, Mode=OneWay}">
+                    
+                </ListView>
             </RelativePanel>
         </Grid>
         <GridView x:Name="gv"

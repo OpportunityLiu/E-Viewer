@@ -93,7 +93,7 @@ namespace ExClient
             }
         }
 
-        public override IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync()
+        public override IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync(ConnectionStrategy strategy)
         {
             return emptySave;
         }

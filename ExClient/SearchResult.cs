@@ -20,6 +20,7 @@ namespace ExClient
     public class SearchResult : IncrementalLoadingCollection<Gallery>
     {
         private static readonly Uri searchUri = new Uri("http://exhentai.org/");
+
         public static readonly Category DefaultFliter = Category.All;
         private static readonly Dictionary<Category, string> searchFliterNames = new Dictionary<Category, string>()
         {
@@ -35,13 +36,13 @@ namespace ExClient
             [Category.Misc] = "f_misc"
         };
 
-        internal static IAsyncOperation<SearchResult> SearchAsync(Client client, string keyWord, Category filter)
+        internal static IAsyncOperation<SearchResult> SearchAsync(Client client, string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
         {
             return Run(async token =>
             {
                 if(filter == Category.Unspecified)
                     filter = DefaultFliter;
-                var result = new SearchResult(client, keyWord, filter);
+                var result = new SearchResult(client, keyWord, filter, advancedSearch);
                 var init = result.init();
                 token.Register(init.Cancel);
                 await init;
@@ -49,12 +50,13 @@ namespace ExClient
             });
         }
 
-        private SearchResult(Client client, string keyWord, Category filter)
+        private SearchResult(Client client, string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
             : base(1)
         {
             this.client = client;
-            this.KeyWord = keyWord;
+            this.KeyWord = keyWord ?? "";
             this.Filter = filter;
+            this.AdvancedSearch = advancedSearch;
         }
 
         private IAsyncAction init()
@@ -73,6 +75,23 @@ namespace ExClient
                         args.Add(item.Value, "0");
                 }
                 args.Add("f_apply", "Apply Filter");
+                if(AdvancedSearch != null)
+                {
+                    var ad = AdvancedSearch;
+                    args.Add("advsearch", "1");
+
+                    args.Add("f_sname", ad.SearchName ? "1" : "0");
+                    args.Add("f_stags", ad.SearchTags ? "1" : "0");
+                    args.Add("f_sdesc", ad.SearchDescription ? "1" : "0");
+                    args.Add("f_storr", ad.SearchTorrentFilenames ? "1" : "0");
+                    args.Add("f_sto", ad.GalleriesWithTorrentsOnly ? "1" : "0");
+                    args.Add("f_sdt1", ad.SearchLowPowerTags ? "1" : "0");
+                    args.Add("f_sdt2", ad.SearchDownvotedTags ? "1" : "0");
+                    args.Add("f_sh", ad.ShowExpungedGalleries ? "1" : "0");
+
+                    args.Add("f_sr", ad.MinimumRating.HasValue ? "1" : "0");
+                    args.Add("f_srdd", ad.MinimumRating.GetValueOrDefault(2).ToString());
+                }
                 var uri = new Uri(searchUri, $"?{new HttpFormUrlEncodedContent(args)}");
                 searchResultBaseUri = uri.OriginalString;
                 var lans = client.HttpClient.GetAsync(uri);
@@ -182,6 +201,12 @@ namespace ExClient
         }
 
         public Category Filter
+        {
+            get;
+            private set;
+        }
+
+        public IAdvancedSearchOptions AdvancedSearch
         {
             get;
             private set;
