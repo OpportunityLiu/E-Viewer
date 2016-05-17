@@ -44,6 +44,18 @@
                 </local:SettingComboBox.Header>
             </local:SettingComboBox>
         </DataTemplate>
+        <DataTemplate x:Name="Boolean"
+                      x:DataType="settings:SettingInfo">
+            <ToggleSwitch HorizontalAlignment="Stretch"
+                          IsOn="{x:Bind Value, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
+                          OnContent="{x:Bind BooleanRepresent.TrueString}"
+                          OffContent="{x:Bind BooleanRepresent.FalseString}">
+                <ToggleSwitch.Header>
+                    <TextBlock Text="{x:Bind FriendlyName}"
+                               TextWrapping="WrapWholeWords" />
+                </ToggleSwitch.Header>
+            </ToggleSwitch> 
+        </DataTemplate>
     </Page.Resources>
     <Page.Transitions>
         <TransitionCollection>

@@ -21,12 +21,12 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SettingsPage : Page,IRootController
+    public sealed partial class SettingsPage : Page, IRootController
     {
         public SettingsPage()
         {
             this.InitializeComponent();
-            this.pv_root.ItemsSource = Settings.Settings.Current.GroupedSettings;
+            this.pv_root.ItemsSource = SettingCollection.Current.GroupedSettings;
             SettingTemplateSelector.Parent = this;
         }
 
@@ -61,6 +61,8 @@ namespace ExViewer.Views
                 return (DataTemplate)Parent.Resources["String"];
             case SettingType.Enum:
                 return (DataTemplate)Parent.Resources["Enum"];
+            case SettingType.Boolean:
+                return (DataTemplate)Parent.Resources["Boolean"];
             case SettingType.Custom:
                 return (DataTemplate)templateDictionary[i.SettingPresenterTemplate];
             default:
@@ -71,6 +73,16 @@ namespace ExViewer.Views
 
     class SettingSlider : Slider
     {
+        public SettingSlider()
+        {
+            Unloaded += SettingSlider_Unloaded;
+        }
+
+        private void SettingSlider_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ClearValue(SettingValueProperty);
+        }
+
         public SettingInfo SettingValue
         {
             get
@@ -90,7 +102,11 @@ namespace ExViewer.Views
         private static void SettingValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var s = (SettingSlider)d;
-            s.ValueChanged -= ValueChangedCallback;
+            s.ValueChanged -= s.ValueChangedCallback;
+            if(e.OldValue != null)
+            {
+                ((SettingInfo)e.OldValue).PropertyChanged -= s.SettingInfoPropertyChanged;
+            }
             var sv = e.NewValue as SettingInfo;
             if(sv != null)
             {
@@ -118,7 +134,8 @@ namespace ExViewer.Views
                 else
                     s.ClearValue(TickFrequencyProperty);
 
-                s.ValueChanged += ValueChangedCallback;
+                s.ValueChanged += s.ValueChangedCallback;
+                sv.PropertyChanged += s.SettingInfoPropertyChanged;
             }
             else
             {
@@ -133,7 +150,14 @@ namespace ExViewer.Views
             }
         }
 
-        private static void ValueChangedCallback(object sender, RangeBaseValueChangedEventArgs e)
+        private void SettingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var s = (SettingInfo)sender;
+            if(e.PropertyName == nameof(Value))
+                this.Value = Convert.ToDouble(s.Value);
+        }
+
+        private void ValueChangedCallback(object sender, RangeBaseValueChangedEventArgs e)
         {
             var s = (SettingSlider)sender;
             s.SettingValue.Value = ConvertToBack(e.NewValue, s.SettingValue.Type);
@@ -163,6 +187,16 @@ namespace ExViewer.Views
 
     class SettingComboBox : ComboBox
     {
+        public SettingComboBox()
+        {
+            Unloaded += SettingComboBox_Unloaded;
+        }
+
+        private void SettingComboBox_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ClearValue(SettingValueProperty);
+        }
+
         public SettingInfo SettingValue
         {
             get
@@ -184,7 +218,11 @@ namespace ExViewer.Views
         private static void SettingValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var s = (SettingComboBox)d;
-            s.SelectionChanged -= SelectionChangedCallback;
+            if(e.OldValue != null)
+            {
+                ((SettingInfo)e.OldValue).PropertyChanged -= s.SettingInfoPropertyChanged;
+            }
+            s.SelectionChanged -= s.SelectionChangedCallback;
             var sv = e.NewValue as SettingInfo;
             if(sv != null)
             {
@@ -192,19 +230,27 @@ namespace ExViewer.Views
                 s.ItemsSource = Enum.GetNames(s.settingType);
 
                 s.SelectedItem = sv.Value.ToString();
-                s.SelectionChanged += SelectionChangedCallback;
+                s.SelectionChanged += s.SelectionChangedCallback;
+                sv.PropertyChanged += s.SettingInfoPropertyChanged;
             }
             else
             {
-                s.ClearValue(ItemsSourceProperty);
                 s.ClearValue(SelectedItemProperty);
+                s.ClearValue(ItemsSourceProperty);
             }
         }
 
-        private static void SelectionChangedCallback(object sender, SelectionChangedEventArgs e)
+        private void SelectionChangedCallback(object sender, SelectionChangedEventArgs e)
         {
             var s = (SettingComboBox)sender;
             s.SettingValue.Value = Enum.Parse(s.settingType, s.SelectedItem.ToString());
+        }
+
+        private void SettingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var s = (SettingInfo)sender;
+            if(e.PropertyName == nameof(SettingInfo.Value))
+                this.SelectedItem = s.Value;
         }
     }
 }

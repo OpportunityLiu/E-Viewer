@@ -2,7 +2,7 @@
 
 namespace ExViewer.Settings
 {
-    public partial class Settings : ExClient.ObservableObject
+    public partial class SettingCollection : ExClient.ObservableObject
     {
         [Roaming]
         [Setting("Searching", "Default keywords on the front page", Index = 10)]
@@ -103,6 +103,38 @@ namespace ExViewer.Settings
             set
             {
                 SetLocal(value);
+            }
+        }
+
+        [Setting("Connection", "Load compressed image while using metered Internet connection")]
+        [BooleanRepresent("Yes", "No")]
+        public bool LoadLofiOnMeteredInternetConnection
+        {
+            get
+            {
+                return GetLocal(true);
+            }
+            set
+            {
+                SetLocal(value);
+                if(LoadLofiOnAllInternetConnection)
+                    SetLocal(true);
+            }
+        }
+
+        [Setting("Connection", "Always load compressed image")]
+        [BooleanRepresent("Yes", "No")]
+        public bool LoadLofiOnAllInternetConnection
+        {
+            get
+            {
+                return GetLocal(false);
+            }
+            set
+            {
+                SetLocal(value);
+                if(value)
+                    LoadLofiOnMeteredInternetConnection = true;
             }
         }
     }

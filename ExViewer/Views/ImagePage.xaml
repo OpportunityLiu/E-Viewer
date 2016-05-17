@@ -122,7 +122,7 @@
                         </ToolTipService.ToolTip>
                     </TextBlock>
                     <TextBlock x:Name="tb_si"
-                               Text="{Binding ElementName=fv, Path=SelectedItem.Page, Mode=OneWay, UpdateSourceTrigger=Explicit}"
+                               Text="{Binding ElementName=fv, Path=SelectedItem.PageId, Mode=OneWay}"
                                Style="{StaticResource BodyTextBlockStyle}"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_sep" />
@@ -150,9 +150,25 @@
                 <AppBarButton x:Name="abb_reload"
                               Label="Reload"
                               Click="abb_reload_Click" />
+                <AppBarButton x:Name="abb_LoadOriginal"
+                              Label="Load original image"
+                              Click="abb_LoadOriginal_Click"
+                              IsEnabled="{Binding ElementName=fv, Path=SelectedItem.OriginalLoaded, Mode=OneWay, Converter={StaticResource LogicalNotConverter}}"/>
                 <AppBarButton x:Name="abb_open"
                               Label="Open in browser"
                               Click="abb_open_Click" />
+                <AppBarSeparator />
+                <AppBarButton x:Name="abb_Info"
+                              Label="Image infomation">
+                    <AppBarButton.Flyout>
+                        <Flyout Opening="Flyout_Opening"
+                                Placement="Bottom">
+                            <StackPanel>
+                                <TextBlock x:Name="tb_Info" />
+                            </StackPanel>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </RelativePanel>

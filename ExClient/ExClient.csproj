@@ -111,6 +111,7 @@
     <Compile Include="CacheHelper.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="ConnectionHelper.cs" />
     <Compile Include="DispatcherHelper.cs" />
     <Compile Include="GalleryCache.cs" />
     <Compile Include="GalleryImage.cs" />

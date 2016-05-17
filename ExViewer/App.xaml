@@ -21,6 +21,7 @@
             <local:EmptyConverter x:Key="EmptyConverter" />
             <local:DefaultConverter x:Key="DefaultConverter" />
             <local:NullableConverter x:Key="NullableConverter" />
+            <local:LogicalNotConverter x:Key="LogicalNotConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

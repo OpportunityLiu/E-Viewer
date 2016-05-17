@@ -305,4 +305,23 @@ namespace ExViewer.Views
             }
         }
     }
+
+    public class LogicalNotConverter : ValueConverterChain
+    {
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return convert(value, targetType, parameter, language);
+        }
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return convert(value, targetType, parameter, language);
+        }
+
+        private static object convert(object value, Type targetType, object parameter, string language)
+        {
+            var v = (bool)value;
+            return !v;
+        }
+    }
 }

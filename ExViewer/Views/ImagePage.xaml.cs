@@ -71,7 +71,7 @@ namespace ExViewer.Views
             {
                 cb_top.Visibility = Visibility.Visible;
             }
-            this.mouseInertialFactor = Settings.Settings.Current.MouseInertialFactor;
+            this.mouseInertialFactor = SettingCollection.Current.MouseInertialFactor;
             enableMouseInertia = mouseInertialFactor > 0.05;
 
             var param = (ExClient.Gallery)e.Parameter;
@@ -106,11 +106,11 @@ namespace ExViewer.Views
 
         private void setFactor(ScrollViewer sv, Image img)
         {
-            var factor = Math.Min(fv.ActualHeight / img.ActualHeight, fv.ActualWidth / img.ActualWidth);
+            var factor = Math.Min((fv.ActualHeight - 1) / img.ActualHeight, (fv.ActualWidth - 1) / img.ActualWidth);
             if(double.IsInfinity(factor) || double.IsNaN(factor))
-                factor = Math.Min(fv.ActualHeight / 1000, fv.ActualWidth / 1000);
+                factor = Math.Min(fv.ActualHeight, fv.ActualWidth) / 1000;
             sv.MinZoomFactor = (float)factor;
-            sv.MaxZoomFactor = (float)factor * Settings.Settings.Current.MaxFactor;
+            sv.MaxZoomFactor = (float)factor * SettingCollection.Current.MaxFactor;
             sv.ZoomToFactor(sv.MinZoomFactor);
         }
 
@@ -151,14 +151,23 @@ namespace ExViewer.Views
             }
             for(int i = start; i < end; i++)
             {
-                var ignore = Gallery[i].LoadImage(false, false);
+                var ignore = Gallery[i].LoadImage(false, SettingCollection.Current.GetStrategy(), false);
             }
             setScale();
         }
 
         private async void abb_reload_Click(object sender, RoutedEventArgs e)
         {
-            await Gallery[fv.SelectedIndex].LoadImage(true, false);
+            var image = Gallery[fv.SelectedIndex];
+            if(image.OriginalLoaded)
+                await image.LoadImage(true, ExClient.ConnectionStrategy.AllFull, false);
+            else
+                await image.LoadImage(true, SettingCollection.Current.GetStrategy(), false);
+        }
+
+        private async void abb_LoadOriginal_Click(object sender, RoutedEventArgs e)
+        {
+            await Gallery[fv.SelectedIndex].LoadImage(true, ExClient.ConnectionStrategy.AllFull, false);
         }
 
         private async void abb_open_Click(object sender, RoutedEventArgs e)
@@ -171,7 +180,7 @@ namespace ExViewer.Views
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
             changeCbVisibility = new System.Threading.CancellationTokenSource();
-            await Task.Delay(Settings.Settings.Current.ChangeCommandBarDelay, this.changeCbVisibility.Token).ContinueWith(async t =>
+            await Task.Delay(SettingCollection.Current.ChangeCommandBarDelay, this.changeCbVisibility.Token).ContinueWith(async t =>
             {
                 if(t.IsCanceled)
                     return;
@@ -218,7 +227,7 @@ namespace ExViewer.Views
                 pi.X *= fa;
                 pi.Y *= fa;
                 var ps = e.GetPosition(sv);
-                var df = Settings.Settings.Current.DefaultFactor;
+                var df = SettingCollection.Current.DefaultFactor;
                 sv.ZoomToFactor(fa * df);
                 sv.ScrollToHorizontalOffset(pi.X * df - ps.X);
                 sv.ScrollToVerticalOffset(pi.Y * df - ps.Y);
@@ -308,6 +317,36 @@ namespace ExViewer.Views
             {
                 av.ExitFullScreenMode();
             }
+        }
+
+        private async void Flyout_Opening(object sender, object e)
+        {
+            var image = (fv.SelectedItem as ExClient.GalleryImage);
+            if(image == null || image.Image == null)
+            {
+                tb_Info.Text = "The image hasn't finished loading";
+                return;
+            }
+            var prop = await image.ImageFile.GetBasicPropertiesAsync();
+            tb_Info.Text = $@"Size: {ByteToString(prop.Size)}
+Dimensions: {image.Image.PixelWidth} x {image.Image.PixelHeight}";
+        }
+
+        private static string ByteToString(ulong byteCount)
+        {
+            if(byteCount < 1024ul)
+                return $"{byteCount} B";
+            double bInK = byteCount / 1024.0;
+            if(byteCount < 1024ul * 1024ul)
+                return $"{bInK:F2} KiB";
+            double bInM = bInK / 1024.0;
+            if(byteCount < 1024ul * 1024ul * 1024ul)
+                return $"{bInM:F2} MiB";
+            double bInG = bInM / 1024.0;
+            if(byteCount < 1024ul * 1024ul * 1024ul * 1024ul)
+                return $"{bInG:F2} GiB";
+            double bInT = bInG / 1024.0;
+            return $"{bInT:F2} TiB";
         }
     }
 }

@@ -65,9 +65,9 @@ namespace ExViewer.Views
 
         private Client client;
 
-        private string searchKeyWord = Settings.Settings.Current.DefaultSearchString;
+        private string searchKeyWord = SettingCollection.Current.DefaultSearchString;
 
-        private Category searchFilter = Settings.Settings.Current.DefaultSearchCategory;
+        private Category searchFilter = SettingCollection.Current.DefaultSearchCategory;
 
         public event EventHandler<RootControlCommand> CommandExecuted;
 
@@ -115,8 +115,8 @@ namespace ExViewer.Views
                 return;
             searchKeyWord = args.QueryText;
             searchFilter = category;
-            Settings.Settings.Current.DefaultSearchCategory = category;
-            Settings.Settings.Current.DefaultSearchString = this.searchKeyWord;
+            SettingCollection.Current.DefaultSearchCategory = category;
+            SettingCollection.Current.DefaultSearchString = this.searchKeyWord;
             SearchResult = null;
             SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
         }
