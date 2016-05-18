@@ -24,7 +24,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class GalleryPage : Page, IRootController
+    public sealed partial class GalleryPage : Page
     {
         public GalleryPage()
         {
@@ -85,12 +85,10 @@ namespace ExViewer.Views
         public static readonly DependencyProperty GalleryProperty =
             DependencyProperty.Register("Gallery", typeof(ExClient.Gallery), typeof(GalleryPage), new PropertyMetadata(null));
 
-        public event EventHandler<RootControlCommand> CommandExecuted;
-
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
             cb_top.IsOpen = false;
-            CommandExecuted?.Invoke(this, RootControlCommand.SwitchSplitView);
+            RootControl.RootController.SwitchSplitView();
         }
 
         private async void abb_open_Click(object sender, RoutedEventArgs e)

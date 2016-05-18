@@ -6,21 +6,61 @@
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                mc:Ignorable="d"
                Title="LOG ON"
+               Loaded="ContentDialog_Loaded"
                PrimaryButtonText="Ok"
-               SecondaryButtonText="Cancel"
+               SecondaryButtonText="?"
                PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-               SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+               SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+               MaxWidth="320">
     <StackPanel>
         <TextBox x:Name="tb_user"
                  Margin="0,4"
-                 PlaceholderText="User Name" />
-        <PasswordBox x:Name="tb_pass"
+                 PlaceholderText="User Name"
+                 TextChanged="tb_TextChanged" />
+        <PasswordBox x:Name="pb_pass"
                      Margin="0,4"
-                     PlaceholderText="Password" />
-        <CheckBox x:Name="cb_savepass"
-                  Content="Save my account info for me."
-                  IsChecked="True"
-                  IsThreeState="False"
-                  HorizontalAlignment="Stretch" />
+                     PlaceholderText="Password"
+                     PasswordChanged="tb_TextChanged" />
+        <Grid x:Name="sp_ReCaptcha"
+              Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.ColumnSpan="2"
+                    Margin="0,4"
+                    BorderBrush="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                    BorderThickness="2"
+                    Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}">
+                <Image x:Name="img_ReCaptcha"
+                       MinHeight="50" />
+            </Border>
+            <TextBox x:Name="tb_ReCaptcha"
+                     Margin="0,4"
+                     Grid.Row="1"
+                     PlaceholderText="ReCaptcha"
+                     TextChanged="tb_TextChanged"
+                     IsSpellCheckEnabled="False" />
+            <Button x:Name="btn_ReloadReCaptcha"
+                    Style="{StaticResource TextBlockButtonStyle}"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="4,4,0,4"
+                    Content="&#xE72C;"
+                    FontFamily="Segoe MDL2 Assets"
+                    Click="btn_ReloadReCaptcha_Click"
+                    AutomationProperties.Name="Reload ReCaptcha"
+                    ToolTipService.ToolTip="Reload ReCaptcha"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch" />
+        </Grid>
+        <TextBlock x:Name="tb_info"
+                   Margin="0,4"
+                   HorizontalAlignment="Stretch"
+                   TextWrapping="WrapWholeWords" />
     </StackPanel>
 </ContentDialog>

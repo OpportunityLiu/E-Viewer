@@ -99,6 +99,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CategorySelector.xaml.cs">
+      <DependentUpon>CategorySelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CategoryTag.cs" />
     <Compile Include="Controls\CategoryToogleButton.cs" />
     <Compile Include="Controls\GalleryViewer.xaml.cs">
@@ -110,8 +113,9 @@
     <Compile Include="Settings\GroupedSettings.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingInfo.cs" />
-    <Compile Include="Settings\SettingCollection-Core.cs" />
+    <Compile Include="Settings\SettingCollectionBase.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
+    <Compile Include="Themes\ThemeExtention.cs" />
     <Compile Include="Views\CachePage.xaml.cs">
       <DependentUpon>CachePage.xaml</DependentUpon>
     </Compile>
@@ -123,12 +127,12 @@
     <Compile Include="Views\ImagePage.xaml.cs">
       <DependentUpon>ImagePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\IRootController.cs" />
+    <Compile Include="Views\RootController.cs" />
     <Compile Include="Views\LogOnDialog.xaml.cs">
       <DependentUpon>LogOnDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RootContorl.xaml.cs">
-      <DependentUpon>RootContorl.xaml</DependentUpon>
+    <Compile Include="Views\RootControl.xaml.cs">
+      <DependentUpon>RootControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\SearchPage.xaml.cs">
@@ -184,6 +188,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\CategorySelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\GalleryViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -212,7 +220,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\RootContorl.xaml">
+    <Page Include="Views\RootControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

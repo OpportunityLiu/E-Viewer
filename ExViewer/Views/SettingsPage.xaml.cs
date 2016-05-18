@@ -21,7 +21,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SettingsPage : Page, IRootController
+    public sealed partial class SettingsPage : Page
     {
         public SettingsPage()
         {
@@ -30,11 +30,9 @@ namespace ExViewer.Views
             SettingTemplateSelector.Parent = this;
         }
 
-        public event EventHandler<RootControlCommand> CommandExecuted;
-
         private void btn_Click(object sender, RoutedEventArgs e)
         {
-            CommandExecuted?.Invoke(this, RootControlCommand.SwitchSplitView);
+            RootControl.RootController.SwitchSplitView();
         }
     }
 
@@ -73,13 +71,9 @@ namespace ExViewer.Views
 
     class SettingSlider : Slider
     {
-        public SettingSlider()
+        protected override void OnDisconnectVisualChildren()
         {
-            Unloaded += SettingSlider_Unloaded;
-        }
-
-        private void SettingSlider_Unloaded(object sender, RoutedEventArgs e)
-        {
+            base.OnDisconnectVisualChildren();
             ClearValue(SettingValueProperty);
         }
 
@@ -187,13 +181,9 @@ namespace ExViewer.Views
 
     class SettingComboBox : ComboBox
     {
-        public SettingComboBox()
+        protected override void OnDisconnectVisualChildren()
         {
-            Unloaded += SettingComboBox_Unloaded;
-        }
-
-        private void SettingComboBox_Unloaded(object sender, RoutedEventArgs e)
-        {
+            base.OnDisconnectVisualChildren();
             ClearValue(SettingValueProperty);
         }
 

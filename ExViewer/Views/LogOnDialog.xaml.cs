@@ -28,28 +28,98 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
+        ReCaptcha recap;
+
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            var d = args.GetDeferral();
-            await Client.CreateClient(tb_user.Text, tb_pass.Password);
-            if(cb_savepass.IsChecked == true)
+            var username = tb_user.Text;
+            var password = pb_pass.Password;
+            if(string.IsNullOrWhiteSpace(username))
             {
-                var pv = new PasswordVault();
+                tb_info.Text = "Please enter your user name";
+                tb_user.Focus(FocusState.Programmatic);
+                args.Cancel = true;
+            }
+            else if(string.IsNullOrWhiteSpace(password))
+            {
+                tb_info.Text = "Please enter your password";
+                pb_pass.Focus(FocusState.Programmatic);
+                args.Cancel = true;
+            }
+            else
+            {
+                var d = args.GetDeferral();
+                tb_info.Text = "";
                 try
                 {
-                    var oldpass = pv.FindAllByResource("ex").First();
-                    pv.Remove(oldpass);
+                    if(recap != null)
+                        await recap.Submit(tb_ReCaptcha.Text);
+                    await Client.Current.LogOnAsync(username, password, recap);
+
+                    var pv = new PasswordVault();
+                    try
+                    {
+                        var oldpass = pv.FindAllByResource("ex").First();
+                        pv.Remove(oldpass);
+                    }
+                    catch(Exception ex) when(ex.HResult == -2147023728)
+                    {
+                    }
+                    pv.Add(new PasswordCredential("ex", username, password));
+
                 }
-                catch(Exception ex) when(ex.HResult == -2147023728)
+                catch(ArgumentException ex) when(ex.ParamName == "response")
                 {
+                    await loadReCapcha();
+                    tb_info.Text = "The captcha was not entered correctly. Please try again.";
+                    tb_ReCaptcha.Focus(FocusState.Programmatic);
+                    args.Cancel = true;
                 }
-                pv.Add(new PasswordCredential("ex", tb_user.Text, tb_pass.Password));
+                catch(Exception ex)
+                {
+                    await loadReCapcha();
+                    tb_info.Text = ex.Message;
+                    tb_user.Focus(FocusState.Programmatic);
+                    args.Cancel = true;
+                }
+                finally
+                {
+                    d.Complete();
+                }
             }
-            d.Complete();
+        }
+
+        private async Task loadReCapcha()
+        {
+            sp_ReCaptcha.Visibility = Visibility.Visible;
+            img_ReCaptcha.Source = null;
+            tb_ReCaptcha.Text = "";
+            recap = await ReCaptcha.Get();
+            img_ReCaptcha.Source = new BitmapImage(recap.ImageUri);
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            if(Client.Current.NeedLogOn)
+                Application.Current.Exit();
+        }
+
+        private void tb_TextChanged(object sender, RoutedEventArgs e)
+        {
+            tb_info.Text = "";
+        }
+
+        private async void btn_ReloadReCaptcha_Click(object sender, RoutedEventArgs e)
+        {
+            await loadReCapcha();
+        }
+
+        private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(Client.Current.NeedLogOn)
+                this.SecondaryButtonText = "Exit";
+            else
+                this.SecondaryButtonText = "Cancel";
         }
     }
 }

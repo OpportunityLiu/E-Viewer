@@ -9,14 +9,8 @@ using Windows.Storage;
 namespace ExViewer.Settings
 {
 
-    public partial class SettingCollection : ExClient.ObservableObject
+    public class SettingCollectionBase : ExClient.ObservableObject
     {
-        public static SettingCollection Current
-        {
-            get;
-            private set;
-        } = new SettingCollection();
-
         private bool loaded;
         private object syncroot = new object();
 
@@ -75,13 +69,17 @@ namespace ExViewer.Settings
             if(testingProperties.ContainsKey(key))
                 return (T)testingProperties[key];
 #endif
-            object v;
-            if(container.TryGetValue(key, out v))
+            try
             {
-                if(def is Enum)
-                    return (T)Enum.Parse(typeof(T), v.ToString());
-                return (T)v;
+                object v;
+                if(container.TryGetValue(key, out v))
+                {
+                    if(def is Enum)
+                        return (T)Enum.Parse(typeof(T), v.ToString());
+                    return (T)v;
+                }
             }
+            catch { }
             return def;
         }
 
@@ -95,10 +93,10 @@ namespace ExViewer.Settings
             return container.ContainsKey(key);
         }
 
-        private void Set<T>(IPropertySet container, T value, string key)
+        private void Set<T>(IPropertySet container, T value, string key, bool forceRaiseEvent)
         {
             load();
-            if(HasValue(container, key) && Equals(Get(container, value, key), value))
+            if(!forceRaiseEvent && HasValue(container, key) && Equals(Get(container, value, key), value))
                 return;
             var enu = value as Enum;
             if(enu != null)
@@ -120,7 +118,12 @@ namespace ExViewer.Settings
 
         protected void SetLocal<T>(T value, [CallerMemberName]string key = null)
         {
-            Set(local, value, key);
+            Set(local, value, key, false);
+        }
+
+        protected void ForceSetLocal<T>(T value, [CallerMemberName]string key = null)
+        {
+            Set(local, value, key, true);
         }
 
         protected T GetRoaming<T>(string key)
@@ -135,7 +138,12 @@ namespace ExViewer.Settings
 
         protected void SetRoaming<T>(T value, [CallerMemberName]string key = null)
         {
-            Set(roaming, value, key);
+            Set(roaming, value, key, false);
+        }
+
+        protected void ForceSetRoaming<T>(T value, [CallerMemberName]string key = null)
+        {
+            Set(roaming, value, key, true);
         }
     }
 }

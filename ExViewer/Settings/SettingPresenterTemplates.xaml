@@ -2,11 +2,14 @@
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:ExViewer.Settings"
+                    xmlns:controls="using:ExViewer.Controls"
                     xmlns:a="using:ExViewer.Views">
     <DataTemplate x:Name="CatagorySettingTemplate"
                   x:DataType="local:SettingInfo">
-        <a:SettingComboBox Header="{Binding FriendlyName}"
-                           SettingValue="{Binding}"
-                           HorizontalAlignment="Stretch" />
+        <StackPanel>
+            <TextBlock Text="{Binding FriendlyName}" />
+            <controls:CategorySelector SelectedCategory="{Binding Value}"
+                                       HorizontalAlignment="Stretch" />
+        </StackPanel>
     </DataTemplate>
 </ResourceDictionary>

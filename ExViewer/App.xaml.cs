@@ -68,23 +68,6 @@ namespace ExViewer
                     var statusBar = StatusBar.GetForCurrentView();
                     var ignore = statusBar.HideAsync();
                 }
-                var tb = view.TitleBar;
-                if(tb != null)
-                {
-                    tb.BackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                    tb.InactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                    tb.ButtonBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                    tb.ButtonHoverBackgroundColor = (Color)Resources["SystemChromeMediumLowColor"];
-                    tb.ButtonInactiveBackgroundColor = (Color)Resources["SystemChromeMediumColor"];
-                    tb.ButtonPressedBackgroundColor = (Color)Resources["SystemChromeHighColor"];
-
-                    tb.ForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
-                    tb.InactiveForegroundColor = (Color)Resources["SystemChromeDisabledLowColor"];
-                    tb.ButtonForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
-                    tb.ButtonHoverForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
-                    tb.ButtonInactiveForegroundColor = (Color)Resources["SystemChromeDisabledLowColor"];
-                    tb.ButtonPressedForegroundColor = (Color)Resources["SystemBaseMediumHighColor"];
-                }
                 splash = new Views.SplashControl(e.SplashScreen);
                 await splash.InitAsync();
                 current.Content = splash;

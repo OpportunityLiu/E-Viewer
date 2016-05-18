@@ -22,6 +22,7 @@
             <local:DefaultConverter x:Key="DefaultConverter" />
             <local:NullableConverter x:Key="NullableConverter" />
             <local:LogicalNotConverter x:Key="LogicalNotConverter" />
+            <local:EnumToStringConverter x:Key="EnumToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
