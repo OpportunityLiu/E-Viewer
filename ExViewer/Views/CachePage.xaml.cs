@@ -21,7 +21,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class CachePage : Page, IRootController
+    public sealed partial class CachePage : Page
     {
         public CachePage()
         {
@@ -40,7 +40,7 @@ namespace ExViewer.Views
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            if(e.NavigationMode != NavigationMode.New)
+            if(!(e.NavigationMode == NavigationMode.New && e.SourcePageType == typeof(GalleryPage)))
             {
                 lv.ItemsSource = null;
             }
@@ -62,12 +62,10 @@ namespace ExViewer.Views
                 tb_Empty.Visibility = Visibility.Collapsed;
         }
 
-        public event EventHandler<RootControlCommand> CommandExecuted;
-
         private void btn_Pane_Click(object sender, RoutedEventArgs e)
         {
             cb_top.IsOpen = false;
-            CommandExecuted?.Invoke(this, RootControlCommand.SwitchSplitView);
+            RootControl.RootController.SwitchSplitView();
         }
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)

@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExViewer.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,10 +52,16 @@ namespace ExViewer.Views
 
         private bool loaded, goToContent;
 
+        private SearchResult sr;
+
         public void GoToContent()
         {
             if(loaded)
-                Window.Current.Content = new RootControl();
+            {
+                Window.Current.Content = new RootControl(sr);
+                Themes.ThemeExtention.SetTitleBar();
+                sr = null;
+            }
             else
                 goToContent = true;
         }
@@ -62,18 +69,23 @@ namespace ExViewer.Views
         private async void splash_Loaded(object sender, RoutedEventArgs e)
         {
             ((Storyboard)Resources["ShowPic"]).Begin();
-            if(Client.Current == null)
+            Themes.ThemeExtention.SetDefaultTitleBar();
+            if(Client.Current.NeedLogOn)
             {
                 var pv = new PasswordVault();
                 try
                 {
                     var pass = pv.FindAllByResource("ex").First();
                     pass.RetrievePassword();
-                    await Client.CreateClient(pass.UserName, pass.Password);
+                    await Client.Current.LogOnAsync(pass.UserName, pass.Password, null);
                 }
-                catch(Exception ex) when(ex.HResult == -2147023728)
+                catch(Exception)
                 {
                 }
+            }
+            if(!Client.Current.NeedLogOn)
+            {
+                sr = await Client.Current.SearchAsync(SettingCollection.Current.DefaultSearchString, SettingCollection.Current.DefaultSearchCategory);
             }
             loaded = true;
             if(goToContent)

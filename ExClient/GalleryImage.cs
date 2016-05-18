@@ -38,6 +38,8 @@ namespace ExClient
         {
             return Run(async token =>
             {
+                if(failToken != null)
+                    PageUri = new Uri(pageBaseUri, $"{imageKey}/{Owner.Id.ToString()}-{PageId.ToString()}?nl={failToken}");
                 var loadPage = Owner.Owner.PostStrAsync(PageUri, null);
                 token.Register(loadPage.Cancel);
                 var pageResult = new HtmlDocument();
@@ -54,8 +56,7 @@ namespace ExClient
                     originalImageUri = new Uri(HtmlUtilities.ConvertToText(originalNode.GetAttributeValue("href", "")));
                 }
                 var loadFail = pageResult.GetElementbyId("loadfail").GetAttributeValue("onclick", "");
-                var failToken = Regex.Match(loadFail, @"return\s+nl\(\s*'(.+?)'\s*\)").Groups[1].Value;
-                PageUri = new Uri(pageBaseUri, $"{imageKey}/{Owner.Id.ToString()}-{PageId.ToString()}?nl={failToken}");
+                failToken = Regex.Match(loadFail, @"return\s+nl\(\s*'(.+?)'\s*\)").Groups[1].Value;
             });
         }
 
@@ -276,6 +277,8 @@ namespace ExClient
         private string imageKey;
 
         internal string ImageKey => imageKey;
+
+        private string failToken;
 
         public bool OriginalLoaded
         {

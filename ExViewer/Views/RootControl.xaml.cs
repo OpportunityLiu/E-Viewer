@@ -26,7 +26,7 @@ namespace ExViewer.Views
     /// </summary>
     public sealed partial class RootControl : UserControl
     {
-        public RootControl()
+        public RootControl(SearchResult sr)
         {
             this.InitializeComponent();
             tabs = new Dictionary<Controls.SplitViewTab, Type>()
@@ -42,7 +42,11 @@ namespace ExViewer.Views
                 [typeof(SearchPage)] = this.svt_Search,
                 [typeof(SettingsPage)] = this.svt_Settings
             };
+            this.sr = sr;
+            RootController.root = this;
         }
+
+        private SearchResult sr;
 
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
         private readonly Dictionary<Type, Controls.SplitViewTab> pages;
@@ -58,7 +62,8 @@ namespace ExViewer.Views
         {
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
-            fm_inner.Navigate(typeof(SearchPage));
+            fm_inner.Navigate(typeof(SearchPage), sr);
+            sr = null;
         }
 
         private void Manager_BackRequested(object sender, BackRequestedEventArgs e)
@@ -72,9 +77,6 @@ namespace ExViewer.Views
 
         private void fm_inner_Navigated(object sender, NavigationEventArgs e)
         {
-            var page = e.Content as IRootController;
-            if(page != null)
-                page.CommandExecuted += Page_CommandExecuted;
             if(fm_inner.CanGoBack)
                 manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             else
@@ -91,32 +93,11 @@ namespace ExViewer.Views
             var content = fm_inner.Content;
             if(content == null)
                 return;
-            var page = content as IRootController;
-            if(page != null)
-                page.CommandExecuted -= Page_CommandExecuted;
             Controls.SplitViewTab tab;
             if(this.pages.TryGetValue(content.GetType(), out tab))
             {
                 tab.IsChecked = false;
             }
-        }
-
-        private void Page_CommandExecuted(object sender, RootControlCommand e)
-        {
-            switch(e)
-            {
-            case RootControlCommand.SwitchSplitView:
-                sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
-                break;
-            default:
-                break;
-            }
-        }
-
-        private void fm_inner_NavigationFailed(object sender, NavigationFailedEventArgs e)
-        {
-            e.Handled = true;
-            throw e.Exception;
         }
 
         private void svt_Click(object sender, RoutedEventArgs e)
@@ -127,6 +108,11 @@ namespace ExViewer.Views
             fm_inner.SetNavigationState("1,0");
             fm_inner.Navigate(tabs[s]);
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
+        }
+
+        private void fm_inner_NavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+
         }
     }
 }

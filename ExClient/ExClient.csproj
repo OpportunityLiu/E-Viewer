@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvancedSearchOptions.cs" />
     <Compile Include="CachedGallery.cs" />
     <Compile Include="CacheHelper.cs" />
     <Compile Include="Category.cs" />
@@ -115,11 +116,13 @@
     <Compile Include="DispatcherHelper.cs" />
     <Compile Include="GalleryCache.cs" />
     <Compile Include="GalleryImage.cs" />
+    <Compile Include="HahProxyConfig.cs" />
     <Compile Include="IncrementalLoadingCollection{T}.cs" />
     <Compile Include="IOHelper.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client-Search.cs" />
+    <Compile Include="ReCaptcha.cs" />
     <Compile Include="SearchResult.cs" />
     <Compile Include="Gallery.cs" />
     <Content Include="Properties\ExClient.rd.xml" />

@@ -44,19 +44,6 @@ namespace ExViewer.Views
         }
     }
 
-    public class DefaultConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            return System.Convert.ChangeType(value, targetType);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            return System.Convert.ChangeType(value, targetType);
-        }
-    }
-
     public abstract class ValueConverterChain : IValueConverter
     {
         public IValueConverter InnerConverter
@@ -84,6 +71,19 @@ namespace ExViewer.Views
             else
                 convertedByInner = value;
             return ConvertBackImplementation(convertedByInner, targetType, parameter, language);
+        }
+    }
+
+    public class DefaultConverter : ValueConverterChain
+    {
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return System.Convert.ChangeType(value, targetType);
+        }
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return System.Convert.ChangeType(value, targetType);
         }
     }
 
@@ -322,6 +322,20 @@ namespace ExViewer.Views
         {
             var v = (bool)value;
             return !v;
+        }
+    }
+
+
+    public class EnumToStringConverter : ValueConverterChain
+    {
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return Enum.Parse(targetType, value.ToString());
+        }
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return Enum.GetName(value.GetType(), value);
         }
     }
 }

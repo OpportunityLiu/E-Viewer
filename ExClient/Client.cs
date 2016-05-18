@@ -15,22 +15,32 @@ namespace ExClient
 {
     public partial class Client : IDisposable
     {
-        private static Client current;
-
         public static Client Current
         {
-            get
-            {
-                return current;
-            }
-            protected set
-            {
-                current?.Dispose();
-                current = value;
-            }
+            get;
+        } = new Client();
+
+        internal static readonly Uri RootUri = new Uri("http://exhentai.org/");
+        internal static readonly Uri EhUri = new Uri("http://e-hentai.org/");
+        private static readonly Uri apiUri = new Uri(RootUri, "api.php");
+        internal static readonly Uri logOnUri = new Uri("https://forums.e-hentai.org/index.php?act=Login&CODE=01");
+
+        private Client()
+        {
+            httpFilter = new HttpBaseProtocolFilter();
+            HttpClient = new HttpClient(httpFilter);
         }
 
-        public static IAsyncOperation<Client> CreateClient(string userName, string password)
+        private HttpBaseProtocolFilter httpFilter;
+
+        internal HttpClient HttpClient
+        {
+            get;
+        }
+
+        public bool NeedLogOn => httpFilter.CookieManager.GetCookies(RootUri).Count < 2 && httpFilter.CookieManager.GetCookies(EhUri).Count < 2;
+
+        public IAsyncOperation<Client> LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
         {
             if(string.IsNullOrWhiteSpace(userName))
                 throw new ArgumentNullException(nameof(userName));
@@ -38,54 +48,21 @@ namespace ExClient
                 throw new ArgumentNullException(nameof(password));
             return Run(async token =>
             {
-                var c = new Client();
-                var init= c.initAsync(userName, password);
-                token.Register(init.Cancel);
-                await init;
-                Current = c;
-                return c;
-            });
-        }
-
-        internal static readonly Uri RootUri = new Uri("http://exhentai.org/");
-        private static readonly Uri apiUri = new Uri(RootUri, "api.php");
-        internal static readonly Uri logOnUri = new Uri("https://forums.e-hentai.org/index.php?act=Login&CODE=01");
-
-        private Client()
-        {
-            httpFilter = new HttpBaseProtocolFilter();
-            httpClient = new HttpClient(httpFilter);
-        }
-
-        private string userName, password;
-
-        private HttpClient httpClient;
-
-        private HttpBaseProtocolFilter httpFilter;
-
-        internal HttpClient HttpClient
-        {
-            get
-            {
-                return httpClient;
-            }
-        }
-
-        private IAsyncOperation<Client> initAsync(string userName, string password)
-        {
-            this.userName = userName;
-            this.password = password;
-            return Run(async token =>
-            {
                 if(this.disposedValue)
                     throw new InvalidOperationException("The client has been disposed.");
+                ClearLogOnInfo();
                 var clientParam = new Dictionary<string, string>()
                 {
                     ["CookieDate"] = "1",
                     ["UserName"] = userName,
                     ["PassWord"] = password
                 };
-                var log = await httpClient.PostAsync(logOnUri, new HttpFormUrlEncodedContent(clientParam));
+                if(reCaptcha?.Answer != null)
+                {
+                    clientParam.Add("recaptcha_challenge_field", reCaptcha.Answer);
+                    clientParam.Add("recaptcha_response_field", "manual_challenge");
+                }
+                var log = await HttpClient.PostAsync(logOnUri, new HttpFormUrlEncodedContent(clientParam));
                 var html = new HtmlDocument();
                 using(var stream = await log.Content.ReadAsInputStreamAsync())
                 {
@@ -110,6 +87,18 @@ namespace ExClient
             });
         }
 
+        public void ClearLogOnInfo()
+        {
+            foreach(var item in httpFilter.CookieManager.GetCookies(RootUri))
+            {
+                httpFilter.CookieManager.DeleteCookie(item);
+            }
+            foreach(var item in httpFilter.CookieManager.GetCookies(EhUri))
+            {
+                httpFilter.CookieManager.DeleteCookie(item);
+            }
+        }
+
         public IAsyncOperationWithProgress<string, HttpProgress> PostStrAsync(Uri uri, string content)
         {
             if(!uri.IsAbsoluteUri)
@@ -131,6 +120,21 @@ namespace ExClient
             return PostStrAsync(apiUri, requestJson);
         }
 
+        public void SetHahProxy(HahProxyConfig hah)
+        {
+            var cm = httpFilter.CookieManager;
+            if(hah == null)
+            {
+                var uconfig = cm.GetCookies(RootUri).FirstOrDefault(c => c.Name == "uconfig");
+                if(uconfig != null)
+                    cm.DeleteCookie(uconfig);
+            }
+            else
+            {
+                cm.SetCookie(hah.GetCookie());
+            }
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
 
@@ -145,8 +149,7 @@ namespace ExClient
 
                 // 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
                 // 将大型字段设置为 null。
-                httpClient.Dispose();
-                httpClient = null;
+                HttpClient.Dispose();
 
                 disposedValue = true;
             }

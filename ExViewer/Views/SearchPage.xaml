@@ -44,39 +44,15 @@
                                 Grid.Column="1"
                                 Margin="8"
                                 IsEnabled="False"
-                                PlaceholderText="Search..."
+                                PlaceholderText="Search..." 
                                 QuerySubmitted="AutoSuggestBox_QuerySubmitted"
                                 QueryIcon="Find" />
-                <GridView Grid.Row="1"
-                          Grid.Column="1"
-                          Margin="0,0,0,0"
-                          x:Name="gv_AdvancedSearch"
-                          x:DeferLoadStrategy="Lazy"
-                          HorizontalAlignment="Center"
-                          ItemsSource="{x:Bind filter}"
-                          Loaded="gv_AdvancedSearch_Loaded">
-                    <GridView.ItemContainerStyle>
-                        <Style TargetType="GridViewItem">
-                            <Setter Property="MinHeight"
-                                    Value="0" />
-                            <Setter Property="MinWidth"
-                                    Value="0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="GridViewItem">
-                                        <ContentPresenter Content="{TemplateBinding Content}"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GridView.ItemContainerStyle>
-                    <GridView.ItemTemplate>
-                        <DataTemplate x:DataType="local:FilterRecord">
-                            <controls:CategoryToggleButton Category="{x:Bind Category}"
-                                                           IsChecked="{x:Bind IsChecked, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
+                <controls:CategorySelector x:Name="cs_AdvancedSearch"
+                                           Grid.Row="1"
+                                           Grid.Column="1"
+                                           Margin="0,0,0,0"
+                                           x:DeferLoadStrategy="Lazy"
+                                           HorizontalAlignment="Center" />
             </Grid>
         </AppBar>
         <ListView x:Name="lv"

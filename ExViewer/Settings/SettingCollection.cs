@@ -2,8 +2,28 @@
 
 namespace ExViewer.Settings
 {
-    public partial class SettingCollection : ExClient.ObservableObject
+    public class SettingCollection : SettingCollectionBase
     {
+        public static SettingCollection Current
+        {
+            get;
+            private set;
+        } = new SettingCollection();
+
+        [Roaming]
+        [Setting("Searching", "Save my lastest search as default", Index = 30)]
+        public bool SaveLastSearch
+        {
+            get
+            {
+                return GetRoaming(false);
+            }
+            set
+            {
+                SetRoaming(value);
+            }
+        }
+
         [Roaming]
         [Setting("Searching", "Default keywords on the front page", Index = 10)]
         public string DefaultSearchString
@@ -37,7 +57,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Overall", "The theme of the app (need restart the app)", Index = 10)]
+        [Setting("Global", "The theme of the app (Need restart the app)", Index = -10)]
         public ApplicationTheme Theme
         {
             get
@@ -78,7 +98,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Image viewing", "Factor for inertia of mouse dragging, set to 0 to disable", Index = 30)]
+        [Setting("Image viewing", "Factor for inertia of mouse dragging (Set to 0 to disable)", Index = 30)]
         [DoubleRange(0, 1, Small = 0.05)]
         public double MouseInertialFactor
         {
@@ -106,7 +126,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Connection", "Load compressed image while using metered Internet connection")]
+        [Setting("Connection", "Load compressed image while using metered Internet connection", Index = 10)]
         [BooleanRepresent("Yes", "No")]
         public bool LoadLofiOnMeteredInternetConnection
         {
@@ -116,13 +136,14 @@ namespace ExViewer.Settings
             }
             set
             {
-                SetLocal(value);
                 if(LoadLofiOnAllInternetConnection)
-                    SetLocal(true);
+                    ForceSetLocal(true);
+                else
+                    ForceSetLocal(value);
             }
         }
 
-        [Setting("Connection", "Always load compressed image")]
+        [Setting("Connection", "Always load compressed image", Index = 20)]
         [BooleanRepresent("Yes", "No")]
         public bool LoadLofiOnAllInternetConnection
         {
@@ -135,6 +156,44 @@ namespace ExViewer.Settings
                 SetLocal(value);
                 if(value)
                     LoadLofiOnMeteredInternetConnection = true;
+            }
+        }
+
+        [Setting("H@H", "IP Address:Port (Leave blank to not use)", Index = 10)]
+        public string HahAddress
+        {
+            get
+            {
+                return GetLocal("");
+            }
+            set
+            {
+                var old = GetLocal("");
+                if(string.IsNullOrWhiteSpace(value))
+                    ForceSetLocal("");
+                else
+                    try
+                    {
+                        var hah = new ExClient.HahProxyConfig(value);
+                        ForceSetLocal(hah.AddressAndPort);
+                    }
+                    catch
+                    {
+                        ForceSetLocal(old);
+                    }
+            }
+        }
+
+        [Setting("H@H", "Passkey (Optional)", Index = 20)]
+        public string HahPasskey
+        {
+            get
+            {
+                return GetLocal("");
+            }
+            set
+            {
+                ForceSetLocal((value ?? "").Trim());
             }
         }
     }

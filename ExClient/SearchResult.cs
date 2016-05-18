@@ -22,7 +22,7 @@ namespace ExClient
         private static readonly Uri searchUri = new Uri("http://exhentai.org/");
 
         public static readonly Category DefaultFliter = Category.All;
-        private static readonly Dictionary<Category, string> searchFliterNames = new Dictionary<Category, string>()
+        private static readonly IReadOnlyDictionary<Category, string> searchFliterNames = new Dictionary<Category, string>()
         {
             [Category.Doujinshi] = "f_doujinshi",
             [Category.Manga] = "f_manga",
@@ -69,43 +69,27 @@ namespace ExClient
                 };
                 foreach(var item in searchFliterNames)
                 {
-                    if((Filter & item.Key) == item.Key)
+                    if(Filter.HasFlag(item.Key))
                         args.Add(item.Value, "1");
                     else
                         args.Add(item.Value, "0");
                 }
                 args.Add("f_apply", "Apply Filter");
-                if(AdvancedSearch != null)
-                {
-                    var ad = AdvancedSearch;
-                    args.Add("advsearch", "1");
 
-                    args.Add("f_sname", ad.SearchName ? "1" : "0");
-                    args.Add("f_stags", ad.SearchTags ? "1" : "0");
-                    args.Add("f_sdesc", ad.SearchDescription ? "1" : "0");
-                    args.Add("f_storr", ad.SearchTorrentFilenames ? "1" : "0");
-                    args.Add("f_sto", ad.GalleriesWithTorrentsOnly ? "1" : "0");
-                    args.Add("f_sdt1", ad.SearchLowPowerTags ? "1" : "0");
-                    args.Add("f_sdt2", ad.SearchDownvotedTags ? "1" : "0");
-                    args.Add("f_sh", ad.ShowExpungedGalleries ? "1" : "0");
-
-                    args.Add("f_sr", ad.MinimumRating.HasValue ? "1" : "0");
-                    args.Add("f_srdd", ad.MinimumRating.GetValueOrDefault(2).ToString());
-                }
-                var uri = new Uri(searchUri, $"?{new HttpFormUrlEncodedContent(args)}");
+                var query = new HttpFormUrlEncodedContent(args.Concat(AdvancedSearch.GetParamDictionary()));
+                var uri = new Uri(searchUri, $"?{query}");
                 searchResultBaseUri = uri.OriginalString;
-                var lans = client.HttpClient.GetAsync(uri);
-                IAsyncOperation<uint> lp = null;
+                var lans = client.HttpClient.GetInputStreamAsync(uri);
+                IAsyncOperation<uint> taskLoadPage = null;
                 token.Register(() =>
                 {
                     lans.Cancel();
-                    lp?.Cancel();
+                    taskLoadPage?.Cancel();
                 });
-                var ans = await lans;
-                using(var stream = (await ans.Content.ReadAsInputStreamAsync()).AsStreamForRead())
+                using(var ans = await lans)
                 {
                     var doc = new HtmlDocument();
-                    doc.Load(stream);
+                    doc.Load(ans.AsStreamForRead());
                     var rcNode = doc.DocumentNode.Descendants("p").Where(node => node.GetAttributeValue("class", null) == "ip").SingleOrDefault();
                     if(rcNode == null)
                     {
@@ -129,8 +113,8 @@ namespace ExClient
                             .DefaultIfEmpty(Tuple.Create(true, 1))
                             .Max(select => select.Item2);
                         PageCount = pcNodes;
-                        lp = loadPage(doc);
-                        await lp;
+                        taskLoadPage = loadPage(doc);
+                        await taskLoadPage;
                     }
                 }
             });

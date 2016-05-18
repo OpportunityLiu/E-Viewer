@@ -5,6 +5,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:ExClient="using:ExClient"
       x:Class="ExViewer.Views.SettingsPage"
+      NavigationCacheMode="Enabled"
       mc:Ignorable="d"
       xmlns:settings="using:ExViewer.Settings">
     <Page.Resources>
@@ -54,7 +55,7 @@
                     <TextBlock Text="{x:Bind FriendlyName}"
                                TextWrapping="WrapWholeWords" />
                 </ToggleSwitch.Header>
-            </ToggleSwitch> 
+            </ToggleSwitch>
         </DataTemplate>
     </Page.Resources>
     <Page.Transitions>
@@ -85,8 +86,7 @@
             <Pivot.ItemTemplate>
                 <DataTemplate  x:DataType="settings:GroupedSettings">
                     <ListView ItemTemplateSelector="{StaticResource SettingTemplateSelector}"
-                              ItemsSource="{x:Bind}"
-                              Margin="4">
+                              ItemsSource="{x:Bind}">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="Template">
@@ -103,8 +103,10 @@
                                 </Setter>
                                 <Setter Property="MinHeight"
                                         Value="0" />
+                                <Setter Property="Margin"
+                                        Value="8" />
                                 <Setter Property="Padding"
-                                        Value="4" />
+                                        Value="0" />
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.ItemContainerTransitions>
@@ -113,6 +115,22 @@
                     </ListView>
                 </DataTemplate>
             </Pivot.ItemTemplate>
+            <Pivot.ItemContainerStyle>
+                <Style TargetType="PivotItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="PivotItem">
+                                <ContentPresenter Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Margin"
+                            Value="0" />
+                </Style>
+            </Pivot.ItemContainerStyle>
         </Pivot>
     </Grid>
 </Page>
