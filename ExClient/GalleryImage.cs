@@ -13,6 +13,7 @@ using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Linq;
 using Windows.Data.Html;
+using System.IO;
 
 namespace ExClient
 {
@@ -32,6 +33,7 @@ namespace ExClient
         AllFull
     }
 
+    [System.Diagnostics.DebuggerDisplay(@"\{PageId = {PageId} State = {State} File = {ImageFile?.Name}\}")]
     public class GalleryImage : ObservableObject
     {
         private IAsyncAction loadImageUri()
@@ -74,36 +76,29 @@ namespace ExClient
             this.Thumb = thumb;
         }
 
-        internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, int page, string imageKey)
+        internal static GalleryImage LoadCachedImage(Gallery owner, int pageId, StorageFile imageFile, string imageKey)
         {
-            return Run(async token =>
+            if(imageFile == null)
+                return null;
+            var image = new GalleryImage(owner, pageId, imageKey);
+            var thumb = new BitmapImage();
+            var loadThumb = imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
+            loadThumb.Completed = async (sender, e) =>
             {
-                var file = await CacheHelper.LoadFileAsync(owner.Id.ToString(), page.ToString());
-                if(file == null)
-                    return null;
-                var image = new GalleryImage(owner, page, imageKey);
-                var thumb = new BitmapImage();
-                thumb.DecodePixelWidth = 100;
-                thumb.DecodePixelType = DecodePixelType.Logical;
-                var loadThumb = file.OpenReadAsync();
-                loadThumb.Completed = async (sender, e) =>
-                {
-                    if(e != AsyncStatus.Completed)
-                        return;
-                    await DispatcherHelper.RunLowAsync(async () =>
-                    {
-                        using(var stream = sender.GetResults())
-                        {
-                            await thumb.SetSourceAsync(stream);
-                        }
-                    });
-                };
-                image.ImageFile = file;
-                image.Thumb = thumb;
-                image.Progress = 100;
-                image.State = ImageLoadingState.Loaded;
-                return image;
-            });
+                if(e != AsyncStatus.Completed)
+                    return;
+                await DispatcherHelper.RunLowAsync(async () =>
+                 {
+                     using(var stream = sender.GetResults())
+                         await thumb.SetSourceAsync(stream);
+                 });
+            };
+            image.ImageFile = imageFile;
+            image.OriginalLoaded = Regex.IsMatch(imageFile.Name, @"\d+\.original\..+");
+            image.Thumb = thumb;
+            image.Progress = 100;
+            image.State = ImageLoadingState.Loaded;
+            return image;
         }
 
         private ImageLoadingState state;
@@ -156,8 +151,8 @@ namespace ExClient
                 case ImageLoadingState.Loaded:
                     if(reload)
                     {
-                        ImageFile = null;
                         load = loadImageUri();
+                        await deleteImageFile();
                     }
                     else
                         return;
@@ -182,7 +177,7 @@ namespace ExClient
                         uri = imageUri;
                         OriginalLoaded = (originalImageUri == null);
                     }
-                    var imageLoad = Owner.Owner.HttpClient.GetBufferAsync(uri);
+                    var imageLoad = Owner.Owner.HttpClient.GetAsync(uri);
                     this.State = ImageLoadingState.Loading;
                     imageLoad.Progress = (sender, progress) =>
                     {
@@ -194,8 +189,11 @@ namespace ExClient
                             this.Progress = pro;
                         }
                     };
-                    var buffer = await imageLoad;
-                    var save = CacheHelper.SaveFileAsync(Owner.Id.ToString(), PageId.ToString(), buffer);
+                    await deleteImageFile();
+                    var imageLoadResponse = await imageLoad;
+                    var buffer = await imageLoadResponse.Content.ReadAsBufferAsync();
+                    var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
+                    var save = CacheHelper.SaveFileAsync(Owner.Id.ToString(), $"{PageId}{(OriginalLoaded ? ".original" : ".compressed")}{ext}", buffer);
                     ImageFile = await save;
                     this.State = ImageLoadingState.Loaded;
                 }
@@ -205,6 +203,19 @@ namespace ExClient
                     State = ImageLoadingState.Failed;
                     if(throwIfFailed)
                         throw;
+                }
+            });
+        }
+
+        private IAsyncAction deleteImageFile()
+        {
+            return Run(async token =>
+            {
+                if(ImageFile != null)
+                {
+                    var file = ImageFile;
+                    ImageFile = null;
+                    await file.DeleteAsync();
                 }
             });
         }
@@ -262,9 +273,16 @@ namespace ExClient
                         return;
                     await DispatcherHelper.RunLowAsync(async () =>
                     {
-                        using(var stream = op.GetResults())
+                        try
                         {
-                            await image.SetSourceAsync(stream);
+                            using(var stream = op.GetResults())
+                            {
+                                await image.SetSourceAsync(stream);
+                            }
+                        }
+                        catch(Exception)
+                        {
+                            this.State = ImageLoadingState.Failed;
                         }
                     });
                 };

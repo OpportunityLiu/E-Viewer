@@ -26,9 +26,12 @@ namespace ExClient
             OnPropertyChanged(propertyName);
         }
 
-        protected void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        protected async void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
-            OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            await DispatcherHelper.RunNormalAsync(() =>
+            {
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            });
         }
 
         private int rc, pc;
@@ -59,7 +62,7 @@ namespace ExClient
             }
         }
 
-        protected abstract IAsyncOperation<uint> LoadPage(int pageIndex);
+        protected abstract IAsyncOperation<uint> LoadPageAsync(int pageIndex);
 
         public bool IsEmpty => RecordCount == 0;
 
@@ -69,13 +72,24 @@ namespace ExClient
 
         public bool HasMoreItems => loadedPageCount < PageCount;
 
+        private IAsyncOperation<LoadMoreItemsResult> loading;
+
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
-            return Run(async token =>
+            if(loading?.Status == AsyncStatus.Started)
+            {
+                var temp = loading;
+                return Run(async token =>
+                {
+                    token.Register(temp.Cancel);
+                    return await temp;
+                });
+            }
+            return loading = Run(async token =>
             {
                 if(!HasMoreItems)
                     return new LoadMoreItemsResult();
-                var lp = LoadPage(loadedPageCount);
+                var lp = LoadPageAsync(loadedPageCount);
                 token.Register(lp.Cancel);
                 var re = await lp;
                 loadedPageCount++;

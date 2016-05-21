@@ -7,14 +7,14 @@
             <local:RateStringConverter x:Key="RateStringConverter" />
             <local:StringConverter x:Key="StringConverter" />
             <local:BooleanToVisibilityConverter x:Key="TrueToVisibleConverter"
-                                                BoolearForVisible="True" />
+                                                BooleanForVisible="True" />
             <local:BooleanToVisibilityConverter x:Key="FalseToVisibleConverter"
-                                                BoolearForVisible="False" />
+                                                BooleanForVisible="False" />
             <local:ObjectToBooleanConverter x:Key="NullToVisibleConverter"
                                             Default="True"
                                             Others="False">
                 <local:ObjectToBooleanConverter.InnerConverter>
-                    <local:BooleanToVisibilityConverter BoolearForVisible="True" />
+                    <local:BooleanToVisibilityConverter BooleanForVisible="True" />
                 </local:ObjectToBooleanConverter.InnerConverter>
             </local:ObjectToBooleanConverter>
             <local:LengthConverter x:Key="LengthConverter" />
@@ -23,6 +23,14 @@
             <local:NullableConverter x:Key="NullableConverter" />
             <local:LogicalNotConverter x:Key="LogicalNotConverter" />
             <local:EnumToStringConverter x:Key="EnumToStringConverter" />
+            <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />
+            <local:RangeToBooleanConverter x:Key="ZeroToVisibleConverter"
+                                           Min="-0.1"
+                                           Max="0.1">
+                <local:RangeToBooleanConverter.InnerConverter>
+                    <local:BooleanToVisibilityConverter BooleanForVisible="True" />
+                </local:RangeToBooleanConverter.InnerConverter>
+            </local:RangeToBooleanConverter>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

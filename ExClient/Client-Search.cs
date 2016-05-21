@@ -15,19 +15,19 @@ namespace ExClient
 {
     public partial class Client
     {
-        public IAsyncOperation<SearchResult> SearchAsync(string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
+        public SearchResult Search(string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
         {
-            return SearchResult.SearchAsync(this, keyWord, filter, advancedSearch);
+            return SearchResult.Search(this, keyWord, filter, advancedSearch);
         }
 
-        public IAsyncOperation<SearchResult> SearchAsync(string keyWord, Category filter)
+        public SearchResult Search(string keyWord, Category filter)
         {
-            return SearchAsync(keyWord, filter, null);
+            return Search(keyWord, filter, null);
         }
 
-        public IAsyncOperation<SearchResult> SearchAsync(string keyWord)
+        public SearchResult Search(string keyWord)
         {
-            return SearchAsync(keyWord, Category.Unspecified);
+            return Search(keyWord, Category.Unspecified);
         }
     }
 }

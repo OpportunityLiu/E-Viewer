@@ -10,6 +10,7 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using HtmlAgilityPack;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace ExClient
 {
@@ -110,8 +111,15 @@ namespace ExClient
                 var op = HttpClient.PostAsync(uri, content == null ? null : new HttpStringContent(content));
                 token.Register(op.Cancel);
                 op.Progress = (sender, value) => progress.Report(value);
-                var res = await op;
-                return await res.Content.ReadAsStringAsync();
+                try
+                {
+                    var res = await op;
+                    return await res.Content.ReadAsStringAsync();
+                }
+                catch(COMException ex)
+                {
+                    throw new InvalidOperationException("Error occured when connect to Internet.", ex);
+                }
             });
         }
 

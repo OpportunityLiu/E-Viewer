@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using ExViewer.ViewModels;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -37,24 +38,20 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(e.NavigationMode == NavigationMode.New)
+            if(Client.Current.NeedLogOn)
             {
-                if(Client.Current.NeedLogOn)
-                {
-                    await RootControl.RootController.RequireLogOn();
-                }
-                setHah();
-                client = Client.Current;
-                asb.IsEnabled = true;
-                asb.Text = searchKeyWord;
-                if(e.Parameter == null)
-                {
-                    if(SearchResult == null)
-                        SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
-                }
-                else
-                    SearchResult = (SearchResult)e.Parameter;
+                await RootControl.RootController.RequireLogOn();
             }
+            if(e.Parameter == null)
+            {
+                if(SearchResult == null)
+                {
+                    var query = Cache.GetSearchQuery(SettingCollection.Current.DefaultSearchString, SettingCollection.Current.DefaultSearchCategory);
+                    SearchResult = Cache.GetSearchResult(query);
+                }
+            }
+            else
+                SearchResult = Cache.GetSearchResult(e.Parameter.ToString());
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -62,36 +59,25 @@ namespace ExViewer.Views
             base.OnNavigatingFrom(e);
         }
 
-        private Client client;
-
-        private string searchKeyWord = SettingCollection.Current.DefaultSearchString;
-
-        private Category searchFilter = SettingCollection.Current.DefaultSearchCategory;
-
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             Frame.Navigate(typeof(GalleryPage), e.ClickedItem);
         }
 
-        private async void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             ab.IsOpen = false;
             init_cs_AdvancedSearch();
-            var category = cs_AdvancedSearch.SelectedCategory;
+            var searchFilter = cs_AdvancedSearch.SelectedCategory;
             this.Focus(FocusState.Pointer);
 
-            searchKeyWord = args.QueryText;
-            searchFilter = category;
+            var searchKeyWord = args.QueryText;
             if(SettingCollection.Current.SaveLastSearch)
             {
-                SettingCollection.Current.DefaultSearchCategory = category;
-                SettingCollection.Current.DefaultSearchString = this.searchKeyWord;
+                SettingCollection.Current.DefaultSearchCategory = searchFilter;
+                SettingCollection.Current.DefaultSearchString = searchKeyWord;
             }
-
-            setHah();
-
-            SearchResult = null;
-            SearchResult = await client.SearchAsync(searchKeyWord, searchFilter);
+            Frame.Navigate(typeof(SearchPage), Cache.GetSearchQuery(searchKeyWord, searchFilter));
         }
 
         private void init_cs_AdvancedSearch()
@@ -99,17 +85,6 @@ namespace ExViewer.Views
             if(cs_AdvancedSearch != null)
                 return;
             FindName(nameof(cs_AdvancedSearch));
-            cs_AdvancedSearch.SelectedCategory = searchFilter;
-        }
-
-        private static void setHah()
-        {
-            // set H@H proxy
-            var hah = SettingCollection.Current.HahAddress;
-            if(!string.IsNullOrEmpty(hah))
-                Client.Current.SetHahProxy(new HahProxyConfig(hah, SettingCollection.Current.HahPasskey));
-            else
-                Client.Current.SetHahProxy(null);
         }
 
         public SearchResult SearchResult

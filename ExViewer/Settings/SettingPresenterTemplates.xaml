@@ -8,7 +8,7 @@
                   x:DataType="local:SettingInfo">
         <StackPanel>
             <TextBlock Text="{Binding FriendlyName}" />
-            <controls:CategorySelector SelectedCategory="{Binding Value}"
+            <controls:CategorySelector SelectedCategory="{Binding Value, Mode=TwoWay}"
                                        HorizontalAlignment="Stretch" />
         </StackPanel>
     </DataTemplate>

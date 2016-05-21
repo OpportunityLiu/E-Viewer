@@ -1,9 +1,11 @@
 ﻿using ExClient;
 using ExViewer.Settings;
+using ExViewer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -52,15 +54,15 @@ namespace ExViewer.Views
 
         private bool loaded, goToContent;
 
-        private SearchResult sr;
+        private RootControl rc;
 
         public void GoToContent()
         {
             if(loaded)
             {
-                Window.Current.Content = new RootControl(sr);
                 Themes.ThemeExtention.SetTitleBar();
-                sr = null;
+                Window.Current.Content = rc;
+                rc = null;
             }
             else
                 goToContent = true;
@@ -70,6 +72,7 @@ namespace ExViewer.Views
         {
             ((Storyboard)Resources["ShowPic"]).Begin();
             Themes.ThemeExtention.SetDefaultTitleBar();
+            string sr = null;
             if(Client.Current.NeedLogOn)
             {
                 var pv = new PasswordVault();
@@ -85,8 +88,18 @@ namespace ExViewer.Views
             }
             if(!Client.Current.NeedLogOn)
             {
-                sr = await Client.Current.SearchAsync(SettingCollection.Current.DefaultSearchString, SettingCollection.Current.DefaultSearchCategory);
+                try
+                {
+                    SettingCollection.SetHah();
+                    sr = Cache.GetSearchQuery(SettingCollection.Current.DefaultSearchString, SettingCollection.Current.DefaultSearchCategory);
+                    await Cache.GetSearchResult(sr).LoadMoreItemsAsync(40);
+                }
+                catch(InvalidOperationException)
+                {
+                    //failed to search
+                }
             }
+            rc = new RootControl(sr);
             loaded = true;
             if(goToContent)
                 GoToContent();
