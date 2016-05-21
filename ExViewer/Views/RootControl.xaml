@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              Loaded="Control_Loaded"
+             Unloaded="Control_Unloaded"
              xmlns:controls="using:ExViewer.Controls">
     <SplitView x:Name="sv_root"
                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

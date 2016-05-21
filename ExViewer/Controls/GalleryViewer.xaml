@@ -8,7 +8,10 @@
              d:DesignHeight="200"
              d:DesignWidth="400">
     <Grid Padding="8,4"
-          Height="200">
+          Height="200"
+          Background="{x:Bind Background, Mode=OneWay}"
+          BorderBrush="{x:Bind BorderBrush, Mode=OneWay}"
+          BorderThickness="{x:Bind BorderThickness, Mode=OneWay}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150" />
             <ColumnDefinition />
@@ -20,7 +23,7 @@
         <RelativePanel Padding="8,4,4,4"
                        Grid.Column="1">
             <TextBlock x:Name="Title"
-                       Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                       Text="{x:Bind Gallery, Converter={StaticResource GalleryToTitleStringConverter}, Mode=OneWay}"
                        Style="{StaticResource SubtitleTextBlockStyle}"
                        ContinuumNavigationTransitionInfo.IsExitElement="True"
                        TextWrapping="WrapWholeWords"
@@ -30,7 +33,7 @@
                        RelativePanel.AlignRightWithPanel="True"
                        RelativePanel.AlignTopWithPanel="True">
                                 <ToolTipService.ToolTip>
-                                    <TextBlock Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                                    <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                                TextWrapping="WrapWholeWords" />
                                 </ToolTipService.ToolTip>
                             </TextBlock>

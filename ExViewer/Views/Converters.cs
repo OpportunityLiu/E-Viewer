@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Reflection;
+using ExViewer.Settings;
 
 namespace ExViewer.Views
 {
@@ -147,7 +148,7 @@ namespace ExViewer.Views
 
     public class BooleanToVisibilityConverter : ValueConverterChain
     {
-        public bool BoolearForVisible
+        public bool BooleanForVisible
         {
             get;
             set;
@@ -156,7 +157,7 @@ namespace ExViewer.Views
         public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
         {
             var v = (bool)value;
-            if(v == BoolearForVisible)
+            if(v == BooleanForVisible)
                 return Visibility.Visible;
             else
                 return Visibility.Collapsed;
@@ -164,7 +165,7 @@ namespace ExViewer.Views
 
         public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
         {
-            return ((Visibility)value == Visibility.Visible) ? BoolearForVisible : !BoolearForVisible;
+            return ((Visibility)value == Visibility.Visible) ? BooleanForVisible : !BooleanForVisible;
         }
     }
 
@@ -337,5 +338,59 @@ namespace ExViewer.Views
         {
             return Enum.GetName(value.GetType(), value);
         }
+    }
+
+    public class GalleryToTitleStringConverter : ValueConverterChain
+    {
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            var g = value as Gallery;
+            if(g == null)
+                return "";
+            if(SettingCollection.Current.UseJapaneseTitle && !string.IsNullOrWhiteSpace(g.TitleJpn))
+                return g.TitleJpn;
+            else
+                return g.Title;
+        }
+    }
+
+    public class RangeToBooleanConverter : ValueConverterChain
+    {
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            var v = System.Convert.ToDouble(value);
+            if(v >= Min && v < Max)
+                return ResultIfInRange;
+            else
+                return !ResultIfInRange;
+        }
+
+        public double Min
+        {
+            get;
+            set;
+        }
+
+        public double Max
+        {
+            get;
+            set;
+        }
+
+        public bool ResultIfInRange
+        {
+            get;
+            set;
+        } = true;
     }
 }

@@ -107,6 +107,9 @@ namespace ExViewer.Views
             var factor = Math.Min((fv.ActualHeight - 1) / img.ActualHeight, (fv.ActualWidth - 1) / img.ActualWidth);
             if(double.IsInfinity(factor) || double.IsNaN(factor))
                 factor = Math.Min(fv.ActualHeight, fv.ActualWidth) / 1000;
+            // limitation of ScrollViewer
+            if(factor < 0.1f)
+                factor = 0.1f;
             sv.MinZoomFactor = (float)factor;
             sv.MaxZoomFactor = (float)factor * SettingCollection.Current.MaxFactor;
             sv.ZoomToFactor(sv.MinZoomFactor);
@@ -323,11 +326,26 @@ namespace ExViewer.Views
             if(image == null || image.Image == null)
             {
                 tb_Info.Text = "The image hasn't finished loading";
+                btn_OpenInExplorer.Visibility = Visibility.Collapsed;
                 return;
             }
             var prop = await image.ImageFile.GetBasicPropertiesAsync();
-            tb_Info.Text = $@"Size: {ByteToString(prop.Size)}
-Dimensions: {image.Image.PixelWidth} x {image.Image.PixelHeight}";
+            var imageProp = await image.ImageFile.Properties.GetImagePropertiesAsync();
+            tb_Info.Text = $@"File name: {image.ImageFile.Name}
+Size: {ByteToString(prop.Size)}
+Dimensions: {imageProp.Width} × {imageProp.Height}";
+            btn_OpenInExplorer.Visibility = Visibility.Visible;
+        }
+
+        private async void btn_OpenInExplorer_Click(object sender, RoutedEventArgs e)
+        {
+            var image = (fv.SelectedItem as ExClient.GalleryImage)?.ImageFile;
+            if(image == null)
+            {
+                return;
+            }
+            var folder = await image.GetParentAsync();
+            await Launcher.LaunchFolderAsync(folder);
         }
 
         private static string ByteToString(ulong byteCount)

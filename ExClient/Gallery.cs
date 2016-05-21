@@ -15,10 +15,12 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using System.Threading;
+using Windows.Storage;
+using Windows.Storage.Search;
 
 namespace ExClient
 {
-    public struct SaveGalleryProgress
+    public class SaveGalleryProgress
     {
         public int ImageLoaded
         {
@@ -32,9 +34,10 @@ namespace ExClient
     }
 
     [JsonObject]
+    [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count} RecordCount = {RecordCount}\}")]
     public class Gallery : IncrementalLoadingCollection<GalleryImage>
     {
-        protected const string thumbFileName = "thumb.jpg";
+        internal const string ThumbFileName = "thumb.jpg";
 
         private static readonly Dictionary<string, Category> categories = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
@@ -49,76 +52,6 @@ namespace ExClient
             ["Asian Porn"] = Category.AsianPorn,
             ["Misc"] = Category.Misc
         };
-
-        /// <summary>
-        /// 查询已缓存的 <see cref="Gallery"/> 列表
-        /// </summary>
-        /// <returns>包含已缓存的 <see cref="Id"/> 列表</returns>
-        public static IAsyncOperation<ICollection<long>> GetCachedGalleriesAsync()
-        {
-            return Run<ICollection<long>>(async token =>
-            {
-                var option = new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.DefaultQuery, new string[] { ".json" })
-                {
-                    FolderDepth = Windows.Storage.Search.FolderDepth.Deep,
-                    ApplicationSearchFilter = "info"
-                };
-                var query = CacheHelper.LocalCache.CreateFileQueryWithOptions(option);
-                var files = await query.GetFilesAsync();
-                var list = new List<long>();
-                foreach(var item in files)
-                {
-                    var d = Path.GetFileName(Path.GetDirectoryName(item.Path));
-                    long id;
-                    if(long.TryParse(d, out id))
-                        list.Add(id);
-                }
-                return list;
-            });
-        }
-
-        /// <summary>
-        /// 清空缓存（包含自动缓存的文件）
-        /// </summary>
-        public static IAsyncAction ClearCachedGalleriesAsync()
-        {
-            return Run(async token =>
-            {
-                foreach(var item in await CacheHelper.LocalCache.GetItemsAsync())
-                {
-                    await item.DeleteAsync();
-                }
-            });
-        }
-
-        /// <summary>
-        /// 从缓存中载入相应的 <see cref="Gallery"/>
-        /// </summary>
-        /// <param name="id">要载入的 <see cref="Id"/></param>
-        /// <returns>相应的 <see cref="Gallery"/></returns>
-        public static IAsyncOperation<Gallery> LoadGalleryAsync(long id)
-        {
-            return LoadGalleryAsync(id, Client.Current);
-        }
-
-        /// <summary>
-        /// 从缓存中载入相应的 <see cref="Gallery"/>
-        /// </summary>
-        /// <param name="id">要载入的 <see cref="Id"/></param>
-        /// <param name="owner">要设置的 <see cref="Owner"/></param>
-        /// <returns>相应的 <see cref="Gallery"/></returns>
-        public static IAsyncOperation<Gallery> LoadGalleryAsync(long id, Client owner)
-        {
-            return Run<Gallery>(async token =>
-            {
-                var cache = await GalleryCache.LoadCacheAsync(id);
-                if(cache == null)
-                    return null;
-                var gallery = new CachedGallery(cache, owner);
-                await gallery.InitAsync();
-                return gallery;
-            });
-        }
 
         private IAsyncActionWithProgress<SaveGalleryProgress> saveTask;
 
@@ -142,19 +75,19 @@ namespace ExClient
                      }
                      toReport.ImageLoaded = 0;
                      progress.Report(toReport);
-                     for(int i = 0; i < this.Count; i++)
+
+                     var loadTasks = this.Select(image => Task.Run(async () =>
                      {
-                         var image = this[i];
-                         if(image.State != ImageLoadingState.Loaded)
+                         await image.LoadImage(false, strategy, true);
+                         lock(toReport)
                          {
-                             var load = image.LoadImage(false, strategy, true);
-                             await load;
+                             toReport.ImageLoaded++;
+                             progress.Report(toReport);
                          }
-                         toReport.ImageLoaded++;
-                         progress.Report(toReport);
-                     }
+                     }));
+                     await Task.WhenAll(loadTasks);
                      var cache = new GalleryCache(this);
-                     var cacheThumb = CacheHelper.SaveFileAsync(this.Id.ToString(), thumbFileName, await loadThumb);
+                     var cacheThumb = CacheHelper.SaveFileAsync(this.Id.ToString(), ThumbFileName, await loadThumb);
                      await cache.SaveCacheAsync();
                      await cacheThumb;
                  });
@@ -214,7 +147,7 @@ namespace ExClient
                 this.Expunged = expunged;
                 this.Rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
                 this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
-                this.Tags = new ReadOnlyCollection<string>(tags);
+                this.Tags = new ReadOnlyCollection<Tag>(tags.Select(tag => new Tag(this, tag)).ToList());
             }
             catch(Exception)
             {
@@ -296,7 +229,7 @@ namespace ExClient
             get; protected set;
         }
 
-        public IReadOnlyList<string> Tags
+        public IReadOnlyList<Tag> Tags
         {
             get; protected set;
         }
@@ -326,12 +259,59 @@ namespace ExClient
             get; private set;
         }
 
-        private static Uri galleryBaseUri = new Uri(Client.RootUri, "g/");
+        public virtual StorageFolder GalleryFolder
+        {
+            get; private set;
+        }
 
-        protected override IAsyncOperation<uint> LoadPage(int pageIndex)
+        public IReadOnlyDictionary<int, StorageFile> ImageFiles
+        {
+            get; private set;
+        }
+
+        /// <summary>
+        /// 载入或刷新 <see cref="ImageFiles"/>。
+        /// </summary>
+        protected IAsyncAction LoadStorageInfoAsync()
         {
             return Run(async token =>
             {
+                if(GalleryFolder == null)
+                {
+                    ImageFiles = new ReadOnlyDictionary<int, StorageFile>(new Dictionary<int, StorageFile>());
+                    return;
+                }
+                var files = (from f in await GalleryFolder.GetFilesAsync()
+                             let match = Regex.Match(f.Name, @"^(\d+)\.(\w+)\.(.+)$")
+                             where match.Success
+                             select new
+                             {
+                                 Key = int.Parse(match.Groups[1].Value),
+                                 Value = f
+                             }).ToDictionary(kv => kv.Key, kv => kv.Value);
+                ImageFiles = new ReadOnlyDictionary<int, StorageFile>(files);
+            });
+        }
+
+        private IAsyncAction createFolderAsync()
+        {
+            return Run(async token =>
+            {
+                GalleryFolder = await CacheHelper.LocalCache.CreateFolderAsync(Id.ToString(), CreationCollisionOption.OpenIfExists);
+            });
+        }
+
+        private static Uri galleryBaseUri = new Uri(Client.RootUri, "g/");
+
+        protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
+        {
+            return Run(async token =>
+            {
+                if(GalleryFolder == null)
+                {
+                    await createFolderAsync();
+                    await LoadStorageInfoAsync();
+                }
                 var uri = new Uri(GalleryUri, $"?p={pageIndex.ToString()}");
                 var request = Owner.PostStrAsync(uri, null);
                 token.Register(request.Cancel);
@@ -343,7 +323,7 @@ namespace ExClient
                             .Select(node =>
                             {
                                 int i;
-                                var su = int.TryParse(node.InnerText, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out i);
+                                var su = int.TryParse(node.InnerText, out i);
                                 return Tuple.Create(su, i);
                             })
                             .Where(select => select.Item1)
@@ -361,7 +341,7 @@ namespace ExClient
                             where match.Success
                             let r = new
                             {
-                                page = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer),
+                                pageId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer),
                                 imageKey = match.Groups[1].Value,
                                 thumbUri = new Uri(matchUri.Groups[3].Value),
                                 width = uint.Parse(matchUri.Groups[1].Value, System.Globalization.NumberStyles.Integer),
@@ -379,7 +359,7 @@ namespace ExClient
                     foreach(var page in group.Value)
                     {
                         {
-                            var image = await GalleryImage.LoadCachedImageAsync(this, page.page, page.imageKey);
+                            var image = GalleryImage.LoadCachedImage(this, page.pageId, ImageFiles.GetValueOrDefault(page.pageId), page.imageKey);
                             if(image != null)
                             {
                                 this.Add(image);
@@ -398,7 +378,7 @@ namespace ExClient
                         {
                             var image = new WriteableBitmap(thumb.PixelWidth, thumb.PixelHeight);
                             thumb.CopyToBuffer(image.PixelBuffer);
-                            this.Add(new GalleryImage(this, page.page, page.imageKey, image));
+                            this.Add(new GalleryImage(this, page.pageId, page.imageKey, image));
                             count++;
                         }
                     }

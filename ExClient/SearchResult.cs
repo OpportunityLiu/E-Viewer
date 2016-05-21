@@ -14,6 +14,7 @@ using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Newtonsoft.Json;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace ExClient
 {
@@ -36,30 +37,26 @@ namespace ExClient
             [Category.Misc] = "f_misc"
         };
 
-        internal static IAsyncOperation<SearchResult> SearchAsync(Client client, string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
+        internal static SearchResult Search(Client client, string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
         {
-            return Run(async token =>
-            {
-                if(filter == Category.Unspecified)
-                    filter = DefaultFliter;
-                var result = new SearchResult(client, keyWord, filter, advancedSearch);
-                var init = result.init();
-                token.Register(init.Cancel);
-                await init;
-                return result;
-            });
+            if(filter == Category.Unspecified)
+                filter = DefaultFliter;
+            var result = new SearchResult(client, keyWord, filter, advancedSearch);
+            return result;
         }
 
         private SearchResult(Client client, string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
-            : base(1)
+            : base(0)
         {
             this.client = client;
             this.KeyWord = keyWord ?? "";
             this.Filter = filter;
             this.AdvancedSearch = advancedSearch;
+            this.PageCount = 1;
+            this.RecordCount = -1;
         }
 
-        private IAsyncAction init()
+        private IAsyncOperation<uint> init()
         {
             return Run(async token =>
             {
@@ -86,36 +83,45 @@ namespace ExClient
                     lans.Cancel();
                     taskLoadPage?.Cancel();
                 });
-                using(var ans = await lans)
+                try
                 {
-                    var doc = new HtmlDocument();
-                    doc.Load(ans.AsStreamForRead());
-                    var rcNode = doc.DocumentNode.Descendants("p").Where(node => node.GetAttributeValue("class", null) == "ip").SingleOrDefault();
-                    if(rcNode == null)
+                    using(var ans = await lans)
                     {
-                        RecordCount = 0;
-                        return;
+                        var doc = new HtmlDocument();
+                        doc.Load(ans.AsStreamForRead());
+                        var rcNode = doc.DocumentNode.Descendants("p").Where(node => node.GetAttributeValue("class", null) == "ip").SingleOrDefault();
+                        if(rcNode == null)
+                        {
+                            RecordCount = 0;
+                            return 0u;
+                        }
+                        var match = Regex.Match(rcNode.InnerText, @"Showing.+of\s+([0-9,]+)");
+                        if(match.Success)
+                            RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
+                        if(!IsEmpty)
+                        {
+                            var pcNodes = doc.DocumentNode.Descendants("td")
+                                .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
+                                .Select(node =>
+                                {
+                                    int i;
+                                    var su = int.TryParse(node.InnerText, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out i);
+                                    return Tuple.Create(su, i);
+                                })
+                                .Where(select => select.Item1)
+                                .DefaultIfEmpty(Tuple.Create(true, 1))
+                                .Max(select => select.Item2);
+                            PageCount = pcNodes;
+                            taskLoadPage = loadPage(doc);
+                            return await taskLoadPage;
+                        }
+                        else
+                            return 0u;
                     }
-                    var match = Regex.Match(rcNode.InnerText, @"Showing.+of\s+([0-9,]+)");
-                    if(match.Success)
-                        RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
-                    if(!IsEmpty)
-                    {
-                        var pcNodes = doc.DocumentNode.Descendants("td")
-                            .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
-                            .Select(node =>
-                            {
-                                int i;
-                                var su = int.TryParse(node.InnerText, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out i);
-                                return Tuple.Create(su, i);
-                            })
-                            .Where(select => select.Item1)
-                            .DefaultIfEmpty(Tuple.Create(true, 1))
-                            .Max(select => select.Item2);
-                        PageCount = pcNodes;
-                        taskLoadPage = loadPage(doc);
-                        await taskLoadPage;
-                    }
+                }
+                catch(COMException ex)
+                {
+                    throw new InvalidOperationException("Can't fetch proper data.", ex);
                 }
             });
         }
@@ -137,7 +143,7 @@ namespace ExClient
                               where match.Success
                               select new gdataRecord
                               {
-                                  gid = long.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture),
+                                  gid = long.Parse(match.Groups[1].Value),
                                   gtoken = match.Groups[2].Value
                               };
                 var json = JsonConvert.SerializeObject(new
@@ -200,25 +206,34 @@ namespace ExClient
 
         private string searchResultBaseUri;
 
-        protected override IAsyncOperation<uint> LoadPage(int pageIndex)
+        protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
         {
+            if(pageIndex == 0)
+                return init();
+
             return Run(async token =>
             {
                 var uri = new Uri($"{this.searchResultBaseUri}&page={pageIndex.ToString()}");
-                var op = client.HttpClient.GetAsync(uri);
+                var op = client.HttpClient.GetInputStreamAsync(uri);
                 IAsyncOperation<uint> op2 = null;
                 token.Register(() =>
                 {
                     op.Cancel();
                     op2?.Cancel();
                 });
-                var ans = await op;
-                using(var stream = (await ans.Content.ReadAsInputStreamAsync()).AsStreamForRead())
+                try
                 {
-                    var doc = new HtmlDocument();
-                    doc.Load(stream);
-                    op2 = loadPage(doc);
-                    return await op2;
+                    using(var stream = (await op).AsStreamForRead())
+                    {
+                        var doc = new HtmlDocument();
+                        doc.Load(stream);
+                        op2 = loadPage(doc);
+                        return await op2;
+                    }
+                }
+                catch(COMException ex)
+                {
+                    throw new InvalidOperationException("Can't fetch proper data.", ex);
                 }
             });
         }

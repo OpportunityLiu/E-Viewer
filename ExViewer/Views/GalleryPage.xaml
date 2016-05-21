@@ -16,46 +16,6 @@
     </Page.Transitions>
 
     <RelativePanel>
-        <CommandBar x:Name="cb_top"
-                    RelativePanel.AlignLeftWithPanel="True"
-                    RelativePanel.AlignRightWithPanel="True"
-                    HorizontalContentAlignment="Stretch">
-            <CommandBar.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="48" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
-                            Content="&#xE700;"
-                            Height="48"
-                            Width="48"
-                            Click="btn_pane_Click" />
-                    <TextBlock Text="{x:Bind Gallery.Title, Mode=OneWay}"
-                               Style="{StaticResource BaseTextBlockStyle}"
-                               Margin="8,0"
-                               Grid.Column="1"
-                               VerticalAlignment="Center"
-                               ContinuumNavigationTransitionInfo.IsEntranceElement="True"
-                               MaxLines="1"
-                               TextTrimming="CharacterEllipsis"
-                               TextWrapping="NoWrap">
-                        <ToolTipService.ToolTip>
-                            <TextBlock Text="{x:Bind Gallery.Title, Mode=OneWay}"
-                                       TextWrapping="WrapWholeWords" />
-                        </ToolTipService.ToolTip>
-                    </TextBlock>
-                </Grid>
-            </CommandBar.Content>
-            <CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="abb_open"
-                              Label="Open in browser"
-                              Click="abb_open_Click" />
-                <AppBarButton x:Name="abb_save"
-                              Label="Save this gallery"
-                              Click="abb_save_Click" />
-            </CommandBar.SecondaryCommands>
-        </CommandBar>
         <Grid x:Name="gd_info"
               RelativePanel.Below="cb_top"
               RelativePanel.AlignLeftWithPanel="True"
@@ -91,8 +51,10 @@
                            FontFamily="Segoe MDL2 Assets" />
                 <ListView x:Name="lv_Tags"
                           RelativePanel.Below="Rating"
-                          ItemsSource="{x:Bind Gallery.Tags, Mode=OneWay}">
-                    
+                          ItemsSource="{x:Bind Gallery.Tags, Mode=OneWay}"
+                          ItemClick="lv_Tags_ItemClick"
+                          IsItemClickEnabled="True">
+
                 </ListView>
             </RelativePanel>
         </Grid>
@@ -124,5 +86,45 @@
                            Visibility="{x:Bind Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more items...</TextBlock>
             </GridView.Footer>
         </GridView>
+        <CommandBar x:Name="cb_top"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignRightWithPanel="True"
+                    HorizontalContentAlignment="Stretch">
+            <CommandBar.Content>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
+                            Content="&#xE700;"
+                            Height="48"
+                            Width="48"
+                            Click="btn_pane_Click" />
+                    <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                               Style="{StaticResource BaseTextBlockStyle}"
+                               Margin="8,0"
+                               Grid.Column="1"
+                               VerticalAlignment="Center"
+                               ContinuumNavigationTransitionInfo.IsEntranceElement="True"
+                               MaxLines="1"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap">
+                        <ToolTipService.ToolTip>
+                            <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                                       TextWrapping="WrapWholeWords" />
+                        </ToolTipService.ToolTip>
+                    </TextBlock>
+                </Grid>
+            </CommandBar.Content>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="abb_open"
+                              Label="Open in browser"
+                              Click="abb_open_Click" />
+                <AppBarButton x:Name="abb_save"
+                              Label="Save this gallery"
+                              Click="abb_save_Click" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
     </RelativePanel>
 </Page>

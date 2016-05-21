@@ -26,7 +26,7 @@ namespace ExViewer.Views
     /// </summary>
     public sealed partial class RootControl : UserControl
     {
-        public RootControl(SearchResult sr)
+        public RootControl(string searchQuery)
         {
             this.InitializeComponent();
             tabs = new Dictionary<Controls.SplitViewTab, Type>()
@@ -42,11 +42,11 @@ namespace ExViewer.Views
                 [typeof(SearchPage)] = this.svt_Search,
                 [typeof(SettingsPage)] = this.svt_Settings
             };
-            this.sr = sr;
+            this.searchQuery = searchQuery;
             RootController.root = this;
         }
 
-        private SearchResult sr;
+        private string searchQuery;
 
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
         private readonly Dictionary<Type, Controls.SplitViewTab> pages;
@@ -62,8 +62,16 @@ namespace ExViewer.Views
         {
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
-            fm_inner.Navigate(typeof(SearchPage), sr);
-            sr = null;
+            if(searchQuery != null)
+                fm_inner.Navigate(typeof(SearchPage), searchQuery);
+            else
+                fm_inner.Navigate(typeof(CachePage));
+            searchQuery = null;
+        }
+
+        private void Control_Unloaded(object sender, RoutedEventArgs e)
+        {
+            manager.BackRequested -= Manager_BackRequested;
         }
 
         private void Manager_BackRequested(object sender, BackRequestedEventArgs e)
@@ -105,14 +113,16 @@ namespace ExViewer.Views
             var s = (Controls.SplitViewTab)sender;
             if(s.IsChecked)
                 return;
-            fm_inner.SetNavigationState("1,0");
             fm_inner.Navigate(tabs[s]);
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
 
         private void fm_inner_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-
+#if DEBUG && !DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION
+            if(global::System.Diagnostics.Debugger.IsAttached)
+                global::System.Diagnostics.Debugger.Break();
+#endif
         }
     }
 }

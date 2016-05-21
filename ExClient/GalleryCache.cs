@@ -7,29 +7,47 @@ using Newtonsoft.Json;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Storage;
 
 namespace ExClient
 {
     [JsonObject]
     internal class GalleryCache
     {
-        private const string cacheFileName = "info.json";
-
-        public static IAsyncOperation<GalleryCache> LoadCacheAsync(long galleryId)
+        public static IAsyncOperation<GalleryCache> LoadCacheAsync(StorageFile infoFile)
         {
             return Run(async token =>
             {
-                var str = await CacheHelper.LoadStringAsync(galleryId.ToString(), cacheFileName);
-                if(str == null)
-                    return null;
-                return JsonConvert.DeserializeObject<GalleryCache>(str);
+                var cache = JsonConvert.DeserializeObject<GalleryCache>(await FileIO.ReadTextAsync(infoFile));
+                cache.infoFile = infoFile;
+                return cache;
             });
         }
 
-        public IAsyncOperation<Windows.Storage.StorageFile> SaveCacheAsync()
+        private StorageFile infoFile;
+
+        public IAsyncOperation<StorageFile> SaveCacheAsync()
         {
-            var str = JsonConvert.SerializeObject(this);
-            return CacheHelper.SaveStringAsync(Id.ToString(), cacheFileName, str);
+            return Run(async token =>
+            {
+                var str = JsonConvert.SerializeObject(this);
+                var file = await CacheHelper.LocalCache.CreateFileAsync($"{Id}.json", CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteTextAsync(file, str);
+                return file;
+            });
+        }
+
+        public IAsyncAction DeleteCacheAsync()
+        {
+            return Run(async token =>
+            {
+                if(infoFile != null)
+                {
+                    var temp = infoFile;
+                    infoFile = null;
+                    await temp.DeleteAsync();
+                }
+            });
         }
 
         [JsonConstructor]
@@ -51,7 +69,7 @@ namespace ExClient
             this.FileSize = toCache.FileSize;
             this.Expunged = toCache.Expunged;
             this.Rating = toCache.Rating;
-            this.Tags = toCache.Tags.ToList();
+            this.Tags = toCache.Tags.Select(tag => tag.ToString()).ToList();
             this.RecordCount = toCache.RecordCount;
             this.ImageKeys = new string[toCache.Count];
             this.Thumb = ((BitmapImage)toCache.Thumb).UriSource.ToString();
@@ -128,7 +146,7 @@ namespace ExClient
 
         public int RecordCount
         {
-            get;set;
+            get; set;
         }
 
         public IList<string> Tags

@@ -105,7 +105,7 @@
                             Width="48"
                             Click="btn_pane_Click" />
                     <TextBlock x:Name="tb_Title"
-                               Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                               Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Grid.Column="1"
                                Margin="8,0"
@@ -117,7 +117,7 @@
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_si">
                         <ToolTipService.ToolTip>
-                            <TextBlock Text="{x:Bind Gallery.Title, Mode=OneWay}"
+                            <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                        TextWrapping="WrapWholeWords" />
                         </ToolTipService.ToolTip>
                     </TextBlock>
@@ -153,7 +153,7 @@
                 <AppBarButton x:Name="abb_LoadOriginal"
                               Label="Load original image"
                               Click="abb_LoadOriginal_Click"
-                              IsEnabled="{Binding ElementName=fv, Path=SelectedItem.OriginalLoaded, Mode=OneWay, Converter={StaticResource LogicalNotConverter}}"/>
+                              IsEnabled="{Binding ElementName=fv, Path=SelectedItem.OriginalLoaded, Mode=OneWay, Converter={StaticResource LogicalNotConverter}}" />
                 <AppBarButton x:Name="abb_open"
                               Label="Open in browser"
                               Click="abb_open_Click" />
@@ -162,10 +162,38 @@
                               Label="Image infomation">
                     <AppBarButton.Flyout>
                         <Flyout Opening="Flyout_Opening"
-                                Placement="Bottom">
+                                Placement="Bottom"
+                                ScrollViewer.VerticalScrollMode="Disabled">
                             <StackPanel>
-                                <TextBlock x:Name="tb_Info" />
+                                <TextBlock x:Name="tb_Info">
+                                    File name: 1.original.png<LineBreak />Size: 4.12MiB<LineBreak />Dimensions: 4444 × 3333
+                                </TextBlock>
+                                <Button x:Name="btn_OpenInExplorer"
+                                        Content="Open in explorer"
+                                        Style="{StaticResource TextBlockButtonStyle}"
+                                        Click="btn_OpenInExplorer_Click"
+                                        BorderThickness="0"
+                                        Padding="0"
+                                        Margin="0,4,0,0" />
                             </StackPanel>
+                            <Flyout.FlyoutPresenterStyle>
+                                <Style TargetType="FlyoutPresenter">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="FlyoutPresenter">
+                                                <Border Padding="{TemplateBinding Padding}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        Background="{TemplateBinding Background}"
+                                                        Margin="{TemplateBinding Margin}">
+                                                    <ContentPresenter Content="{TemplateBinding Content}"
+                                                                      Foreground="{TemplateBinding Foreground}" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Flyout.FlyoutPresenterStyle>
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>

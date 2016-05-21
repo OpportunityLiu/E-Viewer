@@ -46,6 +46,7 @@
             </CommandBar.SecondaryCommands>
         </CommandBar>
         <ListView x:Name="lv"
+                  ItemsSource="{x:Bind cached}"
                   ContinuumNavigationTransitionInfo.ExitElementContainer="True"
                   IsItemClickEnabled="True"
                   ItemClick="lv_ItemClick"
@@ -58,7 +59,19 @@
                 <DataTemplate xmlns:c="using:ExClient"
                               xmlns:controls="using:ExViewer.Controls"
                               x:DataType="c:Gallery">
-                    <controls:GalleryViewer Gallery="{x:Bind}" />
+                    <controls:GalleryViewer x:Name="gv_Gallery"
+                                            Gallery="{x:Bind}"
+                                            RightTapped="gv_Gallery_RightTapped"
+                                            Holding="gv_Gallery_Holding"
+                                            Background="Transparent">
+                        <FlyoutBase.AttachedFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem x:Name="mfi_DeleteGallery"
+                                                Text="Delete"
+                                                Click="mfi_DeleteGallery_Click" />
+                            </MenuFlyout>
+                        </FlyoutBase.AttachedFlyout>
+                    </controls:GalleryViewer>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemContainerStyle>
@@ -72,8 +85,10 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <TextBlock x:Name="tb_Empty" Margin="12"
+        <TextBlock x:Name="tb_Empty"
+                   Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind cached.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}}"
                    RelativePanel.Below="cb_top"
                    RelativePanel.AlignHorizontalCenterWithPanel="True">No cached galleries</TextBlock>
     </RelativePanel>

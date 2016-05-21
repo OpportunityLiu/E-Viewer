@@ -1,9 +1,11 @@
 ﻿using ExClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -28,12 +30,12 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if(e.NavigationMode != NavigationMode.Back)
             {
-                loadCache();
+                await loadCache();
             }
         }
 
@@ -42,24 +44,20 @@ namespace ExViewer.Views
             base.OnNavigatedFrom(e);
             if(!(e.NavigationMode == NavigationMode.New && e.SourcePageType == typeof(GalleryPage)))
             {
-                lv.ItemsSource = null;
+                cached.Clear();
             }
         }
 
-        private async void loadCache()
+        ObservableCollection<CachedGallery> cached = new ObservableCollection<CachedGallery>();
+
+        private async Task loadCache()
         {
-            tb_Empty.Visibility = Visibility.Collapsed;
-            var c = await Gallery.GetCachedGalleriesAsync();
-            var cached = new List<Gallery>();
+            cached.Clear();
+            var c = await CachedGallery.GetCachedGalleries().GetFilesAsync();
             foreach(var id in c)
             {
-                cached.Add(await Gallery.LoadGalleryAsync(id));
+                cached.Add(await CachedGallery.LoadGalleryAsync(id));
             }
-            lv.ItemsSource = cached;
-            if(cached.Count == 0)
-                tb_Empty.Visibility = Visibility.Visible;
-            else
-                tb_Empty.Visibility = Visibility.Collapsed;
         }
 
         private void btn_Pane_Click(object sender, RoutedEventArgs e)
@@ -73,9 +71,9 @@ namespace ExViewer.Views
             Frame.Navigate(typeof(GalleryPage), e.ClickedItem);
         }
 
-        private void abb_Refresh_Click(object sender, RoutedEventArgs e)
+        private async void abb_Refresh_Click(object sender, RoutedEventArgs e)
         {
-            loadCache();
+            await loadCache();
         }
 
         private ContentDialog cdg_ConfirmClear = new ContentDialog()
@@ -91,8 +89,37 @@ namespace ExViewer.Views
             var result = await cdg_ConfirmClear.ShowAsync();
             if(result == ContentDialogResult.Primary)
             {
-                await Gallery.ClearCachedGalleriesAsync();
-                loadCache();
+                await CachedGallery.ClearCachedGalleriesAsync();
+                await loadCache();
+            }
+        }
+
+        private async void mfi_DeleteGallery_Click(object sender, RoutedEventArgs e)
+        {
+            var s = (FrameworkElement)sender;
+            var cg = (CachedGallery)s.DataContext;
+            await cg.DeleteAsync();
+            cached.Remove(cg);
+        }
+
+        private void gv_Gallery_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+        }
+
+        private void gv_Gallery_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            var s = (FrameworkElement)sender;
+            switch(e.HoldingState)
+            {
+            case Windows.UI.Input.HoldingState.Started:
+                FlyoutBase.ShowAttachedFlyout(s);
+                break;
+            case Windows.UI.Input.HoldingState.Canceled:
+                FlyoutBase.GetAttachedFlyout(s).Hide();
+                break;
+            default:
+                break;
             }
         }
     }

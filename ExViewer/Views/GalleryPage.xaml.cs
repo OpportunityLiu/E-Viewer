@@ -16,6 +16,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using ExViewer.Settings;
+using ExClient;
+using ExViewer.ViewModels;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -36,7 +38,7 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             if(e.NavigationMode == NavigationMode.New)
             {
-                Gallery = (ExClient.Gallery)e.Parameter;
+                Gallery = (Gallery)e.Parameter;
                 pb_save.Maximum = Gallery.RecordCount;
                 pb_save.Value = 0;
                 pb_save.Visibility = Visibility.Collapsed;
@@ -50,7 +52,8 @@ namespace ExViewer.Views
                 gv.SelectedIndex = Gallery.CurrentImage;
                 gv.ScrollIntoView(Gallery[Gallery.CurrentImage]);
                 entranceElement = (UIElement)gv.ContainerFromIndex(Gallery.CurrentImage);
-                EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
+                if(entranceElement != null)
+                    EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
             }
         }
 
@@ -69,11 +72,11 @@ namespace ExViewer.Views
             Frame.Navigate(typeof(ImagePage), Gallery);
         }
 
-        public ExClient.Gallery Gallery
+        public Gallery Gallery
         {
             get
             {
-                return (ExClient.Gallery)GetValue(GalleryProperty);
+                return (Gallery)GetValue(GalleryProperty);
             }
             set
             {
@@ -83,7 +86,7 @@ namespace ExViewer.Views
 
         // Using a DependencyProperty as the backing store for Gallery.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GalleryProperty =
-            DependencyProperty.Register("Gallery", typeof(ExClient.Gallery), typeof(GalleryPage), new PropertyMetadata(null));
+            DependencyProperty.Register("Gallery", typeof(Gallery), typeof(GalleryPage), new PropertyMetadata(null));
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
@@ -151,6 +154,11 @@ namespace ExViewer.Views
                     };
                 break;
             }
+        }
+
+        private void lv_Tags_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Frame.Navigate(typeof(SearchPage), Cache.AddSearchResult(((Tag)e.ClickedItem).Search()));
         }
     }
 }

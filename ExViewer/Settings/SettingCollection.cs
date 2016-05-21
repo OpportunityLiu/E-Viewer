@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml;
+﻿using ExClient;
+using Windows.UI.Xaml;
 
 namespace ExViewer.Settings
 {
@@ -67,6 +68,20 @@ namespace ExViewer.Settings
             set
             {
                 SetLocal(value);
+            }
+        }
+
+        [Setting("Global", "The default title displayed", Index = 20)]
+        [BooleanRepresent("Japanese title (If available)", "Default title")]
+        public bool UseJapaneseTitle
+        {
+            get
+            {
+                return GetRoaming(false);
+            }
+            set
+            {
+                SetRoaming(value);
             }
         }
 
@@ -174,13 +189,14 @@ namespace ExViewer.Settings
                 else
                     try
                     {
-                        var hah = new ExClient.HahProxyConfig(value);
+                        var hah = new HahProxyConfig(value);
                         ForceSetLocal(hah.AddressAndPort);
                     }
                     catch
                     {
                         ForceSetLocal(old);
                     }
+                SetHah();
             }
         }
 
@@ -194,7 +210,18 @@ namespace ExViewer.Settings
             set
             {
                 ForceSetLocal((value ?? "").Trim());
+                SetHah();
             }
+        }
+
+        public static void SetHah()
+        {
+            // set H@H proxy
+            var hah = Current.HahAddress;
+            if(!string.IsNullOrEmpty(hah))
+                Client.Current.SetHahProxy(new HahProxyConfig(hah, Current.HahPasskey));
+            else
+                Client.Current.SetHahProxy(null);
         }
     }
 }
