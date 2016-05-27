@@ -65,10 +65,8 @@ namespace ExViewer.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if(e.NavigationMode == NavigationMode.New)
-            {
-                cb_top.Visibility = Visibility.Visible;
-            }
+            cb_top.Visibility = Visibility.Visible;
+
             this.mouseInertialFactor = SettingCollection.Current.MouseInertialFactor;
             enableMouseInertia = mouseInertialFactor > 0.05;
 
@@ -84,6 +82,8 @@ namespace ExViewer.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             Gallery.CurrentImage = fv.SelectedIndex;
+            fv.ItemsSource = Gallery = null;
+
             base.OnNavigatingFrom(e);
             av.VisibleBoundsChanged -= Av_VisibleBoundsChanged;
         }
@@ -152,7 +152,7 @@ namespace ExViewer.Views
             }
             for(int i = start; i < end; i++)
             {
-                var ignore = Gallery[i].LoadImage(false, SettingCollection.Current.GetStrategy(), false);
+                var ignore = Gallery[i].LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
             }
             setScale();
         }
@@ -161,14 +161,14 @@ namespace ExViewer.Views
         {
             var image = Gallery[fv.SelectedIndex];
             if(image.OriginalLoaded)
-                await image.LoadImage(true, ExClient.ConnectionStrategy.AllFull, false);
+                await image.LoadImageAsync(true, ExClient.ConnectionStrategy.AllFull, false);
             else
-                await image.LoadImage(true, SettingCollection.Current.GetStrategy(), false);
+                await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
         }
 
         private async void abb_LoadOriginal_Click(object sender, RoutedEventArgs e)
         {
-            await Gallery[fv.SelectedIndex].LoadImage(true, ExClient.ConnectionStrategy.AllFull, false);
+            await Gallery[fv.SelectedIndex].LoadImageAsync(true, ExClient.ConnectionStrategy.AllFull, false);
         }
 
         private async void abb_open_Click(object sender, RoutedEventArgs e)

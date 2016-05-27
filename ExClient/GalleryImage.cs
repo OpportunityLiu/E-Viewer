@@ -40,9 +40,10 @@ namespace ExClient
         {
             return Run(async token =>
             {
+                var loadPageUri = PageUri;
                 if(failToken != null)
-                    PageUri = new Uri(pageBaseUri, $"{imageKey}/{Owner.Id.ToString()}-{PageId.ToString()}?nl={failToken}");
-                var loadPage = Owner.Owner.PostStrAsync(PageUri, null);
+                    loadPageUri = new Uri(pageBaseUri, $"{imageKey}/{Owner.Id.ToString()}-{PageId.ToString()}?nl={failToken}");
+                var loadPage = Owner.Owner.PostStrAsync(loadPageUri, null);
                 token.Register(loadPage.Cancel);
                 var pageResult = new HtmlDocument();
                 pageResult.LoadHtml(await loadPage);
@@ -62,43 +63,43 @@ namespace ExClient
             });
         }
 
-        private GalleryImage(Gallery owner, int pageId, string imageKey)
+        internal GalleryImage(Gallery owner, int pageId, string imageKey, ImageSource thumb)
         {
             this.Owner = owner;
             this.PageId = pageId;
             this.imageKey = imageKey;
             this.PageUri = new Uri(pageBaseUri, $"{imageKey}/{owner.Id.ToString()}-{pageId.ToString()}");
-        }
-
-        internal GalleryImage(Gallery owner, int pageId, string imageKey, ImageSource thumb)
-            : this(owner, pageId, imageKey)
-        {
             this.Thumb = thumb;
         }
 
-        internal static GalleryImage LoadCachedImage(Gallery owner, int pageId, StorageFile imageFile, string imageKey)
+        internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
         {
-            if(imageFile == null)
-                return null;
-            var image = new GalleryImage(owner, pageId, imageKey);
-            var thumb = new BitmapImage();
-            var loadThumb = imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
-            loadThumb.Completed = async (sender, e) =>
+            return Run(async token =>
             {
-                if(e != AsyncStatus.Completed)
-                    return;
-                await DispatcherHelper.RunLowAsync(async () =>
-                 {
-                     using(var stream = sender.GetResults())
-                         await thumb.SetSourceAsync(stream);
-                 });
-            };
-            image.ImageFile = imageFile;
-            image.OriginalLoaded = Regex.IsMatch(imageFile.Name, @"\d+\.original\..+");
-            image.Thumb = thumb;
-            image.Progress = 100;
-            image.State = ImageLoadingState.Loaded;
-            return image;
+                var imageFile = await owner.GalleryFolder.TryGetFileAsync(model.FileName);
+                if(imageFile == null)
+                    return null;
+                var thumb = new BitmapImage();
+                var image = new GalleryImage(owner, model.PageId, model.ImageKey, thumb);
+
+                var loadThumb = imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
+                loadThumb.Completed = async (sender, e) =>
+                {
+                    if(e != AsyncStatus.Completed)
+                        return;
+                    await DispatcherHelper.RunLowAsync(async () =>
+                    {
+                        using(var stream = sender.GetResults())
+                            await thumb.SetSourceAsync(stream);
+                    });
+                };
+
+                image.ImageFile = imageFile;
+                image.OriginalLoaded = model.OriginalLoaded;
+                image.Progress = 100;
+                image.State = ImageLoadingState.Loaded;
+                return image;
+            });
         }
 
         private ImageLoadingState state;
@@ -118,41 +119,46 @@ namespace ExClient
         public ImageSource Thumb
         {
             get;
-            private set;
         }
 
         public Gallery Owner
         {
-            get; private set;
+            get;
         }
 
         public int PageId
         {
-            get; private set;
+            get;
         }
 
         public Uri PageUri
         {
             get;
-            private set;
         }
 
-        public IAsyncAction LoadImage(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
+        private IAsyncAction loadImageAction;
+
+        public IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
-            return Run(async token =>
+            var previousAction = loadImageAction;
+            return loadImageAction = Run(async token =>
             {
                 IAsyncAction load;
+                IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> imageLoad = null;
                 switch(state)
                 {
                 case ImageLoadingState.Waiting:
                 case ImageLoadingState.Failed:
                     load = loadImageUri();
                     break;
+                case ImageLoadingState.Loading:
                 case ImageLoadingState.Loaded:
                     if(reload)
                     {
-                        load = loadImageUri();
+                        if(previousAction?.Status == AsyncStatus.Started)
+                            previousAction.Cancel();
                         await deleteImageFile();
+                        load = loadImageUri();
                     }
                     else
                         return;
@@ -160,7 +166,11 @@ namespace ExClient
                 default:
                     return;
                 }
-                token.Register(load.Cancel);
+                token.Register(() =>
+                {
+                    load.Cancel();
+                    imageLoad?.Cancel();
+                });
                 this.State = ImageLoadingState.Preparing;
                 try
                 {
@@ -177,7 +187,7 @@ namespace ExClient
                         uri = imageUri;
                         OriginalLoaded = (originalImageUri == null);
                     }
-                    var imageLoad = Owner.Owner.HttpClient.GetAsync(uri);
+                    imageLoad = Owner.Owner.HttpClient.GetAsync(uri);
                     this.State = ImageLoadingState.Loading;
                     imageLoad.Progress = (sender, progress) =>
                     {
@@ -189,12 +199,27 @@ namespace ExClient
                             this.Progress = pro;
                         }
                     };
+                    token.ThrowIfCancellationRequested();
                     await deleteImageFile();
                     var imageLoadResponse = await imageLoad;
+                    token.ThrowIfCancellationRequested();
                     var buffer = await imageLoadResponse.Content.ReadAsBufferAsync();
                     var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
-                    var save = CacheHelper.SaveFileAsync(Owner.Id.ToString(), $"{PageId}{(OriginalLoaded ? ".original" : ".compressed")}{ext}", buffer);
+                    var save = Owner.GalleryFolder.SaveFileAsync($"{PageId}{ext}", buffer);
                     ImageFile = await save;
+                    using(var db = Models.CachedGalleryDb.Create())
+                    {
+                        var myModel = db.ImageSet.SingleOrDefault(model => model.ImageKey == this.ImageKey);
+                        if(myModel == null)
+                        {
+                            db.ImageSet.Add(new Models.ImageModel().Update(this));
+                        }
+                        else
+                        {
+                            db.ImageSet.Update(myModel.Update(this));
+                        }
+                        db.SaveChanges();
+                    }
                     this.State = ImageLoadingState.Loaded;
                 }
                 catch(Exception)

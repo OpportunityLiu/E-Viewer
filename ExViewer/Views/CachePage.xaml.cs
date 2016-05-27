@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExViewer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,36 +29,45 @@ namespace ExViewer.Views
         public CachePage()
         {
             this.InitializeComponent();
+            VM = new CacheVM();
+            cdg_ConfirmClear = new ContentDialog()
+            {
+                Title = "ARE YOU SURE",
+                Content = "All saved galleries will be deleted.",
+                PrimaryButtonText = "Ok",
+                SecondaryButtonText = "Cancel",
+                PrimaryButtonCommand = VM.Clear
+            };
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        public CacheVM VM
+        {
+            get
+            {
+                return (CacheVM)GetValue(VMProperty);
+            }
+            set
+            {
+                SetValue(VMProperty, value);
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VMProperty =
+            DependencyProperty.Register("VM", typeof(CacheVM), typeof(CachePage), new PropertyMetadata(null));
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if(e.NavigationMode != NavigationMode.Back)
             {
-                await loadCache();
+                VM.Refresh.Execute(null);
             }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            if(!(e.NavigationMode == NavigationMode.New && e.SourcePageType == typeof(GalleryPage)))
-            {
-                cached.Clear();
-            }
-        }
-
-        ObservableCollection<CachedGallery> cached = new ObservableCollection<CachedGallery>();
-
-        private async Task loadCache()
-        {
-            cached.Clear();
-            var c = await CachedGallery.GetCachedGalleries().GetFilesAsync();
-            foreach(var id in c)
-            {
-                cached.Add(await CachedGallery.LoadGalleryAsync(id));
-            }
         }
 
         private void btn_Pane_Click(object sender, RoutedEventArgs e)
@@ -71,35 +81,11 @@ namespace ExViewer.Views
             Frame.Navigate(typeof(GalleryPage), e.ClickedItem);
         }
 
-        private async void abb_Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            await loadCache();
-        }
-
-        private ContentDialog cdg_ConfirmClear = new ContentDialog()
-        {
-            Title = "ARE YOU SURE",
-            Content = "All saved galleries will be deleted.",
-            PrimaryButtonText = "Ok",
-            SecondaryButtonText = "Cancel"
-        };
+        private ContentDialog cdg_ConfirmClear;
 
         private async void abb_ClearCache_Click(object sender, RoutedEventArgs e)
         {
-            var result = await cdg_ConfirmClear.ShowAsync();
-            if(result == ContentDialogResult.Primary)
-            {
-                await CachedGallery.ClearCachedGalleriesAsync();
-                await loadCache();
-            }
-        }
-
-        private async void mfi_DeleteGallery_Click(object sender, RoutedEventArgs e)
-        {
-            var s = (FrameworkElement)sender;
-            var cg = (CachedGallery)s.DataContext;
-            await cg.DeleteAsync();
-            cached.Remove(cg);
+            await cdg_ConfirmClear.ShowAsync();
         }
 
         private void gv_Gallery_RightTapped(object sender, RightTappedRoutedEventArgs e)

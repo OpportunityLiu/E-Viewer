@@ -42,7 +42,7 @@ namespace ExViewer
         /// 将在启动应用程序以打开特定文件等情况下使用。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 
 #if DEBUG
@@ -51,8 +51,12 @@ namespace ExViewer
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            if(e.PrelaunchActivated)
+                return;
+
             var current = Window.Current;
             DispatcherHelper.SetDispatcher(current.Dispatcher);
+            GalaSoft.MvvmLight.Threading.DispatcherHelper.Initialize();
             var currentContent = current.Content;
             var splash = currentContent as Views.SplashControl;
             if(currentContent == null)
@@ -69,13 +73,9 @@ namespace ExViewer
                     var ignore = statusBar.HideAsync();
                 }
                 splash = new Views.SplashControl(e.SplashScreen);
-                await splash.InitAsync();
                 current.Content = splash;
             }
-            if(!e.PrelaunchActivated)
-            {
-                splash?.GoToContent();
-            }
+            splash?.GoToContent();
             current.Activate();
         }
 

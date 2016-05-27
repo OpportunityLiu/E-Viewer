@@ -109,18 +109,21 @@
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
     <Compile Include="CachedGallery.cs" />
-    <Compile Include="CacheHelper.cs" />
+    <Compile Include="Models\CachedGalleryModel.cs" />
+    <Compile Include="StorageHelper.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="ConnectionHelper.cs" />
     <Compile Include="DictionaryExtention.cs" />
     <Compile Include="DispatcherHelper.cs" />
-    <Compile Include="GalleryCache.cs" />
     <Compile Include="GalleryImage.cs" />
     <Compile Include="HahProxyConfig.cs" />
     <Compile Include="IncrementalLoadingCollection{T}.cs" />
     <Compile Include="IOHelper.cs" />
     <Compile Include="ObservableObject.cs" />
+    <Compile Include="Models\CachedGalleryDb.cs" />
+    <Compile Include="Models\GalleryModel.cs" />
+    <Compile Include="Models\ImageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client-Search.cs" />
     <Compile Include="ReCaptcha.cs" />

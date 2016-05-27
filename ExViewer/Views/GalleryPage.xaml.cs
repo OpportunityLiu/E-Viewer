@@ -68,7 +68,7 @@ namespace ExViewer.Views
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Gallery.CurrentImage = Gallery.IndexOf((ExClient.GalleryImage)e.ClickedItem);
+            Gallery.CurrentImage = Gallery.IndexOf((GalleryImage)e.ClickedItem);
             Frame.Navigate(typeof(ImagePage), Gallery);
         }
 

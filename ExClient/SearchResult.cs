@@ -164,6 +164,7 @@ namespace ExClient
                 foreach(var item in re.gmetadata)
                 {
                     item.Owner = client;
+                    var ignore = item.InitAsync();
                     this.Add(item);
                     count++;
                 }

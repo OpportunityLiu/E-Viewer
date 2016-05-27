@@ -30,6 +30,13 @@ namespace ExViewer.Views
             SettingTemplateSelector.Parent = this;
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if(e.NavigationMode == NavigationMode.New)
+                this.pv_root.SelectedIndex = 0;
+        }
+
         private void btn_Click(object sender, RoutedEventArgs e)
         {
             RootControl.RootController.SwitchSplitView();
