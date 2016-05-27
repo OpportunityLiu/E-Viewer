@@ -43,7 +43,7 @@ namespace ExViewer.Views
                 [typeof(SettingsPage)] = this.svt_Settings
             };
             this.searchQuery = searchQuery;
-            RootController.root = this;
+            RootController.SetRoot(this);
         }
 
         private string searchQuery;
@@ -76,7 +76,7 @@ namespace ExViewer.Views
 
         private void Manager_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if(fm_inner.CanGoBack)
+            if(fm_inner.CanGoBack && !RootController.ViewDisabled)
             {
                 fm_inner.GoBack();
                 e.Handled = true;
@@ -124,5 +124,10 @@ namespace ExViewer.Views
                 global::System.Diagnostics.Debugger.Break();
 #endif
         }
+
+        //private async void svb_LogOn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    await RootController.RequireLogOn();
+        //}
     }
 }

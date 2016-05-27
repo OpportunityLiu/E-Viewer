@@ -117,6 +117,7 @@
     <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Themes\ThemeExtention.cs" />
     <Compile Include="ViewModels\Cache.cs" />
+    <Compile Include="ViewModels\CacheVM.cs" />
     <Compile Include="Views\CachePage.xaml.cs">
       <DependentUpon>CachePage.xaml</DependentUpon>
     </Compile>

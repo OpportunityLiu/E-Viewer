@@ -72,7 +72,8 @@ namespace ExViewer.ViewModels
             {
                 var data = JsonConvert.DeserializeObject<SearchResultData>(query);
                 return Client.Current.Search(data.KeyWord, data.Filter, data.AdvancedSearch);
-            }
+            },
+            MaxCount = 3
         };
 
         public static SearchResult GetSearchResult(string query)

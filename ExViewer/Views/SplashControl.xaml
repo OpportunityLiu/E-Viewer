@@ -9,7 +9,7 @@
              Loaded="splash_Loaded"
              SizeChanged="splash_SizeChanged">
     <UserControl.Resources>
-        <Storyboard x:Name="ShowPic">
+        <Storyboard x:Name="ShowPic" Completed="ShowPic_Completed">
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.Opacity)"
                              Storyboard.TargetName="img_pic"
                              Duration="0:0:0.7"
@@ -31,16 +31,26 @@
         </Storyboard>
     </UserControl.Resources>
     <Grid Background="#ffe7dfca">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Image x:Name="img_splash"
                HorizontalAlignment="Center"
                VerticalAlignment="Center"
-               RenderTransformOrigin="0.5,0.5">
+               RenderTransformOrigin="0.5,0.5"
+               Source="ms-appx:///Assets/SplashScreen.png"
+               Grid.RowSpan="2">
             <Image.RenderTransform>
                 <CompositeTransform />
             </Image.RenderTransform>
         </Image>
         <Image x:Name="img_pic"
                HorizontalAlignment="Center"
-               VerticalAlignment="Center" />
+               VerticalAlignment="Center"
+               Grid.RowSpan="2" />
+        <ProgressRing x:Name="pr" Grid.Row="1"
+                      Width="40"
+                      Height="40" />
     </Grid>
 </UserControl>

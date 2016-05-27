@@ -71,6 +71,19 @@ namespace ExViewer.Settings
             }
         }
 
+        [Setting("Global", "Verify my PIN when the app is starting", Index = 10)]
+        public bool NeedVerify
+        {
+            get
+            {
+                return GetLocal(false);
+            }
+            set
+            {
+                SetLocal(value);
+            }
+        }
+
         [Setting("Global", "The default title displayed", Index = 20)]
         [BooleanRepresent("Japanese title (If available)", "Default title")]
         public bool UseJapaneseTitle

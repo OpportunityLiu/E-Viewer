@@ -8,44 +8,92 @@
              Loaded="Control_Loaded"
              Unloaded="Control_Unloaded"
              xmlns:controls="using:ExViewer.Controls">
-    <SplitView x:Name="sv_root"
-               Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <SplitView.Pane>
-            <StackPanel>
-                <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
-                        Content="&#xE700;"
-                        Height="48"
-                        Width="48"
-                        Click="btn_pane_Click" />
-                <controls:SplitViewTab x:Name="svt_Search"
-                                       Content="Search"
-                                       Click="svt_Click">
-                    <controls:SplitViewTab.Icon>
-                        <FontIcon Glyph="&#xE7C5;"
-                                  FontSize="16" />
-                    </controls:SplitViewTab.Icon>
-                </controls:SplitViewTab>
-                <controls:SplitViewTab x:Name="svt_Cache"
-                                       Content="Saved galleries"
-                                       Click="svt_Click">
-                    <controls:SplitViewTab.Icon>
-                        <FontIcon Glyph="&#xE8B7;"
-                                  FontSize="16" />
-                    </controls:SplitViewTab.Icon>
-                </controls:SplitViewTab>
-                <controls:SplitViewTab x:Name="svt_Settings"
-                                       Content="Settings"
-                                       Click="svt_Click">
-                    <controls:SplitViewTab.Icon>
-                        <FontIcon Glyph="&#xE713;"
-                                  FontSize="16" />
-                    </controls:SplitViewTab.Icon>
-                </controls:SplitViewTab>
-            </StackPanel>
-        </SplitView.Pane>
-        <Frame x:Name="fm_inner"
-               Navigating="fm_inner_Navigating"
-               Navigated="fm_inner_Navigated"
-               NavigationFailed="fm_inner_NavigationFailed" />
-    </SplitView>
+    <UserControl.Resources>
+        <Storyboard x:Key="ShowDisablePanel">
+            <DoubleAnimation Duration="0:0:0.5"
+                             From="0"
+                             To="1"
+                             Storyboard.TargetName="rp_Disable"
+                             Storyboard.TargetProperty="(UIElement.Opacity)">
+                <DoubleAnimation.EasingFunction>
+                    <PowerEase />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="HideDisablePanel">
+            <DoubleAnimation Duration="0:0:0.5"
+                             From="1"
+                             To="0"
+                             Storyboard.TargetName="rp_Disable"
+                             Storyboard.TargetProperty="(UIElement.Opacity)">
+                <DoubleAnimation.EasingFunction>
+                    <PowerEase />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </UserControl.Resources>
+    <Grid>
+        <SplitView x:Name="sv_root"
+                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <SplitView.Pane>
+                <StackPanel>
+                    <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
+                            Content="&#xE700;"
+                            Height="48"
+                            Width="48"
+                            Click="btn_pane_Click" />
+                    <controls:SplitViewTab x:Name="svt_Search"
+                                           Content="Search"
+                                           Click="svt_Click">
+                        <controls:SplitViewTab.Icon>
+                            <FontIcon Glyph="&#xE7C5;"
+                                      FontSize="16" />
+                        </controls:SplitViewTab.Icon>
+                    </controls:SplitViewTab>
+                    <controls:SplitViewTab x:Name="svt_Cache"
+                                           Content="Saved galleries"
+                                           Click="svt_Click">
+                        <controls:SplitViewTab.Icon>
+                            <FontIcon Glyph="&#xE8B7;"
+                                      FontSize="16" />
+                        </controls:SplitViewTab.Icon>
+                    </controls:SplitViewTab>
+                    <controls:SplitViewTab x:Name="svt_Settings"
+                                           Content="Settings"
+                                           Click="svt_Click">
+                        <controls:SplitViewTab.Icon>
+                            <FontIcon Glyph="&#xE713;"
+                                      FontSize="16" />
+                        </controls:SplitViewTab.Icon>
+                    </controls:SplitViewTab>
+                    <!--<controls:SplitViewButton x:Name="svb_LogOn"
+                                              Content="Log on"
+                                              Click="svb_LogOn_Click">
+                        <controls:SplitViewButton.Icon>
+                            <SymbolIcon Symbol="Contact" />
+                        </controls:SplitViewButton.Icon>
+                    </controls:SplitViewButton>-->
+                </StackPanel>
+            </SplitView.Pane>
+            <Frame x:Name="fm_inner"
+                   Navigating="fm_inner_Navigating"
+                   Navigated="fm_inner_Navigated"
+                   NavigationFailed="fm_inner_NavigationFailed" />
+        </SplitView>
+        <RelativePanel x:Name="rp_Disable"
+                       Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}"
+                       Visibility="Collapsed">
+            <TextBlock x:Name="tb_DisableInfo"
+                       Text="Operation in progress, plaese wait..."
+                       RelativePanel.AlignVerticalCenterWithPanel="True"
+                       RelativePanel.AlignHorizontalCenterWithPanel="True" />
+            <ProgressBar x:Name="pb_Disable"
+                         RelativePanel.AlignLeftWithPanel="True"
+                         RelativePanel.AlignRightWithPanel="True"
+                         RelativePanel.Below="tb_DisableInfo"
+                         Maximum="1"
+                         SmallChange="0.001"
+                         LargeChange="0.01" />
+        </RelativePanel>
+    </Grid>
 </UserControl>

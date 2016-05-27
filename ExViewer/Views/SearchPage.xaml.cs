@@ -52,7 +52,11 @@ namespace ExViewer.Views
             }
             else
                 SearchResult = Cache.GetSearchResult(e.Parameter.ToString());
+            asb.Text = SearchResult.KeyWord;
+            cs_AdvancedSearchInitialized = false;
         }
+
+        private bool cs_AdvancedSearchInitialized;
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
@@ -64,27 +68,14 @@ namespace ExViewer.Views
             Frame.Navigate(typeof(GalleryPage), e.ClickedItem);
         }
 
-        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            ab.IsOpen = false;
-            init_cs_AdvancedSearch();
-            var searchFilter = cs_AdvancedSearch.SelectedCategory;
-            this.Focus(FocusState.Pointer);
-
-            var searchKeyWord = args.QueryText;
-            if(SettingCollection.Current.SaveLastSearch)
-            {
-                SettingCollection.Current.DefaultSearchCategory = searchFilter;
-                SettingCollection.Current.DefaultSearchString = searchKeyWord;
-            }
-            Frame.Navigate(typeof(SearchPage), Cache.GetSearchQuery(searchKeyWord, searchFilter));
-        }
-
         private void init_cs_AdvancedSearch()
         {
-            if(cs_AdvancedSearch != null)
-                return;
-            FindName(nameof(cs_AdvancedSearch));
+            if(!cs_AdvancedSearchInitialized)
+            {
+                FindName(nameof(cs_AdvancedSearch));
+                cs_AdvancedSearch.SelectedCategory = SearchResult.Filter;
+                cs_AdvancedSearchInitialized = true;
+            }
         }
 
         public SearchResult SearchResult
@@ -136,6 +127,36 @@ namespace ExViewer.Views
         private void ab_Closed(object sender, object e)
         {
             abOpened = false;
+        }
+
+        private void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if(args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                sender.ItemsSource = Enum.GetNames(typeof(NameSpace)).Where(s => s.StartsWith(sender.Text, StringComparison.CurrentCultureIgnoreCase));
+            }
+        }
+
+        private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            sender.Focus(FocusState.Programmatic);
+        }
+
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            if(args.ChosenSuggestion != null)
+                return;
+            ab.IsOpen = false;
+            init_cs_AdvancedSearch();
+            var searchFilter = cs_AdvancedSearch.SelectedCategory;
+            this.Focus(FocusState.Pointer);
+            var searchKeyWord = args.QueryText;
+            if(SettingCollection.Current.SaveLastSearch)
+            {
+                SettingCollection.Current.DefaultSearchCategory = searchFilter;
+                SettingCollection.Current.DefaultSearchString = searchKeyWord;
+            }
+            Frame.Navigate(typeof(SearchPage), Cache.GetSearchQuery(searchKeyWord, searchFilter));
         }
     }
 }

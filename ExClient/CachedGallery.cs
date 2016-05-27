@@ -1,179 +1,148 @@
-﻿using System;
+﻿using ExClient.Models;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Storage;
-using Windows.Storage.Search;
-using Windows.UI.Xaml.Media.Imaging;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Windows.Storage.Streams;
+using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace ExClient
 {
     public class CachedGallery : Gallery
     {
-        /// <summary>
-        /// 查询已缓存的 <see cref="CachedGallery"/> 列表
-        /// </summary>
-        /// <returns>包含已缓存的 <see cref="CachedGallery"/> 的文件列表</returns>
-        public static StorageFileQueryResult GetCachedGalleries()
+        public static IAsyncOperation<IList<Gallery>> GetCachedGalleriesAsync()
         {
-            var option = new QueryOptions(CommonFileQuery.DefaultQuery, new string[] { ".json" })
+            return Task.Run<IList<Gallery>>(async () =>
             {
-                FolderDepth = FolderDepth.Shallow
-            };
-            var query = CacheHelper.LocalCache.CreateFileQueryWithOptions(option);
-            return query;
+                using(var db = CachedGalleryDb.Create())
+                {
+                    var query = (from c in db.CacheSet
+                                 select new
+                                 {
+                                     c,
+                                     c.Gallery
+                                 }).ToList();
+                    var ret = query.Select(a => (Gallery)new CachedGallery(a.Gallery, a.c)).ToList();
+                    foreach(var item in ret)
+                    {
+                        await item.InitAsync();
+                    }
+                    return ret;
+                }
+            }).AsAsyncOperation();
         }
 
-        /// <summary>
-        /// 清空缓存（包含自动缓存的文件）
-        /// </summary>
-        public static IAsyncAction ClearCachedGalleriesAsync()
+        public static IAsyncActionWithProgress<double> ClearCachedGalleriesAsync()
         {
-            return Run(async token =>
+            return Run<double>(async (token, progress) =>
             {
-                foreach(var item in await CacheHelper.LocalCache.GetItemsAsync())
+                progress.Report(double.NaN);
+                var items = await StorageHelper.LocalCache.GetItemsAsync();
+                double c = items.Count;
+                for(int i = 0; i < items.Count; i++)
                 {
-                    await item.DeleteAsync();
+                    progress.Report(i / c);
+                    await items[i].DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
+                }
+                progress.Report(1);
+                using(var db = CachedGalleryDb.Create())
+                {
+                    db.ImageSet.RemoveRange(db.ImageSet);
+                    db.CacheSet.RemoveRange(db.CacheSet);
+                    await db.SaveChangesAsync();
                 }
             });
         }
 
-        /// <summary>
-        /// 从缓存中载入相应的 <see cref="CachedGallery"/>
-        /// </summary>
-        /// <param name="galleryInfo">要载入的 <see cref="CachedGallery"/> 对应的储存文件，使用<see cref="GetCachedGalleries"/> 获得</param>
-        /// <returns>相应的 <see cref="CachedGallery"/></returns>
-        public static IAsyncOperation<CachedGallery> LoadGalleryAsync(StorageFile galleryInfo)
+        private CachedGallery(GalleryModel model, CachedGalleryModel cacheModel)
+            : base(model.Id, model.Token, 0)
         {
-            return LoadGalleryAsync(galleryInfo, Client.Current);
+            this.Id = model.Id;
+            this.Available = model.Available;
+            this.ArchiverKey = model.ArchiverKey;
+            this.Token = model.Token;
+            this.Title = model.Title;
+            this.TitleJpn = model.TitleJpn;
+            this.Category = model.Category;
+            this.Uploader = model.Uploader;
+            this.Posted = model.Posted;
+            this.FileSize = model.FileSize;
+            this.Expunged = model.Expunged;
+            this.Rating = model.Rating;
+            this.Tags = JsonConvert.DeserializeObject<IEnumerable<string>>(model.Tags).Select(t => new Tag(this, t)).ToList();
+            this.RecordCount = model.RecordCount;
+            this.ThumbUri = new Uri(model.ThumbUri);
+            this.ThumbFile = cacheModel.ThumbData;
+            this.PageCount = (int)Math.Ceiling(RecordCount / 10d);
+            this.Owner = Client.Current;
         }
 
-        /// <summary>
-        /// 从缓存中载入相应的 <see cref="CachedGallery"/>
-        /// </summary>
-        /// <param name="galleryInfo">要载入的 <see cref="CachedGallery"/> 对应的储存文件，使用<see cref="GetCachedGalleries"/> 获得</param>
-        /// <param name="owner">要设置的 <see cref="Owner"/></param>
-        /// <returns>相应的 <see cref="CachedGallery"/></returns>
-        public static IAsyncOperation<CachedGallery> LoadGalleryAsync(StorageFile galleryInfo, Client owner)
+        public override IAsyncAction InitAsync()
         {
-            if(galleryInfo == null)
-                throw new ArgumentNullException(nameof(galleryInfo));
             return Run(async token =>
             {
-                var cache = await GalleryCache.LoadCacheAsync(galleryInfo);
-                var galleryFolder = await CacheHelper.LocalCache.TryGetFolderAsync(cache.Id.ToString());
-                if(galleryFolder == null)
-                    throw new InvalidOperationException("Can't find cache folder of given gallery.");
-                var gallery = new CachedGallery(cache, owner, galleryFolder);
-                await gallery.InitAsync();
-                return gallery;
+                await base.InitAsync();
+                await DispatcherHelper.RunNormalAsync(async () =>
+                {
+                    using(var stream = ThumbFile.AsBuffer().AsRandomAccessStream())
+                    {
+                        await Thumb.SetSourceAsync(stream);
+                    }
+                });
             });
         }
 
-        private CachedGallery(GalleryCache cache, Client owner, StorageFolder folder)
-            : base(cache.Id, cache.Token, 0)
+        private List<ImageModel> imageModels;
+
+        protected byte[] ThumbFile
         {
-            this.cache = cache;
-            ArchiverKey = cache.ArchiverKey;
-            Available = cache.Available;
-            Category = (Category)cache.Category;
-            Expunged = cache.Expunged;
-            FileSize = cache.FileSize;
-            Owner = owner;
-            Posted = DateTimeOffset.FromUnixTimeSeconds(cache.Posted);
-            Rating = cache.Rating;
-            RecordCount = cache.RecordCount;
-            Tags = new ReadOnlyCollection<Tag>(cache.Tags.Select(tag => new Tag(this, tag)).ToList());
-            Title = cache.Title;
-            TitleJpn = cache.TitleJpn;
-            Uploader = cache.Uploader;
-            PageCount = RecordCount / 10 + 1;
-            galleryFolder = folder;
+            get;
+            private set;
         }
 
-        private StorageFolder galleryFolder;
-        public override StorageFolder GalleryFolder => galleryFolder;
-
-        public bool Deleted => galleryFolder == null;
-
-        public IAsyncAction DeleteAsync()
+        private void loadImageModel()
         {
-            throwIfDeleted();
-            lock(galleryFolder)
+            if(imageModels != null)
+                return;
+            using(var db = CachedGalleryDb.Create())
             {
-                throwIfDeleted();
-                var temp = galleryFolder;
-                galleryFolder = null;
-                return Run(async token =>
-                {
-                    await temp.DeleteAsync();
-                    await cache.DeleteCacheAsync();
-                });
+                imageModels = (from g in db.GallerySet
+                               where g.Id == Id
+                               select g.Images).Single();
             }
         }
-
-        private GalleryCache cache;
-
-        private void throwIfDeleted()
-        {
-            if(Deleted)
-                throw new InvalidOperationException("The gallery has been deleted.");
-        }
-
-        internal IAsyncAction InitAsync()
-        {
-            return Run(async token =>
-            {
-                throwIfDeleted();
-                await LoadStorageInfoAsync();
-                BitmapImage thumb;
-                var thumbFile = await GalleryFolder.GetFileAsync(ThumbFileName);
-                if(thumbFile == null)
-                    thumb = new BitmapImage(new Uri(cache.Thumb));
-                else
-                    using(var source = await thumbFile.OpenReadAsync())
-                    {
-                        thumb = new BitmapImage();
-                        await thumb.SetSourceAsync(source);
-                    }
-                this.Thumb = thumb;
-            });
-        }
-
-        private int loadedCount = 0;
 
         protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
         {
             return Run(async token =>
             {
-                throwIfDeleted();
-                uint i = 0;
-                var max = (pageIndex + 1) * 10;
-                while(this.loadedCount < this.cache.ImageKeys.Count && this.loadedCount < max)
+                if(GalleryFolder == null)
+                    await CreateFolderAsync();
+                loadImageModel();
+                var count = 0u;
+                for(; count < 10 && Count < RecordCount; count++)
                 {
-                    var image = GalleryImage.LoadCachedImage(this, loadedCount + 1, ImageFiles[loadedCount + 1], this.cache.ImageKeys[loadedCount]);
-                    await Task.Delay(1);
-                    this.Add(image);
-                    this.loadedCount++;
-                    i++;
+                    // Load cache
+                    var image = await GalleryImage.LoadCachedImageAsync(this, imageModels.Find(i => i.PageId == Count + 1));
+                    if(image != null)
+                    {
+                        this.Add(image);
+                        continue;
+                    }
                 }
-                return i;
+                return count;
             });
         }
 
-        private readonly IAsyncActionWithProgress<SaveGalleryProgress> saveGalleryAction = Run<SaveGalleryProgress>(async (token, progress) =>
-         {
-             await Task.Yield();
-             return;
-         });
-
-        public override IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAction => saveGalleryAction;
-
-        public override IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync(ConnectionStrategy strategy)
+        public override IAsyncAction DeleteAsync()
         {
-            return saveGalleryAction;
+            return base.DeleteAsync();
         }
     }
 }

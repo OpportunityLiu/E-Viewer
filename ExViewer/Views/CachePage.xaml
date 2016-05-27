@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       NavigationCacheMode="Enabled"
+      x:Name="page"
       mc:Ignorable="d">
     <Page.Transitions>
         <TransitionCollection>
@@ -34,7 +35,7 @@
             </CommandBar.Content>
             <CommandBar.PrimaryCommands>
                 <AppBarButton x:Name="abb_Refresh"
-                              Click="abb_Refresh_Click"
+                              Command="{x:Bind VM.Refresh}"
                               Icon="Refresh"
                               Label="Refresh" />
             </CommandBar.PrimaryCommands>
@@ -46,8 +47,7 @@
             </CommandBar.SecondaryCommands>
         </CommandBar>
         <ListView x:Name="lv"
-                  ItemsSource="{x:Bind cached}"
-                  ContinuumNavigationTransitionInfo.ExitElementContainer="True"
+                  ItemsSource="{x:Bind VM.CachedGalleries, Mode=OneWay}"
                   IsItemClickEnabled="True"
                   ItemClick="lv_ItemClick"
                   RelativePanel.AlignBottomWithPanel="True"
@@ -68,7 +68,8 @@
                             <MenuFlyout>
                                 <MenuFlyoutItem x:Name="mfi_DeleteGallery"
                                                 Text="Delete"
-                                                Click="mfi_DeleteGallery_Click" />
+                                                Command="{Binding VM.Delete, ElementName=page}"
+                                                CommandParameter="{x:Bind}" />
                             </MenuFlyout>
                         </FlyoutBase.AttachedFlyout>
                     </controls:GalleryViewer>
@@ -88,8 +89,14 @@
         <TextBlock x:Name="tb_Empty"
                    Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind cached.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}}"
+                   Visibility="{x:Bind VM.CachedGalleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
                    RelativePanel.Below="cb_top"
                    RelativePanel.AlignHorizontalCenterWithPanel="True">No cached galleries</TextBlock>
+        <TextBlock x:Name="tb_Loading"
+                   Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind VM.CachedGalleries, Mode=OneWay, Converter={StaticResource NullToVisibleConverter}}"
+                   RelativePanel.Below="cb_top"
+                   RelativePanel.AlignHorizontalCenterWithPanel="True">Loading...</TextBlock>
     </RelativePanel>
 </Page>

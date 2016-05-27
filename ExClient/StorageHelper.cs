@@ -9,11 +9,13 @@ namespace ExClient
     /// <summary>
     /// 用于操作缓存文件夹的辅助类
     /// </summary>
-    internal static class CacheHelper
+    internal static class StorageHelper
     {
         private readonly static StorageFolder localCache = ApplicationData.Current.LocalCacheFolder;
+        private readonly static StorageFolder localState = ApplicationData.Current.LocalFolder;
 
         public static StorageFolder LocalCache => localCache;
+        public static StorageFolder LocalState => localState;
 
         public static IAsyncOperation<StorageFile> TryGetFileAsync(this StorageFolder folder, string name)
         {
@@ -24,13 +26,24 @@ namespace ExClient
             return Run(async token => (StorageFolder)await folder.TryGetItemAsync(name));
         }
 
-        public static IAsyncOperation<StorageFile> SaveFileAsync(string folderName, string fileName, IBuffer buffer)
+        public static IAsyncOperation<StorageFile> SaveFileAsync(this StorageFolder folder, string fileName, IBuffer buffer)
         {
             return Run(async token =>
             {
-                var folder = await localCache.CreateFolderAsync(folderName, CreationCollisionOption.OpenIfExists);
                 var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteBufferAsync(file, buffer);
+                return file;
+            });
+        }
+
+        public static IAsyncOperation<StorageFile> LoadFileAsync(string folderName, string fileName)
+        {
+            return Run(async token =>
+            {
+                var folder = await localCache.TryGetFolderAsync(folderName);
+                if(folder == null)
+                    return null;
+                var file = await folder.TryGetFileAsync(fileName);
                 return file;
             });
         }

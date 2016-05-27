@@ -1,33 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Web.Http;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using System.Runtime.InteropServices;
-using Windows.Foundation;
+﻿using ExClient.Models;
 using Newtonsoft.Json;
+using System;
 
 namespace ExClient
 {
+    public enum NameSpace
+    {
+        Misc = 0,
+        Artist,
+        Character,
+        Female,
+        Group,
+        Language,
+        Male,
+        Parody,
+        Reclass
+    }
+
     public class Tag
     {
         private static readonly char[] split = new char[] { ':' };
-        private static readonly string defaultNameSpace = "misc";
-        
 
         internal Tag(Gallery owner, string content)
         {
             var splited = content.Split(split, 2);
             if(splited.Length == 2)
             {
-                NameSpace = splited[0];
+                NameSpace = (NameSpace)Enum.Parse(typeof(NameSpace), splited[0], true);
                 Content = splited[1];
             }
             else
             {
-                NameSpace = defaultNameSpace;
                 Content = splited[0];
             }
             this.Owner = owner;
@@ -36,22 +39,25 @@ namespace ExClient
         public Gallery Owner
         {
             get;
+            internal set;
         }
 
-        public string NameSpace
+        public NameSpace NameSpace
         {
             get;
+            internal set;
         }
 
         public string Content
         {
             get;
+            internal set;
         }
 
         private string getKeyWord()
         {
             var keyword = $"\"{Content}$\"";
-            if(NameSpace != defaultNameSpace)
+            if(NameSpace != NameSpace.Misc)
                 keyword = $"{NameSpace}:{keyword}";
             return keyword;
         }
@@ -80,7 +86,7 @@ namespace ExClient
 
         public override string ToString()
         {
-            if(NameSpace == defaultNameSpace)
+            if(NameSpace == NameSpace.Misc)
                 return Content;
             return $"{NameSpace}:{Content}";
         }
