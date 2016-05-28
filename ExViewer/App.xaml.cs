@@ -55,7 +55,6 @@ namespace ExViewer
                 return;
 
             var current = Window.Current;
-            DispatcherHelper.SetDispatcher(current.Dispatcher);
             GalaSoft.MvvmLight.Threading.DispatcherHelper.Initialize();
             var currentContent = current.Content;
             var splash = currentContent as Views.SplashControl;

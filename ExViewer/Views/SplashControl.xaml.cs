@@ -1,6 +1,7 @@
 ﻿using ExClient;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
+using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,6 +36,8 @@ namespace ExViewer.Views
         public SplashControl()
         {
             this.InitializeComponent();
+            var imgN = new Random().Next(8);
+            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Assets/Splashes/botm{imgN}.png"));
         }
 
         public SplashControl(SplashScreen splashScreen) : this()
@@ -60,11 +63,10 @@ namespace ExViewer.Views
 
         private async void splash_Loaded(object sender, RoutedEventArgs e)
         {
-            var imgN = new Random().Next(8);
-            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Assets/Splashes/botm{imgN}.png"));
-
             ((Storyboard)Resources["ShowPic"]).Begin();
             Themes.ThemeExtention.SetDefaultTitleBar();
+
+            SimpleIoc.Default.Register<CacheVM>();
 
             if(SettingCollection.Current.NeedVerify)
             {
@@ -130,7 +132,7 @@ namespace ExViewer.Views
                     SettingCollection.SetHah();
                     await Cache.GetSearchResult(sr).LoadMoreItemsAsync(40);
                 }
-                catch(InvalidOperationException)
+                catch(Exception)
                 {
                     //failed to search
                     sr = null;

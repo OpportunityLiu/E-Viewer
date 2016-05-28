@@ -66,7 +66,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        private static CacheStorage<SearchResult> srCache = new CacheStorage<SearchResult>()
+        private static CacheStorage<SearchResult> srCache = new CacheStorage<SearchResult>
         {
             Loader = query =>
             {

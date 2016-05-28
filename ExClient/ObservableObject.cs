@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Threading;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -20,12 +21,12 @@ namespace ExClient
             RaisePropertyChanged(propertyName);
         }
 
-        protected async void RaisePropertyChanged([CallerMemberName]string propertyName = null)
+        protected void RaisePropertyChanged([CallerMemberName]string propertyName = null)
         {
             var temp = PropertyChanged;
             if(temp == null)
                 return;
-            await DispatcherHelper.RunLowAsync(() => temp(this, new PropertyChangedEventArgs(propertyName)));
+            DispatcherHelper.CheckBeginInvokeOnUI(() => temp(this, new PropertyChangedEventArgs(propertyName)));
         }
     }
 }

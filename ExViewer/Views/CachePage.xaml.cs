@@ -1,5 +1,6 @@
 ﻿using ExClient;
 using ExViewer.ViewModels;
+using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,7 +30,7 @@ namespace ExViewer.Views
         public CachePage()
         {
             this.InitializeComponent();
-            VM = new CacheVM();
+            VM = SimpleIoc.Default.GetInstance<CacheVM>();
             cdg_ConfirmClear = new ContentDialog()
             {
                 Title = "ARE YOU SURE",
