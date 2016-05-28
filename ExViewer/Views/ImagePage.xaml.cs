@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.ViewManagement;
 using ExViewer.Settings;
+using ExViewer.ViewModels;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -32,30 +33,35 @@ namespace ExViewer.Views
             this.InitializeComponent();
             var backColor = ((SolidColorBrush)Resources["ApplicationPageBackgroundThemeBrush"]).Color;
             var needColor = (Color)Resources["SystemChromeMediumColor"];
-            var toColor = Color.FromArgb(255,
+            var toColor = Color.FromArgb(74,
                 (byte)(backColor.R - 2 * (backColor.R - needColor.R)),
                 (byte)(backColor.G - 2 * (backColor.G - needColor.G)),
                 (byte)(backColor.B - 2 * (backColor.B - needColor.B)));
-            cb_top.Background = new SolidColorBrush(toColor) { Opacity = 0.29 };
+
+            cb_top.Background = new SolidColorBrush(toColor);
+            cb_top_OpenAnimation.From = toColor;
+            cb_top_OpenAnimation.To = needColor;
+            cb_top_CloseAnimation.From = needColor;
+            cb_top_CloseAnimation.To = toColor;
         }
 
-        public ExClient.Gallery Gallery
+        public GalleryVM VM
         {
             get
             {
-                return (ExClient.Gallery)GetValue(GalleryProperty);
+                return (GalleryVM)GetValue(VMProperty);
             }
             set
             {
-                SetValue(GalleryProperty, value);
+                SetValue(VMProperty, value);
             }
         }
 
-        ApplicationView av = ApplicationView.GetForCurrentView();
+        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VMProperty =
+            DependencyProperty.Register("VM", typeof(GalleryVM), typeof(ImagePage), new PropertyMetadata(null));
 
-        // Using a DependencyProperty as the backing store for Gallery.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty GalleryProperty =
-            DependencyProperty.Register("Gallery", typeof(ExClient.Gallery), typeof(ImagePage), new PropertyMetadata(null));
+        ApplicationView av = ApplicationView.GetForCurrentView();
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
@@ -65,15 +71,11 @@ namespace ExViewer.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            base.OnNavigatedTo(e);
+
             cb_top.Visibility = Visibility.Visible;
 
-            this.mouseInertialFactor = SettingCollection.Current.MouseInertialFactor;
-            enableMouseInertia = mouseInertialFactor > 0.05;
-
-            var param = (ExClient.Gallery)e.Parameter;
-            fv.ItemsSource = Gallery = param;
-            base.OnNavigatedTo(e);
-            fv.SelectedIndex = Gallery.CurrentImage;
+            VM = GalleryVM.GetVM((long)e.Parameter);
 
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(av, null);
@@ -81,9 +83,6 @@ namespace ExViewer.Views
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            Gallery.CurrentImage = fv.SelectedIndex;
-            fv.ItemsSource = Gallery = null;
-
             base.OnNavigatingFrom(e);
             av.VisibleBoundsChanged -= Av_VisibleBoundsChanged;
         }
@@ -120,7 +119,7 @@ namespace ExViewer.Views
             int lb = fv.SelectedIndex - 2;
             int ub = fv.SelectedIndex + 3;
             lb = lb < 0 ? 0 : lb;
-            ub = ub > Gallery.Count ? Gallery.Count : ub;
+            ub = ub > VM.Gallery.Count ? VM.Gallery.Count : ub;
             for(int i = lb; i < ub; i++)
             {
                 if(i == fv.SelectedIndex)
@@ -136,44 +135,25 @@ namespace ExViewer.Views
 
         private void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(Gallery == null)
+            if(VM?.Gallery == null)
                 return;
             var start = fv.SelectedIndex;
             if(start < 0)
                 return;
             var end = start + 5;
-            if(end > Gallery.Count)
+            if(end > VM.Gallery.Count)
             {
-                end = Gallery.Count;
+                end = VM.Gallery.Count;
             }
-            if(end + 10 > Gallery.Count && Gallery.RecordCount > Gallery.Count)
+            if(end + 10 > VM.Gallery.Count && VM.Gallery.HasMoreItems)
             {
-                var ignore = Gallery.LoadMoreItemsAsync(5);
+                var ignore = VM.Gallery.LoadMoreItemsAsync(5);
             }
             for(int i = start; i < end; i++)
             {
-                var ignore = Gallery[i].LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
+                var ignore = VM.Gallery[i].LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
             }
             setScale();
-        }
-
-        private async void abb_reload_Click(object sender, RoutedEventArgs e)
-        {
-            var image = Gallery[fv.SelectedIndex];
-            if(image.OriginalLoaded)
-                await image.LoadImageAsync(true, ExClient.ConnectionStrategy.AllFull, false);
-            else
-                await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
-        }
-
-        private async void abb_LoadOriginal_Click(object sender, RoutedEventArgs e)
-        {
-            await Gallery[fv.SelectedIndex].LoadImageAsync(true, ExClient.ConnectionStrategy.AllFull, false);
-        }
-
-        private async void abb_open_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(Gallery[fv.SelectedIndex].PageUri);
         }
 
         private System.Threading.CancellationTokenSource changeCbVisibility;
@@ -252,60 +232,32 @@ namespace ExViewer.Views
             setFactor(s, p);
         }
 
-        private bool enableMouseInertia;
-        private double mouseInertialFactor;
-
         private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if(e.Handled)
                 return;
-            if(!enableMouseInertia && e.IsInertial)
+            if(!SettingCollection.Current.MouseInertial && e.IsInertial)
                 return;
             var dx = e.Delta.Translation.X;
             var dy = e.Delta.Translation.Y;
-            if(e.IsInertial)
-            {
-                dx *= mouseInertialFactor;
-                dy *= mouseInertialFactor;
-            }
             var sv = (ScrollViewer)sender;
             sv.ScrollToHorizontalOffset(sv.HorizontalOffset - dx);
             sv.ScrollToVerticalOffset(sv.VerticalOffset - dy);
         }
 
-        private void setSvManipulationMode(object sender, PointerRoutedEventArgs e)
+        private async void Flyout_Opening(object sender, object e)
         {
-            var sv = (ScrollViewer)sender;
-            switch(e.Pointer.PointerDeviceType)
-            {
-            case Windows.Devices.Input.PointerDeviceType.Touch:
-                sv.ManipulationMode = ManipulationModes.System;
-                break;
-            case Windows.Devices.Input.PointerDeviceType.Pen:
-            case Windows.Devices.Input.PointerDeviceType.Mouse:
-                var mode = ManipulationModes.System | ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-                if(enableMouseInertia)
-                    mode |= ManipulationModes.TranslateInertia;
-                sv.ManipulationMode = mode;
-                break;
-            default:
-                break;
-            }
+            await VM.RefreshInfoAsync();
         }
 
-        private void sv_PointerMoved(object sender, PointerRoutedEventArgs e)
+        private void cb_top_Opening(object sender, object e)
         {
-            setSvManipulationMode(sender, e);
+            cb_top_Open.Begin();
         }
 
-        private void sv_PointerEntered(object sender, PointerRoutedEventArgs e)
+        private void cb_top_Closing(object sender, object e)
         {
-            setSvManipulationMode(sender, e);
-        }
-
-        private void sv_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            setSvManipulationMode(sender, e);
+            cb_top_Close.Begin();
         }
 
         private void abb_fullScreen_Click(object sender, RoutedEventArgs e)
@@ -318,51 +270,6 @@ namespace ExViewer.Views
             {
                 av.ExitFullScreenMode();
             }
-        }
-
-        private async void Flyout_Opening(object sender, object e)
-        {
-            var image = (fv.SelectedItem as ExClient.GalleryImage);
-            if(image == null || image.Image == null)
-            {
-                tb_Info.Text = "The image hasn't finished loading";
-                btn_OpenInExplorer.Visibility = Visibility.Collapsed;
-                return;
-            }
-            var prop = await image.ImageFile.GetBasicPropertiesAsync();
-            var imageProp = await image.ImageFile.Properties.GetImagePropertiesAsync();
-            tb_Info.Text = $@"File name: {image.ImageFile.Name}
-Size: {ByteToString(prop.Size)}
-Dimensions: {imageProp.Width} × {imageProp.Height}";
-            btn_OpenInExplorer.Visibility = Visibility.Visible;
-        }
-
-        private async void btn_OpenInExplorer_Click(object sender, RoutedEventArgs e)
-        {
-            var image = (fv.SelectedItem as ExClient.GalleryImage)?.ImageFile;
-            if(image == null)
-            {
-                return;
-            }
-            var folder = await image.GetParentAsync();
-            await Launcher.LaunchFolderAsync(folder);
-        }
-
-        private static string ByteToString(ulong byteCount)
-        {
-            if(byteCount < 1024ul)
-                return $"{byteCount} B";
-            double bInK = byteCount / 1024.0;
-            if(byteCount < 1024ul * 1024ul)
-                return $"{bInK:F2} KiB";
-            double bInM = bInK / 1024.0;
-            if(byteCount < 1024ul * 1024ul * 1024ul)
-                return $"{bInM:F2} MiB";
-            double bInG = bInM / 1024.0;
-            if(byteCount < 1024ul * 1024ul * 1024ul * 1024ul)
-                return $"{bInG:F2} GiB";
-            double bInT = bInG / 1024.0;
-            return $"{bInT:F2} TiB";
         }
     }
 }

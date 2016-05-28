@@ -43,6 +43,7 @@
                 <AutoSuggestBox x:Name="asb"
                                 Grid.Column="1"
                                 Margin="8"
+                                Text="{x:Bind VM.KeyWord, Mode=TwoWay}"
                                 PlaceholderText="Search..."
                                 QuerySubmitted="AutoSuggestBox_QuerySubmitted"
                                 TextChanged="asb_TextChanged"
@@ -55,17 +56,18 @@
                         </Style>
                     </AutoSuggestBox.TextBoxStyle>
                 </AutoSuggestBox>
-                <controls:CategorySelector x:Name="cs_AdvancedSearch"
+                <controls:CategorySelector x:Name="cs_Category"
                                            Grid.Row="1"
                                            Grid.Column="1"
                                            Margin="0,0,0,0"
+                                           SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
                                            x:DeferLoadStrategy="Lazy"
                                            HorizontalAlignment="Center" />
             </Grid>
         </AppBar>
         <ListView x:Name="lv"
                   ContinuumNavigationTransitionInfo.ExitElementContainer="True"
-                  ItemsSource="{x:Bind SearchResult, Mode=OneWay}"
+                  ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
                   IncrementalLoadingThreshold="0.5"
                   IsItemClickEnabled="True"
                   ItemClick="lv_ItemClick"
@@ -95,12 +97,12 @@
                 <TextBlock HorizontalAlignment="Center"
                            Margin="12"
                            Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind SearchResult.HasMoreItems, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more galleries...</TextBlock>
+                           Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more galleries...</TextBlock>
             </ListView.Footer>
         </ListView>
         <TextBlock Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                   Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
                    RelativePanel.Below="ab"
                    RelativePanel.AlignHorizontalCenterWithPanel="True">No hits found</TextBlock>
     </RelativePanel>

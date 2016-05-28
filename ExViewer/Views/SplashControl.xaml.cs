@@ -110,8 +110,6 @@ namespace ExViewer.Views
                 }
             }
 
-            string sr = Cache.GetSearchQuery(SettingCollection.Current.DefaultSearchString, SettingCollection.Current.DefaultSearchCategory);
-
             if(Client.Current.NeedLogOn)
             {
                 var pv = new PasswordVault();
@@ -127,18 +125,8 @@ namespace ExViewer.Views
             }
             if(!Client.Current.NeedLogOn)
             {
-                try
-                {
-                    SettingCollection.SetHah();
-                    await Cache.GetSearchResult(sr).LoadMoreItemsAsync(40);
-                }
-                catch(Exception)
-                {
-                    //failed to search
-                    sr = null;
-                }
             }
-            rc = new RootControl(sr);
+            rc = new RootControl();
             loaded = true;
             if(goToContent)
                 GoToContent();

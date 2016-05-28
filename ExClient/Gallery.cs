@@ -17,6 +17,7 @@ using Windows.Graphics.Imaging;
 using System.Threading;
 using Windows.Storage;
 using Windows.Storage.Search;
+using ExClient.Models;
 
 namespace ExClient
 {
@@ -37,6 +38,24 @@ namespace ExClient
     [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count} RecordCount = {RecordCount}\}")]
     public class Gallery : IncrementalLoadingCollection<GalleryImage>
     {
+        public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
+        {
+            return Task.Run(()=>
+            {
+                using(var db = CachedGalleryDb.Create())
+                {
+                    var cm = db.CacheSet.SingleOrDefault(c => c.GalleryId == galleryId);
+                    var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
+                    if(gm == null)
+                        return null;
+                    if(cm == null)
+                        return new Gallery(gm);
+                    else
+                        return new CachedGallery(gm, cm);
+                }
+            }).AsAsyncOperation();
+        }
+
         internal const string ThumbFileName = "thumb.jpg";
 
         private static readonly Dictionary<string, Category> categories = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
@@ -54,8 +73,6 @@ namespace ExClient
         };
 
         private IAsyncActionWithProgress<SaveGalleryProgress> saveTask;
-
-        public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAction => saveTask;
 
         public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync(ConnectionStrategy strategy)
         {
@@ -110,6 +127,30 @@ namespace ExClient
             this.Id = id;
             this.Token = token;
             this.GalleryUri = new Uri(galleryBaseUri, $"{Id.ToString()}/{Token}/");
+        }
+
+        internal Gallery(GalleryModel model)
+            : this(model.Id, model.Token, 0)
+        {
+            this.Id = model.Id;
+            this.Available = model.Available;
+            this.ArchiverKey = model.ArchiverKey;
+            this.Token = model.Token;
+            this.Title = model.Title;
+            this.TitleJpn = model.TitleJpn;
+            this.Category = model.Category;
+            this.Uploader = model.Uploader;
+            this.Posted = model.Posted;
+            this.FileSize = model.FileSize;
+            this.Expunged = model.Expunged;
+            this.Rating = model.Rating;
+            this.Tags = JsonConvert.DeserializeObject<IEnumerable<string>>(model.Tags).Select(t => new Tag(this, t)).ToList();
+            this.RecordCount = model.RecordCount;
+            this.ThumbUri = new Uri(model.ThumbUri);
+            this.Thumb.UriSource = ThumbUri;
+            this.Owner = Client.Current;
+            if(this.RecordCount > 0)
+                this.PageCount = 1;
         }
 
         [JsonConstructor]
@@ -172,12 +213,12 @@ namespace ExClient
         {
             return Task.Run(() =>
             {
-                using(var db = Models.CachedGalleryDb.Create())
+                using(var db = CachedGalleryDb.Create())
                 {
                     var myModel = db.GallerySet.SingleOrDefault(model => model.Id == this.Id);
                     if(myModel == null)
                     {
-                        db.GallerySet.Add(new Models.GalleryModel().Update(this));
+                        db.GallerySet.Add(new GalleryModel().Update(this));
                     }
                     else
                     {
@@ -276,19 +317,6 @@ namespace ExClient
         }
 
         #endregion
-        private int currentImage;
-
-        public int CurrentImage
-        {
-            get
-            {
-                return currentImage;
-            }
-            set
-            {
-                Set(ref currentImage, value);
-            }
-        }
 
         public Client Owner
         {
@@ -330,16 +358,16 @@ namespace ExClient
                 var html = new HtmlDocument();
                 html.LoadHtml(res);
                 var pcNodes = html.DocumentNode.Descendants("td")
-                            .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
-                            .Select(node =>
-                            {
-                                int i;
-                                var su = int.TryParse(node.InnerText, out i);
-                                return Tuple.Create(su, i);
-                            })
-                            .Where(select => select.Item1)
-                            .DefaultIfEmpty(Tuple.Create(true, 1))
-                            .Max(select => select.Item2);
+                              .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
+                              .Select(node =>
+                              {
+                                  int i;
+                                  var su = int.TryParse(node.InnerText, out i);
+                                  return Tuple.Create(su, i);
+                              })
+                              .Where(select => select.Item1)
+                              .DefaultIfEmpty(Tuple.Create(true, 1))
+                              .Max(select => select.Item2);
                 PageCount = pcNodes;
                 var pics = (from node in html.GetElementbyId("gdt").Descendants("div")
                             where node.GetAttributeValue("class", null) == "gdtm"
@@ -406,7 +434,26 @@ namespace ExClient
 
         public virtual IAsyncAction DeleteAsync()
         {
-            throw new NotImplementedException();
+            return Run(async token =>
+            {
+                if(GalleryFolder == null)
+                {
+                    await CreateFolderAsync();
+                }
+                var temp = GalleryFolder;
+                GalleryFolder = null;
+                await temp.DeleteAsync();
+                using(var db = Models.CachedGalleryDb.Create())
+                {
+                    db.ImageSet.RemoveRange(db.ImageSet.Where(i => i.OwnerId == this.Id));
+                    await db.SaveChangesAsync();
+                }
+                var c = this.RecordCount;
+                ResetAll();
+                this.RecordCount = c;
+                if(this.RecordCount > 0)
+                    this.PageCount = 1;
+            });
         }
     }
 }

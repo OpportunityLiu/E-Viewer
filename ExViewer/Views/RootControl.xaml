@@ -27,9 +27,35 @@
                              Storyboard.TargetName="rp_Disable"
                              Storyboard.TargetProperty="(UIElement.Opacity)">
                 <DoubleAnimation.EasingFunction>
-                    <PowerEase />
+                    <PowerEase EasingMode="EaseOut" />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="PlayToastPanel">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="cp_Toast"
+                                           Storyboard.TargetProperty="(UIElement.Opacity)"
+                                           Duration="0:0:3">
+                <EasingDoubleKeyFrame KeyTime="0:0:0"
+                                      Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseIn" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2"
+                                      Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseIn" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <LinearDoubleKeyFrame KeyTime="0:0:1"
+                                      Value="1" />
+                <EasingDoubleKeyFrame KeyTime="0:0:3"
+                                      Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </UserControl.Resources>
     <Grid>
@@ -80,6 +106,18 @@
                    Navigated="fm_inner_Navigated"
                    NavigationFailed="fm_inner_NavigationFailed" />
         </SplitView>
+        <ContentPresenter x:Name="cp_Toast"
+                          Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Bottom"
+                          HorizontalContentAlignment="Center"
+                          VerticalContentAlignment="Center"
+                          Opacity="0"
+                          Visibility="Collapsed"
+                          Content="12"
+                          Padding="16,8">
+
+        </ContentPresenter>
         <RelativePanel x:Name="rp_Disable"
                        Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}"
                        Visibility="Collapsed">

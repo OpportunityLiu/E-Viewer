@@ -72,7 +72,7 @@ namespace ExClient
             return Owner.Owner.Search(getKeyWord(), filter);
         }
 
-        public SearchResult Search(Category filter, IAdvancedSearchOptions advancedSearch)
+        public SearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
         {
             return Owner.Owner.Search(getKeyWord(), filter, advancedSearch);
         }

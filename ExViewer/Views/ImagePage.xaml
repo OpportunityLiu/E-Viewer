@@ -15,6 +15,26 @@
     </Page.Transitions>
     <Page.Resources>
         <local:LoadStateToVisualStateConverter x:Key="LoadStateToVisualStateConverter" />
+        <Storyboard x:Name="cb_top_Open">
+            <ColorAnimation x:Name="cb_top_OpenAnimation"
+                            Duration="0:0:0.15"
+                            Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                            Storyboard.TargetName="cb_top">
+                <ColorAnimation.EasingFunction>
+                    <PowerEase EasingMode="EaseOut" />
+                </ColorAnimation.EasingFunction>
+            </ColorAnimation>
+        </Storyboard>
+        <Storyboard x:Name="cb_top_Close">
+            <ColorAnimation x:Name="cb_top_CloseAnimation"
+                            Duration="0:0:0.15"
+                            Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                            Storyboard.TargetName="cb_top">
+                <ColorAnimation.EasingFunction>
+                    <PowerEase EasingMode="EaseIn" />
+                </ColorAnimation.EasingFunction>
+            </ColorAnimation>
+        </Storyboard>
     </Page.Resources>
     <RelativePanel>
         <VisualStateManager.VisualStateGroups>
@@ -37,7 +57,9 @@
                   RelativePanel.AlignBottomWithPanel="True"
                   EntranceNavigationTransitionInfo.IsTargetElement="True"
                   RelativePanel.AlignTopWithPanel="True"
-                  SelectionChanged="fv_SelectionChanged">
+                  SelectionChanged="fv_SelectionChanged"
+                  ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
+                  SelectedItem="{x:Bind VM.Current, Mode=TwoWay, Converter={StaticResource EmptyConverter}}">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
@@ -78,9 +100,7 @@
                                       Grid.RowSpan="2"
                                       SizeChanged="sv_SizeChanged"
                                       ManipulationDelta="sv_ManipulationDelta"
-                                      PointerMoved="sv_PointerMoved"
-                                      PointerEntered="sv_PointerEntered"
-                                      PointerPressed="sv_PointerPressed">
+                                      ManipulationMode="All">
                             <Image Source="{x:Bind Image, Mode=OneWay}"
                                    SizeChanged="Image_SizeChanged" />
                         </ScrollViewer>
@@ -91,11 +111,9 @@
         <CommandBar x:Name="cb_top"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True"
-                    HorizontalContentAlignment="Stretch">
-            <CommandBar.Background>
-                <SolidColorBrush Color="{ThemeResource SystemChromeMediumColor}"
-                                 Opacity="0.5" />
-            </CommandBar.Background>
+                    HorizontalContentAlignment="Stretch"
+                    Opening="cb_top_Opening"
+                    Closing="cb_top_Closing">
             <CommandBar.Content>
                 <RelativePanel>
                     <Button x:Name="btn_pane"
@@ -105,7 +123,7 @@
                             Width="48"
                             Click="btn_pane_Click" />
                     <TextBlock x:Name="tb_Title"
-                               Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                               Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Grid.Column="1"
                                Margin="8,0"
@@ -117,12 +135,12 @@
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_si">
                         <ToolTipService.ToolTip>
-                            <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                            <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                        TextWrapping="WrapWholeWords" />
                         </ToolTipService.ToolTip>
                     </TextBlock>
                     <TextBlock x:Name="tb_si"
-                               Text="{Binding ElementName=fv, Path=SelectedItem.PageId, Mode=OneWay}"
+                               Text="{x:Bind VM.Current.PageId, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=\{0\}}"
                                Style="{StaticResource BodyTextBlockStyle}"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_sep" />
@@ -133,7 +151,7 @@
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_rc" />
                     <TextBlock x:Name="tb_rc"
-                               Text="{x:Bind Gallery.RecordCount, Mode=OneWay}"
+                               Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay}"
                                Style="{StaticResource BodyTextBlockStyle}"
                                RelativePanel.AlignRightWithPanel="True"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
@@ -149,29 +167,31 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_reload"
                               Label="Reload"
-                              Click="abb_reload_Click" />
+                              Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
+                              CommandParameter="{x:Bind VM.Current, Mode=OneWay}" />
                 <AppBarButton x:Name="abb_LoadOriginal"
                               Label="Load original image"
-                              Click="abb_LoadOriginal_Click"
-                              IsEnabled="{Binding ElementName=fv, Path=SelectedItem.OriginalLoaded, Mode=OneWay, Converter={StaticResource LogicalNotConverter}}" />
+                              Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
+                              CommandParameter="{x:Bind VM.Current, Mode=OneWay}" />
                 <AppBarButton x:Name="abb_open"
                               Label="Open in browser"
-                              Click="abb_open_Click" />
+                              Command="{x:Bind VM.OpenInBrowser, Mode=OneWay}"
+                              CommandParameter="{x:Bind VM.Current, Mode=OneWay}"/>
                 <AppBarSeparator />
                 <AppBarButton x:Name="abb_Info"
                               Label="Image infomation">
                     <AppBarButton.Flyout>
-                        <Flyout Opening="Flyout_Opening"
-                                Placement="Bottom"
+                        <Flyout Placement="Bottom"
+                                Opening="Flyout_Opening"
                                 ScrollViewer.VerticalScrollMode="Disabled">
                             <StackPanel>
-                                <TextBlock x:Name="tb_Info">
-                                    File name: 1.original.png<LineBreak />Size: 4.12MiB<LineBreak />Dimensions: 4444 × 3333
-                                </TextBlock>
+                                <TextBlock x:Name="tb_Info"
+                                           Text="{x:Bind VM.CurrentInfo, Mode=OneWay, TargetNullValue=The image hasn\&apos;t finished loading}" />
                                 <Button x:Name="btn_OpenInExplorer"
                                         Content="Open in explorer"
+                                        Visibility="{x:Bind VM.CurrentInfo, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                                         Style="{StaticResource TextBlockButtonStyle}"
-                                        Click="btn_OpenInExplorer_Click"
+                                        Command="{x:Bind VM.OpenInExplorer, Mode=OneWay}"
                                         BorderThickness="0"
                                         Padding="0"
                                         Margin="0,4,0,0" />
