@@ -79,7 +79,8 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Frame.Navigate(typeof(GalleryPage), e.ClickedItem);
+            if(VM.Open.CanExecute(e.ClickedItem))
+                VM.Open.Execute(e.ClickedItem);
         }
 
         private ContentDialog cdg_ConfirmClear;

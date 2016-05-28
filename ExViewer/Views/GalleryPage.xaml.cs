@@ -36,22 +36,11 @@ namespace ExViewer.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(e.NavigationMode == NavigationMode.New)
+            VM = GalleryVM.GetVM((long)e.Parameter);
+            if(e.NavigationMode == NavigationMode.Back)
             {
-                Gallery = (Gallery)e.Parameter;
-                pb_save.Maximum = Gallery.RecordCount;
-                pb_save.Value = 0;
-                pb_save.Visibility = Visibility.Collapsed;
-                pb_save.ClearValue(ForegroundProperty);
-                var save = Gallery.SaveGalleryAction;
-                if(save != null)
-                    saveProgressHandler(save);
-            }
-            else if(e.NavigationMode == NavigationMode.Back)
-            {
-                gv.SelectedIndex = Gallery.CurrentImage;
-                gv.ScrollIntoView(Gallery[Gallery.CurrentImage]);
-                entranceElement = (UIElement)gv.ContainerFromIndex(Gallery.CurrentImage);
+                gv.ScrollIntoView(VM.Current);
+                entranceElement = (UIElement)gv.ContainerFromItem(VM.Current);
                 if(entranceElement != null)
                     EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
             }
@@ -68,25 +57,25 @@ namespace ExViewer.Views
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Gallery.CurrentImage = Gallery.IndexOf((GalleryImage)e.ClickedItem);
-            Frame.Navigate(typeof(ImagePage), Gallery);
+            if(VM.OpenImage.CanExecute(e.ClickedItem))
+                VM.OpenImage.Execute(e.ClickedItem);
         }
 
-        public Gallery Gallery
+        public GalleryVM VM
         {
             get
             {
-                return (Gallery)GetValue(GalleryProperty);
+                return (GalleryVM)GetValue(VMProperty);
             }
             set
             {
-                SetValue(GalleryProperty, value);
+                SetValue(VMProperty, value);
             }
         }
 
-        // Using a DependencyProperty as the backing store for Gallery.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty GalleryProperty =
-            DependencyProperty.Register("Gallery", typeof(Gallery), typeof(GalleryPage), new PropertyMetadata(null));
+        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VMProperty =
+            DependencyProperty.Register("VM", typeof(GalleryVM), typeof(GalleryPage), new PropertyMetadata(null));
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
@@ -94,71 +83,9 @@ namespace ExViewer.Views
             RootControl.RootController.SwitchSplitView();
         }
 
-        private async void abb_open_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(Gallery.GalleryUri);
-        }
-
-        private async void abb_save_Click(object sender, RoutedEventArgs e)
-        {
-            var save = Gallery.SaveGalleryAsync(SettingCollection.Current.GetStrategy());
-            saveProgressHandler(save);
-            await save;
-        }
-
-        private void saveProgressHandler(IAsyncActionWithProgress<ExClient.SaveGalleryProgress> save)
-        {
-            var gid = Gallery.Id;
-            this.pb_save.Visibility = Visibility.Visible;
-            switch(save.Status)
-            {
-            case AsyncStatus.Error:
-            case AsyncStatus.Canceled:
-                this.pb_save.Foreground = new SolidColorBrush(Colors.Red);
-                this.pb_save.Value = Gallery.RecordCount;
-                break;
-            case AsyncStatus.Completed:
-                this.pb_save.Foreground = new SolidColorBrush(Colors.Green);
-                this.pb_save.Value = Gallery.RecordCount;
-                break;
-            case AsyncStatus.Started:
-                if(save.Progress == null)
-                    save.Progress = async (s, p) =>
-                    {
-                        if(this.Gallery.Id != gid)
-                            return;
-                        await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                        {
-                            this.pb_save.Value = p.ImageLoaded;
-                        });
-                    };
-                if(save.Completed == null)
-                    save.Completed = async (s, p) =>
-                    {
-                        if(this.Gallery.Id != gid)
-                            return;
-                        await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                        {
-                            this.pb_save.Value = Gallery.RecordCount;
-                            switch(p)
-                            {
-                            case AsyncStatus.Error:
-                            case AsyncStatus.Canceled:
-                                this.pb_save.Foreground = new SolidColorBrush(Colors.Red);
-                                break;
-                            case AsyncStatus.Completed:
-                                this.pb_save.Foreground = new SolidColorBrush(Colors.Green);
-                                break;
-                            }
-                        });
-                    };
-                break;
-            }
-        }
-
         private void lv_Tags_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Frame.Navigate(typeof(SearchPage), Cache.AddSearchResult(((Tag)e.ClickedItem).Search()));
+            // Frame.Navigate(typeof(SearchPage), Cache.AddSearchResult(((Tag)e.ClickedItem).Search()));
         }
     }
 }

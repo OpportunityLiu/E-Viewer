@@ -31,27 +31,33 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <ProgressBar x:Name="pb_save"
-                         Grid.ColumnSpan="2" />
-            <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay}"
+                         Grid.ColumnSpan="2"
+                         Foreground="{x:Bind VM.SaveStatus, Mode=OneWay, Converter={StaticResource OperationStateToBrushConverter}}"
+                         Visibility="{x:Bind VM.SaveStatus, Mode=OneWay, Converter={StaticResource OperationStateToVisibilityConverter}}"
+                         Maximum="1"
+                         Value="{x:Bind VM.SaveProgress, Mode=OneWay}"
+                         SmallChange="1E-05"
+                         LargeChange="0.0001" />
+            <Image Source="{x:Bind VM.Gallery.Thumb, Mode=OneWay}"
                    Grid.Row="1"
                    Margin="4" />
             <RelativePanel Margin="4"
                            Grid.Row="1"
                            Grid.Column="1">
                 <controls:CategoryTag x:Name="Category"
-                                      Category="{x:Bind Gallery.Category, Mode=OneWay}"
+                                      Category="{x:Bind VM.Gallery.Category, Mode=OneWay}"
                                       RelativePanel.AlignLeftWithPanel="True" />
                 <TextBlock x:Name="RecordCount"
                            RelativePanel.RightOf="Category"
                            RelativePanel.AlignVerticalCenterWith="Category"
-                           Text="{x:Bind Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
+                           Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
                 <TextBlock x:Name="Rating"
                            RelativePanel.Below="Category"
-                           Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
+                           Text="{x:Bind VM.Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
                            FontFamily="Segoe MDL2 Assets" />
                 <ListView x:Name="lv_Tags"
                           RelativePanel.Below="Rating"
-                          ItemsSource="{x:Bind Gallery.Tags, Mode=OneWay}"
+                          ItemsSource="{x:Bind VM.Gallery.Tags, Mode=OneWay}"
                           ItemClick="lv_Tags_ItemClick"
                           IsItemClickEnabled="True">
 
@@ -61,7 +67,8 @@
         <GridView x:Name="gv"
                   IsItemClickEnabled="True"
                   ItemClick="gv_ItemClick"
-                  ItemsSource="{x:Bind Gallery, Mode=OneWay}"
+                  ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
+                  SelectedItem="{x:Bind VM.Current, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
                   RelativePanel.Below="gd_info"
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignRightWithPanel="True"
@@ -83,7 +90,7 @@
             <GridView.Footer>
                 <TextBlock HorizontalAlignment="Center"
                            Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more items...</TextBlock>
+                           Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more items...</TextBlock>
             </GridView.Footer>
         </GridView>
         <CommandBar x:Name="cb_top"
@@ -101,7 +108,7 @@
                             Height="48"
                             Width="48"
                             Click="btn_pane_Click" />
-                    <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                    <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Margin="8,0"
                                Grid.Column="1"
@@ -111,7 +118,7 @@
                                TextTrimming="CharacterEllipsis"
                                TextWrapping="NoWrap">
                         <ToolTipService.ToolTip>
-                            <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                            <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                        TextWrapping="WrapWholeWords" />
                         </ToolTipService.ToolTip>
                     </TextBlock>
@@ -120,10 +127,10 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_open"
                               Label="Open in browser"
-                              Click="abb_open_Click" />
+                              Command="{x:Bind VM.OpenInBrowser, Mode=OneWay}"/>
                 <AppBarButton x:Name="abb_save"
                               Label="Save this gallery"
-                              Click="abb_save_Click" />
+                              Command="{x:Bind VM.Save, Mode=OneWay}"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </RelativePanel>

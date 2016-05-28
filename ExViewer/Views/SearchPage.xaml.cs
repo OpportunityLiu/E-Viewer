@@ -42,21 +42,8 @@ namespace ExViewer.Views
             {
                 await RootControl.RootController.RequireLogOn();
             }
-            if(e.Parameter == null)
-            {
-                if(SearchResult == null)
-                {
-                    var query = Cache.GetSearchQuery(SettingCollection.Current.DefaultSearchString, SettingCollection.Current.DefaultSearchCategory);
-                    SearchResult = Cache.GetSearchResult(query);
-                }
-            }
-            else
-                SearchResult = Cache.GetSearchResult(e.Parameter.ToString());
-            asb.Text = SearchResult.KeyWord;
-            cs_AdvancedSearchInitialized = false;
+            VM = new SearchVM(e.Parameter?.ToString());
         }
-
-        private bool cs_AdvancedSearchInitialized;
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
@@ -65,34 +52,30 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Frame.Navigate(typeof(GalleryPage), e.ClickedItem);
+            if(VM.Open.CanExecute(e.ClickedItem))
+                VM.Open.Execute(e.ClickedItem);
         }
 
-        private void init_cs_AdvancedSearch()
+        private void init_cs_Category()
         {
-            if(!cs_AdvancedSearchInitialized)
-            {
-                FindName(nameof(cs_AdvancedSearch));
-                cs_AdvancedSearch.SelectedCategory = SearchResult.Filter;
-                cs_AdvancedSearchInitialized = true;
-            }
+            FindName(nameof(cs_Category));
         }
 
-        public SearchResult SearchResult
+        public SearchVM VM
         {
             get
             {
-                return (SearchResult)GetValue(SearchResultProperty);
+                return (SearchVM)GetValue(VMProperty);
             }
             set
             {
-                SetValue(SearchResultProperty, value);
+                SetValue(VMProperty, value);
             }
         }
 
-        // Using a DependencyProperty as the backing store for SearchResult.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SearchResultProperty =
-            DependencyProperty.Register("SearchResult", typeof(SearchResult), typeof(SearchPage), new PropertyMetadata(null));
+        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VMProperty =
+            DependencyProperty.Register("VM", typeof(SearchVM), typeof(SearchPage), new PropertyMetadata(null));
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
@@ -102,18 +85,18 @@ namespace ExViewer.Views
 
         private void ab_Opening(object sender, object e)
         {
-            init_cs_AdvancedSearch();
+            init_cs_Category();
         }
 
         private void ab_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            init_cs_AdvancedSearch();
+            init_cs_Category();
             var newState = e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch;
-            if(newState == cs_AdvancedSearch.TouchAdaptive)
+            if(newState == cs_Category.TouchAdaptive)
                 return;
             if(!abOpened)
             {
-                cs_AdvancedSearch.TouchAdaptive = newState;
+                cs_Category.TouchAdaptive = newState;
             }
         }
 
@@ -147,16 +130,7 @@ namespace ExViewer.Views
             if(args.ChosenSuggestion != null)
                 return;
             ab.IsOpen = false;
-            init_cs_AdvancedSearch();
-            var searchFilter = cs_AdvancedSearch.SelectedCategory;
-            this.Focus(FocusState.Pointer);
-            var searchKeyWord = args.QueryText;
-            if(SettingCollection.Current.SaveLastSearch)
-            {
-                SettingCollection.Current.DefaultSearchCategory = searchFilter;
-                SettingCollection.Current.DefaultSearchString = searchKeyWord;
-            }
-            Frame.Navigate(typeof(SearchPage), Cache.GetSearchQuery(searchKeyWord, searchFilter));
+            VM.Search.Execute(null);
         }
     }
 }

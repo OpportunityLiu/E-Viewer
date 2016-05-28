@@ -26,7 +26,7 @@ namespace ExViewer.Views
     /// </summary>
     public sealed partial class RootControl : UserControl
     {
-        public RootControl(string searchQuery)
+        public RootControl()
         {
             this.InitializeComponent();
             tabs = new Dictionary<Controls.SplitViewTab, Type>()
@@ -42,11 +42,8 @@ namespace ExViewer.Views
                 [typeof(SearchPage)] = this.svt_Search,
                 [typeof(SettingsPage)] = this.svt_Settings
             };
-            this.searchQuery = searchQuery;
             RootController.SetRoot(this);
         }
-
-        private string searchQuery;
 
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
         private readonly Dictionary<Type, Controls.SplitViewTab> pages;
@@ -62,11 +59,7 @@ namespace ExViewer.Views
         {
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
-            if(searchQuery != null)
-                fm_inner.Navigate(typeof(SearchPage), searchQuery);
-            else
-                fm_inner.Navigate(typeof(CachePage));
-            searchQuery = null;
+            fm_inner.Navigate(typeof(SearchPage));
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)

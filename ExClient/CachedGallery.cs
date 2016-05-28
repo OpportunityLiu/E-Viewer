@@ -17,7 +17,7 @@ namespace ExClient
 {
     public class CachedGallery : Gallery
     {
-        public static IAsyncOperation<IReadOnlyList<Gallery>> GetCachedGalleriesAsync()
+        public static IAsyncOperation<IReadOnlyList<Gallery>> LoadCachedGalleriesAsync()
         {
             return Task.Run<IReadOnlyList<Gallery>>(() =>
             {
@@ -61,7 +61,7 @@ namespace ExClient
             });
         }
 
-        private CachedGallery(GalleryModel model, CachedGalleryModel cacheModel)
+        internal CachedGallery(GalleryModel model, CachedGalleryModel cacheModel)
             : base(model.Id, model.Token, 0)
         {
             this.Id = model.Id;
@@ -76,10 +76,10 @@ namespace ExClient
             this.FileSize = model.FileSize;
             this.Expunged = model.Expunged;
             this.Rating = model.Rating;
+            this.ThumbFile = cacheModel.ThumbData;
             this.Tags = JsonConvert.DeserializeObject<IEnumerable<string>>(model.Tags).Select(t => new Tag(this, t)).ToList();
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
-            this.ThumbFile = cacheModel.ThumbData;
             this.PageCount = (int)Math.Ceiling(RecordCount / 10d);
             this.Owner = Client.Current;
         }
@@ -126,7 +126,7 @@ namespace ExClient
                     await CreateFolderAsync();
                 loadImageModel();
                 var count = 0u;
-                for(; count < 10 && Count < RecordCount; count++)
+                for(; count < 10 && Count < imageModels.Count; count++)
                 {
                     // Load cache
                     var image = await GalleryImage.LoadCachedImageAsync(this, imageModels.Find(i => i.PageId == Count + 1));
@@ -142,7 +142,15 @@ namespace ExClient
 
         public override IAsyncAction DeleteAsync()
         {
-            return base.DeleteAsync();
+            return Run(async token =>
+            {
+                using(var db = CachedGalleryDb.Create())
+                {
+                    db.CacheSet.Remove(db.CacheSet.Single(c => c.GalleryId == this.Id));
+                    await db.SaveChangesAsync();
+                }
+                await base.DeleteAsync();
+            });
         }
     }
 }

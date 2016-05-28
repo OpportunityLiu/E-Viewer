@@ -37,20 +37,20 @@ namespace ExClient
             [Category.Misc] = "f_misc"
         };
 
-        internal static SearchResult Search(Client client, string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
+        internal static SearchResult Search(Client client, string keyWord, Category category, AdvancedSearchOptions advancedSearch)
         {
-            if(filter == Category.Unspecified)
-                filter = DefaultFliter;
-            var result = new SearchResult(client, keyWord, filter, advancedSearch);
+            if(category == Category.Unspecified)
+                category = DefaultFliter;
+            var result = new SearchResult(client, keyWord, category, advancedSearch);
             return result;
         }
 
-        private SearchResult(Client client, string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
+        private SearchResult(Client client, string keyWord, Category category, AdvancedSearchOptions advancedSearch)
             : base(0)
         {
             this.client = client;
             this.KeyWord = keyWord ?? "";
-            this.Filter = filter;
+            this.Category = category;
             this.AdvancedSearch = advancedSearch;
             this.PageCount = 1;
             this.RecordCount = -1;
@@ -66,14 +66,17 @@ namespace ExClient
                 };
                 foreach(var item in searchFliterNames)
                 {
-                    if(Filter.HasFlag(item.Key))
+                    if(Category.HasFlag(item.Key))
                         args.Add(item.Value, "1");
                     else
                         args.Add(item.Value, "0");
                 }
                 args.Add("f_apply", "Apply Filter");
-
-                var query = new HttpFormUrlEncodedContent(args.Concat(AdvancedSearch.GetParamDictionary()));
+                HttpFormUrlEncodedContent query;
+                if(AdvancedSearch != null)
+                    query = new HttpFormUrlEncodedContent(args.Concat(AdvancedSearch.GetParamDictionary()));
+                else
+                    query = new HttpFormUrlEncodedContent(args);
                 var uri = new Uri(searchUri, $"?{query}");
                 searchResultBaseUri = uri.OriginalString;
                 var lans = client.HttpClient.GetInputStreamAsync(uri);
@@ -184,13 +187,13 @@ namespace ExClient
             private set;
         }
 
-        public Category Filter
+        public Category Category
         {
             get;
             private set;
         }
 
-        public IAdvancedSearchOptions AdvancedSearch
+        public AdvancedSearchOptions AdvancedSearch
         {
             get;
             private set;

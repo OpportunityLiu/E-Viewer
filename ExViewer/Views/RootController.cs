@@ -17,15 +17,31 @@ namespace ExViewer.Views
         {
             private static RootControl root;
 
-            private static Storyboard showPanel, hidePanel;
+            private static Storyboard showPanel, hidePanel,playToast;
 
             internal static void SetRoot(RootControl root)
             {
                 RootController.root = root;
-                hidePanel = (Storyboard)root.Resources["HideDisablePanel"];
                 showPanel = (Storyboard)root.Resources["ShowDisablePanel"];
+                hidePanel = (Storyboard)root.Resources["HideDisablePanel"];
+                playToast = (Storyboard)root.Resources["PlayToastPanel"];
+
                 showPanel.Completed += ShowPanel_Completed;
                 hidePanel.Completed += HidePanel_Completed;
+                playToast.Completed += PlayToast_Completed;
+            }
+
+            public static void SendToast(string content)
+            {
+                root.cp_Toast.Content = content;
+                root.cp_Toast.Visibility = Visibility.Visible;
+                playToast.Begin();
+            }
+
+            private static void PlayToast_Completed(object sender, object e)
+            {
+                root.cp_Toast.Content = null;
+                root.cp_Toast.Visibility = Visibility.Collapsed;
             }
 
             public static void SwitchSplitView()
@@ -182,6 +198,8 @@ namespace ExViewer.Views
             {
                 ViewEnabled = false;
             }
+
+            public static Frame Frame => root?.fm_inner;
         }
     }
 }

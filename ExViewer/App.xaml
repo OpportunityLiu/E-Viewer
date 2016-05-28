@@ -17,6 +17,13 @@
                     <local:BooleanToVisibilityConverter BooleanForVisible="True" />
                 </local:ObjectToBooleanConverter.InnerConverter>
             </local:ObjectToBooleanConverter>
+            <local:ObjectToBooleanConverter x:Key="NullToCollapsedConverter"
+                                            Default="True"
+                                            Others="False">
+                <local:ObjectToBooleanConverter.InnerConverter>
+                    <local:BooleanToVisibilityConverter BooleanForVisible="False" />
+                </local:ObjectToBooleanConverter.InnerConverter>
+            </local:ObjectToBooleanConverter>
             <local:LengthConverter x:Key="LengthConverter" />
             <local:EmptyConverter x:Key="EmptyConverter" />
             <local:DefaultConverter x:Key="DefaultConverter" />
@@ -31,6 +38,20 @@
                     <local:BooleanToVisibilityConverter BooleanForVisible="True" />
                 </local:RangeToBooleanConverter.InnerConverter>
             </local:RangeToBooleanConverter>
+            <local:OperationStateToBrushConverter x:Key="OperationStateToBrushConverter" />
+            <local:EnumToBooleanConverter x:Key="OperationStateToVisibilityConverter"
+                                            xmlns:VM="using:ExViewer.ViewModels"
+                                            Others="True">
+                <local:EnumToBooleanConverter.ValueForFalse>
+                    <VM:OperationState>NotStarted</VM:OperationState>
+                </local:EnumToBooleanConverter.ValueForFalse>
+                <local:EnumToBooleanConverter.ValueForTrue>
+                    <VM:OperationState>Started</VM:OperationState>
+                </local:EnumToBooleanConverter.ValueForTrue>
+                <local:EnumToBooleanConverter.InnerConverter>
+                    <local:BooleanToVisibilityConverter BooleanForVisible="True" />
+                </local:EnumToBooleanConverter.InnerConverter>
+            </local:EnumToBooleanConverter>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

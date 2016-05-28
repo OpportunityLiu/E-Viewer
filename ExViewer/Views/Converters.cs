@@ -10,6 +10,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Reflection;
 using ExViewer.Settings;
+using ExViewer.ViewModels;
+using Windows.UI;
 
 namespace ExViewer.Views
 {
@@ -203,11 +205,60 @@ namespace ExViewer.Views
 
         public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
         {
-            if(value == ValueForTrue && value == ValueForFalse)
+            if(Equals(value, ValueForTrue) && Equals(value, ValueForFalse))
                 return Default;
-            if(value == ValueForTrue)
+            if(Equals(value, ValueForTrue))
                 return true;
-            if(value == ValueForFalse)
+            if(Equals(value, ValueForFalse))
+                return false;
+            return Others;
+        }
+
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            var v = (bool)value;
+            if(v)
+                return ValueForTrue;
+            else
+                return ValueForFalse;
+        }
+    }
+
+    public class EnumToBooleanConverter : ValueConverterChain
+    {
+        public object ValueForTrue
+        {
+            get;
+            set;
+        }
+
+        public object ValueForFalse
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Returns when <c>value != ValueForTrue && value != ValueForFalse</c>.
+        /// </summary>
+        public bool Others
+        {
+            get;
+            set;
+        }
+
+        private Type enumBaseType;
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            if(enumBaseType == null)
+            {
+                enumBaseType = ValueForTrue?.GetType() ?? ValueForFalse?.GetType();
+            }
+            var v = System.Convert.ChangeType(value, enumBaseType);
+            if(Equals(v, ValueForTrue))
+                return true;
+            if(Equals(v, ValueForFalse))
                 return false;
             return Others;
         }
@@ -392,5 +443,30 @@ namespace ExViewer.Views
             get;
             set;
         } = true;
+    }
+
+    public class OperationStateToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var v = (OperationState)value;
+            switch(v)
+            {
+            case OperationState.NotStarted:
+                return new SolidColorBrush(Colors.Transparent);
+            case OperationState.Started:
+                return (SolidColorBrush)Application.Current.Resources["SystemControlHighlightAccentBrush"];
+            case OperationState.Failed:
+                return new SolidColorBrush(Colors.Red);
+            case OperationState.Completed:
+                return new SolidColorBrush(Colors.Green);
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -69,11 +69,19 @@ namespace ExClient
 
         private int loadedPageCount;
 
-        internal int LoadedPageCount => loadedPageCount;
+        protected int LoadedPageCount => loadedPageCount;
 
         public bool HasMoreItems => loadedPageCount < PageCount;
 
         private IAsyncOperation<LoadMoreItemsResult> loading;
+
+        protected void ResetAll()
+        {
+            PageCount = 0;
+            RecordCount = 0;
+            loadedPageCount = 0;
+            Clear();
+        }
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {

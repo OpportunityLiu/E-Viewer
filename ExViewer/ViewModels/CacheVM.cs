@@ -19,27 +19,38 @@ namespace ExViewer.ViewModels
             Refresh = new RelayCommand(async () =>
             {
                 this.CachedGalleries = null;
-                this.CachedGalleries = new ObservableCollection<Gallery>(await CachedGallery.GetCachedGalleriesAsync());
+                this.CachedGalleries = new ObservableCollection<Gallery>(await CachedGallery.LoadCachedGalleriesAsync());
             });
             Clear = new RelayCommand(() => RootControl.RootController.TrackAsyncAction(CachedGallery.ClearCachedGalleriesAsync(), (s, e) => Refresh.Execute(null)));
             Delete = new RelayCommand<Gallery>(async g =>
             {
                 await g.DeleteAsync();
                 this.CachedGalleries?.Remove(g);
+                RootControl.RootController.SendToast("Refreshed");
+            });
+            Open = new RelayCommand<Gallery>(g =>
+            {
+                GalleryVM.AddGallery(g);
+                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
             });
         }
 
-        public ICommand Refresh
+        public RelayCommand Refresh
         {
             get;
         }
 
-        public ICommand Clear
+        public RelayCommand Clear
         {
             get;
         }
 
-        public ICommand Delete
+        public RelayCommand<Gallery> Delete
+        {
+            get;
+        }
+
+        public RelayCommand<Gallery> Open
         {
             get;
         }

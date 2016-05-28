@@ -15,14 +15,14 @@ namespace ExClient
 {
     public partial class Client
     {
-        public SearchResult Search(string keyWord, Category filter, IAdvancedSearchOptions advancedSearch)
+        public SearchResult Search(string keyWord, Category category, AdvancedSearchOptions advancedSearch)
         {
-            return SearchResult.Search(this, keyWord, filter, advancedSearch);
+            return SearchResult.Search(this, keyWord, category, advancedSearch);
         }
 
-        public SearchResult Search(string keyWord, Category filter)
+        public SearchResult Search(string keyWord, Category category)
         {
-            return Search(keyWord, filter, null);
+            return Search(keyWord, category, null);
         }
 
         public SearchResult Search(string keyWord)

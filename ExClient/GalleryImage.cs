@@ -154,6 +154,18 @@ namespace ExClient
                     break;
                 case ImageLoadingState.Loading:
                 case ImageLoadingState.Loaded:
+                    if(!reload && state == ImageLoadingState.Loaded)
+                    {
+                        //check whether image file is deleted.
+                        using(var db = Models.CachedGalleryDb.Create())
+                        {
+                            if(db.ImageSet.SingleOrDefault(i => i.PageId == this.PageId && i.OwnerId == this.Owner.Id) == null)
+                            {
+                                reload = true;
+                                ImageFile = null;
+                            }
+                        }
+                    }
                     if(reload)
                     {
                         if(previousAction?.Status == AsyncStatus.Started)
@@ -295,6 +307,11 @@ namespace ExClient
                 var loadStream = ImageFile.OpenReadAsync();
                 loadStream.Completed = async (op, e) =>
                 {
+                    if(e == AsyncStatus.Error && op.ErrorCode is FileNotFoundException)
+                    {
+                        ImageFile = null;
+                        State = ImageLoadingState.Waiting;
+                    }
                     if(e != AsyncStatus.Completed)
                         return;
                     await DispatcherHelper.RunAsync(async () =>

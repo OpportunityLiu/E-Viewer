@@ -126,13 +126,13 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Image viewing", "Factor for inertia of mouse dragging (Set to 0 to disable)", Index = 30)]
-        [DoubleRange(0, 1, Small = 0.05)]
-        public double MouseInertialFactor
+        [Setting("Image viewing", "Inertia of mouse dragging", Index = 30)]
+        [BooleanRepresent("Enabled", "Disabled")]
+        public bool MouseInertial
         {
             get
             {
-                return GetLocal(0.5);
+                return GetLocal(true);
             }
             set
             {
