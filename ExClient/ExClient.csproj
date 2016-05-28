@@ -115,7 +115,6 @@
     <Compile Include="Client.cs" />
     <Compile Include="ConnectionHelper.cs" />
     <Compile Include="DictionaryExtention.cs" />
-    <Compile Include="DispatcherHelper.cs" />
     <Compile Include="GalleryImage.cs" />
     <Compile Include="HahProxyConfig.cs" />
     <Compile Include="IncrementalLoadingCollection{T}.cs" />

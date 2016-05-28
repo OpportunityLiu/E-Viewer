@@ -83,45 +83,38 @@ namespace ExClient
                     lans.Cancel();
                     taskLoadPage?.Cancel();
                 });
-                try
+                using(var ans = await lans)
                 {
-                    using(var ans = await lans)
+                    var doc = new HtmlDocument();
+                    doc.Load(ans.AsStreamForRead());
+                    var rcNode = doc.DocumentNode.Descendants("p").Where(node => node.GetAttributeValue("class", null) == "ip").SingleOrDefault();
+                    if(rcNode == null)
                     {
-                        var doc = new HtmlDocument();
-                        doc.Load(ans.AsStreamForRead());
-                        var rcNode = doc.DocumentNode.Descendants("p").Where(node => node.GetAttributeValue("class", null) == "ip").SingleOrDefault();
-                        if(rcNode == null)
-                        {
-                            RecordCount = 0;
-                            return 0u;
-                        }
-                        var match = Regex.Match(rcNode.InnerText, @"Showing.+of\s+([0-9,]+)");
-                        if(match.Success)
-                            RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
-                        if(!IsEmpty)
-                        {
-                            var pcNodes = doc.DocumentNode.Descendants("td")
-                                .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
-                                .Select(node =>
-                                {
-                                    int i;
-                                    var su = int.TryParse(node.InnerText, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out i);
-                                    return Tuple.Create(su, i);
-                                })
-                                .Where(select => select.Item1)
-                                .DefaultIfEmpty(Tuple.Create(true, 1))
-                                .Max(select => select.Item2);
-                            PageCount = pcNodes;
-                            taskLoadPage = loadPage(doc);
-                            return await taskLoadPage;
-                        }
-                        else
-                            return 0u;
+                        RecordCount = 0;
+                        return 0u;
                     }
-                }
-                catch(COMException ex)
-                {
-                    throw new InvalidOperationException("Can't fetch proper data.", ex);
+                    var match = Regex.Match(rcNode.InnerText, @"Showing.+of\s+([0-9,]+)");
+                    if(match.Success)
+                        RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
+                    if(!IsEmpty)
+                    {
+                        var pcNodes = doc.DocumentNode.Descendants("td")
+                            .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
+                            .Select(node =>
+                            {
+                                int i;
+                                var su = int.TryParse(node.InnerText, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out i);
+                                return Tuple.Create(su, i);
+                            })
+                            .Where(select => select.Item1)
+                            .DefaultIfEmpty(Tuple.Create(true, 1))
+                            .Max(select => select.Item2);
+                        PageCount = pcNodes;
+                        taskLoadPage = loadPage(doc);
+                        return await taskLoadPage;
+                    }
+                    else
+                        return 0u;
                 }
             });
         }
@@ -222,19 +215,12 @@ namespace ExClient
                     op.Cancel();
                     op2?.Cancel();
                 });
-                try
+                using(var stream = (await op).AsStreamForRead())
                 {
-                    using(var stream = (await op).AsStreamForRead())
-                    {
-                        var doc = new HtmlDocument();
-                        doc.Load(stream);
-                        op2 = loadPage(doc);
-                        return await op2;
-                    }
-                }
-                catch(COMException ex)
-                {
-                    throw new InvalidOperationException("Can't fetch proper data.", ex);
+                    var doc = new HtmlDocument();
+                    doc.Load(stream);
+                    op2 = loadPage(doc);
+                    return await op2;
                 }
             });
         }

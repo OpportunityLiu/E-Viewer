@@ -11,14 +11,15 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.Storage.Streams;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
+using GalaSoft.MvvmLight.Threading;
 
 namespace ExClient
 {
     public class CachedGallery : Gallery
     {
-        public static IAsyncOperation<IList<Gallery>> GetCachedGalleriesAsync()
+        public static IAsyncOperation<IReadOnlyList<Gallery>> GetCachedGalleriesAsync()
         {
-            return Task.Run<IList<Gallery>>(async () =>
+            return Task.Run<IReadOnlyList<Gallery>>(() =>
             {
                 using(var db = CachedGalleryDb.Create())
                 {
@@ -28,10 +29,10 @@ namespace ExClient
                                      c,
                                      c.Gallery
                                  }).ToList();
-                    var ret = query.Select(a => (Gallery)new CachedGallery(a.Gallery, a.c)).ToList();
+                    var ret = query.Select(a => new CachedGallery(a.Gallery, a.c)).ToList();
                     foreach(var item in ret)
                     {
-                        await item.InitAsync();
+                        var ignore = item.InitAsync();
                     }
                     return ret;
                 }
@@ -87,8 +88,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                await base.InitAsync();
-                await DispatcherHelper.RunNormalAsync(async () =>
+                await DispatcherHelper.RunAsync(async () =>
                 {
                     using(var stream = ThumbFile.AsBuffer().AsRandomAccessStream())
                     {

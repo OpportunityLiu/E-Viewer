@@ -14,6 +14,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Linq;
 using Windows.Data.Html;
 using System.IO;
+using GalaSoft.MvvmLight.Threading;
 
 namespace ExClient
 {
@@ -87,7 +88,7 @@ namespace ExClient
                 {
                     if(e != AsyncStatus.Completed)
                         return;
-                    await DispatcherHelper.RunLowAsync(async () =>
+                    await DispatcherHelper.RunAsync(async () =>
                     {
                         using(var stream = sender.GetResults())
                             await thumb.SetSourceAsync(stream);
@@ -296,7 +297,7 @@ namespace ExClient
                 {
                     if(e != AsyncStatus.Completed)
                         return;
-                    await DispatcherHelper.RunLowAsync(async () =>
+                    await DispatcherHelper.RunAsync(async () =>
                     {
                         try
                         {

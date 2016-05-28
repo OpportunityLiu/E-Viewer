@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Data;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Runtime.CompilerServices;
+using GalaSoft.MvvmLight.Threading;
 
 namespace ExClient
 {
@@ -28,7 +29,7 @@ namespace ExClient
 
         protected async void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
-            await DispatcherHelper.RunNormalAsync(() =>
+            await DispatcherHelper.RunAsync(() =>
             {
                 OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             });
