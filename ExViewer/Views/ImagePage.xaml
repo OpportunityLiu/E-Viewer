@@ -100,6 +100,9 @@
                                       Grid.RowSpan="2"
                                       SizeChanged="sv_SizeChanged"
                                       ManipulationDelta="sv_ManipulationDelta"
+                                      PointerEntered="sv_PointerEntered"
+                                      PointerMoved="sv_PointerMoved"
+                                      PointerPressed="sv_PointerPressed"
                                       ManipulationMode="All">
                             <Image Source="{x:Bind Image, Mode=OneWay}"
                                    SizeChanged="Image_SizeChanged" />
