@@ -59,7 +59,7 @@
                   RelativePanel.AlignTopWithPanel="True"
                   SelectionChanged="fv_SelectionChanged"
                   ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
-                  SelectedItem="{x:Bind VM.Current, Mode=TwoWay, Converter={StaticResource EmptyConverter}}">
+                  SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
@@ -143,7 +143,7 @@
                         </ToolTipService.ToolTip>
                     </TextBlock>
                     <TextBlock x:Name="tb_si"
-                               Text="{x:Bind VM.Current.PageId, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=\{0\}}"
+                               Text="{x:Bind VM.CurrentIndex, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=\{0\}}"
                                Style="{StaticResource BodyTextBlockStyle}"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_sep" />
@@ -171,15 +171,15 @@
                 <AppBarButton x:Name="abb_reload"
                               Label="Reload"
                               Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
-                              CommandParameter="{x:Bind VM.Current, Mode=OneWay}" />
+                              CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay}" />
                 <AppBarButton x:Name="abb_LoadOriginal"
                               Label="Load original image"
                               Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
-                              CommandParameter="{x:Bind VM.Current, Mode=OneWay}" />
+                              CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay}" />
                 <AppBarButton x:Name="abb_open"
                               Label="Open in browser"
                               Command="{x:Bind VM.OpenInBrowser, Mode=OneWay}"
-                              CommandParameter="{x:Bind VM.Current, Mode=OneWay}"/>
+                              CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay}"/>
                 <AppBarSeparator />
                 <AppBarButton x:Name="abb_Info"
                               Label="Image infomation">

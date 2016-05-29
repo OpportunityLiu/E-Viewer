@@ -68,7 +68,7 @@
                   IsItemClickEnabled="True"
                   ItemClick="gv_ItemClick"
                   ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
-                  SelectedItem="{x:Bind VM.Current, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
+                  SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}"
                   RelativePanel.Below="gd_info"
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignRightWithPanel="True"

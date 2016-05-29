@@ -47,6 +47,18 @@ namespace ExViewer.ViewModels
             return Cache.Get(parameter);
         }
 
+        public GalleryImage GetCurrent()
+        {
+            try
+            {
+                return Gallery[currentIndex];
+            }
+            catch(ArgumentOutOfRangeException)
+            {
+                return null;
+            }
+        }
+
         private GalleryVM()
         {
             OpenInBrowser = new RelayCommand<GalleryImage>(async image =>
@@ -85,7 +97,7 @@ namespace ExViewer.ViewModels
             }, () => SaveStatus != OperationState.Started && !(Gallery is CachedGallery));
             OpenImage = new RelayCommand<GalleryImage>(image =>
             {
-                Current = image;
+                CurrentIndex = image.PageId - 1;
                 RootControl.RootController.Frame.Navigate(typeof(ImagePage), gallery.Id);
             });
             LoadOriginal = new RelayCommand<GalleryImage>(async image =>
@@ -159,17 +171,17 @@ namespace ExViewer.ViewModels
             }
         }
 
-        private GalleryImage current;
+        private int currentIndex = -1;
 
-        public GalleryImage Current
+        public int CurrentIndex
         {
             get
             {
-                return current;
+                return currentIndex;
             }
             set
             {
-                Set(ref current, value);
+                Set(ref currentIndex, value);
             }
         }
 
@@ -191,7 +203,8 @@ namespace ExViewer.ViewModels
         {
             return Run(async token =>
             {
-                if(current == null || current.Image == null)
+                var current = GetCurrent();
+                if(current?.Image == null)
                 {
                     CurrentInfo = null;
                     return;
