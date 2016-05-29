@@ -27,7 +27,9 @@
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
   <Library Name="ExClient">
 
-  	<!-- add directives for your library here -->
-
+    <!-- add directives for your library here -->
+    <Assembly Name="System.Collections.NonGeneric">
+      <Type Name="System.Collections.ArrayList" Dynamic="Required All"/>
+    </Assembly>
   </Library>
 </Directives>

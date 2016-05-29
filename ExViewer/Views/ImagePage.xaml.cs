@@ -245,6 +245,41 @@ namespace ExViewer.Views
             sv.ScrollToVerticalOffset(sv.VerticalOffset - dy);
         }
 
+        private void setSvManipulationMode(object sender, PointerRoutedEventArgs e)
+        {
+            var sv = (ScrollViewer)sender;
+            switch(e.Pointer.PointerDeviceType)
+            {
+            case Windows.Devices.Input.PointerDeviceType.Touch:
+                sv.ManipulationMode = ManipulationModes.System;
+                break;
+            case Windows.Devices.Input.PointerDeviceType.Pen:
+            case Windows.Devices.Input.PointerDeviceType.Mouse:
+                var mode = ManipulationModes.System | ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+                if(SettingCollection.Current.MouseInertial)
+                    mode |= ManipulationModes.TranslateInertia;
+                sv.ManipulationMode = mode;
+                break;
+            default:
+                break;
+            }
+        }
+
+        private void sv_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            setSvManipulationMode(sender, e);
+        }
+
+        private void sv_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            setSvManipulationMode(sender, e);
+        }
+
+        private void sv_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            setSvManipulationMode(sender, e);
+        }
+
         private async void Flyout_Opening(object sender, object e)
         {
             await VM.RefreshInfoAsync();

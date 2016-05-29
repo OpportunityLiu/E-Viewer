@@ -40,7 +40,7 @@ namespace ExClient
     {
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
-            return Task.Run(()=>
+            return Task.Run(() =>
             {
                 using(var db = CachedGalleryDb.Create())
                 {
@@ -387,41 +387,47 @@ namespace ExClient
                                 height = uint.Parse(matchUri.Groups[2].Value, System.Globalization.NumberStyles.Integer) - 1,
                                 offset = uint.Parse(matchUri.Groups[4].Value, System.Globalization.NumberStyles.Integer)
                             }
-                            group r by r.thumbUri).ToDictionary(group => Owner.HttpClient.GetBufferAsync(group.Key).AsTask());
+                            group r by r.thumbUri).ToDictionary(group => Owner.HttpClient.GetBufferAsync(group.Key));
                 var count = 0u;
-                await Task.WhenAll(pics.Keys);
-                using(var db = Models.CachedGalleryDb.Create())
+                using(var db = CachedGalleryDb.Create())
                 {
                     foreach(var group in pics)
                     {
-                        var buf = group.Key.Result;
-                        var decoder = await BitmapDecoder.CreateAsync(buf.AsStream().AsRandomAccessStream());
-                        var transform = new BitmapTransform();
-                        foreach(var page in group.Value)
+                        using(var stream = (await group.Key).AsRandomAccessStream())
                         {
-                            var imageModel = db.ImageSet.SingleOrDefault(im => im.ImageKey == page.imageKey);
-                            if(imageModel != null)
+                            var decoder = await BitmapDecoder.CreateAsync(stream);
+                            var transform = new BitmapTransform();
+                            foreach(var page in group.Value)
                             {
-                                // Load cache
-                                var image = await GalleryImage.LoadCachedImageAsync(this, imageModel);
-                                if(image != null)
+                                var imageModel = db.ImageSet.SingleOrDefault(im => im.ImageKey == page.imageKey);
+                                if(imageModel != null)
                                 {
-                                    this.Add(image);
-                                    count++;
-                                    continue;
+                                    // Load cache
+                                    var galleryImage = await GalleryImage.LoadCachedImageAsync(this, imageModel);
+                                    if(galleryImage != null)
+                                    {
+                                        this.Add(galleryImage);
+                                        count++;
+                                        continue;
+                                    }
                                 }
-                            }
-                            transform.Bounds = new BitmapBounds()
-                            {
-                                Height = page.height,
-                                Width = page.width,
-                                X = page.offset,
-                                Y = 0
-                            };
-                            using(var thumb = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore, transform, ExifOrientationMode.IgnoreExifOrientation, ColorManagementMode.DoNotColorManage))
-                            {
-                                var image = new WriteableBitmap(thumb.PixelWidth, thumb.PixelHeight);
-                                thumb.CopyToBuffer(image.PixelBuffer);
+                                transform.Bounds = new BitmapBounds()
+                                {
+                                    Height = page.height,
+                                    Width = page.width,
+                                    X = page.offset,
+                                    Y = 0
+                                };
+                                var pix = await decoder.GetPixelDataAsync(
+                                                                  BitmapPixelFormat.Bgra8,
+                                                                  BitmapAlphaMode.Straight,
+                                                                  transform,
+                                                                  ExifOrientationMode.IgnoreExifOrientation,
+                                                                  ColorManagementMode.ColorManageToSRgb);
+                                byte[] pixels = pix.DetachPixelData();
+                                var image = new WriteableBitmap((int)page.width, (int)page.height);
+                                using(var pixStream = image.PixelBuffer.AsStream())
+                                    pixStream.Write(pixels, 0, (int)(page.width * page.height * 4));
                                 this.Add(new GalleryImage(this, page.pageId, page.imageKey, image));
                                 count++;
                             }
