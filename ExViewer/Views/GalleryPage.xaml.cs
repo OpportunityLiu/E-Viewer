@@ -39,8 +39,8 @@ namespace ExViewer.Views
             VM = GalleryVM.GetVM((long)e.Parameter);
             if(e.NavigationMode == NavigationMode.Back)
             {
-                gv.ScrollIntoView(VM.Current);
-                entranceElement = (UIElement)gv.ContainerFromItem(VM.Current);
+                gv.ScrollIntoView(VM.GetCurrent());
+                entranceElement = (UIElement)gv.ContainerFromIndex(VM.CurrentIndex);
                 if(entranceElement != null)
                     EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
             }
