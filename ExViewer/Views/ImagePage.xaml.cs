@@ -18,6 +18,10 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.ViewManagement;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
+using ImageLib;
+using Windows.Storage.Streams;
+using ImageLib.Gif;
+using ExClient;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -101,14 +105,14 @@ namespace ExViewer.Views
             }
         }
 
-        private void setFactor(ScrollViewer sv, Image img)
+        private void setFactor(ScrollViewer sv, FrameworkElement img)
         {
-            var factor = Math.Min((fv.ActualHeight - 1) / img.ActualHeight, (fv.ActualWidth - 1) / img.ActualWidth);
+            var factor = Math.Min((fv.ActualHeight - 0.1) / img.ActualHeight, (fv.ActualWidth - 0.1) / img.ActualWidth);
             if(double.IsInfinity(factor) || double.IsNaN(factor))
                 factor = Math.Min(fv.ActualHeight, fv.ActualWidth) / 1000;
             // limitation of ScrollViewer
-            if(factor < 0.1f)
-                factor = 0.1f;
+            if(factor < 0.1)
+                factor = 0.1;
             sv.MinZoomFactor = (float)factor;
             sv.MaxZoomFactor = (float)factor * SettingCollection.Current.MaxFactor;
             sv.ZoomToFactor(sv.MinZoomFactor);
@@ -220,7 +224,7 @@ namespace ExViewer.Views
 
         private void Image_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var s = (Image)sender;
+            var s = (FrameworkElement)sender;
             var p = (ScrollViewer)s.Parent;
             setFactor(p, s);
         }
@@ -228,7 +232,7 @@ namespace ExViewer.Views
         private void sv_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             var s = (ScrollViewer)sender;
-            var p = (Image)s.Content;
+            var p = (FrameworkElement)s.Content;
             setFactor(s, p);
         }
 
@@ -305,6 +309,50 @@ namespace ExViewer.Views
             {
                 av.ExitFullScreenMode();
             }
+        }
+    }
+
+    internal class ImagePresenterSelector : DataTemplateSelector
+    {
+        public DataTemplate Template
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate GifTemplate
+        {
+            get;
+            set;
+        }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            var img = item as GalleryImage;
+            if(SettingCollection.Current.EnableGif && IsGif(img))
+            {
+                initGif();
+                return GifTemplate;
+            }
+            return Template;
+        }
+
+        public static bool IsGif(GalleryImage img)
+        {
+            return img?.ImageFile?.Name.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) == true;
+        }
+
+        private static bool gifInitialized;
+
+        private static void initGif()
+        {
+            if(gifInitialized)
+                return;
+            gifInitialized = true;
+            ImageLoader.Initialize(new ImageConfig.Builder()
+            {
+                CacheMode = ImageLib.Cache.CacheMode.NoCache
+            }.AddDecoder<GifDecoder>().Build());
         }
     }
 }

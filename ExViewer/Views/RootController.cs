@@ -17,7 +17,7 @@ namespace ExViewer.Views
         {
             private static RootControl root;
 
-            private static Storyboard showPanel, hidePanel,playToast;
+            private static Storyboard showPanel, hidePanel, playToast;
 
             internal static void SetRoot(RootControl root)
             {
@@ -31,16 +31,28 @@ namespace ExViewer.Views
                 playToast.Completed += PlayToast_Completed;
             }
 
-            public static void SendToast(string content)
+            public static void SendToast(Exception ex, Type source)
             {
-                root.cp_Toast.Content = content;
+                var msg = ex.Message.TrimStart();
+                if(msg.StartsWith("The text associated with this error code could not be found."))
+                {
+                    msg = msg.Substring(60);
+                }
+                msg = msg.Trim();
+                SendToast(msg, source);
+            }
+
+            public static void SendToast(string content, Type source)
+            {
+                if(source != root.fm_inner.Content.GetType() && source != null)
+                    return;
+                root.tb_Toast.Text = content;
                 root.cp_Toast.Visibility = Visibility.Visible;
                 playToast.Begin();
             }
 
             private static void PlayToast_Completed(object sender, object e)
             {
-                root.cp_Toast.Content = null;
                 root.cp_Toast.Visibility = Visibility.Collapsed;
             }
 

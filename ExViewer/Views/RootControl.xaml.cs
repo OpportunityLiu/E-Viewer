@@ -26,7 +26,7 @@ namespace ExViewer.Views
     /// </summary>
     public sealed partial class RootControl : UserControl
     {
-        public RootControl()
+        public RootControl(Type homePageType)
         {
             this.InitializeComponent();
             tabs = new Dictionary<Controls.SplitViewTab, Type>()
@@ -43,7 +43,10 @@ namespace ExViewer.Views
                 [typeof(SettingsPage)] = this.svt_Settings
             };
             RootController.SetRoot(this);
+            this.homePageType = homePageType;
         }
+
+        private Type homePageType;
 
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
         private readonly Dictionary<Type, Controls.SplitViewTab> pages;
@@ -59,7 +62,7 @@ namespace ExViewer.Views
         {
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
-            fm_inner.Navigate(typeof(SearchPage));
+            fm_inner.Navigate(homePageType);
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)

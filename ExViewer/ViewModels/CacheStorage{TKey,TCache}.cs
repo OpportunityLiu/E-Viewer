@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExViewer.ViewModels
 {
-    class CacheStorage<TKey,TCache>
+    class CacheStorage<TKey, TCache>
     {
         public CacheStorage(Func<TKey, TCache> loader)
             : this(loader, 100) { }
@@ -29,25 +29,36 @@ namespace ExViewer.ViewModels
         public void Add(TKey key, TCache value)
         {
             EnsureCapacity();
-            if(cacheQueue.Contains(key))
-                cacheDictionary[key] = value;
-            else
-            {
+            if(!cacheDictionary.ContainsKey(key))
                 cacheQueue.Enqueue(key);
-                cacheDictionary[key] = value;
-            }
+            cacheDictionary[key] = value;
         }
 
         public TCache Get(TKey key)
         {
             EnsureCapacity();
-            if(cacheQueue.Contains(key))
+            if(cacheDictionary.ContainsKey(key))
                 return cacheDictionary[key];
             else
             {
                 cacheQueue.Enqueue(key);
                 return cacheDictionary[key] = loader(key);
             }
+        }
+
+        public bool ContainsKey(TKey key)
+        {
+            return cacheDictionary.ContainsKey(key);
+        }
+
+        public bool ContainsValue(TCache value)
+        {
+            return cacheDictionary.ContainsValue(value);
+        }
+
+        public bool TryGet(TKey key, out TCache value)
+        {
+            return cacheDictionary.TryGetValue(key, out value);
         }
 
         public void EnsureCapacity()

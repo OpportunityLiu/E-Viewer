@@ -52,6 +52,13 @@
                     <local:BooleanToVisibilityConverter BooleanForVisible="True" />
                 </local:EnumToBooleanConverter.InnerConverter>
             </local:EnumToBooleanConverter>
+            <local:IntOffsetConverter x:Key="IndexToStringConverter"
+                                      Offset="1">
+                <local:IntOffsetConverter.InnerConverter>
+                    <local:StringConverter />
+                </local:IntOffsetConverter.InnerConverter>
+            </local:IntOffsetConverter>
+            <local:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -154,6 +154,20 @@ namespace ExViewer.Settings
             }
         }
 
+        [Setting("Image viewing", "Gif support", Index = 50)]
+        [BooleanRepresent("Enabled", "Disabled")]
+        public bool EnableGif
+        {
+            get
+            {
+                return GetLocal(true);
+            }
+            set
+            {
+                SetLocal(value);
+            }
+        }
+
         [Setting("Connection", "Load compressed image while using metered Internet connection", Index = 10)]
         [BooleanRepresent("Yes", "No")]
         public bool LoadLofiOnMeteredInternetConnection

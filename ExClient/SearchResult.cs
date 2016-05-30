@@ -15,6 +15,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Newtonsoft.Json;
 using System.Net;
 using System.Runtime.InteropServices;
+using GalaSoft.MvvmLight.Threading;
 
 namespace ExClient
 {
@@ -58,7 +59,7 @@ namespace ExClient
 
         private IAsyncOperation<uint> init()
         {
-            return Run(async token =>
+            return Task.Run(async () =>
             {
                 var args = new Dictionary<string, string>()
                 {
@@ -80,12 +81,6 @@ namespace ExClient
                 var uri = new Uri(searchUri, $"?{query}");
                 searchResultBaseUri = uri.OriginalString;
                 var lans = client.HttpClient.GetInputStreamAsync(uri);
-                IAsyncOperation<uint> taskLoadPage = null;
-                token.Register(() =>
-                {
-                    lans.Cancel();
-                    taskLoadPage?.Cancel();
-                });
                 using(var ans = await lans)
                 {
                     var doc = new HtmlDocument();
@@ -113,18 +108,17 @@ namespace ExClient
                             .DefaultIfEmpty(Tuple.Create(true, 1))
                             .Max(select => select.Item2);
                         PageCount = pcNodes;
-                        taskLoadPage = loadPage(doc);
-                        return await taskLoadPage;
+                        return await loadPage(doc);
                     }
                     else
                         return 0u;
                 }
-            });
+            }).AsAsyncOperation();
         }
 
         private IAsyncOperation<uint> loadPage(HtmlDocument doc)
         {
-            return Run(async token =>
+            return Task.Run(async () =>
             {
                 var table = (from node in doc.DocumentNode.Descendants("table")
                              where node.GetAttributeValue("class", "") == "itg"
@@ -152,20 +146,21 @@ namespace ExClient
                 {
                     gmetadata = (IEnumerable<Gallery>)null
                 };
-                var apiRequest = client.PostApiAsync(json);
-                token.Register(apiRequest.Cancel);
-                var str = await apiRequest;
-                var re = JsonConvert.DeserializeAnonymousType(str, type);
+                var str = await client.PostApiAsync(json);
                 var count = 0u;
-                foreach(var item in re.gmetadata)
+                await DispatcherHelper.RunAsync(() =>
                 {
-                    item.Owner = client;
-                    var ignore = item.InitAsync();
-                    this.Add(item);
-                    count++;
-                }
+                    var re = JsonConvert.DeserializeAnonymousType(str, type);
+                    foreach(var item in re.gmetadata)
+                    {
+                        item.Owner = client;
+                        var ignore = item.InitAsync();
+                        this.Add(item);
+                        count++;
+                    }
+                });
                 return count;
-            });
+            }).AsAsyncOperation();
         }
 
         [JsonArray]
@@ -208,24 +203,16 @@ namespace ExClient
             if(pageIndex == 0)
                 return init();
 
-            return Run(async token =>
+            return Task.Run(async () =>
             {
                 var uri = new Uri($"{this.searchResultBaseUri}&page={pageIndex.ToString()}");
-                var op = client.HttpClient.GetInputStreamAsync(uri);
-                IAsyncOperation<uint> op2 = null;
-                token.Register(() =>
-                {
-                    op.Cancel();
-                    op2?.Cancel();
-                });
-                using(var stream = (await op).AsStreamForRead())
+                using(var stream = (await client.HttpClient.GetInputStreamAsync(uri)).AsStreamForRead())
                 {
                     var doc = new HtmlDocument();
                     doc.Load(stream);
-                    op2 = loadPage(doc);
-                    return await op2;
+                    return await loadPage(doc);
                 }
-            });
+            }).AsAsyncOperation();
         }
     }
 }

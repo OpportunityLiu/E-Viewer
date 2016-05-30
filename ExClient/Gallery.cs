@@ -18,6 +18,7 @@ using System.Threading;
 using Windows.Storage;
 using Windows.Storage.Search;
 using ExClient.Models;
+using GalaSoft.MvvmLight.Threading;
 
 namespace ExClient
 {
@@ -104,18 +105,18 @@ namespace ExClient
                      await Task.WhenAll(loadTasks);
 
                      var thumb = (await Owner.HttpClient.GetBufferAsync(ThumbUri)).ToArray();
-                     using(var db = Models.CachedGalleryDb.Create())
+                     using(var db = CachedGalleryDb.Create())
                      {
                          var myModel = db.CacheSet.SingleOrDefault(model => model.GalleryId == this.Id);
                          if(myModel == null)
                          {
-                             db.CacheSet.Add(new Models.CachedGalleryModel().Update(this, thumb));
+                             db.CacheSet.Add(new CachedGalleryModel().Update(this, thumb));
                          }
                          else
                          {
                              db.CacheSet.Update(myModel.Update(this, thumb));
                          }
-                         db.SaveChanges();
+                         await db.SaveChangesAsync();
                      }
                  });
             return saveTask;
@@ -127,6 +128,7 @@ namespace ExClient
             this.Id = id;
             this.Token = token;
             this.GalleryUri = new Uri(galleryBaseUri, $"{Id.ToString()}/{Token}/");
+            this.Thumb = new BitmapImage();
         }
 
         internal Gallery(GalleryModel model)
@@ -272,7 +274,11 @@ namespace ExClient
         {
             get
             {
-                return LazyInitializer.EnsureInitialized(ref thumbImage);
+                return thumbImage;
+            }
+            protected set
+            {
+                Set(ref thumbImage, value);
             }
         }
 
@@ -345,7 +351,7 @@ namespace ExClient
 
         protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
         {
-            return Run(async token =>
+            return Task.Run(async () =>
             {
                 if(GalleryFolder == null)
                 {
@@ -353,7 +359,6 @@ namespace ExClient
                 }
                 var uri = new Uri(GalleryUri, $"?p={pageIndex.ToString()}");
                 var request = Owner.PostStrAsync(uri, null);
-                token.Register(request.Cancel);
                 var res = await request;
                 var html = new HtmlDocument();
                 html.LoadHtml(res);
@@ -418,29 +423,26 @@ namespace ExClient
                                     X = page.offset,
                                     Y = 0
                                 };
-                                var pix = await decoder.GetPixelDataAsync(
-                                                                  BitmapPixelFormat.Bgra8,
-                                                                  BitmapAlphaMode.Straight,
-                                                                  transform,
-                                                                  ExifOrientationMode.IgnoreExifOrientation,
-                                                                  ColorManagementMode.ColorManageToSRgb);
-                                byte[] pixels = pix.DetachPixelData();
-                                var image = new WriteableBitmap((int)page.width, (int)page.height);
-                                using(var pixStream = image.PixelBuffer.AsStream())
-                                    pixStream.Write(pixels, 0, (int)(page.width * page.height * 4));
-                                this.Add(new GalleryImage(this, page.pageId, page.imageKey, image));
+                                var pix = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight, transform, ExifOrientationMode.IgnoreExifOrientation, ColorManagementMode.ColorManageToSRgb);
+                                await DispatcherHelper.RunAsync(() =>
+                                {
+                                    var image = new WriteableBitmap(pix.PixelWidth, pix.PixelHeight);
+                                    pix.CopyToBuffer(image.PixelBuffer);
+                                    this.Add(new GalleryImage(this, page.pageId, page.imageKey, image));
+                                });
+
                                 count++;
                             }
                         }
                     }
                 }
                 return count;
-            });
+            }).AsAsyncOperation();
         }
 
         public virtual IAsyncAction DeleteAsync()
         {
-            return Run(async token =>
+            return Task.Run(async () =>
             {
                 if(GalleryFolder == null)
                 {
@@ -449,7 +451,7 @@ namespace ExClient
                 var temp = GalleryFolder;
                 GalleryFolder = null;
                 await temp.DeleteAsync();
-                using(var db = Models.CachedGalleryDb.Create())
+                using(var db = CachedGalleryDb.Create())
                 {
                     db.ImageSet.RemoveRange(db.ImageSet.Where(i => i.OwnerId == this.Id));
                     await db.SaveChangesAsync();
@@ -459,7 +461,7 @@ namespace ExClient
                 this.RecordCount = c;
                 if(this.RecordCount > 0)
                     this.PageCount = 1;
-            });
+            }).AsAsyncAction();
         }
     }
 }

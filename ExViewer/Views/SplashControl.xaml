@@ -51,6 +51,8 @@
                Grid.RowSpan="2" />
         <ProgressRing x:Name="pr" Grid.Row="1"
                       Width="40"
-                      Height="40" />
+                      Height="40" 
+                      IsActive="True"
+                      x:DeferLoadStrategy="Lazy"/>
     </Grid>
 </UserControl>

@@ -26,7 +26,7 @@ namespace ExViewer.ViewModels
             {
                 await g.DeleteAsync();
                 this.CachedGalleries?.Remove(g);
-                RootControl.RootController.SendToast("Refreshed");
+                RootControl.RootController.SendToast("Refreshed", typeof(CachePage));
             });
             Open = new RelayCommand<Gallery>(g =>
             {

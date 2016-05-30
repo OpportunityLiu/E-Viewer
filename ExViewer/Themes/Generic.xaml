@@ -221,6 +221,10 @@
                 Value="100" />
         <Setter Property="MinHeight"
                 Value="16" />
+        <Setter Property="HorizontalAlignment"
+                Value="Left" />
+        <Setter Property="VerticalAlignment"
+                Value="Top" />
     </Style>
 
     <Style TargetType="controls:CategoryToggleButton">

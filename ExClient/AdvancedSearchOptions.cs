@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace ExClient
 {
-    internal static class AdvancedSearchExtention
-    {
-    }
-
     //advsearch=1
     public class AdvancedSearchOptions
     {

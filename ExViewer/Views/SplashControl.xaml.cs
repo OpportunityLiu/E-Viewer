@@ -3,27 +3,15 @@ using ExViewer.Settings;
 using ExViewer.ViewModels;
 using GalaSoft.MvvmLight.Ioc;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Security.Credentials;
 using Windows.Security.Credentials.UI;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -68,6 +56,26 @@ namespace ExViewer.Views
 
             SimpleIoc.Default.Register<CacheVM>();
 
+            if(Client.Current.NeedLogOn)
+            {
+                var pv = new PasswordVault();
+                try
+                {
+                    var pass = pv.FindAllByResource("ex").First();
+                    pass.RetrievePassword();
+                    await Client.Current.LogOnAsync(pass.UserName, pass.Password, null);
+                }
+                catch(Exception)
+                {
+                }
+            }
+            rc = new RootControl(typeof(SearchPage));
+            IAsyncAction initSearch = null;
+            if(!Client.Current.NeedLogOn)
+            {
+                initSearch = SearchVM.InitAsync();
+            }
+
             if(SettingCollection.Current.NeedVerify)
             {
                 var result = await UserConsentVerifier.RequestVerificationAsync("Because of your settings, we need to request the verification.");
@@ -109,24 +117,15 @@ namespace ExViewer.Views
                     Application.Current.Exit();
                 }
             }
-
-            if(Client.Current.NeedLogOn)
-            {
-                var pv = new PasswordVault();
+            if(initSearch != null)
                 try
                 {
-                    var pass = pv.FindAllByResource("ex").First();
-                    pass.RetrievePassword();
-                    await Client.Current.LogOnAsync(pass.UserName, pass.Password, null);
+                    await initSearch;
                 }
                 catch(Exception)
                 {
+                    rc = new RootControl(typeof(CachePage));
                 }
-            }
-            if(!Client.Current.NeedLogOn)
-            {
-            }
-            rc = new RootControl();
             loaded = true;
             if(goToContent)
                 GoToContent();
@@ -134,7 +133,7 @@ namespace ExViewer.Views
 
         private void ShowPic_Completed(object sender, object e)
         {
-            pr.IsActive = true;
+            FindName(nameof(pr));
         }
 
         [System.Runtime.CompilerServices.PlatformSpecific]
