@@ -15,6 +15,7 @@ using System.Linq;
 using Windows.Data.Html;
 using System.IO;
 using GalaSoft.MvvmLight.Threading;
+using System.Threading.Tasks;
 
 namespace ExClient
 {
@@ -75,32 +76,36 @@ namespace ExClient
 
         internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
         {
-            return Run(async token =>
+            return Task.Run(async () =>
             {
                 var imageFile = await owner.GalleryFolder.TryGetFileAsync(model.FileName);
                 if(imageFile == null)
                     return null;
-                var thumb = new BitmapImage();
-                var image = new GalleryImage(owner, model.PageId, model.ImageKey, thumb);
-
-                var loadThumb = imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
-                loadThumb.Completed = async (sender, e) =>
+                GalleryImage image = null;
+                await DispatcherHelper.RunAsync(() =>
                 {
-                    if(e != AsyncStatus.Completed)
-                        return;
-                    await DispatcherHelper.RunAsync(async () =>
-                    {
-                        using(var stream = sender.GetResults())
-                            await thumb.SetSourceAsync(stream);
-                    });
-                };
+                    var thumb = new BitmapImage();
+                    image = new GalleryImage(owner, model.PageId, model.ImageKey, thumb);
 
-                image.ImageFile = imageFile;
-                image.OriginalLoaded = model.OriginalLoaded;
-                image.Progress = 100;
-                image.State = ImageLoadingState.Loaded;
+                    var loadThumb = imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
+                    loadThumb.Completed = async (sender, e) =>
+                    {
+                        if(e != AsyncStatus.Completed)
+                            return;
+                        await DispatcherHelper.RunAsync(async () =>
+                        {
+                            using(var stream = sender.GetResults())
+                                await thumb.SetSourceAsync(stream);
+                        });
+                    };
+
+                    image.ImageFile = imageFile;
+                    image.OriginalLoaded = model.OriginalLoaded;
+                    image.Progress = 100;
+                    image.State = ImageLoadingState.Loaded;
+                });
                 return image;
-            });
+            }).AsAsyncOperation();
         }
 
         private ImageLoadingState state;
@@ -275,19 +280,32 @@ namespace ExClient
         private Uri imageUri;
         private Uri originalImageUri;
 
-        private StorageFile _imageFile;
+        private StorageFile imageFile;
 
         public StorageFile ImageFile
         {
             get
             {
-                return _imageFile;
+                return imageFile;
             }
             protected set
             {
-                _imageFile = value;
+                Set(ref imageFile, value);
                 image = null;
                 RaisePropertyChanged(nameof(Image));
+                RaisePropertyChanged(nameof(ImageFileUri));
+            }
+        }
+
+        private static Uri ImageBaseUri = new Uri("ms-appdata:///localCache/");
+
+        public Uri ImageFileUri
+        {
+            get
+            {
+                if(imageFile == null)
+                    return null;
+                return new Uri(ImageBaseUri,$"{Owner.Id}/{imageFile.Name}");
             }
         }
 

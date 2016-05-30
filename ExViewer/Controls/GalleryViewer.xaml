@@ -6,50 +6,71 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              d:DesignHeight="200"
-             d:DesignWidth="400">
-    <Grid Padding="8,4"
-          Height="200"
-          Background="{x:Bind Background, Mode=OneWay}"
+             d:DesignWidth="1000">
+    <Grid Background="{x:Bind Background, Mode=OneWay}"
           BorderBrush="{x:Bind BorderBrush, Mode=OneWay}"
-          BorderThickness="{x:Bind BorderThickness, Mode=OneWay}">
+          BorderThickness="{x:Bind BorderThickness, Mode=OneWay}"
+          Margin="8,4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="1*"
+                              MaxWidth="150"
+                              MinWidth="100" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        <ContentPresenter Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}">
+        <ContentPresenter Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}"
+                          Grid.RowSpan="999"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          MinHeight="100"
+                          MaxHeight="200">
             <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay}"
                    Stretch="Uniform" />
         </ContentPresenter>
-        <RelativePanel Padding="8,4,4,4"
-                       Grid.Column="1">
-            <TextBlock x:Name="Title"
-                       Text="{x:Bind Gallery, Converter={StaticResource GalleryToTitleStringConverter}, Mode=OneWay}"
+        <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="12" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="12" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="{x:Bind Gallery, Converter={StaticResource GalleryToTitleStringConverter}, Mode=OneWay}"
                        Style="{StaticResource SubtitleTextBlockStyle}"
-                       ContinuumNavigationTransitionInfo.IsExitElement="True"
                        TextWrapping="WrapWholeWords"
                        MaxLines="3"
                        TextTrimming="CharacterEllipsis"
-                       RelativePanel.AlignLeftWithPanel="True"
-                       RelativePanel.AlignRightWithPanel="True"
-                       RelativePanel.AlignTopWithPanel="True">
-                                <ToolTipService.ToolTip>
-                                    <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
-                                               TextWrapping="WrapWholeWords" />
-                                </ToolTipService.ToolTip>
-                            </TextBlock>
-            <local:CategoryTag x:Name="Category"
-                               Width="80"
-                               Category="{x:Bind Gallery.Category, Mode=OneWay}"
-                               RelativePanel.Below="Title"
-                               RelativePanel.AlignLeftWithPanel="True" />
-            <TextBlock x:Name="RecordCount"
-                       RelativePanel.RightOf="Category"
-                       RelativePanel.AlignVerticalCenterWith="Category"
-                       Text="{x:Bind Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
-            <TextBlock x:Name="Rating"
-                       RelativePanel.Below="Category"
-                       Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
-                       FontFamily="Segoe MDL2 Assets" />
-        </RelativePanel>
+                       Grid.ColumnSpan="100">
+                <ToolTipService.ToolTip>
+                    <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                               TextWrapping="WrapWholeWords" />
+                </ToolTipService.ToolTip>
+            </TextBlock>
+            <local:CategoryTag Category="{x:Bind Gallery.Category, Mode=OneWay}"
+                               Grid.Row="2"
+                               HorizontalAlignment="Left"/>
+            <TextBlock Text="{x:Bind Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}"
+                       Grid.Row="4"/>
+            <TextBlock Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
+                       FontFamily="Segoe MDL2 Assets"
+                       Grid.Row="3" />
+            <TextBlock Text="{x:Bind Gallery.Uploader, Mode=OneWay}"
+                       Grid.Row="4"
+                       MaxLines="1"
+                       Grid.Column="1"
+                       TextTrimming="CharacterEllipsis"
+                       HorizontalAlignment="Right" />
+            <TextBlock Text="{x:Bind Gallery.Posted, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}}"
+                       Grid.Row="3"
+                       MaxLines="1"
+                       Grid.Column="1"
+                       HorizontalAlignment="Right"
+                       TextTrimming="Clip" />
+        </Grid>
     </Grid>
 </UserControl>

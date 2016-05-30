@@ -38,6 +38,7 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            //this.Focus(FocusState.Programmatic);
             if(Client.Current.NeedLogOn)
             {
                 await RootControl.RootController.RequireLogOn();

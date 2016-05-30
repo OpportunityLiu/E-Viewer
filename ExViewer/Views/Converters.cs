@@ -12,6 +12,7 @@ using System.Reflection;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
 using Windows.UI;
+using System.Globalization;
 
 namespace ExViewer.Views
 {
@@ -139,11 +140,39 @@ namespace ExViewer.Views
     {
         public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
         {
-            return string.Format(parameter.ToString(), value.ToString());
+            return string.Format(CultureInfo.CurrentCulture, parameter.ToString(), value.ToString());
         }
 
         public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
         {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class DateTimeToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var currentType = value.GetType();
+            if(currentType == typeof(DateTimeOffset))
+            {
+                var date = (DateTimeOffset)value;
+                return date.LocalDateTime.ToString(CultureInfo.CurrentCulture);
+            }
+            else if(currentType == typeof(DateTime))
+            {
+                var date = (DateTime)value;
+                return date.ToString(CultureInfo.CurrentCulture);
+            }
+            throw new NotImplementedException();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            if(targetType == typeof(DateTimeOffset))
+                return DateTimeOffset.Parse(value.ToString());
+            else if(targetType == typeof(DateTime))
+                return DateTime.Parse(value.ToString());
             throw new NotImplementedException();
         }
     }
@@ -467,6 +496,25 @@ namespace ExViewer.Views
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class IntOffsetConverter : ValueConverterChain
+    {
+        public int Offset
+        {
+            get;
+            set;
+        }
+
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return (int)value - Offset;
+        }
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return (int)value + Offset;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace ExClient
     {
         public static IAsyncOperation<IReadOnlyList<Gallery>> LoadCachedGalleriesAsync()
         {
-            return Task.Run<IReadOnlyList<Gallery>>(() =>
+            return Task.Run(async () =>
             {
                 using(var db = CachedGalleryDb.Create())
                 {
@@ -29,11 +29,15 @@ namespace ExClient
                                      c,
                                      c.Gallery
                                  }).ToList();
-                    var ret = query.Select(a => new CachedGallery(a.Gallery, a.c)).ToList();
-                    foreach(var item in ret)
+                    IReadOnlyList<Gallery> ret = null;
+                    await DispatcherHelper.RunAsync(() =>
                     {
-                        var ignore = item.InitAsync();
-                    }
+                        ret = query.Select(a => new CachedGallery(a.Gallery, a.c)).ToList();
+                        foreach(var item in ret)
+                        {
+                            var ignore = item.InitAsync();
+                        }
+                    });
                     return ret;
                 }
             }).AsAsyncOperation();
@@ -86,15 +90,12 @@ namespace ExClient
 
         public override IAsyncAction InitAsync()
         {
-            return Run(async token =>
+            return DispatcherHelper.RunAsync(async () =>
             {
-                await DispatcherHelper.RunAsync(async () =>
+                using(var stream = ThumbFile.AsBuffer().AsRandomAccessStream())
                 {
-                    using(var stream = ThumbFile.AsBuffer().AsRandomAccessStream())
-                    {
-                        await Thumb.SetSourceAsync(stream);
-                    }
-                });
+                    await Thumb.SetSourceAsync(stream);
+                }
             });
         }
 
@@ -120,7 +121,7 @@ namespace ExClient
 
         protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
         {
-            return Run(async token =>
+            return Task.Run(async () =>
             {
                 if(GalleryFolder == null)
                     await CreateFolderAsync();
@@ -137,12 +138,12 @@ namespace ExClient
                     }
                 }
                 return count;
-            });
+            }).AsAsyncOperation();
         }
 
         public override IAsyncAction DeleteAsync()
         {
-            return Run(async token =>
+            return Task.Run(async () =>
             {
                 using(var db = CachedGalleryDb.Create())
                 {
@@ -150,7 +151,7 @@ namespace ExClient
                     await db.SaveChangesAsync();
                 }
                 await base.DeleteAsync();
-            });
+            }).AsAsyncAction();
         }
     }
 }

@@ -65,16 +65,17 @@
                                            HorizontalAlignment="Center" />
             </Grid>
         </AppBar>
+        
         <ListView x:Name="lv"
                   ContinuumNavigationTransitionInfo.ExitElementContainer="True"
                   ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
                   IncrementalLoadingThreshold="0.5"
                   IsItemClickEnabled="True"
                   ItemClick="lv_ItemClick"
+                  RelativePanel.Below="ab"
                   RelativePanel.AlignBottomWithPanel="True"
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignRightWithPanel="True"
-                  RelativePanel.Below="ab"
                   VerticalAlignment="Top">
             <ListView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"

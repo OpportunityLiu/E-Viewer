@@ -5,11 +5,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using Windows.Foundation;
 
 namespace ExViewer.ViewModels
 {
@@ -88,6 +84,11 @@ namespace ExViewer.ViewModels
             }
         }
 
+        public static IAsyncAction InitAsync()
+        {
+            var defaultVM = new SearchVM(null);
+            return defaultVM.searchResult.LoadMoreItemsAsync(40).AsTask().AsAsyncAction();
+        }
 
         public SearchVM(string parameter)
             : this()
@@ -96,7 +97,7 @@ namespace ExViewer.ViewModels
             {
                 keyWord = SettingCollection.Current.DefaultSearchString;
                 category = SettingCollection.Current.DefaultSearchCategory;
-                searchResult = Cache.GetSearchResult(Cache.GetSearchQuery(keyWord, category));
+                SearchResult = Cache.GetSearchResult(Cache.GetSearchQuery(keyWord, category));
             }
             else
             {
@@ -104,14 +105,14 @@ namespace ExViewer.ViewModels
                 keyWord = q.KeyWord;
                 category = q.Category;
                 advancedSearch = q.AdvancedSearch;
-                searchResult = Cache.GetSearchResult(parameter);
+                SearchResult = Cache.GetSearchResult(parameter);
             }
         }
 
         private SearchVM(string keyWord, Category category, AdvancedSearchOptions advancedSearch)
             : this()
         {
-            this.searchResult = Cache.GetSearchResult(Cache.GetSearchQuery(keyWord, category, advancedSearch));
+            this.SearchResult = Cache.GetSearchResult(Cache.GetSearchQuery(keyWord, category, advancedSearch));
             this.keyWord = keyWord;
             this.category = category;
             this.advancedSearch = advancedSearch;
@@ -156,8 +157,18 @@ namespace ExViewer.ViewModels
             }
             private set
             {
+                if(searchResult != null)
+                    searchResult.LoadMoreItemsException -= SearchResult_LoadMoreItemsException;
                 Set(ref searchResult, value);
+                if(searchResult != null)
+                    searchResult.LoadMoreItemsException += SearchResult_LoadMoreItemsException;
             }
+        }
+
+        private void SearchResult_LoadMoreItemsException(IncrementalLoadingCollection<Gallery> sender, LoadMoreItemsExceptionEventArgs args)
+        {
+            RootControl.RootController.SendToast(args.Exception, typeof(SearchPage));
+            args.Handled = true;
         }
 
         private string keyWord;

@@ -9,6 +9,9 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Runtime.CompilerServices;
 using GalaSoft.MvvmLight.Threading;
+using System.ComponentModel;
+using System.Collections.Specialized;
+using Windows.UI.Xaml;
 
 namespace ExClient
 {
@@ -27,11 +30,24 @@ namespace ExClient
             OnPropertyChanged(propertyName);
         }
 
-        protected async void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
-            await DispatcherHelper.RunAsync(() =>
+            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+                base.OnPropertyChanged(e);
+            });
+        }
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                base.OnCollectionChanged(e);
             });
         }
 
@@ -73,8 +89,6 @@ namespace ExClient
 
         public bool HasMoreItems => loadedPageCount < PageCount;
 
-        private IAsyncOperation<LoadMoreItemsResult> loading;
-
         protected void ResetAll()
         {
             PageCount = 0;
@@ -82,6 +96,8 @@ namespace ExClient
             loadedPageCount = 0;
             Clear();
         }
+
+        private IAsyncOperation<LoadMoreItemsResult> loading;
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
@@ -99,12 +115,57 @@ namespace ExClient
                 if(!HasMoreItems)
                     return new LoadMoreItemsResult();
                 var lp = LoadPageAsync(loadedPageCount);
+                uint re = 0;
                 token.Register(lp.Cancel);
-                var re = await lp;
-                loadedPageCount++;
-                OnPropertyChanged(nameof(HasMoreItems));
+                try
+                {
+                    re = await lp;
+                    loadedPageCount++;
+                    OnPropertyChanged(nameof(HasMoreItems));
+                }
+                catch(Exception ex)
+                {
+                    raiseLoadMoreItemsException(ex);
+                }
                 return new LoadMoreItemsResult() { Count = re };
             });
+        }
+
+        public event TypedEventHandler<IncrementalLoadingCollection<T>, LoadMoreItemsExceptionEventArgs> LoadMoreItemsException;
+
+        private void raiseLoadMoreItemsException(Exception ex)
+        {
+            var temp = LoadMoreItemsException;
+            if(temp == null)
+                throw new InvalidOperationException($"LoadMoreItemsException did not handled in {{{this}}}.", ex);
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var args = new LoadMoreItemsExceptionEventArgs(ex);
+                temp(this, args);
+                if(!args.Handled)
+                    throw new InvalidOperationException($"LoadMoreItemsException did not handled in {{{this}}}.", ex);
+            });
+        }
+    }
+
+    public class LoadMoreItemsExceptionEventArgs : EventArgs
+    {
+        internal LoadMoreItemsExceptionEventArgs(Exception ex)
+        {
+            Exception = ex;
+        }
+
+        public Exception Exception
+        {
+            get;
+        }
+
+        public string Message => Exception?.Message;
+
+        public bool Handled
+        {
+            get;
+            set;
         }
     }
 }

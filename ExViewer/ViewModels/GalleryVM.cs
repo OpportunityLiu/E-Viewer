@@ -30,16 +30,15 @@ namespace ExViewer.ViewModels
         private static CacheStorage<long, GalleryVM> Cache
         {
             get;
-        } = new CacheStorage<long, GalleryVM>(id => new GalleryVM(id), 25);
-
-        private static CacheStorage<long, Gallery> GalleryCache
-        {
-            get;
-        } = new CacheStorage<long, Gallery>(id => Gallery.TryLoadGalleryAsync(id).AsTask().Result, 25);
+        } = new CacheStorage<long, GalleryVM>(id => new GalleryVM(Gallery.TryLoadGalleryAsync(id).AsTask().Result), 25);
 
         public static void AddGallery(Gallery gallery)
         {
-            GalleryCache.Add(gallery.Id, gallery);
+            GalleryVM vm;
+            if(Cache.TryGet(gallery.Id, out vm))
+                vm.Gallery = gallery;
+            else
+                Cache.Add(gallery.Id, new GalleryVM(gallery));
         }
 
         public static GalleryVM GetVM(long parameter)
@@ -121,10 +120,10 @@ namespace ExViewer.ViewModels
                 LoadOriginal.RaiseCanExecuteChanged();
         }
 
-        public GalleryVM(long parameter)
+        private GalleryVM(Gallery gallery)
             : this()
         {
-            gallery = GalleryCache.Get(parameter);
+            this.Gallery = gallery;
         }
 
         public RelayCommand<GalleryImage> OpenInBrowser
@@ -167,8 +166,21 @@ namespace ExViewer.ViewModels
             }
             private set
             {
+                if(gallery != null)
+                    gallery.LoadMoreItemsException -= Gallery_LoadMoreItemsException;
                 Set(ref gallery, value);
+                if(gallery != null)
+                    gallery.LoadMoreItemsException += Gallery_LoadMoreItemsException;
+                Save.RaiseCanExecuteChanged();
+                OpenInBrowser.RaiseCanExecuteChanged();
+                OpenInExplorer.RaiseCanExecuteChanged();
             }
+        }
+
+        private void Gallery_LoadMoreItemsException(IncrementalLoadingCollection<GalleryImage> sender, LoadMoreItemsExceptionEventArgs args)
+        {
+            RootControl.RootController.SendToast(args.Exception,typeof(GalleryPage));
+            args.Handled = true;
         }
 
         private int currentIndex = -1;
