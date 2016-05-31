@@ -130,11 +130,15 @@ namespace ExClient
                 for(; count < 10 && Count < imageModels.Count; count++)
                 {
                     // Load cache
-                    var image = await GalleryImage.LoadCachedImageAsync(this, imageModels.Find(i => i.PageId == Count + 1));
+                    var model = imageModels.Find(i => i.PageId == Count + 1);
+                    var image = await GalleryImage.LoadCachedImageAsync(this, model);
                     if(image != null)
                     {
                         this.Add(image);
-                        continue;
+                    }
+                    else
+                    {
+                        this.Add(new GalleryImage(this, model.PageId, model.ImageKey, null));
                     }
                 }
                 return count;
