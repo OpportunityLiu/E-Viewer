@@ -83,7 +83,7 @@
             <GridView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
-                    <Image Source="{x:Bind Thumb}"
+                    <Image Source="{x:Bind Thumb, Mode=OneWay}"
                            Width="100" MaxHeight="180"/>
                 </DataTemplate>
             </GridView.ItemTemplate>

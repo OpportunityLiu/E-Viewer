@@ -81,31 +81,35 @@ namespace ExClient
                 var imageFile = await owner.GalleryFolder.TryGetFileAsync(model.FileName);
                 if(imageFile == null)
                     return null;
-                GalleryImage image = null;
-                await DispatcherHelper.RunAsync(() =>
+                return new GalleryImage(owner, model.PageId, model.ImageKey, null)
                 {
-                    var thumb = new BitmapImage();
-                    image = new GalleryImage(owner, model.PageId, model.ImageKey, thumb);
-
-                    var loadThumb = imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
-                    loadThumb.Completed = async (sender, e) =>
-                    {
-                        if(e != AsyncStatus.Completed)
-                            return;
-                        await DispatcherHelper.RunAsync(async () =>
-                        {
-                            using(var stream = sender.GetResults())
-                                await thumb.SetSourceAsync(stream);
-                        });
-                    };
-
-                    image.ImageFile = imageFile;
-                    image.OriginalLoaded = model.OriginalLoaded;
-                    image.Progress = 100;
-                    image.State = ImageLoadingState.Loaded;
-                });
-                return image;
+                    ImageFile = imageFile,
+                    OriginalLoaded = model.OriginalLoaded,
+                    Progress = 100,
+                    State = ImageLoadingState.Loaded
+                };
             }).AsAsyncOperation();
+        }
+
+        private IAsyncAction loadThumbFromFile()
+        {
+            return Task.Run(async () =>
+            {
+                var loadThumb = imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
+                loadThumb.Completed = async (sender, e) =>
+                {
+                    if(e != AsyncStatus.Completed)
+                        return;
+                    await DispatcherHelper.RunAsync(async () =>
+                    {
+                        var thumb = new BitmapImage();
+                        using(var stream = sender.GetResults())
+                            await thumb.SetSourceAsync(stream);
+                        this.Thumb = thumb;
+                    });
+                };
+                await loadThumb;
+            }).AsAsyncAction();
         }
 
         private ImageLoadingState state;
@@ -122,9 +126,18 @@ namespace ExClient
             }
         }
 
+        private ImageSource thumb;
+
         public ImageSource Thumb
         {
-            get;
+            get
+            {
+                return thumb;
+            }
+            protected set
+            {
+                Set(ref thumb, value);
+            }
         }
 
         public Gallery Owner
@@ -291,6 +304,10 @@ namespace ExClient
             protected set
             {
                 Set(ref imageFile, value);
+                if(imageFile != null)
+                {
+                    var ignore = loadThumbFromFile();
+                }
                 image = null;
                 RaisePropertyChanged(nameof(Image));
                 RaisePropertyChanged(nameof(ImageFileUri));
@@ -305,7 +322,7 @@ namespace ExClient
             {
                 if(imageFile == null)
                     return null;
-                return new Uri(ImageBaseUri,$"{Owner.Id}/{imageFile.Name}");
+                return new Uri(ImageBaseUri, $"{Owner.Id}/{imageFile.Name}");
             }
         }
 
