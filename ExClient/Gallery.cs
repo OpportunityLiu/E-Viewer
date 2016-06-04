@@ -49,8 +49,8 @@ namespace ExClient
                     var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
                     if(gm == null)
                         return null;
-                    if(cm == null)
-                        return new Gallery(gm);
+                    else if(cm == null)
+                        return new Gallery(gm, true);
                     else
                         return new CachedGallery(gm, cm);
                 }
@@ -128,10 +128,10 @@ namespace ExClient
             this.Id = id;
             this.Token = token;
             this.GalleryUri = new Uri(galleryBaseUri, $"{Id.ToString()}/{Token}/");
-            this.Thumb = new BitmapImage();
+            DispatcherHelper.RunAsync(() => this.Thumb = new BitmapImage()).AsTask().Wait();
         }
 
-        internal Gallery(GalleryModel model)
+        internal Gallery(GalleryModel model, bool setUriSource)
             : this(model.Id, model.Token, 0)
         {
             this.Id = model.Id;
@@ -146,10 +146,11 @@ namespace ExClient
             this.FileSize = model.FileSize;
             this.Expunged = model.Expunged;
             this.Rating = model.Rating;
-            this.Tags = JsonConvert.DeserializeObject<IEnumerable<string>>(model.Tags).Select(t => new Tag(this, t)).ToList();
+            this.Tags = JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => new Tag(this, t)).ToList();
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
-            this.Thumb.UriSource = ThumbUri;
+            if(setUriSource)
+                DispatcherHelper.CheckBeginInvokeOnUI(() => this.Thumb.UriSource = ThumbUri);
             this.Owner = Client.Current;
             if(this.RecordCount > 0)
                 this.PageCount = 1;
@@ -201,7 +202,7 @@ namespace ExClient
                 this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
                 this.Tags = new ReadOnlyCollection<Tag>(tags.Select(tag => new Tag(this, tag)).ToList());
                 this.ThumbUri = new Uri(thumb);
-                this.Thumb.UriSource = ThumbUri;
+                DispatcherHelper.CheckBeginInvokeOnUI(() => this.Thumb.UriSource = ThumbUri);
             }
             catch(Exception)
             {
@@ -334,16 +335,26 @@ namespace ExClient
             get; private set;
         }
 
+        private StorageFolder galleryFolder;
+
         public StorageFolder GalleryFolder
         {
-            get; private set;
+            get
+            {
+                return galleryFolder;
+            }
+            private set
+            {
+                Set(ref galleryFolder, value);
+            }
         }
 
-        protected IAsyncAction CreateFolderAsync()
+        public IAsyncOperation<StorageFolder> GetFolderAsync()
         {
             return Run(async token =>
             {
                 GalleryFolder = await StorageHelper.LocalCache.CreateFolderAsync(Id.ToString(), CreationCollisionOption.OpenIfExists);
+                return galleryFolder;
             });
         }
 
@@ -355,7 +366,7 @@ namespace ExClient
             {
                 if(GalleryFolder == null)
                 {
-                    await CreateFolderAsync();
+                    await GetFolderAsync();
                 }
                 var uri = new Uri(GalleryUri, $"?p={pageIndex.ToString()}");
                 var request = Owner.PostStrAsync(uri, null);
@@ -393,7 +404,7 @@ namespace ExClient
                                 offset = uint.Parse(matchUri.Groups[4].Value, System.Globalization.NumberStyles.Integer)
                             }
                             group r by r.thumbUri).ToDictionary(group => Owner.HttpClient.GetBufferAsync(group.Key));
-                var count = 0u;
+                var toAdd = new List<GalleryImage>(40);
                 using(var db = CachedGalleryDb.Create())
                 {
                     foreach(var group in pics)
@@ -411,8 +422,7 @@ namespace ExClient
                                     var galleryImage = await GalleryImage.LoadCachedImageAsync(this, imageModel);
                                     if(galleryImage != null)
                                     {
-                                        this.Add(galleryImage);
-                                        count++;
+                                        toAdd.Add(galleryImage);
                                         continue;
                                     }
                                 }
@@ -428,15 +438,13 @@ namespace ExClient
                                 {
                                     var image = new WriteableBitmap(pix.PixelWidth, pix.PixelHeight);
                                     pix.CopyToBuffer(image.PixelBuffer);
-                                    this.Add(new GalleryImage(this, page.pageId, page.imageKey, image));
+                                    toAdd.Add(new GalleryImage(this, page.pageId, page.imageKey, image));
                                 });
-
-                                count++;
                             }
                         }
                     }
                 }
-                return count;
+                return (uint)AddRange(toAdd);
             }).AsAsyncOperation();
         }
 
@@ -446,7 +454,7 @@ namespace ExClient
             {
                 if(GalleryFolder == null)
                 {
-                    await CreateFolderAsync();
+                    await GetFolderAsync();
                 }
                 var temp = GalleryFolder;
                 GalleryFolder = null;

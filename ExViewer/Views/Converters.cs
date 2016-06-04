@@ -35,16 +35,26 @@ namespace ExViewer.Views
         }
     }
 
-    public class EmptyConverter : IValueConverter
+    public class EmptyConverter : ValueConverterChain
     {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
         {
-            return value;
+            return convert(value, targetType, parameter, language);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
         {
-            return value;
+            return convert(value, targetType, parameter, language);
+        }
+
+        private object convert(object value, Type targetType, object parameter, string language)
+        {
+            if(value != null)
+                return value;
+            if(targetType.GetTypeInfo().IsValueType)
+                return Activator.CreateInstance(targetType);
+            else
+                return null;
         }
     }
 
@@ -432,10 +442,7 @@ namespace ExViewer.Views
             var g = value as Gallery;
             if(g == null)
                 return "";
-            if(SettingCollection.Current.UseJapaneseTitle && !string.IsNullOrWhiteSpace(g.TitleJpn))
-                return g.TitleJpn;
-            else
-                return g.Title;
+            return g.GetDisplayTitle();
         }
     }
 

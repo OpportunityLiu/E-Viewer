@@ -22,8 +22,7 @@
                           Grid.RowSpan="999"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
-                          MinHeight="100"
-                          MaxHeight="200">
+                          MaxHeight="240">
             <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay}"
                    Stretch="Uniform" />
         </ContentPresenter>

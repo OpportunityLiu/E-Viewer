@@ -12,10 +12,6 @@ namespace ExClient.Models
 {
     class GalleryModel
     {
-        internal GalleryModel()
-        {
-        }
-
         internal GalleryModel Update(Gallery toCache)
         {
             this.Id = toCache.Id;

@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
@@ -13,9 +14,20 @@ namespace ExClient
     {
         private readonly static StorageFolder localCache = ApplicationData.Current.LocalCacheFolder;
         private readonly static StorageFolder localState = ApplicationData.Current.LocalFolder;
+        private readonly static StorageFolder temp = ApplicationData.Current.TemporaryFolder;
 
         public static StorageFolder LocalCache => localCache;
         public static StorageFolder LocalState => localState;
+        public static StorageFolder Temporary => temp;
+
+        public static IAsyncOperation<StorageItemThumbnail> GetIconOfExtension(string extension)
+        {
+            return Run(async token =>
+            {
+                var dummy = await temp.CreateFileAsync("dummy." + extension, CreationCollisionOption.OpenIfExists);
+                return await dummy.GetThumbnailAsync(ThumbnailMode.SingleItem);
+            });
+        }
 
         public static IAsyncOperation<StorageFile> TryGetFileAsync(this StorageFolder folder, string name)
         {

@@ -97,6 +97,7 @@ namespace ExViewer.ViewModels
             {
                 keyWord = SettingCollection.Current.DefaultSearchString;
                 category = SettingCollection.Current.DefaultSearchCategory;
+                advancedSearch = new AdvancedSearchOptions();
                 SearchResult = Cache.GetSearchResult(Cache.GetSearchQuery(keyWord, category));
             }
             else
@@ -107,15 +108,6 @@ namespace ExViewer.ViewModels
                 advancedSearch = q.AdvancedSearch;
                 SearchResult = Cache.GetSearchResult(parameter);
             }
-        }
-
-        private SearchVM(string keyWord, Category category, AdvancedSearchOptions advancedSearch)
-            : this()
-        {
-            this.SearchResult = Cache.GetSearchResult(Cache.GetSearchQuery(keyWord, category, advancedSearch));
-            this.keyWord = keyWord;
-            this.category = category;
-            this.advancedSearch = advancedSearch;
         }
 
         private SearchVM()

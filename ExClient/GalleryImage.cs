@@ -40,13 +40,12 @@ namespace ExClient
     {
         private IAsyncAction loadImageUri()
         {
-            return Run(async token =>
+            return Task.Run(async () =>
             {
                 var loadPageUri = PageUri;
                 if(failToken != null)
                     loadPageUri = new Uri(pageBaseUri, $"{imageKey}/{Owner.Id.ToString()}-{PageId.ToString()}?nl={failToken}");
                 var loadPage = Owner.Owner.PostStrAsync(loadPageUri, null);
-                token.Register(loadPage.Cancel);
                 var pageResult = new HtmlDocument();
                 pageResult.LoadHtml(await loadPage);
 
@@ -62,7 +61,7 @@ namespace ExClient
                 }
                 var loadFail = pageResult.GetElementbyId("loadfail").GetAttributeValue("onclick", "");
                 failToken = Regex.Match(loadFail, @"return\s+nl\(\s*'(.+?)'\s*\)").Groups[1].Value;
-            });
+            }).AsAsyncAction();
         }
 
         internal GalleryImage(Gallery owner, int pageId, string imageKey, ImageSource thumb)
@@ -81,13 +80,14 @@ namespace ExClient
                 var imageFile = await owner.GalleryFolder.TryGetFileAsync(model.FileName);
                 if(imageFile == null)
                     return null;
-                return new GalleryImage(owner, model.PageId, model.ImageKey, null)
+                var img = new GalleryImage(owner, model.PageId, model.ImageKey, null)
                 {
                     ImageFile = imageFile,
                     OriginalLoaded = model.OriginalLoaded,
                     Progress = 100,
                     State = ImageLoadingState.Loaded
                 };
+                return img;
             }).AsAsyncOperation();
         }
 
@@ -95,20 +95,14 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                var loadThumb = imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
-                loadThumb.Completed = async (sender, e) =>
+                var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
+                await DispatcherHelper.RunAsync(async () =>
                 {
-                    if(e != AsyncStatus.Completed)
-                        return;
-                    await DispatcherHelper.RunAsync(async () =>
-                    {
-                        var thumb = new BitmapImage();
-                        using(var stream = sender.GetResults())
-                            await thumb.SetSourceAsync(stream);
-                        this.Thumb = thumb;
-                    });
-                };
-                await loadThumb;
+                    var thumb = new BitmapImage();
+                    using(stream)
+                        await thumb.SetSourceAsync(stream);
+                    this.Thumb = thumb;
+                });
             }).AsAsyncAction();
         }
 
@@ -172,18 +166,6 @@ namespace ExClient
                     break;
                 case ImageLoadingState.Loading:
                 case ImageLoadingState.Loaded:
-                    if(!reload && state == ImageLoadingState.Loaded)
-                    {
-                        //check whether image file is deleted.
-                        using(var db = Models.CachedGalleryDb.Create())
-                        {
-                            if(db.ImageSet.SingleOrDefault(i => i.PageId == this.PageId && i.OwnerId == this.Owner.Id) == null)
-                            {
-                                reload = true;
-                                ImageFile = null;
-                            }
-                        }
-                    }
                     if(reload)
                     {
                         if(previousAction?.Status == AsyncStatus.Started)
@@ -253,6 +235,7 @@ namespace ExClient
                     }
                     this.State = ImageLoadingState.Loaded;
                 }
+                catch(TaskCanceledException) { }
                 catch(Exception)
                 {
                     this.Progress = 100;

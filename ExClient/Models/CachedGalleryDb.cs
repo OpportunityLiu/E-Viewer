@@ -66,14 +66,17 @@ namespace ExClient.Models
                 .Property(i => i.PageId).ValueGeneratedNever();
             modelBuilder.Entity<ImageModel>()
                 .Property(i => i.OwnerId).ValueGeneratedNever();
+
             modelBuilder.Entity<GalleryModel>()
                 .HasKey(g => g.Id);
             modelBuilder.Entity<GalleryModel>()
                 .Property(g => g.Id).ValueGeneratedNever();
+
             modelBuilder.Entity<CachedGalleryModel>()
                 .HasKey(c => c.GalleryId);
             modelBuilder.Entity<CachedGalleryModel>()
                 .Property(c => c.GalleryId).ValueGeneratedNever();
+
             modelBuilder.Entity<CachedGalleryModel>()
                 .HasOne(c => c.Gallery)
                 .WithOne()
