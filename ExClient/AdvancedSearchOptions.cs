@@ -9,7 +9,7 @@ namespace ExClient
     //advsearch=1
     public class AdvancedSearchOptions
     {
-        public  IDictionary<string, string> GetParamDictionary()
+        public IDictionary<string, string> GetParamDictionary()
         {
             var args = new Dictionary<string, string>();
 
@@ -24,8 +24,8 @@ namespace ExClient
             args.Add("f_sdt2", SearchDownvotedTags ? "1" : "0");
             args.Add("f_sh", ShowExpungedGalleries ? "1" : "0");
 
-            args.Add("f_sr", MinimumRating.HasValue ? "1" : "0");
-            args.Add("f_srdd", MinimumRating.GetValueOrDefault(2).ToString());
+            args.Add("f_sr", SearchMinimumRating ? "1" : "0");
+            args.Add("f_srdd", MinimumRating.ToString());
 
             return args;
         }
@@ -80,9 +80,15 @@ namespace ExClient
             get; set;
         }
 
+        //f_sh
+        public bool SearchMinimumRating
+        {
+            get; set;
+        }
+
         //f_sr=on
         //f_srdd=2
-        public int? MinimumRating
+        public int MinimumRating
         {
             get
             {
@@ -90,21 +96,15 @@ namespace ExClient
             }
             set
             {
-                if(value.HasValue)
-                {
-                    var r = value.Value;
-                    if(r > 5)
-                        minRating = 5;
-                    else if(r < 2)
-                        minRating = 2;
-                    else
-                        minRating = value;
-                }
+                if(value > 5)
+                    minRating = 5;
+                else if(value < 2)
+                    minRating = 2;
                 else
                     minRating = value;
             }
         }
 
-        private int? minRating;
+        private int minRating = 2;
     }
 }

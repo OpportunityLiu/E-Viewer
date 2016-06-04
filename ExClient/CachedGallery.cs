@@ -12,34 +12,56 @@ using Windows.Storage.Streams;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using GalaSoft.MvvmLight.Threading;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace ExClient
 {
     public class CachedGallery : Gallery
     {
-        public static IAsyncOperation<IReadOnlyList<Gallery>> LoadCachedGalleriesAsync()
+        private class CachedGalleryList : IncrementalLoadingCollection<Gallery>
         {
-            return Task.Run(async () =>
+            private int pageSize = 20;
+
+            public CachedGalleryList() : base(0)
             {
                 using(var db = CachedGalleryDb.Create())
                 {
-                    var query = (from c in db.CacheSet
-                                 select new
-                                 {
-                                     c,
-                                     c.Gallery
-                                 }).ToList();
-                    IReadOnlyList<Gallery> ret = null;
-                    await DispatcherHelper.RunAsync(() =>
-                    {
-                        ret = query.Select(a => new CachedGallery(a.Gallery, a.c)).ToList();
-                        foreach(var item in ret)
-                        {
-                            var ignore = item.InitAsync();
-                        }
-                    });
-                    return ret;
+                    RecordCount = db.CacheSet.Count();
+                    PageCount = (int)Math.Ceiling(RecordCount / (double)pageSize);
                 }
+            }
+
+            protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
+            {
+                return Task.Run(() =>
+                {
+                    using(var db = CachedGalleryDb.Create())
+                    {
+                        var query = db.CacheSet.Skip(this.Count).Take(pageSize).Select(c => new
+                        {
+                            c,
+                            c.Gallery
+                        }).ToList();
+                        var toAdd = query.Select(a =>
+                        {
+                            var c = new CachedGallery(a.Gallery, a.c);
+                            var ignore = c.InitAsync();
+                            return c;
+                        });
+                        return (uint)this.AddRange(toAdd);
+                    }
+                }).AsAsyncOperation();
+            }
+        }
+
+        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
+        {
+            return Task.Run<IncrementalLoadingCollection<Gallery>>(async () =>
+            {
+                var r = new CachedGalleryList();
+                if(r.HasMoreItems)
+                    await r.LoadMoreItemsAsync(10);
+                return r;
             }).AsAsyncOperation();
         }
 
@@ -66,24 +88,9 @@ namespace ExClient
         }
 
         internal CachedGallery(GalleryModel model, CachedGalleryModel cacheModel)
-            : base(model.Id, model.Token, 0)
+            : base(model, false)
         {
-            this.Id = model.Id;
-            this.Available = model.Available;
-            this.ArchiverKey = model.ArchiverKey;
-            this.Token = model.Token;
-            this.Title = model.Title;
-            this.TitleJpn = model.TitleJpn;
-            this.Category = model.Category;
-            this.Uploader = model.Uploader;
-            this.Posted = model.Posted;
-            this.FileSize = model.FileSize;
-            this.Expunged = model.Expunged;
-            this.Rating = model.Rating;
             this.ThumbFile = cacheModel.ThumbData;
-            this.Tags = JsonConvert.DeserializeObject<IEnumerable<string>>(model.Tags).Select(t => new Tag(this, t)).ToList();
-            this.RecordCount = model.RecordCount;
-            this.ThumbUri = new Uri(model.ThumbUri);
             this.PageCount = (int)Math.Ceiling(RecordCount / 10d);
             this.Owner = Client.Current;
         }
@@ -124,24 +131,33 @@ namespace ExClient
             return Task.Run(async () =>
             {
                 if(GalleryFolder == null)
-                    await CreateFolderAsync();
+                    await GetFolderAsync();
                 loadImageModel();
-                var count = 0u;
-                for(; count < 10 && Count < imageModels.Count; count++)
+                var toAdd = new List<GalleryImage>(10);
+                while(toAdd.Count < 10 && Count + toAdd.Count < imageModels.Count)
                 {
                     // Load cache
-                    var model = imageModels.Find(i => i.PageId == Count + 1);
+                    var model = imageModels.Find(i => i.PageId == Count + toAdd.Count + 1);
                     var image = await GalleryImage.LoadCachedImageAsync(this, model);
-                    if(image != null)
+                    if(image == null)
+                    // when load fails
                     {
-                        this.Add(image);
+                        var ext = Path.GetExtension(model.FileName);
+                        var thumb = await StorageHelper.GetIconOfExtension(ext);
+                        BitmapImage tb = null;
+                        await DispatcherHelper.RunAsync(async () =>
+                        {
+                            tb = new BitmapImage();
+                            using(thumb)
+                            {
+                                await tb.SetSourceAsync(thumb);
+                            }
+                        });
+                        image = new GalleryImage(this, model.PageId, model.ImageKey, tb);
                     }
-                    else
-                    {
-                        this.Add(new GalleryImage(this, model.PageId, model.ImageKey, null));
-                    }
+                    toAdd.Add(image);
                 }
-                return count;
+                return (uint)this.AddRange(toAdd);
             }).AsAsyncOperation();
         }
 

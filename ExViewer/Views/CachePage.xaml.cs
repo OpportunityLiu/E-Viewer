@@ -8,8 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -109,6 +113,29 @@ namespace ExViewer.Views
             default:
                 break;
             }
+        }
+
+        private void lv_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+        {
+            var item = e.Items.FirstOrDefault() as Gallery;
+            if(item == null)
+            {
+                e.Cancel = true;
+                return;
+            }
+            e.Data.SetDataProvider(StandardDataFormats.StorageItems, async request =>
+            {
+                var d = request.GetDeferral();
+                request.SetData(new IStorageItem[] { await CacheVM.GetCopyOf(item) });
+                d.Complete();
+            });
+            FlyoutBase.GetAttachedFlyout((FrameworkElement)((ListViewItem)lv.ContainerFromItem(item)).ContentTemplateRoot).Hide();
+            e.Data.Properties.ApplicationName = Package.Current.DisplayName;
+            e.Data.Properties.PackageFamilyName = Package.Current.Id.FamilyName;
+            e.Data.Properties.Description = item.Title;
+            e.Data.Properties.Title = item.Title;
+            e.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromUri(item.ThumbUri);
+            e.Data.RequestedOperation = DataPackageOperation.Move;
         }
     }
 }

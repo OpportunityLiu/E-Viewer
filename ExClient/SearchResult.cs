@@ -147,19 +147,13 @@ namespace ExClient
                     gmetadata = (IEnumerable<Gallery>)null
                 };
                 var str = await client.PostApiAsync(json);
-                var count = 0u;
-                await DispatcherHelper.RunAsync(() =>
+                var toAdd = JsonConvert.DeserializeAnonymousType(str, type).gmetadata.Select(item =>
                 {
-                    var re = JsonConvert.DeserializeAnonymousType(str, type);
-                    foreach(var item in re.gmetadata)
-                    {
-                        item.Owner = client;
-                        var ignore = item.InitAsync();
-                        this.Add(item);
-                        count++;
-                    }
+                    item.Owner = client;
+                    var ignore = item.InitAsync();
+                    return item;
                 });
-                return count;
+                return (uint)AddRange(toAdd);
             }).AsAsyncOperation();
         }
 

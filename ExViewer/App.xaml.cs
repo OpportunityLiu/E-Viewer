@@ -33,6 +33,38 @@ namespace ExViewer
         public App()
         {
             this.InitializeComponent();
+#if !DEBUG
+            Microsoft.HockeyApp.HockeyClient.Current.Configure("9c09ca3908114a38a09c81ca8b68ee39", new Microsoft.HockeyApp.TelemetryConfiguration()
+            {
+                Collectors =
+                    Microsoft.HockeyApp.WindowsCollectors.Metadata |
+                    Microsoft.HockeyApp.WindowsCollectors.PageView |
+                    Microsoft.HockeyApp.WindowsCollectors.Session |
+                    Microsoft.HockeyApp.WindowsCollectors.UnhandledException |
+                    Microsoft.HockeyApp.WindowsCollectors.WatsonData,
+                DescriptionLoader = ex =>
+                {
+                    var sb = new System.Text.StringBuilder();
+                    do
+                    {
+                        sb.AppendLine($"Type: {ex.GetType()}");
+                        sb.AppendLine($"HResult: {ex.HResult}");
+                        sb.AppendLine($"Message: {ex.Message}");
+                        sb.AppendLine();
+                        sb.AppendLine("Data:");
+                        foreach(var item in ex.Data.Keys)
+                        {
+                            sb.AppendLine($"    {item}: {ex.Data[item]}");
+                        }
+                        sb.AppendLine("Stacktrace:");
+                        sb.AppendLine(ex.StackTrace);
+                        ex = ex.InnerException;
+                        sb.AppendLine("--------Inner Exception--------");
+                    } while(ex != null);
+                    return sb.ToString();
+                }
+            });
+#endif
             this.Suspending += OnSuspending;
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
         }

@@ -50,26 +50,75 @@
                                 SuggestionChosen="asb_SuggestionChosen"
                                 QueryIcon="Find">
                     <AutoSuggestBox.TextBoxStyle>
-                        <Style TargetType="TextBox" BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}">
+                        <Style TargetType="TextBox"
+                               BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}">
                             <Setter Property="InputScope"
                                     Value="AlphanumericHalfWidth" />
                         </Style>
                     </AutoSuggestBox.TextBoxStyle>
                 </AutoSuggestBox>
-                <controls:CategorySelector x:Name="cs_Category"
-                                           Grid.Row="1"
-                                           Grid.Column="1"
-                                           Margin="0,0,0,0"
-                                           SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
-                                           x:DeferLoadStrategy="Lazy"
-                                           HorizontalAlignment="Center" />
+                <ScrollViewer x:Name="sv_AdvancedSearch"
+                              x:DeferLoadStrategy="Lazy"
+                              Grid.Row="1"
+                              Grid.Column="1"
+                              VerticalScrollBarVisibility="Hidden">
+                    <StackPanel>
+                        <controls:CategorySelector x:Name="cs_Category"
+                                                   SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
+                                                   HorizontalAlignment="Center" />
+                        <Button x:Name="btn_ShowAdvanced"
+                                Content="Show advanced options"
+                                Style="{StaticResource TextBlockButtonStyle}"
+                                HorizontalAlignment="Center" 
+                                Click="btn_ShowAdvanced_Click"/>
+                        <Button x:Name="btn_HideAdvanced"
+                                Content="Hide advanced options"
+                                Style="{StaticResource TextBlockButtonStyle}"
+                                HorizontalAlignment="Center" 
+                                Click="btn_HideAdvanced_Click"
+                                Visibility="Collapsed"/>
+                        <StackPanel x:Name="sp_AdvancedSearch"
+                                    Visibility="Collapsed"
+                                    Padding="0,0,0,8">
+                            <CheckBox Content="Search gallery name"
+                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                            <CheckBox Content="Search gallery tags"
+                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                            <CheckBox Content="Search gallery description"
+                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchDescription, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                            <CheckBox Content="Search torrent filenames"
+                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchTorrentFilenames, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                            <CheckBox Content="Only show galleries with torrents"
+                                      IsChecked="{x:Bind VM.AdvancedSearch.GalleriesWithTorrentsOnly, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                            <CheckBox Content="Search low-power tags"
+                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchLowPowerTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                            <CheckBox Content="Search downvoted tags"
+                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                            <CheckBox Content="Show expunged galleries"
+                                      IsChecked="{x:Bind VM.AdvancedSearch.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                            <CheckBox IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
+                                      Padding="8,0,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Minimum rating:"
+                                               VerticalAlignment="Center" />
+                                    <ComboBox VerticalAlignment="Center"
+                                              SelectedItem="{x:Bind VM.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}">
+                                        <x:Int32>2</x:Int32>
+                                        <x:Int32>3</x:Int32>
+                                        <x:Int32>4</x:Int32>
+                                        <x:Int32>5</x:Int32>
+                                    </ComboBox>
+                                </StackPanel>
+                            </CheckBox>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </AppBar>
-        
+
         <ListView x:Name="lv"
                   ContinuumNavigationTransitionInfo.ExitElementContainer="True"
                   ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
-                  IncrementalLoadingThreshold="0.5"
                   IsItemClickEnabled="True"
                   ItemClick="lv_ItemClick"
                   RelativePanel.Below="ab"
@@ -98,7 +147,7 @@
                 <TextBlock HorizontalAlignment="Center"
                            Margin="12"
                            Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more galleries...</TextBlock>
+                           Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more galleries...</TextBlock>
             </ListView.Footer>
         </ListView>
         <TextBlock Margin="12"

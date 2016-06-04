@@ -49,6 +49,8 @@
         <ListView x:Name="lv"
                   ItemsSource="{x:Bind VM.CachedGalleries, Mode=OneWay}"
                   IsItemClickEnabled="True"
+                  CanDragItems="True"
+                  DragItemsStarting="lv_DragItemsStarting"
                   ItemClick="lv_ItemClick"
                   RelativePanel.AlignBottomWithPanel="True"
                   RelativePanel.AlignLeftWithPanel="True"
@@ -70,6 +72,10 @@
                                                 Text="Delete"
                                                 Command="{Binding VM.Delete, ElementName=page}"
                                                 CommandParameter="{x:Bind}" />
+                                <MenuFlyoutItem x:Name="mfi_SaveTo"
+                                                Text="Save to..."
+                                                Command="{Binding VM.SaveTo, ElementName=page}"
+                                                CommandParameter="{x:Bind}" />
                             </MenuFlyout>
                         </FlyoutBase.AttachedFlyout>
                     </controls:GalleryViewer>
@@ -85,6 +91,12 @@
                             Value="0" />
                 </Style>
             </ListView.ItemContainerStyle>
+            <ListView.Footer>
+                <TextBlock HorizontalAlignment="Center"
+                           Margin="12"
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           Visibility="{x:Bind VM.CachedGalleries.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more galleries...</TextBlock>
+            </ListView.Footer>
         </ListView>
         <TextBlock x:Name="tb_Empty"
                    Margin="12"
@@ -92,11 +104,5 @@
                    Visibility="{x:Bind VM.CachedGalleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
                    RelativePanel.Below="cb_top"
                    RelativePanel.AlignHorizontalCenterWithPanel="True">No cached galleries</TextBlock>
-        <TextBlock x:Name="tb_Loading"
-                   Margin="12"
-                   Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind VM.CachedGalleries, Mode=OneWay, Converter={StaticResource NullToVisibleConverter}}"
-                   RelativePanel.Below="cb_top"
-                   RelativePanel.AlignHorizontalCenterWithPanel="True">Loading...</TextBlock>
     </RelativePanel>
 </Page>

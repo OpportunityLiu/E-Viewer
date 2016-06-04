@@ -38,12 +38,12 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            this.Focus(FocusState.Pointer);
             if(Client.Current.NeedLogOn)
             {
                 await RootControl.RootController.RequireLogOn();
             }
             VM = new SearchVM(e.Parameter?.ToString());
+            lv.Focus(FocusState.Pointer);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -57,9 +57,9 @@ namespace ExViewer.Views
                 VM.Open.Execute(e.ClickedItem);
         }
 
-        private void init_cs_Category()
+        private void init_sv_AdvancedSearch()
         {
-            FindName(nameof(cs_Category));
+            FindName(nameof(sv_AdvancedSearch));
         }
 
         public SearchVM VM
@@ -86,12 +86,12 @@ namespace ExViewer.Views
 
         private void ab_Opening(object sender, object e)
         {
-            init_cs_Category();
+            init_sv_AdvancedSearch();
         }
 
         private void ab_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            init_cs_Category();
+            init_sv_AdvancedSearch();
             var newState = e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch;
             if(newState == cs_Category.TouchAdaptive)
                 return;
@@ -132,6 +132,20 @@ namespace ExViewer.Views
                 return;
             ab.IsOpen = false;
             VM.Search.Execute(null);
+        }
+
+        private void btn_ShowAdvanced_Click(object sender, RoutedEventArgs e)
+        {
+            btn_HideAdvanced.Visibility = Visibility.Visible;
+            sp_AdvancedSearch.Visibility = Visibility.Visible;
+            btn_ShowAdvanced.Visibility = Visibility.Collapsed;
+        }
+
+        private void btn_HideAdvanced_Click(object sender, RoutedEventArgs e)
+        {
+            btn_HideAdvanced.Visibility = Visibility.Collapsed;
+            sp_AdvancedSearch.Visibility = Visibility.Collapsed;
+            btn_ShowAdvanced.Visibility = Visibility.Visible;
         }
     }
 }

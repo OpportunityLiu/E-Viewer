@@ -30,6 +30,25 @@ namespace ExClient
             OnPropertyChanged(propertyName);
         }
 
+        /// <summary>
+        /// Add items into collection.
+        /// </summary>
+        /// <param name="items">Items to add.</param>
+        /// <returns>Count of added items.</returns>
+        public int AddRange(IEnumerable<T> items)
+        {
+            CheckReentrancy();
+            var toAdd = items.ToList();
+            foreach(var item in toAdd)
+            {
+                this.Items.Add(item);
+            }
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, toAdd, this.Count - toAdd.Count));
+            OnPropertyChanged(nameof(Count));
+            OnPropertyChanged("Item[]");
+            return toAdd.Count;
+        }
+
         protected void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
