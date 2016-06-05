@@ -41,7 +41,7 @@ namespace ExClient
     {
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
-            return Task.Run(() =>
+            return Task.Run(async() =>
             {
                 using(var db = CachedGalleryDb.Create())
                 {
@@ -49,10 +49,14 @@ namespace ExClient
                     var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
                     if(gm == null)
                         return null;
-                    else if(cm == null)
-                        return new Gallery(gm, true);
                     else
-                        return new CachedGallery(gm, cm);
+                    {
+                        var r = (cm == null) ?
+                             new Gallery(gm, true) :
+                             new CachedGallery(gm, cm);
+                        await r.InitAsync();
+                        return r;
+                    }
                 }
             }).AsAsyncOperation();
         }

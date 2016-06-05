@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using ExViewer.ViewModels;
+using System.Threading.Tasks;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -43,6 +44,7 @@ namespace ExViewer.Views
                 await RootControl.RootController.RequireLogOn();
             }
             VM = new SearchVM(e.Parameter?.ToString());
+            await Task.Yield();
             lv.Focus(FocusState.Pointer);
         }
 

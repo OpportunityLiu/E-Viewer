@@ -33,10 +33,10 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            VM = GalleryVM.GetVM((long)e.Parameter);
+            VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             if(e.NavigationMode == NavigationMode.Back)
             {
                 gv.ScrollIntoView(VM.GetCurrent());
