@@ -16,6 +16,7 @@ using Windows.Data.Html;
 using System.IO;
 using GalaSoft.MvvmLight.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace ExClient
 {
@@ -38,6 +39,33 @@ namespace ExClient
     [System.Diagnostics.DebuggerDisplay(@"\{PageId = {PageId} State = {State} File = {ImageFile?.Name}\}")]
     public class GalleryImage : ObservableObject
     {
+        internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
+        {
+            return Task.Run(async () =>
+            {
+                var imageFile = await owner.GalleryFolder.TryGetFileAsync(model.FileName);
+                if(imageFile == null)
+                    return null;
+                var img = new GalleryImage(owner, model.PageId, model.ImageKey, null)
+                {
+                    ImageFile = imageFile,
+                    OriginalLoaded = model.OriginalLoaded,
+                    Progress = 100,
+                    State = ImageLoadingState.Loaded
+                };
+                return img;
+            }).AsAsyncOperation();
+        }
+
+        internal GalleryImage(Gallery owner, int pageId, string imageKey, ImageSource thumb)
+        {
+            this.Owner = owner;
+            this.PageId = pageId;
+            this.imageKey = imageKey;
+            this.PageUri = new Uri(pageBaseUri, $"{imageKey}/{owner.Id.ToString()}-{pageId.ToString()}");
+            this.Thumb = thumb;
+        }
+
         private IAsyncAction loadImageUri()
         {
             return Task.Run(async () =>
@@ -62,33 +90,6 @@ namespace ExClient
                 var loadFail = pageResult.GetElementbyId("loadfail").GetAttributeValue("onclick", "");
                 failToken = Regex.Match(loadFail, @"return\s+nl\(\s*'(.+?)'\s*\)").Groups[1].Value;
             }).AsAsyncAction();
-        }
-
-        internal GalleryImage(Gallery owner, int pageId, string imageKey, ImageSource thumb)
-        {
-            this.Owner = owner;
-            this.PageId = pageId;
-            this.imageKey = imageKey;
-            this.PageUri = new Uri(pageBaseUri, $"{imageKey}/{owner.Id.ToString()}-{pageId.ToString()}");
-            this.Thumb = thumb;
-        }
-
-        internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
-        {
-            return Task.Run(async () =>
-            {
-                var imageFile = await owner.GalleryFolder.TryGetFileAsync(model.FileName);
-                if(imageFile == null)
-                    return null;
-                var img = new GalleryImage(owner, model.PageId, model.ImageKey, null)
-                {
-                    ImageFile = imageFile,
-                    OriginalLoaded = model.OriginalLoaded,
-                    Progress = 100,
-                    State = ImageLoadingState.Loaded
-                };
-                return img;
-            }).AsAsyncOperation();
         }
 
         private IAsyncAction loadThumbFromFile()

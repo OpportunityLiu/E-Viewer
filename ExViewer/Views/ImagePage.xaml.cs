@@ -43,9 +43,7 @@ namespace ExViewer.Views
                 (byte)(backColor.B - 2 * (backColor.B - needColor.B)));
 
             cb_top.Background = new SolidColorBrush(toColor);
-            cb_top_OpenAnimation.From = toColor;
             cb_top_OpenAnimation.To = needColor;
-            cb_top_CloseAnimation.From = needColor;
             cb_top_CloseAnimation.To = toColor;
         }
 
@@ -73,16 +71,18 @@ namespace ExViewer.Views
             RootControl.RootController.SwitchSplitView();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
             cb_top.Visibility = Visibility.Visible;
-
-            VM = GalleryVM.GetVM((long)e.Parameter);
-
+            VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(av, null);
+            if(VM.CurrentIndex == -1 && Frame.CanGoBack)
+                Frame.GoBack();
+            await Task.Yield();
+            fv.Focus(FocusState.Pointer);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -120,18 +120,20 @@ namespace ExViewer.Views
 
         private void setScale()
         {
-            int lb = fv.SelectedIndex - 2;
-            int ub = fv.SelectedIndex + 3;
+            int lb = fv.SelectedIndex - 1;
+            int ub = fv.SelectedIndex + 2;
             lb = lb < 0 ? 0 : lb;
             ub = ub > VM.Gallery.Count ? VM.Gallery.Count : ub;
             for(int i = lb; i < ub; i++)
             {
                 if(i == fv.SelectedIndex)
                     continue;
-                var selected = ((FlipViewItem)fv.ContainerFromIndex(i));
+                var selected = (FlipViewItem)fv.ContainerFromIndex(i);
                 if(selected == null)
                     continue;
                 var inner = (Grid)selected.ContentTemplateRoot;
+                if(inner == null)
+                    continue;
                 var sv = (ScrollViewer)inner.FindName("sv");
                 sv.ZoomToFactor(sv.MinZoomFactor);
             }

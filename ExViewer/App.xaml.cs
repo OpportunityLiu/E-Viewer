@@ -92,10 +92,6 @@ namespace ExViewer
             var splash = currentContent as Views.SplashControl;
             if(currentContent == null)
             {
-                if(e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-                {
-                    //TODO: 从之前挂起的应用程序加载状态
-                }
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
                 if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -103,7 +99,7 @@ namespace ExViewer
                     var statusBar = StatusBar.GetForCurrentView();
                     var ignore = statusBar.HideAsync();
                 }
-                splash = new Views.SplashControl(e.SplashScreen);
+                splash = new Views.SplashControl(e.SplashScreen, e.PreviousExecutionState);
                 current.Content = splash;
             }
             splash?.GoToContent();

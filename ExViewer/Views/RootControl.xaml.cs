@@ -16,6 +16,7 @@ using Windows.Data.Json;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media.Imaging;
 using ExClient;
+using Windows.ApplicationModel.Activation;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -26,7 +27,7 @@ namespace ExViewer.Views
     /// </summary>
     public sealed partial class RootControl : UserControl
     {
-        public RootControl(Type homePageType)
+        public RootControl(Type homePageType, ApplicationExecutionState previousState)
         {
             this.InitializeComponent();
             tabs = new Dictionary<Controls.SplitViewTab, Type>()
@@ -44,9 +45,17 @@ namespace ExViewer.Views
             };
             RootController.SetRoot(this);
             this.homePageType = homePageType;
+            this.previousState = previousState;
+            Application.Current.Suspending += Application_Suspending;
+        }
+
+        private void Application_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
+        {
+            Settings.SettingCollection.Current.ViewStack = fm_inner.GetNavigationState();
         }
 
         private Type homePageType;
+        private ApplicationExecutionState previousState;
 
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
         private readonly Dictionary<Type, Controls.SplitViewTab> pages;
@@ -62,7 +71,14 @@ namespace ExViewer.Views
         {
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
-            fm_inner.Navigate(homePageType);
+            var vs = Settings.SettingCollection.Current.ViewStack;
+            if(string.IsNullOrEmpty(vs) || previousState != ApplicationExecutionState.Terminated)
+                fm_inner.Navigate(homePageType);
+            else
+            {
+                fm_inner.SetNavigationState(vs);
+                fm_inner_Navigated(fm_inner, null);
+            }
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)
@@ -86,7 +102,7 @@ namespace ExViewer.Views
             else
                 manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             Controls.SplitViewTab tab;
-            if(pages.TryGetValue(e.Content.GetType(), out tab))
+            if(pages.TryGetValue(fm_inner.Content.GetType(), out tab))
             {
                 tab.IsChecked = true;
             }

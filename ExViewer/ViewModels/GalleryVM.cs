@@ -30,7 +30,7 @@ namespace ExViewer.ViewModels
         private static CacheStorage<long, GalleryVM> Cache
         {
             get;
-        } = new CacheStorage<long, GalleryVM>(id => new GalleryVM(Gallery.TryLoadGalleryAsync(id).AsTask().Result), 25);
+        } = new CacheStorage<long, GalleryVM>(id => Run(async token => new GalleryVM(await Gallery.TryLoadGalleryAsync(id))), 25);
 
         public static void AddGallery(Gallery gallery)
         {
@@ -41,9 +41,9 @@ namespace ExViewer.ViewModels
                 Cache.Add(gallery.Id, new GalleryVM(gallery));
         }
 
-        public static GalleryVM GetVM(long parameter)
+        public static IAsyncOperation<GalleryVM> GetVMAsync(long parameter)
         {
-            return Cache.Get(parameter);
+            return Cache.GetAsync(parameter);
         }
 
         public GalleryImage GetCurrent()
@@ -179,7 +179,7 @@ namespace ExViewer.ViewModels
 
         private void Gallery_LoadMoreItemsException(IncrementalLoadingCollection<GalleryImage> sender, LoadMoreItemsExceptionEventArgs args)
         {
-            RootControl.RootController.SendToast(args.Exception,typeof(GalleryPage));
+            RootControl.RootController.SendToast(args.Exception, typeof(GalleryPage));
             args.Handled = true;
         }
 

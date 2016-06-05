@@ -28,14 +28,17 @@ namespace ExViewer.Views
             this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Assets/Splashes/botm{imgN}.png"));
         }
 
-        public SplashControl(SplashScreen splashScreen) : this()
+        public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
+            : this()
         {
             this.splashScreen = splashScreen;
+            this.previousExecutionState = previousExecutionState;
         }
 
         private bool loaded, goToContent;
 
         private RootControl rc;
+        private ApplicationExecutionState previousExecutionState;
 
         public void GoToContent()
         {
@@ -69,7 +72,7 @@ namespace ExViewer.Views
                 {
                 }
             }
-            rc = new RootControl(typeof(SearchPage));
+            rc = new RootControl(typeof(SearchPage), previousExecutionState);
             IAsyncAction initSearch = null;
             if(!Client.Current.NeedLogOn)
             {
@@ -124,7 +127,7 @@ namespace ExViewer.Views
                 }
                 catch(Exception)
                 {
-                    rc = new RootControl(typeof(CachePage));
+                    rc = new RootControl(typeof(CachePage), previousExecutionState);
                 }
             loaded = true;
             if(goToContent)

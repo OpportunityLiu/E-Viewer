@@ -5,7 +5,9 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Newtonsoft.Json;
 using System;
+using System.Threading.Tasks;
 using Windows.Foundation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.ViewModels
 {

@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      NavigationCacheMode="Enabled">
+      NavigationCacheMode="Disabled">
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -55,8 +55,8 @@
                   RelativePanel.AlignRightWithPanel="True"
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignBottomWithPanel="True"
-                  EntranceNavigationTransitionInfo.IsTargetElement="True"
                   RelativePanel.AlignTopWithPanel="True"
+                  EntranceNavigationTransitionInfo.IsTargetElement="True"
                   SelectionChanged="fv_SelectionChanged"
                   ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
                   SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}">
@@ -161,7 +161,7 @@
                                     <img:ImageView UriSource="{x:Bind ImageFileUri, Mode=OneWay}"
                                                    SizeChanged="Image_SizeChanged"
                                                    HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
+                                                   VerticalAlignment="Center" />
                                 </ScrollViewer>
                             </Grid>
                         </DataTemplate>
@@ -201,7 +201,7 @@
                         </ToolTipService.ToolTip>
                     </TextBlock>
                     <TextBlock x:Name="tb_si"
-                               Text="{x:Bind VM.CurrentIndex, Mode=OneWay, Converter={StaticResource IndexToStringConverter}, ConverterParameter=\{0\}}"
+                               Text="{x:Bind fv.SelectedIndex, Mode=OneWay, Converter={StaticResource IndexToStringConverter}, ConverterParameter=\{0\}}"
                                Style="{StaticResource BodyTextBlockStyle}"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_sep" />

@@ -3,11 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.ViewModels
 {
     class CacheStorage<TKey, TCache>
     {
+        public CacheStorage(Func<TKey, IAsyncOperation<TCache>> loader)
+            : this(loader, 100) { }
+
+        public CacheStorage(Func<TKey, IAsyncOperation<TCache>> loader, int maxCount)
+        {
+            this.asyncLoader = loader;
+            this.MaxCount = maxCount;
+        }
+
         public CacheStorage(Func<TKey, TCache> loader)
             : this(loader, 100) { }
 
@@ -20,6 +31,7 @@ namespace ExViewer.ViewModels
         private Queue<TKey> cacheQueue = new Queue<TKey>();
         private Dictionary<TKey, TCache> cacheDictionary = new Dictionary<TKey, TCache>();
 
+        private Func<TKey, IAsyncOperation<TCache>> asyncLoader;
         private Func<TKey, TCache> loader;
         public int MaxCount
         {
@@ -34,6 +46,24 @@ namespace ExViewer.ViewModels
             cacheDictionary[key] = value;
         }
 
+        public IAsyncOperation<TCache> GetAsync(TKey key)
+        {
+            return Run(async token =>
+            {
+                EnsureCapacity();
+                if(cacheDictionary.ContainsKey(key))
+                    return cacheDictionary[key];
+                else
+                {
+                    cacheQueue.Enqueue(key);
+                    if(asyncLoader != null)
+                        return cacheDictionary[key] = await asyncLoader(key);
+                    else
+                        return cacheDictionary[key] = loader(key);
+                }
+            });
+        }
+
         public TCache Get(TKey key)
         {
             EnsureCapacity();
@@ -42,7 +72,10 @@ namespace ExViewer.ViewModels
             else
             {
                 cacheQueue.Enqueue(key);
-                return cacheDictionary[key] = loader(key);
+                if(asyncLoader != null)
+                    return cacheDictionary[key] = asyncLoader(key).AsTask().Result;
+                else
+                    return cacheDictionary[key] = loader(key);
             }
         }
 

@@ -113,7 +113,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("Image viewing", "Maximum zoom factor", Index = 20)]
-        [SingleRange(4, 8, Small = 0.1)]
+        [SingleRange(4, 10, Small = 0.1)]
         public float MaxFactor
         {
             get
@@ -132,7 +132,7 @@ namespace ExViewer.Settings
         {
             get
             {
-                return GetLocal(true);
+                return GetLocal(false);
             }
             set
             {
@@ -238,6 +238,18 @@ namespace ExViewer.Settings
             {
                 ForceSetLocal((value ?? "").Trim());
                 SetHah();
+            }
+        }
+
+        public string ViewStack
+        {
+            get
+            {
+                return GetLocal("");
+            }
+            set
+            {
+                SetLocal(value);
             }
         }
 
