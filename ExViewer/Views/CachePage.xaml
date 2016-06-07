@@ -50,6 +50,7 @@
                   ItemsSource="{x:Bind VM.CachedGalleries, Mode=OneWay}"
                   IsItemClickEnabled="True"
                   CanDragItems="True"
+                  SelectionMode="None"
                   DragItemsStarting="lv_DragItemsStarting"
                   ItemClick="lv_ItemClick"
                   RelativePanel.AlignBottomWithPanel="True"

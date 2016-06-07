@@ -24,36 +24,13 @@ namespace ExViewer.Views
         public SplashControl()
         {
             this.InitializeComponent();
-            var imgN = new Random().Next(8);
-            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Assets/Splashes/botm{imgN}.png"));
+            var imgN = new Random().Next(1,8);
+            this.img_pic.Source = new BitmapImage(new Uri($"http://ehgt.org/c/botm{imgN}.jpg"));
         }
 
-        public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
-            : this()
+        public async void prepareCompleted()
         {
-            this.splashScreen = splashScreen;
-            this.previousExecutionState = previousExecutionState;
-        }
-
-        private bool loaded, goToContent;
-
-        private RootControl rc;
-        private ApplicationExecutionState previousExecutionState;
-
-        public void GoToContent()
-        {
-            if(loaded)
-            {
-                Themes.ThemeExtention.SetTitleBar();
-                Window.Current.Content = rc;
-                rc = null;
-            }
-            else
-                goToContent = true;
-        }
-
-        private async void splash_Loaded(object sender, RoutedEventArgs e)
-        {
+            Window.Current.Activate();
             ((Storyboard)Resources["ShowPic"]).Begin();
             Themes.ThemeExtention.SetDefaultTitleBar();
 
@@ -134,12 +111,46 @@ namespace ExViewer.Views
                 GoToContent();
         }
 
+        public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
+            : this()
+        {
+            this.splashScreen = splashScreen;
+            this.previousExecutionState = previousExecutionState;
+        }
+
+        private bool loaded, goToContent;
+
+        private RootControl rc;
+        private ApplicationExecutionState previousExecutionState;
+
+        public void GoToContent()
+        {
+            if(loaded)
+            {
+                Themes.ThemeExtention.SetTitleBar();
+                Window.Current.Content = rc;
+                rc = null;
+            }
+            else
+                goToContent = true;
+        }
+
         private void ShowPic_Completed(object sender, object e)
         {
             FindName(nameof(pr));
         }
 
-        [System.Runtime.CompilerServices.PlatformSpecific]
+        private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Assets/Splashes/botm.png"));
+            prepareCompleted();
+        }
+
+        private void img_pic_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            prepareCompleted();
+        }
+
         private void splash_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if(DeviceTrigger.IsMobile)

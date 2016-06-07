@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="2289Opportunity.E-Viewer" Publisher="CN=liuzh" Version="1.1.0.0" />
+  <Identity Name="2289Opportunity.E-Viewer" Publisher="CN=liuzh" Version="1.1.2.0" />
   <mp:PhoneIdentity PhoneProductId="ca5aef37-1465-47a1-bdae-765a5500456f" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>E-Viewer</DisplayName>
+    <DisplayName>ms-resource:AppDisplayName</DisplayName>
     <PublisherDisplayName>Opportunity</PublisherDisplayName>
     <Logo>Assets/Store.png</Logo>
   </Properties>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="ExViewer.App">
-      <uap:VisualElements DisplayName="E-Viewer" Square150x150Logo="Assets/Medium.png" Square44x44Logo="Assets/TaskBar.png" Description="E-Viewer is a client for e-hentai.org and exhentai.org." BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="ms-resource:AppDisplayName" Square150x150Logo="Assets/Medium.png" Square44x44Logo="Assets/TaskBar.png" Description="ms-resource:AppDescription" BackgroundColor="transparent">
         <uap:DefaultTile Square71x71Logo="Assets/Small.png" Wide310x150Logo="Assets/Wide.png">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo" />

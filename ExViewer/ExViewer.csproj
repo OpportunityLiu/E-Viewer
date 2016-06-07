@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ExViewer</RootNamespace>
     <AssemblyName>ExViewer</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
+    <DefaultLanguage>en</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
@@ -96,6 +96,7 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\Resources.lang-en.resw" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\GalleryExtension.cs" />
@@ -162,22 +163,8 @@
     <Content Include="Assets\Medium.scale-400.png" />
     <Content Include="Assets\Small.scale-200.png" />
     <Content Include="Assets\Small.scale-400.png" />
-    <Content Include="Assets\Splashes\botm0.scale-200.png" />
-    <Content Include="Assets\Splashes\botm0.scale-400.png" />
-    <Content Include="Assets\Splashes\botm1.scale-200.png" />
-    <Content Include="Assets\Splashes\botm1.scale-400.png" />
-    <Content Include="Assets\Splashes\botm2.scale-200.png" />
-    <Content Include="Assets\Splashes\botm2.scale-400.png" />
-    <Content Include="Assets\Splashes\botm3.scale-200.png" />
-    <Content Include="Assets\Splashes\botm3.scale-400.png" />
-    <Content Include="Assets\Splashes\botm4.scale-200.png" />
-    <Content Include="Assets\Splashes\botm4.scale-400.png" />
-    <Content Include="Assets\Splashes\botm5.scale-200.png" />
-    <Content Include="Assets\Splashes\botm5.scale-400.png" />
-    <Content Include="Assets\Splashes\botm6.scale-200.png" />
-    <Content Include="Assets\Splashes\botm6.scale-400.png" />
-    <Content Include="Assets\Splashes\botm7.scale-200.png" />
-    <Content Include="Assets\Splashes\botm7.scale-400.png" />
+    <Content Include="Assets\Splashes\botm.scale-200.png" />
+    <Content Include="Assets\Splashes\botm.scale-400.png" />
     <Content Include="Assets\SplashScreen.scale-400.png" />
     <Content Include="Assets\Store.scale-200.png" />
     <Content Include="Assets\Store.scale-400.png" />
@@ -288,6 +275,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

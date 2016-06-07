@@ -18,6 +18,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using AsyncFriendlyStackTrace;
+using Microsoft.HockeyApp;
 
 namespace ExViewer
 {
@@ -34,14 +36,12 @@ namespace ExViewer
         {
             this.InitializeComponent();
 #if !DEBUG
-            Microsoft.HockeyApp.HockeyClient.Current.Configure("9c09ca3908114a38a09c81ca8b68ee39", new Microsoft.HockeyApp.TelemetryConfiguration()
+            HockeyClient.Current.Configure("9c09ca3908114a38a09c81ca8b68ee39", new TelemetryConfiguration()
             {
                 Collectors =
-                    Microsoft.HockeyApp.WindowsCollectors.Metadata |
-                    Microsoft.HockeyApp.WindowsCollectors.PageView |
-                    Microsoft.HockeyApp.WindowsCollectors.Session |
-                    Microsoft.HockeyApp.WindowsCollectors.UnhandledException |
-                    Microsoft.HockeyApp.WindowsCollectors.WatsonData,
+                    WindowsCollectors.Metadata |
+                    WindowsCollectors.Session |
+                    WindowsCollectors.UnhandledException,
                 DescriptionLoader = ex =>
                 {
                     var sb = new System.Text.StringBuilder();
@@ -58,6 +58,8 @@ namespace ExViewer
                         }
                         sb.AppendLine("Stacktrace:");
                         sb.AppendLine(ex.StackTrace);
+                        sb.AppendLine("AsyncStacktrace:");
+                        sb.AppendLine(ex.ToAsyncString());
                         ex = ex.InnerException;
                         sb.AppendLine("--------Inner Exception--------");
                     } while(ex != null);
@@ -102,8 +104,10 @@ namespace ExViewer
                 splash = new Views.SplashControl(e.SplashScreen, e.PreviousExecutionState);
                 current.Content = splash;
             }
-            splash?.GoToContent();
-            current.Activate();
+            if(splash == null)
+                current.Activate();
+            else
+                splash.GoToContent();
         }
 
         /// <summary>

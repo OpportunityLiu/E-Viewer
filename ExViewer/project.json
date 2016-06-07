@@ -1,10 +1,11 @@
 ﻿{
   "dependencies": {
-    "HockeySDK.UWP": "4.0.0",
+    "AsyncFriendlyStackTrace": "1.2.0",
+    "HockeySDK.UWP": "4.1.0-build57036",
     "ImageLib.UWP": "5.0.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.1.0",
     "MvvmLight": "5.3.0",
-    "PlatformSpecific.Analyzer": "2.0.2"
+    "PlatformSpecific.Analyzer": "2.0.3"
   },
   "frameworks": {
     "uap10.0": {}
