@@ -1,1 +1,1 @@
-C:\Users\liuzh\Source\Repos\ExViewer\ExViewer\AppPackages\ExViewer_1.1.0.0\ExViewer_1.1.0.0_x86_x64_arm.appxbundle
+C:\Users\liuzh\Source\Repos\ExViewer\ExViewer\AppPackages\ExViewer_1.1.2.0\ExViewer_1.1.2.0_x86_x64_arm.appxbundle

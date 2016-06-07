@@ -121,6 +121,7 @@
                   ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
                   IsItemClickEnabled="True"
                   ItemClick="lv_ItemClick"
+                  SelectionMode="None"
                   RelativePanel.Below="ab"
                   RelativePanel.AlignBottomWithPanel="True"
                   RelativePanel.AlignLeftWithPanel="True"
