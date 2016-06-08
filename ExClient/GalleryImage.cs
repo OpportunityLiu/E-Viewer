@@ -94,17 +94,15 @@ namespace ExClient
 
         private IAsyncAction loadThumbFromFile()
         {
-            return Task.Run(async () =>
+            return DispatcherHelper.RunAsync(async () =>
             {
                 var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
-                await DispatcherHelper.RunAsync(async () =>
-                {
-                    var thumb = new BitmapImage();
-                    using(stream)
-                        await thumb.SetSourceAsync(stream);
-                    this.Thumb = thumb;
-                });
-            }).AsAsyncAction();
+                var thumb = new BitmapImage();
+                this.Thumb = thumb;
+                await Task.Yield();
+                using(stream)
+                    await thumb.SetSourceAsync(stream);
+            });
         }
 
         private ImageLoadingState state;

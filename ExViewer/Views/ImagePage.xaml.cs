@@ -22,6 +22,7 @@ using ImageLib;
 using Windows.Storage.Streams;
 using ImageLib.Gif;
 using ExClient;
+using Windows.UI.Xaml.Media.Imaging;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 

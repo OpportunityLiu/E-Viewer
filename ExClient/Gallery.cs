@@ -437,12 +437,12 @@ namespace ExClient
                                     X = page.offset,
                                     Y = 0
                                 };
-                                var pix = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight, transform, ExifOrientationMode.IgnoreExifOrientation, ColorManagementMode.ColorManageToSRgb);
-                                await DispatcherHelper.RunAsync(() =>
+                                var pix = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, transform, ExifOrientationMode.IgnoreExifOrientation, ColorManagementMode.ColorManageToSRgb);
+                                await DispatcherHelper.RunAsync(async () =>
                                 {
-                                    var image = new WriteableBitmap(pix.PixelWidth, pix.PixelHeight);
-                                    pix.CopyToBuffer(image.PixelBuffer);
+                                    var image = new SoftwareBitmapSource();
                                     toAdd.Add(new GalleryImage(this, page.pageId, page.imageKey, image));
+                                    await image.SetBitmapAsync(pix);
                                 });
                             }
                         }

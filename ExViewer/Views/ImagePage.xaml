@@ -5,7 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      NavigationCacheMode="Disabled">
+      NavigationCacheMode="Disabled"
+      xmlns:img="using:ImageLib.Controls">
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -60,114 +61,75 @@
                   SelectionChanged="fv_SelectionChanged"
                   ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
                   SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}">
-            <FlipView.ItemTemplateSelector>
-                <local:ImagePresenterSelector>
-                    <local:ImagePresenterSelector.Template>
-                        <DataTemplate xmlns:c="using:ExClient"
-                                      x:DataType="c:GalleryImage">
-                            <Grid DoubleTapped="fvi_DoubleTapped"
-                                  Tapped="fvi_Tapped">
-                                <Grid.Resources>
-                                    <local:InvertConverter x:Key="con">
-                                        <local:InvertConverter.Raw>
-                                            <local:ObjectToBooleanConverter>
-                                                <local:ObjectToBooleanConverter.ValueForTrue>
-                                                    <GridLength>48</GridLength>
-                                                </local:ObjectToBooleanConverter.ValueForTrue>
-                                                <local:ObjectToBooleanConverter.ValueForFalse>
-                                                    <GridLength>0</GridLength>
-                                                </local:ObjectToBooleanConverter.ValueForFalse>
-                                                <local:ObjectToBooleanConverter.InnerConverter>
-                                                    <local:BooleanToVisibilityConverter />
-                                                </local:ObjectToBooleanConverter.InnerConverter>
-                                            </local:ObjectToBooleanConverter>
-                                        </local:InvertConverter.Raw>
-                                    </local:InvertConverter>
-                                </Grid.Resources>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="{Binding Visibility, ElementName=cb_top, Converter={StaticResource con}}" />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
-                                             Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                             Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                             IsIndeterminate="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                             VerticalAlignment="Top"
-                                             Grid.Row="1" />
-                                <ScrollViewer x:Name="sv"
-                                              ZoomMode="Enabled"
-                                              HorizontalScrollBarVisibility="Hidden"
-                                              VerticalScrollBarVisibility="Hidden"
-                                              MinZoomFactor="1"
-                                              Grid.RowSpan="2"
-                                              SizeChanged="sv_SizeChanged"
-                                              ManipulationDelta="sv_ManipulationDelta"
-                                              PointerEntered="sv_PointerEntered"
-                                              PointerMoved="sv_PointerMoved"
-                                              PointerPressed="sv_PointerPressed"
-                                              ManipulationMode="All">
-                                    <Image xmlns:gif="using:XamlAnimatedGif"
-                                           Source="{x:Bind Image, Mode=OneWay}"
-                                           SizeChanged="Image_SizeChanged" />
-                                </ScrollViewer>
+            <FlipView.ItemTemplate>
+                <DataTemplate xmlns:c="using:ExClient"
+                              x:DataType="c:GalleryImage">
+                    <Grid DoubleTapped="fvi_DoubleTapped"
+                          Tapped="fvi_Tapped">
+                        <Grid.Resources>
+                            <local:InvertConverter x:Key="con">
+                                <local:InvertConverter.Raw>
+                                    <local:ObjectToBooleanConverter>
+                                        <local:ObjectToBooleanConverter.ValueForTrue>
+                                            <GridLength>48</GridLength>
+                                        </local:ObjectToBooleanConverter.ValueForTrue>
+                                        <local:ObjectToBooleanConverter.ValueForFalse>
+                                            <GridLength>0</GridLength>
+                                        </local:ObjectToBooleanConverter.ValueForFalse>
+                                        <local:ObjectToBooleanConverter.InnerConverter>
+                                            <local:BooleanToVisibilityConverter />
+                                        </local:ObjectToBooleanConverter.InnerConverter>
+                                    </local:ObjectToBooleanConverter>
+                                </local:InvertConverter.Raw>
+                            </local:InvertConverter>
+                        </Grid.Resources>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="{Binding Visibility, ElementName=cb_top, Converter={StaticResource con}}" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <ScrollViewer x:Name="sv"
+                                      ZoomMode="Enabled"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      MinZoomFactor="1"
+                                      Grid.RowSpan="2"
+                                      SizeChanged="sv_SizeChanged"
+                                      ManipulationDelta="sv_ManipulationDelta"
+                                      PointerEntered="sv_PointerEntered"
+                                      PointerMoved="sv_PointerMoved"
+                                      PointerPressed="sv_PointerPressed"
+                                      ManipulationMode="All">
+                            <Grid SizeChanged="Image_SizeChanged"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center">
+                                <Image Source="{x:Bind Thumb, Mode=OneWay}"/>
+                                <ContentControl Content="{x:Bind}">
+                                    <ContentControl.ContentTemplateSelector>
+                                        <local:ImagePresenterSelector>
+                                            <local:ImagePresenterSelector.Template>
+                                                <DataTemplate x:DataType="c:GalleryImage">
+                                                    <Image Source="{x:Bind Image, Mode=OneWay}" />
+                                                </DataTemplate>
+                                            </local:ImagePresenterSelector.Template>
+                                            <local:ImagePresenterSelector.GifTemplate>
+                                                <DataTemplate x:DataType="c:GalleryImage">
+                                                    <img:ImageView UriSource="{x:Bind ImageFileUri, Mode=OneWay}" />
+                                                </DataTemplate>
+                                            </local:ImagePresenterSelector.GifTemplate>
+                                        </local:ImagePresenterSelector>
+                                    </ContentControl.ContentTemplateSelector>
+                                </ContentControl>
                             </Grid>
-                        </DataTemplate>
-                    </local:ImagePresenterSelector.Template>
-                    <local:ImagePresenterSelector.GifTemplate>
-                        <DataTemplate xmlns:c="using:ExClient"
-                                      x:DataType="c:GalleryImage">
-                            <Grid DoubleTapped="fvi_DoubleTapped"
-                                  Tapped="fvi_Tapped">
-                                <Grid.Resources>
-                                    <local:InvertConverter x:Key="con">
-                                        <local:InvertConverter.Raw>
-                                            <local:ObjectToBooleanConverter>
-                                                <local:ObjectToBooleanConverter.ValueForTrue>
-                                                    <GridLength>48</GridLength>
-                                                </local:ObjectToBooleanConverter.ValueForTrue>
-                                                <local:ObjectToBooleanConverter.ValueForFalse>
-                                                    <GridLength>0</GridLength>
-                                                </local:ObjectToBooleanConverter.ValueForFalse>
-                                                <local:ObjectToBooleanConverter.InnerConverter>
-                                                    <local:BooleanToVisibilityConverter />
-                                                </local:ObjectToBooleanConverter.InnerConverter>
-                                            </local:ObjectToBooleanConverter>
-                                        </local:InvertConverter.Raw>
-                                    </local:InvertConverter>
-                                </Grid.Resources>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="{Binding Visibility, ElementName=cb_top, Converter={StaticResource con}}" />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
-                                             Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                             Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                             IsIndeterminate="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                             VerticalAlignment="Top"
-                                             Grid.Row="1" />
-                                <ScrollViewer x:Name="sv"
-                                              xmlns:img="using:ImageLib.Controls"
-                                              ZoomMode="Enabled"
-                                              HorizontalScrollBarVisibility="Hidden"
-                                              VerticalScrollBarVisibility="Hidden"
-                                              MinZoomFactor="1"
-                                              Grid.RowSpan="2"
-                                              SizeChanged="sv_SizeChanged"
-                                              ManipulationDelta="sv_ManipulationDelta"
-                                              PointerEntered="sv_PointerEntered"
-                                              PointerMoved="sv_PointerMoved"
-                                              PointerPressed="sv_PointerPressed"
-                                              ManipulationMode="All">
-                                    <img:ImageView UriSource="{x:Bind ImageFileUri, Mode=OneWay}"
-                                                   SizeChanged="Image_SizeChanged"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
-                                </ScrollViewer>
-                            </Grid>
-                        </DataTemplate>
-                    </local:ImagePresenterSelector.GifTemplate>
-                </local:ImagePresenterSelector>
-            </FlipView.ItemTemplateSelector>
+                        </ScrollViewer>
+                        <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
+                                     Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     IsIndeterminate="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     VerticalAlignment="Top"
+                                     Grid.Row="1" />
+                    </Grid>
+                </DataTemplate>
+            </FlipView.ItemTemplate>
         </FlipView>
         <CommandBar x:Name="cb_top"
                     RelativePanel.AlignLeftWithPanel="True"
