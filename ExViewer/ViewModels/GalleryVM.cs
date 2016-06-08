@@ -216,7 +216,7 @@ namespace ExViewer.ViewModels
             return Run(async token =>
             {
                 var current = GetCurrent();
-                if(current?.Image == null)
+                if(current?.ImageFile == null)
                 {
                     CurrentInfo = null;
                     return;
