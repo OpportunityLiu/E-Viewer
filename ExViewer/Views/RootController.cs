@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Animation;
 using GalaSoft.MvvmLight.Threading;
+using System.Diagnostics;
 
 namespace ExViewer.Views
 {
@@ -15,6 +16,19 @@ namespace ExViewer.Views
     {
         internal static class RootController
         {
+            static RootController()
+            {
+                Application.Current.UnhandledException += App_UnhandledException;
+            }
+            
+            private static void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+            {
+                SendToast(e.Exception, null);
+#if !DEBUG
+                e.Handled = true;
+#endif
+            }
+
             private static RootControl root;
 
             private static Storyboard showPanel, hidePanel, playToast;

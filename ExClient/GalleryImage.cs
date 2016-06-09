@@ -96,12 +96,17 @@ namespace ExClient
         {
             return DispatcherHelper.RunAsync(async () =>
             {
-                var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem);
-                var thumb = new BitmapImage();
+                var thumb = new BitmapImage()
+                {
+                    DecodePixelType = DecodePixelType.Logical,
+                    DecodePixelWidth = 200
+                };
                 this.Thumb = thumb;
-                await Task.Yield();
-                using(stream)
-                    await thumb.SetSourceAsync(stream);
+                using(var stream=await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                {
+                await thumb.SetSourceAsync(stream);
+
+                }
             });
         }
 
