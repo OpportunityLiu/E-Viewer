@@ -1,11 +1,12 @@
-﻿<Page x:Class="ExViewer.Views.ImagePage"
+﻿<Page x:Name="page"
+      x:Class="ExViewer.Views.ImagePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:ExViewer.Views"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      NavigationCacheMode="Disabled"
+      NavigationCacheMode="Enabled"
       xmlns:img="using:ImageLib.Controls">
     <Page.Transitions>
         <TransitionCollection>
@@ -59,8 +60,7 @@
                   RelativePanel.AlignTopWithPanel="True"
                   EntranceNavigationTransitionInfo.IsTargetElement="True"
                   SelectionChanged="fv_SelectionChanged"
-                  ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
-                  SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}">
+                  ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
@@ -92,6 +92,7 @@
                                       HorizontalScrollBarVisibility="Hidden"
                                       VerticalScrollBarVisibility="Hidden"
                                       MinZoomFactor="1"
+                                      Loading="sv_Loading"
                                       Grid.RowSpan="2"
                                       SizeChanged="sv_SizeChanged"
                                       ManipulationDelta="sv_ManipulationDelta"
@@ -99,21 +100,29 @@
                                       PointerMoved="sv_PointerMoved"
                                       PointerPressed="sv_PointerPressed"
                                       ManipulationMode="All">
-                            <Grid SizeChanged="Image_SizeChanged"
-                                  HorizontalAlignment="Center"
+                            <Grid HorizontalAlignment="Center"
                                   VerticalAlignment="Center">
-                                <Image Source="{x:Bind Thumb, Mode=OneWay}"/>
-                                <ContentControl Content="{x:Bind}">
+                                <Image x:Name="img_Thumb"
+                                       Source="{x:Bind Thumb, Mode=OneWay}"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch" />
+                                <ContentControl Content="{x:Bind}"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
+                                                VerticalContentAlignment="Stretch">
                                     <ContentControl.ContentTemplateSelector>
                                         <local:ImagePresenterSelector>
                                             <local:ImagePresenterSelector.Template>
                                                 <DataTemplate x:DataType="c:GalleryImage">
-                                                    <Image Source="{x:Bind Image, Mode=OneWay}" />
+                                                    <Image Source="{x:Bind Image, Mode=OneWay}"
+                                                           Stretch="Uniform" />
                                                 </DataTemplate>
                                             </local:ImagePresenterSelector.Template>
                                             <local:ImagePresenterSelector.GifTemplate>
                                                 <DataTemplate x:DataType="c:GalleryImage">
-                                                    <img:ImageView UriSource="{x:Bind ImageFileUri, Mode=OneWay}" />
+                                                    <img:ImageView UriSource="{x:Bind ImageFileUri, Mode=OneWay}"
+                                                                   Stretch="Uniform" />
                                                 </DataTemplate>
                                             </local:ImagePresenterSelector.GifTemplate>
                                         </local:ImagePresenterSelector>

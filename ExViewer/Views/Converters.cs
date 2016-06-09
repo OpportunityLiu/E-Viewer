@@ -524,4 +524,23 @@ namespace ExViewer.Views
             return (int)value + Offset;
         }
     }
+
+    public class DoubleOffsetConverter : ValueConverterChain
+    {
+        public double Offset
+        {
+            get;
+            set;
+        }
+
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return (double)value - Offset;
+        }
+
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return (double)value + Offset;
+        }
+    }
 }

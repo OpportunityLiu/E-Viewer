@@ -75,7 +75,6 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
             cb_top.Visibility = Visibility.Visible;
             VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
@@ -84,16 +83,38 @@ namespace ExViewer.Views
                 Frame.GoBack();
             await Task.Yield();
             fv.Focus(FocusState.Pointer);
+            fv.SelectedIndex = VM.CurrentIndex;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+            VM.CurrentIndex = fv.SelectedIndex;
             av.VisibleBoundsChanged -= Av_VisibleBoundsChanged;
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            VM = null;
+            isFullScreen = null;
+        }
+
+        bool? isFullScreen;
+
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
         {
+            switch(isFullScreen)
+            {
+            case true:
+                if(av.IsFullScreenMode)
+                    return;
+                break;
+            case false:
+                if(!av.IsFullScreenMode)
+                    return;
+                break;
+            }
             if(av.IsFullScreenMode)
             {
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
@@ -104,19 +125,7 @@ namespace ExViewer.Views
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
                 abb_fullScreen.Label = "Full screen";
             }
-        }
-
-        private void setFactor(ScrollViewer sv, FrameworkElement img)
-        {
-            var factor = Math.Min((fv.ActualHeight - 0.1) / img.ActualHeight, (fv.ActualWidth - 0.1) / img.ActualWidth);
-            if(double.IsInfinity(factor) || double.IsNaN(factor))
-                factor = Math.Min(fv.ActualHeight, fv.ActualWidth) / 1000;
-            // limitation of ScrollViewer
-            if(factor < 0.1)
-                factor = 0.1;
-            sv.MinZoomFactor = (float)factor;
-            sv.MaxZoomFactor = (float)factor * SettingCollection.Current.MaxFactor;
-            sv.ZoomToFactor(sv.MinZoomFactor);
+            isFullScreen = av.IsFullScreenMode;
         }
 
         private void setScale()
@@ -140,6 +149,8 @@ namespace ExViewer.Views
             }
         }
 
+        IAsyncOperation<LoadMoreItemsResult> loadItems;
+
         private void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(VM?.Gallery == null)
@@ -154,7 +165,8 @@ namespace ExViewer.Views
             }
             if(end + 10 > VM.Gallery.Count && VM.Gallery.HasMoreItems)
             {
-                var ignore = VM.Gallery.LoadMoreItemsAsync(5);
+                if(loadItems == null || loadItems.Status != AsyncStatus.Started)
+                    loadItems = VM.Gallery.LoadMoreItemsAsync(5);
             }
             for(int i = start; i < end; i++)
             {
@@ -225,20 +237,6 @@ namespace ExViewer.Views
             e.Handled = true;
         }
 
-        private void Image_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var s = (FrameworkElement)sender;
-            var p = (ScrollViewer)s.Parent;
-            setFactor(p, s);
-        }
-
-        private void sv_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var s = (ScrollViewer)sender;
-            var p = (FrameworkElement)s.Content;
-            setFactor(s, p);
-        }
-
         private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if(e.Handled)
@@ -304,14 +302,29 @@ namespace ExViewer.Views
 
         private void abb_fullScreen_Click(object sender, RoutedEventArgs e)
         {
-            if(!av.IsFullScreenMode)
-            {
-                av.TryEnterFullScreenMode();
-            }
-            else
+            if(av.IsFullScreenMode)
             {
                 av.ExitFullScreenMode();
             }
+            else
+            {
+                av.TryEnterFullScreenMode();
+            }
+        }
+
+        private void sv_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var s = (ScrollViewer)sender;
+            var p = (FrameworkElement)s.Content;
+            p.MaxWidth = s.ActualWidth;
+            p.MaxHeight = s.ActualHeight;
+            s.ZoomToFactor(1);
+        }
+
+        private void sv_Loading(FrameworkElement sender, object args)
+        {
+            var s = (ScrollViewer)sender;
+            s.MaxZoomFactor = SettingCollection.Current.MaxFactor;
         }
     }
 
