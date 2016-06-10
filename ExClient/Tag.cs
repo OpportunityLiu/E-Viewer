@@ -19,6 +19,7 @@ namespace ExClient
 
     public class Tag
     {
+        // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };
         private static readonly char[] split = new char[] { ':' };
 
         internal Tag(Gallery owner, string content)

@@ -9,7 +9,7 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Runtime.InteropServices.WindowsRuntime;
 
-namespace ExClient
+namespace Windows.Storage
 {
     internal static class IOHelper
     {

@@ -13,6 +13,7 @@ using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using GalaSoft.MvvmLight.Threading;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Storage;
 
 namespace ExClient
 {

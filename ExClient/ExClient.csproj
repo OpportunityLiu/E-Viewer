@@ -110,15 +110,15 @@
     <Compile Include="AdvancedSearchOptions.cs" />
     <Compile Include="CachedGallery.cs" />
     <Compile Include="Models\CachedGalleryModel.cs" />
-    <Compile Include="StorageHelper.cs" />
+    <Compile Include="Helpers\StorageHelper.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="Client.cs" />
-    <Compile Include="ConnectionHelper.cs" />
+    <Compile Include="Helpers\ConnectionHelper.cs" />
     <Compile Include="DictionaryExtention.cs" />
     <Compile Include="GalleryImage.cs" />
     <Compile Include="HahProxyConfig.cs" />
     <Compile Include="IncrementalLoadingCollection{T}.cs" />
-    <Compile Include="IOHelper.cs" />
+    <Compile Include="Helpers\IOHelper.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="Models\CachedGalleryDb.cs" />
     <Compile Include="Models\GalleryModel.cs" />
@@ -129,6 +129,7 @@
     <Compile Include="SearchResult.cs" />
     <Compile Include="Gallery.cs" />
     <Compile Include="Tag.cs" />
+    <Compile Include="TorrentInfo.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
