@@ -17,6 +17,11 @@ namespace ExClient
         {
             if(Equals(field, value))
                 return;
+            ForceSet(ref field, value, propertyName);
+        }
+
+        protected void ForceSet<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
+        {
             field = value;
             RaisePropertyChanged(propertyName);
         }

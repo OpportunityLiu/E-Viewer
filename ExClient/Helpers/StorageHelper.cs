@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
@@ -48,6 +51,11 @@ namespace ExClient
             });
         }
 
+        public static IAsyncOperation<StorageFolder> CreateTempFolderAsync()
+        {
+            return Temporary.CreateFolderAsync(DateTimeOffset.Now.Ticks.ToString());
+        }
+
         public static IAsyncOperation<StorageFile> LoadFileAsync(string folderName, string fileName)
         {
             return Run(async token =>
@@ -58,6 +66,37 @@ namespace ExClient
                 var file = await folder.TryGetFileAsync(fileName);
                 return file;
             });
+        }
+
+        private static Dictionary<char, char> alternateFolderChars = new Dictionary<char, char>()
+        {
+            ['?'] = '？',
+            ['\\'] = '＼',
+            ['/'] = '／',
+            ['"'] = '＂',
+            ['|'] = '｜',
+            ['*'] = '＊',
+            ['<'] = '＜',
+            ['>'] = '＞',
+            [':'] = '：'
+        };
+
+        public static string ToValidFolderName(string raw)
+        {
+            var sb = new StringBuilder(raw);
+            foreach(var item in alternateFolderChars)
+            {
+                sb.Replace(item.Key, item.Value);
+            }
+            var invalid = Path.GetInvalidFileNameChars();
+            foreach(var item in invalid)
+            {
+                sb.Replace(item.ToString(), "");
+            }
+            var final = sb.ToString().Trim();
+            if(string.IsNullOrEmpty(final))
+                return DateTimeOffset.Now.Ticks.ToString();
+            return final;
         }
     }
 }
