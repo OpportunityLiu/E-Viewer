@@ -5,13 +5,125 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                mc:Ignorable="d"
-               Title="LOG ON"
                Loaded="ContentDialog_Loaded"
                PrimaryButtonText="Ok"
                SecondaryButtonText="?"
                PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
                SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
                MaxWidth="320">
+    <ContentDialog.Template>
+        <ControlTemplate TargetType="ContentDialog">
+            <Border x:Name="Container">
+                <Grid x:Name="LayoutRoot">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border x:Name="BackgroundElement"
+                            Background="{TemplateBinding Background}"
+                            FlowDirection="{TemplateBinding FlowDirection}"
+                            BorderThickness="{ThemeResource ContentDialogBorderWidth}"
+                            BorderBrush="{ThemeResource SystemControlForegroundAccentBrush}"
+                            MaxWidth="{TemplateBinding MaxWidth}"
+                            MaxHeight="{TemplateBinding MaxHeight}"
+                            MinWidth="{TemplateBinding MinWidth}"
+                            MinHeight="{TemplateBinding MinHeight}">
+                        <Grid x:Name="DialogSpace"
+                              VerticalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <ScrollViewer x:Name="ContentScrollViewer"
+                                          HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          ZoomMode="Disabled"
+                                          Margin="{ThemeResource ContentDialogContentScrollViewerMargin}"
+                                          IsTabStop="False">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <ContentControl x:Name="Title"
+                                                    Margin="{ThemeResource ContentDialogTitleMargin}"
+                                                    Content="{TemplateBinding Title}"
+                                                    ContentTemplate="{TemplateBinding TitleTemplate}"
+                                                    FontSize="20"
+                                                    FontFamily="XamlAutoFontFamily"
+                                                    FontWeight="Normal"
+                                                    Foreground="{TemplateBinding Foreground}"
+                                                    IsTabStop="False"
+                                                    MaxHeight="{ThemeResource ContentDialogTitleMaxHeight}"
+                                                    VerticalContentAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch">
+                                        <ContentControl.Template>
+                                            <ControlTemplate TargetType="ContentControl">
+                                                <ContentPresenter Content="{TemplateBinding Content}"
+                                                                  MaxLines="2"
+                                                                  TextWrapping="Wrap"
+                                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                  Margin="{TemplateBinding Padding}"
+                                                                  ContentTransitions="{TemplateBinding ContentTransitions}"
+                                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                            </ControlTemplate>
+                                        </ContentControl.Template>
+                                    </ContentControl>
+                                    <ContentPresenter x:Name="Content"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                      Content="{TemplateBinding Content}"
+                                                      FontSize="{ThemeResource ControlContentThemeFontSize}"
+                                                      FontFamily="{ThemeResource ContentControlThemeFontFamily}"
+                                                      Margin="{ThemeResource ContentDialogContentMargin}"
+                                                      Foreground="{TemplateBinding Foreground}"
+                                                      Grid.Row="1"
+                                                      TextWrapping="Wrap" />
+                                </Grid>
+                            </ScrollViewer>
+                            <Grid x:Name="CommandSpace"
+                                  Grid.Row="1"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Bottom">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Border x:Name="Button1Host"
+                                        Margin="{ThemeResource ContentDialogButton1HostMargin}"
+                                        MinWidth="{ThemeResource ContentDialogButtonMinWidth}"
+                                        MaxWidth="{ThemeResource ContentDialogButtonMaxWidth}"
+                                        Height="{ThemeResource ContentDialogButtonHeight}"
+                                        HorizontalAlignment="Stretch" />
+                                <Border x:Name="Button2Host"
+                                        Margin="{ThemeResource ContentDialogButton2HostMargin}"
+                                        MinWidth="{ThemeResource ContentDialogButtonMinWidth}"
+                                        MaxWidth="{ThemeResource ContentDialogButtonMaxWidth}"
+                                        Height="{ThemeResource ContentDialogButtonHeight}"
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Stretch" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </ContentDialog.Template>
+    <ContentDialog.Title>
+        <Grid >
+            <TextBlock>LOG ON</TextBlock>
+            <HyperlinkButton x:Name="btn_Register"
+                             Content="Register"
+                             HorizontalAlignment="Right"
+                             Style="{StaticResource TextBlockButtonStyle}"
+                             Padding="0"
+                             NavigateUri="http://forums.e-hentai.org/index.php?act=Reg&amp;CODE=00"
+                             FontSize="12" />
+        </Grid>
+    </ContentDialog.Title>
     <StackPanel>
         <TextBox x:Name="tb_user"
                  Margin="0,4"

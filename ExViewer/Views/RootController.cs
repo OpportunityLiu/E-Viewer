@@ -43,6 +43,7 @@ namespace ExViewer.Views
                 showPanel.Completed += ShowPanel_Completed;
                 hidePanel.Completed += HidePanel_Completed;
                 playToast.Completed += PlayToast_Completed;
+                RequireLogOn();
             }
 
             public static void SendToast(Exception ex, Type source)
