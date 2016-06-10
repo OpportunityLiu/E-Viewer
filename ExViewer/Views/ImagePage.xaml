@@ -6,8 +6,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      NavigationCacheMode="Enabled"
-      xmlns:img="using:ImageLib.Controls">
+      xmlns:controls="using:ExViewer.Controls"
+      NavigationCacheMode="Enabled">
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -87,49 +87,8 @@
                             <RowDefinition Height="{Binding Visibility, ElementName=cb_top, Converter={StaticResource con}}" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <ScrollViewer x:Name="sv"
-                                      ZoomMode="Enabled"
-                                      HorizontalScrollBarVisibility="Hidden"
-                                      VerticalScrollBarVisibility="Hidden"
-                                      MinZoomFactor="1"
-                                      Loading="sv_Loading"
-                                      Grid.RowSpan="2"
-                                      SizeChanged="sv_SizeChanged"
-                                      ManipulationDelta="sv_ManipulationDelta"
-                                      PointerEntered="sv_PointerEntered"
-                                      PointerMoved="sv_PointerMoved"
-                                      PointerPressed="sv_PointerPressed"
-                                      ManipulationMode="All">
-                            <Grid HorizontalAlignment="Center"
-                                  VerticalAlignment="Center">
-                                <Image x:Name="img_Thumb"
-                                       Source="{x:Bind Thumb, Mode=OneWay}"
-                                       HorizontalAlignment="Stretch"
-                                       VerticalAlignment="Stretch" />
-                                <ContentControl Content="{x:Bind}"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch">
-                                    <ContentControl.ContentTemplateSelector>
-                                        <local:ImagePresenterSelector>
-                                            <local:ImagePresenterSelector.Template>
-                                                <DataTemplate x:DataType="c:GalleryImage">
-                                                    <Image Source="{x:Bind Image, Mode=OneWay}"
-                                                           Stretch="Uniform" />
-                                                </DataTemplate>
-                                            </local:ImagePresenterSelector.Template>
-                                            <local:ImagePresenterSelector.GifTemplate>
-                                                <DataTemplate x:DataType="c:GalleryImage">
-                                                    <img:ImageView UriSource="{x:Bind ImageFileUri, Mode=OneWay}"
-                                                                   Stretch="Uniform" />
-                                                </DataTemplate>
-                                            </local:ImagePresenterSelector.GifTemplate>
-                                        </local:ImagePresenterSelector>
-                                    </ContentControl.ContentTemplateSelector>
-                                </ContentControl>
-                            </Grid>
-                        </ScrollViewer>
+                        <controls:ImagePresenter x:Name="ip"
+                                                 Grid.RowSpan="2" />
                         <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
                                      Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
                                      Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"

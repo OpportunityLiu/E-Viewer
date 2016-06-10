@@ -15,87 +15,113 @@
         </TransitionCollection>
     </Page.Transitions>
 
-    <RelativePanel>
-        <Grid x:Name="gd_info"
-              RelativePanel.Below="cb_top"
-              RelativePanel.AlignLeftWithPanel="True"
-              Height="200"
-              RelativePanel.AlignRightWithPanel="True">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="4" />
-                <RowDefinition />
-                <RowDefinition Height="4" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <ProgressBar x:Name="pb_save"
-                         Grid.ColumnSpan="2"
-                         Foreground="{x:Bind VM.SaveStatus, Mode=OneWay, Converter={StaticResource OperationStateToBrushConverter}}"
-                         Visibility="{x:Bind VM.SaveStatus, Mode=OneWay, Converter={StaticResource OperationStateToVisibilityConverter}}"
-                         Maximum="1"
-                         Value="{x:Bind VM.SaveProgress, Mode=OneWay}"
-                         SmallChange="1E-05"
-                         LargeChange="0.0001" />
-            <Image Source="{x:Bind VM.Gallery.Thumb, Mode=OneWay}"
-                   Grid.Row="1"
-                   Margin="4" />
-            <RelativePanel Margin="4"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <ScrollViewer x:Name="sv_Content"
+                      Grid.Row="1"
+                      VerticalSnapPointsType="Mandatory"
+                      VerticalScrollMode="Auto"
+                      VerticalScrollBarVisibility="Hidden">
+            <StackPanel>
+                <Grid x:Name="gd_info"
+                      Height="200">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="4" />
+                        <RowDefinition />
+                        <RowDefinition Height="4" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <ProgressBar x:Name="pb_save"
+                                 Grid.ColumnSpan="2"
+                                 Foreground="{x:Bind VM.SaveStatus, Mode=OneWay, Converter={StaticResource OperationStateToBrushConverter}}"
+                                 Visibility="{x:Bind VM.SaveStatus, Mode=OneWay, Converter={StaticResource OperationStateToVisibilityConverter}}"
+                                 Maximum="1"
+                                 Value="{x:Bind VM.SaveProgress, Mode=OneWay}"
+                                 SmallChange="1E-05"
+                                 LargeChange="0.0001" />
+                    <Image Source="{x:Bind VM.Gallery.Thumb, Mode=OneWay}"
                            Grid.Row="1"
-                           Grid.Column="1">
-                <controls:CategoryTag x:Name="Category"
-                                      Category="{x:Bind VM.Gallery.Category, Mode=OneWay}"
-                                      RelativePanel.AlignLeftWithPanel="True" />
-                <TextBlock x:Name="RecordCount"
-                           RelativePanel.RightOf="Category"
-                           RelativePanel.AlignVerticalCenterWith="Category"
-                           Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
-                <TextBlock x:Name="Rating"
-                           RelativePanel.Below="Category"
-                           Text="{x:Bind VM.Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
-                           FontFamily="Segoe MDL2 Assets" />
-                <ListView x:Name="lv_Tags"
-                          RelativePanel.Below="Rating"
-                          ItemsSource="{x:Bind VM.Gallery.Tags, Mode=OneWay}"
-                          ItemClick="lv_Tags_ItemClick"
-                          IsItemClickEnabled="True">
+                           Margin="4" />
+                    <RelativePanel Margin="4"
+                                   Grid.Row="1"
+                                   Grid.Column="1">
+                        <controls:CategoryTag x:Name="Category"
+                                              Category="{x:Bind VM.Gallery.Category, Mode=OneWay}"
+                                              RelativePanel.AlignLeftWithPanel="True" />
+                        <TextBlock x:Name="RecordCount"
+                                   RelativePanel.RightOf="Category"
+                                   RelativePanel.AlignVerticalCenterWith="Category"
+                                   Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}" />
+                        <TextBlock x:Name="Rating"
+                                   RelativePanel.Below="Category"
+                                   Text="{x:Bind VM.Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
+                                   FontFamily="Segoe MDL2 Assets" />
+                        <ListView x:Name="lv_Tags"
+                                  RelativePanel.Below="Rating"
+                                  ItemsSource="{x:Bind VM.Gallery.Tags, Mode=OneWay}"
+                                  ItemClick="lv_Tags_ItemClick"
+                                  IsItemClickEnabled="True">
 
-                </ListView>
-            </RelativePanel>
-        </Grid>
-        <GridView x:Name="gv"
-                  IsItemClickEnabled="True"
-                  ItemClick="gv_ItemClick"
-                  ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
-                  SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}"
-                  RelativePanel.Below="gd_info"
-                  RelativePanel.AlignLeftWithPanel="True"
-                  RelativePanel.AlignRightWithPanel="True"
-                  RelativePanel.AlignBottomWithPanel="True"
-                  VerticalAlignment="Top">
-            <GridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ItemsWrapGrid HorizontalAlignment="Center"
-                                   Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </GridView.ItemsPanel>
-            <GridView.ItemTemplate>
-                <DataTemplate xmlns:c="using:ExClient"
-                              x:DataType="c:GalleryImage">
-                    <Image Source="{x:Bind Thumb, Mode=OneWay}"
-                           Width="100" MaxHeight="180"/>
-                </DataTemplate>
-            </GridView.ItemTemplate>
-            <GridView.Footer>
-                <TextBlock HorizontalAlignment="Center"
-                           Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more items...</TextBlock>
-            </GridView.Footer>
-        </GridView>
+                        </ListView>
+                    </RelativePanel>
+                </Grid>
+                <Pivot x:Name="pv">
+                    <Pivot.Items>
+                        <PivotItem Header="Images">
+                            <GridView x:Name="gv"
+                                      IsItemClickEnabled="True"
+                                      ItemClick="gv_ItemClick"
+                                      ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
+                                      SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}"
+                                      VerticalAlignment="Top">
+                                <GridView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ItemsWrapGrid HorizontalAlignment="Center"
+                                                       Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </GridView.ItemsPanel>
+                                <GridView.ItemTemplate>
+                                    <DataTemplate xmlns:c="using:ExClient"
+                                                  x:DataType="c:GalleryImage">
+                                        <Image Source="{x:Bind Thumb, Mode=OneWay}"
+                                               Width="100"
+                                               MaxHeight="180" />
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                                <GridView.Footer>
+                                    <TextBlock HorizontalAlignment="Center"
+                                               Style="{StaticResource BaseTextBlockStyle}"
+                                               Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more items...</TextBlock>
+                                </GridView.Footer>
+                            </GridView>
+
+                        </PivotItem>
+                        <PivotItem Header="Torrents">
+                            <ListView x:Name="lv_Torrents"
+                                      IsItemClickEnabled="True"
+                                      ItemClick="lv_Torrents_ItemClick"
+                                      ItemsSource="{x:Bind VM.Torrents, Mode=OneWay}"
+                                      VerticalAlignment="Top"
+                                      Loaded="lv_Torrents_Loaded">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate xmlns:c="using:ExClient"
+                                                  x:DataType="c:TorrentInfo">
+                                        <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </PivotItem>
+                    </Pivot.Items>
+                </Pivot>
+            </StackPanel>
+        </ScrollViewer>
         <CommandBar x:Name="cb_top"
-                    RelativePanel.AlignLeftWithPanel="True"
-                    RelativePanel.AlignRightWithPanel="True"
                     HorizontalContentAlignment="Stretch">
             <CommandBar.Content>
                 <Grid>
@@ -127,11 +153,11 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_open"
                               Label="Open in browser"
-                              Command="{x:Bind VM.OpenInBrowser, Mode=OneWay}"/>
+                              Command="{x:Bind VM.OpenInBrowser, Mode=OneWay}" />
                 <AppBarButton x:Name="abb_save"
                               Label="Save this gallery"
-                              Command="{x:Bind VM.Save, Mode=OneWay}"/>
+                              Command="{x:Bind VM.Save, Mode=OneWay}" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
-    </RelativePanel>
+    </Grid>
 </Page>

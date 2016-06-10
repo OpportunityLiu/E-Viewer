@@ -277,5 +277,27 @@ Dimensions: {imageProp.Width} × {imageProp.Height}";
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref saveProgress, value));
             }
         }
+
+        public IAsyncAction LoadTorrents()
+        {
+            return Run(async token =>
+            {
+                Torrents = await gallery.LoadTorrnetsAsync();
+            });
+        }
+
+        private IList<TorrentInfo> torrents;
+
+        public IList<TorrentInfo> Torrents
+        {
+            get
+            {
+                return torrents;
+            }
+            set
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref torrents, value));
+            }
+        }
     }
 }
