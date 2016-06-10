@@ -41,7 +41,7 @@ namespace ExClient
     {
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
-            return Task.Run(async() =>
+            return Task.Run(async () =>
             {
                 using(var db = CachedGalleryDb.Create())
                 {
@@ -419,7 +419,7 @@ namespace ExClient
                             var transform = new BitmapTransform();
                             foreach(var page in group.Value)
                             {
-                                var imageModel = db.ImageSet.SingleOrDefault(im => im.ImageKey == page.imageKey);
+                                var imageModel = db.ImageSet.SingleOrDefault(im => im.OwnerId == this.Id && im.PageId == page.pageId);
                                 if(imageModel != null)
                                 {
                                     // Load cache

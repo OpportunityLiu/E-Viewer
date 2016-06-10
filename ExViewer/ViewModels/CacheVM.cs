@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.ViewModels
 {
@@ -18,11 +19,13 @@ namespace ExViewer.ViewModels
     {
         public CacheVM()
         {
-            Refresh = new RelayCommand(async () =>
+            this.Refresh = new RelayCommand(async () =>
             {
                 this.CachedGalleries = null;
+                this.Refresh.RaiseCanExecuteChanged();
                 this.CachedGalleries = await CachedGallery.LoadCachedGalleriesAsync();
-            });
+                this.Refresh.RaiseCanExecuteChanged();
+            }, () => this.CachedGalleries != null);
             Clear = new RelayCommand(() => RootControl.RootController.TrackAsyncAction(CachedGallery.ClearCachedGalleriesAsync(), (s, e) => Refresh.Execute(null)));
             Delete = new RelayCommand<Gallery>(async g =>
             {
@@ -50,6 +53,13 @@ namespace ExViewer.ViewModels
                 GalleryVM.AddGallery(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
             });
+            CachedGallery.LoadCachedGalleriesAsync().Completed = (s, e) =>
+            {
+                if(e == AsyncStatus.Completed)
+                    
+                    this.CachedGalleries = s.GetResults();
+                Refresh.RaiseCanExecuteChanged();
+            };
         }
 
         private static Dictionary<char, char> alternateFolderChars = new Dictionary<char, char>()
@@ -117,13 +127,13 @@ namespace ExViewer.ViewModels
         {
             return Task.Run(async () =>
             {
+                var p = new SaveGalleryProgress();
                 var source = await gallery.GetFolderAsync();
+                var files = await source.GetFilesAsync();
                 var name = toValidFolderName(gallery.GetDisplayTitle());
-                var oldTarget = await ApplicationData.Current.TemporaryFolder.TryGetItemAsync(name);
-                if(oldTarget != null)
-                    await oldTarget.DeleteAsync(StorageDeleteOption.PermanentDelete);
-                var target = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync(name);
-                foreach(var item in await source.GetFilesAsync())
+                var temp = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync(DateTimeOffset.Now.Ticks.ToString());
+                var target = await temp.CreateFolderAsync(name);
+                foreach(var item in files)
                 {
                     await item.CopyAsync(target);
                 }

@@ -113,7 +113,7 @@
         </ControlTemplate>
     </ContentDialog.Template>
     <ContentDialog.Title>
-        <Grid >
+        <Grid>
             <TextBlock>LOG ON</TextBlock>
             <HyperlinkButton x:Name="btn_Register"
                              Content="Register"
