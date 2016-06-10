@@ -23,6 +23,7 @@ using Windows.Storage.Streams;
 using ImageLib.Gif;
 using ExClient;
 using Windows.UI.Xaml.Media.Imaging;
+using ExViewer.Controls;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -144,8 +145,8 @@ namespace ExViewer.Views
                 var inner = (Grid)selected.ContentTemplateRoot;
                 if(inner == null)
                     continue;
-                var sv = (ScrollViewer)inner.FindName("sv");
-                sv.ZoomToFactor(sv.MinZoomFactor);
+                var ip = (ImagePresenter)inner.FindName("ip");
+                ip.ResetScale();
             }
         }
 
@@ -219,70 +220,11 @@ namespace ExViewer.Views
                 else
                     changeCbVisibility.Cancel();
             }
-            var sv = (ScrollViewer)((FrameworkElement)sender).FindName("sv");
-            var fa = sv.ZoomFactor;
-            if(fa == sv.MinZoomFactor)
-            {
-                var pi = e.GetPosition((UIElement)sv.Content);
-                pi.X *= fa;
-                pi.Y *= fa;
-                var ps = e.GetPosition(sv);
-                var df = SettingCollection.Current.DefaultFactor;
-                sv.ZoomToFactor(fa * df);
-                sv.ScrollToHorizontalOffset(pi.X * df - ps.X);
-                sv.ScrollToVerticalOffset(pi.Y * df - ps.Y);
-            }
-            else
-                sv.ZoomToFactor(sv.MinZoomFactor);
+            var fvi = (FlipViewItem)fv.ContainerFromIndex(fv.SelectedIndex);
+            var gd = (Grid)fvi?.ContentTemplateRoot;
+            var ip = (ImagePresenter)gd?.FindName("ip");
+            ip?.ZoomTo(e);
             e.Handled = true;
-        }
-
-        private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {
-            if(e.Handled)
-                return;
-            if(!SettingCollection.Current.MouseInertial && e.IsInertial)
-                return;
-            var dx = e.Delta.Translation.X;
-            var dy = e.Delta.Translation.Y;
-            var sv = (ScrollViewer)sender;
-            sv.ScrollToHorizontalOffset(sv.HorizontalOffset - dx);
-            sv.ScrollToVerticalOffset(sv.VerticalOffset - dy);
-        }
-
-        private void setSvManipulationMode(object sender, PointerRoutedEventArgs e)
-        {
-            var sv = (ScrollViewer)sender;
-            switch(e.Pointer.PointerDeviceType)
-            {
-            case Windows.Devices.Input.PointerDeviceType.Touch:
-                sv.ManipulationMode = ManipulationModes.System;
-                break;
-            case Windows.Devices.Input.PointerDeviceType.Pen:
-            case Windows.Devices.Input.PointerDeviceType.Mouse:
-                var mode = ManipulationModes.System | ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-                if(SettingCollection.Current.MouseInertial)
-                    mode |= ManipulationModes.TranslateInertia;
-                sv.ManipulationMode = mode;
-                break;
-            default:
-                break;
-            }
-        }
-
-        private void sv_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            setSvManipulationMode(sender, e);
-        }
-
-        private void sv_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            setSvManipulationMode(sender, e);
-        }
-
-        private void sv_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            setSvManipulationMode(sender, e);
         }
 
         private async void Flyout_Opening(object sender, object e)
@@ -312,63 +254,5 @@ namespace ExViewer.Views
             }
         }
 
-        private void sv_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var s = (ScrollViewer)sender;
-            var p = (FrameworkElement)s.Content;
-            p.MaxWidth = s.ActualWidth;
-            p.MaxHeight = s.ActualHeight;
-            s.ZoomToFactor(1);
-        }
-
-        private void sv_Loading(FrameworkElement sender, object args)
-        {
-            var s = (ScrollViewer)sender;
-            s.MaxZoomFactor = SettingCollection.Current.MaxFactor;
-        }
-    }
-
-    internal class ImagePresenterSelector : DataTemplateSelector
-    {
-        public DataTemplate Template
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate GifTemplate
-        {
-            get;
-            set;
-        }
-
-        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
-        {
-            var img = item as GalleryImage;
-            if(SettingCollection.Current.EnableGif && IsGif(img))
-            {
-                initGif();
-                return GifTemplate;
-            }
-            return Template;
-        }
-
-        public static bool IsGif(GalleryImage img)
-        {
-            return img?.ImageFile?.Name.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) == true;
-        }
-
-        private static bool gifInitialized;
-
-        private static void initGif()
-        {
-            if(gifInitialized)
-                return;
-            gifInitialized = true;
-            ImageLoader.Initialize(new ImageConfig.Builder()
-            {
-                CacheMode = ImageLib.Cache.CacheMode.NoCache
-            }.AddDecoder<GifDecoder>().Build());
-        }
     }
 }

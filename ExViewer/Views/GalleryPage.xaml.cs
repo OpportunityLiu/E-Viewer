@@ -33,6 +33,12 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            pv.Height = availableSize.Height - 48;
+            return base.MeasureOverride(availableSize);
+        }
+
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -86,6 +92,16 @@ namespace ExViewer.Views
         private void lv_Tags_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Frame.Navigate(typeof(SearchPage), Cache.AddSearchResult(((Tag)e.ClickedItem).Search()));
+        }
+
+        private void lv_Torrents_ItemClick(object sender, ItemClickEventArgs e)
+        {
+
+        }
+
+        private async void lv_Torrents_Loaded(object sender, RoutedEventArgs e)
+        {
+            await VM.LoadTorrents();
         }
     }
 }

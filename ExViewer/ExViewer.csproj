@@ -111,6 +111,9 @@
     <Compile Include="Controls\GalleryViewer.xaml.cs">
       <DependentUpon>GalleryViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ImagePresenter.xaml.cs">
+      <DependentUpon>ImagePresenter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SplitViewButton.cs" />
     <Compile Include="Controls\SplitViewTab.cs" />
     <Compile Include="Settings\Attributes.cs" />
@@ -188,6 +191,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\GalleryViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ImagePresenter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
