@@ -20,7 +20,7 @@ namespace ExViewer.Views
             {
                 Application.Current.UnhandledException += App_UnhandledException;
             }
-            
+
             private static void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
             {
                 SendToast(e.Exception, null);
@@ -43,7 +43,6 @@ namespace ExViewer.Views
                 showPanel.Completed += ShowPanel_Completed;
                 hidePanel.Completed += HidePanel_Completed;
                 playToast.Completed += PlayToast_Completed;
-                RequireLogOn();
             }
 
             public static void SendToast(Exception ex, Type source)
@@ -59,11 +58,14 @@ namespace ExViewer.Views
 
             public static void SendToast(string content, Type source)
             {
-                if(source != root.fm_inner.Content.GetType() && source != null)
-                    return;
-                root.tb_Toast.Text = content;
-                root.cp_Toast.Visibility = Visibility.Visible;
-                playToast.Begin();
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    if(source != root.fm_inner.Content.GetType() && source != null)
+                        return;
+                    root.tb_Toast.Text = content;
+                    root.cp_Toast.Visibility = Visibility.Visible;
+                    playToast.Begin();
+                });
             }
 
             private static void PlayToast_Completed(object sender, object e)

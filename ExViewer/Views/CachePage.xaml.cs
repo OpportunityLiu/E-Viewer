@@ -128,8 +128,12 @@ namespace ExViewer.Views
             e.Data.SetDataProvider(StandardDataFormats.StorageItems, async request =>
             {
                 var d = request.GetDeferral();
-                request.SetData(new IStorageItem[] { await CacheVM.GetCopyOf(item) });
-                d.Complete();
+                try
+                {
+                    var makeCopy = CacheVM.GetCopyOf(item);
+                    request.SetData(new IStorageItem[] { await makeCopy });
+                }
+                finally { d.Complete(); }
             });
             FlyoutBase.GetAttachedFlyout((FrameworkElement)((ListViewItem)lv.ContainerFromItem(item)).ContentTemplateRoot).Hide();
             e.Data.Properties.ApplicationName = Package.Current.DisplayName;
@@ -138,6 +142,11 @@ namespace ExViewer.Views
             e.Data.Properties.Title = item.Title;
             e.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromUri(item.ThumbUri);
             e.Data.RequestedOperation = DataPackageOperation.Move;
+        }
+
+        private void PullToRefreshBox_RefreshInvoked(DependencyObject sender, object args)
+        {
+            VM.Refresh.Execute(null);
         }
     }
 }

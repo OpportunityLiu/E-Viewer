@@ -4,6 +4,7 @@ using ExViewer.ViewModels;
 using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Security.Credentials;
@@ -30,6 +31,7 @@ namespace ExViewer.Views
 
         public async void prepareCompleted()
         {
+            await Task.Delay(50);
             Window.Current.Activate();
             ((Storyboard)Resources["ShowPic"]).Begin();
             Themes.ThemeExtention.SetDefaultTitleBar();

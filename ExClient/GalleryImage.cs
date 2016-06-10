@@ -102,9 +102,9 @@ namespace ExClient
                     DecodePixelWidth = 200
                 };
                 this.Thumb = thumb;
-                using(var stream=await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                using(var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                 {
-                await thumb.SetSourceAsync(stream);
+                    await thumb.SetSourceAsync(stream);
 
                 }
             });
@@ -226,7 +226,7 @@ namespace ExClient
                     ImageFile = await save;
                     using(var db = Models.CachedGalleryDb.Create())
                     {
-                        var myModel = db.ImageSet.SingleOrDefault(model => model.ImageKey == this.ImageKey);
+                        var myModel = db.ImageSet.SingleOrDefault(model => model.OwnerId == this.Owner.Id && model.PageId == this.PageId);
                         if(myModel == null)
                         {
                             db.ImageSet.Add(new Models.ImageModel().Update(this));
