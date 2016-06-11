@@ -229,6 +229,7 @@ namespace ExViewer.Views
 
         private async void Flyout_Opening(object sender, object e)
         {
+            VM.CurrentIndex = fv.SelectedIndex;
             await VM.RefreshInfoAsync();
         }
 

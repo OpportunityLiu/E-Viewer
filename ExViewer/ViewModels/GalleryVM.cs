@@ -112,6 +112,11 @@ namespace ExViewer.ViewModels
                 else
                     await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
             });
+            TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
+            {
+                var file = await torrent.LoadTorrentAsync();
+                await Launcher.LaunchFileAsync(file);
+            }, torrent => torrent != null);
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -156,6 +161,11 @@ namespace ExViewer.ViewModels
             get;
         }
 
+        public RelayCommand<TorrentInfo> TorrentDownload
+        {
+            get;
+        }
+
         private Gallery gallery;
 
         public Gallery Gallery
@@ -174,6 +184,7 @@ namespace ExViewer.ViewModels
                 Save.RaiseCanExecuteChanged();
                 OpenInBrowser.RaiseCanExecuteChanged();
                 OpenInExplorer.RaiseCanExecuteChanged();
+                Torrents = null;
             }
         }
 
@@ -282,13 +293,20 @@ Dimensions: {imageProp.Width} × {imageProp.Height}";
         {
             return Run(async token =>
             {
-                Torrents = await gallery.LoadTorrnetsAsync();
+                try
+                {
+                    Torrents = await gallery.LoadTorrnetsAsync();
+                }
+                catch(Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+                }
             });
         }
 
-        private IList<TorrentInfo> torrents;
+        private List<TorrentInfo> torrents;
 
-        public IList<TorrentInfo> Torrents
+        public List<TorrentInfo> Torrents
         {
             get
             {
@@ -296,8 +314,15 @@ Dimensions: {imageProp.Width} × {imageProp.Height}";
             }
             set
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref torrents, value));
+                torrents = value;
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    RaisePropertyChanged(nameof(Torrents));
+                    RaisePropertyChanged(nameof(TorrentCount));
+                });
             }
         }
+
+        public int? TorrentCount => torrents?.Count ?? gallery?.TorrentCount;
     }
 }

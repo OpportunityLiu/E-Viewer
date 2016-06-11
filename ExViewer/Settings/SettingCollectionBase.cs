@@ -23,9 +23,6 @@ namespace ExViewer.Settings
                 if(loaded)
                     return;
                 loaded = true;
-                roamingProperties = (from property in this.GetType().GetRuntimeProperties()
-                                     where property.CustomAttributes.Any(data => data.AttributeType == typeof(RoamingAttribute))
-                                     select property.Name).ToList();
                 groupedProperties = (from property in this.GetType().GetRuntimeProperties()
                                      where property.GetCustomAttribute<SettingAttribute>() != null
                                      select new SettingInfo(property) into setting
@@ -38,11 +35,9 @@ namespace ExViewer.Settings
                                      where t != null
                                      select Tuple.Create(property.Name, t.Value)).ToDictionary(p => p.Item1, p => p.Item2);
 #endif
-                ApplicationData.Current.DataChanged += DataChanged;
             }
         }
-
-        private List<string> roamingProperties;
+        
         private List<GroupedSettings> groupedProperties;
 
 #if DEBUG
@@ -50,14 +45,6 @@ namespace ExViewer.Settings
 #endif
 
         public List<GroupedSettings> GroupedSettings => groupedProperties;
-
-        private void DataChanged(ApplicationData sender, object args)
-        {
-            foreach(var item in roamingProperties)
-            {
-                RaisePropertyChanged(item);
-            }
-        }
 
         private IPropertySet local = ApplicationData.Current.LocalSettings.Values;
         private IPropertySet roaming = ApplicationData.Current.RoamingSettings.Values;

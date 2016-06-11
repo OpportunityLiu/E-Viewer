@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using ExViewer.Settings;
 using ExClient;
 using ExViewer.ViewModels;
+using System.Threading.Tasks;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -35,13 +36,19 @@ namespace ExViewer.Views
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            pv.Height = availableSize.Height - 48;
+            gd_Pivot.Height = availableSize.Height - 48;
+            changeView(true);
             return base.MeasureOverride(availableSize);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            if(e.NavigationMode == NavigationMode.New)
+            {
+                pv.SelectedIndex = 0;
+                changeViewTo(false, true);
+            }
             VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             if(e.NavigationMode == NavigationMode.Back)
             {
@@ -57,6 +64,11 @@ namespace ExViewer.Views
             base.OnNavigatingFrom(e);
             if(entranceElement != null)
                 EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, false);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            VM = null;
         }
 
         UIElement entranceElement;
@@ -99,9 +111,55 @@ namespace ExViewer.Views
 
         }
 
-        private async void lv_Torrents_Loaded(object sender, RoutedEventArgs e)
+        private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
-            await VM.LoadTorrents();
+            await Task.Yield();
+            changeView(false);
+        }
+
+        private void changeView(bool keep)
+        {
+            var fullOffset = gd_info.ActualHeight;
+            if(sv_Content.VerticalOffset < fullOffset * 0.95 ^ keep)
+                sv_Content.ChangeView(null, fullOffset, null, false);
+            else
+                sv_Content.ChangeView(null, 0, null, false);
+        }
+
+        private void changeViewTo(bool view, bool disableAnimation)
+        {
+            var fullOffset = gd_info.ActualHeight;
+            if(view)
+                sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
+            else
+                sv_Content.ChangeView(null, 0, null, disableAnimation);
+        }
+
+        private async void pv_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(pv.SelectedIndex == 1 && VM.Torrents == null)
+                await VM.LoadTorrents();
+        }
+
+        private void lv_Torrents_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach(var item in e.RemovedItems)
+            {
+                var con = (ListViewItem)lv_Torrents.ContainerFromItem(item);
+                if(con == null)
+                    continue;
+                var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
+                gd.Visibility = Visibility.Collapsed;
+            }
+            var added = e.AddedItems.FirstOrDefault();
+            if(added != null)
+            {
+                var con = (ListViewItem)lv_Torrents.ContainerFromItem(added);
+                if(con == null)
+                    return;
+                var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
+                gd.Visibility = Visibility.Visible;
+            }
         }
     }
 }
