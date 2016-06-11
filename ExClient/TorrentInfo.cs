@@ -14,9 +14,9 @@ namespace ExClient
 {
     public class TorrentInfo
     {
-        internal static IAsyncOperation<IList<TorrentInfo>> LoadTorrentsAsync(Gallery gallery)
+        internal static IAsyncOperation<List<TorrentInfo>> LoadTorrentsAsync(Gallery gallery)
         {
-            return Task.Run<IList<TorrentInfo>>(async () =>
+            return Task.Run(async () =>
             {
                 var torrentHtml = await gallery.Owner.HttpClient.GetStringAsync(new Uri($"http://exhentai.org/gallerytorrents.php?gid={gallery.Id}&t={gallery.Token}"));
                 var doc = new HtmlDocument();
@@ -111,7 +111,7 @@ namespace ExClient
             private set;
         }
 
-        public IAsyncOperation<StorageFile> GetTorrentAsync()
+        public IAsyncOperation<StorageFile> LoadTorrentAsync()
         {
             return Run(async token =>
             {

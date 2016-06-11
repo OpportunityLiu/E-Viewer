@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 namespace ExViewer.Settings
 {
     [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    sealed class RoamingAttribute : Attribute
-    {
-    }
-
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     sealed class TestingValueAttribute : Attribute
     {
         readonly object value;

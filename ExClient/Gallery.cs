@@ -452,7 +452,7 @@ namespace ExClient
             }).AsAsyncOperation();
         }
 
-        public IAsyncOperation<IList<TorrentInfo>> LoadTorrnetsAsync()
+        public IAsyncOperation<List<TorrentInfo>> LoadTorrnetsAsync()
         {
             return TorrentInfo.LoadTorrentsAsync(this);
         }

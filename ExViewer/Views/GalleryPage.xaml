@@ -6,7 +6,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      NavigationCacheMode="Enabled">
+      NavigationCacheMode="Enabled"
+      x:Name="page">
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -27,7 +28,8 @@
                       VerticalScrollBarVisibility="Hidden">
             <StackPanel>
                 <Grid x:Name="gd_info"
-                      Height="200">
+                      Height="180"
+                      Background="{ThemeResource SystemControlPageBackgroundListLowBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="4" />
                         <RowDefinition />
@@ -37,14 +39,6 @@
                         <ColumnDefinition Width="150" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <ProgressBar x:Name="pb_save"
-                                 Grid.ColumnSpan="2"
-                                 Foreground="{x:Bind VM.SaveStatus, Mode=OneWay, Converter={StaticResource OperationStateToBrushConverter}}"
-                                 Visibility="{x:Bind VM.SaveStatus, Mode=OneWay, Converter={StaticResource OperationStateToVisibilityConverter}}"
-                                 Maximum="1"
-                                 Value="{x:Bind VM.SaveProgress, Mode=OneWay}"
-                                 SmallChange="1E-05"
-                                 LargeChange="0.0001" />
                     <Image Source="{x:Bind VM.Gallery.Thumb, Mode=OneWay}"
                            Grid.Row="1"
                            Margin="4" />
@@ -71,9 +65,40 @@
                         </ListView>
                     </RelativePanel>
                 </Grid>
-                <Pivot x:Name="pv">
-                    <Pivot.Items>
-                        <PivotItem Header="Images">
+                <Grid x:Name="gd_Pivot">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Border Background="{ThemeResource SystemControlPageBackgroundListLowBrush}">
+                        <Button x:Name="btn_Scroll"
+                                Width="48"
+                                Height="24"
+                                Style="{StaticResource TextBlockButtonStyle}"
+                                Content="&#xE014;"
+                                FontFamily="Segoe MDL2 Assets"
+                                AutomationProperties.Name="Show/Hide detiles"
+                                Click="btn_Scroll_Click"
+                                Padding="0"
+                                HorizontalAlignment="Center"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Button.RenderTransform>
+                                <CompositeTransform Rotation="{x:Bind sv_Content.VerticalOffset, Mode=OneWay}" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </Border>
+                    <Pivot x:Name="pv"
+                           Grid.Row="1"
+                           SelectionChanged="pv_SelectionChanged">
+                        <PivotItem>
+                            <PivotItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Images</TextBlock>
+                                    <TextBlock Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               VerticalAlignment="Top" />
+                                </StackPanel>
+                            </PivotItem.Header>
                             <GridView x:Name="gv"
                                       IsItemClickEnabled="True"
                                       ItemClick="gv_ItemClick"
@@ -96,29 +121,70 @@
                                 </GridView.ItemTemplate>
                                 <GridView.Footer>
                                     <TextBlock HorizontalAlignment="Center"
+                                               Margin="12"
                                                Style="{StaticResource BaseTextBlockStyle}"
-                                               Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more items...</TextBlock>
+                                               Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                                               Text="Loading more items..." />
                                 </GridView.Footer>
                             </GridView>
-
                         </PivotItem>
-                        <PivotItem Header="Torrents">
+                        <PivotItem>
+                            <PivotItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>Torrents</TextBlock>
+                                    <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}] ,TargetNullValue=}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               VerticalAlignment="Top" />
+                                </StackPanel>
+                            </PivotItem.Header>
                             <ListView x:Name="lv_Torrents"
-                                      IsItemClickEnabled="True"
-                                      ItemClick="lv_Torrents_ItemClick"
                                       ItemsSource="{x:Bind VM.Torrents, Mode=OneWay}"
                                       VerticalAlignment="Top"
-                                      Loaded="lv_Torrents_Loaded">
+                                      SelectionChanged="lv_Torrents_SelectionChanged">
                                 <ListView.ItemTemplate>
                                     <DataTemplate xmlns:c="using:ExClient"
                                                   x:DataType="c:TorrentInfo">
-                                        <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                                        <StackPanel>
+                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
+                                            <Grid x:Name="gd_TorrentDetail"
+                                                  Visibility="Collapsed">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="{x:Bind Posted, Converter={StaticResource StringConverter}, ConverterParameter=Posted: \{0\}}" />
+                                                    <TextBlock Text="{x:Bind Uploader, Converter={StaticResource StringConverter}, ConverterParameter=Uploader: \{0\}}" />
+                                                    <TextBlock Text="{x:Bind Downloads, Converter={StaticResource StringConverter}, ConverterParameter=Downloads: \{0\}}" />
+                                                    <TextBlock Text="{x:Bind Peers, Converter={StaticResource StringConverter}, ConverterParameter=Peers: \{0\}}" />
+                                                    <TextBlock Text="{x:Bind Seeds, Converter={StaticResource StringConverter}, ConverterParameter=Seeds: \{0\}}" />
+                                                    <TextBlock Text="{x:Bind Size, Converter={StaticResource StringConverter}, ConverterParameter=Size: \{0\}}" />
+                                                </StackPanel>
+                                                <Button Command="{Binding VM.TorrentDownload, ElementName=page}"
+                                                        CommandParameter="{x:Bind}"
+                                                        Grid.Column="1">Download</Button>
+                                            </Grid>
+                                        </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
+                                <ListView.Header>
+                                    <TextBlock HorizontalAlignment="Center"
+                                               Margin="12"
+                                               Style="{StaticResource BaseTextBlockStyle}"
+                                               Visibility="{x:Bind VM.Torrents.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
+                                               Text="No available torrents" />
+                                </ListView.Header>
+                                <ListView.Footer>
+                                    <TextBlock HorizontalAlignment="Center"
+                                               Margin="12"
+                                               Style="{StaticResource BaseTextBlockStyle}"
+                                               Visibility="{x:Bind VM.Torrents, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
+                                               Text="Loading torrents..." />
+                                </ListView.Footer>
                             </ListView>
                         </PivotItem>
-                    </Pivot.Items>
-                </Pivot>
+                    </Pivot>
+                </Grid>
             </StackPanel>
         </ScrollViewer>
         <CommandBar x:Name="cb_top"
@@ -159,5 +225,14 @@
                               Command="{x:Bind VM.Save, Mode=OneWay}" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
+        <ProgressBar x:Name="pb_save"
+                     Grid.Row="1"
+                     Foreground="{x:Bind VM.SaveStatus, Converter={StaticResource OperationStateToBrushConverter}, Mode=OneWay}"
+                     Visibility="{x:Bind VM.SaveStatus, Converter={StaticResource OperationStateToVisibilityConverter}, Mode=OneWay}"
+                     Maximum="1"
+                     Value="{x:Bind VM.SaveProgress, Mode=OneWay}"
+                     SmallChange="1E-05"
+                     LargeChange="0.0001"
+                     VerticalAlignment="Top" />
     </Grid>
 </Page>
