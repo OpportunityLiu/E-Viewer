@@ -65,7 +65,7 @@
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
-    <Grid>
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
         <Rectangle Height="48"
                    Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                    VerticalAlignment="Top"

@@ -101,12 +101,11 @@ namespace ExClient
                     DecodePixelType = DecodePixelType.Logical,
                     DecodePixelWidth = 100
                 };
-                this.Thumb = thumb;
                 using(var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                 {
                     await thumb.SetSourceAsync(stream);
-
                 }
+                this.Thumb = thumb;
             });
         }
 

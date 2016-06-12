@@ -49,8 +49,7 @@
         </Storyboard>
     </UserControl.Resources>
     <Grid>
-        <SplitView x:Name="sv_root"
-                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <SplitView x:Name="sv_root">
             <SplitView.Pane>
                 <StackPanel>
                     <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
@@ -97,7 +96,7 @@
                    NavigationFailed="fm_inner_NavigationFailed" />
         </SplitView>
         <ContentPresenter x:Name="cp_Toast"
-                          Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                          Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Bottom"
                           HorizontalContentAlignment="Center"

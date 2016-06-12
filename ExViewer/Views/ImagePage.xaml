@@ -53,14 +53,14 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <FlipView x:Name="fv"
-                  Background="{x:Null}"
                   RelativePanel.AlignRightWithPanel="True"
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignBottomWithPanel="True"
                   RelativePanel.AlignTopWithPanel="True"
                   EntranceNavigationTransitionInfo.IsTargetElement="True"
                   SelectionChanged="fv_SelectionChanged"
-                  ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}">
+                  ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
+                  Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="c:GalleryImage">
