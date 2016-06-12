@@ -34,6 +34,20 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
+        private async void GalleryPage_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            if(e.NextView.VerticalOffset < e.FinalView.VerticalOffset && sv_Content.VerticalOffset < 1)
+            {
+                await Task.Yield();
+                changeViewTo(true, false);
+            }
+            else if(e.IsInertial && e.NextView.VerticalOffset < 1 && sv_Content.VerticalOffset > gd_info.ActualHeight - 1)
+            {
+                await Task.Yield();
+                changeViewTo(false, false);
+            }
+        }
+
         protected override Size MeasureOverride(Size availableSize)
         {
             gd_Pivot.Height = availableSize.Height - 48;
@@ -160,6 +174,22 @@ namespace ExViewer.Views
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
                 gd.Visibility = Visibility.Visible;
             }
+        }
+
+        private void gv_Loaded(object sender, RoutedEventArgs e)
+        {
+            var bd_Gv = VisualTreeHelper.GetChild(gv, 0);
+            var sv_Gv = VisualTreeHelper.GetChild(bd_Gv, 0);
+            (sv_Gv as ScrollViewer).ViewChanging += GalleryPage_ViewChanging;
+            gv.Loaded -= gv_Loaded;
+        }
+
+        private void lv_Torrents_Loaded(object sender, RoutedEventArgs e)
+        {
+            var bd_Lv = VisualTreeHelper.GetChild(lv_Torrents, 0);
+            var sv_Lv = VisualTreeHelper.GetChild(bd_Lv, 0);
+            (sv_Lv as ScrollViewer).ViewChanging += GalleryPage_ViewChanging;
+            lv_Torrents.Loaded -= lv_Torrents_Loaded;
         }
     }
 }

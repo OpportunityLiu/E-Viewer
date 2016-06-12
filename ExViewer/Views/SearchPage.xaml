@@ -117,6 +117,7 @@
         </AppBar>
 
         <ListView x:Name="lv"
+                  Background="{StaticResource ApplicationPageBackgroundThemeBrush}"
                   ContinuumNavigationTransitionInfo.ExitElementContainer="True"
                   ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
                   IsItemClickEnabled="True"
@@ -148,13 +149,15 @@
                 <TextBlock HorizontalAlignment="Center"
                            Margin="12"
                            Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">Loading more galleries...</TextBlock>
+                           Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                           Text="Loading more galleries..." />
             </ListView.Footer>
         </ListView>
         <TextBlock Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
                    Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
                    RelativePanel.Below="ab"
-                   RelativePanel.AlignHorizontalCenterWithPanel="True">No hits found</TextBlock>
+                   RelativePanel.AlignHorizontalCenterWithPanel="True"
+                   Text="No hits found" />
     </RelativePanel>
 </Page>

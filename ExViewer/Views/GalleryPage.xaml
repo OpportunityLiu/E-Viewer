@@ -25,11 +25,20 @@
                       Grid.Row="1"
                       VerticalSnapPointsType="Mandatory"
                       VerticalScrollMode="Auto"
-                      VerticalScrollBarVisibility="Hidden">
+                      VerticalScrollBarVisibility="Hidden"
+                      Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <StackPanel>
                 <Grid x:Name="gd_info"
-                      Height="180"
-                      Background="{ThemeResource SystemControlPageBackgroundListLowBrush}">
+                      Height="180">
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,1"
+                                             StartPoint="0.5,0">
+                            <GradientStop Color="{ThemeResource SystemAltHighColor}"
+                                          Offset="0" />
+                            <GradientStop Color="{ThemeResource SystemChromeMediumColor}"
+                                          Offset="1" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="4" />
                         <RowDefinition />
@@ -70,7 +79,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Border Background="{ThemeResource SystemControlPageBackgroundListLowBrush}">
+                    <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <Button x:Name="btn_Scroll"
                                 Width="48"
                                 Height="24"
@@ -81,19 +90,21 @@
                                 Click="btn_Scroll_Click"
                                 Padding="0"
                                 HorizontalAlignment="Center"
+                                HorizontalContentAlignment="Center"
                                 RenderTransformOrigin="0.5,0.5">
                             <Button.RenderTransform>
                                 <CompositeTransform Rotation="{x:Bind sv_Content.VerticalOffset, Mode=OneWay}" />
                             </Button.RenderTransform>
                         </Button>
                     </Border>
+
                     <Pivot x:Name="pv"
                            Grid.Row="1"
                            SelectionChanged="pv_SelectionChanged">
                         <PivotItem>
                             <PivotItem.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock>Images</TextBlock>
+                                    <TextBlock Text="Images" />
                                     <TextBlock Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                VerticalAlignment="Top" />
@@ -104,7 +115,8 @@
                                       ItemClick="gv_ItemClick"
                                       ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
                                       SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}"
-                                      VerticalAlignment="Top">
+                                      VerticalAlignment="Top"
+                                      Loaded="gv_Loaded">
                                 <GridView.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <ItemsWrapGrid HorizontalAlignment="Center"
@@ -131,7 +143,7 @@
                         <PivotItem>
                             <PivotItem.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock>Torrents</TextBlock>
+                                    <TextBlock Text="Torrents" />
                                     <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}] ,TargetNullValue=}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                VerticalAlignment="Top" />
@@ -140,7 +152,8 @@
                             <ListView x:Name="lv_Torrents"
                                       ItemsSource="{x:Bind VM.Torrents, Mode=OneWay}"
                                       VerticalAlignment="Top"
-                                      SelectionChanged="lv_Torrents_SelectionChanged">
+                                      SelectionChanged="lv_Torrents_SelectionChanged"
+                                      Loaded="lv_Torrents_Loaded">
                                 <ListView.ItemTemplate>
                                     <DataTemplate xmlns:c="using:ExClient"
                                                   x:DataType="c:TorrentInfo">
