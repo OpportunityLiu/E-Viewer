@@ -41,8 +41,10 @@ namespace ExViewer.Controls
         }
 
         // Using a DependencyProperty as the backing store for Image.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ImageProperty =
-            DependencyProperty.Register("Image", typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null));
+        public static DependencyProperty ImageProperty
+        {
+            get;
+        } = DependencyProperty.Register("Image", typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null));
 
         protected override Size MeasureOverride(Size availableSize)
         {
@@ -55,6 +57,7 @@ namespace ExViewer.Controls
         private void sv_Loading(FrameworkElement sender, object args)
         {
             sv.MaxZoomFactor = SettingCollection.Current.MaxFactor;
+            Bindings.Update();
         }
 
         private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)

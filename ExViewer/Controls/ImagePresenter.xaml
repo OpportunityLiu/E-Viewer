@@ -23,10 +23,18 @@
         <Grid HorizontalAlignment="Center"
               VerticalAlignment="Center"
               x:Name="gd_ContentRoot">
-            <Image x:Name="img_Thumb"
-                   Source="{x:Bind Image.Thumb, Mode=OneWay}"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch" />
+            <ContentPresenter Content="{x:Bind Image, Mode=OneWay}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              VerticalContentAlignment="Stretch">
+                <ContentPresenter.ContentTemplate>
+                    <DataTemplate x:DataType="c:GalleryImage">
+                        <Image Source="{x:Bind Thumb, Mode=OneWay}"
+                               Stretch="Uniform" />
+                    </DataTemplate>
+                </ContentPresenter.ContentTemplate>
+            </ContentPresenter>
             <ContentControl Content="{x:Bind Image, Mode=OneWay}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
