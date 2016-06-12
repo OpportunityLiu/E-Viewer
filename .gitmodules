@@ -1,9 +1,3 @@
-<<<<<<< HEAD
 [submodule "E-Chinese"]
 	path = E-Chinese
 	url = https://github.com/bhunji2/E-Hentai-Chinese.git
-=======
-[submodule "E-Hentai-Chinese"] 
-    path = E-Hentai-Chinese 
-    url = https://github.com/bhunji2/E-Hentai-Chinese.git
->>>>>>> 476bb29dc97ad2cf22d7649565a275f05b136458
