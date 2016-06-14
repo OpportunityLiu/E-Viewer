@@ -249,6 +249,10 @@
       <Project>{8875a248-ce2e-454b-9090-62ae609d7644}</Project>
       <Name>ExClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MathExpression\MathExpression.csproj">
+      <Project>{946bdc38-a325-4325-bc86-48f923b01dd6}</Project>
+      <Name>MathExpression</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="WindowsDesktop, Version=10.0.10586.0">

@@ -118,7 +118,7 @@
                         </ToolTipService.ToolTip>
                     </TextBlock>
                     <TextBlock x:Name="tb_si"
-                               Text="{x:Bind fv.SelectedIndex, Mode=OneWay, Converter={StaticResource IndexToStringConverter}, ConverterParameter=\{0\}}"
+                               Text="{x:Bind fv.SelectedIndex, Mode=OneWay, Converter={StaticResource IndexToStringConverter}}"
                                Style="{StaticResource BodyTextBlockStyle}"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_sep" />
