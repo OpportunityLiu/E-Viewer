@@ -13,9 +13,12 @@ using ExViewer.Settings;
 using ExViewer.ViewModels;
 using Windows.UI;
 using System.Globalization;
+using Windows.UI.Xaml.Markup;
+using MathExpression;
 
 namespace ExViewer.Views
 {
+    [ContentProperty(Name = "Raw")]
     public class InvertConverter : IValueConverter
     {
         public IValueConverter Raw
@@ -35,29 +38,7 @@ namespace ExViewer.Views
         }
     }
 
-    public class EmptyConverter : ValueConverterChain
-    {
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
-        {
-            return convert(value, targetType, parameter, language);
-        }
-
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
-        {
-            return convert(value, targetType, parameter, language);
-        }
-
-        private object convert(object value, Type targetType, object parameter, string language)
-        {
-            if(value != null)
-                return value;
-            if(targetType.GetTypeInfo().IsValueType)
-                return Activator.CreateInstance(targetType);
-            else
-                return null;
-        }
-    }
-
+    [ContentProperty(Name = "InnerConverter")]
     public abstract class ValueConverterChain : IValueConverter
     {
         public IValueConverter InnerConverter
@@ -85,6 +66,29 @@ namespace ExViewer.Views
             else
                 convertedByInner = value;
             return ConvertBackImplementation(convertedByInner, targetType, parameter, language);
+        }
+    }
+
+    public class EmptyConverter : ValueConverterChain
+    {
+        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return convert(value, targetType, parameter, language);
+        }
+
+        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        {
+            return convert(value, targetType, parameter, language);
+        }
+
+        private object convert(object value, Type targetType, object parameter, string language)
+        {
+            if(value != null)
+                return value;
+            if(targetType.GetTypeInfo().IsValueType)
+                return Activator.CreateInstance(targetType);
+            else
+                return null;
         }
     }
 
@@ -506,22 +510,34 @@ namespace ExViewer.Views
         }
     }
 
-    public class IntOffsetConverter : ValueConverterChain
+    public class MathFuctionConverter : ValueConverterChain
     {
-        public int Offset
+        public string Function
         {
-            get;
-            set;
+            get
+            {
+                return function;
+            }
+            set
+            {
+                function = value;
+                parsed = Parser.Parse1(function);
+            }
         }
+
+        private string function;
+
+        private ParseResult<Func<double, double>> parsed;
 
         public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
         {
-            return (int)value - Offset;
+            throw new NotImplementedException();
         }
 
         public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
         {
-            return (int)value + Offset;
+            var v = System.Convert.ToDouble(value);
+            return System.Convert.ChangeType(parsed.Compiled(v), targetType);
         }
     }
 

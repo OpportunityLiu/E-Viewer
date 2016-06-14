@@ -17,6 +17,15 @@ namespace ExViewer.Controls
 {
     public sealed class CategoryTag : Control
     {
+        private static readonly ResourceDictionary categoryBrushes = getResource();
+
+        private static ResourceDictionary getResource()
+        {
+            var r = new ResourceDictionary();
+            Application.LoadComponent(r, new Uri("ms-appx:///Themes/Categories.xaml"));
+            return r;
+        }
+
         public CategoryTag()
         {
             this.DefaultStyleKey = typeof(CategoryTag);
@@ -28,15 +37,6 @@ namespace ExViewer.Controls
             textPresenter = ((TextBlock)this.GetTemplateChild("TextPresenter"));
             if(textPresenter != null)
                 textPresenter.Text = Category.ToFriendlyNameString().ToUpper();
-        }
-
-        private static readonly ResourceDictionary categoryBrushes = getResource();
-
-        private static ResourceDictionary getResource()
-        {
-            var r = new ResourceDictionary();
-            Application.LoadComponent(r, new Uri("ms-appx:///Themes/Categories.xaml"));
-            return r;
         }
 
         private TextBlock textPresenter;
