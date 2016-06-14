@@ -21,9 +21,9 @@ namespace ExClient
 
     public static class CategoryExtention
     {
-        public static string ToFriendlyNameString(this Category @this)
+        public static string ToFriendlyNameString(this Category that)
         {
-            switch(@this)
+            switch(that)
             {
             case Category.ArtistCG:
                 return "Artist CG";
@@ -43,7 +43,7 @@ namespace ExClient
             case Category.Misc:
             case Category.All:
             default:
-                return @this.ToString();
+                return that.ToString();
             }
         }
     }

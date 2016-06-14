@@ -24,6 +24,7 @@ using ImageLib.Gif;
 using ExClient;
 using Windows.UI.Xaml.Media.Imaging;
 using ExViewer.Controls;
+using Windows.System.Display;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -65,7 +66,9 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(GalleryVM), typeof(ImagePage), new PropertyMetadata(null));
 
-        ApplicationView av = ApplicationView.GetForCurrentView();
+        private readonly ApplicationView av = ApplicationView.GetForCurrentView();
+        private readonly DisplayRequest displayRequest = new DisplayRequest();
+        private bool displayActived;
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
@@ -80,43 +83,53 @@ namespace ExViewer.Views
             VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(av, null);
-            if(VM.CurrentIndex == -1 && Frame.CanGoBack)
-                Frame.GoBack();
             await Task.Yield();
             fv.Focus(FocusState.Pointer);
             fv.SelectedIndex = VM.CurrentIndex;
+            if(SettingCollection.Current.KeepScreenOn)
+            {
+                displayRequest.RequestActive();
+                displayActived = true;
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
             VM.CurrentIndex = fv.SelectedIndex;
-            av.VisibleBoundsChanged -= Av_VisibleBoundsChanged;
+            VM = null;
+            if(DeviceTrigger.IsMobile)
+                RootControl.RootController.SetFullScreen(false);
+            if(displayActived)
+            {
+                displayRequest.RequestRelease();
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            VM = null;
-            isFullScreen = null;
+            av.VisibleBoundsChanged -= Av_VisibleBoundsChanged;
         }
 
         bool? isFullScreen;
 
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
         {
+            sender.SuppressSystemOverlays = false;
+            var currentState = RootControl.RootController.IsFullScreen;
             switch(isFullScreen)
             {
             case true:
-                if(av.IsFullScreenMode)
+                if(currentState)
                     return;
                 break;
             case false:
-                if(!av.IsFullScreenMode)
+                if(!currentState)
                     return;
                 break;
             }
-            if(av.IsFullScreenMode)
+            if(currentState)
             {
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
                 abb_fullScreen.Label = "Back to window";
@@ -126,7 +139,7 @@ namespace ExViewer.Views
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
                 abb_fullScreen.Label = "Full screen";
             }
-            isFullScreen = av.IsFullScreenMode;
+            isFullScreen = currentState;
         }
 
         private void setScale()
@@ -245,14 +258,7 @@ namespace ExViewer.Views
 
         private void abb_fullScreen_Click(object sender, RoutedEventArgs e)
         {
-            if(av.IsFullScreenMode)
-            {
-                av.ExitFullScreenMode();
-            }
-            else
-            {
-                av.TryEnterFullScreenMode();
-            }
+            RootControl.RootController.SetFullScreen();
         }
 
     }

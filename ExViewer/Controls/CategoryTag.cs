@@ -30,6 +30,15 @@ namespace ExViewer.Controls
                 textPresenter.Text = Category.ToFriendlyNameString().ToUpper();
         }
 
+        private static readonly ResourceDictionary categoryBrushes = getResource();
+
+        private static ResourceDictionary getResource()
+        {
+            var r = new ResourceDictionary();
+            Application.LoadComponent(r, new Uri("ms-appx:///Themes/Categories.xaml"));
+            return r;
+        }
+
         private TextBlock textPresenter;
 
         public Category Category
@@ -52,41 +61,14 @@ namespace ExViewer.Controls
         {
             var sender = (CategoryTag)d;
             var newValue = (Category)e.NewValue;
-            switch(newValue)
+            object brush;
+            if(categoryBrushes.TryGetValue($"Category{newValue}BackgroundBrush", out brush))
             {
-            case Category.Doujinshi://#FFFF2525
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x25, 0x25));
-                break;
-            case Category.Manga://#FFFFB225
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xB2, 0x25));
-                break;
-            case Category.ArtistCG://#FFE8D825
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xE8, 0xD8, 0x25));
-                break;
-            case Category.GameCG://#FF259225
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x25, 0x92, 0x25));
-                break;
-            case Category.Western://#FF9AFF38
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x9A, 0xFF, 0x38));
-                break;
-            case Category.NonH://#FF38ACFF
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x38, 0xAC, 0xFF));
-                break;
-            case Category.ImageSet://#FF2525FF
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x25, 0x25, 0xFF));
-                break;
-            case Category.Cosplay://#FF652594
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x65, 0x25, 0x94));
-                break;
-            case Category.AsianPorn://#FFF2A7F2
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xF2, 0xA7, 0xF2));
-                break;
-            case Category.Misc://#FFD3D3D3
-                sender.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xD3, 0xD3, 0xD3));
-                break;
-            default:
+                sender.Background = (Brush)brush;
+            }
+            else
+            {
                 sender.ClearValue(BackgroundProperty);
-                break;
             }
             if(sender.textPresenter != null)
                 sender.textPresenter.Text = newValue.ToFriendlyNameString().ToUpper();

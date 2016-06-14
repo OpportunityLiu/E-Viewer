@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Animation;
 using GalaSoft.MvvmLight.Threading;
 using System.Diagnostics;
+using Windows.UI.ViewManagement;
 
 namespace ExViewer.Views
 {
@@ -19,6 +20,19 @@ namespace ExViewer.Views
             static RootController()
             {
                 Application.Current.UnhandledException += App_UnhandledException;
+                av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
+            }
+
+            private static void Av_VisibleBoundsChanged(ApplicationView sender, object args)
+            {
+                if(IsFullScreen)
+                {
+                    av.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
+                }
+                else
+                {
+                    av.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
+                }
             }
 
             private static void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -226,6 +240,37 @@ namespace ExViewer.Views
             private static void ShowPanel_Completed(object sender, object e)
             {
                 ViewEnabled = false;
+            }
+
+            public static bool IsFullScreen
+            {
+                get
+                {
+                    return av.IsFullScreenMode;
+                }
+            }
+
+            private static ApplicationView av = ApplicationView.GetForCurrentView();
+
+            public static void SetFullScreen(bool fullScreen)
+            {
+                if(fullScreen)
+                {
+                    if(av.TryEnterFullScreenMode())
+                    {
+                        av.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
+                    }
+                }
+                else
+                {
+                    av.ExitFullScreenMode();
+                    av.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
+                }
+            }
+
+            public static void SetFullScreen()
+            {
+                SetFullScreen(!IsFullScreen);
             }
 
             public static Frame Frame => root?.fm_inner;

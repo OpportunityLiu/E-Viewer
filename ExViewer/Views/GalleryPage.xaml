@@ -144,7 +144,8 @@
                             <PivotItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Torrents" />
-                                    <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}] ,TargetNullValue=}"
+                                    <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
+                                               Visibility="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                VerticalAlignment="Top" />
                                 </StackPanel>

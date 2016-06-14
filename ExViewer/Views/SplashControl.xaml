@@ -45,6 +45,7 @@
             </Image.RenderTransform>
         </Image>
         <Image x:Name="img_pic"
+               Opacity="0"
                HorizontalAlignment="Center"
                VerticalAlignment="Center"
                ImageFailed="img_pic_ImageFailed"

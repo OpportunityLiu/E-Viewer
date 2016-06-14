@@ -17,6 +17,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Media.Imaging;
 using ExClient;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.ViewManagement;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -25,7 +26,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class RootControl : UserControl
+    public sealed partial class RootControl : Page
     {
         public RootControl(Type homePageType, ApplicationExecutionState previousState)
         {
@@ -46,12 +47,6 @@ namespace ExViewer.Views
             RootController.SetRoot(this);
             this.homePageType = homePageType;
             this.previousState = previousState;
-            Application.Current.Suspending += Application_Suspending;
-        }
-
-        private void Application_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
-        {
-            Settings.SettingCollection.Current.ViewStack = fm_inner.GetNavigationState();
         }
 
         private Type homePageType;
@@ -69,16 +64,14 @@ namespace ExViewer.Views
 
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                var ignore = statusBar.ShowAsync();
+            }
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
-            var vs = Settings.SettingCollection.Current.ViewStack;
-            if(string.IsNullOrEmpty(vs) || previousState != ApplicationExecutionState.Terminated)
-                fm_inner.Navigate(homePageType);
-            else
-            {
-                fm_inner.SetNavigationState(vs);
-                fm_inner_Navigated(fm_inner, null);
-            }
+            fm_inner.Navigate(homePageType);
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)

@@ -323,6 +323,6 @@ Dimensions: {imageProp.Width} × {imageProp.Height}";
             }
         }
 
-        public int? TorrentCount => torrents?.Count ?? gallery?.TorrentCount;
+        public int? TorrentCount => torrents?.Count ?? (gallery is CachedGallery ? null : gallery?.TorrentCount);
     }
 }

@@ -98,11 +98,6 @@ namespace ExViewer
             {
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
-                if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-                {
-                    var statusBar = StatusBar.GetForCurrentView();
-                    var ignore = statusBar.HideAsync();
-                }
                 splash = new Views.SplashControl(e.SplashScreen, e.PreviousExecutionState);
                 current.Content = splash;
             }

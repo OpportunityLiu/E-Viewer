@@ -15,11 +15,10 @@ namespace ExViewer.Themes
 
         public static void SetTitleBar()
         {
-            var view = ApplicationView.GetForCurrentView();
-            var tb = view.TitleBar;
+            var resources = Application.Current.Resources;
+            var tb = ApplicationView.GetForCurrentView().TitleBar;
             if(tb != null)
             {
-                var resources = Application.Current.Resources;
                 tb.BackgroundColor = (Color)resources["SystemChromeMediumColor"];
                 tb.InactiveBackgroundColor = (Color)resources["SystemChromeMediumColor"];
                 tb.ButtonBackgroundColor = (Color)resources["SystemChromeMediumColor"];
@@ -33,6 +32,13 @@ namespace ExViewer.Themes
                 tb.ButtonHoverForegroundColor = (Color)resources["SystemBaseMediumHighColor"];
                 tb.ButtonInactiveForegroundColor = (Color)resources["SystemChromeDisabledLowColor"];
                 tb.ButtonPressedForegroundColor = (Color)resources["SystemBaseMediumHighColor"];
+            }
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var sb = StatusBar.GetForCurrentView();
+                sb.BackgroundColor = (Color)resources["SystemChromeMediumColor"];
+                sb.BackgroundOpacity = 1;
+                sb.ForegroundColor = (Color)resources["SystemBaseMediumHighColor"];
             }
         }
 

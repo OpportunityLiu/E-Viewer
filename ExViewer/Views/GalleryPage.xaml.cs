@@ -58,12 +58,13 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
             if(e.NavigationMode == NavigationMode.New)
             {
                 pv.SelectedIndex = 0;
-                changeViewTo(false, true);
             }
             VM = await GalleryVM.GetVMAsync((long)e.Parameter);
+            Bindings.Update();
             if(e.NavigationMode == NavigationMode.Back)
             {
                 gv.ScrollIntoView(VM.GetCurrent());
@@ -83,6 +84,7 @@ namespace ExViewer.Views
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             VM = null;
+            changeViewTo(false, true);
         }
 
         UIElement entranceElement;
@@ -131,13 +133,18 @@ namespace ExViewer.Views
             changeView(false);
         }
 
+        private bool currentState
+        {
+            get
+            {
+                var fullOffset = gd_info.ActualHeight;
+                return sv_Content.VerticalOffset > fullOffset * 0.95;
+            }
+        }
+
         private void changeView(bool keep)
         {
-            var fullOffset = gd_info.ActualHeight;
-            if(sv_Content.VerticalOffset < fullOffset * 0.95 ^ keep)
-                sv_Content.ChangeView(null, fullOffset, null, false);
-            else
-                sv_Content.ChangeView(null, 0, null, false);
+            changeViewTo(!currentState ^ keep, false);
         }
 
         private void changeViewTo(bool view, bool disableAnimation)
@@ -146,7 +153,7 @@ namespace ExViewer.Views
             if(view)
                 sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
             else
-                sv_Content.ChangeView(null, 0, null, disableAnimation);
+                sv_Content.ChangeView(null, 0.000001, null, disableAnimation);
         }
 
         private async void pv_SelectionChanged(object sender, SelectionChangedEventArgs e)
