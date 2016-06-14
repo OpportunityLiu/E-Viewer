@@ -150,7 +150,7 @@ namespace ExViewer.Views
     {
         public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
         {
-            return string.Format(CultureInfo.CurrentCulture, parameter.ToString(), value.ToString());
+            return string.Format(CultureInfo.CurrentCulture, parameter.ToString(), value);
         }
 
         public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)

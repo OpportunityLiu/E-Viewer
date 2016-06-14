@@ -39,19 +39,6 @@
         </Storyboard>
     </Page.Resources>
     <RelativePanel>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <local:DeviceTrigger ActiveType="Windows.Mobile" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="abb_fullScreen.Visibility"
-                                Value="Collapsed" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
         <FlipView x:Name="fv"
                   RelativePanel.AlignRightWithPanel="True"
                   RelativePanel.AlignLeftWithPanel="True"

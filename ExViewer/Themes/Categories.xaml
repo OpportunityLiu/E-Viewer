@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="using:ExViewer.Themes">
+    <SolidColorBrush x:Key="CategoryDoujinshiBackgroundBrush"
+                     Color="#FFFF4040" />
+    <SolidColorBrush x:Key="CategoryMangaBackgroundBrush"
+                     Color="#FFFFB225" />
+    <SolidColorBrush x:Key="CategoryArtistCGBackgroundBrush"
+                     Color="#FFCDCD00" />
+    <SolidColorBrush x:Key="CategoryGameCGBackgroundBrush"
+                     Color="#FF2C9E36" />
+    <SolidColorBrush x:Key="CategoryWesternBackgroundBrush"
+                     Color="#FF69AA1B" />
+    <SolidColorBrush x:Key="CategoryNonHBackgroundBrush"
+                     Color="#FF38ACFF" />
+    <SolidColorBrush x:Key="CategoryImageSetBackgroundBrush"
+                     Color="#FF7E7EFA" />
+    <SolidColorBrush x:Key="CategoryCosplayBackgroundBrush"
+                     Color="#FF9F66C8" />
+    <SolidColorBrush x:Key="CategoryAsianPornBackgroundBrush"
+                     Color="#FFD26FD2" />
+    <SolidColorBrush x:Key="CategoryMiscBackgroundBrush"
+                     Color="#FFA5A5A5" />
+</ResourceDictionary>

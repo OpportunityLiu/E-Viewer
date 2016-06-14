@@ -9,13 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExClient", "ExClient\ExClie
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F164C16F-5F47-4A2A-896C-31CAB8C7D74D}"
 	ProjectSection(SolutionItems) = preProject
-		Performance1.psess = Performance1.psess
+		CleanUp.ps1 = CleanUp.ps1
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM

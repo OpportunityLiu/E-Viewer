@@ -9,6 +9,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Security.Credentials;
 using Windows.Security.Credentials.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -31,6 +32,11 @@ namespace ExViewer.Views
 
         public async void prepareCompleted()
         {
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                var ignore = statusBar.HideAsync();
+            }
             await Task.Delay(50);
             Window.Current.Activate();
             ((Storyboard)Resources["ShowPic"]).Begin();

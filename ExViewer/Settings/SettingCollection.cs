@@ -10,7 +10,7 @@ namespace ExViewer.Settings
             get;
             private set;
         } = new SettingCollection();
-        
+
         [Setting("Searching", "Save my lastest search as default", Index = 30)]
         public bool SaveLastSearch
         {
@@ -23,7 +23,7 @@ namespace ExViewer.Settings
                 SetRoaming(value);
             }
         }
-        
+
         [Setting("Searching", "Default keywords on the front page", Index = 10)]
         public string DefaultSearchString
         {
@@ -36,7 +36,7 @@ namespace ExViewer.Settings
                 SetRoaming(value);
             }
         }
-        
+
         [Setting(
             "Searching",
             "Default categories on the front page",
@@ -238,11 +238,12 @@ namespace ExViewer.Settings
             }
         }
 
-        public string ViewStack
+        [Setting("Image viewing", "Keep my screen on during image viewing", Index = 45)]
+        public bool KeepScreenOn
         {
             get
             {
-                return GetLocal("");
+                return GetLocal(false);
             }
             set
             {

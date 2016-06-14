@@ -44,8 +44,9 @@ namespace ExViewer.Views
                 await RootControl.RootController.RequireLogOn();
             }
             VM = new SearchVM(e.Parameter?.ToString());
+            Bindings.Update();
             await Task.Yield();
-            lv.Focus(FocusState.Pointer);
+            ab.Focus(FocusState.Pointer);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
