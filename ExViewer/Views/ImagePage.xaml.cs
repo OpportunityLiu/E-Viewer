@@ -81,6 +81,7 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             cb_top.Visibility = Visibility.Visible;
             VM = await GalleryVM.GetVMAsync((long)e.Parameter);
+            Bindings.Update();
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(av, null);
             await Task.Yield();

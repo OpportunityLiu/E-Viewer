@@ -184,17 +184,18 @@ namespace MathExpression
         public static Token RightBracket(int position) => new Token(TokenType.RightBracket, position);
     }
 
+    [Flags]
     public enum TokenType
     {
-        Number,
-        Id,
-        LeftBracket,
-        RightBracket,
-        Plus,
-        Minus,
-        Multiply,
-        Divide,
-        Power
+        Number = 1,
+        Id = 2,
+        LeftBracket = 4,
+        RightBracket = 8,
+        Plus = 16,
+        Minus = 32,
+        Multiply = 64,
+        Divide = 128,
+        Power = 256
     }
 
     public class TokenizeException : Exception

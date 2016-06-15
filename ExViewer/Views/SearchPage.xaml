@@ -66,20 +66,15 @@
                         <controls:CategorySelector x:Name="cs_Category"
                                                    SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
                                                    HorizontalAlignment="Center" />
-                        <Button x:Name="btn_ShowAdvanced"
+                        <Button x:Name="btn_Advanced"
                                 Content="Show advanced options"
                                 Style="{StaticResource TextBlockButtonStyle}"
-                                HorizontalAlignment="Center" 
-                                Click="btn_ShowAdvanced_Click"/>
-                        <Button x:Name="btn_HideAdvanced"
-                                Content="Hide advanced options"
-                                Style="{StaticResource TextBlockButtonStyle}"
-                                HorizontalAlignment="Center" 
-                                Click="btn_HideAdvanced_Click"
-                                Visibility="Collapsed"/>
-                        <StackPanel x:Name="sp_AdvancedSearch"
-                                    Visibility="Collapsed"
-                                    Padding="0,0,0,8">
+                                HorizontalAlignment="Center"
+                                Click="btn_Advanced_Click" />
+                        <ListView x:Name="lv_AdvancedSearch"
+                                  Visibility="Collapsed"
+                                  Padding="0,0,0,8"
+                                  ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}">
                             <CheckBox Content="Search gallery name"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
                             <CheckBox Content="Search gallery tags"
@@ -96,8 +91,8 @@
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
                             <CheckBox Content="Show expunged galleries"
                                       IsChecked="{x:Bind VM.AdvancedSearch.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
-                                      Padding="8,0,0,0">
+                            <CheckBox Padding="8,0,0,0"
+                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource NullableConverter}}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Minimum rating:"
                                                VerticalAlignment="Center" />
@@ -110,7 +105,7 @@
                                     </ComboBox>
                                 </StackPanel>
                             </CheckBox>
-                        </StackPanel>
+                        </ListView>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

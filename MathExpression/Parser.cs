@@ -31,7 +31,7 @@ namespace MathExpression
             get;
         } = new Stack<string>();
 
-        public string ExprStr => string.Join(" ", Expressions);
+        public string ExprStr => string.Join("", Expressions.Reverse());
 
         public bool MoveNext()
         {
@@ -42,10 +42,10 @@ namespace MathExpression
             return r;
         }
 
-        public List<ParameterExpression> Parameters
+        public Dictionary<string, ParameterExpression> Parameters
         {
             get;
-        } = new List<ParameterExpression>();
+        } = new Dictionary<string, ParameterExpression>(StringComparer.OrdinalIgnoreCase);
 
         public Expression Expr
         {
@@ -55,20 +55,6 @@ namespace MathExpression
 
     public static class Parser
     {
-        private static Analyzer parseImpl(string expression)
-        {
-            if(string.IsNullOrEmpty(expression))
-                throw new ArgumentNullException(nameof(expression));
-            using(var tokens = Tokenizer.Tokenize(expression).GetEnumerator())
-            {
-                var analyzer = new Analyzer(tokens);
-                if(!analyzer.MoveNext())
-                    throw new ParseException("No tokens found.");
-                analyzer.Expr = Parser.expression(analyzer);
-                return analyzer;
-            }
-        }
-
         public static ParseResult Parse(string expression)
         {
             return new ParseResult(parseImpl(expression));
@@ -94,6 +80,21 @@ namespace MathExpression
             return new ParseResult<Func<double, double, double, double>>(parseImpl(expression));
         }
 
+        private static Analyzer parseImpl(string expression)
+        {
+            if(string.IsNullOrEmpty(expression))
+                throw new ArgumentNullException(nameof(expression));
+            using(var tokens = Tokenizer.Tokenize(expression).GetEnumerator())
+            {
+                var analyzer = new Analyzer(tokens);
+                if(!analyzer.MoveNext())
+                    throw ParseException.EmptyToken();
+                analyzer.Expr = Parser.expression(analyzer);
+                if(!analyzer.Ended)
+                    throw ParseException.UnexpectedToken(analyzer);
+                return analyzer;
+            }
+        }
 
         // Expression -> [ Addop ] Term { Addop Term }
         // Addop -> "+" | "-"
@@ -106,7 +107,7 @@ namespace MathExpression
             {
                 addOps[0] = analyzer.Current;
                 if(!analyzer.MoveNext())
-                    throw new ParseException("Expression ended at an unexcepted position.");
+                    throw ParseException.WrongEneded();
             }
             terms.Add(term(analyzer));
             while(!analyzer.Ended)
@@ -115,7 +116,7 @@ namespace MathExpression
                 if(!addOp.IsAddOp())
                     break;
                 if(!analyzer.MoveNext())
-                    throw new ParseException($"Expression ended at an unexcepted position.");
+                    throw ParseException.WrongEneded();
                 addOps.Add(addOp);
                 terms.Add(term(analyzer));
             }
@@ -147,7 +148,7 @@ namespace MathExpression
                 if(!mulOp.IsMulOp())
                     break;
                 if(!analyzer.MoveNext())
-                    throw new ParseException($"Expression ended at an unexcepted position.");
+                    throw ParseException.WrongEneded();
                 mulOps.Add(mulOp);
                 powers.Add(power(analyzer));
             }
@@ -175,14 +176,14 @@ namespace MathExpression
                 if(!powOp.IsPowOp())
                     break;
                 if(!analyzer.MoveNext())
-                    throw new ParseException($"Expression ended at an unexcepted position.");
+                    throw ParseException.WrongEneded();
                 powOps.Add(powOp);
                 factors.Add(factor(analyzer));
             }
-            var result = factors[0];
-            for(int i = 0; i < powOps.Count; i++)
+            var result = factors[factors.Count - 1];
+            for(int i = powOps.Count - 1; i >= 0; i--)
             {
-                result = Expression.Power(result, factors[i + 1]);
+                result = Expression.Power(factors[i], result);
             }
             return result;
         }
@@ -202,36 +203,48 @@ namespace MathExpression
                 double constValue;
                 if(Functions.TryGetValue(first.Id, out func))
                 {
+                    analyzer.Expressions.Pop();
+                    analyzer.Expressions.Push(FunctionNames[first.Id]);
                     if(!analyzer.MoveNext())
-                        throw new ParseException($"Expression ended at an unexcepted position.");
+                        throw ParseException.WrongEneded();
                     if(analyzer.Current.Type != TokenType.LeftBracket)
-                        throw new ParseException($"Unexcepted token has been detected.\nPostion: {analyzer.Current.Position}");
+                        throw ParseException.UnexpectedToken(analyzer, TokenType.LeftBracket);
                     if(!analyzer.MoveNext())
-                        throw new ParseException($"Expression ended at an unexcepted position.");
+                        throw ParseException.WrongEneded();
                     var exprInFunc = expression(analyzer);
                     if(analyzer.Current.Type != TokenType.RightBracket)
-                        throw new ParseException($"Bracket not match.\nPosition: {analyzer.Current.Position}");
+                        throw ParseException.UnexpectedToken(analyzer, TokenType.RightBracket);
                     analyzer.MoveNext();
                     return Expression.Call(func, exprInFunc);
                 }
                 else if(ConstantValues.TryGetValue(first.Id, out constValue))
                 {
+                    analyzer.Expressions.Pop();
+                    analyzer.Expressions.Push(ConstantNames[first.Id]);
                     analyzer.MoveNext();
                     return Expression.Constant(constValue, typeof(double));
                 }
                 else
                 {
                     analyzer.MoveNext();
-                    var param = Expression.Parameter(typeof(double), first.Id);
-                    analyzer.Parameters.Add(param);
-                    return param;
+                    ParameterExpression param;
+                    if(analyzer.Parameters.TryGetValue(first.Id, out param))
+                    {
+                        return param;
+                    }
+                    else
+                    {
+                        param = Expression.Parameter(typeof(double), first.Id);
+                        analyzer.Parameters.Add(first.Id, param);
+                        return param;
+                    }
                 }
             case TokenType.LeftBracket:
                 if(!analyzer.MoveNext())
-                    throw new ParseException($"Expression ended at an unexcepted position.");
+                    throw ParseException.WrongEneded();
                 var expr = expression(analyzer);
                 if(analyzer.Current.Type != TokenType.RightBracket)
-                    throw new ParseException($"Bracket not match.\nPosition: {analyzer.Current.Position}");
+                    throw ParseException.UnexpectedToken(analyzer, TokenType.RightBracket);
                 analyzer.MoveNext();
                 return expr;
             case TokenType.RightBracket:
@@ -241,7 +254,7 @@ namespace MathExpression
             case TokenType.Divide:
             case TokenType.Power:
             default:
-                throw new ParseException($"Unexcepted token has been detected.\nPostion: {first.Position}");
+                throw ParseException.UnexpectedToken(analyzer, TokenType.Number | TokenType.Id | TokenType.LeftBracket);
             }
         }
 
@@ -254,10 +267,14 @@ namespace MathExpression
             ["E"] = Math.E,
         };
 
+        private static Dictionary<string, string> ConstantNames = ConstantValues.Keys.ToDictionary(s => s, StringComparer.OrdinalIgnoreCase);
+
         public static IReadOnlyDictionary<string, MethodInfo> Functions
         {
             get;
         } = loadFunctions();
+
+        private static Dictionary<string, string> FunctionNames = Functions.Keys.ToDictionary(s => s, StringComparer.OrdinalIgnoreCase);
 
         private static Dictionary<string, MethodInfo> loadFunctions()
         {
@@ -315,9 +332,9 @@ namespace MathExpression
         internal ParseResult(Analyzer analyzer)
         {
             Formatted = analyzer.ExprStr;
-            Expression = System.Linq.Expressions.Expression.Lambda(analyzer.Expr, Formatted, analyzer.Parameters);
+            Expression = System.Linq.Expressions.Expression.Lambda(analyzer.Expr, Formatted, analyzer.Parameters.Values);
             Compiled = Expression.Compile();
-            Parameters = new ReadOnlyCollection<string>(analyzer.Parameters.Select(p => p.Name).ToList());
+            Parameters = new ReadOnlyCollection<string>(analyzer.Parameters.Keys.ToList());
         }
 
         public LambdaExpression Expression
@@ -346,7 +363,7 @@ namespace MathExpression
         internal ParseResult(Analyzer analyzer)
             : base(analyzer)
         {
-            Expression = System.Linq.Expressions.Expression.Lambda<TDelegate>(analyzer.Expr, analyzer.ExprStr, analyzer.Parameters);
+            Expression = System.Linq.Expressions.Expression.Lambda<TDelegate>(analyzer.Expr, analyzer.ExprStr, analyzer.Parameters.Values);
             Compiled = Expression.Compile();
         }
 
@@ -363,10 +380,21 @@ namespace MathExpression
 
     public class ParseException : Exception
     {
-        public ParseException()
+        internal static ParseException UnexpectedToken(Analyzer analyzer, TokenType? expected = null)
         {
+            if(expected.HasValue)
+                return new ParseException($"Unexpected token has been detected.{expected.Value} expected.\nPostion: {analyzer.Current.Position + 1}");
+            else
+                return new ParseException($"Unexpected token has been detected.\nPostion: {analyzer.Current.Position + 1}");
         }
-        public ParseException(string message) : base(message) { }
-        public ParseException(string message, Exception inner) : base(message, inner) { }
+
+        internal static ParseException WrongEneded()
+            => new ParseException($"Expression ended at an unexpected position.");
+
+        internal static ParseException EmptyToken()
+            => new ParseException($"No tokens found.");
+
+        internal ParseException(string message) : base(message) { }
+        internal ParseException(string message, Exception inner) : base(message, inner) { }
     }
 }

@@ -525,17 +525,39 @@ namespace ExViewer.Views
             }
         }
 
-        private string function;
+        private string invFunction;
 
         private ParseResult<Func<double, double>> parsed;
 
+        public string InversedFunction
+        {
+            get
+            {
+                return invFunction;
+            }
+            set
+            {
+                invFunction = value;
+                invParsed = Parser.Parse1(invFunction);
+            }
+        }
+
+        private string function;
+
+        private ParseResult<Func<double, double>> invParsed;
+
         public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
         {
-            throw new NotImplementedException();
+            if(invParsed == null)
+                throw new InvalidOperationException($"{nameof(InversedFunction)} hasn't been set.");
+            var v = System.Convert.ToDouble(value);
+            return System.Convert.ChangeType(invParsed.Compiled(v), targetType);
         }
 
         public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
         {
+            if(parsed == null)
+                throw new InvalidOperationException($"{nameof(Function)} hasn't been set.");
             var v = System.Convert.ToDouble(value);
             return System.Convert.ChangeType(parsed.Compiled(v), targetType);
         }

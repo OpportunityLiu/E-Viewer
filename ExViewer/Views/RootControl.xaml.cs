@@ -130,6 +130,11 @@ namespace ExViewer.Views
 #endif
         }
 
+        private void Grid_GotFocus(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.OriginalSource);
+        }
+
         //private async void svb_LogOn_Click(object sender, RoutedEventArgs e)
         //{
         //    await RootController.RequireLogOn();

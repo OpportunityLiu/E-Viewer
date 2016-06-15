@@ -26,7 +26,7 @@
 -->
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
   <Library Name="MathExpression">
-
+    <Type Name="System.Math" Dynamic="Required Public"/>
   	<!-- add directives for your library here -->
 
   </Library>

@@ -69,7 +69,7 @@ namespace ExViewer.Views
                 VM.Refresh.Execute(null);
             }
             await Task.Yield();
-            lv.Focus(FocusState.Pointer);
+            abb_Refresh.Focus(FocusState.Pointer);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

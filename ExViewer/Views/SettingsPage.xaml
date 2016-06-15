@@ -70,7 +70,7 @@
                    Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                    VerticalAlignment="Top"
                    StrokeThickness="0" />
-        <Pivot x:Name="pv_root">
+        <Pivot x:Name="pv_root" IsTabStop="False">
             <Pivot.LeftHeader>
                 <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
                         Content="&#xE700;"
@@ -97,7 +97,8 @@
                                                               Padding="{TemplateBinding Padding}"
                                                               Foreground="{TemplateBinding Foreground}"
                                                               Background="{TemplateBinding Background}"
-                                                              BorderBrush="{TemplateBinding BorderBrush}" />
+                                                              BorderBrush="{TemplateBinding BorderBrush}" 
+                                                              Control.IsTemplateFocusTarget="True"/>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -107,6 +108,8 @@
                                         Value="8" />
                                 <Setter Property="Padding"
                                         Value="0" />
+                                <Setter Property="UseSystemFocusVisuals"
+                                        Value="True" />
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.ItemContainerTransitions>
@@ -129,6 +132,10 @@
                     </Setter>
                     <Setter Property="Margin"
                             Value="0" />
+                    <Setter Property="UseSystemFocusVisuals"
+                            Value="True" />
+                    <Setter Property="IsTabStop"
+                            Value="False" />
                 </Style>
             </Pivot.ItemContainerStyle>
         </Pivot>
