@@ -20,10 +20,13 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="GridViewItem">
-                            <ContentPresenter Content="{TemplateBinding Content}" />
+                            <ContentPresenter Control.IsTemplateFocusTarget="True"
+                                              Content="{TemplateBinding Content}" />
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Setter Property="IsTabStop"
+                        Value="False" />
             </Style>
         </GridView.ItemContainerStyle>
         <GridView.ItemTemplate>

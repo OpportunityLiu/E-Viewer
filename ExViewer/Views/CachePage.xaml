@@ -53,6 +53,7 @@
                              RelativePanel.Below="cb_top"
                              RefreshInvoked="PullToRefreshBox_RefreshInvoked"
                              RefreshThreshold="60"
+                             IsTabStop="False"
                              Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <pr:PullToRefreshBox.TopIndicatorTemplate>
                 <DataTemplate>
@@ -60,7 +61,8 @@
                                                    Height="80"
                                                    Width="200"
                                                    PullToRefreshText="Pull to refresh"
-                                                   ReleaseToRefreshText="Release to refresh">
+                                                   ReleaseToRefreshText="Release to refresh"
+                                                   IsTabStop="False">
                         <pr:PullRefreshProgressControl.Template>
                             <ControlTemplate TargetType="pr:PullRefreshProgressControl">
                                 <Grid>

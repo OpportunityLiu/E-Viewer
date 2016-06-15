@@ -7,7 +7,8 @@
       mc:Ignorable="d"
       Loaded="Control_Loaded"
       Unloaded="Control_Unloaded"
-      xmlns:controls="using:ExViewer.Controls">
+      xmlns:controls="using:ExViewer.Controls"
+      GotFocus="Grid_GotFocus">
     <UserControl.Resources>
         <Storyboard x:Key="ShowDisablePanel">
             <DoubleAnimation Duration="0:0:0.5"
@@ -32,14 +33,14 @@
             </DoubleAnimation>
         </Storyboard>
         <Storyboard x:Key="PlayToastPanel">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="cp_Toast"
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="bd_Toast"
                                            Storyboard.TargetProperty="(UIElement.Opacity)"
-                                           Duration="0:0:3">
+                                           Duration="0:0:5">
                 <LinearDoubleKeyFrame KeyTime="0:0:0"
                                       Value="1" />
-                <LinearDoubleKeyFrame KeyTime="0:0:1"
+                <LinearDoubleKeyFrame KeyTime="0:0:3"
                                       Value="1" />
-                <EasingDoubleKeyFrame KeyTime="0:0:3"
+                <EasingDoubleKeyFrame KeyTime="0:0:5"
                                       Value="0">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <CubicEase EasingMode="EaseOut" />
@@ -49,9 +50,17 @@
         </Storyboard>
     </UserControl.Resources>
     <Grid>
-        <SplitView x:Name="sv_root">
+        <SplitView x:Name="sv_root"
+                   IsTabStop="False">
             <SplitView.Pane>
-                <StackPanel>
+                <ListView x:Name="lv_Pane"
+                          ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}">
+                    <ListView.Transitions>
+                        <TransitionCollection />
+                    </ListView.Transitions>
+                    <ListView.ItemContainerTransitions>
+                        <TransitionCollection />
+                    </ListView.ItemContainerTransitions>
                     <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
                             Content="&#xE700;"
                             Height="48"
@@ -88,26 +97,28 @@
                             <SymbolIcon Symbol="Contact" />
                         </controls:SplitViewButton.Icon>
                     </controls:SplitViewButton>-->
-                </StackPanel>
+                </ListView>
             </SplitView.Pane>
             <Frame x:Name="fm_inner"
                    Navigating="fm_inner_Navigating"
                    Navigated="fm_inner_Navigated"
                    NavigationFailed="fm_inner_NavigationFailed" />
         </SplitView>
-        <ContentPresenter x:Name="cp_Toast"
-                          Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
-                          HorizontalAlignment="Stretch"
-                          VerticalAlignment="Bottom"
-                          HorizontalContentAlignment="Center"
-                          VerticalContentAlignment="Center"
-                          Opacity="0"
-                          Visibility="Collapsed"
-                          Padding="16,8">
+        <Border x:Name="bd_Toast"
+                x:DeferLoadStrategy="Lazy"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Opacity="0"
+                Visibility="Collapsed"
+                Padding="16,8">
             <TextBlock x:Name="tb_Toast"
-                       TextWrapping="WrapWholeWords" />
-        </ContentPresenter>
+                       TextWrapping="WrapWholeWords"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+        </Border>
         <RelativePanel x:Name="rp_Disable"
+                       x:DeferLoadStrategy="Lazy"
                        Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}"
                        Visibility="Collapsed">
             <TextBlock x:Name="tb_DisableInfo"

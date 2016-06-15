@@ -39,7 +39,8 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch">
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False">
                 <ContentControl.ContentTemplateSelector>
                     <local:ImagePresenterSelector>
                         <local:ImagePresenterSelector.Template>

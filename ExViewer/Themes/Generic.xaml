@@ -225,6 +225,14 @@
                 Value="Left" />
         <Setter Property="VerticalAlignment"
                 Value="Top" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="UseSystemFocusVisuals"
+                Value="True" />
+        <Setter Property="IsTabStop"
+                Value="False" />
     </Style>
 
     <Style TargetType="controls:CategoryToggleButton">
@@ -260,7 +268,7 @@
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="Mask.(Shape.Fill)"
-                                                Value="{ThemeResource ToggleButtonPointerOverBackgroundThemeBrush}" />
+                                                Value="{ThemeResource ToggleButtonCheckedDisabledBackgroundThemeBrush}" />
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
@@ -309,17 +317,32 @@
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
+                                <VisualState x:Name="Unfocused" />
+                                <VisualState x:Name="PointerFocused" />
+                                <VisualState x:Name="Focused">
+                                    <VisualState.Setters>
+                                        <Setter Target="Focus.(UIElement.Visibility)"
+                                                Value="Visible" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <controls:CategoryTag x:Name="ContentPresenter"
-                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              AutomationProperties.AccessibilityView="Raw"
-                                              Category="{TemplateBinding Category}" />
+                                              Category="{TemplateBinding Category}"
+                                              Control.IsTemplateFocusTarget="True" />
                         <Rectangle x:Name="Mask"
                                    StrokeThickness="0" />
+                        <Rectangle x:Name="Focus"
+                                   Stroke="{ThemeResource SystemControlHighlightAltBaseHighBrush}"
+                                   StrokeThickness="2"
+                                   Visibility="Collapsed"
+                                   Margin="-2" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="UseSystemFocusVisuals"
+                Value="False" />
     </Style>
 </ResourceDictionary>

@@ -45,8 +45,26 @@
                 <local:BooleanToVisibilityConverter BooleanForVisible="True" />
             </local:EnumToBooleanConverter>
             <local:MathFuctionConverter x:Key="IndexToStringConverter"
-                                        Function="sin(x)+1" />
+                                        Function="x + 1"
+                                        InversedFunction="x - 1" />
             <local:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
+
+            <Style x:Key="StackPanelListViewItemStyle"
+                   TargetType="ListViewItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListViewItem">
+                            <ContentPresenter Content="{TemplateBinding Content}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Margin"
+                        Value="0" />
+                <Setter Property="Padding"
+                        Value="0" />
+                <Setter Property="IsTabStop"
+                        Value="False" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

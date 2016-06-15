@@ -137,18 +137,19 @@ namespace ExViewer.Views
             VM.Search.Execute(null);
         }
 
-        private void btn_ShowAdvanced_Click(object sender, RoutedEventArgs e)
+        private void btn_Advanced_Click(object sender, RoutedEventArgs e)
         {
-            btn_HideAdvanced.Visibility = Visibility.Visible;
-            sp_AdvancedSearch.Visibility = Visibility.Visible;
-            btn_ShowAdvanced.Visibility = Visibility.Collapsed;
-        }
-
-        private void btn_HideAdvanced_Click(object sender, RoutedEventArgs e)
-        {
-            btn_HideAdvanced.Visibility = Visibility.Collapsed;
-            sp_AdvancedSearch.Visibility = Visibility.Collapsed;
-            btn_ShowAdvanced.Visibility = Visibility.Visible;
+            switch(lv_AdvancedSearch.Visibility)
+            {
+            case Visibility.Visible:
+                lv_AdvancedSearch.Visibility = Visibility.Collapsed;
+                btn_Advanced.Content = "Show advanced options";
+                break;
+            case Visibility.Collapsed:
+                lv_AdvancedSearch.Visibility = Visibility.Visible;
+                btn_Advanced.Content = "Hide advanced options";
+                break;
+            }
         }
     }
 }

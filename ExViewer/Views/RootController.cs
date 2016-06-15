@@ -76,15 +76,16 @@ namespace ExViewer.Views
                 {
                     if(source != root.fm_inner.Content.GetType() && source != null)
                         return;
+                    root.FindName(nameof(root.bd_Toast));
                     root.tb_Toast.Text = content;
-                    root.cp_Toast.Visibility = Visibility.Visible;
+                    root.bd_Toast.Visibility = Visibility.Visible;
                     playToast.Begin();
                 });
             }
 
             private static void PlayToast_Completed(object sender, object e)
             {
-                root.cp_Toast.Visibility = Visibility.Collapsed;
+                root.bd_Toast.Visibility = Visibility.Collapsed;
             }
 
             public static void SwitchSplitView()
@@ -203,6 +204,7 @@ namespace ExViewer.Views
                 {
                     ViewDisabled = true;
                     root.sv_root.IsEnabled = false;
+                    root.FindName(nameof(root.rp_Disable));
                     root.rp_Disable.Visibility = Visibility.Visible;
                     showPanel.Begin();
                 }
