@@ -61,6 +61,7 @@
                               x:DeferLoadStrategy="Lazy"
                               Grid.Row="1"
                               Grid.Column="1"
+                              IsEnabled="False"
                               VerticalScrollBarVisibility="Hidden">
                     <StackPanel>
                         <controls:CategorySelector x:Name="cs_Category"
@@ -115,14 +116,12 @@
                   Background="{StaticResource ApplicationPageBackgroundThemeBrush}"
                   ContinuumNavigationTransitionInfo.ExitElementContainer="True"
                   ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
-                  IsItemClickEnabled="True"
+                  Style="{StaticResource GalleryListViewStyle}"
                   ItemClick="lv_ItemClick"
-                  SelectionMode="None"
                   RelativePanel.Below="ab"
                   RelativePanel.AlignBottomWithPanel="True"
                   RelativePanel.AlignLeftWithPanel="True"
-                  RelativePanel.AlignRightWithPanel="True"
-                  VerticalAlignment="Top">
+                  RelativePanel.AlignRightWithPanel="True">
             <ListView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               xmlns:controls="using:ExViewer.Controls"
@@ -130,16 +129,6 @@
                     <controls:GalleryViewer Gallery="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment"
-                            Value="Stretch" />
-                    <Setter Property="VerticalContentAlignment"
-                            Value="Stretch" />
-                    <Setter Property="Padding"
-                            Value="0" />
-                </Style>
-            </ListView.ItemContainerStyle>
             <ListView.Footer>
                 <TextBlock HorizontalAlignment="Center"
                            Margin="12"

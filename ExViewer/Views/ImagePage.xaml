@@ -85,6 +85,12 @@
                     </Grid>
                 </DataTemplate>
             </FlipView.ItemTemplate>
+            <FlipView.ItemContainerStyle>
+                <Style TargetType="FlipViewItem">
+                    <Setter Property="IsTabStop"
+                            Value="False" />
+                </Style>
+            </FlipView.ItemContainerStyle>
         </FlipView>
         <CommandBar x:Name="cb_top"
                     RelativePanel.AlignLeftWithPanel="True"

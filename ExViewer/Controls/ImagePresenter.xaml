@@ -10,6 +10,7 @@
              d:DesignHeight="300"
              d:DesignWidth="400">
     <ScrollViewer x:Name="sv"
+                  IsTabStop="True"
                   ZoomMode="Enabled"
                   HorizontalScrollBarVisibility="Hidden"
                   VerticalScrollBarVisibility="Hidden"

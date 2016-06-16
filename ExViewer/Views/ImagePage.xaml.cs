@@ -160,7 +160,7 @@ namespace ExViewer.Views
                 if(inner == null)
                     continue;
                 var ip = (ImagePresenter)inner.FindName("ip");
-                ip.ResetScale();
+                ip.ResetZoom();
             }
         }
 
@@ -217,8 +217,6 @@ namespace ExViewer.Views
 
         private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            if(e.Handled)
-                return;
             if(changeCbVisibility != null)
             {
                 if(changeCbVisibility.IsCancellationRequested)
@@ -234,10 +232,6 @@ namespace ExViewer.Views
                 else
                     changeCbVisibility.Cancel();
             }
-            var fvi = (FlipViewItem)fv.ContainerFromIndex(fv.SelectedIndex);
-            var gd = (Grid)fvi?.ContentTemplateRoot;
-            var ip = (ImagePresenter)gd?.FindName("ip");
-            ip?.ZoomTo(e);
             e.Handled = true;
         }
 
@@ -262,5 +256,26 @@ namespace ExViewer.Views
             RootControl.RootController.SetFullScreen();
         }
 
+        protected override void OnKeyDown(KeyRoutedEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if(!enterPressed && e.Key == VirtualKey.Enter)
+            {
+                RootControl.RootController.SetFullScreen();
+                enterPressed = true;
+                e.Handled = true;
+            }
+        }
+
+        protected override void OnKeyUp(KeyRoutedEventArgs e)
+        {
+            base.OnKeyUp(e);
+            if(e.Key == VirtualKey.Enter)
+            {
+                enterPressed = false;
+            }
+        }
+
+        private bool enterPressed;
     }
 }

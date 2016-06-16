@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -50,7 +51,7 @@ namespace ExViewer.Controls
         {
             gd_ContentRoot.MaxWidth = availableSize.Width;
             gd_ContentRoot.MaxHeight = availableSize.Height;
-            sv.ZoomToFactor(1);
+            Task.Yield().GetAwaiter().OnCompleted(() => sv.ChangeView(null, null, 1, true));
             return base.MeasureOverride(availableSize);
         }
 
@@ -62,8 +63,6 @@ namespace ExViewer.Controls
 
         private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if(e.Handled)
-                return;
             if(!SettingCollection.Current.MouseInertial && e.IsInertial)
                 return;
             var dx = e.Delta.Translation.X;
@@ -106,46 +105,127 @@ namespace ExViewer.Controls
             setSvManipulationMode(sender, e);
         }
 
-        public void ZoomTo(DoubleTappedRoutedEventArgs e)
+        public void ZoomTo(Point point, float factor)
         {
-            var fa = sv.ZoomFactor;
-            if(fa == sv.MinZoomFactor)
-            {
-                var pi = e.GetPosition((UIElement)sv.Content);
-                pi.X *= fa;
-                pi.Y *= fa;
-                var ps = e.GetPosition(sv);
-                var df = SettingCollection.Current.DefaultFactor;
-                sv.ZoomToFactor(fa * df);
-                sv.ScrollToHorizontalOffset(pi.X * df - ps.X);
-                sv.ScrollToVerticalOffset(pi.Y * df - ps.Y);
-            }
+            if(factor > sv.MaxZoomFactor)
+                factor = sv.MaxZoomFactor;
+            else if(factor < sv.MinZoomFactor)
+                factor = sv.MinZoomFactor;
+            var pi = point;
+            var psX = point.X * sv.ZoomFactor;
+            var psY = point.Y * sv.ZoomFactor;
+            if(sv.ScrollableWidth > 0)
+                psX -= sv.HorizontalOffset;
             else
-                ResetScale();
+                psX += (sv.ActualWidth - sv.ExtentWidth) / 2;
+            if(sv.ScrollableHeight > 0)
+                psY -= sv.VerticalOffset;
+            else
+                psY += (sv.ActualHeight - sv.ExtentHeight) / 2;
+            sv.ChangeView(pi.X * factor - psX, pi.Y * factor - psY, factor);
         }
 
-        public void ZoomTo(TappedRoutedEventArgs e)
+        public void ZoomTo(Point point)
         {
-            var fa = sv.ZoomFactor;
-            if(fa == sv.MinZoomFactor)
-            {
-                var pi = e.GetPosition((UIElement)sv.Content);
-                pi.X *= fa;
-                pi.Y *= fa;
-                var ps = e.GetPosition(sv);
-                var df = SettingCollection.Current.DefaultFactor;
-                sv.ZoomToFactor(fa * df);
-                sv.ScrollToHorizontalOffset(pi.X * df - ps.X);
-                sv.ScrollToVerticalOffset(pi.Y * df - ps.Y);
-            }
-            else
-                ResetScale();
+            this.ZoomTo(point, SettingCollection.Current.DefaultFactor);
         }
 
-        public void ResetScale()
+        public void ZoomTo(float factor)
         {
-            sv.ZoomToFactor(1);
+            double w, h;
+            if(sv.ScrollableWidth > 0)
+                w = (sv.ActualWidth / 2 + sv.HorizontalOffset) / sv.ZoomFactor;
+            else
+                w = gd_ContentRoot.ActualWidth / 2;
+            if(sv.ScrollableHeight > 0)
+                h = (sv.ActualHeight / 2 + sv.VerticalOffset) / sv.ZoomFactor;
+            else
+                h = gd_ContentRoot.ActualHeight / 2;
+            this.ZoomTo(new Point(w, h), factor);
         }
+
+        private void Zoom(Point p)
+        {
+            if(sv.ZoomFactor > 1.001)
+                ResetZoom();
+            else
+                this.ZoomTo(p);
+        }
+
+        public void ResetZoom()
+        {
+            sv.ChangeView(null, null, 1);
+        }
+
+        protected override async void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+        {
+            base.OnDoubleTapped(e);
+            var point = e.GetPosition(this.gd_ContentRoot);
+            await Task.Yield();
+            this.Zoom(point);
+        }
+
+        protected override void OnKeyDown(KeyRoutedEventArgs e)
+        {
+            base.OnKeyDown(e);
+            e.Handled = true;
+            switch(e.Key)
+            {
+            case (Windows.System.VirtualKey)221:
+                ZoomTo(sv.ZoomFactor * 1.2f);
+                break;
+            case (Windows.System.VirtualKey)219:
+                ZoomTo(sv.ZoomFactor / 1.2f);
+                break;
+            case Windows.System.VirtualKey.Up:
+            case Windows.System.VirtualKey.Down:
+                if(sv.ScrollableHeight < 1)
+                    e.Handled = false;
+                break;
+            case Windows.System.VirtualKey.Left:
+            case Windows.System.VirtualKey.Right:
+                if(sv.ScrollableWidth < 1)
+                    e.Handled = false;
+                break;
+            case Windows.System.VirtualKey.Space:
+                if(spacePressed)
+                    e.Handled = false;
+                else
+                {
+                    Zoom(new Point(gd_ContentRoot.ActualWidth / 2, gd_ContentRoot.ActualHeight / 2));
+                    spacePressed = true;
+                    e.Handled = true;
+                }
+                break;
+            default:
+                e.Handled = false;
+                break;
+            }
+        }
+
+        protected override void OnKeyUp(KeyRoutedEventArgs e)
+        {
+            base.OnKeyUp(e);
+            e.Handled = true;
+            switch(e.Key)
+            {
+            case (Windows.System.VirtualKey)187:
+                ZoomTo(sv.MaxZoomFactor);
+                break;
+            case (Windows.System.VirtualKey)189:
+                ResetZoom();
+                break;
+            case Windows.System.VirtualKey.Space:
+                spacePressed = false;
+                e.Handled = false;
+                break;
+            default:
+                e.Handled = false;
+                break;
+            }
+        }
+
+        private bool spacePressed;
     }
 
     internal class ImagePresenterSelector : DataTemplateSelector
