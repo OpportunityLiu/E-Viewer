@@ -6,11 +6,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              d:DesignHeight="200"
-             d:DesignWidth="1000">
+             d:DesignWidth="1000"
+             IsTabStop="False"
+             UseSystemFocusVisuals="False">
     <Grid Background="{x:Bind Background, Mode=OneWay}"
           BorderBrush="{x:Bind BorderBrush, Mode=OneWay}"
           BorderThickness="{x:Bind BorderThickness, Mode=OneWay}"
-          Margin="8,4">
+          Margin="8,4"
+          x:Name="gd_Root">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"
                               MaxWidth="150"
@@ -18,14 +21,14 @@
             <ColumnDefinition Width="8" />
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        <ContentPresenter Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}"
-                          Grid.RowSpan="999"
-                          HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch"
-                          MaxHeight="240">
+        <Border Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}"
+                Grid.RowSpan="999"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                MaxHeight="240">
             <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay}"
                    Stretch="Uniform" />
-        </ContentPresenter>
+        </Border>
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -46,15 +49,17 @@
                        TextTrimming="CharacterEllipsis"
                        Grid.ColumnSpan="100">
                 <ToolTipService.ToolTip>
-                    <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
-                               TextWrapping="WrapWholeWords" />
+                    <ToolTip x:Name="tt_Title">
+                        <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                                   TextWrapping="WrapWholeWords" />
+                    </ToolTip>
                 </ToolTipService.ToolTip>
             </TextBlock>
             <local:CategoryTag Category="{x:Bind Gallery.Category, Mode=OneWay}"
                                Grid.Row="2"
-                               HorizontalAlignment="Left"/>
+                               HorizontalAlignment="Left" />
             <TextBlock Text="{x:Bind Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}"
-                       Grid.Row="4"/>
+                       Grid.Row="4" />
             <TextBlock Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
                        FontFamily="Segoe MDL2 Assets"
                        Grid.Row="3" />

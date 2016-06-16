@@ -90,6 +90,7 @@ namespace ExViewer.Views
         private void ab_Opening(object sender, object e)
         {
             init_sv_AdvancedSearch();
+            sv_AdvancedSearch.IsEnabled = true;
         }
 
         private void ab_Tapped(object sender, TappedRoutedEventArgs e)
@@ -114,6 +115,7 @@ namespace ExViewer.Views
         private void ab_Closed(object sender, object e)
         {
             abOpened = false;
+            sv_AdvancedSearch.IsEnabled = false;
         }
 
         private void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)

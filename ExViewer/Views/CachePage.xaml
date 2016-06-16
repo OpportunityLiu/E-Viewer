@@ -132,12 +132,10 @@
             </pr:PullToRefreshBox.TopIndicatorTemplate>
             <ListView x:Name="lv"
                       ItemsSource="{x:Bind VM.CachedGalleries, Mode=OneWay}"
-                      IsItemClickEnabled="True"
+                      Style="{StaticResource GalleryListViewStyle}"
                       CanDragItems="True"
-                      SelectionMode="None"
                       DragItemsStarting="lv_DragItemsStarting"
-                      ItemClick="lv_ItemClick"
-                      VerticalAlignment="Top">
+                      ItemClick="lv_ItemClick">
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:c="using:ExClient"
                                   xmlns:controls="using:ExViewer.Controls"
@@ -162,16 +160,6 @@
                         </controls:GalleryViewer>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment"
-                                Value="Stretch" />
-                        <Setter Property="VerticalContentAlignment"
-                                Value="Stretch" />
-                        <Setter Property="Padding"
-                                Value="0" />
-                    </Style>
-                </ListView.ItemContainerStyle>
                 <ListView.Footer>
                     <TextBlock HorizontalAlignment="Center"
                                Margin="12"

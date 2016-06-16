@@ -25,8 +25,14 @@ namespace ExViewer.ViewModels
                 this.Refresh.RaiseCanExecuteChanged();
                 this.CachedGalleries = await CachedGallery.LoadCachedGalleriesAsync();
                 this.Refresh.RaiseCanExecuteChanged();
-            }, () => this.CachedGalleries != null);
-            Clear = new RelayCommand(() => RootControl.RootController.TrackAsyncAction(CachedGallery.ClearCachedGalleriesAsync(), (s, e) => Refresh.Execute(null)));
+            });
+            Clear = new RelayCommand(() =>
+            {
+                RootControl.RootController.TrackAsyncAction(CachedGallery.ClearCachedGalleriesAsync(), (s, e) =>
+                {
+                    Refresh.Execute(null);
+                });
+            });
             Delete = new RelayCommand<Gallery>(async g =>
             {
                 await g.DeleteAsync();
@@ -41,10 +47,10 @@ namespace ExViewer.ViewModels
                 var target = await getTarget;
                 if(target == null)
                     return;
-                target = await target.CreateFolderAsync(toValidFolderName(g.GetDisplayTitle()), Windows.Storage.CreationCollisionOption.GenerateUniqueName);
+                target = await target.CreateFolderAsync(toValidFolderName(g.GetDisplayTitle()), CreationCollisionOption.GenerateUniqueName);
                 foreach(var file in files)
                 {
-                    await file.CopyAsync(target, file.Name, Windows.Storage.NameCollisionOption.ReplaceExisting);
+                    await file.CopyAsync(target, file.Name, NameCollisionOption.ReplaceExisting);
                 }
                 RootControl.RootController.SendToast("Saved", typeof(CachePage));
             });
@@ -53,13 +59,6 @@ namespace ExViewer.ViewModels
                 GalleryVM.AddGallery(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
             });
-            CachedGallery.LoadCachedGalleriesAsync().Completed = (s, e) =>
-            {
-                if(e == AsyncStatus.Completed)
-                    
-                    this.CachedGalleries = s.GetResults();
-                Refresh.RaiseCanExecuteChanged();
-            };
         }
 
         private static Dictionary<char, char> alternateFolderChars = new Dictionary<char, char>()

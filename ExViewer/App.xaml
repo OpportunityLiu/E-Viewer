@@ -65,6 +65,28 @@
                 <Setter Property="IsTabStop"
                         Value="False" />
             </Style>
+            
+            <Style x:Key="GalleryListViewItemStyle"
+                   TargetType="ListViewItem">
+                <Setter Property="HorizontalContentAlignment"
+                        Value="Stretch" />
+                <Setter Property="VerticalContentAlignment"
+                        Value="Stretch" />
+                <Setter Property="Padding"
+                        Value="0" />
+            </Style>
+
+            <Style x:Key="GalleryListViewStyle"
+                   TargetType="ListView">
+                <Setter Property="IsItemClickEnabled"
+                        Value="True" />
+                <Setter Property="SelectionMode"
+                        Value="None" />
+                <Setter Property="VerticalAlignment"
+                        Value="Top" />
+                <Setter Property="ItemContainerStyle" 
+                        Value="{StaticResource GalleryListViewItemStyle}"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

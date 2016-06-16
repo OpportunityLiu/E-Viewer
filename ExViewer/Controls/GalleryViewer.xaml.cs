@@ -40,7 +40,5 @@ namespace ExViewer.Controls
         // Using a DependencyProperty as the backing store for Gallery.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GalleryProperty =
             DependencyProperty.Register("Gallery", typeof(Gallery), typeof(GalleryViewer), new PropertyMetadata(null));
-
-
     }
 }
