@@ -21,7 +21,7 @@ namespace ExClient
     {
         private class CachedGalleryList : IncrementalLoadingCollection<Gallery>
         {
-            private int pageSize = 20;
+            private static int pageSize = 20;
 
             public CachedGalleryList() : base(0)
             {
@@ -55,6 +55,8 @@ namespace ExClient
             }
         }
 
+        private static int pageSize = 1;
+
         public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
         {
             return Task.Run<IncrementalLoadingCollection<Gallery>>(async () =>
@@ -76,7 +78,7 @@ namespace ExClient
                 for(int i = 0; i < items.Count; i++)
                 {
                     progress.Report(i / c);
-                    await items[i].DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
+                    await items[i].DeleteAsync(StorageDeleteOption.PermanentDelete);
                 }
                 progress.Report(1);
                 using(var db = CachedGalleryDb.Create())
@@ -92,7 +94,7 @@ namespace ExClient
             : base(model, false)
         {
             this.ThumbFile = cacheModel.ThumbData;
-            this.PageCount = (int)Math.Ceiling(RecordCount / 10d);
+            this.PageCount = (int)Math.Ceiling(RecordCount / (double)pageSize);
             this.Owner = Client.Current;
         }
 
@@ -134,8 +136,8 @@ namespace ExClient
                 if(GalleryFolder == null)
                     await GetFolderAsync();
                 loadImageModel();
-                var toAdd = new List<GalleryImage>(10);
-                while(toAdd.Count < 10 && Count + toAdd.Count < imageModels.Count)
+                var toAdd = new List<GalleryImage>(pageSize);
+                while(toAdd.Count < pageSize && Count + toAdd.Count < imageModels.Count)
                 {
                     // Load cache
                     var model = imageModels.Find(i => i.PageId == Count + toAdd.Count + 1);

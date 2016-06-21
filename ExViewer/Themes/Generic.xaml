@@ -5,7 +5,8 @@
                     xmlns:views="using:ExViewer.Views"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d"
-                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:pr="using:PullToRefresh.UWP">
     <Style TargetType="controls:SplitViewButton">
         <Setter Property="Background"
                 Value="Transparent" />

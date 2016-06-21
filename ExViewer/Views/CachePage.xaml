@@ -52,84 +52,8 @@
                              RelativePanel.AlignRightWithPanel="True"
                              RelativePanel.Below="cb_top"
                              RefreshInvoked="PullToRefreshBox_RefreshInvoked"
-                             RefreshThreshold="60"
-                             IsTabStop="False"
+                             Style="{StaticResource PullToRefreshBoxStyle}"
                              Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-            <pr:PullToRefreshBox.TopIndicatorTemplate>
-                <DataTemplate>
-                    <pr:PullRefreshProgressControl Progress="{Binding}"
-                                                   Height="80"
-                                                   Width="200"
-                                                   PullToRefreshText="Pull to refresh"
-                                                   ReleaseToRefreshText="Release to refresh"
-                                                   IsTabStop="False">
-                        <pr:PullRefreshProgressControl.Template>
-                            <ControlTemplate TargetType="pr:PullRefreshProgressControl">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="VisualStateGroup">
-                                            <VisualState x:Name="Normal" />
-                                            <VisualState x:Name="ReleaseToRefresh">
-                                                <Storyboard>
-                                                    <DoubleAnimation Storyboard.TargetName="txt"
-                                                                     Storyboard.TargetProperty="Opacity"
-                                                                     To="0"
-                                                                     Duration="0"
-                                                                     BeginTime="0:0:0.05">
-                                                    </DoubleAnimation>
-                                                    <DoubleAnimation Storyboard.TargetName="txt2"
-                                                                     Storyboard.TargetProperty="Opacity"
-                                                                     To="1"
-                                                                     Duration="0"
-                                                                     BeginTime="0:0:0.05">
-                                                    </DoubleAnimation>
-                                                    <DoubleAnimation Storyboard.TargetName="rect"
-                                                                     Storyboard.TargetProperty="Opacity"
-                                                                     To="1"
-                                                                     Duration="0:0:0.1">
-                                                        <DoubleAnimation.EasingFunction>
-                                                            <QuadraticEase EasingMode="EaseIn" />
-                                                        </DoubleAnimation.EasingFunction>
-                                                    </DoubleAnimation>
-                                                </Storyboard>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                    <TextBlock x:Name="txt"
-                                               Text="{TemplateBinding PullToRefreshText}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Bottom" />
-                                    <TextBlock x:Name="txt2"
-                                               Text="{TemplateBinding ReleaseToRefreshText}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Bottom"
-                                               Opacity="0" />
-                                    <Rectangle x:Name="rect"
-                                               StrokeThickness="0"
-                                               Width="200"
-                                               Height="4"
-                                               Fill="{StaticResource SystemControlForegroundAccentBrush}"
-                                               Margin="4"
-                                               Opacity="0.5"
-                                               VerticalAlignment="Bottom"
-                                               RenderTransformOrigin="0.5,0.5"
-                                               Grid.Row="1">
-                                        <Rectangle.RenderTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform ScaleX="{Binding}" />
-                                            </TransformGroup>
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
-                                </Grid>
-                            </ControlTemplate>
-                        </pr:PullRefreshProgressControl.Template>
-                    </pr:PullRefreshProgressControl>
-                </DataTemplate>
-            </pr:PullToRefreshBox.TopIndicatorTemplate>
             <ListView x:Name="lv"
                       ItemsSource="{x:Bind VM.CachedGalleries, Mode=OneWay}"
                       Style="{StaticResource GalleryListViewStyle}"
