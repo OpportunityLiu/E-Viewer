@@ -39,6 +39,17 @@ namespace ExClient
     [System.Diagnostics.DebuggerDisplay(@"\{PageId = {PageId} State = {State} File = {ImageFile?.Name}\}")]
     public class GalleryImage : ObservableObject
     {
+        static GalleryImage()
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                var info = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
+                thumbWidth = (uint)(100 * info.RawPixelsPerViewPixel);
+            });
+        }
+
+        private static uint thumbWidth = 100;
+
         internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
         {
             return Task.Run(async () =>
@@ -98,10 +109,10 @@ namespace ExClient
             {
                 var thumb = new BitmapImage()
                 {
-                    DecodePixelType = DecodePixelType.Logical,
+                    DecodePixelType = DecodePixelType.Physical,
                     DecodePixelWidth = 100
                 };
-                using(var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                using(var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 2))
                 {
                     await thumb.SetSourceAsync(stream);
                 }

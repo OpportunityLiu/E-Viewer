@@ -70,7 +70,8 @@
                    Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                    VerticalAlignment="Top"
                    StrokeThickness="0" />
-        <Pivot x:Name="pv_root" IsTabStop="False">
+        <Pivot x:Name="pv_root"
+               IsTabStop="False">
             <Pivot.LeftHeader>
                 <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
                         Content="&#xE700;"
@@ -97,17 +98,17 @@
                                                               Padding="{TemplateBinding Padding}"
                                                               Foreground="{TemplateBinding Foreground}"
                                                               Background="{TemplateBinding Background}"
-                                                              BorderBrush="{TemplateBinding BorderBrush}" 
-                                                              Control.IsTemplateFocusTarget="True"/>
+                                                              BorderBrush="{TemplateBinding BorderBrush}"
+                                                              Control.IsTemplateFocusTarget="True" />
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
                                 <Setter Property="MinHeight"
                                         Value="0" />
                                 <Setter Property="Margin"
-                                        Value="8" />
+                                        Value="0, 4" />
                                 <Setter Property="Padding"
-                                        Value="0" />
+                                        Value="4" />
                                 <Setter Property="UseSystemFocusVisuals"
                                         Value="True" />
                             </Style>
@@ -118,26 +119,6 @@
                     </ListView>
                 </DataTemplate>
             </Pivot.ItemTemplate>
-            <Pivot.ItemContainerStyle>
-                <Style TargetType="PivotItem">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="PivotItem">
-                                <ContentPresenter Content="{TemplateBinding Content}"
-                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Margin"
-                            Value="0" />
-                    <Setter Property="UseSystemFocusVisuals"
-                            Value="True" />
-                    <Setter Property="IsTabStop"
-                            Value="False" />
-                </Style>
-            </Pivot.ItemContainerStyle>
         </Pivot>
     </Grid>
 </Page>

@@ -153,5 +153,10 @@ namespace ExViewer.Views
                 break;
             }
         }
+
+        private void PullToRefreshBox_RefreshInvoked(DependencyObject sender, object args)
+        {
+            VM?.SearchResult.Reset();
+        }
     }
 }

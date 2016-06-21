@@ -53,6 +53,12 @@ namespace ExClient
             this.KeyWord = keyWord ?? "";
             this.Category = category;
             this.AdvancedSearch = advancedSearch;
+            Reset();
+        }
+
+        public void Reset()
+        {
+            ResetAll();
             this.PageCount = 1;
             this.RecordCount = -1;
         }
