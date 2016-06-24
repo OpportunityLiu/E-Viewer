@@ -15,8 +15,7 @@
           Margin="8,4"
           x:Name="gd_Root">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"
-                              MaxWidth="150"
+            <ColumnDefinition MaxWidth="150"
                               MinWidth="100" />
             <ColumnDefinition Width="8" />
             <ColumnDefinition Width="2*" />
@@ -74,7 +73,13 @@
                        MaxLines="1"
                        Grid.Column="1"
                        HorizontalAlignment="Right"
-                       TextTrimming="Clip" />
+                       TextTrimming="CharacterEllipsis" />
+            <TextBlock Text="{x:Bind Gallery.Language, Mode=OneWay}"
+                       Grid.Row="2"
+                       MaxLines="1"
+                       Grid.Column="1"
+                       HorizontalAlignment="Right"
+                       TextTrimming="CharacterEllipsis" />
         </Grid>
     </Grid>
 </UserControl>
