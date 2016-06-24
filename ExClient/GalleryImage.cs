@@ -109,10 +109,10 @@ namespace ExClient
             {
                 var thumb = new BitmapImage()
                 {
-                    DecodePixelType = DecodePixelType.Physical,
+                    DecodePixelType = DecodePixelType.Logical,
                     DecodePixelWidth = 100
                 };
-                using(var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 2))
+                using(var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 18 / 10))
                 {
                     await thumb.SetSourceAsync(stream);
                 }

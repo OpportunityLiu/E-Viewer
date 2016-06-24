@@ -67,7 +67,7 @@ namespace ExViewer.Views
             Bindings.Update();
             if(e.NavigationMode == NavigationMode.Back)
             {
-                gv.ScrollIntoView(VM.GetCurrent());
+                gv.ScrollIntoView(VM.GetCurrent(), ScrollIntoViewAlignment.Leading);
                 entranceElement = (UIElement)gv.ContainerFromIndex(VM.CurrentIndex);
                 if(entranceElement != null)
                     EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);

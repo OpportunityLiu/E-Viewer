@@ -19,6 +19,7 @@ using Windows.Storage;
 using Windows.Storage.Search;
 using ExClient.Models;
 using GalaSoft.MvvmLight.Threading;
+using Windows.Globalization;
 
 namespace ExClient
 {
@@ -325,6 +326,23 @@ namespace ExClient
         public IReadOnlyList<Tag> Tags
         {
             get; protected set;
+        }
+
+        private static readonly string[] technicalTags = new string[]
+        {
+            "rewrite",
+            "speechless",
+            "text cleaned",
+            "translated"
+        };
+
+        public string Language
+        {
+            get
+            {
+                return Tags.FirstOrDefault(t => t.NameSpace == NameSpace.Language && !technicalTags.Contains(t.Content))?.Content.ToUpper();
+                ;
+            }
         }
 
         #endregion

@@ -33,7 +33,6 @@ namespace ExViewer.ViewModels
 
         private static class Cache
         {
-
             private static CacheStorage<string, SearchResult> srCache = new CacheStorage<string, SearchResult>(query =>
                 {
                     var data = JsonConvert.DeserializeObject<SearchResultData>(query);
@@ -100,7 +99,7 @@ namespace ExViewer.ViewModels
                 keyWord = SettingCollection.Current.DefaultSearchString;
                 category = SettingCollection.Current.DefaultSearchCategory;
                 advancedSearch = new AdvancedSearchOptions();
-                SearchResult = Cache.GetSearchResult(Cache.GetSearchQuery(keyWord, category));
+                SearchResult = Cache.GetSearchResult(Cache.GetSearchQuery(keyWord, category, advancedSearch));
             }
             else
             {

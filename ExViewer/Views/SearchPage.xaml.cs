@@ -44,8 +44,14 @@ namespace ExViewer.Views
                 await RootControl.RootController.RequireLogOn();
             }
             VM = new SearchVM(e.Parameter?.ToString());
+            if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
+                VM?.SearchResult.Reset();
             Bindings.Update();
             await Task.Yield();
+            if(e.NavigationMode == NavigationMode.Back)
+            { 
+                //TODO: restore scroll position.
+            }
             ab.Focus(FocusState.Pointer);
         }
 
