@@ -158,8 +158,17 @@ namespace ExViewer.Views
 
         private async void pv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(pv.SelectedIndex == 1 && VM.Torrents == null)
-                await VM.LoadTorrents();
+            switch(pv.SelectedIndex)
+            {
+            case 1://Comments
+                if(VM.Comments == null)
+                    await VM.LoadComments();
+                break;
+            case 2://Torrents
+                if(VM.Torrents == null)
+                    await VM.LoadTorrents();
+                break;
+            }
         }
 
         private void lv_Torrents_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -197,6 +206,14 @@ namespace ExViewer.Views
             var sv_Lv = VisualTreeHelper.GetChild(bd_Lv, 0);
             (sv_Lv as ScrollViewer).ViewChanging += GalleryPage_ViewChanging;
             lv_Torrents.Loaded -= lv_Torrents_Loaded;
+        }
+
+        private void lv_Comments_Loaded(object sender, RoutedEventArgs e)
+        {
+            var bd_Lv = VisualTreeHelper.GetChild(lv_Comments, 0);
+            var sv_Lv = VisualTreeHelper.GetChild(bd_Lv, 0);
+            (sv_Lv as ScrollViewer).ViewChanging += GalleryPage_ViewChanging;
+            lv_Comments.Loaded -= lv_Comments_Loaded;
         }
     }
 }

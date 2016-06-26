@@ -475,6 +475,11 @@ namespace ExClient
             return TorrentInfo.LoadTorrentsAsync(this);
         }
 
+        public IAsyncOperation<List<Comment>> LoadCommentsAsync()
+        {
+            return Comment.LoadCommentsAsync(this);
+        }
+
         public virtual IAsyncAction DeleteAsync()
         {
             return Task.Run(async () =>

@@ -143,6 +143,44 @@
                         <PivotItem>
                             <PivotItem.Header>
                                 <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Comments" />
+                                    <TextBlock Text="{x:Bind VM.CommentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
+                                               Visibility="{x:Bind VM.CommentCount, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               VerticalAlignment="Top" />
+                                </StackPanel>
+                            </PivotItem.Header>
+                            <ListView x:Name="lv_Comments"
+                                      ItemsSource="{x:Bind VM.Comments, Mode=OneWay}"
+                                      VerticalAlignment="Top"
+                                      Loaded="lv_Comments_Loaded">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate xmlns:c="using:ExClient"
+                                                  x:DataType="c:Comment">
+                                        <StackPanel>
+                                            <TextBlock Text="{x:Bind Content, Mode=OneWay}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.Header>
+                                    <TextBlock HorizontalAlignment="Center"
+                                               Margin="12"
+                                               Style="{StaticResource BaseTextBlockStyle}"
+                                               Visibility="{x:Bind VM.Comments.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
+                                               Text="No comments" />
+                                </ListView.Header>
+                                <ListView.Footer>
+                                    <TextBlock HorizontalAlignment="Center"
+                                               Margin="12"
+                                               Style="{StaticResource BaseTextBlockStyle}"
+                                               Visibility="{x:Bind VM.Comments, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
+                                               Text="Loading comments..." />
+                                </ListView.Footer>
+                            </ListView>
+                        </PivotItem>
+                        <PivotItem>
+                            <PivotItem.Header>
+                                <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Torrents" />
                                     <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
                                                Visibility="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
