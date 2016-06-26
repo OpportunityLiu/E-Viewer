@@ -289,6 +289,48 @@ Dimensions: {imageProp.Width} × {imageProp.Height}";
             }
         }
 
+        #region Comments
+
+        public IAsyncAction LoadComments()
+        {
+            return Run(async token =>
+            {
+                try
+                {
+                    Comments = await gallery.LoadCommentsAsync();
+                }
+                catch(Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+                }
+            });
+        }
+
+        private List<Comment> comments;
+
+        public List<Comment> Comments
+        {
+            get
+            {
+                return comments;
+            }
+            set
+            {
+                comments = value;
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    RaisePropertyChanged(nameof(Comments));
+                    RaisePropertyChanged(nameof(CommentCount));
+                });
+            }
+        }
+
+        public int? CommentCount => comments?.Count;
+
+        #endregion Comments
+
+        #region Torrents
+
         public IAsyncAction LoadTorrents()
         {
             return Run(async token =>
@@ -324,5 +366,7 @@ Dimensions: {imageProp.Width} × {imageProp.Height}";
         }
 
         public int? TorrentCount => torrents?.Count ?? (gallery is CachedGallery ? null : gallery?.TorrentCount);
+
+        #endregion Torrents
     }
 }

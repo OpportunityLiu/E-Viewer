@@ -85,7 +85,7 @@
                 </DataTemplate>
             </Pivot.HeaderTemplate>
             <Pivot.ItemTemplate>
-                <DataTemplate  x:DataType="settings:GroupedSettings">
+                <DataTemplate x:DataType="settings:GroupedSettings">
                     <ListView ItemTemplateSelector="{StaticResource SettingTemplateSelector}"
                               ItemsSource="{x:Bind}">
                         <ListView.ItemContainerStyle>
@@ -99,7 +99,7 @@
                                                               Foreground="{TemplateBinding Foreground}"
                                                               Background="{TemplateBinding Background}"
                                                               BorderBrush="{TemplateBinding BorderBrush}"
-                                                              Control.IsTemplateFocusTarget="True" />
+                                                              Control.IsTemplateFocusTarget="True"/>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>

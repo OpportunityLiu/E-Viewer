@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
     <Compile Include="CachedGallery.cs" />
+    <Compile Include="Comment.cs" />
     <Compile Include="Models\CachedGalleryModel.cs" />
     <Compile Include="Helpers\StorageHelper.cs" />
     <Compile Include="Category.cs" />
