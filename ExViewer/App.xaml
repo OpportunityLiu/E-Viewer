@@ -65,6 +65,8 @@
                         Value="0" />
                 <Setter Property="MinHeight"
                         Value="0" />
+                <Setter Property="MinWidth"
+                        Value="0" />
                 <Setter Property="IsTabStop"
                         Value="False" />
             </Style>

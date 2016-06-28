@@ -117,8 +117,11 @@ namespace ExViewer.Views
             RootControl.RootController.SwitchSplitView();
         }
 
-        private void lv_Tags_ItemClick(object sender, ItemClickEventArgs e)
+        private void gv_Tags_ItemClick(object sender, ItemClickEventArgs e)
         {
+            var s = (ListViewBase)sender;
+            var container = (SelectorItem)s.ContainerFromItem(e.ClickedItem);
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)container.ContentTemplateRoot);
             // Frame.Navigate(typeof(SearchPage), Cache.AddSearchResult(((Tag)e.ClickedItem).Search()));
         }
 

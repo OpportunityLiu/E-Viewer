@@ -25,6 +25,13 @@ namespace ExViewer.ViewModels
         Completed
     }
 
+    public class TagList : List<Tag>
+    {
+        public TagList(IEnumerable<Tag> items) : base(items) { }
+
+        public NameSpace NameSpace => this.FirstOrDefault()?.NameSpace ?? NameSpace.Misc;
+    }
+
     public class GalleryVM : ViewModelBase
     {
         private static CacheStorage<long, GalleryVM> Cache
@@ -185,6 +192,7 @@ namespace ExViewer.ViewModels
                 OpenInBrowser.RaiseCanExecuteChanged();
                 OpenInExplorer.RaiseCanExecuteChanged();
                 Torrents = null;
+                RaisePropertyChanged(nameof(SortedTags));
             }
         }
 
@@ -219,6 +227,19 @@ namespace ExViewer.ViewModels
             private set
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref currentInfo, value));
+            }
+        }
+
+        public SortedSet<TagList> SortedTags
+        {
+            get
+            {
+                if(gallery == null)
+                    return null;
+                var query = from tag in gallery.Tags
+                            group tag by tag.NameSpace into taggroup
+                            select new TagList(taggroup);
+                return new SortedSet<TagList>(query, Comparer<TagList>.Create((x, y) => x.NameSpace - y.NameSpace));
             }
         }
 
