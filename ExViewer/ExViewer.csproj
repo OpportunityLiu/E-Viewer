@@ -116,6 +116,7 @@
     </Compile>
     <Compile Include="Controls\SplitViewButton.cs" />
     <Compile Include="Controls\SplitViewTab.cs" />
+    <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Settings\Attributes.cs" />
     <Compile Include="Settings\GroupedSettings.cs" />
     <Compile Include="Settings\SettingCollection.cs" />

@@ -6,15 +6,15 @@ namespace ExClient
 {
     public enum NameSpace
     {
-        Misc = 0,
-        Artist,
-        Character,
-        Female,
-        Group,
+        Reclass,
         Language,
-        Male,
         Parody,
-        Reclass
+        Character,
+        Group,
+        Artist,
+        Male,
+        Female,
+        Misc
     }
 
     public class Tag
