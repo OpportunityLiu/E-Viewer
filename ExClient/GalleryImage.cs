@@ -41,6 +41,7 @@ namespace ExClient
     {
         static GalleryImage()
         {
+            var ignore = GetDefaultThumb();
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 var info = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
@@ -49,6 +50,27 @@ namespace ExClient
         }
 
         private static uint thumbWidth = 100;
+
+        private static BitmapImage defaultThumb;
+
+        protected internal static IAsyncOperation<BitmapImage> GetDefaultThumb()
+        {
+            return Run(async token =>
+            {
+                if(defaultThumb != null)
+                    return defaultThumb;
+                BitmapImage tb = null;
+                await DispatcherHelper.RunAsync(async () =>
+                {
+                    tb = new BitmapImage();
+                    using(var thumb = await StorageHelper.GetIconOfExtension("jpg"))
+                    {
+                        await tb.SetSourceAsync(thumb);
+                    }
+                });
+                return defaultThumb = tb;
+            });
+        }
 
         internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
         {
@@ -144,7 +166,15 @@ namespace ExClient
             }
             protected set
             {
-                Set(ref thumb, value);
+                if(value == null)
+                {
+                    GetDefaultThumb().Completed = (sender, e) =>
+                    {
+                        Set(ref thumb, sender.GetResults());
+                    };
+                }
+                else
+                    Set(ref thumb, value);
             }
         }
 

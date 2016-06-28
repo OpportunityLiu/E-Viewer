@@ -1,30 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using ExViewer.Controls;
+using ExViewer.Settings;
+using ExViewer.ViewModels;
+using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.System;
-using Color = Windows.UI.Color;
+using Windows.System.Display;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.ViewManagement;
-using ExViewer.Settings;
-using ExViewer.ViewModels;
-using ImageLib;
-using Windows.Storage.Streams;
-using ImageLib.Gif;
-using ExClient;
-using Windows.UI.Xaml.Media.Imaging;
-using ExViewer.Controls;
-using Windows.System.Display;
+using Color = Windows.UI.Color;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -181,7 +170,22 @@ namespace ExViewer.Views
             if(end + 10 > VM.Gallery.Count && VM.Gallery.HasMoreItems)
             {
                 if(loadItems == null || loadItems.Status != AsyncStatus.Started)
+                {
                     loadItems = VM.Gallery.LoadMoreItemsAsync(5);
+
+                    //集合改变后应用崩溃的修复，操作系统更新后尝试移除
+                    loadItems.Completed = async (s, arg) =>
+                    {
+                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                        {
+                            var current = fv.SelectedIndex;
+                            fv.ItemsSource = null;
+                            Bindings.Update();
+                            fv.SelectedIndex = current;
+                        });
+                    };
+                    //
+                }
             }
             for(int i = start; i < end; i++)
             {
