@@ -55,7 +55,7 @@ namespace ExClient
             }
         }
 
-        private static int pageSize = 1;
+        private static int pageSize = 20;
 
         public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
         {
@@ -145,18 +145,7 @@ namespace ExClient
                     if(image == null)
                     // when load fails
                     {
-                        var ext = Path.GetExtension(model.FileName);
-                        var thumb = await StorageHelper.GetIconOfExtension(ext);
-                        BitmapImage tb = null;
-                        await DispatcherHelper.RunAsync(async () =>
-                        {
-                            tb = new BitmapImage();
-                            using(thumb)
-                            {
-                                await tb.SetSourceAsync(thumb);
-                            }
-                        });
-                        image = new GalleryImage(this, model.PageId, model.ImageKey, tb);
+                        image = new GalleryImage(this, model.PageId, model.ImageKey, null);
                     }
                     toAdd.Add(image);
                 }
