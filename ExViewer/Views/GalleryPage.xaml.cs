@@ -121,7 +121,11 @@ namespace ExViewer.Views
         {
             var s = (ListViewBase)sender;
             var container = (SelectorItem)s.ContainerFromItem(e.ClickedItem);
-            FlyoutBase.ShowAttachedFlyout((FrameworkElement)container.ContentTemplateRoot);
+            foreach(var item in mfo_Tag.Items)
+            {
+                item.DataContext = e.ClickedItem;
+            }
+            mfo_Tag.ShowAt(container);
             // Frame.Navigate(typeof(SearchPage), Cache.AddSearchResult(((Tag)e.ClickedItem).Search()));
         }
 

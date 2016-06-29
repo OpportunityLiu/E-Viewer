@@ -124,6 +124,15 @@ namespace ExViewer.ViewModels
                 var file = await torrent.LoadTorrentAsync();
                 await Launcher.LaunchFileAsync(file);
             }, torrent => torrent != null);
+            GoToDefination = new RelayCommand<Tag>(async tag =>
+            {
+                await Launcher.LaunchUriAsync(tag.TagDefinationUri);
+            }, tag => tag != null);
+            SearchTag = new RelayCommand<Tag>(tag =>
+            {
+                var param = SearchVM.Cache.AddSearchResult(tag.Search());
+                RootControl.RootController.Frame.Navigate(typeof(SearchPage), param);
+            }, tag => tag != null);
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -169,6 +178,16 @@ namespace ExViewer.ViewModels
         }
 
         public RelayCommand<TorrentInfo> TorrentDownload
+        {
+            get;
+        }
+
+        public RelayCommand<Tag> GoToDefination
+        {
+            get;
+        }
+
+        public RelayCommand<Tag> SearchTag
         {
             get;
         }
