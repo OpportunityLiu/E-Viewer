@@ -74,7 +74,7 @@ namespace ExClient
 
         internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
         {
-            return Task.Run(async () =>
+            return Run(async token =>
             {
                 var imageFile = await owner.GalleryFolder.TryGetFileAsync(model.FileName);
                 if(imageFile == null)
@@ -87,7 +87,7 @@ namespace ExClient
                     State = ImageLoadingState.Loaded
                 };
                 return img;
-            }).AsAsyncOperation();
+            });
         }
 
         internal GalleryImage(Gallery owner, int pageId, string imageKey, ImageSource thumb)

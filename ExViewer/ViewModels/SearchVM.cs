@@ -31,7 +31,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        private static class Cache
+        internal static class Cache
         {
             private static CacheStorage<string, SearchResult> srCache = new CacheStorage<string, SearchResult>(query =>
                 {

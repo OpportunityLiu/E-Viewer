@@ -17,6 +17,18 @@
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
+    <Page.Resources>
+        <MenuFlyout x:Name="mfo_Tag" >
+            <MenuFlyoutItem Text="{Binding Content}"/>
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Go to EHWiki for defination"
+                            Command="{x:Bind VM.GoToDefination, Mode=OneWay}"
+                            CommandParameter="{Binding}" />
+            <MenuFlyoutItem Text="Show galleries with this tag"
+                            Command="{x:Bind VM.SearchTag, Mode=OneWay}"
+                            CommandParameter="{Binding}" />
+        </MenuFlyout>
+    </Page.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
@@ -120,14 +132,7 @@
                                         <GridView.ItemTemplate>
                                             <DataTemplate x:DataType="client:Tag">
                                                 <TextBlock Text="{x:Bind Content}"
-                                                           Padding="4,0">
-                                                        <FlyoutBase.AttachedFlyout>
-                                                            <MenuFlyout>
-                                                                <MenuFlyoutItem Text="Go to EHWiki for defination" />
-                                                                <MenuFlyoutItem Text="Show galleries with this tag" />
-                                                            </MenuFlyout>
-                                                        </FlyoutBase.AttachedFlyout>
-                                                </TextBlock>
+                                                           Padding="4,0" />
                                             </DataTemplate>
                                         </GridView.ItemTemplate>
                                         <GridView.ItemsPanel>
