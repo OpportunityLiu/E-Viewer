@@ -18,6 +18,26 @@
         </TransitionCollection>
     </Page.Transitions>
     <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="500" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="img_Thumb.Visibility"
+                                Value="Collapsed" />
+                        <Setter Target="wsp_Info.HorizontalAlignment"
+                                Value="Center" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -41,79 +61,91 @@
                         </LinearGradientBrush>
                     </Grid.Background>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Image Source="{x:Bind VM.Gallery.Thumb, Mode=OneWay}"
-                           Margin="8" />
-                    <RelativePanel Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Image x:Name="img_Thumb" Source="{x:Bind VM.Gallery.Thumb}"
+                           Margin="8"
+                           Width="160"
+                           Grid.RowSpan="2" />
+                    <controls:WrapStackPanel x:Name="wsp_Info" Grid.Column="1"
+                                             HorizontalAlignment="Left"
+                                             Margin="2,4">
                         <controls:CategoryTag x:Name="Category"
-                                              Margin="8"
-                                              Category="{x:Bind VM.Gallery.Category, Mode=OneWay}"
-                                              RelativePanel.AlignLeftWithPanel="True" />
+                                              Margin="6,4"
+                                              Category="{x:Bind VM.Gallery.Category, Mode=OneWay}"/>
                         <TextBlock x:Name="Rating"
-                                   RelativePanel.RightOf="Category"
-                                   Margin="8"
+                                   Margin="6,4"
+                                   VerticalAlignment="Center"
                                    Text="{x:Bind VM.Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
                                    FontFamily="Segoe MDL2 Assets" />
-                        <ListView x:Name="lv_Tags"
-                                  Margin="6"
-                                  RelativePanel.Below="Category"
-                                  RelativePanel.AlignRightWithPanel="True"
-                                  RelativePanel.AlignLeftWith="Category"
-                                  SelectionMode="None"
-                                  ItemsSource="{x:Bind VM.SortedTags, Mode=OneWay}"
-                                  ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="VM:TagList">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0"
-                                                   Text="{x:Bind NameSpace}"
-                                                   MinWidth="80" 
-                                                   Padding="2"/>
-                                        <GridView Grid.Column="1"
-                                                  ItemsSource="{x:Bind}"
-                                                  SelectionMode="None"
-                                                  IsItemClickEnabled="True"
-                                                  ItemClick="gv_Tags_ItemClick"
-                                                  Padding="0"
-                                                  HorizontalAlignment="Left">
-                                            <GridView.ItemContainerStyle>
-                                                <Style TargetType="GridViewItem">
-                                                    <Setter Property="MinHeight"
-                                                            Value="0" />
-                                                    <Setter Property="MinWidth"
-                                                            Value="0" />
-                                                </Style>
-                                            </GridView.ItemContainerStyle>
-                                            <GridView.ItemTemplate>
-                                                <DataTemplate x:DataType="client:Tag">
-                                                    <TextBlock Text="{x:Bind Content}"
-                                                               Padding="4,2">
+                    </controls:WrapStackPanel>
+                    <ListView x:Name="lv_Tags"
+                              Grid.Column="1"
+                              Grid.Row="1"
+                              Margin="6"
+                              SelectionMode="None"
+                              ItemsSource="{x:Bind VM.SortedTags}"
+                              ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="VM:TagList">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                               Text="{x:Bind NameSpace}"
+                                               MinWidth="80"
+                                               Padding="2,0" />
+                                    <GridView Grid.Column="1"
+                                              ItemsSource="{x:Bind}"
+                                              SelectionMode="None"
+                                              IsItemClickEnabled="True"
+                                              ItemClick="gv_Tags_ItemClick"
+                                              HorizontalAlignment="Left"
+                                              Padding="0,0,0,4">
+                                        <GridView.ItemContainerStyle>
+                                            <Style TargetType="GridViewItem">
+                                                <Setter Property="MinHeight"
+                                                        Value="0" />
+                                                <Setter Property="MinWidth"
+                                                        Value="0" />
+                                            </Style>
+                                        </GridView.ItemContainerStyle>
+                                        <GridView.ItemTemplate>
+                                            <DataTemplate x:DataType="client:Tag">
+                                                <TextBlock Text="{x:Bind Content}"
+                                                           Padding="4,0">
                                                         <FlyoutBase.AttachedFlyout>
                                                             <MenuFlyout>
                                                                 <MenuFlyoutItem Text="Go to EHWiki for defination" />
                                                                 <MenuFlyoutItem Text="Show galleries with this tag" />
                                                             </MenuFlyout>
                                                         </FlyoutBase.AttachedFlyout>
-                                                    </TextBlock>
-                                                </DataTemplate>
-                                            </GridView.ItemTemplate>
-                                            <GridView.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <controls:WrapStackPanel Orientation="Horizontal"></controls:WrapStackPanel>
-                                                </ItemsPanelTemplate>
-                                            </GridView.ItemsPanel>
-                                        </GridView>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </RelativePanel>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridView.ItemTemplate>
+                                        <GridView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <controls:WrapStackPanel />
+                                            </ItemsPanelTemplate>
+                                        </GridView.ItemsPanel>
+                                        <GridView.ItemContainerTransitions>
+                                            <TransitionCollection />
+                                        </GridView.ItemContainerTransitions>
+                                    </GridView>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerTransitions>
+                            <TransitionCollection />
+                        </ListView.ItemContainerTransitions>
+                    </ListView>
                 </Grid>
                 <Grid x:Name="gd_Pivot">
                     <Grid.RowDefinitions>
