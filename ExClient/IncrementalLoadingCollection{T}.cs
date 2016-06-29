@@ -22,14 +22,6 @@ namespace ExClient
             this.loadedPageCount = loadedPageCount;
         }
 
-        protected void Set<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
-        {
-            if(Equals(field, value))
-                return;
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
-
         /// <summary>
         /// Add items into collection.
         /// </summary>
@@ -47,6 +39,14 @@ namespace ExClient
             OnPropertyChanged(nameof(Count));
             OnPropertyChanged("Item[]");
             return toAdd.Count;
+        }
+
+        protected void Set<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
+        {
+            if(Equals(field, value))
+                return;
+            field = value;
+            OnPropertyChanged(propertyName);
         }
 
         protected void OnPropertyChanged([CallerMemberName]string propertyName = null)
