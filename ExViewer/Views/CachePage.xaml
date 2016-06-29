@@ -15,10 +15,6 @@
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
-    <Page.Resources>
-        <CollectionViewSource x:Key="CacheView"
-                              Source="{x:Bind VM.CacheView, Mode=OneWay}" />
-    </Page.Resources>
 
     <RelativePanel>
         <CommandBar x:Name="cb_top"
@@ -59,7 +55,7 @@
                              Style="{StaticResource PullToRefreshBoxStyle}"
                              Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <ListView x:Name="lv"
-                      ItemsSource="{Binding Source={StaticResource CacheView}}"
+                      ItemsSource="{x:Bind VM.CachedGalleries, Mode=OneWay}"
                       Style="{StaticResource GalleryListViewStyle}"
                       CanDragItems="True"
                       DragItemsStarting="lv_DragItemsStarting"
@@ -88,20 +84,20 @@
                         </controls:GalleryViewer>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                <!--<ListView.Footer>
+                <ListView.Footer>
                     <TextBlock HorizontalAlignment="Center"
                                Margin="12"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Visibility="{x:Bind VM.CachedGalleries.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
                                Text="Loading more galleries..." />
-                </ListView.Footer>-->
-                <!--<ListView.Header>
+                </ListView.Footer>
+                <ListView.Header>
                     <TextBlock HorizontalAlignment="Center"
                                Margin="12"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Visibility="{x:Bind VM.CachedGalleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
                                Text="No cached galleries" />
-                </ListView.Header>-->
+                </ListView.Header>
             </ListView>
         </pr:PullToRefreshBox>
     </RelativePanel>
