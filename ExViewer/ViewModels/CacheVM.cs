@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.ViewModels
@@ -21,9 +22,9 @@ namespace ExViewer.ViewModels
         {
             this.Refresh = new RelayCommand(async () =>
             {
-                this.CachedGalleries = null;
+                this.CacheView = null;
                 this.Refresh.RaiseCanExecuteChanged();
-                this.CachedGalleries = await CachedGallery.LoadCachedGalleriesAsync();
+                this.CacheView = await CachedGallery.LoadCachedGalleriesAsync();
                 this.Refresh.RaiseCanExecuteChanged();
             });
             Clear = new RelayCommand(() =>
@@ -36,7 +37,7 @@ namespace ExViewer.ViewModels
             Delete = new RelayCommand<Gallery>(async g =>
             {
                 await g.DeleteAsync();
-                this.CachedGalleries?.Remove(g);
+                //this.CacheView?.Remove(g);
                 RootControl.RootController.SendToast("Deleted", typeof(CachePage));
             });
             SaveTo = new RelayCommand<Gallery>(async g =>
@@ -146,17 +147,17 @@ namespace ExViewer.ViewModels
             get;
         }
 
-        private IncrementalLoadingCollection<Gallery> cachedGalleries;
+        private ICollectionViewFactory cacheView;
 
-        public IncrementalLoadingCollection<Gallery> CachedGalleries
+        public ICollectionViewFactory CacheView
         {
             get
             {
-                return cachedGalleries;
+                return cacheView;
             }
             private set
             {
-                Set(ref cachedGalleries, value);
+                Set(ref cacheView, value);
             }
         }
     }

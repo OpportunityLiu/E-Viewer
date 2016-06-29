@@ -61,6 +61,7 @@
                        Grid.Row="4" />
             <TextBlock Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
                        FontFamily="Segoe MDL2 Assets"
+                       VerticalAlignment="Center"
                        Grid.Row="3" />
             <TextBlock Text="{x:Bind Gallery.Uploader, Mode=OneWay}"
                        Grid.Row="4"

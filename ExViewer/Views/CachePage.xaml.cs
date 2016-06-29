@@ -64,7 +64,7 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(e.NavigationMode != NavigationMode.Back || VM.CachedGalleries == null)
+            if(e.NavigationMode != NavigationMode.Back || VM.CacheView == null)
             {
                 VM.Refresh.Execute(null);
             }

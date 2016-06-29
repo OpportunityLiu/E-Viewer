@@ -14,31 +14,39 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using GalaSoft.MvvmLight.Threading;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
+using Windows.UI.Xaml.Data;
+using System.Collections;
+using Windows.Foundation.Collections;
+using System.Runtime.CompilerServices;
+using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace ExClient
 {
     public class CachedGallery : Gallery
     {
-        private class CachedGalleryList : IncrementalLoadingCollection<Gallery>
+        private class CachedGalleryList : ObservableCollection<CachedGallery>, ICollectionView,ICollectionViewFactory
         {
             private static int pageSize = 20;
 
-            public CachedGalleryList() : base(0)
+            public CachedGalleryList()
             {
                 using(var db = CachedGalleryDb.Create())
                 {
-                    RecordCount = db.CacheSet.Count();
-                    PageCount = (int)Math.Ceiling(RecordCount / (double)pageSize);
+                    for(int i = 0; i < db.CacheSet.Count(); i++)
+                    {
+                        this.Add(null);
+                    }
                 }
             }
 
-            protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
+            protected IAsyncAction LoadPageAsync(int startIndex)
             {
                 return Task.Run(() =>
                 {
                     using(var db = CachedGalleryDb.Create())
                     {
-                        var query = db.CacheSet.Skip(this.Count).Take(pageSize).Select(c => new
+                        var query = db.CacheSet.Skip(startIndex).Take(pageSize).Select(c => new
                         {
                             c,
                             c.Gallery
@@ -49,23 +57,267 @@ namespace ExClient
                             var ignore = c.InitAsync();
                             return c;
                         });
-                        return (uint)this.AddRange(toAdd);
+                        foreach(var item in toAdd)
+                        {
+                            if(this[startIndex] == null)
+                            {
+                                this[startIndex] = item;
+                            }
+                            startIndex++;
+                        }
                     }
+                }).AsAsyncAction();
+            }
+
+            protected void Set<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
+            {
+                if(Equals(field, value))
+                    return;
+                field = value;
+                OnPropertyChanged(propertyName);
+            }
+
+            protected void OnPropertyChanged([CallerMemberName]string propertyName = null)
+            {
+                OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            }
+
+            protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    base.OnPropertyChanged(e);
+                });
+            }
+
+            protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    base.OnCollectionChanged(e);
+                    VectorChanged?.Invoke(this, new VectorChangedEventArgs(e));
+                });
+            }
+
+            private class VectorChangedEventArgs : IVectorChangedEventArgs
+            {
+                public VectorChangedEventArgs(NotifyCollectionChangedEventArgs args)
+                {
+                    switch(args.Action)
+                    {
+                    case NotifyCollectionChangedAction.Add:
+                        CollectionChange = CollectionChange.ItemInserted;
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                    case NotifyCollectionChangedAction.Move:
+                        CollectionChange = CollectionChange.ItemChanged;
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        CollectionChange = CollectionChange.ItemRemoved;
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        CollectionChange = CollectionChange.Reset;
+                        break;
+                    }
+                    Index = (uint)args.NewStartingIndex;
+                }
+
+                public CollectionChange CollectionChange
+                {
+                    get;
+                }
+
+                public uint Index
+                {
+                    get;
+                }
+            }
+
+            public event EventHandler<object> CurrentChanged;
+            public event CurrentChangingEventHandler CurrentChanging;
+            public event VectorChangedEventHandler<object> VectorChanged;
+
+            public IObservableVector<object> CollectionGroups
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            public object CurrentItem
+            {
+                get
+                {
+                    if(currentPosition < 0 || currentPosition >= this.Count)
+                        return null;
+                    return this[CurrentPosition];
+                }
+            }
+
+            private int currentPosition = -1;
+
+            public int CurrentPosition
+            {
+                get
+                {
+                    return currentPosition;
+                }
+            }
+
+            protected bool SetCurrentPosition(int value)
+            {
+                var changingArgs = new CurrentChangingEventArgs();
+                CurrentChanging?.Invoke(this, changingArgs);
+                if(changingArgs.Cancel)
+                    return false;
+                Set(ref currentPosition, value, nameof(CurrentPosition));
+                OnPropertyChanged(nameof(CurrentItem));
+                CurrentChanged?.Invoke(this, CurrentItem);
+                if(CurrentItem == null)
+                {
+                    var ignore = LoadPageAsync(value);
+                }
+                return true;
+            }
+
+            bool ICollectionView.HasMoreItems => false;
+
+            public bool IsCurrentAfterLast => false;
+
+            public bool IsCurrentBeforeFirst => false;
+
+            public bool IsReadOnly => false;
+
+            object IList<object>.this[int index]
+            {
+                get
+                {
+                    return this[index];
+                }
+                set
+                {
+                    this[index] = (CachedGallery)value;
+                }
+            }
+
+            public bool MoveCurrentTo(object item)
+            {
+                var i = IndexOf((CachedGallery)item);
+                if(i == -1)
+                    return false;
+                return SetCurrentPosition(i);
+            }
+
+            public bool MoveCurrentToPosition(int index)
+            {
+                return SetCurrentPosition(index);
+            }
+
+            public bool MoveCurrentToFirst()
+            {
+                return SetCurrentPosition(0);
+            }
+
+            public bool MoveCurrentToLast()
+            {
+                return SetCurrentPosition(Count - 1);
+            }
+
+            public bool MoveCurrentToNext()
+            {
+                if(currentPosition == Count - 1)
+                    return false;
+                return SetCurrentPosition(currentPosition + 1);
+            }
+
+            public bool MoveCurrentToPrevious()
+            {
+                if(currentPosition == 0)
+                    return false;
+                return SetCurrentPosition(currentPosition - 1);
+            }
+
+            IAsyncOperation<LoadMoreItemsResult> ICollectionView.LoadMoreItemsAsync(uint count)
+            {
+                throw new NotImplementedException();
+            }
+
+            int IList<object>.IndexOf(object item)
+            {
+                return IndexOf((CachedGallery)item);
+            }
+
+            void IList<object>.Insert(int index, object item)
+            {
+                Insert(index, (CachedGallery)item);
+            }
+
+            void ICollection<object>.Add(object item)
+            {
+                Add((CachedGallery)item);
+            }
+
+            bool ICollection<object>.Contains(object item)
+            {
+                return Contains((CachedGallery)item);
+            }
+
+            void ICollection<object>.CopyTo(object[] array, int arrayIndex)
+            {
+                CopyTo((CachedGallery[])array, arrayIndex);
+            }
+
+            bool ICollection<object>.Remove(object item)
+            {
+                return Remove((CachedGallery)item);
+            }
+
+            IEnumerator<object> IEnumerable<object>.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            public ICollectionView CreateView()
+            {
+                return this;
+            }
+        }
+
+        private class CachedGalleryFactory : ICollectionViewFactory
+        {
+            private CachedGalleryList view = new CachedGalleryList();
+
+            public static IAsyncOperation<ICollectionViewFactory> CreateAsync()
+            {
+                return Task.Run(() =>
+                {
+                    return (ICollectionViewFactory)new CachedGalleryList();
                 }).AsAsyncOperation();
+            }
+
+            private CachedGalleryFactory()
+            {
+            }
+
+            public ICollectionView CreateView()
+            {
+                if(view == null)
+                    return new CachedGalleryList();
+                else
+                {
+                    var temp = view;
+                    view = null;
+                    return temp;
+                }
             }
         }
 
         private static int pageSize = 20;
 
-        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
+        public static IAsyncOperation<ICollectionViewFactory> LoadCachedGalleriesAsync()
         {
-            return Task.Run<IncrementalLoadingCollection<Gallery>>(async () =>
-            {
-                var r = new CachedGalleryList();
-                if(r.HasMoreItems)
-                    await r.LoadMoreItemsAsync(10);
-                return r;
-            }).AsAsyncOperation();
+            return Run(async token => (ICollectionViewFactory)await CachedGalleryFactory.CreateAsync());
         }
 
         public static IAsyncActionWithProgress<double> ClearCachedGalleriesAsync()
