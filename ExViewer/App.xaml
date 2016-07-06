@@ -49,6 +49,7 @@
                                         Function="x + 1"
                                         InversedFunction="x - 1" />
             <local:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
+            <local:SizeConverter x:Key="SizeConverter" />
 
             <Style x:Key="StackPanelListViewItemStyle"
                    TargetType="ListViewItem">

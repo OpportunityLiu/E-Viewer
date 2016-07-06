@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using HtmlAgilityPack;
+using System.Text.RegularExpressions;
 
 namespace ExClient
 {
@@ -25,7 +26,7 @@ namespace ExClient
                         break;
                     var id = int.Parse(commentNodes[i].GetAttributeValue("name", "c0").Substring(1));
                     var commentNode = commentNodes[i + 1];
-                    var content = HtmlEntity.DeEntitize(document.GetElementbyId($"comment_{id}").InnerHtml.Replace("<br>", Environment.NewLine));
+                    var content = getContent(document.GetElementbyId($"comment_{id}").InnerHtml);
                     var editNode = commentNode.ChildNodes.FirstOrDefault(node => node.GetAttributeValue("class", "") == "c8");
                     var edit = editNode != null ? DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal) : (DateTimeOffset?)null;
                     var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.GetAttributeValue("class", "") == "c3");
@@ -45,6 +46,24 @@ namespace ExClient
                 }
                 return comments;
             }).AsAsyncOperation();
+        }
+
+        private static string getContent(string innerHtml)
+        {
+            var sb = new StringBuilder(innerHtml);
+            sb.Replace("<br>", Environment.NewLine);
+            sb.Replace("<strong>", "[b]");
+            sb.Replace("</strong>", "[/b]");
+            sb.Replace("<em>", "[i]");
+            sb.Replace("</em>", "[/i]");
+            sb.Replace("<span style=\"text-decoration:underline;\">", "[u]");
+            sb.Replace("<span>", "[/u]");
+            sb.Replace("<del>", "[s]");
+            sb.Replace("</del>", "[/s]");
+            sb.Replace("<a href=\"", "[url=");
+            sb.Replace("\">", "]");
+            sb.Replace("</a>", "[/url]");
+            return HtmlEntity.DeEntitize(sb.ToString());
         }
 
         private Comment()

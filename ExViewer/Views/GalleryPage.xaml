@@ -18,8 +18,8 @@
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
-        <MenuFlyout x:Name="mfo_Tag" >
-            <MenuFlyoutItem Text="{Binding Content}"/>
+        <MenuFlyout x:Name="mfo_Tag">
+            <MenuFlyoutItem Text="{Binding Content}" />
             <MenuFlyoutSeparator />
             <MenuFlyoutItem Text="Go to EHWiki for defination"
                             Command="{x:Bind VM.GoToDefination, Mode=OneWay}"
@@ -28,6 +28,120 @@
                             Command="{x:Bind VM.SearchTag, Mode=OneWay}"
                             CommandParameter="{Binding}" />
         </MenuFlyout>
+        <DataTemplate x:Key="TorrentTemplate"
+                      xmlns:c="using:ExClient"
+                      x:DataType="c:TorrentInfo">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Margin="12,8,4,8"
+                           Text="{x:Bind Name}"
+                           FontWeight="Medium"
+                           TextWrapping="WrapWholeWords"
+                           VerticalAlignment="Center" />
+                <Button Grid.RowSpan="2"
+                        Grid.Column="2"
+                        Width="48"
+                        MinHeight="48"
+                        Height="Auto"
+                        VerticalAlignment="Stretch"
+                        Command="{Binding VM.TorrentDownload, ElementName=page}"
+                        CommandParameter="{x:Bind}"
+                        ToolTipService.ToolTip="Download"
+                        Content="&#xE896;"
+                        Style="{StaticResource NavigationBackButtonSmallStyle}" />
+                <Grid x:Name="gd_TorrentDetail"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      Visibility="Collapsed"
+                      Margin="12,0,4,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <Style x:Key="KeyTextBlockStyle"
+                               TargetType="TextBlock">
+                            <Setter Property="FontSize"
+                                    Value="13" />
+                            <Setter Property="FontWeight"
+                                    Value="Normal" />
+                        </Style>
+                        <Style x:Key="ValueTextBlockStyle"
+                               TargetType="TextBlock">
+                            <Setter Property="FontSize"
+                                    Value="13" />
+                            <Setter Property="FontWeight"
+                                    Value="SemiLight" />
+                        </Style>
+                    </Grid.Resources>
+                    <TextBlock Text="Uploader"
+                               Style="{StaticResource KeyTextBlockStyle}" />
+                    <TextBlock Text="Posted"
+                               Style="{StaticResource KeyTextBlockStyle}"
+                               Grid.Row="1" />
+                    <TextBlock Text="Downloads"
+                               Style="{StaticResource KeyTextBlockStyle}"
+                               Grid.Row="2" />
+                    <TextBlock Text="Peers"
+                               Style="{StaticResource KeyTextBlockStyle}"
+                               Grid.Row="3" />
+                    <TextBlock Text="Seeds"
+                               Style="{StaticResource KeyTextBlockStyle}"
+                               Grid.Row="4" />
+                    <TextBlock Text="Size"
+                               Style="{StaticResource KeyTextBlockStyle}"
+                               Grid.Row="5" />
+
+                    <TextBlock Grid.Column="2"
+                               Text="{x:Bind Uploader}"
+                               Style="{StaticResource ValueTextBlockStyle}" />
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="2"
+                               Text="{x:Bind Posted, Converter={StaticResource DateTimeToStringConverter}}"
+                               Style="{StaticResource ValueTextBlockStyle}" />
+                    <TextBlock Grid.Row="2"
+                               Grid.Column="2"
+                               Text="{x:Bind Downloads}"
+                               Style="{StaticResource ValueTextBlockStyle}" />
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="2"
+                               Text="{x:Bind Peers}"
+                               Style="{StaticResource ValueTextBlockStyle}" />
+                    <TextBlock Grid.Row="4"
+                               Grid.Column="2"
+                               Text="{x:Bind Seeds}"
+                               Style="{StaticResource ValueTextBlockStyle}" />
+                    <TextBlock Grid.Row="5"
+                               Grid.Column="2"
+                               Text="{x:Bind Size, Converter={StaticResource SizeConverter}}"
+                               Style="{StaticResource ValueTextBlockStyle}" />
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="CommentTemplate"
+                      xmlns:c="using:ExClient"
+                      x:DataType="c:Comment">
+            <StackPanel>
+                <controls:BBCodeTextBlock Margin="0,8"
+                                          BBCode="{x:Bind Content}" />
+            </StackPanel>
+        </DataTemplate>
     </Page.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -80,16 +194,18 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Image x:Name="img_Thumb" Source="{x:Bind VM.Gallery.Thumb}"
+                    <Image x:Name="img_Thumb"
+                           Source="{x:Bind VM.Gallery.Thumb}"
                            Margin="8"
                            Width="160"
                            Grid.RowSpan="2" />
-                    <controls:WrapStackPanel x:Name="wsp_Info" Grid.Column="1"
+                    <controls:WrapStackPanel x:Name="wsp_Info"
+                                             Grid.Column="1"
                                              HorizontalAlignment="Left"
                                              Margin="2,4">
                         <controls:CategoryTag x:Name="Category"
                                               Margin="6,4"
-                                              Category="{x:Bind VM.Gallery.Category, Mode=OneWay}"/>
+                                              Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
                         <TextBlock x:Name="Rating"
                                    Margin="6,4"
                                    VerticalAlignment="Center"
@@ -143,6 +259,17 @@
                                         <GridView.ItemContainerTransitions>
                                             <TransitionCollection />
                                         </GridView.ItemContainerTransitions>
+                                        <GridView.Template>
+                                            <ControlTemplate TargetType="GridView">
+                                                <ItemsPresenter Header="{TemplateBinding Header}"
+                                                                HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                                                                HeaderTransitions="{TemplateBinding HeaderTransitions}"
+                                                                Footer="{TemplateBinding Footer}"
+                                                                FooterTemplate="{TemplateBinding FooterTemplate}"
+                                                                FooterTransitions="{TemplateBinding FooterTransitions}"
+                                                                Padding="{TemplateBinding Padding}" />
+                                            </ControlTemplate>
+                                        </GridView.Template>
                                     </GridView>
                                 </Grid>
                             </DataTemplate>
@@ -178,7 +305,15 @@
 
                     <Pivot x:Name="pv"
                            Grid.Row="1"
-                           SelectionChanged="pv_SelectionChanged">
+                           SelectionChanged="pv_SelectionChanged"
+                           HorizontalContentAlignment="Stretch"
+                           VerticalContentAlignment="Stretch">
+                        <Pivot.ItemContainerStyle>
+                            <Style TargetType="PivotItem">
+                                <Setter Property="Margin"
+                                        Value="0" />
+                            </Style>
+                        </Pivot.ItemContainerStyle>
                         <PivotItem>
                             <PivotItem.Header>
                                 <StackPanel Orientation="Horizontal">
@@ -189,6 +324,7 @@
                                 </StackPanel>
                             </PivotItem.Header>
                             <GridView x:Name="gv"
+                                      Padding="8,4,8,12"
                                       IsItemClickEnabled="True"
                                       ItemClick="gv_ItemClick"
                                       ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
@@ -231,15 +367,8 @@
                             <ListView x:Name="lv_Comments"
                                       ItemsSource="{x:Bind VM.Comments, Mode=OneWay}"
                                       VerticalAlignment="Top"
-                                      Loaded="lv_Comments_Loaded">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate xmlns:c="using:ExClient"
-                                                  x:DataType="c:Comment">
-                                        <StackPanel>
-                                            <TextBlock Text="{x:Bind Content, Mode=OneWay}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
+                                      Loaded="lv_Comments_Loaded"
+                                      ItemTemplate="{StaticResource CommentTemplate}">
                                 <ListView.Header>
                                     <TextBlock HorizontalAlignment="Center"
                                                Margin="12"
@@ -270,33 +399,20 @@
                                       ItemsSource="{x:Bind VM.Torrents, Mode=OneWay}"
                                       VerticalAlignment="Top"
                                       SelectionChanged="lv_Torrents_SelectionChanged"
-                                      Loaded="lv_Torrents_Loaded">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate xmlns:c="using:ExClient"
-                                                  x:DataType="c:TorrentInfo">
-                                        <StackPanel>
-                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
-                                            <Grid x:Name="gd_TorrentDetail"
-                                                  Visibility="Collapsed">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel>
-                                                    <TextBlock Text="{x:Bind Posted, Converter={StaticResource StringConverter}, ConverterParameter=Posted: \{0\}}" />
-                                                    <TextBlock Text="{x:Bind Uploader, Converter={StaticResource StringConverter}, ConverterParameter=Uploader: \{0\}}" />
-                                                    <TextBlock Text="{x:Bind Downloads, Converter={StaticResource StringConverter}, ConverterParameter=Downloads: \{0\}}" />
-                                                    <TextBlock Text="{x:Bind Peers, Converter={StaticResource StringConverter}, ConverterParameter=Peers: \{0\}}" />
-                                                    <TextBlock Text="{x:Bind Seeds, Converter={StaticResource StringConverter}, ConverterParameter=Seeds: \{0\}}" />
-                                                    <TextBlock Text="{x:Bind Size, Converter={StaticResource StringConverter}, ConverterParameter=Size: \{0\}}" />
-                                                </StackPanel>
-                                                <Button Command="{Binding VM.TorrentDownload, ElementName=page}"
-                                                        CommandParameter="{x:Bind}"
-                                                        Grid.Column="1">Download</Button>
-                                            </Grid>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
+                                      Loaded="lv_Torrents_Loaded"
+                                      ItemTemplate="{StaticResource TorrentTemplate}">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="MinWidth"
+                                                Value="0" />
+                                        <Setter Property="MinHeight"
+                                                Value="0" />
+                                        <Setter Property="Padding"
+                                                Value="0" />
+                                        <Setter Property="HorizontalContentAlignment"
+                                                Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
                                 <ListView.Header>
                                     <TextBlock HorizontalAlignment="Center"
                                                Margin="12"

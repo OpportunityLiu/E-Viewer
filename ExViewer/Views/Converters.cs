@@ -563,22 +563,45 @@ namespace ExViewer.Views
         }
     }
 
-    public class DoubleOffsetConverter : ValueConverterChain
+    public class SizeConverter : IValueConverter
     {
-        public double Offset
+        private static readonly string[] units = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB" };
+
+        public string OutOfRange
         {
             get;
             set;
+        } = "???";
+
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var size = System.Convert.ToDouble(value);
+            if(size < 0)
+                return OutOfRange;
+            foreach(var unit in units)
+            {
+                if(size < 1000)
+                {
+                    return $"{size.ToString().Substring(0, 5)} {unit}";
+                }
+                size /= 1024;
+            }
+            return OutOfRange;
         }
 
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            return (double)value - Offset;
-        }
-
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
-        {
-            return (double)value + Offset;
+            var sizeStr = value.ToString().Trim();
+            for(int i = 0; i < units.Length; i++)
+            {
+                if(sizeStr.EndsWith(units[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    var sizeNumStr = sizeStr.Substring(0, sizeStr.Length - units[i].Length);
+                    var sizeNum = double.Parse(sizeNumStr);
+                    return (long)(sizeNum * Math.Pow(1024, i));
+                }
+            }
+            throw new ArgumentException(nameof(value));
         }
     }
 }
