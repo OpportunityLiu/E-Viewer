@@ -14,6 +14,8 @@ namespace ExClient
 {
     public class TorrentInfo
     {
+        private static readonly Regex infoMatcher = new Regex(@"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+", RegexOptions.Compiled);
+
         internal static IAsyncOperation<List<TorrentInfo>> LoadTorrentsAsync(Gallery gallery)
         {
             return Task.Run(async () =>
@@ -23,7 +25,7 @@ namespace ExClient
                 doc.LoadHtml(torrentHtml);
                 var nodes = (from n in doc.DocumentNode.Descendants("table")
                              where n.GetAttributeValue("style", "") == "width:99%"
-                             let reg = Regex.Match(n.InnerText, @"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+")
+                             let reg = infoMatcher.Match(n.InnerText)
                              let link = n.Descendants("a").Single()
                              select new TorrentInfo()
                              {

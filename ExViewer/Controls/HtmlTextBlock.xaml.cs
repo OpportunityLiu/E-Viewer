@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -59,14 +60,38 @@ namespace ExViewer.Controls
         public static readonly DependencyProperty HtmlContentProperty =
             DependencyProperty.Register("HtmlContent", typeof(HtmlNode), typeof(HtmlTextBlock), new PropertyMetadata(null, HtmlContentPropertyChanged));
 
-
         public static void HtmlContentPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var s = (HtmlTextBlock)sender;
-            s.loadHtml(s.Presenter, (HtmlNode)e.NewValue);
+            s.loadHtml(s.Presenter, (HtmlNode)e.NewValue, s.DetectLink);
         }
 
-        private void loadHtml(RichTextBlock presenter, HtmlNode content)
+        public bool DetectLink
+        {
+            get
+            {
+                return (bool)GetValue(DetectLinkProperty);
+            }
+            set
+            {
+                SetValue(DetectLinkProperty, value);
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for DetectLink.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DetectLinkProperty =
+            DependencyProperty.Register("DetectLink", typeof(bool), typeof(HtmlTextBlock), new PropertyMetadata(false, DetectLinkPropertyChanged));
+
+        public static void DetectLinkPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var s = (HtmlTextBlock)sender;
+            s.loadHtml(s.Presenter, s.HtmlContent, (bool)e.NewValue);
+        }
+
+        private static readonly string eof = " ";
+        private static readonly Regex linkDetector = new Regex(@"[a-zA-z]+://[^\s]*", RegexOptions.Compiled);
+
+        private void loadHtml(RichTextBlock presenter, HtmlNode content, bool detectLink)
         {
             presenter.Blocks.Clear();
             if(content == null)
@@ -74,38 +99,61 @@ namespace ExViewer.Controls
             var para = new Paragraph() { Foreground = (Brush)Resources["ApplicationForegroundThemeBrush"] };
             foreach(var node in content.ChildNodes)
             {
-                var tbNode = createNode(node);
+                var tbNode = createNode(node, detectLink);
                 para.Inlines.Add(tbNode);
             }
+            para.Inlines.Add(new Run { Text = eof });
             presenter.Blocks.Add(para);
         }
 
-        private Inline createNode(HtmlNode node)
+        private Inline createNode(HtmlNode node, bool detectLink)
         {
             if(node is HtmlTextNode)
-                return new Run { Text = HtmlEntity.DeEntitize(node.InnerText) };
+            {
+                var text = HtmlEntity.DeEntitize(node.InnerText);
+                MatchCollection matches;
+                if(detectLink && (matches = linkDetector.Matches(text)).Count > 0)
+                {
+                    var t = new Span();
+                    var currentPos = 0;
+                    foreach(Match match in matches)
+                    {
+                        t.Inlines.Add(new Run { Text = text.Substring(currentPos, match.Index - currentPos) });
+                        var detectedLink = new Hyperlink { NavigateUri = new Uri(match.Value) };
+                        detectedLink.Inlines.Add(new Run { Text = match.Value });
+                        t.Inlines.Add(detectedLink);
+                        currentPos = match.Index + match.Length;
+                    }
+                    t.Inlines.Add(new Run { Text = text.Substring(currentPos) });
+                    return t;
+                }
+                else
+                {
+                    return new Run { Text = text };
+                }
+            }
             switch(node.Name)
             {
             case "br":
                 return new LineBreak();
             case "strong"://[b]
                 var b = new Bold();
-                foreach(var item in createChildNodes(node))
+                foreach(var item in createChildNodes(node, detectLink))
                     b.Inlines.Add(item);
                 return b;
             case "em"://[i]
                 var i = new Italic();
-                foreach(var item in createChildNodes(node))
+                foreach(var item in createChildNodes(node, detectLink))
                     i.Inlines.Add(item);
                 return i;
             case "span"://[u]
                 var u = new Underline();
-                foreach(var item in createChildNodes(node))
+                foreach(var item in createChildNodes(node, detectLink))
                     u.Inlines.Add(item);
                 return u;
             case "del"://[s]
                 var s = new Span() { Foreground = (Brush)Resources["ApplicationSecondaryForegroundThemeBrush"] };
-                foreach(var item in createChildNodes(node))
+                foreach(var item in createChildNodes(node, detectLink))
                     s.Inlines.Add(item);
                 return s;
             case "a"://[url]
@@ -113,14 +161,14 @@ namespace ExViewer.Controls
                 try
                 {
                     var aLink = new Hyperlink() { NavigateUri = target };
-                    foreach(var item in createChildNodes(node))
+                    foreach(var item in createChildNodes(node, false))
                         aLink.Inlines.Add(item);
                     return aLink;
                 }
                 catch(ArgumentException)// has InlineUIContainer in childnodes
                 {
                     var aBtnContent = new RichTextBlock { IsTextSelectionEnabled = false };
-                    loadHtml(aBtnContent, node);
+                    loadHtml(aBtnContent, node, false);
                     var aBtn = new HyperlinkButton()
                     {
                         NavigateUri = target,
@@ -128,7 +176,7 @@ namespace ExViewer.Controls
                         Padding = new Thickness()
                     };
                     ToolTipService.SetToolTip(aBtn, target);
-                  return new InlineUIContainer { Child = aBtn };
+                    return new InlineUIContainer { Child = aBtn };
                 }
             case "img"://[img]
                 var img = new InlineUIContainer()
@@ -153,9 +201,9 @@ namespace ExViewer.Controls
             }
         }
 
-        private IEnumerable<Inline> createChildNodes(HtmlNode node)
+        private IEnumerable<Inline> createChildNodes(HtmlNode node, bool detectLink)
         {
-            return node.ChildNodes.Select(n => createNode(n));
+            return node.ChildNodes.Select(n => createNode(n, detectLink));
         }
     }
 }

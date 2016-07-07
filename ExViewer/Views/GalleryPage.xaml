@@ -18,6 +18,18 @@
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
+        <Style x:Key="ListViewItemStyle"
+               TargetType="ListViewItem">
+            <Setter Property="MinWidth"
+                    Value="0" />
+            <Setter Property="MinHeight"
+                    Value="0" />
+            <Setter Property="Padding"
+                    Value="0" />
+            <Setter Property="HorizontalContentAlignment"           
+                    Value="Stretch" />
+        </Style>
+
         <MenuFlyout x:Name="mfo_Tag">
             <MenuFlyoutItem Text="{Binding Content}" />
             <MenuFlyoutSeparator />
@@ -28,6 +40,21 @@
                             Command="{x:Bind VM.SearchTag, Mode=OneWay}"
                             CommandParameter="{Binding}" />
         </MenuFlyout>
+
+        <Style x:Key="KeyTextBlockStyle"
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="13" />
+            <Setter Property="FontWeight"
+                    Value="Normal" />
+        </Style>
+        <Style x:Key="ValueTextBlockStyle"
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="13" />
+            <Setter Property="FontWeight"
+                    Value="SemiLight" />
+        </Style>
         <DataTemplate x:Key="TorrentTemplate"
                       xmlns:c="using:ExClient"
                       x:DataType="c:TorrentInfo">
@@ -74,22 +101,6 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Grid.Resources>
-                        <Style x:Key="KeyTextBlockStyle"
-                               TargetType="TextBlock">
-                            <Setter Property="FontSize"
-                                    Value="13" />
-                            <Setter Property="FontWeight"
-                                    Value="Normal" />
-                        </Style>
-                        <Style x:Key="ValueTextBlockStyle"
-                               TargetType="TextBlock">
-                            <Setter Property="FontSize"
-                                    Value="13" />
-                            <Setter Property="FontWeight"
-                                    Value="SemiLight" />
-                        </Style>
-                    </Grid.Resources>
                     <TextBlock Text="Uploader"
                                Style="{StaticResource KeyTextBlockStyle}" />
                     <TextBlock Text="Posted"
@@ -134,17 +145,108 @@
                 </Grid>
             </Grid>
         </DataTemplate>
+
+        <Style x:Key="HeaderRectangleStyle"
+               TargetType="Rectangle">
+            <Setter Property="Fill"
+                    Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+            <Setter Property="StrokeThickness"
+                    Value="0" />
+        </Style>
+        <Style x:Key="CommentHeaderTextBlockStyle"
+               TargetType="TextBlock">
+            <Setter Property="FontWeight"
+                    Value="Medium" />
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="Margin"
+                    Value="8,0" />
+        </Style>
+        <Style x:Key="EditedTextBlockStyle"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource CaptionTextBlockStyle}">
+            <Setter Property="FontStyle"
+                    Value="Italic" />
+            <Setter Property="FontWeight"
+                    Value="Medium" />
+        </Style>
         <DataTemplate x:Key="CommentTemplate"
                       xmlns:c="using:ExClient"
                       x:DataType="c:Comment">
-            <StackPanel>
-                <controls:HtmlTextBlock Margin="0,8"
-                                        HtmlContent="{x:Bind Content}">
-                    <controls:HtmlTextBlock.Foreground>
-                        <ImageBrush Stretch="Fill" />
-                    </controls:HtmlTextBlock.Foreground>
-                </controls:HtmlTextBlock>
-            </StackPanel>
+            <UserControl VerticalContentAlignment="Stretch"
+                         HorizontalContentAlignment="Stretch">
+                <RelativePanel Padding="4,4,4,12">
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Narrow">
+                                <VisualState.StateTriggers>
+                                    <AdaptiveTrigger MinWindowWidth="0" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Target="Author.(RelativePanel.Below)"
+                                            Value="Posted" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Normal">
+                                <VisualState.StateTriggers>
+                                    <AdaptiveTrigger MinWindowWidth="500" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Target="Author.(RelativePanel.RightOf)"
+                                            Value="Posted" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    <Rectangle x:Name="Header"
+                               Style="{StaticResource HeaderRectangleStyle}"
+                               RelativePanel.AlignLeftWithPanel="True"
+                               RelativePanel.AlignRightWithPanel="True"
+                               RelativePanel.AlignTopWithPanel="True"
+                               RelativePanel.AlignBottomWith="Author" 
+                               Margin="0,-4"/>
+                    <TextBlock x:Name="Posted"
+                               Text="{x:Bind Posted, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=Posted on \{0\}}"
+                               Style="{StaticResource CommentHeaderTextBlockStyle}"
+                               RelativePanel.AlignTopWithPanel="True"
+                               RelativePanel.AlignLeftWithPanel="True" />
+                    <TextBlock x:Name="Author"
+                               Text="{x:Bind Author, Converter={StaticResource StringConverter}, ConverterParameter=By \{0\}}"
+                               Style="{StaticResource CommentHeaderTextBlockStyle}"/>
+                    <TextBlock x:Name="Score"
+                               Text="{x:Bind Score, Converter={StaticResource StringConverter}, ConverterParameter=Score \{0:+#0;-#0\}}"
+                               Style="{StaticResource CommentHeaderTextBlockStyle}"
+                               Visibility="{x:Bind IsUploaderComment, Converter={StaticResource FalseToVisibleConverter}}"
+                               HorizontalAlignment="Right"
+                               RelativePanel.AlignTopWith="Author"
+                               RelativePanel.AlignRightWithPanel="True" />
+                    <TextBlock x:Name="IsUploaderComment"
+                               Text="Uploader Comment"
+                               Style="{StaticResource CommentHeaderTextBlockStyle}"
+                               Visibility="{x:Bind IsUploaderComment, Converter={StaticResource TrueToVisibleConverter}}"
+                               HorizontalAlignment="Right"
+                               RelativePanel.AlignTopWith="Author"
+                               RelativePanel.AlignRightWithPanel="True" />
+                    <controls:HtmlTextBlock x:Name="Content"
+                                            DetectLink="True"
+                                            HtmlContent="{x:Bind Content}"
+                                            Margin="12,12,12,4"
+                                            RelativePanel.AlignLeftWithPanel="True"
+                                            RelativePanel.AlignRightWithPanel="True"
+                                            RelativePanel.Below="Header"
+                                            Pivot.SlideInAnimationGroup="GroupOne" />
+                    <TextBlock x:Name="Edited"
+                               Text="{x:Bind Edited, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=Last edited on \{0\}}"
+                               Visibility="{x:Bind Edited, Converter={StaticResource NullToCollapsedConverter}}"
+                               Style="{StaticResource EditedTextBlockStyle}"
+                               Margin="12,4"
+                               RelativePanel.AlignLeftWithPanel="True"
+                               RelativePanel.AlignRightWithPanel="True"
+                               RelativePanel.AlignBottomWithPanel="True"
+                               RelativePanel.Below="Content"
+                               Pivot.SlideInAnimationGroup="GroupTwo" />
+                </RelativePanel>
+            </UserControl>
         </DataTemplate>
     </Page.Resources>
     <Grid>
@@ -373,7 +475,8 @@
                                       VerticalAlignment="Top"
                                       Loaded="lv_Comments_Loaded"
                                       SelectionMode="None"
-                                      ItemTemplate="{StaticResource CommentTemplate}">
+                                      ItemTemplate="{StaticResource CommentTemplate}"
+                                      ItemContainerStyle="{StaticResource ListViewItemStyle}">
                                 <ListView.Header>
                                     <TextBlock HorizontalAlignment="Center"
                                                Margin="12"
@@ -405,19 +508,8 @@
                                       VerticalAlignment="Top"
                                       SelectionChanged="lv_Torrents_SelectionChanged"
                                       Loaded="lv_Torrents_Loaded"
-                                      ItemTemplate="{StaticResource TorrentTemplate}">
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="MinWidth"
-                                                Value="0" />
-                                        <Setter Property="MinHeight"
-                                                Value="0" />
-                                        <Setter Property="Padding"
-                                                Value="0" />
-                                        <Setter Property="HorizontalContentAlignment"
-                                                Value="Stretch" />
-                                    </Style>
-                                </ListView.ItemContainerStyle>
+                                      ItemTemplate="{StaticResource TorrentTemplate}"
+                                      ItemContainerStyle="{StaticResource ListViewItemStyle}">
                                 <ListView.Header>
                                     <TextBlock HorizontalAlignment="Center"
                                                Margin="12"

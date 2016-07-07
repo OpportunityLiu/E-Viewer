@@ -63,6 +63,8 @@ namespace ExClient
             this.RecordCount = -1;
         }
 
+        private static readonly Regex recordCountMatcher = new Regex(@"Showing.+of\s+([0-9,]+)", RegexOptions.Compiled);
+
         private IAsyncOperation<uint> init()
         {
             return Task.Run(async () =>
@@ -97,7 +99,7 @@ namespace ExClient
                         RecordCount = 0;
                         return 0u;
                     }
-                    var match = Regex.Match(rcNode.InnerText, @"Showing.+of\s+([0-9,]+)");
+                    var match = recordCountMatcher.Match(rcNode.InnerText);
                     if(match.Success)
                         RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
                     if(!IsEmpty)
@@ -122,6 +124,8 @@ namespace ExClient
             }).AsAsyncOperation();
         }
 
+        private static readonly Regex gLinkMatcher = new Regex(@".+?/g/(\d+)/([0-9a-f]+).+?", RegexOptions.Compiled);
+
         private IAsyncOperation<uint> loadPage(HtmlDocument doc)
         {
             return Task.Run(async () =>
@@ -135,7 +139,7 @@ namespace ExClient
                                             where node2.GetAttributeValue("onmouseover", "").StartsWith("show_image_pane")
                                             select node2).SingleOrDefault()
                               where detail != null
-                              let match = Regex.Match(detail.GetAttributeValue("href", ""), @".+?/g/(\d+)/([0-9a-f]+).+?")
+                              let match = gLinkMatcher.Match(detail.GetAttributeValue("href", ""))
                               where match.Success
                               select new gdataRecord
                               {

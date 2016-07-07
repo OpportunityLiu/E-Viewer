@@ -122,11 +122,10 @@ namespace ExClient
         {
             if(loading?.Status == AsyncStatus.Started)
             {
-                var temp = loading;
                 return Run(async token =>
                 {
-                    token.Register(temp.Cancel);
-                    return await temp;
+                    await Task.Yield();
+                    return new LoadMoreItemsResult();
                 });
             }
             return loading = Run(async token =>

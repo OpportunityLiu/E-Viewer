@@ -74,8 +74,8 @@ namespace ExViewer.Views
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(av, null);
             fv.SelectedIndex = VM.CurrentIndex;
-            await Task.Delay(100);
-            //fv.SelectedIndex = VM.CurrentIndex;
+            await Task.Delay(50);
+            fv.SelectedIndex = VM.CurrentIndex;
             fv.Focus(FocusState.Pointer);
             if(SettingCollection.Current.KeepScreenOn)
             {
@@ -94,6 +94,7 @@ namespace ExViewer.Views
             if(displayActived)
             {
                 displayRequest.RequestRelease();
+                displayActived = false;
             }
         }
 
@@ -185,7 +186,7 @@ namespace ExViewer.Views
                             fv.SelectedIndex = current;
                         });
                     };
-                    //
+                    ////
                 }
             }
             for(int i = start; i < end; i++)
