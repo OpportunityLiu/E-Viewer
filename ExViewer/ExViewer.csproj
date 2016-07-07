@@ -94,6 +94,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="Assets\Panda.psd" />
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
     <PRIResource Include="Strings\Resources.lang-en.resw" />
@@ -166,19 +167,24 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Medium.scale-100.png" />
     <Content Include="Assets\Medium.scale-200.png" />
     <Content Include="Assets\Medium.scale-400.png" />
+    <Content Include="Assets\Small.scale-100.png" />
     <Content Include="Assets\Small.scale-200.png" />
     <Content Include="Assets\Small.scale-400.png" />
     <Content Include="Assets\Splashes\botm.scale-200.png" />
     <Content Include="Assets\Splashes\botm.scale-400.png" />
     <Content Include="Assets\SplashScreen.scale-400.png" />
+    <Content Include="Assets\Store.scale-100.png" />
     <Content Include="Assets\Store.scale-200.png" />
     <Content Include="Assets\Store.scale-400.png" />
+    <Content Include="Assets\TaskBar.scale-100.png" />
     <Content Include="Assets\Taskbar.scale-200.png" />
     <Content Include="Assets\Taskbar.scale-400.png" />
     <Content Include="Assets\TaskBar.targetsize-256.png" />
     <Content Include="Assets\TaskBar.targetsize-256_altform-unplated.png" />
+    <Content Include="Assets\Wide.scale-100.png" />
     <Content Include="Assets\Wide.scale-200.png" />
     <Content Include="Assets\Wide.scale-400.png" />
     <None Include="Package.StoreAssociation.xml" />
