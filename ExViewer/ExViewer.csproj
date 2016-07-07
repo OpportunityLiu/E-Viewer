@@ -103,8 +103,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\BBCodeTextBlock.xaml.cs">
-      <DependentUpon>BBCodeTextBlock.xaml</DependentUpon>
+    <Compile Include="Controls\HtmlTextBlock.xaml.cs">
+      <DependentUpon>HtmlTextBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\CategorySelector.xaml.cs">
       <DependentUpon>CategorySelector.xaml</DependentUpon>
@@ -190,7 +190,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\BBCodeTextBlock.xaml">
+    <Page Include="Controls\HtmlTextBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

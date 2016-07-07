@@ -73,9 +73,10 @@ namespace ExViewer.Views
             Bindings.Update();
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(av, null);
-            await Task.Yield();
-            fv.Focus(FocusState.Pointer);
             fv.SelectedIndex = VM.CurrentIndex;
+            await Task.Delay(100);
+            //fv.SelectedIndex = VM.CurrentIndex;
+            fv.Focus(FocusState.Pointer);
             if(SettingCollection.Current.KeepScreenOn)
             {
                 displayRequest.RequestActive();

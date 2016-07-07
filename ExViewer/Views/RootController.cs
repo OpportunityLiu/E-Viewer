@@ -37,10 +37,12 @@ namespace ExViewer.Views
 
             private static void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
             {
-                SendToast(e.Exception, null);
-#if !DEBUG
-                e.Handled = true;
+#if DEBUG && !DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION
+                if(global::System.Diagnostics.Debugger.IsAttached)
+                    global::System.Diagnostics.Debugger.Break();
 #endif
+                SendToast(e.Exception, null);
+                e.Handled = true;
             }
 
             private static RootControl root;
