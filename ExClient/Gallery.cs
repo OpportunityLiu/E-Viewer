@@ -381,6 +381,8 @@ namespace ExClient
         }
 
         private static Uri galleryBaseUri = new Uri(Client.RootUri, "g/");
+        private static readonly Regex picInfoMatcher = new Regex(@"width:\s*(\d+)px;\s*height:\s*(\d+)px;.*url\((.+)\)\s*-\s*(\d+)px", RegexOptions.Compiled);
+        private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
 
         protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
         {
@@ -410,11 +412,10 @@ namespace ExClient
                 var pics = (from node in html.GetElementbyId("gdt").Descendants("div")
                             where node.GetAttributeValue("class", null) == "gdtm"
                             let nodeBackGround = node.Descendants("div").Single()
-                            let matchUri = Regex.Match(nodeBackGround.GetAttributeValue("style", ""),
-                            @"width:\s*(\d+)px;\s*height:\s*(\d+)px;.*url\((.+)\)\s*-\s*(\d+)px")
+                            let matchUri = picInfoMatcher.Match(nodeBackGround.GetAttributeValue("style", ""))
                             where matchUri.Success
                             let nodeA = nodeBackGround.Descendants("a").Single()
-                            let match = Regex.Match(nodeA.GetAttributeValue("href", ""), @"/s/([0-9a-f]+)/(\d+)-(\d+)")
+                            let match = imgLinkMatcher.Match(nodeA.GetAttributeValue("href", ""))
                             where match.Success
                             let r = new
                             {

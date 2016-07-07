@@ -99,6 +99,8 @@ namespace ExClient
             this.Thumb = thumb;
         }
 
+        private static readonly Regex failTokenMatcher = new Regex(@"return\s+nl\(\s*'(.+?)'\s*\)", RegexOptions.Compiled);
+
         private IAsyncAction loadImageUri()
         {
             return Task.Run(async () =>
@@ -121,7 +123,7 @@ namespace ExClient
                     originalImageUri = new Uri(HtmlUtilities.ConvertToText(originalNode.GetAttributeValue("href", "")));
                 }
                 var loadFail = pageResult.GetElementbyId("loadfail").GetAttributeValue("onclick", "");
-                failToken = Regex.Match(loadFail, @"return\s+nl\(\s*'(.+?)'\s*\)").Groups[1].Value;
+                failToken = failTokenMatcher.Match(loadFail).Groups[1].Value;
             }).AsAsyncAction();
         }
 

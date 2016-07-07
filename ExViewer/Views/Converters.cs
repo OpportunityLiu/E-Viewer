@@ -167,18 +167,30 @@ namespace ExViewer.Views
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var currentType = value.GetType();
-            if(currentType == typeof(DateTimeOffset))
+            var r = (string)null;
+            if(value == null)
             {
-                var date = (DateTimeOffset)value;
-                return date.LocalDateTime.ToString(CultureInfo.CurrentCulture);
+                r = string.Empty;
             }
-            else if(currentType == typeof(DateTime))
+            else
             {
-                var date = (DateTime)value;
-                return date.ToString(CultureInfo.CurrentCulture);
+                var currentType = value.GetType();
+                if(currentType == typeof(DateTimeOffset))
+                {
+                    var date = (DateTimeOffset)value;
+                    r = date.LocalDateTime.ToString(CultureInfo.CurrentCulture);
+                }
+                else if(currentType == typeof(DateTime))
+                {
+                    var date = (DateTime)value;
+                    r = date.ToString(CultureInfo.CurrentCulture);
+                }
             }
-            throw new NotImplementedException();
+            if(parameter != null)
+            {
+                r = string.Format(parameter.ToString(), r);
+            }
+            return r;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

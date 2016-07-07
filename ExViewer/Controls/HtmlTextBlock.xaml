@@ -9,5 +9,5 @@
              d:DesignWidth="400"
              IsTabStop="False">
     <RichTextBlock x:Name="Presenter"
-                   Style="{x:Bind RichTextBlockStyle, Mode=OneWay}"/>
+                   Style="{x:Bind RichTextBlockStyle, Mode=OneWay}" />
 </UserControl>
