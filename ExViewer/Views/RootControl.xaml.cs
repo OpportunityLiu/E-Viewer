@@ -132,7 +132,9 @@ namespace ExViewer.Views
 
         private void Grid_GotFocus(object sender, RoutedEventArgs e)
         {
+#if DEBUG
             System.Diagnostics.Debug.WriteLine(e.OriginalSource);
+#endif
         }
 
         //private async void svb_LogOn_Click(object sender, RoutedEventArgs e)

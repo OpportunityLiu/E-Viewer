@@ -138,8 +138,12 @@
                       xmlns:c="using:ExClient"
                       x:DataType="c:Comment">
             <StackPanel>
-                <controls:BBCodeTextBlock Margin="0,8"
-                                          BBCode="{x:Bind Content}" />
+                <controls:HtmlTextBlock Margin="0,8"
+                                        HtmlContent="{x:Bind Content}">
+                    <controls:HtmlTextBlock.Foreground>
+                        <ImageBrush Stretch="Fill" />
+                    </controls:HtmlTextBlock.Foreground>
+                </controls:HtmlTextBlock>
             </StackPanel>
         </DataTemplate>
     </Page.Resources>
@@ -368,6 +372,7 @@
                                       ItemsSource="{x:Bind VM.Comments, Mode=OneWay}"
                                       VerticalAlignment="Top"
                                       Loaded="lv_Comments_Loaded"
+                                      SelectionMode="None"
                                       ItemTemplate="{StaticResource CommentTemplate}">
                                 <ListView.Header>
                                     <TextBlock HorizontalAlignment="Center"

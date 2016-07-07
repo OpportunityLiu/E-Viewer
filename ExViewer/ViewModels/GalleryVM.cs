@@ -121,6 +121,7 @@ namespace ExViewer.ViewModels
             });
             TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
             {
+                RootControl.RootController.SendToast("Start downloading...", null);
                 var file = await torrent.LoadTorrentAsync();
                 await Launcher.LaunchFileAsync(file);
             }, torrent => torrent != null);

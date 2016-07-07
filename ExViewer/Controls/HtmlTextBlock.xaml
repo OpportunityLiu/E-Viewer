@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ExViewer.Controls.BBCodeTextBlock"
+﻿<UserControl x:Class="ExViewer.Controls.HtmlTextBlock"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:ExViewer.Controls"
@@ -8,6 +8,6 @@
              d:DesignHeight="300"
              d:DesignWidth="400"
              IsTabStop="False">
-    <TextBlock x:Name="Content" Style="{x:Bind TextBlockStyle, Mode=OneWay}"
-               TextWrapping="WrapWholeWords"/>
+    <RichTextBlock x:Name="Presenter"
+                   Style="{x:Bind RichTextBlockStyle, Mode=OneWay}"/>
 </UserControl>
