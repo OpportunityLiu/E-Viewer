@@ -29,17 +29,14 @@
                 Tapped="ab_Tapped">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="48" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="48" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
-                        Content="&#xE700;"
-                        Height="48"
-                        Width="48"
+                <Button Style="{StaticResource SplitButtonStyle}"
                         Click="btn_pane_Click" />
                 <AutoSuggestBox x:Name="asb"
                                 Grid.Column="1"
@@ -68,15 +65,16 @@
                         <controls:CategorySelector x:Name="cs_Category"
                                                    SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
                                                    HorizontalAlignment="Center" />
-                        <Button x:Name="btn_Advanced"
-                                Content="Show advanced options"
-                                Style="{StaticResource TextBlockButtonStyle}"
-                                HorizontalAlignment="Center"
-                                Click="btn_Advanced_Click" />
+                        <ToggleSwitch x:Name="ts_Advanced"
+                                      Margin="8"
+                                      Style="{StaticResource TextBlockToggleSwitch}"
+                                      OffContent="Show advanced options"
+                                      OnContent="Hide advanced options"
+                                      HorizontalAlignment="Center" />
                         <ListView x:Name="lv_AdvancedSearch"
-                                  Visibility="Collapsed"
+                                  Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
                                   Padding="0,0,0,8"
-                                  ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}">
+                                  Style="{StaticResource StackPanelListViewStyle}">
                             <CheckBox Content="Search gallery name"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
                             <CheckBox Content="Search gallery tags"

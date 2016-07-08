@@ -101,20 +101,11 @@
             <CommandBar.Content>
                 <RelativePanel>
                     <Button x:Name="btn_pane"
-                            Style="{StaticResource NavigationBackButtonSmallStyle}"
-                            Content="&#xE700;"
-                            Height="48"
-                            Width="48"
+                            Style="{StaticResource SplitButtonStyle}"
                             Click="btn_pane_Click" />
                     <TextBlock x:Name="tb_Title"
                                Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
-                               Style="{StaticResource BaseTextBlockStyle}"
-                               Grid.Column="1"
-                               Margin="8,0"
-                               VerticalAlignment="Center"
-                               MaxLines="1"
-                               TextTrimming="CharacterEllipsis"
-                               TextWrapping="NoWrap"
+                               Style="{StaticResource GalleryTitleTextBlockStyle}"
                                RelativePanel.RightOf="btn_pane"
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="tb_si">

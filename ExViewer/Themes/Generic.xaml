@@ -261,6 +261,8 @@
                                     <VisualState.Setters>
                                         <Setter Target="Mask.(Shape.Fill)"
                                                 Value="{ThemeResource ToggleButtonCheckedDisabledBackgroundThemeBrush}" />
+                                        <Setter Target="ContentPresenter.(Control.Foreground)"
+                                                Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" />
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
@@ -331,7 +333,7 @@
                         </VisualStateManager.VisualStateGroups>
                         <controls:CategoryTag x:Name="ContentPresenter"
                                               Category="{TemplateBinding Category}"
-                                              Control.IsTemplateFocusTarget="True" />
+                                              Control.IsTemplateFocusTarget="True"/>
                         <Rectangle x:Name="Mask"
                                    StrokeThickness="0" />
                         <Rectangle x:Name="Focus"

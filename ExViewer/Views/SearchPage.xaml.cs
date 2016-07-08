@@ -69,6 +69,7 @@ namespace ExViewer.Views
         private void init_sv_AdvancedSearch()
         {
             FindName(nameof(sv_AdvancedSearch));
+            Bindings.Update();
         }
 
         public SearchVM VM
@@ -143,21 +144,6 @@ namespace ExViewer.Views
                 return;
             ab.IsOpen = false;
             VM.Search.Execute(null);
-        }
-
-        private void btn_Advanced_Click(object sender, RoutedEventArgs e)
-        {
-            switch(lv_AdvancedSearch.Visibility)
-            {
-            case Visibility.Visible:
-                lv_AdvancedSearch.Visibility = Visibility.Collapsed;
-                btn_Advanced.Content = "Show advanced options";
-                break;
-            case Visibility.Collapsed:
-                lv_AdvancedSearch.Visibility = Visibility.Visible;
-                btn_Advanced.Content = "Hide advanced options";
-                break;
-            }
         }
 
         private void PullToRefreshBox_RefreshInvoked(DependencyObject sender, object args)

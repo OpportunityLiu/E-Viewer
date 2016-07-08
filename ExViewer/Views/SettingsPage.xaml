@@ -73,10 +73,7 @@
         <Pivot x:Name="pv_root"
                IsTabStop="False">
             <Pivot.LeftHeader>
-                <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
-                        Content="&#xE700;"
-                        Height="48"
-                        Width="48"
+                <Button Style="{StaticResource SplitButtonStyle}"
                         Click="btn_Click" />
             </Pivot.LeftHeader>
             <Pivot.HeaderTemplate>

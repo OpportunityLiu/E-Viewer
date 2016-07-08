@@ -54,17 +54,11 @@
                    IsTabStop="False">
             <SplitView.Pane>
                 <ListView x:Name="lv_Pane"
-                          ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}">
+                          Style="{StaticResource StackPanelListViewStyle}">
                     <ListView.Transitions>
                         <TransitionCollection />
                     </ListView.Transitions>
-                    <ListView.ItemContainerTransitions>
-                        <TransitionCollection />
-                    </ListView.ItemContainerTransitions>
-                    <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
-                            Content="&#xE700;"
-                            Height="48"
-                            Width="48"
+                    <Button Style="{StaticResource SplitButtonStyle}"
                             Click="btn_pane_Click" />
                     <controls:SplitViewTab x:Name="svt_Search"
                                            Content="Search"

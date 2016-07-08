@@ -10,7 +10,8 @@
     <GridView x:Name="gv_AdvancedSearch"
               ItemsSource="{x:Bind filter}"
               Loaded="gv_AdvancedSearch_Loaded"
-              HorizontalAlignment="Center">
+              HorizontalAlignment="Center"
+              Padding="0">
         <GridView.ItemContainerStyle>
             <Style TargetType="GridViewItem">
                 <Setter Property="MinHeight"

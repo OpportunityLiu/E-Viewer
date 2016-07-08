@@ -27,10 +27,7 @@
                         <ColumnDefinition Width="48" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
-                            Content="&#xE700;"
-                            Height="48"
-                            Width="48"
+                    <Button Style="{StaticResource SplitButtonStyle}"
                             Click="btn_Pane_Click" />
                 </Grid>
             </CommandBar.Content>
