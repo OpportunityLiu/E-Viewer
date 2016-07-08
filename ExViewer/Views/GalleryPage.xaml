@@ -41,6 +41,25 @@
                             CommandParameter="{Binding}" />
         </MenuFlyout>
 
+        <Style x:Key="TorrentNameTextBlockStyle"
+               TargetType="TextBlock">
+            <Setter Property="TextWrapping"
+                    Value="WrapWholeWords" />
+            <Setter Property="FontWeight"
+                    Value="Medium" />
+        </Style>
+        <Style x:Key="DownloadButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource NavigationBackButtonSmallStyle}">
+            <Setter Property="Width"
+                    Value="48" />
+            <Setter Property="MinHeight"
+                    Value="48" />
+            <Setter Property="Height"
+                    Value="Auto" />
+            <Setter Property="Content"
+                    Value="&#xE896;" />
+        </Style>
         <Style x:Key="KeyTextBlockStyle"
                TargetType="TextBlock">
             <Setter Property="FontSize"
@@ -69,25 +88,19 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Margin="12,8,4,8"
                            Text="{x:Bind Name}"
-                           FontWeight="Medium"
-                           TextWrapping="WrapWholeWords"
+                           Style="{StaticResource TorrentNameTextBlockStyle}"
                            VerticalAlignment="Center" />
                 <Button Grid.RowSpan="2"
                         Grid.Column="2"
-                        Width="48"
-                        MinHeight="48"
-                        Height="Auto"
                         VerticalAlignment="Stretch"
                         Command="{Binding VM.TorrentDownload, ElementName=page}"
                         CommandParameter="{x:Bind}"
                         ToolTipService.ToolTip="Download"
-                        Content="&#xE896;"
-                        Style="{StaticResource NavigationBackButtonSmallStyle}" />
+                        Style="{StaticResource DownloadButtonStyle}" />
                 <Grid x:Name="gd_TorrentDetail"
                       Grid.Row="1"
-                      Grid.ColumnSpan="2"
                       Visibility="Collapsed"
-                      Margin="12,0,4,8">
+                      Margin="20,0,4,8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="16" />
@@ -538,20 +551,11 @@
                         <ColumnDefinition Width="48" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource NavigationBackButtonSmallStyle}"
-                            Content="&#xE700;"
-                            Height="48"
-                            Width="48"
+                    <Button Style="{StaticResource SplitButtonStyle}"
                             Click="btn_pane_Click" />
                     <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
-                               Style="{StaticResource BaseTextBlockStyle}"
-                               Margin="8,0"
-                               Grid.Column="1"
-                               VerticalAlignment="Center"
-                               ContinuumNavigationTransitionInfo.IsEntranceElement="True"
-                               MaxLines="1"
-                               TextTrimming="CharacterEllipsis"
-                               TextWrapping="NoWrap">
+                               Style="{StaticResource GalleryTitleTextBlockStyle}"
+                               Grid.Column="1">
                         <ToolTipService.ToolTip>
                             <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                        TextWrapping="WrapWholeWords" />
