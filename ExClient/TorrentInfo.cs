@@ -29,14 +29,14 @@ namespace ExClient
                              let link = n.Descendants("a").Single()
                              select new TorrentInfo()
                              {
-                                 Name = link.InnerText,
+                                 Name = link.InnerText.DeEntitize(),
                                  Posted = DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
                                  Size = parseSize(reg.Groups[2].Value),
                                  Seeds = int.Parse(reg.Groups[3].Value),
                                  Peers = int.Parse(reg.Groups[4].Value),
                                  Downloads = int.Parse(reg.Groups[5].Value),
-                                 Uploader = reg.Groups[6].Value,
-                                 TorrentUri = new Uri(link.GetAttributeValue("href", ""))
+                                 Uploader = reg.Groups[6].Value.DeEntitize(),
+                                 TorrentUri = new Uri(link.GetAttributeValue("href", "").DeEntitize())
                              }).ToList();
                 return nodes;
             }).AsAsyncOperation();

@@ -6,6 +6,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             Loading="splash_Loading"
+             Loaded="splash_Loaded"
              SizeChanged="splash_SizeChanged">
     <UserControl.Resources>
         <Storyboard x:Name="ShowPic" Completed="ShowPic_Completed">

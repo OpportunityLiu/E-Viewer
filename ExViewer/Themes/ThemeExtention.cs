@@ -11,47 +11,51 @@ namespace ExViewer.Themes
 {
     static class ThemeExtention
     {
-        public static Color SplashColor = Color.FromArgb(0xff, 0xe7, 0xdf, 0xca);
-
         public static void SetTitleBar()
         {
             var resources = Application.Current.Resources;
+            var SystmeChromeMediumColor = (Color)resources["SystemChromeMediumColor"];
+            var SystemChromeMediumLowColor = (Color)resources["SystemChromeMediumLowColor"];
+            var SystemChromeHighColor = (Color)resources["SystemChromeHighColor"];
+            var SystemBaseMediumHighColor = (Color)resources["SystemBaseMediumHighColor"];
+            var SystemChromeDisabledLowColor = (Color)resources["SystemChromeDisabledLowColor"];
             var tb = ApplicationView.GetForCurrentView().TitleBar;
             if(tb != null)
             {
-                tb.BackgroundColor = (Color)resources["SystemChromeMediumColor"];
-                tb.InactiveBackgroundColor = (Color)resources["SystemChromeMediumColor"];
-                tb.ButtonBackgroundColor = (Color)resources["SystemChromeMediumColor"];
-                tb.ButtonHoverBackgroundColor = (Color)resources["SystemChromeMediumLowColor"];
-                tb.ButtonInactiveBackgroundColor = (Color)resources["SystemChromeMediumColor"];
-                tb.ButtonPressedBackgroundColor = (Color)resources["SystemChromeHighColor"];
+                tb.BackgroundColor = SystmeChromeMediumColor;
+                tb.InactiveBackgroundColor = SystmeChromeMediumColor;
+                tb.ButtonBackgroundColor = SystmeChromeMediumColor;
+                tb.ButtonHoverBackgroundColor = SystemChromeMediumLowColor;
+                tb.ButtonInactiveBackgroundColor = SystmeChromeMediumColor;
+                tb.ButtonPressedBackgroundColor = SystemChromeHighColor;
 
-                tb.ForegroundColor = (Color)resources["SystemBaseMediumHighColor"];
-                tb.InactiveForegroundColor = (Color)resources["SystemChromeDisabledLowColor"];
-                tb.ButtonForegroundColor = (Color)resources["SystemBaseMediumHighColor"];
-                tb.ButtonHoverForegroundColor = (Color)resources["SystemBaseMediumHighColor"];
-                tb.ButtonInactiveForegroundColor = (Color)resources["SystemChromeDisabledLowColor"];
-                tb.ButtonPressedForegroundColor = (Color)resources["SystemBaseMediumHighColor"];
+                tb.ForegroundColor = SystemBaseMediumHighColor;
+                tb.InactiveForegroundColor = SystemChromeDisabledLowColor;
+                tb.ButtonForegroundColor = SystemBaseMediumHighColor;
+                tb.ButtonHoverForegroundColor = SystemBaseMediumHighColor;
+                tb.ButtonInactiveForegroundColor = SystemChromeDisabledLowColor;
+                tb.ButtonPressedForegroundColor = SystemBaseMediumHighColor;
             }
             if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 var sb = StatusBar.GetForCurrentView();
-                sb.BackgroundColor = (Color)resources["SystemChromeMediumColor"];
+                sb.BackgroundColor = SystmeChromeMediumColor;
                 sb.BackgroundOpacity = 1;
-                sb.ForegroundColor = (Color)resources["SystemBaseMediumHighColor"];
+                sb.ForegroundColor = SystemBaseMediumHighColor;
             }
         }
 
-        public static void SetDefaultTitleBar()
+        public static void SetSplashTitleBar()
         {
+            var splashColor = (Color)Application.Current.Resources["SplashColor"];
             var view = ApplicationView.GetForCurrentView();
             var tb = view.TitleBar;
             if(tb != null)
             {
-                tb.BackgroundColor = SplashColor;
-                tb.InactiveBackgroundColor = SplashColor;
-                tb.ButtonBackgroundColor = SplashColor;
-                tb.ButtonInactiveBackgroundColor = SplashColor;
+                tb.BackgroundColor = splashColor;
+                tb.InactiveBackgroundColor = splashColor;
+                tb.ButtonBackgroundColor = splashColor;
+                tb.ButtonInactiveBackgroundColor = splashColor;
             }
         }
     }

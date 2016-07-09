@@ -1,9 +1,9 @@
 ﻿{
   "dependencies": {
-    "AsyncFriendlyStackTrace": "1.2.0",
-    "HockeySDK.UWP": "4.1.0-build65440",
+    "AsyncFriendlyStackTrace": "1.4.0",
+    "HockeySDK.UWP": "4.1.2",
     "ImageLib.UWP": "5.0.0",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.1.0",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.0",
     "MvvmLight": "5.3.0",
     "PlatformSpecific.Analyzer": "2.0.3",
     "PullToRefresh.UWP": "0.3.4"

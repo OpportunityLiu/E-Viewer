@@ -392,11 +392,13 @@ namespace ExClient
                 {
                     await GetFolderAsync();
                 }
-                var uri = new Uri(GalleryUri, $"?p={pageIndex.ToString()}");
+                var uri = new Uri(GalleryUri, $"?p={pageIndex.ToString()}{(comments == null ? "hc=1" : "")}");
                 var request = Owner.PostStrAsync(uri, null);
                 var res = await request;
                 var html = new HtmlDocument();
                 html.LoadHtml(res);
+                if(comments == null)
+                    Comments = Comment.LoadComment(html);
                 var pcNodes = html.DocumentNode.Descendants("td")
                               .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
                               .Select(node =>
@@ -476,9 +478,27 @@ namespace ExClient
             return TorrentInfo.LoadTorrentsAsync(this);
         }
 
+        private List<Comment> comments;
+
+        public List<Comment> Comments
+        {
+            get
+            {
+                return comments;
+            }
+            protected set
+            {
+                Set(ref comments, value);
+            }
+        }
+
         public IAsyncOperation<List<Comment>> LoadCommentsAsync()
         {
-            return Comment.LoadCommentsAsync(this);
+            return Run(async token =>
+            {
+                Comments = await Comment.LoadCommentsAsync(this);
+                return comments;
+            });
         }
 
         public virtual IAsyncAction DeleteAsync()

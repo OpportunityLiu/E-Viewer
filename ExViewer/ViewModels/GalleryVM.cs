@@ -338,7 +338,7 @@ Dimensions: {imageProp.Width} × {imageProp.Height}";
             {
                 try
                 {
-                    Comments = await gallery.LoadCommentsAsync();
+                    await gallery.LoadCommentsAsync();
                 }
                 catch(Exception ex)
                 {
@@ -346,27 +346,6 @@ Dimensions: {imageProp.Width} × {imageProp.Height}";
                 }
             });
         }
-
-        private List<Comment> comments;
-
-        public List<Comment> Comments
-        {
-            get
-            {
-                return comments;
-            }
-            set
-            {
-                comments = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    RaisePropertyChanged(nameof(Comments));
-                    RaisePropertyChanged(nameof(CommentCount));
-                });
-            }
-        }
-
-        public int? CommentCount => comments?.Count;
 
         #endregion Comments
 

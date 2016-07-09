@@ -21,7 +21,7 @@
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>BB30952678C962EA3214AAC9AC8D04DE12D99A15</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>B922EB999884DD0831B67ED27DD51BA033BEF9F1</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -100,6 +100,7 @@
     <PRIResource Include="Strings\Resources.lang-en.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountManager.cs" />
     <Compile Include="Adapters\GalleryExtension.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -167,6 +168,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\DefaultUser.scale-100.png" />
+    <Content Include="Assets\DefaultUser.scale-200.png" />
+    <Content Include="Assets\DefaultUser.scale-400.png" />
     <Content Include="Assets\Medium.scale-100.png" />
     <Content Include="Assets\Medium.scale-200.png" />
     <Content Include="Assets\Medium.scale-400.png" />

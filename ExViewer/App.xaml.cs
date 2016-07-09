@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using AsyncFriendlyStackTrace;
 using Microsoft.HockeyApp;
+using ExViewer.Views;
 
 namespace ExViewer
 {
@@ -41,30 +42,31 @@ namespace ExViewer
                 Collectors =
                     WindowsCollectors.Metadata |
                     WindowsCollectors.Session |
-                    WindowsCollectors.UnhandledException,
-                DescriptionLoader = ex =>
-                {
-                    var sb = new System.Text.StringBuilder();
-                    do
-                    {
-                        sb.AppendLine($"Type: {ex.GetType()}");
-                        sb.AppendLine($"HResult: {ex.HResult}");
-                        sb.AppendLine($"Message: {ex.Message}");
-                        sb.AppendLine();
-                        sb.AppendLine("Data:");
-                        foreach(var item in ex.Data.Keys)
-                        {
-                            sb.AppendLine($"    {item}: {ex.Data[item]}");
-                        }
-                        sb.AppendLine("Stacktrace:");
-                        sb.AppendLine(ex.StackTrace);
-                        sb.AppendLine("AsyncStacktrace:");
-                        sb.AppendLine(ex.ToAsyncString());
-                        ex = ex.InnerException;
-                        sb.AppendLine("--------Inner Exception--------");
-                    } while(ex != null);
-                    return sb.ToString();
-                }
+                    WindowsCollectors.UnhandledException
+                //,
+                //DescriptionLoader = ex =>
+                //{
+                //    var sb = new System.Text.StringBuilder();
+                //    do
+                //    {
+                //        sb.AppendLine($"Type: {ex.GetType()}");
+                //        sb.AppendLine($"HResult: {ex.HResult}");
+                //        sb.AppendLine($"Message: {ex.Message}");
+                //        sb.AppendLine();
+                //        sb.AppendLine("Data:");
+                //        foreach(var item in ex.Data.Keys)
+                //        {
+                //            sb.AppendLine($"    {item}: {ex.Data[item]}");
+                //        }
+                //        sb.AppendLine("Stacktrace:");
+                //        sb.AppendLine(ex.StackTrace);
+                //        sb.AppendLine("AsyncStacktrace:");
+                //        sb.AppendLine(ex.ToAsyncString());
+                //        ex = ex.InnerException;
+                //        sb.AppendLine("--------Inner Exception--------");
+                //    } while(ex != null);
+                //    return sb.ToString();
+                //}
             });
 #endif
             this.Suspending += OnSuspending;
@@ -90,21 +92,22 @@ namespace ExViewer
             if(e.PrelaunchActivated)
                 return;
 
-            var current = Window.Current;
+            var currentWindow = Window.Current;
             GalaSoft.MvvmLight.Threading.DispatcherHelper.Initialize();
-            var currentContent = current.Content;
-            var splash = currentContent as Views.SplashControl;
-            if(currentContent == null)
+            var currentContent = currentWindow.Content;
+            if(currentContent is SplashControl)
+            {
+            }
+            else if(currentContent == null)
             {
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
-                splash = new Views.SplashControl(e.SplashScreen, e.PreviousExecutionState);
-                current.Content = splash;
+                currentWindow.Content = new SplashControl(e.SplashScreen, e.PreviousExecutionState);
             }
-            if(splash == null)
-                current.Activate();
             else
-                splash.GoToContent();
+            {
+                currentWindow.Activate();
+            }
         }
 
         /// <summary>
