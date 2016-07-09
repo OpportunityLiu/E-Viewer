@@ -1,3 +1,6 @@
 [submodule "E-Chinese"]
 	path = E-Chinese
 	url = https://github.com/bhunji2/E-Hentai-Chinese.git
+[submodule "EhTagTranslator.wiki"]
+	path = EhTagTranslator.wiki
+	url = https://github.com/Mapaler/EhTagTranslator.wiki.git
