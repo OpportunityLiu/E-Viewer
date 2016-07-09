@@ -24,7 +24,7 @@ namespace ExClient
         internal static readonly Uri RootUri = new Uri("http://exhentai.org/");
         internal static readonly Uri EhUri = new Uri("http://e-hentai.org/");
         private static readonly Uri apiUri = new Uri(RootUri, "api.php");
-        internal static readonly Uri logOnUri = new Uri("https://forums.e-hentai.org/index.php?act=Login&CODE=01");
+        internal static readonly Uri LogOnUri = new Uri("https://forums.e-hentai.org/index.php?act=Login&CODE=01");
 
         private Client()
         {
@@ -51,41 +51,54 @@ namespace ExClient
             {
                 if(this.disposedValue)
                     throw new InvalidOperationException("The client has been disposed.");
+                var cookieBackUp = getLogOnInfo();
                 ClearLogOnInfo();
-                var clientParam = new Dictionary<string, string>()
+                try
                 {
-                    ["CookieDate"] = "1",
-                    ["UserName"] = userName,
-                    ["PassWord"] = password
-                };
-                if(reCaptcha?.Answer != null)
-                {
-                    clientParam.Add("recaptcha_challenge_field", reCaptcha.Answer);
-                    clientParam.Add("recaptcha_response_field", "manual_challenge");
-                }
-                var log = await HttpClient.PostAsync(logOnUri, new HttpFormUrlEncodedContent(clientParam));
-                var html = new HtmlDocument();
-                using(var stream = await log.Content.ReadAsInputStreamAsync())
-                {
-                    html.Load(stream.AsStreamForRead());
-                }
-                var errorNode = html.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "") == "postcolor").FirstOrDefault();
-                if(errorNode != null)
-                {
-                    throw new InvalidOperationException(errorNode.InnerText);
-                }
-                foreach(var cookie in httpFilter.CookieManager.GetCookies(new Uri("http://e-hentai.org")))
-                {
-                    httpFilter.CookieManager.SetCookie(new HttpCookie(cookie.Name, "exhentai.org", cookie.Path)
+                    var clientParam = new Dictionary<string, string>()
                     {
-                        Expires = cookie.Expires,
-                        HttpOnly = cookie.HttpOnly,
-                        Secure = cookie.Secure,
-                        Value = cookie.Value
-                    }, true);
+                        ["CookieDate"] = "1",
+                        ["UserName"] = userName,
+                        ["PassWord"] = password
+                    };
+                    if(reCaptcha?.Answer != null)
+                    {
+                        clientParam.Add("recaptcha_challenge_field", reCaptcha.Answer);
+                        clientParam.Add("recaptcha_response_field", "manual_challenge");
+                    }
+                    var log = await HttpClient.PostAsync(LogOnUri, new HttpFormUrlEncodedContent(clientParam));
+                    var html = new HtmlDocument();
+                    using(var stream = await log.Content.ReadAsInputStreamAsync())
+                    {
+                        html.Load(stream.AsStreamForRead());
+                    }
+                    var errorNode = html.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "") == "postcolor").FirstOrDefault();
+                    if(errorNode != null)
+                    {
+                        throw new InvalidOperationException(errorNode.InnerText);
+                    }
+                    var init = await HttpClient.GetAsync(RootUri, HttpCompletionOption.ResponseHeadersRead);
+                    if(httpFilter.CookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")
+                    {
+                        throw new NotSupportedException("This account dose not have permittion for exhentai.");
+                    }
+                    return this;
                 }
-                return this;
+                catch(Exception)
+                {
+                    ClearLogOnInfo();
+                    foreach(var item in cookieBackUp)
+                    {
+                        httpFilter.CookieManager.SetCookie(item);
+                    }
+                    throw;
+                }
             });
+        }
+
+        private List<HttpCookie> getLogOnInfo()
+        {
+            return httpFilter.CookieManager.GetCookies(RootUri).Concat(httpFilter.CookieManager.GetCookies(EhUri)).ToList();
         }
 
         public void ClearLogOnInfo()
@@ -121,6 +134,17 @@ namespace ExClient
                     throw new InvalidOperationException("Error occured when connect to Internet.", ex);
                 }
             });
+        }
+
+        public int UserID
+        {
+            get
+            {
+                var cookie = httpFilter.CookieManager.GetCookies(EhUri).FirstOrDefault(c => c.Name == "ipb_member_id");
+                if(cookie == null)
+                    return -1;
+                return int.Parse(cookie.Value);
+            }
         }
 
         public IAsyncOperationWithProgress<string, HttpProgress> PostApiAsync(string requestJson)

@@ -48,6 +48,7 @@ namespace ExViewer.Views
             }
             else
             {
+                pb_Loading.IsIndeterminate = true;
                 var d = args.GetDeferral();
                 tb_info.Text = "";
                 try
@@ -56,23 +57,22 @@ namespace ExViewer.Views
                         await recap.Submit(tb_ReCaptcha.Text);
                     await Client.Current.LogOnAsync(username, password, recap);
 
-                    var pv = new PasswordVault();
-                    try
-                    {
-                        var oldpass = pv.FindAllByResource("ex").First();
-                        pv.Remove(oldpass);
-                    }
-                    catch(Exception ex) when(ex.HResult == -2147023728)
-                    {
-                    }
-                    pv.Add(new PasswordCredential("ex", username, password));
-
+                    AccountManager.CurrentCredential = AccountManager.CreateCredential(username, password);
                 }
                 catch(ArgumentException ex) when(ex.ParamName == "response")
                 {
                     await loadReCapcha();
                     tb_info.Text = "The captcha was not entered correctly. Please try again.";
                     tb_ReCaptcha.Focus(FocusState.Programmatic);
+                    args.Cancel = true;
+                }
+                catch(NotSupportedException ex)
+                {
+                    tb_user.Text = "";
+                    pb_pass.Password = "";
+                    await Task.Delay(50);
+                    tb_info.Text = ex.Message;
+                    tb_user.Focus(FocusState.Programmatic);
                     args.Cancel = true;
                 }
                 catch(Exception ex)
@@ -84,6 +84,7 @@ namespace ExViewer.Views
                 }
                 finally
                 {
+                    pb_Loading.IsIndeterminate = false;
                     d.Complete();
                 }
             }
@@ -101,7 +102,9 @@ namespace ExViewer.Views
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             if(Client.Current.NeedLogOn)
+            {
                 Application.Current.Exit();
+            }
         }
 
         private void tb_TextChanged(object sender, RoutedEventArgs e)

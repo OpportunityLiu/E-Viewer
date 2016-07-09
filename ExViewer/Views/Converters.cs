@@ -594,7 +594,7 @@ namespace ExViewer.Views
             {
                 if(size < 1000)
                 {
-                    return $"{size.ToString().Substring(0, 5)} {unit}";
+                    return $"{size.ToString("0.000").Substring(0, 5)} {unit}";
                 }
                 size /= 1024;
             }

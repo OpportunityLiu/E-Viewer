@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using ExClient;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.ViewManagement;
+using ExViewer.ViewModels;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -55,6 +56,8 @@ namespace ExViewer.Views
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
         private readonly Dictionary<Type, Controls.SplitViewTab> pages;
 
+        private UserInfo userInfo;
+
         SystemNavigationManager manager;
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
@@ -62,16 +65,22 @@ namespace ExViewer.Views
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
 
-        private void Control_Loaded(object sender, RoutedEventArgs e)
+        private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = StatusBar.GetForCurrentView();
-                var ignore = statusBar.ShowAsync();
-            }
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
             fm_inner.Navigate(homePageType);
+            updateUserInfo();
+        }
+
+        private async void updateUserInfo()
+        {
+            if(userInfo?.UserID == Client.Current.UserID)
+                return;
+            userInfo = null;
+            Bindings.Update();
+            userInfo = await Client.Current.LoadUserInfo(Client.Current.UserID);
+            Bindings.Update();
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)
@@ -137,9 +146,10 @@ namespace ExViewer.Views
 #endif
         }
 
-        //private async void svb_LogOn_Click(object sender, RoutedEventArgs e)
-        //{
-        //    await RootController.RequireLogOn();
-        //}
+        private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)
+        {
+            await RootController.RequireLogOn();
+            updateUserInfo();
+        }
     }
 }

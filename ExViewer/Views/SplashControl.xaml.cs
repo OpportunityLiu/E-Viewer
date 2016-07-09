@@ -26,38 +26,46 @@ namespace ExViewer.Views
         public SplashControl()
         {
             this.InitializeComponent();
-            var imgN = new Random().Next(1,8);
+            var imgN = new Random().Next(1, 8);
             this.img_pic.Source = new BitmapImage(new Uri($"http://ehgt.org/c/botm{imgN}.jpg"));
         }
 
-        public async void prepareCompleted()
+        private void splash_Loading(FrameworkElement sender, object args)
         {
             if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 var statusBar = StatusBar.GetForCurrentView();
                 var ignore = statusBar.HideAsync();
             }
+            Themes.ThemeExtention.SetSplashTitleBar();
+        }
+
+        private void splash_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        public async void prepareCompleted()
+        {
             await Task.Delay(50);
             Window.Current.Activate();
-            ((Storyboard)Resources["ShowPic"]).Begin();
-            Themes.ThemeExtention.SetDefaultTitleBar();
-
-            SimpleIoc.Default.Register<CacheVM>();
+            ShowPic.Begin();
 
             if(Client.Current.NeedLogOn)
             {
-                var pv = new PasswordVault();
                 try
                 {
-                    var pass = pv.FindAllByResource("ex").First();
-                    pass.RetrievePassword();
-                    await Client.Current.LogOnAsync(pass.UserName, pass.Password, null);
+                    var pass = AccountManager.CurrentCredential;
+                    if(pass != null)
+                    {
+                        pass.RetrievePassword();
+                        await Client.Current.LogOnAsync(pass.UserName, pass.Password, null);
+                    }
                 }
                 catch(Exception)
                 {
                 }
             }
-            rc = new RootControl(typeof(SearchPage), previousExecutionState);
             IAsyncAction initSearch = null;
             if(!Client.Current.NeedLogOn)
             {
@@ -68,7 +76,7 @@ namespace ExViewer.Views
             {
                 var result = await UserConsentVerifier.RequestVerificationAsync("Because of your settings, we need to request the verification.");
                 string info = null;
-                bool succeed = false;
+                var succeed = false;
                 switch(result)
                 {
                 case UserConsentVerificationResult.Verified:
@@ -94,7 +102,7 @@ namespace ExViewer.Views
                 {
                     if(info != null)
                     {
-                        var dialog = new ContentDialog()
+                        var dialog = new ContentDialog
                         {
                             Title = "VERIFICATION FAILED",
                             Content = info,
@@ -109,14 +117,13 @@ namespace ExViewer.Views
                 try
                 {
                     await initSearch;
+                    rc = new RootControl(typeof(SearchPage), previousExecutionState);
                 }
                 catch(Exception)
                 {
                     rc = new RootControl(typeof(CachePage), previousExecutionState);
                 }
-            loaded = true;
-            if(goToContent)
-                GoToContent();
+            GoToContent();
         }
 
         public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
@@ -126,21 +133,19 @@ namespace ExViewer.Views
             this.previousExecutionState = previousExecutionState;
         }
 
-        private bool loaded, goToContent;
-
         private RootControl rc;
         private ApplicationExecutionState previousExecutionState;
 
         public void GoToContent()
         {
-            if(loaded)
+            Window.Current.Content = rc;
+            rc = null;
+            Themes.ThemeExtention.SetTitleBar();
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                Themes.ThemeExtention.SetTitleBar();
-                Window.Current.Content = rc;
-                rc = null;
+                var statusBar = StatusBar.GetForCurrentView();
+                var ignore = statusBar.ShowAsync();
             }
-            else
-                goToContent = true;
         }
 
         private void ShowPic_Completed(object sender, object e)

@@ -34,7 +34,7 @@ namespace ExViewer.Views
         public CachePage()
         {
             this.InitializeComponent();
-            VM = SimpleIoc.Default.GetInstance<CacheVM>();
+            VM = new CacheVM();
             cdg_ConfirmClear = new ContentDialog()
             {
                 Title = "ARE YOU SURE",

@@ -89,7 +89,7 @@ namespace ExViewer.Controls
         }
 
         private static readonly string eof = " ";
-        private static readonly Regex linkDetector = new Regex(@"[a-zA-z]+://[^\s]*", RegexOptions.Compiled);
+        private static readonly Regex linkDetector = new Regex(@"(?<=\s|^)((?<explict>[a-zA-z]+://[^\s]*)|(?<implict>([^\.\s]+\.){2,}[^\.\s]+))(?=\s|$)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         private void loadHtml(RichTextBlock presenter, HtmlNode content, bool detectLink)
         {
@@ -119,7 +119,12 @@ namespace ExViewer.Controls
                     foreach(Match match in matches)
                     {
                         t.Inlines.Add(new Run { Text = text.Substring(currentPos, match.Index - currentPos) });
-                        var detectedLink = new Hyperlink { NavigateUri = new Uri(match.Value) };
+                        var uri = (Uri)null;
+                        if(match.Groups["implict"].Success)
+                            uri = new Uri($"http://{match.Value}");
+                        else if(match.Groups["explict"].Success)
+                            uri = new Uri(match.Value);
+                        var detectedLink = new Hyperlink { NavigateUri = uri };
                         detectedLink.Inlines.Add(new Run { Text = match.Value });
                         t.Inlines.Add(detectedLink);
                         currentPos = match.Index + match.Length;

@@ -67,7 +67,9 @@ namespace ExViewer.Views
             Bindings.Update();
             if(e.NavigationMode == NavigationMode.Back)
             {
-                gv.ScrollIntoView(VM.GetCurrent(), ScrollIntoViewAlignment.Leading);
+                var current = VM.GetCurrent();
+                if(current != null)
+                    gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
                 entranceElement = (UIElement)gv.ContainerFromIndex(VM.CurrentIndex);
                 if(entranceElement != null)
                     EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
@@ -168,7 +170,7 @@ namespace ExViewer.Views
             switch(pv.SelectedIndex)
             {
             case 1://Comments
-                if(VM.Comments == null)
+                if(VM.Gallery.Comments == null)
                     await VM.LoadComments();
                 break;
             case 2://Torrents
