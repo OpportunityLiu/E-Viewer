@@ -12,6 +12,9 @@ namespace ExClient
     {
         public HahProxyConfig(string addressAndPort) : this(addressAndPort, null) { }
 
+        private static readonly char[] colonChars = ":：፥᠄꛴꞉ː˸⦂𒑱﹕：︓".ToCharArray();
+        private static readonly char[] dotChars = ".։𖫵۔。᠃︒｡．﹒።𛲟⳹꓿᠉⳾᙮⸼꘎꛳𝪈܁܂".ToCharArray();
+
         public HahProxyConfig(string addressAndPort, string passkey)
         {
             if(string.IsNullOrWhiteSpace(addressAndPort))
@@ -19,14 +22,14 @@ namespace ExClient
             Passkey = passkey?.Trim();
             try
             {
-                var ss = addressAndPort.Split(":：፥᠄꛴꞉ː˸⦂𒑱﹕：︓".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var ss = addressAndPort.Split(colonChars, StringSplitOptions.RemoveEmptyEntries);
                 Port = uint.Parse(ss[1]);
-                var ipv4 = ss[0].Split(".։𖫵۔。᠃︒｡．﹒።𛲟⳹꓿᠉⳾᙮⸼꘎꛳𝪈܁܂".ToCharArray()).Select(s => byte.Parse("0" + s)).ToArray();
+                var ipv4 = ss[0].Split(dotChars).Select(s => byte.Parse("0" + s)).ToArray();
                 IPAddress = $"{ipv4[0]}.{ipv4[1]}.{ipv4[2]}.{ipv4[3]}";
             }
             catch(Exception ex)
             {
-                throw new ArgumentException(nameof(addressAndPort), "only IPV4 address supported", ex);
+                throw new ArgumentException(nameof(addressAndPort), LocalizedStrings.Resources.OnlyIpv4, ex);
             }
         }
 

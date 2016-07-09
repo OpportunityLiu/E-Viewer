@@ -64,7 +64,7 @@ namespace ExClient
 
         internal const string ThumbFileName = "thumb.jpg";
 
-        private static readonly Dictionary<string, Category> categories = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
+        private static readonly IReadOnlyDictionary<string, Category> categoriesForRestApi = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
             ["Doujinshi"] = Category.Doujinshi,
             ["Manga"] = Category.Manga,
@@ -195,7 +195,7 @@ namespace ExClient
                 this.Title = WebUtility.HtmlDecode(title);
                 this.TitleJpn = WebUtility.HtmlDecode(title_jpn);
                 Category ca;
-                if(!categories.TryGetValue(category, out ca))
+                if(!categoriesForRestApi.TryGetValue(category, out ca))
                     ca = Category.Unspecified;
                 this.Category = ca;
                 this.Uploader = WebUtility.HtmlDecode(uploader);
@@ -341,7 +341,6 @@ namespace ExClient
             get
             {
                 return Tags.FirstOrDefault(t => t.NameSpace == NameSpace.Language && !technicalTags.Contains(t.Content))?.Content.ToUpper();
-                ;
             }
         }
 

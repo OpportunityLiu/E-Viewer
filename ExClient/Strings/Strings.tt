@@ -1,0 +1,163 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Xml" #>
+<#@ output extension=".cs" #>
+<#
+    // TODO: 修改相关配置。
+    // 检索 resw 的路径。
+    string ResourcePath = "Strings";
+    // 生成辅助类的命名空间，默认使用 "<ProjectDefaultNamespace>.LocalizedStrings"。
+    string LocalizedStringsNameSpace = "";
+    // 检索 resw 并生成注释时使用的语言相对 ResourcePath 的路径。
+    string SourceLanguagePath = "en";
+    // 是否为默认工程，决定是否需要显式定义资源路径。
+    bool IsDefaultProject = false;
+#>
+<#
+    //是否对生成的代码启用调试。
+    bool DebugGeneratedCode = false;
+#>
+<#
+    var nameSpace = string.IsNullOrWhiteSpace(LocalizedStringsNameSpace) ? 
+        (GetProjectDefaultNamespace()+ ".LocalizedStrings") :
+        LocalizedStringsNameSpace;
+
+    // 用于存放所有 resw 的 key。
+    var names = new Dictionary<string, Dictionary<string, string>>();
+    var stringsPath = Path.Combine(GetProjectPath(), ResourcePath, SourceLanguagePath);
+    string[] reswPaths;
+
+    // 当前项目存在 Strings 文件夹。
+    if(Directory.Exists(stringsPath))
+    {
+        // 获取 Strings 文件夹下所有的 .resw 文件的路径。
+        reswPaths = Directory.GetFiles(stringsPath, "*.resw", SearchOption.AllDirectories);
+    }
+    else
+    {
+        reswPaths = new string[0];
+    }
+    foreach(string reswPath in reswPaths)
+    {
+        var className = Path.GetFileNameWithoutExtension(reswPath);
+        var content = new Dictionary<string, string>();
+
+        var document = new XmlDocument();
+        document.Load(reswPath);
+
+        // 获取 resw 文件中的 data 节点。
+        var dataNodes = document.GetElementsByTagName("data");
+        foreach(XmlElement dataNode in dataNodes)
+        {
+            if(dataNode != null)
+            {
+                var value = dataNode.GetAttribute("name");
+                // key 中包含 ‘.’ 的作为控件的多语言化，不处理。
+                if(value.Contains("."))
+                    continue;
+                content.Add(value, dataNode["value"].InnerText);
+            }
+        }
+
+        if(content.Count != 0)
+            names.Add(className, content);
+    }
+#>
+namespace <#=nameSpace#>
+{    
+<#
+    foreach(var localizedClass in names)
+    {
+        var resourcePath = (IsDefaultProject ? "" : GetProjectAssemblyName()) + "/" + localizedClass.Key;
+        if(!DebugGeneratedCode)
+        {
+#>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+<#
+        }
+#>
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator","1.0")]
+    public static class <#=localizedClass.Key#>
+    {
+        private static readonly global::System.Collections.Generic.Dictionary<string, string> cache 
+            = new global::System.Collections.Generic.Dictionary<string, string>();
+
+        private static readonly global::Windows.ApplicationModel.Resources.ResourceLoader loader 
+            = global::Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse("<#=resourcePath#>");
+
+        public static string GetString(string resourceKey)
+        {
+            string value;
+            if(cache.TryGetValue(resourceKey, out value))
+                return value;
+            else
+                return cache[resourceKey] = loader.GetString(resourceKey);
+        }
+
+        public static void ClearCache()
+        {
+            cache.Clear();
+        }
+<#
+        foreach(var name in localizedClass.Value)
+        {
+            if(string.IsNullOrWhiteSpace(name.Key))
+                continue;
+#>
+
+        /// <summary>
+<#
+            // 转义注释序列
+            var comments = new StringReader(name.Value.Replace("\"", "&quot;").Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"));
+            while(true)
+            {
+                var comment = comments.ReadLine();
+                if(comment == null)
+                    break;
+#>
+        /// <#=comment#>
+<#
+            }
+#>
+        /// </summary>
+        public static string <#=name.Key#> => GetString("<#=name.Key#>");
+<#
+        }
+#>
+    }
+
+<#
+    }
+#>
+}
+<#+
+    // 获取当前 T4 模板所在的工程的目录。
+    public string GetProjectPath()
+    {
+        return Host.ResolveAssemblyReference("$(ProjectDir)");
+    }
+
+    // 获取当前 T4 模板所在的工程的默认命名空间。
+    public string GetProjectDefaultNamespace()
+    {
+        IServiceProvider serviceProvider = (IServiceProvider)this.Host;
+        EnvDTE.DTE dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
+        EnvDTE.Project project = (EnvDTE.Project)dte.Solution.FindProjectItem(this.Host.TemplateFile).ContainingProject;
+        return project.Properties.Item("DefaultNamespace").Value.ToString();
+    }
+
+    // 获取当前 T4 模板所在的工程的程序集名称。
+    public string GetProjectAssemblyName()
+    {
+        IServiceProvider serviceProvider = (IServiceProvider)this.Host;
+        EnvDTE.DTE dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
+        EnvDTE.Project project = (EnvDTE.Project)dte.Solution.FindProjectItem(this.Host.TemplateFile).ContainingProject;
+        return project.Properties.Item("AssemblyName").Value.ToString();
+    }
+#>

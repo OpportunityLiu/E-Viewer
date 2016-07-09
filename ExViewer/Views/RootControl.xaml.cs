@@ -48,6 +48,7 @@ namespace ExViewer.Views
             RootController.SetRoot(this);
             this.homePageType = homePageType;
             this.previousState = previousState;
+            IObservableMap<string, string> qualifiers = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().QualifierValues;
         }
 
         private Type homePageType;
@@ -70,16 +71,26 @@ namespace ExViewer.Views
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
             fm_inner.Navigate(homePageType);
-            updateUserInfo();
+            userInfo = await UserInfo.LoadFromCache();
+            updateUserInfo(false);
         }
 
-        private async void updateUserInfo()
+        private async void updateUserInfo(bool setNull)
         {
-            if(userInfo?.UserID == Client.Current.UserID)
-                return;
-            userInfo = null;
+            if(setNull)
+            {
+                userInfo = null;
+            }
             Bindings.Update();
-            userInfo = await Client.Current.LoadUserInfo(Client.Current.UserID);
+            try
+            {
+                userInfo = await Client.Current.LoadUserInfo(Client.Current.UserID);
+                await userInfo.SaveToCache();
+            }
+            catch(Exception)
+            {
+                userInfo = await UserInfo.LoadFromCache();
+            }
             Bindings.Update();
         }
 
@@ -149,7 +160,7 @@ namespace ExViewer.Views
         private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)
         {
             await RootController.RequireLogOn();
-            updateUserInfo();
+            updateUserInfo(true);
         }
     }
 }

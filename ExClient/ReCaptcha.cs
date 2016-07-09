@@ -21,7 +21,7 @@ namespace ExClient
         static Uri recaptchaUri = new Uri("https://www.google.com/recaptcha/api/noscript?k=6LdtfgYAAAAAALjIPPiCgPJJah8MhAUpnHcKF8u_");
         static Uri imageBaseUri = new Uri("https://www.google.com/recaptcha/api/");
 
-        public static IAsyncOperation<ReCaptcha> Get()
+        public static IAsyncOperation<ReCaptcha> Fetch()
         {
             return Run(async token =>
             {
@@ -73,7 +73,7 @@ namespace ExClient
                     html.LoadHtml(str);
                     var ans = html.DocumentNode.Descendants("textarea").SingleOrDefault();
                     if(ans == null)
-                        throw new ArgumentException("The captcha was not entered correctly. Please try again.", nameof(response));
+                        throw new ArgumentException(LocalizedStrings.Resources.WrongCaptcha, nameof(response));
                     Answer = ans.InnerText;
                 }
             });

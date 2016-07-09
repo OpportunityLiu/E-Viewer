@@ -105,6 +105,8 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-cn\Resources.resw" />
+    <PRIResource Include="Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
@@ -131,9 +133,21 @@
     <Compile Include="ReCaptcha.cs" />
     <Compile Include="SearchResult.cs" />
     <Compile Include="Gallery.cs" />
+    <Compile Include="Strings\Strings.cs">
+      <DependentUpon>Strings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tag.cs" />
     <Compile Include="TorrentInfo.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
+    <None Include="Strings\Strings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Strings.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

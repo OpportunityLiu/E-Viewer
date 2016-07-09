@@ -34,11 +34,11 @@ namespace ExClient
 
         public static IAsyncOperation<StorageFile> TryGetFileAsync(this StorageFolder folder, string name)
         {
-            return Run(async token => (StorageFile)await folder.TryGetItemAsync(name));
+            return Run(async token => await folder.TryGetItemAsync(name) as StorageFile);
         }
         public static IAsyncOperation<StorageFolder> TryGetFolderAsync(this StorageFolder folder, string name)
         {
-            return Run(async token => (StorageFolder)await folder.TryGetItemAsync(name));
+            return Run(async token => await folder.TryGetItemAsync(name) as StorageFolder);
         }
 
         public static IAsyncOperation<StorageFile> SaveFileAsync(this StorageFolder folder, string fileName, IBuffer buffer)

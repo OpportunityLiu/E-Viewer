@@ -9,9 +9,10 @@ using Windows.Web.Http.Filters;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using HtmlAgilityPack;
-using System.IO;
+using Windows.Storage;
 using System.Runtime.InteropServices;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace ExClient
 {
@@ -62,34 +63,66 @@ namespace ExClient
 
     public class UserInfo
     {
+        public IAsyncAction SaveToCache()
+        {
+            return Run(async token =>
+            {
+                var str = JsonConvert.SerializeObject(this);
+                var file = await StorageHelper.LocalState.CreateFileAsync("UserInfo", CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteTextAsync(file, str);
+                var avatarFile = await StorageHelper.LocalState.CreateFileAsync("UserAvatar", CreationCollisionOption.ReplaceExisting);
+                var buffur = await Client.Current.HttpClient.GetBufferAsync(Avatar);
+                await FileIO.WriteBufferAsync(avatarFile, buffur);
+            });
+        }
+
+        public static IAsyncOperation<UserInfo> LoadFromCache()
+        {
+            return Run(async token =>
+            {
+                var file = await StorageHelper.LocalState.TryGetFileAsync("UserInfo");
+                if(file == null)
+                    return null;
+                var str = await FileIO.ReadTextAsync(file);
+                var obj = JsonConvert.DeserializeObject<UserInfo>(str);
+                obj.Avatar = new Uri("ms-appdata:///local/UserAvatar");
+                return obj;
+            });
+        }
+
         internal UserInfo()
         {
         }
 
+        [JsonProperty]
         public string DisplayName
         {
             get;
             internal set;
         }
 
+        [JsonProperty]
         public int UserID
         {
             get;
             internal set;
         }
 
+        [JsonProperty]
         public string MemberGroup
         {
             get;
             internal set;
         }
 
+        [JsonProperty]
         public DateTime RegisterDate
         {
             get;
             internal set;
         }
 
+        [JsonProperty]
         public string Infomation
         {
             get;

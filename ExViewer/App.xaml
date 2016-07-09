@@ -8,6 +8,12 @@
                 <ResourceDictionary Source="Themes/NamedStyles.xaml" />
                 <ResourceDictionary Source="Themes/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark"
+                                    Source="Themes/Dark.xaml" />
+                <ResourceDictionary x:Key="Light"
+                                    Source="Themes/Light.xaml" />
+            </ResourceDictionary.ThemeDictionaries>
             <Color x:Key="SplashColor">#ffe7dfca</Color>
         </ResourceDictionary>
     </Application.Resources>
