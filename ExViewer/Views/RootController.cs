@@ -63,13 +63,7 @@ namespace ExViewer.Views
 
             public static void SendToast(Exception ex, Type source)
             {
-                var msg = ex.Message.TrimStart();
-                if(msg.StartsWith("The text associated with this error code could not be found."))
-                {
-                    msg = msg.Substring(60);
-                }
-                msg = msg.Trim();
-                SendToast(msg, source);
+                SendToast(ex.GetMessage(), source);
             }
 
             public static void SendToast(string content, Type source)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace ExClient
 {
@@ -23,27 +24,16 @@ namespace ExClient
     {
         public static string ToFriendlyNameString(this Category that)
         {
-            switch(that)
+            if(Enum.IsDefined(typeof(Category), that))
+                return LocalizedStrings.Resources.GetString(that.ToString());
+            else
             {
-            case Category.ArtistCG:
-                return "Artist CG";
-            case Category.GameCG:
-                return "Game CG";
-            case Category.NonH:
-                return "Non-H";
-            case Category.ImageSet:
-                return "Image Set";
-            case Category.AsianPorn:
-                return "Asian Porn";
-            case Category.Unspecified:
-            case Category.Doujinshi:
-            case Category.Manga:
-            case Category.Western:
-            case Category.Cosplay:
-            case Category.Misc:
-            case Category.All:
-            default:
-                return that.ToString();
+                var represent = new StringBuilder(that.ToString());
+                foreach(var item in Enum.GetNames(typeof(Category)))
+                {
+                    represent.Replace(item, LocalizedStrings.Resources.GetString(item));
+                }
+                return represent.ToString();
             }
         }
     }

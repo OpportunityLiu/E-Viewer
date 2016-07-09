@@ -40,7 +40,7 @@ namespace ExViewer.Views
                 tb_user.Focus(FocusState.Programmatic);
                 args.Cancel = true;
             }
-            else if(string.IsNullOrWhiteSpace(password))
+            else if(string.IsNullOrEmpty(password))
             {
                 tb_info.Text = "Please enter your password";
                 pb_pass.Focus(FocusState.Programmatic);
@@ -71,14 +71,15 @@ namespace ExViewer.Views
                     tb_user.Text = "";
                     pb_pass.Password = "";
                     await Task.Delay(50);
-                    tb_info.Text = ex.Message;
+                    tb_info.Text = ex.GetMessage();
                     tb_user.Focus(FocusState.Programmatic);
                     args.Cancel = true;
                 }
                 catch(Exception ex)
                 {
-                    await loadReCapcha();
-                    tb_info.Text = ex.Message;
+                    if((uint)ex.HResult != 0x80072ee7)
+                        await loadReCapcha();
+                    tb_info.Text = ex.GetMessage();
                     tb_user.Focus(FocusState.Programmatic);
                     args.Cancel = true;
                 }
@@ -95,8 +96,15 @@ namespace ExViewer.Views
             sp_ReCaptcha.Visibility = Visibility.Visible;
             img_ReCaptcha.Source = null;
             tb_ReCaptcha.Text = "";
-            recap = await ReCaptcha.Get();
-            img_ReCaptcha.Source = new BitmapImage(recap.ImageUri);
+            try
+            {
+                recap = await ReCaptcha.Fetch();
+                img_ReCaptcha.Source = new BitmapImage(recap.ImageUri);
+            }
+            catch(Exception ex)
+            {
+                tb_info.Text = ex.GetMessage();
+            }
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

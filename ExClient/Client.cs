@@ -50,7 +50,7 @@ namespace ExClient
             return Run(async token =>
             {
                 if(this.disposedValue)
-                    throw new InvalidOperationException("The client has been disposed.");
+                    throw new InvalidOperationException(LocalizedStrings.Resources.ClientDisposed);
                 var cookieBackUp = getLogOnInfo();
                 ClearLogOnInfo();
                 try
@@ -80,7 +80,7 @@ namespace ExClient
                     var init = await HttpClient.GetAsync(RootUri, HttpCompletionOption.ResponseHeadersRead);
                     if(httpFilter.CookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")
                     {
-                        throw new NotSupportedException("This account dose not have permittion for exhentai.");
+                        throw new NotSupportedException(LocalizedStrings.Resources.AccountDenied);
                     }
                     return this;
                 }
@@ -124,15 +124,8 @@ namespace ExClient
                 var op = HttpClient.PostAsync(uri, content == null ? null : new HttpStringContent(content));
                 token.Register(op.Cancel);
                 op.Progress = (sender, value) => progress.Report(value);
-                try
-                {
-                    var res = await op;
-                    return await res.Content.ReadAsStringAsync();
-                }
-                catch(COMException ex)
-                {
-                    throw new InvalidOperationException("Error occured when connect to Internet.", ex);
-                }
+                var res = await op;
+                return await res.Content.ReadAsStringAsync();
             });
         }
 

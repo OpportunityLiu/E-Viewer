@@ -123,4 +123,7 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>E-Viewer</value>
   </data>
+  <data name="ErrorPrefix" xml:space="preserve">
+    <value>The text associated with this error code could not be found.</value>
+  </data>
 </root>

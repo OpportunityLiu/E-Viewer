@@ -97,7 +97,8 @@
     <None Include="Assets\Panda.psd" />
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
-    <PRIResource Include="Strings\Resources.lang-en.resw" />
+    <PRIResource Include="Strings\zh-cn\Resources.resw" />
+    <PRIResource Include="Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountManager.cs" />
@@ -122,12 +123,18 @@
     <Compile Include="Controls\SplitViewButton.cs" />
     <Compile Include="Controls\SplitViewTab.cs" />
     <Compile Include="Controls\WrapStackPanel.cs" />
+    <Compile Include="ExceptionHandler.cs" />
     <Compile Include="Settings\Attributes.cs" />
     <Compile Include="Settings\GroupedSettings.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingInfo.cs" />
     <Compile Include="Settings\SettingCollectionBase.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
+    <Compile Include="Strings\Strings.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.tt</DependentUpon>
+    </Compile>
     <Compile Include="Themes\ThemeExtention.cs" />
     <Compile Include="ViewModels\CacheStorage{TKey,TCache}.cs" />
     <Compile Include="ViewModels\CacheVM.cs" />
@@ -168,9 +175,12 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\DefaultUser.scale-100.png" />
-    <Content Include="Assets\DefaultUser.scale-200.png" />
-    <Content Include="Assets\DefaultUser.scale-400.png" />
+    <Content Include="Images\Dark\UserBackground.scale-100.png" />
+    <Content Include="Images\Dark\UserBackground.scale-200.png" />
+    <Content Include="Images\Dark\UserBackground.scale-400.png" />
+    <Content Include="Images\DefaultUser.scale-100.png" />
+    <Content Include="Images\DefaultUser.scale-200.png" />
+    <Content Include="Images\DefaultUser.scale-400.png" />
     <Content Include="Assets\Medium.scale-100.png" />
     <Content Include="Assets\Medium.scale-200.png" />
     <Content Include="Assets\Medium.scale-400.png" />
@@ -191,7 +201,14 @@
     <Content Include="Assets\Wide.scale-100.png" />
     <Content Include="Assets\Wide.scale-200.png" />
     <Content Include="Assets\Wide.scale-400.png" />
+    <None Include="Strings\Strings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Strings.cs</LastGenOutput>
+    </None>
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="Images\Light\UserBackground.scale-100.png" />
+    <Content Include="Images\Light\UserBackground.scale-200.png" />
+    <Content Include="Images\Light\UserBackground.scale-400.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
   </ItemGroup>
@@ -230,6 +247,10 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
+    <Page Include="Themes\Dark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -238,6 +259,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Themes\Light.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\NamedStyles.xaml">
       <SubType>Designer</SubType>
@@ -294,6 +319,9 @@
     <SDKReference Include="WindowsMobile, Version=10.0.10586.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
