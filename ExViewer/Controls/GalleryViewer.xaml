@@ -12,7 +12,7 @@
     <Grid Background="{x:Bind Background, Mode=OneWay}"
           BorderBrush="{x:Bind BorderBrush, Mode=OneWay}"
           BorderThickness="{x:Bind BorderThickness, Mode=OneWay}"
-          Margin="8,4"
+          Padding="8,4"
           x:Name="gd_Root">
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="150"
@@ -32,7 +32,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="12" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

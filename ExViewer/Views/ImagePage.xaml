@@ -75,7 +75,8 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <controls:ImagePresenter x:Name="ip"
-                                                 Grid.RowSpan="2" />
+                                                 Grid.RowSpan="2"
+                                                 Image="{x:Bind}"/>
                         <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
                                      Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
                                      Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
@@ -192,6 +193,10 @@
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
+                <AppBarSeparator />
+                <AppBarButton x:Name="abb_Help"
+                              Label="Tips for keyboard users"
+                              Click="abb_Help_Click" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </RelativePanel>

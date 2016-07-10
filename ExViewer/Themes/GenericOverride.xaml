@@ -20,229 +20,43 @@
                         <Grid.Resources>
                             <ControlTemplate x:Key="RepeatButtonTemplate"
                                              TargetType="RepeatButton">
-                                <Grid x:Name="Root"
-                                      Background="Transparent">
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="CommonStates">
-                                            <VisualState x:Name="Normal" />
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                </Grid>
+                                <Border x:Name="Root" />
                             </ControlTemplate>
-                            <ControlTemplate x:Key="HorizontalIncrementTemplate"
-                                             TargetType="RepeatButton">
-                                <Grid x:Name="Root">
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="CommonStates">
-                                            <VisualState x:Name="Normal" />
-                                            <VisualState x:Name="PointerOver">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
-                                                                                   Storyboard.TargetProperty="Background">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState x:Name="Pressed">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
-                                                                                   Storyboard.TargetProperty="Background">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightBaseMediumBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightAltAltHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState x:Name="Disabled">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlDisabledBaseHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                    <FontIcon x:Name="Arrow"
-                                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                              Glyph="&#xE0E3;"
-                                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                              FontSize="6"
-                                              MirroredWhenRightToLeft="True" />
-                                </Grid>
-                            </ControlTemplate>
-                            <ControlTemplate x:Key="HorizontalDecrementTemplate"
-                                             TargetType="RepeatButton">
-                                <Grid x:Name="Root">
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="CommonStates">
-                                            <VisualState x:Name="Normal" />
-                                            <VisualState x:Name="PointerOver">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
-                                                                                   Storyboard.TargetProperty="Background">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState x:Name="Pressed">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
-                                                                                   Storyboard.TargetProperty="Background">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightBaseMediumBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightAltAltHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState x:Name="Disabled">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlDisabledBaseHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                    <FontIcon x:Name="Arrow"
-                                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                              Glyph="&#xE0E2;"
-                                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                              FontSize="6"
-                                              MirroredWhenRightToLeft="True" />
-                                </Grid>
-                            </ControlTemplate>
-                            <ControlTemplate x:Key="VerticalIncrementTemplate"
-                                             TargetType="RepeatButton">
-                                <Grid x:Name="Root">
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="CommonStates">
-                                            <VisualState x:Name="Normal" />
-                                            <VisualState x:Name="PointerOver">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
-                                                                                   Storyboard.TargetProperty="Background">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState x:Name="Pressed">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
-                                                                                   Storyboard.TargetProperty="Background">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightBaseMediumBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightAltAltHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState x:Name="Disabled">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlDisabledBaseHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                    <FontIcon x:Name="Arrow"
-                                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                              Glyph="&#xE0E5;"
-                                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                              FontSize="6" />
-                                </Grid>
-                            </ControlTemplate>
-                            <ControlTemplate x:Key="VerticalDecrementTemplate"
-                                             TargetType="RepeatButton">
-                                <Grid x:Name="Root">
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="CommonStates">
-                                            <VisualState x:Name="Normal" />
-                                            <VisualState x:Name="PointerOver">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
-                                                                                   Storyboard.TargetProperty="Background">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState x:Name="Pressed">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root"
-                                                                                   Storyboard.TargetProperty="Background">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightBaseMediumBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlHighlightAltAltHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                            <VisualState x:Name="Disabled">
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow"
-                                                                                   Storyboard.TargetProperty="Foreground">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                                                Value="{ThemeResource SystemControlDisabledBaseHighBrush}" />
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                    <FontIcon x:Name="Arrow"
-                                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                              Glyph="&#xE0E4;"
-                                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                              FontSize="6" />
-                                </Grid>
-                            </ControlTemplate>
+                            <Style x:Key="RepeatButtonStyle"
+                                   TargetType="RepeatButton">
+                                <Setter Property="Template"
+                                        Value="{StaticResource RepeatButtonTemplate}" />
+                                <Setter Property="IsTabStop"
+                                        Value="False" />
+                                <Setter Property="IsHitTestVisible"
+                                        Value="False" />
+                                <Setter Property="HorizontalAlignment"
+                                        Value="Stretch" />
+                                <Setter Property="VerticalAlignment"
+                                        Value="Stretch" />
+                            </Style>
+                            <Style x:Key="TrackRectStyle"
+                                   TargetType="Rectangle">
+                                <Setter Property="StrokeThickness"
+                                        Value="{ThemeResource ScrollBarTrackBorderThemeThickness}" />
+                                <Setter Property="Fill"
+                                        Value="{x:Null}" />
+                                <Setter Property="Stroke"
+                                        Value="{x:Null}" />
+                                <Setter Property="Margin"
+                                        Value="0" />
+                            </Style>
+                            <Style x:Key="ThumbStyle"
+                                   TargetType="Thumb">
+                                <Setter Property="AutomationProperties.AccessibilityView"
+                                        Value="Raw" />
+                            </Style>
                             <ControlTemplate x:Key="VerticalThumbTemplate"
                                              TargetType="Thumb">
                                 <Rectangle x:Name="ThumbVisual"
-                                           Fill="{ThemeResource SystemControlForegroundBaseLowBrush}">
+                                           Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                           RadiusX="4"
+                                           RadiusY="4">
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroup x:Name="CommonStates">
                                             <VisualState x:Name="Normal" />
@@ -276,10 +90,22 @@
                                     </VisualStateManager.VisualStateGroups>
                                 </Rectangle>
                             </ControlTemplate>
+                            <Style x:Key="VerticalThumbStyle"
+                                   TargetType="Thumb"
+                                   BasedOn="{StaticResource ThumbStyle}">
+                                <Setter Property="Template"
+                                        Value="{StaticResource VerticalThumbTemplate}" />
+                                <Setter Property="Width"
+                                        Value="8" />
+                                <Setter Property="MinHeight"
+                                        Value="12" />
+                            </Style>
                             <ControlTemplate x:Key="HorizontalThumbTemplate"
                                              TargetType="Thumb">
                                 <Rectangle x:Name="ThumbVisual"
-                                           Fill="{ThemeResource SystemControlForegroundBaseLowBrush}">
+                                           Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                                           RadiusX="4"
+                                           RadiusY="4">
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroup x:Name="CommonStates">
                                             <VisualState x:Name="Normal" />
@@ -313,6 +139,16 @@
                                     </VisualStateManager.VisualStateGroups>
                                 </Rectangle>
                             </ControlTemplate>
+                            <Style x:Key="HorizontalThumbStyle"
+                                   TargetType="Thumb"
+                                   BasedOn="{StaticResource ThumbStyle}">
+                                <Setter Property="Template"
+                                        Value="{StaticResource HorizontalThumbTemplate}" />
+                                <Setter Property="Height"
+                                        Value="8" />
+                                <Setter Property="MinWidth"
+                                        Value="12" />
+                            </Style>
                         </Grid.Resources>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
@@ -435,56 +271,20 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Rectangle x:Name="HorizontalTrackRect"
-                                       Grid.ColumnSpan="5"
-                                       Margin="0"
-                                       StrokeThickness="{ThemeResource ScrollBarTrackBorderThemeThickness}"
-                                       Fill="AliceBlue"
-                                       Stroke="{ThemeResource SystemControlForegroundTransparentBrush}" />
-                            <RepeatButton x:Name="HorizontalSmallDecrease"
-                                          Grid.Column="0"
-                                          MinHeight="12"
-                                          IsTabStop="False"
-                                          Interval="50"
-                                          Margin="0"
-                                          Template="{StaticResource HorizontalDecrementTemplate}"
-                                          Width="12"
-                                          VerticalAlignment="Center" />
+                                       Grid.ColumnSpan="3"
+                                       Style="{StaticResource TrackRectStyle}"/>
                             <RepeatButton x:Name="HorizontalLargeDecrease"
-                                          Grid.Column="1"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          IsTabStop="False"
-                                          Interval="50"
-                                          Template="{StaticResource RepeatButtonTemplate}"
+                                          Style="{StaticResource RepeatButtonStyle}"
                                           Width="0" />
                             <Thumb x:Name="HorizontalThumb"
-                                   Grid.Column="2"
-                                   Background="AliceBlue"
-                                   Template="{StaticResource HorizontalThumbTemplate}"
-                                   Height="12"
-                                   MinWidth="12"
-                                   AutomationProperties.AccessibilityView="Raw" />
+                                   Grid.Column="1"
+                                   Style="{StaticResource HorizontalThumbStyle}"/>
                             <RepeatButton x:Name="HorizontalLargeIncrease"
-                                          Grid.Column="3"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          IsTabStop="False"
-                                          Interval="50"
-                                          Template="{StaticResource RepeatButtonTemplate}" />
-                            <RepeatButton x:Name="HorizontalSmallIncrease"
-                                          Grid.Column="4"
-                                          MinHeight="12"
-                                          IsTabStop="False"
-                                          Interval="50"
-                                          Margin="0"
-                                          Template="{StaticResource HorizontalIncrementTemplate}"
-                                          Width="12"
-                                          VerticalAlignment="Center" />
+                                          Grid.Column="2"
+                                          Style="{StaticResource RepeatButtonStyle}" />
                         </Grid>
                         <Grid x:Name="HorizontalPanningRoot"
                               MinWidth="24">
@@ -502,63 +302,27 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Rectangle x:Name="VerticalTrackRect"
-                                       Grid.RowSpan="5"
-                                       Margin="0"
-                                       StrokeThickness="{ThemeResource ScrollBarTrackBorderThemeThickness}"
-                                       Fill="AliceBlue"
-                                       Stroke="{ThemeResource SystemControlForegroundTransparentBrush}" />
-                            <RepeatButton x:Name="VerticalSmallDecrease"
-                                          Height="12"
-                                          MinWidth="12"
-                                          IsTabStop="False"
-                                          Interval="50"
-                                          Margin="0"
-                                          Grid.Row="0"
-                                          Template="{StaticResource VerticalDecrementTemplate}"
-                                          HorizontalAlignment="Center" />
+                                       Grid.RowSpan="3"
+                                       Style="{StaticResource TrackRectStyle}"/>
                             <RepeatButton x:Name="VerticalLargeDecrease"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          Height="0"
-                                          IsTabStop="False"
-                                          Interval="50"
-                                          Grid.Row="1"
-                                          Template="{StaticResource RepeatButtonTemplate}" />
+                                          Style="{StaticResource RepeatButtonStyle}"
+                                          Height="0" />
                             <Thumb x:Name="VerticalThumb"
-                                   Grid.Row="2"
-                                   Background="Green"
-                                   Template="{StaticResource VerticalThumbTemplate}"
-                                   Width="12"
-                                   MinHeight="12"
-                                   AutomationProperties.AccessibilityView="Raw" />
+                                   Grid.Row="1"
+                                   Style="{StaticResource VerticalThumbStyle}" />
                             <RepeatButton x:Name="VerticalLargeIncrease"
-                                          HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch"
-                                          IsTabStop="False"
-                                          Interval="50"
-                                          Grid.Row="3"
-                                          Template="{StaticResource RepeatButtonTemplate}" />
-                            <RepeatButton x:Name="VerticalSmallIncrease"
-                                          Height="12"
-                                          MinWidth="12"
-                                          IsTabStop="False"
-                                          Interval="50"
-                                          Margin="0"
-                                          Grid.Row="4"
-                                          Template="{StaticResource VerticalIncrementTemplate}"
-                                          HorizontalAlignment="Center" />
+                                          Grid.Row="2"
+                                          Style="{StaticResource RepeatButtonStyle}" />
                         </Grid>
                         <Grid x:Name="VerticalPanningRoot"
                               MinHeight="24">
                             <Border x:Name="VerticalPanningThumb"
                                     VerticalAlignment="Top"
                                     HorizontalAlignment="Right"
-                                    Background="Red"
+                                    Background="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}"
                                     BorderThickness="0"
                                     Width="2"
                                     MinHeight="32"
@@ -569,4 +333,5 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 </ResourceDictionary>

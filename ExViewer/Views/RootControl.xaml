@@ -82,7 +82,7 @@
                                  HorizontalAlignment="Center"
                                  VerticalAlignment="Center">
                             <Ellipse.Fill>
-                                <ImageBrush>
+                                <ImageBrush Stretch="Uniform">
                                     <ImageBrush.ImageSource>
                                         <BitmapImage UriSource="{x:Bind userInfo.Avatar, TargetNullValue=ms-appx:///Images/DefaultUser.png, FallbackValue=ms-appx:///Images/DefaultUser.png}" />
                                     </ImageBrush.ImageSource>
@@ -92,10 +92,9 @@
                         <TextBlock  Grid.Row="2"
                                     Grid.Column="1"
                                     Margin="8"
-                                    MinWidth="80"
                                     MaxWidth="200"
                                     TextTrimming="CharacterEllipsis"
-                                    Text="{x:Bind userInfo.DisplayName}"
+                                    Text="{x:Bind userInfo.DisplayName, FallbackValue=Guest}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center" />
                         <Button Grid.Row="2"

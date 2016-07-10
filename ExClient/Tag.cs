@@ -17,7 +17,7 @@ namespace ExClient
         Misc
     }
 
-    public class Tag
+    public sealed class Tag
     {
         // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };
         private static readonly char[] split = new char[] { ':' };
@@ -33,6 +33,7 @@ namespace ExClient
             else
             {
                 Content = splited[0];
+                NameSpace = NameSpace.Misc;
             }
             this.Owner = owner;
         }
@@ -40,19 +41,16 @@ namespace ExClient
         public Gallery Owner
         {
             get;
-            internal set;
         }
 
         public NameSpace NameSpace
         {
             get;
-            internal set;
         }
 
         public string Content
         {
             get;
-            internal set;
         }
 
         private string getKeyWord()

@@ -144,7 +144,7 @@ namespace ExViewer.Views
 
         private void fm_inner_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-#if DEBUG && !DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION
+#if DEBUG 
             if(global::System.Diagnostics.Debugger.IsAttached)
                 global::System.Diagnostics.Debugger.Break();
 #endif
@@ -152,9 +152,7 @@ namespace ExViewer.Views
 
         private void Grid_GotFocus(object sender, RoutedEventArgs e)
         {
-#if DEBUG
             System.Diagnostics.Debug.WriteLine(e.OriginalSource);
-#endif
         }
 
         private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)

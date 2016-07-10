@@ -52,7 +52,7 @@ namespace ExClient
                     DisplayName = profileName.InnerText.DeEntitize(),
                     UserID = userID,
                     Infomation = (info.ChildNodes.Count == 1 && info.ChildNodes[0].Name == "i" && info.InnerText == "No Information") ? null : info.InnerText.DeEntitize(),
-                    Avatar = (avatar == null) ? null : new Uri(avatar.Attributes["src"].Value),
+                    Avatar = (avatar == null) ? null : new Uri(forumUri, avatar.Attributes["src"].Value),
                     MemberGroup = groupAndJoin.FirstChild.InnerText.Trim().Substring(14).DeEntitize(),
                     RegisterDate = register.Date
                 };

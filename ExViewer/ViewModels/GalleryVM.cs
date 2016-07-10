@@ -90,6 +90,7 @@ namespace ExViewer.ViewModels
                     case AsyncStatus.Canceled:
                     case AsyncStatus.Error:
                         SaveStatus = OperationState.Failed;
+                        RootControl.RootController.SendToast(sender.ErrorCode, null);
                         break;
                     case AsyncStatus.Completed:
                         SaveStatus = OperationState.Completed;
@@ -124,7 +125,7 @@ namespace ExViewer.ViewModels
                 RootControl.RootController.SendToast("Start downloading...", null);
                 var file = await torrent.LoadTorrentAsync();
                 await Launcher.LaunchFileAsync(file);
-            }, torrent => torrent != null);
+            }, torrent => torrent != null && torrent.TorrentUri != null);
             GoToDefination = new RelayCommand<Tag>(async tag =>
             {
                 await Launcher.LaunchUriAsync(tag.TagDefinationUri);

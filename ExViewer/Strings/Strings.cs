@@ -38,6 +38,22 @@
         /// The text associated with this error code could not be found.
         /// </summary>
         public static string ErrorPrefix => GetString("ErrorPrefix");
+
+        /// <summary>
+        /// Zoom in/out				SPACE
+        /// Zoom to maximum				=
+        /// Zoom to minimun				-
+        /// Zoom in					]
+        /// Zoom out				[
+        /// Pan / Next/Previous Image		ARROW KEYS
+        /// Full screen				ENTER
+        /// </summary>
+        public static string ImageViewTipsContent => GetString("ImageViewTipsContent");
+
+        /// <summary>
+        /// TIPS FOR KEYBOARD USERS
+        /// </summary>
+        public static string ImageViewTipsTitle => GetString("ImageViewTipsTitle");
     }
 
 }

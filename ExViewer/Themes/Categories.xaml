@@ -6,7 +6,7 @@
     <SolidColorBrush x:Key="CategoryMangaBackgroundBrush"
                      Color="#FFFFB225" />
     <SolidColorBrush x:Key="CategoryArtistCGBackgroundBrush"
-                     Color="#FFCDCD00" />
+                     Color="#ffcbcb15" />
     <SolidColorBrush x:Key="CategoryGameCGBackgroundBrush"
                      Color="#FF2C9E36" />
     <SolidColorBrush x:Key="CategoryWesternBackgroundBrush"

@@ -85,11 +85,19 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Margin="12,8,4,8"
                            Text="{x:Bind Name}"
                            Style="{StaticResource TorrentNameTextBlockStyle}"
                            VerticalAlignment="Center" />
+                <TextBlock Margin="12,8,4,8"
+                           Grid.Column="1"
+                           Text="Expunged"
+                           Foreground="Red"
+                           Style="{StaticResource TorrentNameTextBlockStyle}"
+                           VerticalAlignment="Center" 
+                           Visibility="{x:Bind TorrentUri, Converter={StaticResource NullToVisibleConverter}}"/>
                 <Button Grid.RowSpan="2"
                         Grid.Column="2"
                         VerticalAlignment="Stretch"
@@ -334,7 +342,7 @@
                     <ListView x:Name="lv_Tags"
                               Grid.Column="1"
                               Grid.Row="1"
-                              Margin="6"
+                              Padding="6"
                               SelectionMode="None"
                               ItemsSource="{x:Bind VM.SortedTags}"
                               ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}">

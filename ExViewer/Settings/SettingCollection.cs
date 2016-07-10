@@ -11,6 +11,9 @@ namespace ExViewer.Settings
             private set;
         } = new SettingCollection();
 
+        private SettingCollection()
+            : base("Settings") { }
+
         [Setting("Searching", "Save my lastest search as default", Index = 30)]
         public bool SaveLastSearch
         {
