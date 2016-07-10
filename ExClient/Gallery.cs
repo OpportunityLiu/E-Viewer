@@ -206,7 +206,7 @@ namespace ExClient
                 this.Rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
                 this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
                 this.Tags = new ReadOnlyCollection<Tag>(tags.Select(tag => new Tag(this, tag)).ToList());
-                this.ThumbUri = new Uri(thumb);
+                this.ThumbUri = toExUri(thumb);
                 DispatcherHelper.CheckBeginInvokeOnUI(() => this.Thumb.UriSource = ThumbUri);
             }
             catch(Exception)
@@ -215,6 +215,15 @@ namespace ExClient
             }
             if(this.RecordCount > 0)
                 this.PageCount = 1;
+        }
+
+        private static readonly Regex toExUriRegex = new Regex(@"(?<domain>((gt\d|ul)\.ehgt\.org)|(ehgt\.org/t)|((\d{1,3}\.){3}\d{1,3}))(?<body>.+)(?<tail>_l\.)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+
+        // from gtX.eght.org//_l.jpg
+        // to   exhentai.org/t//_250.jpg
+        private static Uri toExUri(string uri)
+        {
+            return new Uri(toExUriRegex.Replace(uri, @"exhentai.org/t${body}_250."));
         }
 
         public virtual IAsyncAction InitAsync()

@@ -82,6 +82,8 @@ namespace ExViewer.Views
                 displayRequest.RequestActive();
                 displayActived = true;
             }
+            if(!StatusCollection.Current.ImageViewTipShown)
+                showTip();
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -108,7 +110,6 @@ namespace ExViewer.Views
 
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
         {
-            sender.SuppressSystemOverlays = false;
             var currentState = RootControl.RootController.IsFullScreen;
             switch(isFullScreen)
             {
@@ -283,5 +284,21 @@ namespace ExViewer.Views
         }
 
         private bool enterPressed;
+
+        private void abb_Help_Click(object sender, RoutedEventArgs e)
+        {
+            showTip();
+        }
+
+        private static async void showTip()
+        {
+            await new ContentDialog
+            {
+                Title = LocalizedStrings.Resources.ImageViewTipsTitle,
+                Content = LocalizedStrings.Resources.ImageViewTipsContent,
+                PrimaryButtonText = "Ok"
+            }.ShowAsync();
+            StatusCollection.Current.ImageViewTipShown = true;
+        }
     }
 }

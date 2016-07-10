@@ -98,7 +98,9 @@
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
     <PRIResource Include="Strings\zh-cn\Resources.resw" />
-    <PRIResource Include="Strings\en\Resources.resw" />
+    <PRIResource Include="Strings\en\Resources.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountManager.cs" />
@@ -130,6 +132,7 @@
     <Compile Include="Settings\SettingInfo.cs" />
     <Compile Include="Settings\SettingCollectionBase.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
+    <Compile Include="Settings\StatusCollection.cs" />
     <Compile Include="Strings\Strings.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

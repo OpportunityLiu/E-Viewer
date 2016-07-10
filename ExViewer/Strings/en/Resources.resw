@@ -126,4 +126,16 @@
   <data name="ErrorPrefix" xml:space="preserve">
     <value>The text associated with this error code could not be found.</value>
   </data>
+  <data name="ImageViewTipsContent" xml:space="preserve">
+    <value>Zoom in/out			SPACE
+Zoom to maximum		=
+Zoom to minimun			-
+Zoom in				]
+Zoom out			[
+Pan / Next/Previous Image		ARROW KEYS
+Full screen			ENTER</value>
+  </data>
+  <data name="ImageViewTipsTitle" xml:space="preserve">
+    <value>TIPS FOR KEYBOARD USERS</value>
+  </data>
 </root>

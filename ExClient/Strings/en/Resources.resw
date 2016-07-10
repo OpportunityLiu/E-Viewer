@@ -138,6 +138,9 @@
   <data name="Doujinshi" xml:space="preserve">
     <value>Doujinshi</value>
   </data>
+  <data name="ExpungedTorrent" xml:space="preserve">
+    <value>This torrent has beem expunged.</value>
+  </data>
   <data name="GameCG" xml:space="preserve">
     <value>Game CG</value>
   </data>

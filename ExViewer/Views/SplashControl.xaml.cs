@@ -32,11 +32,6 @@ namespace ExViewer.Views
 
         private void splash_Loading(FrameworkElement sender, object args)
         {
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = StatusBar.GetForCurrentView();
-                var ignore = statusBar.HideAsync();
-            }
             Themes.ThemeExtention.SetSplashTitleBar();
         }
 
@@ -113,16 +108,15 @@ namespace ExViewer.Views
                     Application.Current.Exit();
                 }
             }
-            if(initSearch != null)
-                try
-                {
-                    await initSearch;
-                    rc = new RootControl(typeof(SearchPage), previousExecutionState);
-                }
-                catch(Exception)
-                {
-                    rc = new RootControl(typeof(CachePage), previousExecutionState);
-                }
+            try
+            {
+                await initSearch;
+                rc = new RootControl(typeof(SearchPage), previousExecutionState);
+            }
+            catch(Exception)
+            {
+                rc = new RootControl(typeof(CachePage), previousExecutionState);
+            }
             GoToContent();
         }
 
@@ -141,11 +135,6 @@ namespace ExViewer.Views
             Window.Current.Content = rc;
             rc = null;
             Themes.ThemeExtention.SetTitleBar();
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = StatusBar.GetForCurrentView();
-                var ignore = statusBar.ShowAsync();
-            }
         }
 
         private void ShowPic_Completed(object sender, object e)

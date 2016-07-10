@@ -60,6 +60,11 @@
         public static string Doujinshi => GetString("Doujinshi");
 
         /// <summary>
+        /// This torrent has beem expunged.
+        /// </summary>
+        public static string ExpungedTorrent => GetString("ExpungedTorrent");
+
+        /// <summary>
         /// Game CG
         /// </summary>
         public static string GameCG => GetString("GameCG");

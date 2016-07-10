@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -89,7 +90,7 @@ namespace ExViewer.Controls
         }
 
         private static readonly string eof = " ";
-        private static readonly Regex linkDetector = new Regex(@"(?<=\s|^)((?<explict>[a-zA-z]+://[^\s]*)|(?<implict>([^\.\s]+\.){2,}[^\.\s]+))(?=\s|$)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex linkDetector = new Regex(@"((?<explict>[a-zA-z]+://[^\s]*)|(?<implict>(?<=\s|^)([^:\.\s]+\.)+([^:\.\s]+:)?([^:\.\s]+\.)+[^\.\s]+(?=\s|$)))", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         private void loadHtml(RichTextBlock presenter, HtmlNode content, bool detectLink)
         {
@@ -120,13 +121,24 @@ namespace ExViewer.Controls
                     {
                         t.Inlines.Add(new Run { Text = text.Substring(currentPos, match.Index - currentPos) });
                         var uri = (Uri)null;
-                        if(match.Groups["implict"].Success)
-                            uri = new Uri($"http://{match.Value}");
-                        else if(match.Groups["explict"].Success)
-                            uri = new Uri(match.Value);
-                        var detectedLink = new Hyperlink { NavigateUri = uri };
-                        detectedLink.Inlines.Add(new Run { Text = match.Value });
-                        t.Inlines.Add(detectedLink);
+                        try
+                        {
+                            if(match.Groups["implict"].Success)
+                                uri = new Uri($"http://{match.Value}");
+                            else if(match.Groups["explict"].Success)
+                                uri = new Uri(match.Value);
+                        }
+                        catch(UriFormatException) { }
+                        if(uri != null)
+                        {
+                            var detectedLink = new Hyperlink { NavigateUri = uri };
+                            detectedLink.Inlines.Add(new Run { Text = match.Value });
+                            t.Inlines.Add(detectedLink);
+                        }
+                        else
+                        {
+                            t.Inlines.Add(new Run { Text = match.Value });
+                        }
                         currentPos = match.Index + match.Length;
                     }
                     t.Inlines.Add(new Run { Text = text.Substring(currentPos) });
@@ -162,13 +174,22 @@ namespace ExViewer.Controls
                     s.Inlines.Add(item);
                 return s;
             case "a"://[url]
-                var target = new Uri(node.GetAttributeValue("href", "http://exhentai.org"));
+                var container = (Span)null;
+                var target = (Uri)null;
                 try
                 {
-                    var aLink = new Hyperlink() { NavigateUri = target };
+                    target = new Uri(node.GetAttributeValue("href", "http://exhentai.org"));
+                    container = new Hyperlink { NavigateUri = target };
+                }
+                catch(UriFormatException)
+                {
+                    container = new Span();
+                }
+                try
+                {
                     foreach(var item in createChildNodes(node, false))
-                        aLink.Inlines.Add(item);
-                    return aLink;
+                        container.Inlines.Add(item);
+                    return container;
                 }
                 catch(ArgumentException)// has InlineUIContainer in childnodes
                 {
@@ -184,17 +205,15 @@ namespace ExViewer.Controls
                     return new InlineUIContainer { Child = aBtn };
                 }
             case "img"://[img]
-                var img = new InlineUIContainer()
+                var image = new Image
                 {
-                    Child = new Image()
+                    Source = new BitmapImage
                     {
-                        Source = new BitmapImage()
-                        {
-                            UriSource = new Uri(node.GetAttributeValue("src", ""))
-                        },
-                        Stretch = Stretch.None
+                        UriSource = new Uri(node.GetAttributeValue("src", ""))
                     }
                 };
+                image.ImageOpened += Image_ImageOpened;
+                var img = new InlineUIContainer { Child = image };
                 var con = new Span();
                 con.Inlines.Add(img);
                 return con;
@@ -206,9 +225,36 @@ namespace ExViewer.Controls
             }
         }
 
+        private void Image_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            var scaleRate = Math.Sqrt(dpi.RawPixelsPerViewPixel);
+            var image = (Image)sender;
+            var bitmap = (BitmapImage)image.Source;
+            image.Width = bitmap.PixelWidth / scaleRate;
+            image.Height = bitmap.PixelHeight / scaleRate;
+            image.ImageOpened -= Image_ImageOpened;
+        }
+
+        private static DisplayInformation dpi = DisplayInformation.GetForCurrentView();
+
         private IEnumerable<Inline> createChildNodes(HtmlNode node, bool detectLink)
         {
             return node.ChildNodes.Select(n => createNode(n, detectLink));
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            dpi.DpiChanged += Dpi_DpiChanged;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            dpi.DpiChanged -= Dpi_DpiChanged;
+        }
+
+        private void Dpi_DpiChanged(DisplayInformation sender, object args)
+        {
+            this.loadHtml(this.Presenter, this.HtmlContent, this.DetectLink);
         }
     }
 }

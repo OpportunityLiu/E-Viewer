@@ -12,7 +12,13 @@ namespace ExClient.Models
         {
             GalleryId = gallery.Id;
             ThumbData = thumbData;
+            Saved = DateTimeOffset.UtcNow;
             return this;
+        }
+
+        public DateTimeOffset Saved
+        {
+            get; set;
         }
 
         public GalleryModel Gallery

@@ -26,17 +26,18 @@ namespace ExClient
                 var nodes = (from n in doc.DocumentNode.Descendants("table")
                              where n.GetAttributeValue("style", "") == "width:99%"
                              let reg = infoMatcher.Match(n.InnerText)
-                             let link = n.Descendants("a").Single()
+                             let name = n.Descendants("tr").Last()
+                             let link = name.Descendants("a").SingleOrDefault()
                              select new TorrentInfo()
                              {
-                                 Name = link.InnerText.DeEntitize(),
+                                 Name = name.InnerText.DeEntitize().Trim(),
                                  Posted = DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
                                  Size = parseSize(reg.Groups[2].Value),
                                  Seeds = int.Parse(reg.Groups[3].Value),
                                  Peers = int.Parse(reg.Groups[4].Value),
                                  Downloads = int.Parse(reg.Groups[5].Value),
                                  Uploader = reg.Groups[6].Value.DeEntitize(),
-                                 TorrentUri = new Uri(link.GetAttributeValue("href", "").DeEntitize())
+                                 TorrentUri = link == null ? null : new Uri(link.GetAttributeValue("href", "").DeEntitize())
                              }).ToList();
                 return nodes;
             }).AsAsyncOperation();
@@ -117,6 +118,8 @@ namespace ExClient
         {
             return Run(async token =>
             {
+                if(TorrentUri == null)
+                    throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
                 using(var client = new HttpClient())
                 {
                     var filename = StorageHelper.ToValidFolderName(Name + ".torrent");

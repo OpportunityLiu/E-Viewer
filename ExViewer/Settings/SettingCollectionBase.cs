@@ -11,6 +11,13 @@ namespace ExViewer.Settings
 
     public class SettingCollectionBase : ExClient.ObservableObject
     {
+        protected SettingCollectionBase(string containerName)
+        {
+            var data = ApplicationData.Current;
+            this.local = data.LocalSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
+            this.roaming = data.RoamingSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
+        }
+
         private bool loaded;
         private object syncroot = new object();
 
@@ -37,7 +44,7 @@ namespace ExViewer.Settings
 #endif
             }
         }
-        
+
         private List<GroupedSettings> groupedProperties;
 
 #if DEBUG
@@ -46,10 +53,10 @@ namespace ExViewer.Settings
 
         public List<GroupedSettings> GroupedSettings => groupedProperties;
 
-        private IPropertySet local = ApplicationData.Current.LocalSettings.Values;
-        private IPropertySet roaming = ApplicationData.Current.RoamingSettings.Values;
+        private readonly IPropertySet local;
+        private readonly IPropertySet roaming;
 
-        private T Get<T>(IPropertySet container, T def, string key)
+        private T Get<T>(IPropertySet container, T @default, string key)
         {
             load();
 #if DEBUG
@@ -61,13 +68,13 @@ namespace ExViewer.Settings
                 object v;
                 if(container.TryGetValue(key, out v))
                 {
-                    if(def is Enum)
+                    if(@default is Enum)
                         return (T)Enum.Parse(typeof(T), v.ToString());
                     return (T)v;
                 }
             }
             catch { }
-            return def;
+            return @default;
         }
 
         private bool HasValue(IPropertySet container, string key)
@@ -93,14 +100,14 @@ namespace ExViewer.Settings
             RaisePropertyChanged(key);
         }
 
-        protected T GetLocal<T>(string key)
+        protected T GetLocal<T>([CallerMemberName]string key = null)
         {
             return GetLocal(default(T), key);
         }
 
-        protected T GetLocal<T>(T def, [CallerMemberName]string key = null)
+        protected T GetLocal<T>(T @default, [CallerMemberName]string key = null)
         {
-            return Get(local, def, key);
+            return Get(local, @default, key);
         }
 
         protected void SetLocal<T>(T value, [CallerMemberName]string key = null)
@@ -118,9 +125,9 @@ namespace ExViewer.Settings
             return GetRoaming(default(T), key);
         }
 
-        protected T GetRoaming<T>(T def, [CallerMemberName]string key = null)
+        protected T GetRoaming<T>(T @default, [CallerMemberName]string key = null)
         {
-            return Get(roaming, def, key);
+            return Get(roaming, @default, key);
         }
 
         protected void SetRoaming<T>(T value, [CallerMemberName]string key = null)

@@ -121,7 +121,7 @@
     <value>此账户没有访问 Ex 绅士的权限。</value>
   </data>
   <data name="All" xml:space="preserve">
-    <value>All</value>
+    <value>全部</value>
   </data>
   <data name="ArtistCG" xml:space="preserve">
     <value>Artist CG</value>
@@ -136,7 +136,10 @@
     <value>Cosplay</value>
   </data>
   <data name="Doujinshi" xml:space="preserve">
-    <value>同人志</value>
+    <value>Doujinshi</value>
+  </data>
+  <data name="ExpungedTorrent" xml:space="preserve">
+    <value>此种子已经被删除。</value>
   </data>
   <data name="GameCG" xml:space="preserve">
     <value>Game CG</value>
@@ -145,7 +148,7 @@
     <value>Image Set</value>
   </data>
   <data name="Manga" xml:space="preserve">
-    <value>漫画</value>
+    <value>Manga</value>
   </data>
   <data name="Misc" xml:space="preserve">
     <value>Misc</value>

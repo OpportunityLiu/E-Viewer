@@ -42,6 +42,7 @@ namespace ExViewer.Themes
                 sb.BackgroundColor = SystmeChromeMediumColor;
                 sb.BackgroundOpacity = 1;
                 sb.ForegroundColor = SystemBaseMediumHighColor;
+                var ignore = sb.ShowAsync();
             }
         }
 
@@ -56,6 +57,11 @@ namespace ExViewer.Themes
                 tb.InactiveBackgroundColor = splashColor;
                 tb.ButtonBackgroundColor = splashColor;
                 tb.ButtonInactiveBackgroundColor = splashColor;
+            }
+            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                var ignore = statusBar.HideAsync();
             }
         }
     }
