@@ -123,9 +123,6 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>E-Viewer</value>
   </data>
-  <data name="ErrorPrefix" xml:space="preserve">
-    <value>The text associated with this error code could not be found.</value>
-  </data>
   <data name="ImageViewTipsContent" xml:space="preserve">
     <value>Zoom in/out			SPACE
 Zoom to maximum		=
@@ -137,5 +134,8 @@ Full screen			ENTER</value>
   </data>
   <data name="ImageViewTipsTitle" xml:space="preserve">
     <value>TIPS FOR KEYBOARD USERS</value>
+  </data>
+  <data name="WrongCaptcha" xml:space="preserve">
+    <value>The captcha was not entered correctly. Please try again.</value>
   </data>
 </root>

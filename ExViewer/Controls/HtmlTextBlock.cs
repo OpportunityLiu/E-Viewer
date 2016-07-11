@@ -18,32 +18,22 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace ExViewer.Controls
 {
-    public sealed partial class HtmlTextBlock : UserControl
+    public class HtmlTextBlock : Control
     {
         public HtmlTextBlock()
         {
-            this.InitializeComponent();
+            DefaultStyleKey = typeof(HtmlTextBlock);
         }
 
-        public Style RichTextBlockStyle
+        private RichTextBlock Presenter;
+
+        protected override void OnApplyTemplate()
         {
-            get
-            {
-                return (Style)GetValue(RichTextBlockStyleProperty);
-            }
-            set
-            {
-                SetValue(RichTextBlockStyleProperty, value);
-            }
+            Presenter = GetTemplateChild(nameof(Presenter)) as RichTextBlock;
+            reload();
         }
-
-        // Using a DependencyProperty as the backing store for TextBlockStyle.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RichTextBlockStyleProperty =
-            DependencyProperty.Register("RichTextBlockStyle", typeof(Style), typeof(HtmlTextBlock), new PropertyMetadata(null));
 
         public HtmlNode HtmlContent
         {
@@ -64,7 +54,7 @@ namespace ExViewer.Controls
         public static void HtmlContentPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var s = (HtmlTextBlock)sender;
-            s.loadHtml(s.Presenter, (HtmlNode)e.NewValue, s.DetectLink);
+            s.reload();
         }
 
         public bool DetectLink
@@ -86,11 +76,18 @@ namespace ExViewer.Controls
         public static void DetectLinkPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var s = (HtmlTextBlock)sender;
-            s.loadHtml(s.Presenter, s.HtmlContent, (bool)e.NewValue);
+            s.reload();
         }
 
         private static readonly string eof = " ";
         private static readonly Regex linkDetector = new Regex(@"((?<explict>[a-zA-z]+://[^\s]*)|(?<implict>(?<=\s|^)([^:\.\s]+\.)+([^:\.\s]+:)?([^:\.\s]+\.)+[^\.\s]+(?=\s|$)))", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+
+        private void reload()
+        {
+            if(this.Presenter == null)
+                return;
+            this.loadHtml(this.Presenter, this.HtmlContent, this.DetectLink);
+        }
 
         private void loadHtml(RichTextBlock presenter, HtmlNode content, bool detectLink)
         {
@@ -210,7 +207,9 @@ namespace ExViewer.Controls
                     Source = new BitmapImage
                     {
                         UriSource = new Uri(node.GetAttributeValue("src", ""))
-                    }
+                    },
+                    Width = 0,
+                    Height = 0
                 };
                 image.ImageOpened += Image_ImageOpened;
                 var img = new InlineUIContainer { Child = image };
@@ -254,7 +253,7 @@ namespace ExViewer.Controls
 
         private void Dpi_DpiChanged(DisplayInformation sender, object args)
         {
-            this.loadHtml(this.Presenter, this.HtmlContent, this.DetectLink);
+            reload();
         }
     }
 }

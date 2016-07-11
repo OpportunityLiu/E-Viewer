@@ -62,7 +62,7 @@ namespace ExViewer.Views
                 catch(ArgumentException ex) when(ex.ParamName == "response")
                 {
                     await loadReCapcha();
-                    tb_info.Text = "The captcha was not entered correctly. Please try again.";
+                    tb_info.Text = ex.Message;
                     tb_ReCaptcha.Focus(FocusState.Programmatic);
                     args.Cancel = true;
                 }

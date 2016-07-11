@@ -123,7 +123,7 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>E-Viewer</value>
   </data>
-  <data name="ErrorPrefix" xml:space="preserve">
-    <value>无法找到与此错误代码关联的文本。</value>
+  <data name="WrongCaptcha" xml:space="preserve">
+    <value>验证码输入错误，请重试。</value>
   </data>
 </root>

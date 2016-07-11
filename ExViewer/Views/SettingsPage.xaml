@@ -84,28 +84,26 @@
             <Pivot.ItemTemplate>
                 <DataTemplate x:DataType="settings:GroupedSettings">
                     <ListView ItemTemplateSelector="{StaticResource SettingTemplateSelector}"
-                              ItemsSource="{x:Bind}">
+                              ItemsSource="{x:Bind}"
+                              Margin="-12,0">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListViewItem">
                                             <ContentPresenter HorizontalAlignment="Stretch"
-                                                              Margin="{TemplateBinding Margin}"
                                                               Padding="{TemplateBinding Padding}"
                                                               Foreground="{TemplateBinding Foreground}"
                                                               Background="{TemplateBinding Background}"
                                                               BorderBrush="{TemplateBinding BorderBrush}"
-                                                              Control.IsTemplateFocusTarget="True"/>
+                                                              Control.IsTemplateFocusTarget="True" />
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
                                 <Setter Property="MinHeight"
                                         Value="0" />
                                 <Setter Property="Margin"
-                                        Value="0, 4" />
-                                <Setter Property="Padding"
-                                        Value="4" />
+                                        Value="8" />
                                 <Setter Property="UseSystemFocusVisuals"
                                         Value="True" />
                             </Style>

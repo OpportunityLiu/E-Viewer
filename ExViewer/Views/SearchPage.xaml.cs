@@ -135,6 +135,7 @@ namespace ExViewer.Views
 
         private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
+            sender.ItemsSource = null;
             sender.Focus(FocusState.Programmatic);
         }
 

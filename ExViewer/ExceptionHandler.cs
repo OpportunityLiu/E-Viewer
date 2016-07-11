@@ -8,13 +8,22 @@ namespace ExViewer
 {
     internal static class ExceptionHandler
     {
+        private static string[] prefixes = new string[]
+        {
+            "无法找到与此错误代码关联的文本。",
+            "The text associated with this error code could not be found."
+        };
+
         public static string GetMessage(this Exception ex)
         {
             var msg = ex.Message.TrimStart();
-            var prefix = LocalizedStrings.Resources.ErrorPrefix;
-            if(msg.StartsWith(prefix))
+            foreach(var prefix in prefixes)
             {
-                msg = msg.Substring(prefix.Length);
+                if(msg.StartsWith(prefix))
+                {
+                    msg = msg.Substring(prefix.Length);
+                    break;
+                }
             }
             return msg.Trim();
         }

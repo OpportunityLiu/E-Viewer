@@ -116,7 +116,7 @@
     </ContentDialog.Template>
     <ContentDialog.Title>
         <Grid>
-            <TextBlock>LOG ON</TextBlock>
+            <TextBlock Text="LOG ON" />
             <HyperlinkButton x:Name="btn_Register"
                              Content="Register"
                              HorizontalAlignment="Right"
