@@ -101,7 +101,7 @@ namespace ExViewer.Controls
             DependencyProperty.Register("TouchAdaptive", typeof(bool), typeof(CategorySelector), new PropertyMetadata(true, TouchAdaptivePropertyChangedCallback));
 
 #pragma warning disable UWP001 // Platform-specific
-        private static Thickness mouseThickness = new Thickness(4), touchThickness = new Thickness(12);
+        private static Thickness mouseThickness = new Thickness(4), touchThickness = new Thickness(4, 12, 4, 12);
 #pragma warning restore UWP001 // Platform-specific
 
         private static void TouchAdaptivePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)

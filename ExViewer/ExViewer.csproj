@@ -108,9 +108,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\HtmlTextBlock.xaml.cs">
-      <DependentUpon>HtmlTextBlock.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Controls\HtmlTextBlock.cs" />
     <Compile Include="Controls\CategorySelector.xaml.cs">
       <DependentUpon>CategorySelector.xaml</DependentUpon>
     </Compile>
@@ -220,10 +218,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\HtmlTextBlock.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\CategorySelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
