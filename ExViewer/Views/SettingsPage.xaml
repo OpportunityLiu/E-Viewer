@@ -103,6 +103,8 @@
                                 <Setter Property="MinHeight"
                                         Value="0" />
                                 <Setter Property="Margin"
+                                        Value="4" />
+                                <Setter Property="Padding"
                                         Value="8" />
                                 <Setter Property="UseSystemFocusVisuals"
                                         Value="True" />
