@@ -228,7 +228,7 @@ namespace ExViewer.Controls
         private bool spacePressed;
     }
 
-    internal class ImagePresenterSelector : DataTemplateSelector
+    internal class ImagePresenterSelector : Windows.UI.Xaml.Controls.DataTemplateSelector
     {
         public DataTemplate Template
         {

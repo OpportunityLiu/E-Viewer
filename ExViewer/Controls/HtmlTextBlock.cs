@@ -25,13 +25,15 @@ namespace ExViewer.Controls
         public HtmlTextBlock()
         {
             DefaultStyleKey = typeof(HtmlTextBlock);
+            this.Loaded += OnLoaded;
+            this.Unloaded += OnUnloaded;
         }
 
         private RichTextBlock Presenter;
 
         protected override void OnApplyTemplate()
         {
-            Presenter = GetTemplateChild(nameof(Presenter)) as RichTextBlock;
+            this.Presenter = GetTemplateChild(nameof(Presenter)) as RichTextBlock;
             reload();
         }
 
@@ -241,12 +243,12 @@ namespace ExViewer.Controls
             return node.ChildNodes.Select(n => createNode(n, detectLink));
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void OnLoaded(object sender, RoutedEventArgs e)
         {
             dpi.DpiChanged += Dpi_DpiChanged;
         }
 
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             dpi.DpiChanged -= Dpi_DpiChanged;
         }

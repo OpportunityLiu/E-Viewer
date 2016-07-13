@@ -114,6 +114,7 @@
     <Compile Include="Client-Forum.cs" />
     <Compile Include="Comment.cs" />
     <Compile Include="Helpers\HtmlHelper.cs" />
+    <Compile Include="Internal\ImageHandle.cs" />
     <Compile Include="Models\CachedGalleryModel.cs" />
     <Compile Include="Helpers\StorageHelper.cs" />
     <Compile Include="Category.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="IncrementalLoadingCollection{T}.cs" />
     <Compile Include="Helpers\IOHelper.cs" />
     <Compile Include="ObservableObject.cs" />
-    <Compile Include="Models\CachedGalleryDb.cs" />
+    <Compile Include="Models\GalleryDb.cs" />
     <Compile Include="Models\GalleryModel.cs" />
     <Compile Include="Models\ImageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
