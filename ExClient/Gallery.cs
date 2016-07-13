@@ -44,11 +44,11 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                using(var db = CachedGalleryDb.Create())
+                using (var db = CachedGalleryDb.Create())
                 {
                     var cm = db.CacheSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
-                    if(gm == null)
+                    if (gm == null)
                         return null;
                     else
                     {
@@ -82,48 +82,48 @@ namespace ExClient
 
         public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync(ConnectionStrategy strategy)
         {
-            if(saveTask?.Status != AsyncStatus.Started)
+            if (saveTask?.Status != AsyncStatus.Started)
                 saveTask = Run<SaveGalleryProgress>(async (token, progress) =>
-                 {
-                     var toReport = new SaveGalleryProgress
-                     {
-                         ImageCount = this.RecordCount,
-                         ImageLoaded = -1
-                     };
-                     progress.Report(toReport);
-                     while(this.HasMoreItems)
-                     {
-                         await this.LoadMoreItemsAsync(40);
-                     }
-                     toReport.ImageLoaded = 0;
-                     progress.Report(toReport);
+                {
+                    var toReport = new SaveGalleryProgress
+                    {
+                        ImageCount = this.RecordCount,
+                        ImageLoaded = -1
+                    };
+                    progress.Report(toReport);
+                    while (this.HasMoreItems)
+                    {
+                        await this.LoadMoreItemsAsync(40);
+                    }
+                    toReport.ImageLoaded = 0;
+                    progress.Report(toReport);
 
-                     var loadTasks = this.Select(image => Task.Run(async () =>
-                     {
-                         await image.LoadImageAsync(false, strategy, true);
-                         lock(toReport)
-                         {
-                             toReport.ImageLoaded++;
-                             progress.Report(toReport);
-                         }
-                     }));
-                     await Task.WhenAll(loadTasks);
+                    var loadTasks = this.Select(image => Task.Run(async () =>
+                    {
+                        await image.LoadImageAsync(false, strategy, true);
+                        lock (toReport)
+                        {
+                            toReport.ImageLoaded++;
+                            progress.Report(toReport);
+                        }
+                    }));
+                    await Task.WhenAll(loadTasks);
 
-                     var thumb = (await Owner.HttpClient.GetBufferAsync(ThumbUri)).ToArray();
-                     using(var db = CachedGalleryDb.Create())
-                     {
-                         var myModel = db.CacheSet.SingleOrDefault(model => model.GalleryId == this.Id);
-                         if(myModel == null)
-                         {
-                             db.CacheSet.Add(new CachedGalleryModel().Update(this, thumb));
-                         }
-                         else
-                         {
-                             db.CacheSet.Update(myModel.Update(this, thumb));
-                         }
-                         await db.SaveChangesAsync();
-                     }
-                 });
+                    var thumb = (await Owner.HttpClient.GetBufferAsync(ThumbUri)).ToArray();
+                    using (var db = CachedGalleryDb.Create())
+                    {
+                        var myModel = db.CacheSet.SingleOrDefault(model => model.GalleryId == this.Id);
+                        if (myModel == null)
+                        {
+                            db.CacheSet.Add(new CachedGalleryModel().Update(this, thumb));
+                        }
+                        else
+                        {
+                            db.CacheSet.Update(myModel.Update(this, thumb));
+                        }
+                        await db.SaveChangesAsync();
+                    }
+                });
             return saveTask;
         }
 
@@ -154,10 +154,10 @@ namespace ExClient
             this.Tags = JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => new Tag(this, t)).ToList();
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
-            if(setUriSource)
+            if (setUriSource)
                 DispatcherHelper.CheckBeginInvokeOnUI(() => this.Thumb.UriSource = ThumbUri);
             this.Owner = Client.Current;
-            if(this.RecordCount > 0)
+            if (this.RecordCount > 0)
                 this.PageCount = 1;
         }
 
@@ -182,7 +182,7 @@ namespace ExClient
             : this(gid, token, 0)
         {
             this.Id = gid;
-            if(error != null)
+            if (error != null)
             {
                 Available = false;
                 return;
@@ -195,7 +195,7 @@ namespace ExClient
                 this.Title = WebUtility.HtmlDecode(title);
                 this.TitleJpn = WebUtility.HtmlDecode(title_jpn);
                 Category ca;
-                if(!categoriesForRestApi.TryGetValue(category, out ca))
+                if (!categoriesForRestApi.TryGetValue(category, out ca))
                     ca = Category.Unspecified;
                 this.Category = ca;
                 this.Uploader = WebUtility.HtmlDecode(uploader);
@@ -209,11 +209,11 @@ namespace ExClient
                 this.ThumbUri = toExUri(thumb);
                 DispatcherHelper.CheckBeginInvokeOnUI(() => this.Thumb.UriSource = ThumbUri);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Available = false;
             }
-            if(this.RecordCount > 0)
+            if (this.RecordCount > 0)
                 this.PageCount = 1;
         }
 
@@ -230,10 +230,10 @@ namespace ExClient
         {
             return Task.Run(() =>
             {
-                using(var db = CachedGalleryDb.Create())
+                using (var db = CachedGalleryDb.Create())
                 {
                     var myModel = db.GallerySet.SingleOrDefault(model => model.Id == this.Id);
-                    if(myModel == null)
+                    if (myModel == null)
                     {
                         db.GallerySet.Add(new GalleryModel().Update(this));
                     }
@@ -396,7 +396,7 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                if(GalleryFolder == null)
+                if (GalleryFolder == null)
                 {
                     await GetFolderAsync();
                 }
@@ -405,7 +405,7 @@ namespace ExClient
                 var res = await request;
                 var html = new HtmlDocument();
                 html.LoadHtml(res);
-                if(comments == null)
+                if (comments == null)
                     Comments = Comment.LoadComment(html);
                 var pcNodes = html.DocumentNode.Descendants("td")
                               .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
@@ -438,22 +438,22 @@ namespace ExClient
                             }
                             group r by r.thumbUri).ToDictionary(group => Owner.HttpClient.GetBufferAsync(group.Key));
                 var toAdd = new List<GalleryImage>(40);
-                using(var db = CachedGalleryDb.Create())
+                using (var db = CachedGalleryDb.Create())
                 {
-                    foreach(var group in pics)
+                    foreach (var group in pics)
                     {
-                        using(var stream = (await group.Key).AsRandomAccessStream())
+                        using (var stream = (await group.Key).AsRandomAccessStream())
                         {
                             var decoder = await BitmapDecoder.CreateAsync(stream);
                             var transform = new BitmapTransform();
-                            foreach(var page in group.Value)
+                            foreach (var page in group.Value)
                             {
                                 var imageModel = db.ImageSet.SingleOrDefault(im => im.OwnerId == this.Id && im.PageId == page.pageId);
-                                if(imageModel != null)
+                                if (imageModel != null)
                                 {
                                     // Load cache
                                     var galleryImage = await GalleryImage.LoadCachedImageAsync(this, imageModel);
-                                    if(galleryImage != null)
+                                    if (galleryImage != null)
                                     {
                                         toAdd.Add(galleryImage);
                                         continue;
@@ -513,14 +513,14 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                if(GalleryFolder == null)
+                if (GalleryFolder == null)
                 {
                     await GetFolderAsync();
                 }
                 var temp = GalleryFolder;
                 GalleryFolder = null;
                 await temp.DeleteAsync();
-                using(var db = CachedGalleryDb.Create())
+                using (var db = CachedGalleryDb.Create())
                 {
                     db.ImageSet.RemoveRange(db.ImageSet.Where(i => i.OwnerId == this.Id));
                     await db.SaveChangesAsync();
@@ -528,7 +528,7 @@ namespace ExClient
                 var c = this.RecordCount;
                 ResetAll();
                 this.RecordCount = c;
-                if(this.RecordCount > 0)
+                if (this.RecordCount > 0)
                     this.PageCount = 1;
             }).AsAsyncAction();
         }

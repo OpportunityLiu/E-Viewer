@@ -6,6 +6,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
       IsTextScaleFactorEnabled="False"
+      Loading="Control_Loading"
       Loaded="Control_Loaded"
       Unloaded="Control_Unloaded"
       xmlns:controls="using:ExViewer.Controls"
@@ -52,7 +53,8 @@
     </UserControl.Resources>
     <Grid>
         <SplitView x:Name="sv_root"
-                   IsTabStop="False">
+                   IsTabStop="False"
+                   IsPaneOpen="True">
             <SplitView.Pane>
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               HorizontalScrollMode="Disabled">

@@ -66,6 +66,11 @@ namespace ExViewer.Views
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
 
+        private void Control_Loading(FrameworkElement sender, object args)
+        {
+            sv_root.IsPaneOpen = false;
+        }
+
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
             manager = SystemNavigationManager.GetForCurrentView();
@@ -73,6 +78,11 @@ namespace ExViewer.Views
             fm_inner.Navigate(homePageType);
             userInfo = await UserInfo.LoadFromCache();
             updateUserInfo(false);
+        }
+
+        private void Control_Unloaded(object sender, RoutedEventArgs e)
+        {
+            manager.BackRequested -= Manager_BackRequested;
         }
 
         private async void updateUserInfo(bool setNull)
@@ -92,11 +102,6 @@ namespace ExViewer.Views
                 userInfo = await UserInfo.LoadFromCache();
             }
             Bindings.Update();
-        }
-
-        private void Control_Unloaded(object sender, RoutedEventArgs e)
-        {
-            manager.BackRequested -= Manager_BackRequested;
         }
 
         private void Manager_BackRequested(object sender, BackRequestedEventArgs e)
@@ -157,8 +162,7 @@ namespace ExViewer.Views
 
         private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)
         {
-            await RootController.RequireLogOn();
-            updateUserInfo(true);
+            updateUserInfo(await RootController.RequireLogOn() == ContentDialogResult.Primary);
         }
     }
 }
