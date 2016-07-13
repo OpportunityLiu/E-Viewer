@@ -14,21 +14,116 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using GalaSoft.MvvmLight.Threading;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
+using Windows.UI.Xaml.Data;
+using System.Collections;
 
 namespace ExClient
 {
     public class CachedGallery : Gallery
     {
-        private class CachedGalleryList : IncrementalLoadingCollection<Gallery>
+        private class CachedGalleryList : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
         {
-            private static int pageSize = 20;
-
-            public CachedGalleryList() : base(0)
+            private class ItemIndexRangeEqualityComparer : EqualityComparer<ItemIndexRange>
             {
-                using(var db = CachedGalleryDb.Create())
+                public static new ItemIndexRangeEqualityComparer Default { get; } = new ItemIndexRangeEqualityComparer();
+
+                public override bool Equals(ItemIndexRange x, ItemIndexRange y)
+                {
+                    return x.FirstIndex == y.FirstIndex && x.Length == y.Length;
+                }
+
+                public override int GetHashCode(ItemIndexRange obj)
+                {
+                    return obj.FirstIndex ^ ((int)obj.Length << 16);
+                }
+            }
+
+            private BitArray loadStateFlag;
+            private int loadedCount;
+
+            public CachedGalleryList() : base(1)
+            {
+                using(var db = GalleryDb.Create())
                 {
                     RecordCount = db.CacheSet.Count();
-                    PageCount = (int)Math.Ceiling(RecordCount / (double)pageSize);
+                    PageCount = 1;
+                    loadStateFlag = new BitArray(RecordCount);
+                    AddRange(Enumerable.Repeat((CachedGallery)null, RecordCount));
+                    loadRange(new ItemIndexRange(0, (uint)Math.Min(RecordCount, 20)), db);
+                }
+            }
+
+            protected override void RemoveItem(int index)
+            {
+                RecordCount--;
+                base.RemoveItem(index);
+                if(loadStateFlag != null)
+                {
+                    if(loadStateFlag[index])
+                        loadedCount--;
+                    var oldFlag = loadStateFlag;
+                    loadStateFlag = new BitArray(RecordCount);
+                    for(int i = 0; i < index; i++)
+                    {
+                        loadStateFlag[i] = oldFlag[i];
+                    }
+                    for(int i = index; i < RecordCount; i++)
+                    {
+                        loadStateFlag[i] = oldFlag[i + 1];
+                    }
+                }
+            }
+
+            public void RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)
+            {
+                if(loadedCount == RecordCount)
+                {
+                    loadStateFlag = null;
+                    return;
+                }
+                using(var db = GalleryDb.Create())
+                {
+                    foreach(var item in trackedItems.Concat(Enumerable.Repeat(visibleRange, 1)).Distinct(ItemIndexRangeEqualityComparer.Default))
+                    {
+                        loadRange(item, db);
+                    }
+                }
+            }
+
+            private void loadRange(ItemIndexRange visibleRange, GalleryDb db)
+            {
+                var needLoad = false;
+                for(int i = visibleRange.LastIndex; i >= visibleRange.FirstIndex; i--)
+                {
+                    if(!this.loadStateFlag[i])
+                    {
+                        needLoad = true;
+                        break;
+                    }
+                }
+                if(!needLoad)
+                    return;
+                System.Diagnostics.Debug.WriteLine($"Load {visibleRange.FirstIndex} to {visibleRange.LastIndex}, count {visibleRange.Length}");
+                var query = db.CacheSet
+                    .OrderByDescending(c => c.Saved)
+                    .Skip(visibleRange.FirstIndex)
+                    .Take((int)visibleRange.Length)
+                    .Select(c => new
+                    {
+                        c,
+                        c.Gallery
+                    }).ToList();
+                for(int i = 0; i < visibleRange.Length; i++)
+                {
+                    var index = i + visibleRange.FirstIndex;
+                    if(this.loadStateFlag[index])
+                        continue;
+                    var a = query[i];
+                    var c = new CachedGallery(a.Gallery, a.c);
+                    var ignore = c.InitAsync();
+                    this[index] = c;
+                    this.loadStateFlag[index] = true;
+                    this.loadedCount++;
                 }
             }
 
@@ -36,36 +131,51 @@ namespace ExClient
             {
                 return Task.Run(() =>
                 {
-                    using(var db = CachedGalleryDb.Create())
-                    {
-                        var query = db.CacheSet.Skip(this.Count).Take(pageSize).Select(c => new
-                        {
-                            c,
-                            c.Gallery
-                        }).ToList();
-                        var toAdd = query.Select(a =>
-                        {
-                            var c = new CachedGallery(a.Gallery, a.c);
-                            var ignore = c.InitAsync();
-                            return c;
-                        });
-                        return (uint)this.AddRange(toAdd);
-                    }
+                    return 0u;
                 }).AsAsyncOperation();
             }
+
+            #region IDisposable Support
+            private bool disposedValue = false; // 要检测冗余调用
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if(!disposedValue)
+                {
+                    if(disposing)
+                    {
+                        // TODO: 释放托管状态(托管对象)。
+                    }
+
+                    // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
+                    // TODO: 将大型字段设置为 null。
+
+                    disposedValue = true;
+                }
+            }
+
+            // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
+            // ~CachedGalleryList() {
+            //   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
+            //   Dispose(false);
+            // }
+
+            // 添加此代码以正确实现可处置模式。
+            public void Dispose()
+            {
+                // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
+                Dispose(true);
+                // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
+                // GC.SuppressFinalize(this);
+            }
+            #endregion
         }
 
         private static int pageSize = 20;
 
         public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
         {
-            return Task.Run<IncrementalLoadingCollection<Gallery>>(async () =>
-            {
-                var r = new CachedGalleryList();
-                if(r.HasMoreItems)
-                    await r.LoadMoreItemsAsync(10);
-                return r;
-            }).AsAsyncOperation();
+            return Task.Run<IncrementalLoadingCollection<Gallery>>(() => new CachedGalleryList()).AsAsyncOperation();
         }
 
         public static IAsyncActionWithProgress<double> ClearCachedGalleriesAsync()
@@ -81,7 +191,7 @@ namespace ExClient
                     await items[i].DeleteAsync(StorageDeleteOption.PermanentDelete);
                 }
                 progress.Report(1);
-                using(var db = CachedGalleryDb.Create())
+                using(var db = GalleryDb.Create())
                 {
                     db.ImageSet.RemoveRange(db.ImageSet);
                     db.CacheSet.RemoveRange(db.CacheSet);
@@ -98,7 +208,7 @@ namespace ExClient
             this.Owner = Client.Current;
         }
 
-        public override IAsyncAction InitAsync()
+        public override IAsyncAction InitOverrideAsync()
         {
             return DispatcherHelper.RunAsync(async () =>
             {
@@ -121,7 +231,7 @@ namespace ExClient
         {
             if(imageModels != null)
                 return;
-            using(var db = CachedGalleryDb.Create())
+            using(var db = GalleryDb.Create())
             {
                 imageModels = (from g in db.GallerySet
                                where g.Id == Id
@@ -157,7 +267,7 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                using(var db = CachedGalleryDb.Create())
+                using(var db = GalleryDb.Create())
                 {
                     db.CacheSet.Remove(db.CacheSet.Single(c => c.GalleryId == this.Id));
                     await db.SaveChangesAsync();

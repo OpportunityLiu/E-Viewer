@@ -49,7 +49,7 @@ namespace ExViewer.Views
             Bindings.Update();
             await Task.Yield();
             if(e.NavigationMode == NavigationMode.Back)
-            { 
+            {
                 //TODO: restore scroll position.
             }
             ab.Focus(FocusState.Pointer);
@@ -125,24 +125,25 @@ namespace ExViewer.Views
             sv_AdvancedSearch.IsEnabled = false;
         }
 
-        private void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if(args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
-                sender.ItemsSource = Enum.GetNames(typeof(NameSpace)).Where(s => s.StartsWith(sender.Text, StringComparison.CurrentCultureIgnoreCase));
+                var r = await VM.LoadSuggestion(sender.Text);
+                if(args.CheckCurrent())
+                    asb.ItemsSource = r;
             }
         }
 
         private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            sender.ItemsSource = null;
+            if(!VM.AutoComplateFinished(args.SelectedItem))
+                return;
             sender.Focus(FocusState.Programmatic);
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            if(args.ChosenSuggestion != null)
-                return;
             ab.IsOpen = false;
             VM.Search.Execute(null);
         }

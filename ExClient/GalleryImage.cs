@@ -17,6 +17,7 @@ using System.IO;
 using GalaSoft.MvvmLight.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using ExClient.Internal;
 
 namespace ExClient
 {
@@ -41,7 +42,6 @@ namespace ExClient
     {
         static GalleryImage()
         {
-            var ignore = GetDefaultThumb();
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 var info = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
@@ -50,27 +50,6 @@ namespace ExClient
         }
 
         private static uint thumbWidth = 100;
-
-        private static BitmapImage defaultThumb;
-
-        protected internal static IAsyncOperation<BitmapImage> GetDefaultThumb()
-        {
-            return Run(async token =>
-            {
-                if(defaultThumb != null)
-                    return defaultThumb;
-                BitmapImage tb = null;
-                await DispatcherHelper.RunAsync(async () =>
-                {
-                    tb = new BitmapImage();
-                    using(var thumb = await StorageHelper.GetIconOfExtension("jpg"))
-                    {
-                        await tb.SetSourceAsync(thumb);
-                    }
-                });
-                return defaultThumb = tb;
-            });
-        }
 
         internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
         {
@@ -96,7 +75,54 @@ namespace ExClient
             this.PageId = pageId;
             this.imageKey = imageKey;
             this.PageUri = new Uri(pageBaseUri, $"{imageKey}/{owner.Id.ToString()}-{pageId.ToString()}");
-            this.Thumb = thumb;
+            this.image = new ImageHandle(img =>
+            {
+                return Run(async token =>
+                {
+                    try
+                    {
+                        using(var stream = await ImageFile.OpenReadAsync())
+                        {
+                            await DispatcherHelper.RunAsync(async () =>
+                            {
+                                await img.SetSourceAsync(stream);
+                            });
+                        }
+                    }
+                    catch(FileNotFoundException)
+                    {
+                        ImageFile = null;
+                        State = ImageLoadingState.Waiting;
+                    }
+                    catch(Exception)
+                    {
+                        this.State = ImageLoadingState.Failed;
+                    }
+                });
+            });
+            this.thumbSource = thumb;
+            this.thumb = new ImageHandle(img =>
+            {
+                return DispatcherHelper.RunAsync(async () =>
+                {
+                    img.DecodePixelType = DecodePixelType.Logical;
+                    img.DecodePixelWidth = 100;
+                    try
+                    {
+                        using(var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 18 / 10))
+                        {
+                            await img.SetSourceAsync(stream);
+                        }
+                    }
+                    catch
+                    {
+                        using(var stream = await StorageHelper.GetIconOfExtension("jpg"))
+                        {
+                            await img.SetSourceAsync(stream);
+                        }
+                    }
+                });
+            });
         }
 
         private static readonly Regex failTokenMatcher = new Regex(@"return\s+nl\(\s*'(.+?)'\s*\)", RegexOptions.Compiled);
@@ -127,23 +153,6 @@ namespace ExClient
             }).AsAsyncAction();
         }
 
-        private IAsyncAction loadThumbFromFile()
-        {
-            return DispatcherHelper.RunAsync(async () =>
-            {
-                var thumb = new BitmapImage()
-                {
-                    DecodePixelType = DecodePixelType.Logical,
-                    DecodePixelWidth = 100
-                };
-                using(var stream = await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 18 / 10))
-                {
-                    await thumb.SetSourceAsync(stream);
-                }
-                this.Thumb = thumb;
-            });
-        }
-
         private ImageLoadingState state;
 
         public ImageLoadingState State
@@ -158,25 +167,14 @@ namespace ExClient
             }
         }
 
-        private ImageSource thumb;
+        private readonly ImageHandle thumb;
+        private ImageSource thumbSource;
 
         public ImageSource Thumb
         {
             get
             {
-                return thumb;
-            }
-            protected set
-            {
-                if(value == null)
-                {
-                    GetDefaultThumb().Completed = (sender, e) =>
-                    {
-                        Set(ref thumb, sender.GetResults());
-                    };
-                }
-                else
-                    Set(ref thumb, value);
+                return thumbSource ?? thumb.Image;
             }
         }
 
@@ -261,12 +259,14 @@ namespace ExClient
                     token.ThrowIfCancellationRequested();
                     await deleteImageFile();
                     var imageLoadResponse = await imageLoad;
+                    if(imageLoadResponse.Content.Headers.ContentType.MediaType == "text/html")
+                        throw new InvalidOperationException(HtmlUtilities.ConvertToText(imageLoadResponse.Content.ToString()));
                     token.ThrowIfCancellationRequested();
                     var buffer = await imageLoadResponse.Content.ReadAsBufferAsync();
                     var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
                     var save = Owner.GalleryFolder.SaveFileAsync($"{PageId}{ext}", buffer);
                     ImageFile = await save;
-                    using(var db = Models.CachedGalleryDb.Create())
+                    using(var db = Models.GalleryDb.Create())
                     {
                         var myModel = db.ImageSet.SingleOrDefault(model => model.OwnerId == this.Owner.Id && model.PageId == this.PageId);
                         if(myModel == null)
@@ -332,13 +332,15 @@ namespace ExClient
             }
             protected set
             {
-                Set(ref imageFile, value);
-                if(imageFile != null)
+                if(value != null)
                 {
-                    var ignore = loadThumbFromFile();
+                    this.thumbSource = null;
+                    thumb.Reset();
                 }
-                image = null;
+                Set(ref imageFile, value);
+                image.Reset();
                 RaisePropertyChanged(nameof(Image));
+                RaisePropertyChanged(nameof(Thumb));
                 RaisePropertyChanged(nameof(ImageFileUri));
             }
         }
@@ -355,7 +357,7 @@ namespace ExClient
             }
         }
 
-        private WeakReference<BitmapImage> image;
+        private readonly ImageHandle image;
 
         public BitmapImage Image
         {
@@ -363,37 +365,7 @@ namespace ExClient
             {
                 if(ImageFile == null)
                     return null;
-                BitmapImage image;
-                if(this.image != null && this.image.TryGetTarget(out image))
-                    return image;
-                image = new BitmapImage();
-                this.image = new WeakReference<BitmapImage>(image);
-                var loadStream = ImageFile.OpenReadAsync();
-                loadStream.Completed = async (op, e) =>
-                {
-                    if(e == AsyncStatus.Error && op.ErrorCode is FileNotFoundException)
-                    {
-                        ImageFile = null;
-                        State = ImageLoadingState.Waiting;
-                    }
-                    if(e != AsyncStatus.Completed)
-                        return;
-                    await DispatcherHelper.RunAsync(async () =>
-                    {
-                        try
-                        {
-                            using(var stream = op.GetResults())
-                            {
-                                await image.SetSourceAsync(stream);
-                            }
-                        }
-                        catch(Exception)
-                        {
-                            this.State = ImageLoadingState.Failed;
-                        }
-                    });
-                };
-                return image;
+                return this.image.Image;
             }
         }
 

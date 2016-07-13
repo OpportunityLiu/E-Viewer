@@ -1,13 +1,16 @@
 ﻿using ExClient;
+using ExViewer.DataBase;
 using ExViewer.Settings;
 using ExViewer.Views;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using System.Linq;
 
 namespace ExViewer.ViewModels
 {
@@ -36,6 +39,7 @@ namespace ExViewer.ViewModels
             private static CacheStorage<string, SearchResult> srCache = new CacheStorage<string, SearchResult>(query =>
                 {
                     var data = JsonConvert.DeserializeObject<SearchResultData>(query);
+                    AddHistory(data.KeyWord);
                     return Client.Current.Search(data.KeyWord, data.Category, data.AdvancedSearch);
                 }, 10
             );
@@ -80,6 +84,7 @@ namespace ExViewer.ViewModels
                     Category = searchResult.Category,
                     AdvancedSearch = searchResult.AdvancedSearch
                 });
+                AddHistory(searchResult.KeyWord);
                 srCache.Add(query, searchResult);
                 return query;
             }
@@ -206,5 +211,55 @@ namespace ExViewer.ViewModels
             }
         }
 
+        internal IAsyncOperation<IReadOnlyList<SearchHistory>> LoadSuggestion(string input)
+        {
+            return Task.Run(() =>
+            {
+                input = input?.Trim() ?? "";
+                using(var db = SearchHistoryDb.Create())
+                {
+                    return (IReadOnlyList<SearchHistory>)
+                    ((IEnumerable<SearchHistory>)
+                        (db.SearchHistorySet
+                            .Where(sh => sh.Content.StartsWith(input))
+                            .OrderByDescending(sh => sh.Time)))
+                        .Distinct()
+                        .ToList();
+                }
+            }).AsAsyncOperation();
+        }
+
+        internal bool AutoComplateFinished(object selectedSuggestion)
+        {
+            if(selectedSuggestion is SearchHistory)
+                return true;
+            return false;
+        }
+
+        public async void ClearHistory()
+        {
+            await SearchHistoryDb.DeleteAsync();
+        }
+
+        public static void AddHistory(string content)
+        {
+            using(var db = SearchHistoryDb.Create())
+            {
+                db.SearchHistorySet.Add(SearchHistory.Create(content));
+                db.SaveChanges();
+            }
+        }
+
+        internal RelayCommand<SearchHistory> DeleteHistory
+        {
+            get;
+        } = new RelayCommand<SearchHistory>(sh =>
+        {
+            using(var db = SearchHistoryDb.Create())
+            {
+                db.SearchHistorySet.Remove(sh);
+                db.SaveChanges();
+            }
+        }, sh => sh != null);
     }
 }

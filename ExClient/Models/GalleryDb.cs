@@ -10,15 +10,15 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Models
 {
-    class CachedGalleryDb : DbContext
+    class GalleryDb : DbContext
     {
         private const string dbFilename = "Gallery.db";
         private static object syncroot = new object();
         private static bool created = false;
 
-        public static CachedGalleryDb Create()
+        public static GalleryDb Create()
         {
-            var db = new CachedGalleryDb();
+            var db = new GalleryDb();
             if(!created)
                 lock(syncroot)
                     if(!created)
@@ -35,7 +35,7 @@ namespace ExClient.Models
                 lock(syncroot)
                     if(created)
                     {
-                        new CachedGalleryDb().Database.EnsureDeleted();
+                        new GalleryDb().Database.EnsureDeleted();
                         created = false;
                     }
         }
@@ -45,7 +45,7 @@ namespace ExClient.Models
             return Task.Run((Action)Delete).AsAsyncAction();
         }
 
-        protected CachedGalleryDb()
+        protected GalleryDb()
         {
         }
 
