@@ -24,7 +24,7 @@ namespace ExClient
 
         protected void Set<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
         {
-            if(Equals(field, value))
+            if (Equals(field, value))
                 return;
             field = value;
             OnPropertyChanged(propertyName);
@@ -39,7 +39,7 @@ namespace ExClient
         {
             CheckReentrancy();
             var toAdd = items.ToList();
-            foreach(var item in toAdd)
+            foreach (var item in toAdd)
             {
                 this.Items.Add(item);
             }
@@ -120,17 +120,31 @@ namespace ExClient
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
-            if(loading?.Status == AsyncStatus.Started)
+            if (loading?.Status == AsyncStatus.Started)
             {
+                var temp = loading;
                 return Run(async token =>
                 {
-                    await Task.Yield();
-                    return new LoadMoreItemsResult();
+                    token.Register(temp.Cancel);
+                    while(temp.Status== AsyncStatus.Started)
+                    {
+                        await Task.Delay(200);
+                    }
+                    switch (temp.Status)
+                    {
+                        case AsyncStatus.Completed:
+                            return temp.GetResults();
+                        case AsyncStatus.Error:
+                            throw temp.ErrorCode;
+                        default:
+                            token.ThrowIfCancellationRequested();
+                            throw new OperationCanceledException(token);
+                    }
                 });
             }
             return loading = Run(async token =>
             {
-                if(!HasMoreItems)
+                if (!HasMoreItems)
                     return new LoadMoreItemsResult();
                 var lp = LoadPageAsync(loadedPageCount);
                 uint re = 0;
@@ -141,7 +155,7 @@ namespace ExClient
                     loadedPageCount++;
                     OnPropertyChanged(nameof(HasMoreItems));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     raiseLoadMoreItemsException(ex);
                 }
@@ -154,13 +168,13 @@ namespace ExClient
         private void raiseLoadMoreItemsException(Exception ex)
         {
             var temp = LoadMoreItemsException;
-            if(temp == null)
+            if (temp == null)
                 throw new InvalidOperationException($"LoadMoreItemsException did not handled in {{{this}}}.", ex);
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 var args = new LoadMoreItemsExceptionEventArgs(ex);
                 temp(this, args);
-                if(!args.Handled)
+                if (!args.Handled)
                     throw new InvalidOperationException($"LoadMoreItemsException did not handled in {{{this}}}.", ex);
             });
         }
