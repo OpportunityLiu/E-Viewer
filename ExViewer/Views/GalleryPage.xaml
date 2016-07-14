@@ -26,7 +26,7 @@
                     Value="0" />
             <Setter Property="Padding"
                     Value="0" />
-            <Setter Property="HorizontalContentAlignment"           
+            <Setter Property="HorizontalContentAlignment"
                     Value="Stretch" />
         </Style>
 
@@ -96,8 +96,8 @@
                            Text="Expunged"
                            Foreground="Red"
                            Style="{StaticResource TorrentNameTextBlockStyle}"
-                           VerticalAlignment="Center" 
-                           Visibility="{x:Bind TorrentUri, Converter={StaticResource NullToVisibleConverter}}"/>
+                           VerticalAlignment="Center"
+                           Visibility="{x:Bind TorrentUri, Converter={StaticResource NullToVisibleConverter}}" />
                 <Button Grid.RowSpan="2"
                         Grid.Column="2"
                         VerticalAlignment="Stretch"
@@ -196,7 +196,7 @@
                       x:DataType="c:Comment">
             <UserControl VerticalContentAlignment="Stretch"
                          HorizontalContentAlignment="Stretch">
-                <RelativePanel Padding="4,4,4,12">
+                <RelativePanel Padding="4,8,4,12">
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup>
                             <VisualState x:Name="Narrow">
@@ -224,8 +224,8 @@
                                RelativePanel.AlignLeftWithPanel="True"
                                RelativePanel.AlignRightWithPanel="True"
                                RelativePanel.AlignTopWithPanel="True"
-                               RelativePanel.AlignBottomWith="Author" 
-                               Margin="0,-4"/>
+                               RelativePanel.AlignBottomWith="Author"
+                               Margin="0,-4" />
                     <TextBlock x:Name="Posted"
                                Text="{x:Bind Posted, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=Posted on \{0\}}"
                                Style="{StaticResource CommentHeaderTextBlockStyle}"
@@ -233,7 +233,7 @@
                                RelativePanel.AlignLeftWithPanel="True" />
                     <TextBlock x:Name="Author"
                                Text="{x:Bind Author, Converter={StaticResource StringConverter}, ConverterParameter=By \{0\}}"
-                               Style="{StaticResource CommentHeaderTextBlockStyle}"/>
+                               Style="{StaticResource CommentHeaderTextBlockStyle}" />
                     <TextBlock x:Name="Score"
                                Text="{x:Bind Score, Converter={StaticResource StringConverter}, ConverterParameter=Score \{0:+#0;-#0\}}"
                                Style="{StaticResource CommentHeaderTextBlockStyle}"
@@ -269,6 +269,16 @@
                 </RelativePanel>
             </UserControl>
         </DataTemplate>
+
+        <Style x:Key="PivotHeaderPathIconStyle"
+               TargetType="PathIcon">
+            <Setter Property="Margin"
+                    Value="0,8,8,0" />
+            <Setter Property="MinWidth"
+                    Value="32" />
+            <Setter Property="MinHeight"
+                    Value="32" />
+        </Style>
     </Page.Resources>
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -277,6 +287,20 @@
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="500" />
                     </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="tb_ImagesWide.Visibility"
+                                Value="Visible" />
+                        <Setter Target="tb_CommentsWide.Visibility"
+                                Value="Visible" />
+                        <Setter Target="tb_TorrentsWide.Visibility"
+                                Value="Visible" />
+                        <Setter Target="p_ImagesNarrow.Visibility"
+                                Value="Collapsed" />
+                        <Setter Target="tb_CommentsNarrow.Visibility"
+                                Value="Collapsed" />
+                        <Setter Target="p_TorrentsNarrow.Visibility"
+                                Value="Collapsed" />
+                    </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Narrow">
                     <VisualState.StateTriggers>
@@ -444,7 +468,18 @@
                         <PivotItem>
                             <PivotItem.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Images" />
+                                    <PathIcon x:Name="p_ImagesNarrow"
+                                              Data="M0,12 V28 H24 V12 H0 Z
+                  M2,14 V26 H22 V14 H2 Z
+                  M2,22 L8,16 L12,20 L15,17 L22,24 V26 H21.172 L15,19.828 L8.828,26 H6 L10.586,21.414 L8,18.828 L2,24.828 Z
+                  M18,17 A1,1,0,1,0,19,16 A1,1,0,0,0,18,17 Z
+                  M 4,12 V8 H28 V24 H24 V22 H26 V10 H6 V12 H4 Z
+                  M 8,8 V4 H32 V20 H28 V18 H30 V6 H10 V8 H8 Z"
+                                              Style="{StaticResource PivotHeaderPathIconStyle}"
+                                              AutomationProperties.Name="Images" />
+                                    <TextBlock x:Name="tb_ImagesWide"
+                                               Visibility="Collapsed"
+                                               Text="Images" />
                                     <TextBlock Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                VerticalAlignment="Top" />
@@ -484,7 +519,15 @@
                         <PivotItem>
                             <PivotItem.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Comments" />
+                                    <TextBlock x:Name="tb_CommentsNarrow"
+                                               Text="&#xE90A;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               AutomationProperties.Name="Comments"
+                                               Margin="0,8,8,0"
+                                               FontSize="32" />
+                                    <TextBlock x:Name="tb_CommentsWide"
+                                               Visibility="Collapsed"
+                                               Text="Comments" />
                                     <TextBlock Text="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
                                                Visibility="{x:Bind VM.Gallery.Comments, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
@@ -517,7 +560,22 @@
                         <PivotItem>
                             <PivotItem.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Torrents" />
+                                    <PathIcon x:Name="p_TorrentsNarrow"
+                                              Data="M4,0 V16 H6 V2 H26 V17
+                                          C26,19,24,20,24,22 
+                                          V30 H12 V32 H28 A2,2,0,0,0,30,30 V22
+                                          C30,20,28,19,28,17 V2 A2,2,0,0,0,26,0 Z
+                                          M26,30 H28 V22.5
+                                          Q 28,21.3,27,20.4
+                                          Q 26,21.3,26,22.5 Z
+                                          M0,32 H10 V30 H0 Z
+                                          M4,18 H6 V28.172 L8.586,25.586 L10,27 L7,30 H3 L0,27 L1.414,25.586
+                                          L4,28.172 Z"
+                                              Style="{StaticResource PivotHeaderPathIconStyle}"
+                                              AutomationProperties.Name="Torrents"/>
+                                    <TextBlock x:Name="tb_TorrentsWide"
+                                               Text="Torrents"
+                                               Visibility="Collapsed" />
                                     <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
                                                Visibility="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
