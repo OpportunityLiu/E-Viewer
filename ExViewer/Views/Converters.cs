@@ -14,7 +14,6 @@ using ExViewer.ViewModels;
 using Windows.UI;
 using System.Globalization;
 using Windows.UI.Xaml.Markup;
-using MathExpression;
 
 namespace ExViewer.Views
 {
@@ -46,12 +45,12 @@ namespace ExViewer.Views
             get; set;
         }
 
-        public abstract object ConvertImplementation(object value, Type targetType, object parameter, string language);
-        public abstract object ConvertBackImplementation(object value, Type targetType, object parameter, string language);
+        public abstract object ConvertImpl(object value, Type targetType, object parameter, string language);
+        public abstract object ConvertBackImpl(object value, Type targetType, object parameter, string language);
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var convertedByThis = ConvertImplementation(value, targetType, parameter, language);
+            var convertedByThis = ConvertImpl(value, targetType, parameter, language);
             if(InnerConverter == null)
                 return convertedByThis;
             else
@@ -65,18 +64,18 @@ namespace ExViewer.Views
                 convertedByInner = InnerConverter.ConvertBack(value, targetType, parameter, language);
             else
                 convertedByInner = value;
-            return ConvertBackImplementation(convertedByInner, targetType, parameter, language);
+            return ConvertBackImpl(convertedByInner, targetType, parameter, language);
         }
     }
 
     public class EmptyConverter : ValueConverterChain
     {
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             return convert(value, targetType, parameter, language);
         }
 
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             return convert(value, targetType, parameter, language);
         }
@@ -94,12 +93,12 @@ namespace ExViewer.Views
 
     public class DefaultConverter : ValueConverterChain
     {
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             return System.Convert.ChangeType(value, targetType);
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             return System.Convert.ChangeType(value, targetType);
         }
@@ -117,7 +116,7 @@ namespace ExViewer.Views
             }
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             var state = (ExClient.ImageLoadingState)value;
             if(targetType == typeof(Visibility))
@@ -144,7 +143,7 @@ namespace ExViewer.Views
             throw new NotImplementedException();
         }
 
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
         }
@@ -152,12 +151,12 @@ namespace ExViewer.Views
 
     public class StringConverter : ValueConverterChain
     {
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             return string.Format(CultureInfo.CurrentCulture, parameter.ToString(), value);
         }
 
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
         }
@@ -211,7 +210,7 @@ namespace ExViewer.Views
             set;
         } = true;
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             var v = (bool)value;
             if(v == BooleanForVisible)
@@ -220,7 +219,7 @@ namespace ExViewer.Views
                 return Visibility.Collapsed;
         }
 
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             return ((Visibility)value == Visibility.Visible) ? BooleanForVisible : !BooleanForVisible;
         }
@@ -258,7 +257,7 @@ namespace ExViewer.Views
             set;
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             if(Equals(value, ValueForTrue) && Equals(value, ValueForFalse))
                 return Default;
@@ -269,7 +268,7 @@ namespace ExViewer.Views
             return Others;
         }
 
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             var v = (bool)value;
             if(v)
@@ -304,7 +303,7 @@ namespace ExViewer.Views
 
         private Type enumBaseType;
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             if(enumBaseType == null)
             {
@@ -318,7 +317,7 @@ namespace ExViewer.Views
             return Others;
         }
 
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             var v = (bool)value;
             if(v)
@@ -330,7 +329,7 @@ namespace ExViewer.Views
 
     public class LengthConverter : ValueConverterChain
     {
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             var v = value as double?;
             if(v == null)
@@ -355,9 +354,9 @@ namespace ExViewer.Views
             throw new InvalidOperationException();
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
-            return ConvertBackImplementation(value, targetType, parameter, language);
+            return ConvertBackImpl(value, targetType, parameter, language);
         }
     }
 
@@ -366,7 +365,7 @@ namespace ExViewer.Views
         const char halfL = '\xE7C6';
         const char full = '\xE00A';
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             var rating = ((double)value) * 2;
             var x = (int)Math.Round(rating);
@@ -375,7 +374,7 @@ namespace ExViewer.Views
             return new string(full, fullCount) + new string(halfL, halfCount);
         }
 
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
         }
@@ -383,12 +382,12 @@ namespace ExViewer.Views
 
     public class NullableConverter : ValueConverterChain
     {
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             return convert(value, targetType, parameter, language);
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             return convert(value, targetType, parameter, language);
         }
@@ -415,12 +414,12 @@ namespace ExViewer.Views
 
     public class LogicalNotConverter : ValueConverterChain
     {
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             return convert(value, targetType, parameter, language);
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             return convert(value, targetType, parameter, language);
         }
@@ -435,12 +434,12 @@ namespace ExViewer.Views
 
     public class EnumToStringConverter : ValueConverterChain
     {
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             return Enum.Parse(targetType, value.ToString());
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             return Enum.GetName(value.GetType(), value);
         }
@@ -448,12 +447,12 @@ namespace ExViewer.Views
 
     public class GalleryToTitleStringConverter : ValueConverterChain
     {
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             var g = value as Gallery;
             if(g == null)
@@ -464,12 +463,12 @@ namespace ExViewer.Views
 
     public class RangeToBooleanConverter : ValueConverterChain
     {
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             var v = System.Convert.ToDouble(value);
             if(v >= Min && v < Max)
@@ -522,56 +521,24 @@ namespace ExViewer.Views
         }
     }
 
-    public class MathFuctionConverter : ValueConverterChain
+    public class NumberOffserConverter : ValueConverterChain
     {
-        public string Function
+        public double Offset
         {
-            get
-            {
-                return function;
-            }
-            set
-            {
-                function = value;
-                parsed = Parser.Parse1(function);
-            }
+            set;
+            get;
         }
 
-        private string invFunction;
-
-        private ParseResult<Func<double, double>> parsed;
-
-        public string InversedFunction
+        public override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
-            get
-            {
-                return invFunction;
-            }
-            set
-            {
-                invFunction = value;
-                invParsed = Parser.Parse1(invFunction);
-            }
-        }
-
-        private string function;
-
-        private ParseResult<Func<double, double>> invParsed;
-
-        public override object ConvertBackImplementation(object value, Type targetType, object parameter, string language)
-        {
-            if(invParsed == null)
-                throw new InvalidOperationException($"{nameof(InversedFunction)} hasn't been set.");
             var v = System.Convert.ToDouble(value);
-            return System.Convert.ChangeType(invParsed.Compiled(v), targetType);
+            return System.Convert.ChangeType(v - Offset, targetType);
         }
 
-        public override object ConvertImplementation(object value, Type targetType, object parameter, string language)
+        public override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
-            if(parsed == null)
-                throw new InvalidOperationException($"{nameof(Function)} hasn't been set.");
             var v = System.Convert.ToDouble(value);
-            return System.Convert.ChangeType(parsed.Compiled(v), targetType);
+            return System.Convert.ChangeType(v + Offset, targetType);
         }
     }
 

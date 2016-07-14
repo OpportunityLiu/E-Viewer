@@ -93,7 +93,6 @@ namespace ExViewer.ViewModels
         public static IAsyncAction InitAsync()
         {
             var defaultVM = new SearchVM(null);
-            EhTagTranslatorClient.ContentFetcher.Current.get();
             return defaultVM.searchResult.LoadMoreItemsAsync(40).AsTask().AsAsyncAction();
         }
 
