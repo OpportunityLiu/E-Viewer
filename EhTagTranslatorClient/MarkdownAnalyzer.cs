@@ -24,7 +24,7 @@ namespace EhTagTranslatorClient
 
         private static Record analyzeLine(string line)
         {
-             
+            return null;
         }
     }
 }
