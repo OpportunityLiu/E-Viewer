@@ -353,7 +353,19 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:HtmlTextBlock">
-                    <RichTextBlock x:Name="Presenter"/>
+                    <RichTextBlock x:Name="Presenter" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="IsTabStop"
+                Value="False" />
+    </Style>
+
+    <Style TargetType="controls:HighlightTextBlock">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:HighlightTextBlock">
+                    <TextBlock x:Name="Presenter" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

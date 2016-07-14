@@ -23,6 +23,8 @@ namespace ExClient
     {
         private class CachedGalleryList : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
         {
+            private static Gallery defaultGallery = new Gallery(-1, null, "", "", "Gallery Title", "", "", "ms-appx:///", "Uploader", "0", "0", 0, false, "2.5", "0", new string[0]);
+
             private class ItemIndexRangeEqualityComparer : EqualityComparer<ItemIndexRange>
             {
                 public static new ItemIndexRangeEqualityComparer Default { get; } = new ItemIndexRangeEqualityComparer();
@@ -48,8 +50,8 @@ namespace ExClient
                     RecordCount = db.CacheSet.Count();
                     PageCount = 1;
                     loadStateFlag = new BitArray(RecordCount);
-                    AddRange(Enumerable.Repeat((CachedGallery)null, RecordCount));
-                    loadRange(new ItemIndexRange(0, (uint)Math.Min(RecordCount, 20)), db);
+                    AddRange(Enumerable.Repeat(defaultGallery, RecordCount));
+                    loadRange(new ItemIndexRange(0, (uint)Math.Min(RecordCount, 10)), db);
                 }
             }
 

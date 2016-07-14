@@ -58,6 +58,7 @@ namespace ExViewer.DataBase
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SearchHistory>().HasKey(sh => sh.Time);
+            modelBuilder.Entity<SearchHistory>().Ignore(sh => sh.Highlight);
         }
 
         public DbSet<SearchHistory> SearchHistorySet
@@ -72,6 +73,17 @@ namespace ExViewer.DataBase
         public string Content
         {
             get; set;
+        }
+
+        public string Highlight
+        {
+            get; private set;
+        }
+
+        public SearchHistory SetHighlight(string highlight)
+        {
+            Highlight = highlight;
+            return this;
         }
 
         public DateTimeOffset Time

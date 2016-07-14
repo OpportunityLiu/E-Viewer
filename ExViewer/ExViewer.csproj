@@ -104,11 +104,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountManager.cs" />
-    <Compile Include="Adapters\GalleryExtension.cs" />
+    <Compile Include="Helpers\DocumentHelper.cs" />
+    <Compile Include="Helpers\GalleryExtension.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\DataTemplateSelector.cs" />
+    <Compile Include="Controls\HighlightTextBlock.cs" />
     <Compile Include="Controls\HtmlTextBlock.cs" />
     <Compile Include="Controls\CategorySelector.xaml.cs">
       <DependentUpon>CategorySelector.xaml</DependentUpon>
