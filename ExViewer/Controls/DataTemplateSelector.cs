@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace ExViewer.Controls
 {
-    [ContentProperty(Name = "Templates")]
+    [ContentProperty(Name = nameof(Templates))]
     public class DataTemplateSelector : Windows.UI.Xaml.Controls.DataTemplateSelector
     {
         private class DataTemplateCollection : Collection<DataTemplateKeyValuePair>
@@ -65,7 +65,7 @@ namespace ExViewer.Controls
         }
     }
 
-    [ContentProperty(Name = "Value")]
+    [ContentProperty(Name = nameof(Value))]
     public class DataTemplateKeyValuePair : DependencyObject
     {
         public string Key

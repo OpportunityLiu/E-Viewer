@@ -68,9 +68,10 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{x:Bind Content}"
-                                           Grid.Column="1" />
-                                <TextBlock Text="{x:Bind Time, ConverterParameter=Search history\, Last search on \{0\}, Converter={StaticResource DateTimeToStringConverter}}"
+                                <controls:HighlightTextBlock Text="{x:Bind Content}"
+                                                             HighlightText="{x:Bind Highlight}"
+                                                             Grid.Column="1" />
+                                <TextBlock Text="{x:Bind Time, Converter={StaticResource DateTimeToStringConverter}}"
                                            Style="{StaticResource SuggestionCaptionTextBlockStyle}"
                                            Grid.Row="1"
                                            Grid.Column="1" />

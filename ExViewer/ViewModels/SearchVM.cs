@@ -221,9 +221,10 @@ namespace ExViewer.ViewModels
                     return (IReadOnlyList<SearchHistory>)
                     ((IEnumerable<SearchHistory>)
                         (db.SearchHistorySet
-                            .Where(sh => sh.Content.StartsWith(input))
+                            .Where(sh => sh.Content.Contains(input))
                             .OrderByDescending(sh => sh.Time)))
                         .Distinct()
+                        .Select(sh=>sh.SetHighlight(input))
                         .ToList();
                 }
             }).AsAsyncOperation();

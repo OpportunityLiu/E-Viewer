@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using static ExViewer.Helpers.DocumentHelper;
 
 namespace ExViewer.Controls
 {
@@ -96,7 +97,7 @@ namespace ExViewer.Controls
             presenter.Blocks.Clear();
             if(content == null)
                 return;
-            var para = new Paragraph() { Foreground = (Brush)Resources["ApplicationForegroundThemeBrush"] };
+            var para = new Paragraph() { Foreground = Foreground };
             foreach(var node in content.ChildNodes)
             {
                 var tbNode = createNode(node, detectLink);
@@ -118,7 +119,7 @@ namespace ExViewer.Controls
                     var currentPos = 0;
                     foreach(Match match in matches)
                     {
-                        t.Inlines.Add(new Run { Text = text.Substring(currentPos, match.Index - currentPos) });
+                        t.Inlines.Add(CreateRun(text.Substring(currentPos, match.Index - currentPos)));
                         var uri = (Uri)null;
                         try
                         {
@@ -130,22 +131,20 @@ namespace ExViewer.Controls
                         catch(UriFormatException) { }
                         if(uri != null)
                         {
-                            var detectedLink = new Hyperlink { NavigateUri = uri };
-                            detectedLink.Inlines.Add(new Run { Text = match.Value });
-                            t.Inlines.Add(detectedLink);
+                            t.Inlines.Add(CreateHyperlink(match.Value, uri));
                         }
                         else
                         {
-                            t.Inlines.Add(new Run { Text = match.Value });
+                            t.Inlines.Add(CreateRun(match.Value));
                         }
                         currentPos = match.Index + match.Length;
                     }
-                    t.Inlines.Add(new Run { Text = text.Substring(currentPos) });
+                    t.Inlines.Add(CreateRun(text.Substring(currentPos)));
                     return t;
                 }
                 else
                 {
-                    return new Run { Text = text };
+                    return CreateRun(text);
                 }
             }
             switch(node.Name)
