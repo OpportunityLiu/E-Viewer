@@ -176,7 +176,6 @@
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
                              RefreshInvoked="PullToRefreshBox_RefreshInvoked"
-                             Style="{StaticResource PullToRefreshBoxStyle}"
                              Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <ListView x:Name="lv"
                       ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
