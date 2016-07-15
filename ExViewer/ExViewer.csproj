@@ -104,13 +104,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountManager.cs" />
+    <Compile Include="Converters\ByteSizeToStringConverter.cs" />
     <Compile Include="Converters\ChainConverter.cs" />
+    <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\EmptyConverter.cs" />
     <Compile Include="Converters\EnumToStringConverter.cs" />
     <Compile Include="Converters\FormatStringConverter.cs" />
     <Compile Include="Converters\InvertConverter.cs" />
+    <Compile Include="Converters\LengthConverter.cs" />
+    <Compile Include="Converters\LogicalNotConverter.cs" />
+    <Compile Include="Converters\NullableConverter.cs" />
+    <Compile Include="Converters\NumberOffsetConverter.cs" />
     <Compile Include="Converters\ObjectToBooleanConverter.cs" />
     <Compile Include="Converters\SystemConverter.cs" />
+    <Compile Include="Converters\ValueConverter.cs" />
     <Compile Include="Converters\ValueConverterBase.cs" />
     <Compile Include="Helpers\DocumentHelper.cs" />
     <Compile Include="Helpers\GalleryExtension.cs" />

@@ -176,9 +176,11 @@ namespace ExViewer.Views
                 {
                     loadItems = VM.Gallery.LoadMoreItemsAsync(5);
 
-                    //集合改变后应用崩溃的修复，操作系统更新后尝试移除
+                    //FIXME:集合改变后应用崩溃的修复，操作系统更新后尝试移除
                     loadItems.Completed = async (s, arg) =>
                     {
+                        if(arg != AsyncStatus.Completed)
+                            return;
                         await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                         {
                             var current = fv.SelectedIndex;

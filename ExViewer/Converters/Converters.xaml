@@ -2,7 +2,6 @@
                         xmlns:uwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:local="using:ExViewer.Views">
-    <local:RateStringConverter x:Key="RateStringConverter" />
     <FormatStringConverter x:Key="StringConverter" />
     <InvertConverter x:Key="TrueToVisibleConverter">
         <ObjectToBooleanConverter>
@@ -32,24 +31,17 @@
                               Default="True"
                               Others="False"
                               InnerConverter="{uwp:StaticResource FalseToVisibleConverter}" />
-    <local:LengthConverter x:Key="LengthConverter" />
+    <LengthConverter x:Key="LengthConverter" />
     <EmptyConverter x:Key="EmptyConverter" />
     <SystemConverter x:Key="DefaultConverter" />
-    <local:NullableConverter x:Key="NullableConverter" />
-    <local:LogicalNotConverter x:Key="LogicalNotConverter" />
+    <NullableConverter x:Key="NullableConverter" />
     <EnumToStringConverter x:Key="EnumToStringConverter" />
-    <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />
     <ObjectToBooleanConverter x:Key="ZeroToVisibleConverter"
                               InnerConverter="{uwp:StaticResource TrueToVisibleConverter}">
         <ObjectToBooleanConverter.ValueForTrue>
             <x:Int32>0</x:Int32>
         </ObjectToBooleanConverter.ValueForTrue>
     </ObjectToBooleanConverter>
-    <!--<local:RangeToBooleanConverter x:Key="ZeroToVisibleConverter"
-                                   Min="-0.1"
-                                   Max="0.1"
-                                   InnerConverter="{uwp:StaticResource TrueToVisibleConverter}" />-->
-    <local:OperationStateToBrushConverter x:Key="OperationStateToBrushConverter" />
     <ObjectToBooleanConverter x:Key="OperationStateToVisibilityConverter"
                               xmlns:VM="using:ExViewer.ViewModels"
                               Others="True"
@@ -61,8 +53,14 @@
             <VM:OperationState>Started</VM:OperationState>
         </ObjectToBooleanConverter.ValueForTrue>
     </ObjectToBooleanConverter>
-    <local:NumberOffserConverter x:Key="IndexToStringConverter"
-                                 Offset="1" />
-    <local:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
-    <local:SizeConverter x:Key="SizeConverter" />
+    <NumberOffsetConverter x:Key="IndexToStringConverter"
+                           Offset="1" />
+    <DateTimeToStringConverter x:Key="DateTimeToStringConverter"
+                               InnerConverter="{uwp:StaticResource StringConverter}" />
+    <ByteSizeToStringConverter x:Key="SizeConverter"
+                               Representation="Ieee" />
+    <LogicalNotConverter x:Key="LogicalNotConverter" />
+    <local:RateStringConverter x:Key="RateStringConverter" />
+    <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />
+    <local:OperationStateToBrushConverter x:Key="OperationStateToBrushConverter" />
 </uwp:ResourceDictionary>

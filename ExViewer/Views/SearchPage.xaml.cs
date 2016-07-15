@@ -68,8 +68,12 @@ namespace ExViewer.Views
 
         private void init_sv_AdvancedSearch()
         {
-            FindName(nameof(sv_AdvancedSearch));
-            Bindings.Update();
+            if(sv_AdvancedSearch == null)
+            {
+                Bindings.StopTracking();
+                FindName(nameof(sv_AdvancedSearch));
+                Bindings.Update();
+            }
         }
 
         public SearchVM VM
