@@ -42,7 +42,7 @@ namespace ExViewer.Converters
                 return d;
             if(targetType == typeof(GridLength))
                 return new GridLength(d);
-            throw new InvalidOperationException();
+            return DependencyProperty.UnsetValue;
         }
     }
 }

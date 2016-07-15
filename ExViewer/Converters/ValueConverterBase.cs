@@ -21,9 +21,9 @@ namespace ExViewer.Converters
         public static readonly DependencyProperty InnerConverterProperty =
             DependencyProperty.Register(nameof(InnerConverter), typeof(IValueConverter), typeof(ValueConverterBase), new PropertyMetadata(EmptyConverter.Default, InnerConverterPropertyChangedCallback));
 
-        private static void InnerConverterPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        private static void InnerConverterPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((ValueConverterBase)dp).OnInnerConverterChanged(e);
+            ((ValueConverterBase)d).OnInnerConverterChanged(e);
         }
 
         protected virtual void OnInnerConverterChanged(DependencyPropertyChangedEventArgs e)

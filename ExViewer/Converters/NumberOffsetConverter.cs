@@ -20,7 +20,7 @@ namespace ExViewer.Converters
         public static readonly DependencyProperty OffsetProperty =
             DependencyProperty.Register("Offset", typeof(double), typeof(NumberOffsetConverter), new PropertyMetadata(0d, OffsetPropertyChangedCallback));
 
-        private static void OffsetPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        private static void OffsetPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if(double.IsNaN((double)e.NewValue))
                 throw new ArgumentOutOfRangeException(nameof(Offset));

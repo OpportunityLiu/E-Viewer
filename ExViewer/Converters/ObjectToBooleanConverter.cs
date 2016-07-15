@@ -57,9 +57,9 @@ namespace ExViewer.Converters
         public static readonly DependencyProperty DefaultProperty =
             DependencyProperty.Register("Default", typeof(bool), typeof(ObjectToBooleanConverter), new PropertyMetadata(false));
 
-        private static void ValueChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        private static void ValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var s = (ObjectToBooleanConverter)dp;
+            var s = (ObjectToBooleanConverter)d;
             var tType = s.ValueForTrue?.GetType();
             var fType = s.ValueForFalse?.GetType();
             if(tType == null && fType == null)

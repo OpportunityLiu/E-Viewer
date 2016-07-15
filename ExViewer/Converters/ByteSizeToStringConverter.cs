@@ -31,7 +31,7 @@ namespace ExViewer.Converters
         public static readonly DependencyProperty OutOfRangeValueProperty =
             DependencyProperty.Register("OutOfRangeValue", typeof(string), typeof(ByteSizeToStringConverter), new PropertyMetadata("???", OutOfRangeValuePropertyChangedCallback));
 
-        private static void OutOfRangeValuePropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        private static void OutOfRangeValuePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if(e.NewValue == null)
                 throw new ArgumentNullException(nameof(OutOfRangeValue));

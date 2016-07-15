@@ -8,6 +8,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
+      SizeChanged="page_SizeChanged"
       NavigationCacheMode="Enabled"
       x:Name="page">
     <Page.Transitions>
@@ -227,15 +228,15 @@
                                RelativePanel.AlignBottomWith="Author"
                                Margin="0,-4" />
                     <TextBlock x:Name="Posted"
-                               Text="{x:Bind Posted, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=Posted on \{0\}}"
+                               Text="{x:Bind Posted, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Posted on {0}'}"
                                Style="{StaticResource CommentHeaderTextBlockStyle}"
                                RelativePanel.AlignTopWithPanel="True"
                                RelativePanel.AlignLeftWithPanel="True" />
                     <TextBlock x:Name="Author"
-                               Text="{x:Bind Author, Converter={StaticResource StringConverter}, ConverterParameter=By \{0\}}"
+                               Text="{x:Bind Author, Converter={StaticResource StringConverter}, ConverterParameter='By {0}'}"
                                Style="{StaticResource CommentHeaderTextBlockStyle}" />
                     <TextBlock x:Name="Score"
-                               Text="{x:Bind Score, Converter={StaticResource StringConverter}, ConverterParameter=Score \{0:+#0;-#0\}}"
+                               Text="{x:Bind Score, Converter={StaticResource StringConverter}, ConverterParameter='Score {0:+#0;-#0}'}"
                                Style="{StaticResource CommentHeaderTextBlockStyle}"
                                Visibility="{x:Bind IsUploaderComment, Converter={StaticResource FalseToVisibleConverter}}"
                                HorizontalAlignment="Right"
@@ -257,7 +258,7 @@
                                             RelativePanel.Below="Header"
                                             Pivot.SlideInAnimationGroup="GroupOne" />
                     <TextBlock x:Name="Edited"
-                               Text="{x:Bind Edited, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=Last edited on \{0\}}"
+                               Text="{x:Bind Edited, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Last edited on {0}'}"
                                Visibility="{x:Bind Edited, Converter={StaticResource NullToCollapsedConverter}}"
                                Style="{StaticResource EditedTextBlockStyle}"
                                Margin="12,4"
@@ -280,7 +281,7 @@
                     Value="32" />
         </Style>
     </Page.Resources>
-    <Grid>
+    <Grid x:Name="gd_Root">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="Wide">
@@ -288,18 +289,6 @@
                         <AdaptiveTrigger MinWindowWidth="500" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="tb_ImagesWide.Visibility"
-                                Value="Visible" />
-                        <Setter Target="tb_CommentsWide.Visibility"
-                                Value="Visible" />
-                        <Setter Target="tb_TorrentsWide.Visibility"
-                                Value="Visible" />
-                        <Setter Target="p_ImagesNarrow.Visibility"
-                                Value="Collapsed" />
-                        <Setter Target="tb_CommentsNarrow.Visibility"
-                                Value="Collapsed" />
-                        <Setter Target="p_TorrentsNarrow.Visibility"
-                                Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Narrow">
@@ -326,8 +315,9 @@
                       VerticalScrollBarVisibility="Hidden"
                       Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <StackPanel>
-                <Grid x:Name="gd_info"
-                      Height="180">
+                <Grid x:Name="gd_Info"
+                      MaxHeight="300"
+                      MinHeight="100">
                     <Grid.Background>
                         <LinearGradientBrush EndPoint="0.5,1"
                                              StartPoint="0.5,0">
@@ -341,94 +331,98 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
                     <Image x:Name="img_Thumb"
                            Source="{x:Bind VM.Gallery.Thumb}"
                            Margin="8"
                            Width="160"
                            Grid.RowSpan="2" />
-                    <controls:WrapStackPanel x:Name="wsp_Info"
-                                             Grid.Column="1"
-                                             HorizontalAlignment="Left"
-                                             Margin="2,4">
-                        <controls:CategoryTag x:Name="Category"
-                                              Margin="6,4"
-                                              Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
-                        <TextBlock x:Name="Rating"
-                                   Margin="6,4"
-                                   VerticalAlignment="Center"
-                                   Text="{x:Bind VM.Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
-                                   FontFamily="Segoe MDL2 Assets" />
-                    </controls:WrapStackPanel>
-                    <ListView x:Name="lv_Tags"
-                              Grid.Column="1"
-                              Grid.Row="1"
-                              Padding="6"
-                              SelectionMode="None"
-                              ItemsSource="{x:Bind VM.SortedTags}"
-                              ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="VM:TagList">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0"
-                                               Text="{x:Bind NameSpace}"
-                                               MinWidth="80"
-                                               Padding="2,0" />
-                                    <GridView Grid.Column="1"
-                                              ItemsSource="{x:Bind}"
-                                              SelectionMode="None"
-                                              IsItemClickEnabled="True"
-                                              ItemClick="gv_Tags_ItemClick"
-                                              HorizontalAlignment="Left"
-                                              Padding="0,0,0,4">
-                                        <GridView.ItemContainerStyle>
-                                            <Style TargetType="GridViewItem">
-                                                <Setter Property="MinHeight"
-                                                        Value="0" />
-                                                <Setter Property="MinWidth"
-                                                        Value="0" />
-                                            </Style>
-                                        </GridView.ItemContainerStyle>
-                                        <GridView.ItemTemplate>
-                                            <DataTemplate x:DataType="client:Tag">
-                                                <TextBlock Text="{x:Bind Content}"
-                                                           Padding="4,0" />
-                                            </DataTemplate>
-                                        </GridView.ItemTemplate>
-                                        <GridView.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <controls:WrapStackPanel />
-                                            </ItemsPanelTemplate>
-                                        </GridView.ItemsPanel>
-                                        <GridView.ItemContainerTransitions>
-                                            <TransitionCollection />
-                                        </GridView.ItemContainerTransitions>
-                                        <GridView.Template>
-                                            <ControlTemplate TargetType="GridView">
-                                                <ItemsPresenter Header="{TemplateBinding Header}"
-                                                                HeaderTemplate="{TemplateBinding HeaderTemplate}"
-                                                                HeaderTransitions="{TemplateBinding HeaderTransitions}"
-                                                                Footer="{TemplateBinding Footer}"
-                                                                FooterTemplate="{TemplateBinding FooterTemplate}"
-                                                                FooterTransitions="{TemplateBinding FooterTransitions}"
-                                                                Padding="{TemplateBinding Padding}" />
-                                            </ControlTemplate>
-                                        </GridView.Template>
-                                    </GridView>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.ItemContainerTransitions>
-                            <TransitionCollection />
-                        </ListView.ItemContainerTransitions>
-                    </ListView>
+                    <Grid Grid.Column="1"
+                          VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <controls:WrapStackPanel x:Name="wsp_Info"
+                                                 Grid.Column="1"
+                                                 HorizontalAlignment="Left"
+                                                 Margin="2,4">
+                            <controls:CategoryTag x:Name="Category"
+                                                  Margin="6,4"
+                                                  Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
+                            <TextBlock x:Name="Rating"
+                                       Margin="6,4"
+                                       VerticalAlignment="Center"
+                                       Text="{x:Bind VM.Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
+                                       FontFamily="Segoe MDL2 Assets" />
+                        </controls:WrapStackPanel>
+                        <ListView x:Name="lv_Tags"
+                                  Grid.Column="1"
+                                  Grid.Row="1"
+                                  Padding="6"
+                                  SelectionMode="None"
+                                  ItemsSource="{x:Bind VM.SortedTags}"
+                                  ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
+                                  ScrollViewer.IsVerticalScrollChainingEnabled="True">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="VM:TagList">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{x:Bind NameSpace}"
+                                                   MinWidth="80"
+                                                   Padding="2,0" />
+                                        <GridView Grid.Column="1"
+                                                  ItemsSource="{x:Bind}"
+                                                  SelectionMode="None"
+                                                  IsItemClickEnabled="True"
+                                                  ItemClick="gv_Tags_ItemClick"
+                                                  HorizontalAlignment="Left"
+                                                  Padding="0,0,0,4">
+                                            <GridView.ItemContainerStyle>
+                                                <Style TargetType="GridViewItem">
+                                                    <Setter Property="MinHeight"
+                                                            Value="0" />
+                                                    <Setter Property="MinWidth"
+                                                            Value="0" />
+                                                </Style>
+                                            </GridView.ItemContainerStyle>
+                                            <GridView.ItemTemplate>
+                                                <DataTemplate x:DataType="client:Tag">
+                                                    <TextBlock Text="{x:Bind Content}"
+                                                               Padding="4,0" />
+                                                </DataTemplate>
+                                            </GridView.ItemTemplate>
+                                            <GridView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <controls:WrapStackPanel />
+                                                </ItemsPanelTemplate>
+                                            </GridView.ItemsPanel>
+                                            <GridView.ItemContainerTransitions>
+                                                <TransitionCollection />
+                                            </GridView.ItemContainerTransitions>
+                                            <GridView.Template>
+                                                <ControlTemplate TargetType="GridView">
+                                                    <ItemsPresenter Header="{TemplateBinding Header}"
+                                                                    HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                                                                    HeaderTransitions="{TemplateBinding HeaderTransitions}"
+                                                                    Footer="{TemplateBinding Footer}"
+                                                                    FooterTemplate="{TemplateBinding FooterTemplate}"
+                                                                    FooterTransitions="{TemplateBinding FooterTransitions}"
+                                                                    Padding="{TemplateBinding Padding}" />
+                                                </ControlTemplate>
+                                            </GridView.Template>
+                                        </GridView>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerTransitions>
+                                <TransitionCollection />
+                            </ListView.ItemContainerTransitions>
+                        </ListView>
+                    </Grid>
                 </Grid>
                 <Grid x:Name="gd_Pivot">
                     <Grid.RowDefinitions>
@@ -449,13 +443,14 @@
                                 HorizontalContentAlignment="Center"
                                 RenderTransformOrigin="0.5,0.5">
                             <Button.RenderTransform>
-                                <CompositeTransform Rotation="{x:Bind sv_Content.VerticalOffset, Mode=OneWay}" />
+                                <CompositeTransform x:Name="ct_btn_Scroll" Rotation="0" />
                             </Button.RenderTransform>
                         </Button>
                     </Border>
 
                     <Pivot x:Name="pv"
                            Grid.Row="1"
+                           Loaded="pv_Loaded"
                            SelectionChanged="pv_SelectionChanged"
                            HorizontalContentAlignment="Stretch"
                            VerticalContentAlignment="Stretch">
@@ -467,7 +462,15 @@
                         </Pivot.ItemContainerStyle>
                         <PivotItem>
                             <PivotItem.Header>
-                                <StackPanel Orientation="Horizontal">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
                                     <PathIcon x:Name="p_ImagesNarrow"
                                               Data="M0,12 V28 H24 V12 H0 Z
                   M2,14 V26 H22 V14 H2 Z
@@ -475,15 +478,15 @@
                   M18,17 A1,1,0,1,0,19,16 A1,1,0,0,0,18,17 Z
                   M 4,12 V8 H28 V24 H24 V22 H26 V10 H6 V12 H4 Z
                   M 8,8 V4 H32 V20 H28 V18 H30 V6 H10 V8 H8 Z"
-                                              Style="{StaticResource PivotHeaderPathIconStyle}"
-                                              AutomationProperties.Name="Images" />
+                                              Style="{StaticResource PivotHeaderPathIconStyle}" />
                                     <TextBlock x:Name="tb_ImagesWide"
-                                               Visibility="Collapsed"
-                                               Text="Images" />
-                                    <TextBlock Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
+                                               Text="Images"
+                                               Grid.Row="1" />
+                                    <TextBlock Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='[{0}]'}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                               VerticalAlignment="Top" />
-                                </StackPanel>
+                                               VerticalAlignment="Top" 
+                                               Grid.Column="1"/>
+                                </Grid>
                             </PivotItem.Header>
                             <GridView x:Name="gv"
                                       Padding="8,4,8,12"
@@ -492,7 +495,7 @@
                                       ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
                                       SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}"
                                       VerticalAlignment="Top"
-                                      Loaded="gv_Loaded">
+                                      Loaded="pv_Content_Loaded">
                                 <GridView.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <ItemsWrapGrid HorizontalAlignment="Center"
@@ -522,13 +525,13 @@
                                     <TextBlock x:Name="tb_CommentsNarrow"
                                                Text="&#xE90A;"
                                                FontFamily="Segoe MDL2 Assets"
-                                               AutomationProperties.Name="Comments"
+                                               ToolTipService.ToolTip="Comments"
                                                Margin="0,8,8,0"
                                                FontSize="32" />
                                     <TextBlock x:Name="tb_CommentsWide"
                                                Visibility="Collapsed"
                                                Text="Comments" />
-                                    <TextBlock Text="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
+                                    <TextBlock Text="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='[{0}]'}"
                                                Visibility="{x:Bind VM.Gallery.Comments, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                VerticalAlignment="Top" />
@@ -537,7 +540,7 @@
                             <ListView x:Name="lv_Comments"
                                       ItemsSource="{x:Bind VM.Gallery.Comments, Mode=OneWay}"
                                       VerticalAlignment="Top"
-                                      Loaded="lv_Comments_Loaded"
+                                      Loaded="pv_Content_Loaded"
                                       SelectionMode="None"
                                       ItemTemplate="{StaticResource CommentTemplate}"
                                       ItemContainerStyle="{StaticResource ListViewItemStyle}">
@@ -572,11 +575,11 @@
                                           M4,18 H6 V28.172 L8.586,25.586 L10,27 L7,30 H3 L0,27 L1.414,25.586
                                           L4,28.172 Z"
                                               Style="{StaticResource PivotHeaderPathIconStyle}"
-                                              AutomationProperties.Name="Torrents"/>
+                                              ToolTipService.ToolTip="Torrents" />
                                     <TextBlock x:Name="tb_TorrentsWide"
                                                Text="Torrents"
                                                Visibility="Collapsed" />
-                                    <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter=[\{0\}]}"
+                                    <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='[{0}]'}"
                                                Visibility="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                VerticalAlignment="Top" />
@@ -586,7 +589,7 @@
                                       ItemsSource="{x:Bind VM.Torrents, Mode=OneWay}"
                                       VerticalAlignment="Top"
                                       SelectionChanged="lv_Torrents_SelectionChanged"
-                                      Loaded="lv_Torrents_Loaded"
+                                      Loaded="pv_Content_Loaded"
                                       ItemTemplate="{StaticResource TorrentTemplate}"
                                       ItemContainerStyle="{StaticResource ListViewItemStyle}">
                                 <ListView.Header>
