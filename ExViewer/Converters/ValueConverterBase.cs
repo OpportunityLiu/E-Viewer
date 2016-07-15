@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Data;
 namespace ExViewer.Converters
 {
     [Windows.UI.Xaml.Markup.ContentProperty(Name = nameof(InnerConverter))]
-    public abstract class ValueConverterBase : DependencyObject, IValueConverter
+    public abstract class ValueConverterBase : ValueConverter, IValueConverter
     {
         public IValueConverter InnerConverter
         {
@@ -32,7 +32,7 @@ namespace ExViewer.Converters
                 throw new ArgumentNullException(nameof(InnerConverter));
         }
 
-        public abstract object Convert(object value, Type targetType, object parameter, string language);
-        public abstract object ConvertBack(object value, Type targetType, object parameter, string language);
+        public override abstract object Convert(object value, Type targetType, object parameter, string language);
+        public override abstract object ConvertBack(object value, Type targetType, object parameter, string language);
     }
 }

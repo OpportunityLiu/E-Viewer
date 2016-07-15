@@ -115,10 +115,12 @@ namespace ExViewer.ViewModels
             }, image => image != null && !image.OriginalLoaded);
             ReloadImage = new RelayCommand<GalleryImage>(async image =>
             {
+                image.PropertyChanged += Image_PropertyChanged;
                 if(image.OriginalLoaded)
                     await image.LoadImageAsync(true, ConnectionStrategy.AllFull, false);
                 else
                     await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
+                image.PropertyChanged -= Image_PropertyChanged;
             });
             TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
             {

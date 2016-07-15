@@ -5,6 +5,7 @@
       xmlns:local="using:ExViewer.Views"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:converters="using:ExViewer.Converters"
       mc:Ignorable="d"
       xmlns:controls="using:ExViewer.Controls"
       NavigationCacheMode="Enabled">
@@ -17,6 +18,16 @@
     </Page.Transitions>
     <Page.Resources>
         <local:LoadStateToVisualStateConverter x:Key="LoadStateToVisualStateConverter" />
+        <converters:InvertConverter x:Key="VisibleToAppbarHeightConverter">
+            <converters:ObjectToBooleanConverter InnerConverter="{StaticResource TrueToVisibleConverter}">
+                <converters:ObjectToBooleanConverter.ValueForTrue>
+                    <GridLength>48</GridLength>
+                </converters:ObjectToBooleanConverter.ValueForTrue>
+                <converters:ObjectToBooleanConverter.ValueForFalse>
+                    <GridLength>0</GridLength>
+                </converters:ObjectToBooleanConverter.ValueForFalse>
+            </converters:ObjectToBooleanConverter>
+        </converters:InvertConverter>
         <Storyboard x:Name="cb_top_Open">
             <ColorAnimation x:Name="cb_top_OpenAnimation"
                             Duration="0:0:0.15"
@@ -54,29 +65,14 @@
                     <Grid DoubleTapped="fvi_DoubleTapped"
                           Tapped="fvi_Tapped">
                         <Grid.Resources>
-                            <local:InvertConverter x:Key="con">
-                                <local:InvertConverter.Raw>
-                                    <local:ObjectToBooleanConverter>
-                                        <local:ObjectToBooleanConverter.ValueForTrue>
-                                            <GridLength>48</GridLength>
-                                        </local:ObjectToBooleanConverter.ValueForTrue>
-                                        <local:ObjectToBooleanConverter.ValueForFalse>
-                                            <GridLength>0</GridLength>
-                                        </local:ObjectToBooleanConverter.ValueForFalse>
-                                        <local:ObjectToBooleanConverter.InnerConverter>
-                                            <local:BooleanToVisibilityConverter />
-                                        </local:ObjectToBooleanConverter.InnerConverter>
-                                    </local:ObjectToBooleanConverter>
-                                </local:InvertConverter.Raw>
-                            </local:InvertConverter>
                         </Grid.Resources>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="{Binding Visibility, ElementName=cb_top, Converter={StaticResource con}}" />
+                            <RowDefinition Height="{Binding Visibility, ElementName=cb_top, Converter={StaticResource VisibleToAppbarHeightConverter}}" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <controls:ImagePresenter x:Name="ip"
                                                  Grid.RowSpan="2"
-                                                 Image="{x:Bind}"/>
+                                                 Image="{x:Bind}" />
                         <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
                                      Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
                                      Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
