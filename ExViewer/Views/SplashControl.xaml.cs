@@ -14,6 +14,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Collections.Generic;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -37,7 +38,6 @@ namespace ExViewer.Views
 
         private void splash_Loaded(object sender, RoutedEventArgs e)
         {
-
         }
 
         public async void prepareCompleted()
