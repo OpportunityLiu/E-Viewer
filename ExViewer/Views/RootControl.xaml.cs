@@ -19,6 +19,7 @@ using ExClient;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.ViewManagement;
 using ExViewer.ViewModels;
+using System.Diagnostics;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -150,14 +151,14 @@ namespace ExViewer.Views
         private void fm_inner_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
 #if DEBUG 
-            if(global::System.Diagnostics.Debugger.IsAttached)
-                global::System.Diagnostics.Debugger.Break();
+            if(Debugger.IsAttached)
+                Debugger.Break();
 #endif
         }
 
         private void Grid_GotFocus(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(e.OriginalSource);
+            Debug.WriteLine(e.OriginalSource, "Focus state");
         }
 
         private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)

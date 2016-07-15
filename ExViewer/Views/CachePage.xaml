@@ -49,7 +49,6 @@
                              RelativePanel.AlignRightWithPanel="True"
                              RelativePanel.Below="cb_top"
                              RefreshInvoked="PullToRefreshBox_RefreshInvoked"
-                             Style="{StaticResource PullToRefreshBoxStyle}"
                              Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <ListView x:Name="lv"
                       ItemsSource="{x:Bind VM.CachedGalleries, Mode=OneWay}"
