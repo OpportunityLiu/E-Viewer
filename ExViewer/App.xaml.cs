@@ -91,8 +91,8 @@ namespace ExViewer
             if(e.PrelaunchActivated)
                 return;
 
-            var currentWindow = Window.Current;
             GalaSoft.MvvmLight.Threading.DispatcherHelper.Initialize();
+            var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
             if(currentContent is SplashControl)
             {

@@ -58,7 +58,7 @@
     <DateTimeToStringConverter x:Key="DateTimeToStringConverter"
                                InnerConverter="{uwp:StaticResource StringConverter}" />
     <ByteSizeToStringConverter x:Key="SizeConverter"
-                               Representation="Ieee" />
+                               Representation="Binary" />
     <LogicalNotConverter x:Key="LogicalNotConverter" />
     <local:RateStringConverter x:Key="RateStringConverter" />
     <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />

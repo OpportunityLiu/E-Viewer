@@ -108,7 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentFetcher.cs" />
-    <Compile Include="MarkdownAnalyzer.cs" />
+    <Compile Include="EhTagDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Record.cs" />
     <EmbeddedResource Include="Properties\EhTagTranslatorClient.rd.xml" />

@@ -141,7 +141,7 @@
     <Compile Include="Controls\SplitViewButton.cs" />
     <Compile Include="Controls\SplitViewTab.cs" />
     <Compile Include="Controls\WrapStackPanel.cs" />
-    <Compile Include="DataBase\SearchHistoryDb.cs" />
+    <Compile Include="Database\SearchHistoryDb.cs" />
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="Settings\Attributes.cs" />
     <Compile Include="Settings\GroupedSettings.cs" />

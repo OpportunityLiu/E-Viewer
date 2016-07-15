@@ -1,5 +1,5 @@
 ﻿using ExClient;
-using ExViewer.DataBase;
+using ExViewer.Database;
 using ExViewer.Settings;
 using ExViewer.Views;
 using GalaSoft.MvvmLight;

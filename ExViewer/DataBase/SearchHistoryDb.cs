@@ -9,7 +9,7 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 
-namespace ExViewer.DataBase
+namespace ExViewer.Database
 {
     class SearchHistoryDb : DbContext
     {
