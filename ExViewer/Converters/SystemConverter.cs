@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using Windows.UI.Xaml;
 
 namespace ExViewer.Converters
 {
     [Windows.UI.Xaml.Markup.ContentProperty(Name = nameof(InnerConverter))]
-    public class SystemConverter:ChainConverter
+    public class SystemConverter : ChainConverter
     {
         protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
@@ -20,11 +21,19 @@ namespace ExViewer.Converters
             return ChangeType(value, targetType);
         }
 
-        public static object ChangeType(object value,Type targetType)
+        public static object ChangeType(object value, Type targetType)
         {
-            if(targetType.IsInstanceOfType(value))
-                return value;
-            return System.Convert.ChangeType(value, targetType);
+            try
+            {
+                if(targetType.IsInstanceOfType(value))
+                    return value;
+                return System.Convert.ChangeType(value, targetType);
+
+            }
+            catch(Exception)
+            {
+                return DependencyProperty.UnsetValue;
+            }
         }
     }
 }

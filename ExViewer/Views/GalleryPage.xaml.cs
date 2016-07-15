@@ -32,27 +32,89 @@ namespace ExViewer.Views
         public GalleryPage()
         {
             this.InitializeComponent();
+            gd_Info.RegisterPropertyChangedCallback(ActualHeightProperty, set_btn_Scroll_Rotation);
+            sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, set_btn_Scroll_Rotation);
         }
 
-        private async void GalleryPage_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)
+        {
+            ct_btn_Scroll.Rotation = sv_Content.VerticalOffset / gd_Info.ActualHeight * 180d;
+        }
+
+        private void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
             if(e.NextView.VerticalOffset < e.FinalView.VerticalOffset && sv_Content.VerticalOffset < 1)
             {
-                await Task.Yield();
                 changeViewTo(true, false);
             }
-            else if(e.IsInertial && e.NextView.VerticalOffset < 1 && sv_Content.VerticalOffset > gd_info.ActualHeight - 1)
+            else if(e.IsInertial && e.NextView.VerticalOffset < 1 && sv_Content.VerticalOffset > gd_Info.ActualHeight - 1)
             {
-                await Task.Yield();
                 changeViewTo(false, false);
             }
         }
 
+        private void pv_Content_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            var prop = e.GetCurrentPoint(this).Properties;
+            if(!prop.IsHorizontalMouseWheel && prop.MouseWheelDelta != 0)
+            {
+                changeViewTo(prop.MouseWheelDelta < 0, false);
+                e.Handled = true;
+            }
+        }
+
+        private bool needResetView;
+
         protected override Size MeasureOverride(Size availableSize)
         {
             gd_Pivot.Height = availableSize.Height - 48;
-            changeView(true);
             return base.MeasureOverride(availableSize);
+        }
+
+        private void page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(needResetView)
+            {
+                needResetView = false;
+                resetView();
+            }
+            else
+            {
+                changeView(true);
+            }
+        }
+
+        private void resetView()
+        {
+            changeViewTo(false, true);
+            gv.ScrollIntoView(gv.Items.FirstOrDefault());
+            lv_Comments.ScrollIntoView(lv_Comments.Items.FirstOrDefault());
+            lv_Torrents.ScrollIntoView(lv_Torrents.Items.FirstOrDefault());
+            lv_Tags.ScrollIntoView(lv_Tags.Items.FirstOrDefault());
+        }
+
+        private bool currentState
+        {
+            get
+            {
+                var fullOffset = gd_Info.ActualHeight;
+                return sv_Content.VerticalOffset > fullOffset * 0.95;
+            }
+        }
+
+        private void changeView(bool keep)
+        {
+            changeViewTo(!currentState ^ keep, false);
+        }
+
+        private void changeViewTo(bool view, bool disableAnimation)
+        {
+            Bindings.Update();
+            var fullOffset = gd_Info.ActualHeight;
+            if(view)
+                sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
+            else
+                sv_Content.ChangeView(null, 0.000001, null, disableAnimation);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -62,6 +124,7 @@ namespace ExViewer.Views
             if(e.NavigationMode == NavigationMode.New)
             {
                 pv.SelectedIndex = 0;
+                needResetView = true;
             }
             VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             Bindings.Update();
@@ -86,7 +149,6 @@ namespace ExViewer.Views
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             VM = null;
-            changeViewTo(false, true);
         }
 
         UIElement entranceElement;
@@ -128,7 +190,6 @@ namespace ExViewer.Views
                 item.DataContext = e.ClickedItem;
             }
             mfo_Tag.ShowAt(container);
-            // Frame.Navigate(typeof(SearchPage), Cache.AddSearchResult(((Tag)e.ClickedItem).Search()));
         }
 
         private void lv_Torrents_ItemClick(object sender, ItemClickEventArgs e)
@@ -140,29 +201,6 @@ namespace ExViewer.Views
         {
             await Task.Yield();
             changeView(false);
-        }
-
-        private bool currentState
-        {
-            get
-            {
-                var fullOffset = gd_info.ActualHeight;
-                return sv_Content.VerticalOffset > fullOffset * 0.95;
-            }
-        }
-
-        private void changeView(bool keep)
-        {
-            changeViewTo(!currentState ^ keep, false);
-        }
-
-        private void changeViewTo(bool view, bool disableAnimation)
-        {
-            var fullOffset = gd_info.ActualHeight;
-            if(view)
-                sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
-            else
-                sv_Content.ChangeView(null, 0.000001, null, disableAnimation);
         }
 
         private async void pv_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -201,28 +239,22 @@ namespace ExViewer.Views
             }
         }
 
-        private void gv_Loaded(object sender, RoutedEventArgs e)
+        private void pv_Loaded(object sender, RoutedEventArgs e)
         {
-            var bd_Gv = VisualTreeHelper.GetChild(gv, 0);
-            var sv_Gv = VisualTreeHelper.GetChild(bd_Gv, 0);
-            (sv_Gv as ScrollViewer).ViewChanging += GalleryPage_ViewChanging;
-            gv.Loaded -= gv_Loaded;
+            var sv_pv = (UIElement)VisualTreeHelperEx.GetFirstNamedChild(pv, "PivotItemPresenter");
+            var sv_pv2 = (UIElement)VisualTreeHelperEx.GetFirstNamedChild(pv, "HeaderClipper");
+            sv_pv.PointerWheelChanged += pv_Content_PointerWheelChanged;
+            sv_pv2.PointerWheelChanged += pv_Content_PointerWheelChanged;
+            pv.Loaded -= pv_Loaded;
         }
 
-        private void lv_Torrents_Loaded(object sender, RoutedEventArgs e)
+        private void pv_Content_Loaded(object sender, RoutedEventArgs e)
         {
-            var bd_Lv = VisualTreeHelper.GetChild(lv_Torrents, 0);
-            var sv_Lv = VisualTreeHelper.GetChild(bd_Lv, 0);
-            (sv_Lv as ScrollViewer).ViewChanging += GalleryPage_ViewChanging;
-            lv_Torrents.Loaded -= lv_Torrents_Loaded;
-        }
-
-        private void lv_Comments_Loaded(object sender, RoutedEventArgs e)
-        {
-            var bd_Lv = VisualTreeHelper.GetChild(lv_Comments, 0);
-            var sv_Lv = VisualTreeHelper.GetChild(bd_Lv, 0);
-            (sv_Lv as ScrollViewer).ViewChanging += GalleryPage_ViewChanging;
-            lv_Comments.Loaded -= lv_Comments_Loaded;
+            var fe_Content = (FrameworkElement)sender;
+            var bd_Content = VisualTreeHelper.GetChild(fe_Content, 0);
+            var sv_Content = (ScrollViewer)VisualTreeHelper.GetChild(bd_Content, 0);
+            sv_Content.ViewChanging += pv_Content_ViewChanging;
+            fe_Content.Loaded -= pv_Content_Loaded;
         }
     }
 }

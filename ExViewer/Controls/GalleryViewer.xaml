@@ -56,7 +56,7 @@
             <local:CategoryTag Category="{x:Bind Gallery.Category, Mode=OneWay}"
                                Grid.Row="2"
                                HorizontalAlignment="Left" />
-            <TextBlock Text="{x:Bind Gallery.RecordCount, Mode=OneWay, ConverterParameter=\{0\} Pages, Converter={StaticResource StringConverter}}"
+            <TextBlock Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='{}{0} Pages'}"
                        Grid.Row="4" />
             <TextBlock Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
                        FontFamily="Segoe MDL2 Assets"

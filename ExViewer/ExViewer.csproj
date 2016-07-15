@@ -188,6 +188,7 @@
     <Compile Include="Views\SplashControl.xaml.cs">
       <DependentUpon>SplashControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VisualTreeHelperEx.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

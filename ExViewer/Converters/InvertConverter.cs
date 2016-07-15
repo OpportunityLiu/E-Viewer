@@ -12,7 +12,14 @@ namespace ExViewer.Converters
     {
         public override object Convert(object value, Type targetType, object parameter, string language)
         {
-            return InnerConverter.ConvertBack(value, targetType, parameter, language);
+            try
+            {
+                return InnerConverter.ConvertBack(value, targetType, parameter, language);
+            }
+            catch(Exception)
+            {
+                return DependencyProperty.UnsetValue;
+            }
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, string language)

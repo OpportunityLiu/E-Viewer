@@ -110,7 +110,7 @@ namespace ExViewer.Views
             }
             try
             {
-                await Task.WhenAny(initSearch.AsTask(), Task.Delay(7000));
+                await await Task.WhenAny(initSearch.AsTask(), Task.Delay(7000));
                 rc = new RootControl(typeof(SearchPage), previousExecutionState);
             }
             catch(Exception)
