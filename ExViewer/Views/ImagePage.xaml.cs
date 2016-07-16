@@ -29,14 +29,12 @@ namespace ExViewer.Views
             this.InitializeComponent();
             var backColor = ((SolidColorBrush)Resources["ApplicationPageBackgroundThemeBrush"]).Color;
             var needColor = (Color)Resources["SystemChromeMediumColor"];
-            var toColor = Color.FromArgb(74,
-                (byte)(backColor.R - 2 * (backColor.R - needColor.R)),
-                (byte)(backColor.G - 2 * (backColor.G - needColor.G)),
-                (byte)(backColor.B - 2 * (backColor.B - needColor.B)));
+            var toColor = Color.FromArgb(85,
+                (byte)(backColor.R - 3 * (backColor.R - needColor.R)),
+                (byte)(backColor.G - 3 * (backColor.G - needColor.G)),
+                (byte)(backColor.B - 3 * (backColor.B - needColor.B)));
 
             cb_top.Background = new SolidColorBrush(toColor);
-            cb_top_OpenAnimation.To = needColor;
-            cb_top_CloseAnimation.To = toColor;
         }
 
         public GalleryVM VM

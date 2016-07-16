@@ -42,14 +42,20 @@ namespace ExClient
     {
         static GalleryImage()
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
             {
                 var info = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
                 thumbWidth = (uint)(100 * info.RawPixelsPerViewPixel);
+                defaultThumb = new BitmapImage();
+                using(var stream = await StorageHelper.GetIconOfExtension("jpg"))
+                {
+                    await defaultThumb.SetSourceAsync(stream);
+                }
             });
         }
 
         private static uint thumbWidth = 100;
+        private static BitmapImage defaultThumb;
 
         internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
         {
@@ -83,10 +89,7 @@ namespace ExClient
                     {
                         using(var stream = await ImageFile.OpenReadAsync())
                         {
-                            await DispatcherHelper.RunAsync(async () =>
-                            {
-                                await img.SetSourceAsync(stream);
-                            });
+                            await img.SetSourceAsync(stream);
                         }
                     }
                     catch(FileNotFoundException)
@@ -103,7 +106,7 @@ namespace ExClient
             this.thumbSource = thumb;
             this.thumb = new ImageHandle(img =>
             {
-                return DispatcherHelper.RunAsync(async () =>
+                return Run(async token =>
                 {
                     img.DecodePixelType = DecodePixelType.Logical;
                     img.DecodePixelWidth = 100;
@@ -123,6 +126,13 @@ namespace ExClient
                     }
                 });
             });
+            this.thumb.ImageLoaded += Thumb_ImageLoaded;
+        }
+
+        private void Thumb_ImageLoaded(object sender, EventArgs e)
+        {
+            thumbSource = null;
+            RaisePropertyChanged(nameof(Thumb));
         }
 
         private static readonly Regex failTokenMatcher = new Regex(@"return\s+nl\(\s*'(.+?)'\s*\)", RegexOptions.Compiled);
@@ -174,7 +184,12 @@ namespace ExClient
         {
             get
             {
-                return thumbSource ?? thumb.Image;
+                if(thumbSource != null)
+                    return thumbSource;
+                if(thumb.Loaded)
+                    return thumb.Image;
+                thumb.StartLoading();
+                return defaultThumb;
             }
         }
 
@@ -334,13 +349,12 @@ namespace ExClient
             {
                 if(value != null)
                 {
-                    this.thumbSource = null;
                     thumb.Reset();
+                    thumb.StartLoading();
                 }
                 Set(ref imageFile, value);
                 image.Reset();
                 RaisePropertyChanged(nameof(Image));
-                RaisePropertyChanged(nameof(Thumb));
                 RaisePropertyChanged(nameof(ImageFileUri));
             }
         }

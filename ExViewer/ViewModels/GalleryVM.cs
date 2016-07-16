@@ -43,7 +43,11 @@ namespace ExViewer.ViewModels
         {
             GalleryVM vm;
             if(Cache.TryGet(gallery.Id, out vm))
+            {
                 vm.Gallery = gallery;
+                if(gallery.Count <= vm.currentIndex)
+                    vm.currentIndex = -1;
+            }
             else
                 Cache.Add(gallery.Id, new GalleryVM(gallery));
         }
@@ -279,26 +283,9 @@ namespace ExViewer.ViewModels
                 var prop = await current.ImageFile.GetBasicPropertiesAsync();
                 var imageProp = await current.ImageFile.Properties.GetImagePropertiesAsync();
                 CurrentInfo = $@"File name: {current.ImageFile.Name}
-Size: {ByteToString(prop.Size)}
+Size: {Converters.ByteSizeToStringConverter.ByteSizeToString(prop.Size, Converters.UnitPrefix.Binary)}
 Dimensions: {imageProp.Width} × {imageProp.Height}";
             });
-        }
-
-        private static string ByteToString(ulong byteCount)
-        {
-            if(byteCount < 1024ul)
-                return $"{byteCount} B";
-            double bInK = byteCount / 1024.0;
-            if(byteCount < 1024ul * 1024ul)
-                return $"{bInK:F2} KiB";
-            double bInM = bInK / 1024.0;
-            if(byteCount < 1024ul * 1024ul * 1024ul)
-                return $"{bInM:F2} MiB";
-            double bInG = bInM / 1024.0;
-            if(byteCount < 1024ul * 1024ul * 1024ul * 1024ul)
-                return $"{bInG:F2} GiB";
-            double bInT = bInG / 1024.0;
-            return $"{bInT:F2} TiB";
         }
 
         private OperationState saveStatus;

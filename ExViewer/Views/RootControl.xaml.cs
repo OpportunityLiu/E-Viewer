@@ -148,14 +148,6 @@ namespace ExViewer.Views
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
 
-        private void fm_inner_NavigationFailed(object sender, NavigationFailedEventArgs e)
-        {
-#if DEBUG 
-            if(Debugger.IsAttached)
-                Debugger.Break();
-#endif
-        }
-
         private void Grid_GotFocus(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine(e.OriginalSource, "Focus state");

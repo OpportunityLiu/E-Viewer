@@ -271,14 +271,42 @@
             </UserControl>
         </DataTemplate>
 
-        <Style x:Key="PivotHeaderPathIconStyle"
-               TargetType="PathIcon">
+        <Style x:Key="PivotHeaderGridStyle"
+               TargetType="Grid">
+            <Setter Property="Padding"
+                    Value="0,8" />
+        </Style>
+        <Style x:Key="PivotHeaderIconStyle"
+               TargetType="FrameworkElement">
             <Setter Property="Margin"
-                    Value="0,8,8,0" />
+                    Value="8,0" />
             <Setter Property="MinWidth"
                     Value="32" />
             <Setter Property="MinHeight"
                     Value="32" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+        </Style>
+        <Style x:Key="PivotHeaderTextBlockStyle"
+               TargetType="TextBlock">
+            <Setter Property="Margin"
+                    Value="-16,0" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+            <Setter Property="Grid.Row"
+                    Value="1" />
+            <Setter Property="FontSize"
+                    Value="14" />
+        </Style>
+        <Style x:Key="PivotHeaderSuperscriptTextBlockStyle"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource CaptionTextBlockStyle}">
+            <Setter Property="VerticalAlignment"
+                    Value="Top" />
+            <Setter Property="Grid.Column"
+                    Value="1" />
+            <Setter Property="Margin"
+                    Value="0,-8,0,0" />
         </Style>
     </Page.Resources>
     <Grid x:Name="gd_Root">
@@ -438,12 +466,14 @@
                                 FontFamily="Segoe MDL2 Assets"
                                 AutomationProperties.Name="Show/Hide detiles"
                                 Click="btn_Scroll_Click"
+                                IsTabStop="False"
                                 Padding="0"
                                 HorizontalAlignment="Center"
                                 HorizontalContentAlignment="Center"
                                 RenderTransformOrigin="0.5,0.5">
                             <Button.RenderTransform>
-                                <CompositeTransform x:Name="ct_btn_Scroll" Rotation="0" />
+                                <CompositeTransform x:Name="ct_btn_Scroll"
+                                                    Rotation="0" />
                             </Button.RenderTransform>
                         </Button>
                     </Border>
@@ -453,7 +483,8 @@
                            Loaded="pv_Loaded"
                            SelectionChanged="pv_SelectionChanged"
                            HorizontalContentAlignment="Stretch"
-                           VerticalContentAlignment="Stretch">
+                           VerticalContentAlignment="Stretch"
+                           BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
                         <Pivot.ItemContainerStyle>
                             <Style TargetType="PivotItem">
                                 <Setter Property="Margin"
@@ -462,7 +493,7 @@
                         </Pivot.ItemContainerStyle>
                         <PivotItem>
                             <PivotItem.Header>
-                                <Grid>
+                                <Grid Style="{StaticResource PivotHeaderGridStyle}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
@@ -471,21 +502,17 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <PathIcon x:Name="p_ImagesNarrow"
-                                              Data="M0,12 V28 H24 V12 H0 Z
+                                    <PathIcon Data="M0,12 V28 H24 V12 H0 Z
                   M2,14 V26 H22 V14 H2 Z
                   M2,22 L8,16 L12,20 L15,17 L22,24 V26 H21.172 L15,19.828 L8.828,26 H6 L10.586,21.414 L8,18.828 L2,24.828 Z
                   M18,17 A1,1,0,1,0,19,16 A1,1,0,0,0,18,17 Z
                   M 4,12 V8 H28 V24 H24 V22 H26 V10 H6 V12 H4 Z
                   M 8,8 V4 H32 V20 H28 V18 H30 V6 H10 V8 H8 Z"
-                                              Style="{StaticResource PivotHeaderPathIconStyle}" />
-                                    <TextBlock x:Name="tb_ImagesWide"
-                                               Text="Images"
-                                               Grid.Row="1" />
+                                              Style="{StaticResource PivotHeaderIconStyle}" />
+                                    <TextBlock Text="Images"
+                                               Style="{StaticResource PivotHeaderTextBlockStyle}" />
                                     <TextBlock Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='[{0}]'}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               VerticalAlignment="Top" 
-                                               Grid.Column="1"/>
+                                               Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"/>
                                 </Grid>
                             </PivotItem.Header>
                             <GridView x:Name="gv"
@@ -521,21 +548,25 @@
                         </PivotItem>
                         <PivotItem>
                             <PivotItem.Header>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock x:Name="tb_CommentsNarrow"
-                                               Text="&#xE90A;"
+                                <Grid Style="{StaticResource PivotHeaderGridStyle}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="&#xE90A;"
                                                FontFamily="Segoe MDL2 Assets"
-                                               ToolTipService.ToolTip="Comments"
-                                               Margin="0,8,8,0"
+                                               Style="{StaticResource PivotHeaderIconStyle}"
                                                FontSize="32" />
-                                    <TextBlock x:Name="tb_CommentsWide"
-                                               Visibility="Collapsed"
-                                               Text="Comments" />
+                                    <TextBlock Text="Comments"
+                                               Style="{StaticResource PivotHeaderTextBlockStyle}" />
                                     <TextBlock Text="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='[{0}]'}"
                                                Visibility="{x:Bind VM.Gallery.Comments, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               VerticalAlignment="Top" />
-                                </StackPanel>
+                                               Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}" />
+                                </Grid>
                             </PivotItem.Header>
                             <ListView x:Name="lv_Comments"
                                       ItemsSource="{x:Bind VM.Gallery.Comments, Mode=OneWay}"
@@ -562,9 +593,16 @@
                         </PivotItem>
                         <PivotItem>
                             <PivotItem.Header>
-                                <StackPanel Orientation="Horizontal">
-                                    <PathIcon x:Name="p_TorrentsNarrow"
-                                              Data="M4,0 V16 H6 V2 H26 V17
+                                <Grid Style="{StaticResource PivotHeaderGridStyle}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <PathIcon Data="M4,0 V16 H6 V2 H26 V17
                                           C26,19,24,20,24,22 
                                           V30 H12 V32 H28 A2,2,0,0,0,30,30 V22
                                           C30,20,28,19,28,17 V2 A2,2,0,0,0,26,0 Z
@@ -574,16 +612,13 @@
                                           M0,32 H10 V30 H0 Z
                                           M4,18 H6 V28.172 L8.586,25.586 L10,27 L7,30 H3 L0,27 L1.414,25.586
                                           L4,28.172 Z"
-                                              Style="{StaticResource PivotHeaderPathIconStyle}"
-                                              ToolTipService.ToolTip="Torrents" />
-                                    <TextBlock x:Name="tb_TorrentsWide"
-                                               Text="Torrents"
-                                               Visibility="Collapsed" />
+                                              Style="{StaticResource PivotHeaderIconStyle}" />
+                                    <TextBlock Text="Torrents"
+                                               Style="{StaticResource PivotHeaderTextBlockStyle}" />
                                     <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='[{0}]'}"
                                                Visibility="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
-                                               Style="{StaticResource CaptionTextBlockStyle}"
-                                               VerticalAlignment="Top" />
-                                </StackPanel>
+                                               Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}" />
+                                </Grid>
                             </PivotItem.Header>
                             <ListView x:Name="lv_Torrents"
                                       ItemsSource="{x:Bind VM.Torrents, Mode=OneWay}"
@@ -646,6 +681,7 @@
                      Foreground="{x:Bind VM.SaveStatus, Converter={StaticResource OperationStateToBrushConverter}, Mode=OneWay}"
                      Visibility="{x:Bind VM.SaveStatus, Converter={StaticResource OperationStateToVisibilityConverter}, Mode=OneWay}"
                      Maximum="1"
+                     IsHitTestVisible="False"
                      Value="{x:Bind VM.SaveProgress, Mode=OneWay}"
                      SmallChange="1E-05"
                      LargeChange="0.0001"

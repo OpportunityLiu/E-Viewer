@@ -13,21 +13,21 @@ namespace ExViewer.Converters
         private static readonly string[] unitsMetric = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
         private static readonly string[] unitsBinary = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB" };
 
-        public BytePresentation Representation
+        public UnitPrefix UnitPrefix
         {
-            get { return (BytePresentation)GetValue(RepresentationProperty); }
-            set { SetValue(RepresentationProperty, value); }
+            get { return (UnitPrefix)GetValue(UnitPrefixProperty); }
+            set { SetValue(UnitPrefixProperty, value); }
         }
 
-        public static readonly DependencyProperty RepresentationProperty =
-            DependencyProperty.Register(nameof(Representation), typeof(BytePresentation), typeof(ByteSizeToStringConverter), new PropertyMetadata(BytePresentation.Binary));
+        public static readonly DependencyProperty UnitPrefixProperty =
+            DependencyProperty.Register(nameof(UnitPrefix), typeof(UnitPrefix), typeof(ByteSizeToStringConverter), new PropertyMetadata(UnitPrefix.Binary));
 
         public string OutOfRangeValue
         {
             get { return (string)GetValue(OutOfRangeValueProperty); }
             set { SetValue(OutOfRangeValueProperty, value); }
         }
-        
+
         public static readonly DependencyProperty OutOfRangeValueProperty =
             DependencyProperty.Register("OutOfRangeValue", typeof(string), typeof(ByteSizeToStringConverter), new PropertyMetadata("???", OutOfRangeValuePropertyChangedCallback));
 
@@ -40,43 +40,32 @@ namespace ExViewer.Converters
         protected override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             var size = System.Convert.ToDouble(value);
-            if(size < 0)
-                return OutOfRangeValue;
-            string[] units;
-            double powerBase;
-            getUnits(out units, out powerBase);
-            foreach(var unit in units)
+            try
             {
-                if(size < 1000)
-                {
-                    return $"{size.ToString("0.000").Substring(0, 5)} {unit}";
-                }
-                size /= powerBase;
+                return ByteSizeToString(size, this.UnitPrefix);
             }
-            return OutOfRangeValue;
+            catch(ArgumentException)
+            {
+                return OutOfRangeValue;
+            }
         }
 
         protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
-            var sizeStr = value.ToString().Trim();
-            string[] units;
-            double powerBase;
-            getUnits(out units, out powerBase);
-            for(int i = 0; i < units.Length; i++)
+            var sizeStr = value.ToString();
+            try
             {
-                if(sizeStr.EndsWith(units[i], StringComparison.OrdinalIgnoreCase))
-                {
-                    var sizeNumStr = sizeStr.Substring(0, sizeStr.Length - units[i].Length);
-                    var sizeNum = double.Parse(sizeNumStr);
-                    return (long)(sizeNum * Math.Pow(powerBase, i));
-                }
+                return StringToByteSize(sizeStr, this.UnitPrefix);
             }
-            throw new ArgumentException(nameof(value));
+            catch(Exception)
+            {
+                return DependencyProperty.UnsetValue;
+            }
         }
 
-        private void getUnits(out string[] units, out double powerBase)
+        private static void getUnits(out string[] units, out double powerBase, UnitPrefix unitPrefix)
         {
-            if(Representation == BytePresentation.Metric)
+            if(unitPrefix == UnitPrefix.Metric)
             {
                 units = unitsMetric;
                 powerBase = 1000;
@@ -87,9 +76,47 @@ namespace ExViewer.Converters
                 powerBase = 1024;
             }
         }
+
+        public static string ByteSizeToString(double size, UnitPrefix unitPrefix)
+        {
+            if(size < 0 || double.IsNaN(size))
+                throw new ArgumentOutOfRangeException(nameof(size));
+            string[] units;
+            double powerBase;
+            getUnits(out units, out powerBase, unitPrefix);
+            foreach(var unit in units)
+            {
+                if(size < 1000)
+                {
+                    return $"{size.ToString("0.000").Substring(0, 5)} {unit}";
+                }
+                size /= powerBase;
+            }
+            throw new ArgumentOutOfRangeException(nameof(size));
+        }
+
+        public static double StringToByteSize(string sizeStr,UnitPrefix unitPrefix)
+        {
+            if(string.IsNullOrEmpty(sizeStr))
+                throw new ArgumentNullException(nameof(sizeStr));
+            sizeStr = sizeStr.Trim();
+            string[] units;
+            double powerBase;
+            getUnits(out units, out powerBase, unitPrefix);
+            for(int i = 0; i < units.Length; i++)
+            {
+                if(sizeStr.EndsWith(units[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    var sizeNumStr = sizeStr.Substring(0, sizeStr.Length - units[i].Length);
+                    var sizeNum = double.Parse(sizeNumStr);
+                    return sizeNum * Math.Pow(powerBase, i);
+                }
+            }
+            throw new FormatException("Can't parse the given string to a byte size.");
+        }
     }
 
-    public enum BytePresentation
+    public enum UnitPrefix
     {
         Binary,
         Metric
