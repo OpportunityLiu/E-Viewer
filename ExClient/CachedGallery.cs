@@ -205,29 +205,29 @@ namespace ExClient
         internal CachedGallery(GalleryModel model, CachedGalleryModel cacheModel)
             : base(model, false)
         {
-            this.ThumbFile = cacheModel.ThumbData;
+            this.thumbFile = cacheModel.ThumbData;
             this.PageCount = (int)Math.Ceiling(RecordCount / (double)pageSize);
             this.Owner = Client.Current;
         }
 
         public override IAsyncAction InitOverrideAsync()
         {
+            var temp = thumbFile;
             return DispatcherHelper.RunAsync(async () =>
             {
-                using(var stream = ThumbFile.AsBuffer().AsRandomAccessStream())
+                if(temp == null)
+                    return;
+                using(var stream = temp.AsBuffer().AsRandomAccessStream())
                 {
                     await Thumb.SetSourceAsync(stream);
                 }
+                thumbFile = null;
             });
         }
 
         private List<ImageModel> imageModels;
 
-        protected byte[] ThumbFile
-        {
-            get;
-            private set;
-        }
+        private byte[] thumbFile;
 
         private void loadImageModel()
         {

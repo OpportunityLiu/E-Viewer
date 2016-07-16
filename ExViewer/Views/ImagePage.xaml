@@ -32,7 +32,8 @@
             <ColorAnimation x:Name="cb_top_OpenAnimation"
                             Duration="0:0:0.15"
                             Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
-                            Storyboard.TargetName="cb_top">
+                            Storyboard.TargetName="cb_top"
+                            To="{StaticResource SystemChromeMediumColor}">
                 <ColorAnimation.EasingFunction>
                     <PowerEase EasingMode="EaseOut" />
                 </ColorAnimation.EasingFunction>

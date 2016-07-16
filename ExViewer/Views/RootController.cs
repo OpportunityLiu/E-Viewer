@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Media.Animation;
 using GalaSoft.MvvmLight.Threading;
 using System.Diagnostics;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Navigation;
 
 namespace ExViewer.Views
 {
@@ -37,12 +38,20 @@ namespace ExViewer.Views
 
             private static void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
             {
-#if DEBUG && !DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION
+#if DEBUG
                 if(global::System.Diagnostics.Debugger.IsAttached)
                     global::System.Diagnostics.Debugger.Break();
 #endif
                 SendToast(e.Exception, null);
                 e.Handled = true;
+            }
+
+            private static void Frame_NavigationFailed(object sender, NavigationFailedEventArgs e)
+            {
+#if DEBUG
+                if(Debugger.IsAttached)
+                    Debugger.Break();
+#endif
             }
 
             private static RootControl root;
@@ -52,6 +61,7 @@ namespace ExViewer.Views
             internal static void SetRoot(RootControl root)
             {
                 RootController.root = root;
+                root.fm_inner.NavigationFailed += Frame_NavigationFailed;
                 showPanel = (Storyboard)root.Resources["ShowDisablePanel"];
                 hidePanel = (Storyboard)root.Resources["HideDisablePanel"];
                 playToast = (Storyboard)root.Resources["PlayToastPanel"];

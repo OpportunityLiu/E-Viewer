@@ -144,8 +144,7 @@
             </SplitView.Pane>
             <Frame x:Name="fm_inner"
                    Navigating="fm_inner_Navigating"
-                   Navigated="fm_inner_Navigated"
-                   NavigationFailed="fm_inner_NavigationFailed" />
+                   Navigated="fm_inner_Navigated" />
         </SplitView>
         <Border x:Name="bd_Toast"
                 x:DeferLoadStrategy="Lazy"

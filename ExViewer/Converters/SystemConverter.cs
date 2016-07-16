@@ -28,7 +28,6 @@ namespace ExViewer.Converters
                 if(targetType.IsInstanceOfType(value))
                     return value;
                 return System.Convert.ChangeType(value, targetType);
-
             }
             catch(Exception)
             {

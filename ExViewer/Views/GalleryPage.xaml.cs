@@ -41,8 +41,9 @@ namespace ExViewer.Views
             ct_btn_Scroll.Rotation = sv_Content.VerticalOffset / gd_Info.ActualHeight * 180d;
         }
 
-        private void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        private async void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
+            await Task.Yield();
             if(e.NextView.VerticalOffset < e.FinalView.VerticalOffset && sv_Content.VerticalOffset < 1)
             {
                 changeViewTo(true, false);
@@ -87,7 +88,7 @@ namespace ExViewer.Views
         private void resetView()
         {
             changeViewTo(false, true);
-            gv.ScrollIntoView(gv.Items.FirstOrDefault());
+            gv.ScrollIntoView(VM.GetCurrent());
             lv_Comments.ScrollIntoView(lv_Comments.Items.FirstOrDefault());
             lv_Torrents.ScrollIntoView(lv_Torrents.Items.FirstOrDefault());
             lv_Tags.ScrollIntoView(lv_Tags.Items.FirstOrDefault());
@@ -114,7 +115,7 @@ namespace ExViewer.Views
             if(view)
                 sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
             else
-                sv_Content.ChangeView(null, 0.000001, null, disableAnimation);
+                sv_Content.ChangeView(null, 0, null, disableAnimation);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -132,7 +133,12 @@ namespace ExViewer.Views
             {
                 var current = VM.GetCurrent();
                 if(current != null)
-                    gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
+                {
+                    if(currentState)
+                        gv.ScrollIntoView(current);
+                    else
+                        gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
+                }
                 entranceElement = (UIElement)gv.ContainerFromIndex(VM.CurrentIndex);
                 if(entranceElement != null)
                     EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
