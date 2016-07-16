@@ -119,14 +119,14 @@ namespace ExViewer.ViewModels
         private SearchVM()
         {
             SettingCollection.SetHah();
-            Search = new RelayCommand(() =>
+            Search = new RelayCommand<string>(queryText =>
             {
                 if(SettingCollection.Current.SaveLastSearch)
                 {
                     SettingCollection.Current.DefaultSearchCategory = category;
-                    SettingCollection.Current.DefaultSearchString = keyWord;
+                    SettingCollection.Current.DefaultSearchString = queryText;
                 }
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), Cache.GetSearchQuery(keyWord, category, advancedSearch));
+                RootControl.RootController.Frame.Navigate(typeof(SearchPage), Cache.GetSearchQuery(queryText, category, advancedSearch));
             });
             Open = new RelayCommand<Gallery>(g =>
             {
@@ -135,7 +135,7 @@ namespace ExViewer.ViewModels
             });
         }
 
-        public RelayCommand Search
+        public RelayCommand<string> Search
         {
             get;
         }

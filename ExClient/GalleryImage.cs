@@ -263,6 +263,11 @@ namespace ExClient
                     this.State = ImageLoadingState.Loading;
                     imageLoad.Progress = (sender, progress) =>
                     {
+                        if(this.State == ImageLoadingState.Loaded)
+                        {
+                            sender.Cancel();
+                            return;
+                        }
                         if(progress.TotalBytesToReceive == null || progress.TotalBytesToReceive == 0)
                             this.Progress = 0;
                         else
@@ -347,15 +352,15 @@ namespace ExClient
             }
             protected set
             {
+                Set(ref imageFile, value);
+                image.Reset();
+                RaisePropertyChanged(nameof(Image));
+                RaisePropertyChanged(nameof(ImageFileUri));
                 if(value != null)
                 {
                     thumb.Reset();
                     thumb.StartLoading();
                 }
-                Set(ref imageFile, value);
-                image.Reset();
-                RaisePropertyChanged(nameof(Image));
-                RaisePropertyChanged(nameof(ImageFileUri));
             }
         }
 

@@ -3,15 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:ExViewer.Controls"
              xmlns:c="using:ExClient"
-             xmlns:img="using:ImageLib.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             Loaded="UserControl_Loaded"
+             Unloaded="UserControl_Unloaded"
              d:DesignHeight="300"
              d:DesignWidth="400">
+    <UserControl.Resources>
+        <DataTemplate x:Key="GifTemplate"
+                      xmlns:img="using:ImageLib.Controls"
+                      x:DataType="c:GalleryImage">
+            <img:ImageView UriSource="{Binding ImageFileUri, Mode=OneWay}"
+                           Stretch="Uniform" />
+        </DataTemplate>
+        <DataTemplate x:Key="NormalTemplate"
+                      x:DataType="c:GalleryImage">
+            <Image Source="{Binding Image, Mode=OneWay}"
+                   Stretch="Uniform" />
+        </DataTemplate>
+        <local:ImagePresenterSelector x:Key="ImageTemplateSelector"
+                                      Template="{StaticResource NormalTemplate}"
+                                      GifTemplate="{StaticResource GifTemplate}" />
+    </UserControl.Resources>
     <ScrollViewer x:Name="sv"
                   IsTabStop="True"
                   ZoomMode="Enabled"
+                  Template="{StaticResource ScrollViewerScrollBarlessTemplate}"
                   HorizontalScrollBarVisibility="Hidden"
                   VerticalScrollBarVisibility="Hidden"
                   MinZoomFactor="1"
@@ -24,41 +42,16 @@
         <Grid HorizontalAlignment="Center"
               VerticalAlignment="Center"
               x:Name="gd_ContentRoot">
-            <ContentPresenter Content="{x:Bind Image, Mode=OneWay}"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
-                              HorizontalContentAlignment="Stretch"
-                              VerticalContentAlignment="Stretch">
-                <ContentPresenter.ContentTemplate>
-                    <DataTemplate x:DataType="c:GalleryImage">
-                        <Image Source="{x:Bind Thumb, Mode=OneWay}"
-                               Stretch="Uniform" />
-                    </DataTemplate>
-                </ContentPresenter.ContentTemplate>
-            </ContentPresenter>
-            <ContentControl Content="{x:Bind Image, Mode=OneWay}"
+            <Image x:Name="img_Thumb"
+                   Source="{x:Bind Image.Thumb, Mode=OneWay}" />
+            <ContentControl x:Name="cc_Image"
+                            Content="{x:Bind Image, Mode=OneWay}"
+                            ContentTemplateSelector="{StaticResource ImageTemplateSelector}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            IsTabStop="False">
-                <ContentControl.ContentTemplateSelector>
-                    <local:ImagePresenterSelector>
-                        <local:ImagePresenterSelector.Template>
-                            <DataTemplate x:DataType="c:GalleryImage">
-                                <Image Source="{x:Bind Image, Mode=OneWay}"
-                                       Stretch="Uniform" />
-                            </DataTemplate>
-                        </local:ImagePresenterSelector.Template>
-                        <local:ImagePresenterSelector.GifTemplate>
-                            <DataTemplate x:DataType="c:GalleryImage">
-                                <img:ImageView UriSource="{x:Bind ImageFileUri, Mode=OneWay}"
-                                               Stretch="Uniform" />
-                            </DataTemplate>
-                        </local:ImagePresenterSelector.GifTemplate>
-                    </local:ImagePresenterSelector>
-                </ContentControl.ContentTemplateSelector>
-            </ContentControl>
+                            IsTabStop="False" />
         </Grid>
     </ScrollViewer>
 </UserControl>
