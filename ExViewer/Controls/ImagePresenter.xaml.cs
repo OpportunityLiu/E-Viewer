@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.ComponentModel;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -46,6 +47,50 @@ namespace ExViewer.Controls
         {
             get;
         } = DependencyProperty.Register("Image", typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null));
+
+        private static void ImagePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var sender = (ImagePresenter)d;
+            if(!sender.loaded)
+            {
+                if(e.OldValue != null)
+                {
+                    ((GalleryImage)e.OldValue).PropertyChanged -= sender.Image_PropertyChanged;
+                }
+            }
+            else
+            {
+                if(e.NewValue != null)
+                {
+                    ((GalleryImage)e.NewValue).PropertyChanged += sender.Image_PropertyChanged;
+                }
+            }
+        }
+
+        private bool loaded;
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(this.Image != null)
+                this.Image.PropertyChanged += Image_PropertyChanged;
+            loaded = true;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if(this.Image != null)
+                this.Image.PropertyChanged -= Image_PropertyChanged;
+            loaded = false;
+        }
+
+        private void Image_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(GalleryImage.ImageFile))
+            {
+                this.cc_Image.ClearValue(ContentControl.ContentProperty);
+                this.cc_Image.Content = Image;
+            }
+        }
 
         protected override Size MeasureOverride(Size availableSize)
         {

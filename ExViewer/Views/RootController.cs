@@ -39,8 +39,8 @@ namespace ExViewer.Views
             private static void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
             {
 #if DEBUG
-                if(global::System.Diagnostics.Debugger.IsAttached)
-                    global::System.Diagnostics.Debugger.Break();
+                if(Debugger.IsAttached)
+                    Debugger.Break();
 #endif
                 SendToast(e.Exception, null);
                 e.Handled = true;

@@ -149,7 +149,7 @@ namespace ExViewer.Views
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             ab.IsOpen = false;
-            VM.Search.Execute(null);
+            VM.Search.Execute(args.QueryText);
         }
 
         private void PullToRefreshBox_RefreshInvoked(DependencyObject sender, object args)
