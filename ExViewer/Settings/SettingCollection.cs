@@ -46,11 +46,11 @@ namespace ExViewer.Settings
             Index = 20,
             SettingPresenterTemplate = "CatagorySettingTemplate"
         )]
-        public ExClient.Category DefaultSearchCategory
+        public Category DefaultSearchCategory
         {
             get
             {
-                return GetRoaming(ExClient.Category.NonH);
+                return GetRoaming(Category.All);
             }
             set
             {
