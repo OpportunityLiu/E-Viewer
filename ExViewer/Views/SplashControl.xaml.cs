@@ -42,10 +42,15 @@ namespace ExViewer.Views
 
         public async void prepareCompleted()
         {
+            var initdb = Task.Run(() =>
+            {
+                ExClient.Models.GalleryDb.Migrate();
+                Database.SearchHistoryDb.Migrate();
+            });
             await Task.Delay(50);
             Window.Current.Activate();
             ShowPic.Begin();
-
+            
             if(Client.Current.NeedLogOn)
             {
                 try
@@ -61,6 +66,7 @@ namespace ExViewer.Views
                 {
                 }
             }
+            await initdb;
             IAsyncAction initSearch = null;
             if(!Client.Current.NeedLogOn)
             {
@@ -69,44 +75,7 @@ namespace ExViewer.Views
 
             if(SettingCollection.Current.NeedVerify)
             {
-                var result = await UserConsentVerifier.RequestVerificationAsync("Because of your settings, we need to request the verification.");
-                string info = null;
-                var succeed = false;
-                switch(result)
-                {
-                case UserConsentVerificationResult.Verified:
-                    succeed = true;
-                    break;
-                case UserConsentVerificationResult.DeviceNotPresent:
-                case UserConsentVerificationResult.NotConfiguredForUser:
-                    info = "Please set up a PIN first. \n\n"
-                        + "Go \"Settings -> Accounts - Sign-in options -> PIN -> Add\" to do this.";
-                    break;
-                case UserConsentVerificationResult.DisabledByPolicy:
-                    info = "Verification has been disabled by group policy. Please contact your administrator.";
-                    break;
-                case UserConsentVerificationResult.DeviceBusy:
-                    info = "Device is busy. Please try again later.";
-                    break;
-                case UserConsentVerificationResult.RetriesExhausted:
-                case UserConsentVerificationResult.Canceled:
-                default:
-                    break;
-                }
-                if(!succeed)
-                {
-                    if(info != null)
-                    {
-                        var dialog = new ContentDialog
-                        {
-                            Title = "VERIFICATION FAILED",
-                            Content = info,
-                            PrimaryButtonText = "Ok"
-                        };
-                        await dialog.ShowAsync();
-                    }
-                    Application.Current.Exit();
-                }
+                await verify();
             }
             try
             {
@@ -118,6 +87,48 @@ namespace ExViewer.Views
                 rc = new RootControl(typeof(CachePage), previousExecutionState);
             }
             GoToContent();
+        }
+
+        private static async Task verify()
+        {
+            var result = await UserConsentVerifier.RequestVerificationAsync("Because of your settings, we need to request the verification.");
+            string info = null;
+            var succeed = false;
+            switch(result)
+            {
+            case UserConsentVerificationResult.Verified:
+                succeed = true;
+                break;
+            case UserConsentVerificationResult.DeviceNotPresent:
+            case UserConsentVerificationResult.NotConfiguredForUser:
+                info = "Please set up a PIN first. \n\n"
+                    + "Go \"Settings -> Accounts - Sign-in options -> PIN -> Add\" to do this.";
+                break;
+            case UserConsentVerificationResult.DisabledByPolicy:
+                info = "Verification has been disabled by group policy. Please contact your administrator.";
+                break;
+            case UserConsentVerificationResult.DeviceBusy:
+                info = "Device is busy. Please try again later.";
+                break;
+            case UserConsentVerificationResult.RetriesExhausted:
+            case UserConsentVerificationResult.Canceled:
+            default:
+                break;
+            }
+            if(!succeed)
+            {
+                if(info != null)
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = "VERIFICATION FAILED",
+                        Content = info,
+                        PrimaryButtonText = "Ok"
+                    };
+                    await dialog.ShowAsync();
+                }
+                Application.Current.Exit();
+            }
         }
 
         public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
@@ -145,7 +156,7 @@ namespace ExViewer.Views
         private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
             this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Assets/Splashes/botm.png"));
-            prepareCompleted();
+            // After the default image loaded, prepareCompleted() will be called.
         }
 
         private void img_pic_ImageOpened(object sender, RoutedEventArgs e)

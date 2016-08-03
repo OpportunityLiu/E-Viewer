@@ -158,13 +158,16 @@
         </SplitView>
         <Border x:Name="bd_Toast"
                 x:DeferLoadStrategy="Lazy"
-                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Bottom"
                 Opacity="0"
                 IsHitTestVisible="False"
                 Visibility="Collapsed"
                 Padding="16,8">
+            <Border.Background>
+                <SolidColorBrush Color="{StaticResource SystemChromeMediumLowColor}"
+                                 Opacity="0.75" />
+            </Border.Background>
             <TextBlock x:Name="tb_Toast"
                        TextWrapping="WrapWholeWords"
                        HorizontalAlignment="Center"

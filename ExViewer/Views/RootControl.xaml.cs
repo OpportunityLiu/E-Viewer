@@ -48,10 +48,9 @@ namespace ExViewer.Views
                 [typeof(SettingsPage)] = this.svt_Settings,
                 [typeof(AboutPage)] = this.svt_About
             };
-            RootController.SetRoot(this);
             this.homePageType = homePageType;
             this.previousState = previousState;
-            IObservableMap<string, string> qualifiers = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().QualifierValues;
+            sv_root.IsPaneOpen = false;
         }
 
         private Type homePageType;
@@ -71,7 +70,7 @@ namespace ExViewer.Views
 
         private void Control_Loading(FrameworkElement sender, object args)
         {
-            sv_root.IsPaneOpen = false;
+            RootController.SetRoot(this);
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)

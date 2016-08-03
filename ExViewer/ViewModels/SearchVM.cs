@@ -216,7 +216,7 @@ namespace ExViewer.ViewModels
             return Task.Run(() =>
             {
                 input = input?.Trim() ?? "";
-                using(var db = SearchHistoryDb.Create())
+                using(var db = new SearchHistoryDb())
                 {
                     return (IReadOnlyList<SearchHistory>)
                     ((IEnumerable<SearchHistory>)
@@ -224,7 +224,7 @@ namespace ExViewer.ViewModels
                             .Where(sh => sh.Content.Contains(input))
                             .OrderByDescending(sh => sh.Time)))
                         .Distinct()
-                        .Select(sh=>sh.SetHighlight(input))
+                        .Select(sh => sh.SetHighlight(input))
                         .ToList();
                 }
             }).AsAsyncOperation();
@@ -239,12 +239,16 @@ namespace ExViewer.ViewModels
 
         public async void ClearHistory()
         {
-            await SearchHistoryDb.DeleteAsync();
+            using(var db = new SearchHistoryDb())
+            {
+                db.SearchHistorySet.RemoveRange(db.SearchHistorySet);
+                await db.SaveChangesAsync();
+            }
         }
 
         public static void AddHistory(string content)
         {
-            using(var db = SearchHistoryDb.Create())
+            using(var db = new SearchHistoryDb())
             {
                 db.SearchHistorySet.Add(SearchHistory.Create(content));
                 db.SaveChanges();
@@ -256,7 +260,7 @@ namespace ExViewer.ViewModels
             get;
         } = new RelayCommand<SearchHistory>(sh =>
         {
-            using(var db = SearchHistoryDb.Create())
+            using(var db = new SearchHistoryDb())
             {
                 db.SearchHistorySet.Remove(sh);
                 db.SaveChanges();
