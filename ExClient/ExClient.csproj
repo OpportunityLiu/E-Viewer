@@ -115,6 +115,11 @@
     <Compile Include="Comment.cs" />
     <Compile Include="Helpers\HtmlHelper.cs" />
     <Compile Include="Internal\ImageHandle.cs" />
+    <Compile Include="Migrations\20160717022029_MyFirstMigration.cs" />
+    <Compile Include="Migrations\20160717022029_MyFirstMigration.designer.cs">
+      <DependentUpon>20160717022029_MyFirstMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\GalleryDbModelSnapshot.cs" />
     <Compile Include="Models\CachedGalleryModel.cs" />
     <Compile Include="Helpers\StorageHelper.cs" />
     <Compile Include="Category.cs" />

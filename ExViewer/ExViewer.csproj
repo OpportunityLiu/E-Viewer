@@ -20,7 +20,7 @@
     <PackageCertificateKeyFile>ExViewer_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
     <PackageCertificateThumbprint>B922EB999884DD0831B67ED27DD51BA033BEF9F1</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
@@ -94,6 +94,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="App.config" />
     <None Include="Assets\Panda.psd" />
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
@@ -143,6 +144,11 @@
     <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Database\SearchHistoryDb.cs" />
     <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="Migrations\20160717021413_MyFirstMigration.cs" />
+    <Compile Include="Migrations\20160717021413_MyFirstMigration.designer.cs">
+      <DependentUpon>20160717021413_MyFirstMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\SearchHistoryDbModelSnapshot.cs" />
     <Compile Include="Settings\Attributes.cs" />
     <Compile Include="Settings\GroupedSettings.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
@@ -199,6 +205,8 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Splashes\botm.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Images\Dark\UserBackground.scale-100.png" />
     <Content Include="Images\Dark\UserBackground.scale-200.png" />
     <Content Include="Images\Dark\UserBackground.scale-400.png" />

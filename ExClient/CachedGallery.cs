@@ -45,7 +45,7 @@ namespace ExClient
 
             public CachedGalleryList() : base(1)
             {
-                using(var db = GalleryDb.Create())
+                using(var db = new GalleryDb())
                 {
                     RecordCount = db.CacheSet.Count();
                     PageCount = 1;
@@ -83,7 +83,7 @@ namespace ExClient
                     loadStateFlag = null;
                     return;
                 }
-                using(var db = GalleryDb.Create())
+                using(var db = new GalleryDb())
                 {
                     foreach(var item in trackedItems.Concat(Enumerable.Repeat(visibleRange, 1)).Distinct(ItemIndexRangeEqualityComparer.Default))
                     {
@@ -193,7 +193,7 @@ namespace ExClient
                     await items[i].DeleteAsync(StorageDeleteOption.PermanentDelete);
                 }
                 progress.Report(1);
-                using(var db = GalleryDb.Create())
+                using(var db = new GalleryDb())
                 {
                     db.ImageSet.RemoveRange(db.ImageSet);
                     db.CacheSet.RemoveRange(db.CacheSet);
@@ -233,7 +233,7 @@ namespace ExClient
         {
             if(imageModels != null)
                 return;
-            using(var db = GalleryDb.Create())
+            using(var db = new GalleryDb())
             {
                 imageModels = (from g in db.GallerySet
                                where g.Id == Id
@@ -269,7 +269,7 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                using(var db = GalleryDb.Create())
+                using(var db = new GalleryDb())
                 {
                     db.CacheSet.Remove(db.CacheSet.Single(c => c.GalleryId == this.Id));
                     await db.SaveChangesAsync();

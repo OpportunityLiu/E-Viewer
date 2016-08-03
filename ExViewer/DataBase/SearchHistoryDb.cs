@@ -14,39 +14,16 @@ namespace ExViewer.Database
     class SearchHistoryDb : DbContext
     {
         private const string dbFilename = "SearchHistory.db";
-        private static object syncroot = new object();
-        private static bool created = false;
 
-        public static SearchHistoryDb Create()
+        public static void Migrate()
         {
-            var db = new SearchHistoryDb();
-            if(!created)
-                lock(syncroot)
-                    if(!created)
-                    {
-                        db.Database.EnsureCreated();
-                        created = true;
-                    }
-            return db;
+            using(var db = new SearchHistoryDb())
+            {
+                db.Database.Migrate();
+            }
         }
 
-        public static void Delete()
-        {
-            if(created)
-                lock(syncroot)
-                    if(created)
-                    {
-                        new SearchHistoryDb().Database.EnsureDeleted();
-                        created = false;
-                    }
-        }
-
-        public static IAsyncAction DeleteAsync()
-        {
-            return Task.Run((Action)Delete).AsAsyncAction();
-        }
-
-        protected SearchHistoryDb()
+        public SearchHistoryDb()
         {
         }
 

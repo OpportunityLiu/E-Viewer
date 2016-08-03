@@ -44,7 +44,7 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                using(var db = GalleryDb.Create())
+                using(var db = new GalleryDb())
                 {
                     var cm = db.CacheSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
@@ -110,7 +110,7 @@ namespace ExClient
                     await Task.WhenAll(loadTasks);
 
                     var thumb = (await Owner.HttpClient.GetBufferAsync(ThumbUri)).ToArray();
-                    using(var db = GalleryDb.Create())
+                    using(var db = new GalleryDb())
                     {
                         var myModel = db.CacheSet.SingleOrDefault(model => model.GalleryId == this.Id);
                         if(myModel == null)
@@ -249,7 +249,7 @@ namespace ExClient
         {
             return Task.Run(() =>
             {
-                using(var db = GalleryDb.Create())
+                using(var db = new GalleryDb())
                 {
                     var myModel = db.GallerySet.SingleOrDefault(model => model.Id == this.Id);
                     if(myModel == null)
@@ -457,7 +457,7 @@ namespace ExClient
                             }
                             group r by r.thumbUri).ToDictionary(group => Owner.HttpClient.GetBufferAsync(group.Key));
                 var toAdd = new List<GalleryImage>(40);
-                using(var db = GalleryDb.Create())
+                using(var db = new GalleryDb())
                 {
                     foreach(var group in pics)
                     {
@@ -539,7 +539,7 @@ namespace ExClient
                 var temp = GalleryFolder;
                 GalleryFolder = null;
                 await temp.DeleteAsync();
-                using(var db = GalleryDb.Create())
+                using(var db = new GalleryDb())
                 {
                     db.ImageSet.RemoveRange(db.ImageSet.Where(i => i.OwnerId == this.Id));
                     await db.SaveChangesAsync();

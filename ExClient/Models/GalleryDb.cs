@@ -7,45 +7,23 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ExClient.Models
 {
-    class GalleryDb : DbContext
+    public class GalleryDb : DbContext
     {
         private const string dbFilename = "Gallery.db";
-        private static object syncroot = new object();
-        private static bool created = false;
 
-        public static GalleryDb Create()
+        public static void Migrate()
         {
-            var db = new GalleryDb();
-            if(!created)
-                lock(syncroot)
-                    if(!created)
-                    {
-                        db.Database.EnsureCreated();
-                        created = true;
-                    }
-            return db;
+            using(var db = new GalleryDb())
+            {
+                db.Database.Migrate();
+            }
         }
 
-        public static void Delete()
-        {
-            if(created)
-                lock(syncroot)
-                    if(created)
-                    {
-                        new GalleryDb().Database.EnsureDeleted();
-                        created = false;
-                    }
-        }
-
-        public static IAsyncAction DeleteAsync()
-        {
-            return Task.Run((Action)Delete).AsAsyncAction();
-        }
-
-        protected GalleryDb()
+        internal GalleryDb()
         {
         }
 
@@ -87,19 +65,19 @@ namespace ExClient.Models
                 .HasForeignKey(i => i.OwnerId);
         }
 
-        public DbSet<GalleryModel> GallerySet
+        internal DbSet<GalleryModel> GallerySet
         {
             get;
             set;
         }
 
-        public DbSet<ImageModel> ImageSet
+        internal DbSet<ImageModel> ImageSet
         {
             get;
             set;
         }
 
-        public DbSet<CachedGalleryModel> CacheSet
+        internal DbSet<CachedGalleryModel> CacheSet
         {
             get;
             set;

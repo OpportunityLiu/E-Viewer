@@ -80,7 +80,7 @@ namespace ExViewer.Views
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    if(source != root.fm_inner.Content.GetType() && source != null)
+                    if(source != root.fm_inner.Content?.GetType() && source != null)
                         return;
                     root.FindName(nameof(root.bd_Toast));
                     root.tb_Toast.Text = content;

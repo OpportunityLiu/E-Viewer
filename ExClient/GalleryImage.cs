@@ -244,6 +244,7 @@ namespace ExClient
                     imageLoad?.Cancel();
                 });
                 this.State = ImageLoadingState.Preparing;
+                this.Progress = 0;
                 try
                 {
                     await load;
@@ -286,7 +287,7 @@ namespace ExClient
                     var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
                     var save = Owner.GalleryFolder.SaveFileAsync($"{PageId}{ext}", buffer);
                     ImageFile = await save;
-                    using(var db = Models.GalleryDb.Create())
+                    using(var db = new Models.GalleryDb())
                     {
                         var myModel = db.ImageSet.SingleOrDefault(model => model.OwnerId == this.Owner.Id && model.PageId == this.PageId);
                         if(myModel == null)
