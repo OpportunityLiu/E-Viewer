@@ -28,18 +28,25 @@ namespace ExClient
 
         private Client()
         {
-            httpFilter = new HttpBaseProtocolFilter();
-            HttpClient = new HttpClient(httpFilter);
+            var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
+            cookieManager = httpFilter.CookieManager;
+            HttpClient = new HttpClient(new Internal.RedirectFilter(httpFilter));
         }
 
-        private HttpBaseProtocolFilter httpFilter;
+        public async void Test()
+        {
+            //var s = await HttpClient.GetAsync(new Uri("https://exhentai.org/fullimg.php?gid=967271&page=26&key=7lj5fez8rfj"));
+            //s.Dispose();
+        }
+
+        private HttpCookieManager cookieManager;
 
         internal HttpClient HttpClient
         {
             get;
         }
 
-        public bool NeedLogOn => httpFilter.CookieManager.GetCookies(RootUri).Count < 2 && httpFilter.CookieManager.GetCookies(EhUri).Count < 2;
+        public bool NeedLogOn => cookieManager.GetCookies(RootUri).Count < 2 && cookieManager.GetCookies(EhUri).Count < 2;
 
         public IAsyncOperation<Client> LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
         {
@@ -78,7 +85,7 @@ namespace ExClient
                         throw new InvalidOperationException(errorNode.InnerText);
                     }
                     var init = await HttpClient.GetAsync(RootUri, HttpCompletionOption.ResponseHeadersRead);
-                    if(httpFilter.CookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")
+                    if(cookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")
                     {
                         throw new NotSupportedException(LocalizedStrings.Resources.AccountDenied);
                     }
@@ -89,7 +96,7 @@ namespace ExClient
                     ClearLogOnInfo();
                     foreach(var item in cookieBackUp)
                     {
-                        httpFilter.CookieManager.SetCookie(item);
+                        cookieManager.SetCookie(item);
                     }
                     throw;
                 }
@@ -98,18 +105,18 @@ namespace ExClient
 
         private List<HttpCookie> getLogOnInfo()
         {
-            return httpFilter.CookieManager.GetCookies(RootUri).Concat(httpFilter.CookieManager.GetCookies(EhUri)).ToList();
+            return cookieManager.GetCookies(RootUri).Concat(cookieManager.GetCookies(EhUri)).ToList();
         }
 
         public void ClearLogOnInfo()
         {
-            foreach(var item in httpFilter.CookieManager.GetCookies(RootUri))
+            foreach(var item in cookieManager.GetCookies(RootUri))
             {
-                httpFilter.CookieManager.DeleteCookie(item);
+                cookieManager.DeleteCookie(item);
             }
-            foreach(var item in httpFilter.CookieManager.GetCookies(EhUri))
+            foreach(var item in cookieManager.GetCookies(EhUri))
             {
-                httpFilter.CookieManager.DeleteCookie(item);
+                cookieManager.DeleteCookie(item);
             }
         }
 
@@ -133,7 +140,7 @@ namespace ExClient
         {
             get
             {
-                var cookie = httpFilter.CookieManager.GetCookies(EhUri).FirstOrDefault(c => c.Name == "ipb_member_id");
+                var cookie = cookieManager.GetCookies(EhUri).FirstOrDefault(c => c.Name == "ipb_member_id");
                 if(cookie == null)
                     return -1;
                 return int.Parse(cookie.Value);
@@ -147,16 +154,15 @@ namespace ExClient
 
         public void SetHahProxy(HahProxyConfig hah)
         {
-            var cm = httpFilter.CookieManager;
             if(hah == null)
             {
-                var uconfig = cm.GetCookies(RootUri).FirstOrDefault(c => c.Name == "uconfig");
+                var uconfig = cookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "uconfig");
                 if(uconfig != null)
-                    cm.DeleteCookie(uconfig);
+                    cookieManager.DeleteCookie(uconfig);
             }
             else
             {
-                cm.SetCookie(hah.GetCookie());
+                cookieManager.SetCookie(hah.GetCookie());
             }
         }
 

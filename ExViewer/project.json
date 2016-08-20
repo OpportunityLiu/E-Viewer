@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "AsyncFriendlyStackTrace": "1.4.0",
+    "AsyncFriendlyStackTrace": "1.4.1",
     "HockeySDK.UWP": "4.1.3",
     "ImageLib.UWP": "5.0.0",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0",

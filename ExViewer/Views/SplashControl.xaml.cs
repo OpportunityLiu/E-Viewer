@@ -50,7 +50,7 @@ namespace ExViewer.Views
             await Task.Delay(50);
             Window.Current.Activate();
             ShowPic.Begin();
-            
+
             if(Client.Current.NeedLogOn)
             {
                 try
@@ -77,15 +77,20 @@ namespace ExViewer.Views
             {
                 await verify();
             }
-            try
+            if(initSearch != null)
             {
-                await await Task.WhenAny(initSearch.AsTask(), Task.Delay(7000));
+                try
+                {
+                    await await Task.WhenAny(initSearch.AsTask(), Task.Delay(7000));
+                    rc = new RootControl(typeof(SearchPage), previousExecutionState);
+                }
+                catch(Exception)
+                {
+                    rc = new RootControl(typeof(CachePage), previousExecutionState);
+                }
+            }
+            else
                 rc = new RootControl(typeof(SearchPage), previousExecutionState);
-            }
-            catch(Exception)
-            {
-                rc = new RootControl(typeof(CachePage), previousExecutionState);
-            }
             GoToContent();
         }
 

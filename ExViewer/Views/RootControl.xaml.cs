@@ -79,31 +79,12 @@ namespace ExViewer.Views
             manager.BackRequested += Manager_BackRequested;
             fm_inner.Navigate(homePageType);
             userInfo = await UserInfo.LoadFromCache();
-            updateUserInfo(false);
+            RootController.UpdateUserInfo(false);
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)
         {
             manager.BackRequested -= Manager_BackRequested;
-        }
-
-        private async void updateUserInfo(bool setNull)
-        {
-            if(setNull)
-            {
-                userInfo = null;
-            }
-            Bindings.Update();
-            try
-            {
-                userInfo = await Client.Current.LoadUserInfo(Client.Current.UserID);
-                await userInfo.SaveToCache();
-            }
-            catch(Exception)
-            {
-                userInfo = await UserInfo.LoadFromCache();
-            }
-            Bindings.Update();
         }
 
         private void Manager_BackRequested(object sender, BackRequestedEventArgs e)
@@ -156,7 +137,7 @@ namespace ExViewer.Views
 
         private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)
         {
-            updateUserInfo(await RootController.RequireLogOn() == ContentDialogResult.Primary);
+            await RootController.RequireLogOn();
         }
     }
 }

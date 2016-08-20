@@ -85,6 +85,8 @@ namespace ExClient
                     return null;
                 var str = await FileIO.ReadTextAsync(file);
                 var obj = JsonConvert.DeserializeObject<UserInfo>(str);
+                if(obj == null)
+                    return null;
                 obj.Avatar = new Uri("ms-appdata:///local/UserAvatar");
                 return obj;
             });

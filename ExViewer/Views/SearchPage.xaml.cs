@@ -53,6 +53,7 @@ namespace ExViewer.Views
                 //TODO: restore scroll position.
             }
             ab.Focus(FocusState.Pointer);
+            Client.Current.Test();
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

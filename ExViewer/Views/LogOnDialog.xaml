@@ -16,6 +16,22 @@
     <ContentDialog.Template>
         <ControlTemplate TargetType="ContentDialog">
             <Border x:Name="Container">
+                <Border.Resources>
+                    <x:Double x:Key="ContentDialogMinWidth">320</x:Double>
+                    <x:Double x:Key="ContentDialogMaxWidth">548</x:Double>
+                    <x:Double x:Key="ContentDialogMinHeight">184</x:Double>
+                    <x:Double x:Key="ContentDialogMaxHeight">756</x:Double>
+                    <x:Double x:Key="ContentDialogButtonMinWidth">130</x:Double>
+                    <x:Double x:Key="ContentDialogButtonMaxWidth">202</x:Double>
+                    <x:Double x:Key="ContentDialogButtonHeight">32</x:Double>
+                    <x:Double x:Key="ContentDialogTitleMaxHeight">56</x:Double>
+                    <Thickness x:Key="ContentDialogBorderWidth">1</Thickness>
+                    <Thickness x:Key="ContentDialogButton1HostMargin">24,0,0,24</Thickness>
+                    <Thickness x:Key="ContentDialogButton2HostMargin">4,0,24,24</Thickness>
+                    <Thickness x:Key="ContentDialogContentMargin">24,0,24,0</Thickness>
+                    <Thickness x:Key="ContentDialogContentScrollViewerMargin">0,0,0,24</Thickness>
+                    <Thickness x:Key="ContentDialogTitleMargin">24,18,24,0</Thickness>
+                </Border.Resources>
                 <Grid x:Name="LayoutRoot">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

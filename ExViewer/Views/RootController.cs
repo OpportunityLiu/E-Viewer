@@ -11,6 +11,8 @@ using GalaSoft.MvvmLight.Threading;
 using System.Diagnostics;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Navigation;
+using ExClient;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.Views
 {
@@ -103,7 +105,33 @@ namespace ExViewer.Views
 
             public static IAsyncOperation<ContentDialogResult> RequireLogOn()
             {
-                return new LogOnDialog().ShowAsync();
+                return Run(async token =>
+                {
+                    var result = await new LogOnDialog().ShowAsync();
+                    UpdateUserInfo(result == ContentDialogResult.Primary);
+                    return result;
+                });
+            }
+
+            public static async void UpdateUserInfo(bool setNull)
+            {
+                if(setNull)
+                {
+                    root.userInfo = null;
+                }
+                if(Client.Current.UserID == -1)
+                    return;
+                root.Bindings.Update();
+                try
+                {
+                    root.userInfo = await Client.Current.LoadUserInfo(Client.Current.UserID);
+                    await root.userInfo.SaveToCache();
+                }
+                catch(Exception)
+                {
+                    root.userInfo = await UserInfo.LoadFromCache();
+                }
+                root.Bindings.Update();
             }
 
             public static bool ViewDisabled
