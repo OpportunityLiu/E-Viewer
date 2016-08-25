@@ -308,6 +308,8 @@
             <Setter Property="Margin"
                     Value="0,-8,0,0" />
         </Style>
+
+        <local:TagToStringConverter x:Key="TagToStringConverter" />
     </Page.Resources>
     <Grid x:Name="gd_Root">
         <VisualStateManager.VisualStateGroups>
@@ -419,7 +421,7 @@
                                             </GridView.ItemContainerStyle>
                                             <GridView.ItemTemplate>
                                                 <DataTemplate x:DataType="client:Tag">
-                                                    <TextBlock Text="{x:Bind Content}"
+                                                    <TextBlock Text="{x:Bind Converter={StaticResource TagToStringConverter}}"
                                                                Padding="4,0" />
                                                 </DataTemplate>
                                             </GridView.ItemTemplate>

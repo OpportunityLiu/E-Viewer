@@ -42,15 +42,11 @@ namespace ExViewer.Views
 
         public async void prepareCompleted()
         {
-            var db = await EhTagTranslatorClient.EhTagDatabase.LoadDatabaseAsync();
-            foreach(var item in db)
-            {
-                var ii = item.Introduction.Analyze().ToList();
-            }
-            var initdb = Task.Run(() =>
+            var initdb = Task.Run(async () =>
             {
                 ExClient.Models.GalleryDb.Migrate();
                 Database.SearchHistoryDb.Migrate();
+                await TagExtension.Init();
             });
             await Task.Delay(50);
             Window.Current.Activate();

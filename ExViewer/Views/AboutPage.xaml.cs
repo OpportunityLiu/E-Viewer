@@ -31,7 +31,7 @@ namespace ExViewer.Views
             tb_AppVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
             this.tb_AppName.Text = Package.Current.DisplayName;
             this.tb_AppAuthor.Text = Package.Current.PublisherDisplayName;
-            this.tb_AppDescription.Text = Package.Current.Description;
+            this.tb_AppDescription.Text = LocalizedStrings.Resources.AppDescription;
         }
 
         private void btn_Pane_Click(object sender, RoutedEventArgs e)

@@ -144,6 +144,7 @@
     <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Database\SearchHistoryDb.cs" />
     <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="Helpers\TagExtension.cs" />
     <Compile Include="Migrations\20160717021413_MyFirstMigration.cs" />
     <Compile Include="Migrations\20160717021413_MyFirstMigration.designer.cs">
       <DependentUpon>20160717021413_MyFirstMigration.cs</DependentUpon>
