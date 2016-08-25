@@ -83,7 +83,7 @@ namespace ExViewer.Views
         }
     }
 
-    public class GalleryToTitleStringConverter :ValueConverter
+    public class GalleryToTitleStringConverter : ValueConverter
     {
         public override object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -91,6 +91,22 @@ namespace ExViewer.Views
             if(g == null)
                 return "";
             return g.GetDisplayTitle();
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TagToStringConverter : ValueConverter
+    {
+        public override object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var t = value as Tag;
+            if(t == null)
+                return "";
+            return t.GetDisplayContent();
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, string language)

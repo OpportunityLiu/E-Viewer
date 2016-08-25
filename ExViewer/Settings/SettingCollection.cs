@@ -98,6 +98,20 @@ namespace ExViewer.Settings
             }
         }
 
+        [Setting("Global", "Use chinese translation of tags", Index = 40)]
+        [BooleanRepresent("Enabled", "Disabled")]
+        public bool UseTagTranslation
+        {
+            get
+            {
+                return GetRoaming(false);
+            }
+            set
+            {
+                SetRoaming(value);
+            }
+        }
+
         [Setting("Image viewing", "Zoom factor for double tapping", Index = 10)]
         [SingleRange(1, 4, Small = 0.1)]
         public float DefaultFactor

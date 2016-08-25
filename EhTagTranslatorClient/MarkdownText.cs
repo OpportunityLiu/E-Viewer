@@ -24,7 +24,7 @@ namespace EhTagTranslatorClient
         {
             get
             {
-                return RawString;
+                return Analyze().Where(t => t is MarkdownString).Aggregate("", (old, t) => old + t.ToString());
             }
         }
 
