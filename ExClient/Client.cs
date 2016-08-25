@@ -33,12 +33,6 @@ namespace ExClient
             HttpClient = new HttpClient(new Internal.RedirectFilter(httpFilter));
         }
 
-        public async void Test()
-        {
-            //var s = await HttpClient.GetAsync(new Uri("https://exhentai.org/fullimg.php?gid=967271&page=26&key=7lj5fez8rfj"));
-            //s.Dispose();
-        }
-
         private HttpCookieManager cookieManager;
 
         internal HttpClient HttpClient

@@ -11,7 +11,7 @@ using NameSpace = ExClient.NameSpace;
 
 namespace EhTagTranslatorClient
 {
-    [DebuggerDisplay(@"\{{Original}\}")]
+    [DebuggerDisplay(@"\{{Original} -> {Translated.RawString}\}")]
     public class Record
     {
         private static Regex lineRegex = new Regex(
@@ -47,20 +47,24 @@ namespace EhTagTranslatorClient
                 return null;
             var tra = match.Groups[nameof(Translated)].Value;
             var intro = match.Groups[nameof(Introduction)].Value;
-            return new Record(nameSpace, replaceBr(ori), replaceBr(tra), replaceBr(intro));
+            return new Record(nameSpace, unescape(ori), unescape(tra), unescape(intro));
         }
 
-        private static string replaceBr(string value)
+        private static string unescape(string value)
         {
-            return value.Replace("<br>", Environment.NewLine);
+            var sb = new StringBuilder(value);
+            sb.Replace(@"\|", @"|");
+            sb.Replace(@"\\", @"\");
+            sb.Replace("<br>", Environment.NewLine);
+            return sb.ToString();
         }
 
         private Record(NameSpace nameSpace, string original, string translated, string introduction)
         {
             this.NameSpace = nameSpace;
             this.Original = original;
-            this.Translated = translated;
-            this.Introduction = introduction;
+            this.Translated = new MarkdownText(translated);
+            this.Introduction = new MarkdownText(introduction);
         }
 
         public string Original
@@ -68,12 +72,12 @@ namespace EhTagTranslatorClient
             get;
         }
 
-        public string Translated
+        public MarkdownText Translated
         {
             get;
         }
 
-        public string Introduction
+        public MarkdownText Introduction
         {
             get;
         }

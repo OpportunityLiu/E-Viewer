@@ -74,6 +74,10 @@ namespace ExClient
                         loadStateFlag[i] = oldFlag[i + 1];
                     }
                 }
+                else
+                {
+                    loadedCount--;
+                }
             }
 
             public void RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)
