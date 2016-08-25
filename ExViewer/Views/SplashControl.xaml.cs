@@ -42,6 +42,11 @@ namespace ExViewer.Views
 
         public async void prepareCompleted()
         {
+            var db = await EhTagTranslatorClient.EhTagDatabase.LoadDatabaseAsync();
+            foreach(var item in db)
+            {
+                var ii = item.Introduction.Analyze().ToList();
+            }
             var initdb = Task.Run(() =>
             {
                 ExClient.Models.GalleryDb.Migrate();
