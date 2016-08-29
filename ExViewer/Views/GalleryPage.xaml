@@ -286,15 +286,17 @@
                     Value="32" />
             <Setter Property="HorizontalAlignment"
                     Value="Center" />
+            <Setter Property="Grid.Column"
+                    Value="1" />
         </Style>
         <Style x:Key="PivotHeaderTextBlockStyle"
                TargetType="TextBlock">
-            <Setter Property="Margin"
-                    Value="-16,0" />
             <Setter Property="HorizontalAlignment"
-                    Value="Center" />
+                    Value="Stretch" />
             <Setter Property="Grid.Row"
                     Value="1" />
+            <Setter Property="Grid.ColumnSpan"
+                    Value="3" />
             <Setter Property="FontSize"
                     Value="14" />
         </Style>
@@ -304,9 +306,11 @@
             <Setter Property="VerticalAlignment"
                     Value="Top" />
             <Setter Property="Grid.Column"
-                    Value="1" />
+                    Value="2" />
+            <Setter Property="Grid.ColumnSpan"
+                    Value="2" />
             <Setter Property="Margin"
-                    Value="0,-8,0,0" />
+                    Value="0,-8,-8,0" />
         </Style>
 
         <local:TagToStringConverter x:Key="TagToStringConverter" />
@@ -501,7 +505,9 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <PathIcon Data="M0,12 V28 H24 V12 H0 Z
@@ -556,7 +562,9 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="&#xE90A;"
@@ -601,7 +609,9 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition  />
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <PathIcon Data="M4,0 V16 H6 V2 H26 V17
@@ -661,6 +671,7 @@
                             Click="btn_pane_Click" />
                     <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                Style="{StaticResource GalleryTitleTextBlockStyle}"
+                               ContinuumNavigationTransitionInfo.IsEntranceElement="True"
                                Grid.Column="1">
                         <ToolTipService.ToolTip>
                             <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"

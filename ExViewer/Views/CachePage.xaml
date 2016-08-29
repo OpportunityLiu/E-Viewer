@@ -55,7 +55,8 @@
                       Style="{StaticResource GalleryListViewStyle}"
                       CanDragItems="True"
                       DragItemsStarting="lv_DragItemsStarting"
-                      ItemClick="lv_ItemClick">
+                      ItemClick="lv_ItemClick"
+                      ContinuumNavigationTransitionInfo.ExitElementContainer="True">
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:c="using:ExClient"
                                   xmlns:controls="using:ExViewer.Controls"
@@ -64,7 +65,8 @@
                                                 Gallery="{x:Bind}"
                                                 RightTapped="gv_Gallery_RightTapped"
                                                 Holding="gv_Gallery_Holding"
-                                                Background="Transparent">
+                                                Background="Transparent"
+                                                ContinuumNavigationTransitionInfo.IsExitElement="True">
                             <FlyoutBase.AttachedFlyout>
                                 <MenuFlyout>
                                     <MenuFlyoutItem x:Name="mfi_DeleteGallery"
