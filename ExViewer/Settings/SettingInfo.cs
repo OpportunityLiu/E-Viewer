@@ -28,7 +28,7 @@ namespace ExViewer.Settings
             PropertyInfo = info;
             var setting = info.GetCustomAttribute<SettingAttribute>();
             Name = info.Name;
-            FriendlyName = setting.FriendlyName;
+            FriendlyName = LocalizedStrings.Settings.GetString(Name);
             Category = setting.Category;
             Index = setting.Index;
             Range = info.GetCustomAttributes().Select(a => a as IValueRange).SingleOrDefault(a => a != null);

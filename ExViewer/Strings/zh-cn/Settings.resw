@@ -117,89 +117,94 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppDescription" xml:space="preserve">
-    <value>E-Viewer 是一个 E- 绅士和 Ex 绅士的第三方客户端。</value>
+  <data name="BooleanDisabled" xml:space="preserve">
+    <value>停用</value>
   </data>
-  <data name="AppDisplayName" xml:space="preserve">
-    <value>E-Viewer</value>
+  <data name="BooleanDT" xml:space="preserve">
+    <value>默认标题</value>
   </data>
-  <data name="BackToWindow" xml:space="preserve">
-    <value>退出全屏</value>
+  <data name="BooleanEnabled" xml:space="preserve">
+    <value>启用</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>取消</value>
+  <data name="BooleanJT" xml:space="preserve">
+    <value>日文标题（可用时）</value>
   </data>
-  <data name="ClearCacheDialogContent" xml:space="preserve">
-    <value>所有保存的画集将被删除！</value>
+  <data name="BooleanNo" xml:space="preserve">
+    <value>否</value>
   </data>
-  <data name="ClearCacheDialogTitle" xml:space="preserve">
-    <value>警告</value>
+  <data name="BooleanOff" xml:space="preserve">
+    <value>关</value>
   </data>
-  <data name="Exit" xml:space="preserve">
-    <value>退出</value>
+  <data name="BooleanOn" xml:space="preserve">
+    <value>开</value>
   </data>
-  <data name="FullScreen" xml:space="preserve">
-    <value>全屏</value>
+  <data name="BooleanYes" xml:space="preserve">
+    <value>是</value>
   </data>
-  <data name="GalleryDeleted" xml:space="preserve">
-    <value>选定的画集已删除。</value>
+  <data name="ChangeCommandBarDelay" xml:space="preserve">
+    <value>在点击后显示或隐藏应用栏的延迟</value>
   </data>
-  <data name="GallerySavedTo" xml:space="preserve">
-    <value>选定的画集已保存至给定位置。</value>
+  <data name="Connection" xml:space="preserve">
+    <value>连接</value>
   </data>
-  <data name="ImageFileInfo" xml:space="preserve">
-    <value>文件名：{0}
-大小：{1}
-尺寸：{2} × {3}</value>
+  <data name="DefaultFactor" xml:space="preserve">
+    <value>双击时的缩放比例</value>
   </data>
-  <data name="ImageViewTipsContent" xml:space="preserve">
-    <value>缩放			空格
-放大至最大		=
-缩小至最小		-
-放大			]
-缩小			[
-平移/切换图片		方向键
-全屏			回车</value>
+  <data name="DefaultSearchCategory" xml:space="preserve">
+    <value>默认搜索分类</value>
   </data>
-  <data name="ImageViewTipsTitle" xml:space="preserve">
-    <value>键盘快捷键</value>
+  <data name="DefaultSearchString" xml:space="preserve">
+    <value>默认搜索关键字</value>
+  </data>
+  <data name="EnableGif" xml:space="preserve">
+    <value>GIF 支持</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>全局</value>
+  </data>
+  <data name="Hah" xml:space="preserve">
+    <value>H@H</value>
+  </data>
+  <data name="HahAddress" xml:space="preserve">
+    <value>IP 地址：端口（留空以停用）</value>
+  </data>
+  <data name="HahPasskey" xml:space="preserve">
+    <value>Passkey（可选）</value>
+  </data>
+  <data name="ImageViewing" xml:space="preserve">
+    <value>浏览</value>
+  </data>
+  <data name="KeepScreenOn" xml:space="preserve">
+    <value>在浏览画集时保持屏幕常亮</value>
+  </data>
+  <data name="LoadLofiOnAllInternetConnection" xml:space="preserve">
+    <value>始终加载压缩的图片</value>
+  </data>
+  <data name="LoadLofiOnMeteredInternetConnection" xml:space="preserve">
+    <value>使用按流量计费的网络时加载压缩的图片</value>
+  </data>
+  <data name="MaxFactor" xml:space="preserve">
+    <value>最大缩放比例</value>
+  </data>
+  <data name="MouseInertial" xml:space="preserve">
+    <value>鼠标拖动惯性</value>
   </data>
   <data name="NeedVerify" xml:space="preserve">
-    <value>需要使用 Windows Hello 验证身份。</value>
+    <value>启动应用时使用 Windows Hello 验证身份</value>
   </data>
-  <data name="NoPassword" xml:space="preserve">
-    <value>请输入密码。</value>
+  <data name="SaveLastSearch" xml:space="preserve">
+    <value>保存最后一次搜索为默认</value>
   </data>
-  <data name="NoUserName" xml:space="preserve">
-    <value>请输入用户名。</value>
+  <data name="Searching" xml:space="preserve">
+    <value>搜索</value>
   </data>
-  <data name="OK" xml:space="preserve">
-    <value>确定</value>
+  <data name="Theme" xml:space="preserve">
+    <value>应用主题（需要重启应用）</value>
   </data>
-  <data name="ParseByteException" xml:space="preserve">
-    <value>无法将给定字符串解析为字节数。</value>
+  <data name="UseJapaneseTitle" xml:space="preserve">
+    <value>默认显示的画集标题</value>
   </data>
-  <data name="TorrentDownloading" xml:space="preserve">
-    <value>开始下载种子……</value>
-  </data>
-  <data name="VerifyDeviceBusy" xml:space="preserve">
-    <value>设备忙，请稍后重试。</value>
-  </data>
-  <data name="VerifyDisabled" xml:space="preserve">
-    <value>验证已通过组策略禁用，请联系管理员。</value>
-  </data>
-  <data name="VerifyFailed" xml:space="preserve">
-    <value>验证失败，请重试。</value>
-  </data>
-  <data name="VerifyFailedDialogTitle" xml:space="preserve">
-    <value>验证失败</value>
-  </data>
-  <data name="VerifyNotConfigured" xml:space="preserve">
-    <value>请先设置 PIN。
-
-在 “设置 -&gt; 账户-&gt; 登陆选项 -&gt; PIN -&gt; 添加” 进行此项设定。</value>
-  </data>
-  <data name="WrongCaptcha" xml:space="preserve">
-    <value>验证码输入错误，请重试。</value>
+  <data name="UseTagTranslation" xml:space="preserve">
+    <value>标签中文翻译</value>
   </data>
 </root>

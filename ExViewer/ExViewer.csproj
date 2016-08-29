@@ -98,6 +98,7 @@
     <None Include="Assets\Panda.psd" />
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-cn\Settings.resw" />
     <PRIResource Include="Strings\zh-cn\Resources.resw" />
     <PRIResource Include="Strings\en\Resources.resw">
       <SubType>Designer</SubType>
@@ -234,6 +235,7 @@
     <Content Include="Assets\Wide.scale-100.png" />
     <Content Include="Assets\Wide.scale-200.png" />
     <Content Include="Assets\Wide.scale-400.png" />
+    <PRIResource Include="Strings\en\Settings.resw" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.cs</LastGenOutput>
