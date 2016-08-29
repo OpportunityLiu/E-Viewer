@@ -128,7 +128,7 @@ namespace ExViewer.ViewModels
             });
             TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
             {
-                RootControl.RootController.SendToast("Start downloading...", null);
+                RootControl.RootController.SendToast(LocalizedStrings.Resources.TorrentDownloading, null);
                 var file = await torrent.LoadTorrentAsync();
                 await Launcher.LaunchFileAsync(file);
             }, torrent => torrent != null && torrent.TorrentUri != null);
@@ -282,9 +282,9 @@ namespace ExViewer.ViewModels
                 }
                 var prop = await current.ImageFile.GetBasicPropertiesAsync();
                 var imageProp = await current.ImageFile.Properties.GetImagePropertiesAsync();
-                CurrentInfo = $@"File name: {current.ImageFile.Name}
-Size: {Converters.ByteSizeToStringConverter.ByteSizeToString(prop.Size, Converters.UnitPrefix.Binary)}
-Dimensions: {imageProp.Width} × {imageProp.Height}";
+                CurrentInfo = string.Format(LocalizedStrings.Resources.ImageFileInfo, current.ImageFile.Name,
+                    Converters.ByteSizeToStringConverter.ByteSizeToString(prop.Size, Converters.UnitPrefix.Binary),
+                    imageProp.Width.ToString(), imageProp.Height.ToString());
             });
         }
 

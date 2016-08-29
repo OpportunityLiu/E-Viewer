@@ -29,7 +29,7 @@ namespace ExClient
             }
             catch(Exception ex)
             {
-                throw new ArgumentException(nameof(addressAndPort), LocalizedStrings.Resources.OnlyIpv4, ex);
+                throw new ArgumentException(LocalizedStrings.Resources.OnlyIpv4, nameof(addressAndPort), ex);
             }
         }
 

@@ -236,6 +236,7 @@ namespace ExViewer.Settings
                     catch
                     {
                         ForceSetLocal(old);
+                        throw;
                     }
                 SetHah();
             }

@@ -242,7 +242,7 @@ namespace ExViewer.Settings
         public static BooleanRepresentAttribute Default
         {
             get;
-        } = new BooleanRepresentAttribute("On", "Off");
+        } = new BooleanRepresentAttribute(LocalizedStrings.Resources.BooleanOn, LocalizedStrings.Resources.BooleanOff);
 
         public BooleanRepresentAttribute(string trueString, string falseString)
         {

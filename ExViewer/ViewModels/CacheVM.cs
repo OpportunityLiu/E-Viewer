@@ -37,7 +37,7 @@ namespace ExViewer.ViewModels
             {
                 await g.DeleteAsync();
                 this.CachedGalleries?.Remove(g);
-                RootControl.RootController.SendToast("Deleted", typeof(CachePage));
+                RootControl.RootController.SendToast(LocalizedStrings.Resources.GalleryDeleted, typeof(CachePage));
             });
             SaveTo = new RelayCommand<Gallery>(async g =>
             {
@@ -52,7 +52,7 @@ namespace ExViewer.ViewModels
                 {
                     await file.CopyAsync(target, file.Name, NameCollisionOption.ReplaceExisting);
                 }
-                RootControl.RootController.SendToast("Saved", typeof(CachePage));
+                RootControl.RootController.SendToast(LocalizedStrings.Resources.GallerySavedTo, typeof(CachePage));
             });
             Open = new RelayCommand<Gallery>(g =>
             {
@@ -136,7 +136,6 @@ namespace ExViewer.ViewModels
                 {
                     await item.CopyAsync(target);
                 }
-                Debug.WriteLine("CopyCreated");
                 return target;
             }).AsAsyncOperation();
         }

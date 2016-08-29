@@ -26,6 +26,8 @@ namespace ExViewer.Views
     {
         public ImagePage()
         {
+            //HACK:防止崩溃，暂时设为 disabled
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
             this.InitializeComponent();
             var backColor = ((SolidColorBrush)Resources["ApplicationPageBackgroundThemeBrush"]).Color;
             var needColor = (Color)Resources["SystemChromeMediumColor"];
@@ -123,12 +125,12 @@ namespace ExViewer.Views
             if(currentState)
             {
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
-                abb_fullScreen.Label = "Back to window";
+                abb_fullScreen.Label = LocalizedStrings.Resources.BackToWindow;
             }
             else
             {
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
-                abb_fullScreen.Label = "Full screen";
+                abb_fullScreen.Label = LocalizedStrings.Resources.FullScreen;
             }
             isFullScreen = currentState;
         }
@@ -174,7 +176,7 @@ namespace ExViewer.Views
                 {
                     loadItems = VM.Gallery.LoadMoreItemsAsync(5);
 
-                    //FIXME:集合改变后应用崩溃的修复，操作系统更新后尝试移除
+                    //HACK:集合改变后应用崩溃的修复，操作系统更新后尝试移除
                     loadItems.Completed = async (s, arg) =>
                     {
                         if(arg != AsyncStatus.Completed)
@@ -296,7 +298,7 @@ namespace ExViewer.Views
             {
                 Title = LocalizedStrings.Resources.ImageViewTipsTitle,
                 Content = LocalizedStrings.Resources.ImageViewTipsContent,
-                PrimaryButtonText = "Ok"
+                PrimaryButtonText = LocalizedStrings.Resources.OK
             }.ShowAsync();
             StatusCollection.Current.ImageViewTipShown = true;
         }

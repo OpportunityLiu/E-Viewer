@@ -24,7 +24,7 @@ namespace ExClient
 
         protected void Set<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
         {
-            if (Equals(field, value))
+            if(Equals(field, value))
                 return;
             field = value;
             OnPropertyChanged(propertyName);
@@ -39,7 +39,7 @@ namespace ExClient
         {
             CheckReentrancy();
             var toAdd = items.ToList();
-            foreach (var item in toAdd)
+            foreach(var item in toAdd)
             {
                 this.Items.Add(item);
             }
@@ -120,31 +120,31 @@ namespace ExClient
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
-            if (loading?.Status == AsyncStatus.Started)
+            if(loading?.Status == AsyncStatus.Started)
             {
                 var temp = loading;
                 return Run(async token =>
                 {
                     token.Register(temp.Cancel);
-                    while(temp.Status== AsyncStatus.Started)
+                    while(temp.Status == AsyncStatus.Started)
                     {
                         await Task.Delay(200);
                     }
-                    switch (temp.Status)
+                    switch(temp.Status)
                     {
-                        case AsyncStatus.Completed:
-                            return temp.GetResults();
-                        case AsyncStatus.Error:
-                            throw temp.ErrorCode;
-                        default:
-                            token.ThrowIfCancellationRequested();
-                            throw new OperationCanceledException(token);
+                    case AsyncStatus.Completed:
+                        return temp.GetResults();
+                    case AsyncStatus.Error:
+                        throw temp.ErrorCode;
+                    default:
+                        token.ThrowIfCancellationRequested();
+                        throw new OperationCanceledException(token);
                     }
                 });
             }
             return loading = Run(async token =>
             {
-                if (!HasMoreItems)
+                if(!HasMoreItems)
                     return new LoadMoreItemsResult();
                 var lp = LoadPageAsync(loadedPageCount);
                 uint re = 0;
@@ -155,9 +155,10 @@ namespace ExClient
                     loadedPageCount++;
                     OnPropertyChanged(nameof(HasMoreItems));
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
-                    raiseLoadMoreItemsException(ex);
+                    if(!await tryHandle(ex))
+                        throw;
                 }
                 return new LoadMoreItemsResult() { Count = re };
             });
@@ -165,18 +166,19 @@ namespace ExClient
 
         public event TypedEventHandler<IncrementalLoadingCollection<T>, LoadMoreItemsExceptionEventArgs> LoadMoreItemsException;
 
-        private void raiseLoadMoreItemsException(Exception ex)
+        private async Task<bool> tryHandle(Exception ex)
         {
             var temp = LoadMoreItemsException;
-            if (temp == null)
-                throw new InvalidOperationException($"LoadMoreItemsException did not handled in {{{this}}}.", ex);
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            if(temp == null)
+                return false;
+            var h = false;
+            await DispatcherHelper.RunAsync(() =>
             {
                 var args = new LoadMoreItemsExceptionEventArgs(ex);
                 temp(this, args);
-                if (!args.Handled)
-                    throw new InvalidOperationException($"LoadMoreItemsException did not handled in {{{this}}}.", ex);
+                h = args.Handled;
             });
+            return h;
         }
     }
 

@@ -135,6 +135,12 @@
   <data name="Cosplay" xml:space="preserve">
     <value>Cosplay</value>
   </data>
+  <data name="DefaultTitle" xml:space="preserve">
+    <value>Gallery Title</value>
+  </data>
+  <data name="DefaultUploader" xml:space="preserve">
+    <value>Uploader</value>
+  </data>
   <data name="Doujinshi" xml:space="preserve">
     <value>Doujinshi</value>
   </data>

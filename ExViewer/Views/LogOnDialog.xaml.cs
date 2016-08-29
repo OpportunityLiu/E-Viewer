@@ -36,13 +36,13 @@ namespace ExViewer.Views
             var password = pb_pass.Password;
             if(string.IsNullOrWhiteSpace(username))
             {
-                tb_info.Text = "Please enter your user name";
+                tb_info.Text = LocalizedStrings.Resources.NoUserName;
                 tb_user.Focus(FocusState.Programmatic);
                 args.Cancel = true;
             }
             else if(string.IsNullOrEmpty(password))
             {
-                tb_info.Text = "Please enter your password";
+                tb_info.Text = LocalizedStrings.Resources.NoPassword;
                 pb_pass.Focus(FocusState.Programmatic);
                 args.Cancel = true;
             }
@@ -62,7 +62,7 @@ namespace ExViewer.Views
                 catch(ArgumentException ex) when(ex.ParamName == "response")
                 {
                     await loadReCapcha();
-                    tb_info.Text = ex.Message;
+                    tb_info.Text = ex.GetMessage();
                     tb_ReCaptcha.Focus(FocusState.Programmatic);
                     args.Cancel = true;
                 }
@@ -128,9 +128,9 @@ namespace ExViewer.Views
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
             if(Client.Current.NeedLogOn)
-                this.SecondaryButtonText = "Exit";
+                this.SecondaryButtonText = LocalizedStrings.Resources.Exit;
             else
-                this.SecondaryButtonText = "Cancel";
+                this.SecondaryButtonText = LocalizedStrings.Resources.Cancel;
         }
     }
 }

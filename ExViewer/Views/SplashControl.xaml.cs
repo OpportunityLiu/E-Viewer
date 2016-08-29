@@ -97,7 +97,7 @@ namespace ExViewer.Views
 
         private static async Task verify()
         {
-            var result = await UserConsentVerifier.RequestVerificationAsync("Because of your settings, we need to request the verification.");
+            var result = await UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.NeedVerify);
             string info = null;
             var succeed = false;
             switch(result)
@@ -107,18 +107,18 @@ namespace ExViewer.Views
                 break;
             case UserConsentVerificationResult.DeviceNotPresent:
             case UserConsentVerificationResult.NotConfiguredForUser:
-                info = "Please set up a PIN first. \n\n"
-                    + "Go \"Settings -> Accounts - Sign-in options -> PIN -> Add\" to do this.";
+                info = LocalizedStrings.Resources.VerifyNotConfigured;
                 break;
             case UserConsentVerificationResult.DisabledByPolicy:
-                info = "Verification has been disabled by group policy. Please contact your administrator.";
+                info = LocalizedStrings.Resources.VerifyDisabled;
                 break;
             case UserConsentVerificationResult.DeviceBusy:
-                info = "Device is busy. Please try again later.";
+                info = LocalizedStrings.Resources.VerifyDeviceBusy;
                 break;
             case UserConsentVerificationResult.RetriesExhausted:
             case UserConsentVerificationResult.Canceled:
             default:
+                info = LocalizedStrings.Resources.VerifyFailed;
                 break;
             }
             if(!succeed)
@@ -127,9 +127,9 @@ namespace ExViewer.Views
                 {
                     var dialog = new ContentDialog
                     {
-                        Title = "VERIFICATION FAILED",
+                        Title = LocalizedStrings.Resources.VerifyFailedDialogTitle,
                         Content = info,
-                        PrimaryButtonText = "Ok"
+                        PrimaryButtonText = LocalizedStrings.Resources.OK
                     };
                     await dialog.ShowAsync();
                 }

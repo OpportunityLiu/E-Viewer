@@ -365,7 +365,7 @@ namespace ExClient
             }
         }
 
-        private static Uri ImageBaseUri = new Uri("ms-appdata:///localCache/");
+        private static Uri ImageCacheBaseUri = new Uri("ms-appdata:///localCache/");
 
         public Uri ImageFileUri
         {
@@ -373,7 +373,7 @@ namespace ExClient
             {
                 if(imageFile == null)
                     return null;
-                return new Uri(ImageBaseUri, $"{Owner.Id}/{imageFile.Name}");
+                return new Uri(ImageCacheBaseUri, $"{Owner.Id}/{imageFile.Name}");
             }
         }
 
