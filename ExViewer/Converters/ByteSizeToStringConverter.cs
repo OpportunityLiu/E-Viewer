@@ -77,6 +77,8 @@ namespace ExViewer.Converters
             }
         }
 
+        private static string sizeFormat = "0" + System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator + "000";
+
         public static string ByteSizeToString(double size, UnitPrefix unitPrefix)
         {
             if(size < 0 || double.IsNaN(size))
@@ -88,14 +90,14 @@ namespace ExViewer.Converters
             {
                 if(size < 1000)
                 {
-                    return $"{size.ToString("0.000").Substring(0, 5)} {unit}";
+                    return $"{size.ToString(sizeFormat).Substring(0, 5)} {unit}";
                 }
                 size /= powerBase;
             }
             throw new ArgumentOutOfRangeException(nameof(size));
         }
 
-        public static double StringToByteSize(string sizeStr,UnitPrefix unitPrefix)
+        public static double StringToByteSize(string sizeStr, UnitPrefix unitPrefix)
         {
             if(string.IsNullOrEmpty(sizeStr))
                 throw new ArgumentNullException(nameof(sizeStr));
@@ -112,7 +114,7 @@ namespace ExViewer.Converters
                     return sizeNum * Math.Pow(powerBase, i);
                 }
             }
-            throw new FormatException("Can't parse the given string to a byte size.");
+            throw new FormatException(LocalizedStrings.Resources.ParseByteException);
         }
     }
 

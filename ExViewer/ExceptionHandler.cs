@@ -16,6 +16,13 @@ namespace ExViewer
 
         public static string GetMessage(this Exception ex)
         {
+            if(ex.InnerException!=null)
+            {
+                if(ex is System.Reflection.TargetInvocationException)
+                    ex = ex.InnerException;
+                else if(ex is AggregateException)
+                    ex = ex.InnerException;
+            }
             var msg = ex.Message.TrimStart();
             foreach(var prefix in prefixes)
             {

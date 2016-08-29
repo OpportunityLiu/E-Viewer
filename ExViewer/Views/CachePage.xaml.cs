@@ -37,10 +37,10 @@ namespace ExViewer.Views
             VM = new CacheVM();
             cdg_ConfirmClear = new ContentDialog()
             {
-                Title = "ARE YOU SURE",
-                Content = "All saved galleries will be deleted.",
-                PrimaryButtonText = "Ok",
-                SecondaryButtonText = "Cancel",
+                Title = LocalizedStrings.Resources.ClearCacheDialogTitle,
+                Content = LocalizedStrings.Resources.ClearCacheDialogContent,
+                PrimaryButtonText = LocalizedStrings.Resources.OK,
+                SecondaryButtonText = LocalizedStrings.Resources.Cancel,
                 PrimaryButtonCommand = VM.Clear
             };
         }

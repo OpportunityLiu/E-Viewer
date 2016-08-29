@@ -55,6 +55,16 @@
         public static string Cosplay => GetString("Cosplay");
 
         /// <summary>
+        /// Gallery Title
+        /// </summary>
+        public static string DefaultTitle => GetString("DefaultTitle");
+
+        /// <summary>
+        /// Uploader
+        /// </summary>
+        public static string DefaultUploader => GetString("DefaultUploader");
+
+        /// <summary>
         /// Doujinshi
         /// </summary>
         public static string Doujinshi => GetString("Doujinshi");
