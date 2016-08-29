@@ -179,13 +179,15 @@
                              Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <ListView x:Name="lv"
                       ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
+                      ContinuumNavigationTransitionInfo.ExitElementContainer="True"
                       Style="{StaticResource GalleryListViewStyle}"
                       ItemClick="lv_ItemClick">
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:c="using:ExClient"
                                   xmlns:controls="using:ExViewer.Controls"
                                   x:DataType="c:Gallery">
-                        <controls:GalleryViewer Gallery="{x:Bind}" />
+                        <controls:GalleryViewer Gallery="{x:Bind}"
+                                                ContinuumNavigationTransitionInfo.IsExitElement="True" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.Header>

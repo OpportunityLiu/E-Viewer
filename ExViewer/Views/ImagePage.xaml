@@ -97,16 +97,21 @@
                     Opening="cb_top_Opening"
                     Closing="cb_top_Closing">
             <CommandBar.Content>
-                <RelativePanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
                     <Button x:Name="btn_pane"
                             Style="{StaticResource SplitButtonStyle}"
                             Click="btn_pane_Click" />
                     <TextBlock x:Name="tb_Title"
                                Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                Style="{StaticResource GalleryTitleTextBlockStyle}"
-                               RelativePanel.RightOf="btn_pane"
-                               RelativePanel.AlignVerticalCenterWithPanel="True"
-                               RelativePanel.LeftOf="tb_si">
+                               Grid.Column="1">
                         <ToolTipService.ToolTip>
                             <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                        TextWrapping="WrapWholeWords" />
@@ -115,21 +120,20 @@
                     <TextBlock x:Name="tb_si"
                                Text="{x:Bind fv.SelectedIndex, Mode=OneWay, Converter={StaticResource IndexToStringConverter}}"
                                Style="{StaticResource BodyTextBlockStyle}"
-                               RelativePanel.AlignVerticalCenterWithPanel="True"
-                               RelativePanel.LeftOf="tb_sep" />
+                               Grid.Column="2"
+                               VerticalAlignment="Center" />
                     <TextBlock x:Name="tb_sep"
                                Text="/"
                                Style="{StaticResource BodyTextBlockStyle}"
-                               Margin="0,0"
-                               RelativePanel.AlignVerticalCenterWithPanel="True"
-                               RelativePanel.LeftOf="tb_rc" />
+                               Grid.Column="3"
+                               VerticalAlignment="Center" />
                     <TextBlock x:Name="tb_rc"
                                Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay}"
                                Style="{StaticResource BodyTextBlockStyle}"
-                               RelativePanel.AlignRightWithPanel="True"
-                               RelativePanel.AlignVerticalCenterWithPanel="True"
-                               Margin="0,0,8,0" />
-                </RelativePanel>
+                               Margin="0,0,8,0"
+                               Grid.Column="4"
+                               VerticalAlignment="Center" />
+                </Grid>
             </CommandBar.Content>
             <CommandBar.PrimaryCommands>
                 <AppBarButton x:Name="abb_fullScreen"
