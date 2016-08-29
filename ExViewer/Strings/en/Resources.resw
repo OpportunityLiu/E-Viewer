@@ -154,9 +154,9 @@
     <value>Selected gallery has been saved to provided location.</value>
   </data>
   <data name="ImageFileInfo" xml:space="preserve">
-    <value>File name: {1}
-Size: {2}
-Dimensions: {3} × {4}</value>
+    <value>File name: {0}
+Size: {1}
+Dimensions: {2} × {3}</value>
   </data>
   <data name="ImageViewTipsContent" xml:space="preserve">
     <value>Zoom in/out			SPACE
