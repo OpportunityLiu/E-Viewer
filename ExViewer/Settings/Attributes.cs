@@ -29,17 +29,13 @@ namespace ExViewer.Settings
     sealed class SettingAttribute : Attribute
     {
         readonly string category;
-        readonly string name;
 
-        public SettingAttribute(string category, string friendlyName)
+        public SettingAttribute(string categoryNameKey)
         {
-            this.category = category;
-            this.name = friendlyName;
+            this.category = LocalizedStrings.Settings.GetString(categoryNameKey);
         }
 
         public string Category => category;
-
-        public string FriendlyName => name;
 
         public int Index
         {
@@ -242,12 +238,12 @@ namespace ExViewer.Settings
         public static BooleanRepresentAttribute Default
         {
             get;
-        } = new BooleanRepresentAttribute(LocalizedStrings.Resources.BooleanOn, LocalizedStrings.Resources.BooleanOff);
+        } = new BooleanRepresentAttribute("BooleanOn", "BooleanOff");
 
-        public BooleanRepresentAttribute(string trueString, string falseString)
+        public BooleanRepresentAttribute(string trueStringKey, string falseStringKey)
         {
-            TrueString = trueString;
-            FalseString = falseString;
+            TrueString = LocalizedStrings.Settings.GetString(trueStringKey);
+            FalseString = LocalizedStrings.Settings.GetString(falseStringKey);
         }
 
         public string TrueString

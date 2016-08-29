@@ -14,7 +14,7 @@ namespace ExViewer.Settings
         private SettingCollection()
             : base("Settings") { }
 
-        [Setting("Searching", "Save my lastest search as default", Index = 30)]
+        [Setting("Searching", Index = 30)]
         public bool SaveLastSearch
         {
             get
@@ -27,7 +27,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Searching", "Default keywords on the front page", Index = 10)]
+        [Setting("Searching", Index = 10)]
         public string DefaultSearchString
         {
             get
@@ -42,7 +42,7 @@ namespace ExViewer.Settings
 
         [Setting(
             "Searching",
-            "Default categories on the front page",
+
             Index = 20,
             SettingPresenterTemplate = "CatagorySettingTemplate"
         )]
@@ -58,7 +58,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Global", "The theme of the app (Need restart the app)", Index = -10)]
+        [Setting("Global", Index = -10)]
         public ApplicationTheme Theme
         {
             get
@@ -71,7 +71,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Global", "Verify my PIN when the app is starting", Index = 10)]
+        [Setting("Global", Index = 10)]
         public bool NeedVerify
         {
             get
@@ -84,8 +84,8 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Global", "The default title displayed", Index = 20)]
-        [BooleanRepresent("Japanese title (If available)", "Default title")]
+        [Setting("Global", Index = 20)]
+        [BooleanRepresent("BooleanJT", "BooleanDT")]
         public bool UseJapaneseTitle
         {
             get
@@ -98,8 +98,8 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Global", "Use chinese translation of tags", Index = 40)]
-        [BooleanRepresent("Enabled", "Disabled")]
+        [Setting("Global", Index = 40)]
+        [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
         public bool UseTagTranslation
         {
             get
@@ -112,7 +112,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Image viewing", "Zoom factor for double tapping", Index = 10)]
+        [Setting("ImageViewing", Index = 10)]
         [SingleRange(1, 4, Small = 0.1)]
         public float DefaultFactor
         {
@@ -126,7 +126,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Image viewing", "Maximum zoom factor", Index = 20)]
+        [Setting("ImageViewing", Index = 20)]
         [SingleRange(4, 10, Small = 0.1)]
         public float MaxFactor
         {
@@ -140,8 +140,8 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Image viewing", "Inertia of mouse dragging", Index = 30)]
-        [BooleanRepresent("Enabled", "Disabled")]
+        [Setting("ImageViewing", Index = 30)]
+        [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
         public bool MouseInertial
         {
             get
@@ -154,7 +154,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Image viewing", "The latency for the command bar to hide or show after tapping", Index = 40)]
+        [Setting("ImageViewing", Index = 40)]
         [Int32Range(0, 1000, Tick = 100, Small = 10, Large = 100)]
         public int ChangeCommandBarDelay
         {
@@ -168,8 +168,21 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Image viewing", "Gif support", Index = 50)]
-        [BooleanRepresent("Enabled", "Disabled")]
+        [Setting("ImageViewing", Index = 45)]
+        public bool KeepScreenOn
+        {
+            get
+            {
+                return GetLocal(false);
+            }
+            set
+            {
+                SetLocal(value);
+            }
+        }
+
+        [Setting("ImageViewing", Index = 50)]
+        [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
         public bool EnableGif
         {
             get
@@ -182,8 +195,8 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Connection", "Load compressed image while using metered Internet connection", Index = 10)]
-        [BooleanRepresent("Yes", "No")]
+        [Setting("Connection", Index = 10)]
+        [BooleanRepresent("BooleanYes", "BooleanNo")]
         public bool LoadLofiOnMeteredInternetConnection
         {
             get
@@ -199,8 +212,8 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Connection", "Always load compressed image", Index = 20)]
-        [BooleanRepresent("Yes", "No")]
+        [Setting("Connection", Index = 20)]
+        [BooleanRepresent("BooleanYes", "BooleanNo")]
         public bool LoadLofiOnAllInternetConnection
         {
             get
@@ -215,7 +228,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("H@H", "IP Address:Port (Leave blank to not use)", Index = 10)]
+        [Setting("Hah", Index = 10)]
         public string HahAddress
         {
             get
@@ -242,7 +255,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("H@H", "Passkey (Optional)", Index = 20)]
+        [Setting("Hah", Index = 20)]
         public string HahPasskey
         {
             get
@@ -253,19 +266,6 @@ namespace ExViewer.Settings
             {
                 ForceSetLocal((value ?? "").Trim());
                 SetHah();
-            }
-        }
-
-        [Setting("Image viewing", "Keep my screen on during image viewing", Index = 45)]
-        public bool KeepScreenOn
-        {
-            get
-            {
-                return GetLocal(false);
-            }
-            set
-            {
-                SetLocal(value);
             }
         }
 

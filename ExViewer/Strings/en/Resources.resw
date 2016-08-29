@@ -126,12 +126,6 @@
   <data name="BackToWindow" xml:space="preserve">
     <value>Back to window</value>
   </data>
-  <data name="BooleanOff" xml:space="preserve">
-    <value>Off</value>
-  </data>
-  <data name="BooleanOn" xml:space="preserve">
-    <value>On</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>

@@ -40,16 +40,6 @@
         public static string BackToWindow => GetString("BackToWindow");
 
         /// <summary>
-        /// Off
-        /// </summary>
-        public static string BooleanOff => GetString("BooleanOff");
-
-        /// <summary>
-        /// On
-        /// </summary>
-        public static string BooleanOn => GetString("BooleanOn");
-
-        /// <summary>
         /// Cancel
         /// </summary>
         public static string Cancel => GetString("Cancel");
@@ -85,9 +75,9 @@
         public static string GallerySavedTo => GetString("GallerySavedTo");
 
         /// <summary>
-        /// File name: {1}
-        /// Size: {2}
-        /// Dimensions: {3} × {4}
+        /// File name: {0}
+        /// Size: {1}
+        /// Dimensions: {2} × {3}
         /// </summary>
         public static string ImageFileInfo => GetString("ImageFileInfo");
 
@@ -168,6 +158,46 @@
         /// The captcha was not entered correctly. Please try again.
         /// </summary>
         public static string WrongCaptcha => GetString("WrongCaptcha");
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator","1.0")]
+    public static class Settings
+    {
+        private static readonly global::System.Collections.Generic.Dictionary<string, string> cache 
+            = new global::System.Collections.Generic.Dictionary<string, string>();
+
+        private static readonly global::Windows.ApplicationModel.Resources.ResourceLoader loader 
+            = global::Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse("/Settings");
+
+        public static string GetString(string resourceKey)
+        {
+            string value;
+            if(cache.TryGetValue(resourceKey, out value))
+                return value;
+            else
+                return cache[resourceKey] = loader.GetString(resourceKey);
+        }
+
+        public static void ClearCache()
+        {
+            cache.Clear();
+        }
+
+        /// <summary>
+        /// Off
+        /// </summary>
+        public static string BooleanOff => GetString("BooleanOff");
+
+        /// <summary>
+        /// On
+        /// </summary>
+        public static string BooleanOn => GetString("BooleanOn");
+
+        /// <summary>
+        /// Searching
+        /// </summary>
+        public static string Searching => GetString("Searching");
     }
 
 }
