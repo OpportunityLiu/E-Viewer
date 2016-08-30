@@ -142,6 +142,11 @@
     <Compile Include="ReCaptcha.cs" />
     <Compile Include="SearchResult.cs" />
     <Compile Include="Gallery.cs" />
+    <Compile Include="Strings\Strings.cs">
+      <DependentUpon>Strings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tag.cs" />
     <Compile Include="TorrentInfo.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
