@@ -262,7 +262,7 @@
                                         <Setter Target="Mask.(Shape.Fill)"
                                                 Value="{ThemeResource ToggleButtonCheckedDisabledBackgroundThemeBrush}" />
                                         <Setter Target="ContentPresenter.(Control.Foreground)"
-                                                Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" />
+                                                Value="{ThemeResource CategoryToggleButtonUncheckedForegroundThemeBrush}" />
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />

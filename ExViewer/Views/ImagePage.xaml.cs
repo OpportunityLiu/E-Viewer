@@ -81,6 +81,7 @@ namespace ExViewer.Views
             await Task.Delay(50);
             fv.SelectedIndex = VM.CurrentIndex;
             fv.Focus(FocusState.Pointer);
+
             if(SettingCollection.Current.KeepScreenOn)
             {
                 displayRequest.RequestActive();
@@ -88,6 +89,8 @@ namespace ExViewer.Views
             }
             if(!StatusCollection.Current.ImageViewTipShown)
                 showTip();
+            fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ? 
+                FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

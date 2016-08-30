@@ -207,4 +207,19 @@
   <data name="UseTagTranslation" xml:space="preserve">
     <value>标签中文翻译</value>
   </data>
+  <data name="ApplicationThemeDark" xml:space="preserve">
+    <value>深色</value>
+  </data>
+  <data name="ApplicationThemeLight" xml:space="preserve">
+    <value>浅色</value>
+  </data>
+  <data name="BooleanLeftToRight" xml:space="preserve">
+    <value>从左向右</value>
+  </data>
+  <data name="BooleanRightToLeft" xml:space="preserve">
+    <value>从右向左</value>
+  </data>
+  <data name="ReverseFlowDirection" xml:space="preserve">
+    <value>翻页方向</value>
+  </data>
 </root>
