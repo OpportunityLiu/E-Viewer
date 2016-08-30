@@ -153,9 +153,10 @@ namespace ExViewer.Views
 
         private void SettingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if(e.PropertyName != nameof(Value))
+                return;
             var s = (SettingInfo)sender;
-            if(e.PropertyName == nameof(Value))
-                this.Value = Convert.ToDouble(s.Value);
+            this.Value = Convert.ToDouble(s.Value);
         }
 
         private void ValueChangedCallback(object sender, RangeBaseValueChangedEventArgs e)
@@ -224,9 +225,12 @@ namespace ExViewer.Views
             if(sv != null)
             {
                 s.settingType = sv.PropertyInfo.PropertyType;
-                s.ItemsSource = Enum.GetNames(s.settingType);
-
-                s.SelectedItem = sv.Value.ToString();
+                var selections = Enum.GetNames(s.settingType)
+                    .Select(name =>
+                        new EnumSelection(name, LocalizedStrings.Settings.GetString(sv.EnumRepresent.ResourcePrefix + name)))
+                    .ToList();
+                s.ItemsSource = selections;
+                s.SelectedItem = selections.Single(sel => sel.EnumName == sv.Value.ToString());
                 s.SelectionChanged += s.SelectionChangedCallback;
                 sv.PropertyChanged += s.SettingInfoPropertyChanged;
             }
@@ -240,14 +244,39 @@ namespace ExViewer.Views
         private void SelectionChangedCallback(object sender, SelectionChangedEventArgs e)
         {
             var s = (SettingComboBox)sender;
-            s.SettingValue.Value = Enum.Parse(s.settingType, s.SelectedItem.ToString());
+            s.SettingValue.Value = Enum.Parse(s.settingType, ((EnumSelection)s.SelectedItem).EnumName);
         }
 
         private void SettingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if(e.PropertyName != nameof(SettingInfo.Value))
+                return;
             var s = (SettingInfo)sender;
-            if(e.PropertyName == nameof(SettingInfo.Value))
-                this.SelectedItem = s.Value;
+            this.SelectedItem = ((IEnumerable<EnumSelection>)ItemsSource).Single(sel => sel.EnumName == s.Value.ToString());
+        }
+
+        private class EnumSelection
+        {
+            public EnumSelection(string name, string friendlyName)
+            {
+                FriendlyName = friendlyName;
+                EnumName = name;
+            }
+
+            public string FriendlyName
+            {
+                get;
+            }
+
+            public string EnumName
+            {
+                get;
+            }
+
+            public override string ToString()
+            {
+                return FriendlyName;
+            }
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:ExViewer.Themes">
-    <ImageBrush x:Key="UserBackgroundBrush"
+    <ImageBrush x:Key="UserBackgroundThemeBrush"
                 ImageSource="ms-appx:///Images/Dark/UserBackground.png" />
+    <SolidColorBrush x:Key="CategoryToggleButtonUncheckedForegroundThemeBrush"
+                     Color="White"
+                     Opacity="0.5" />
 </ResourceDictionary>

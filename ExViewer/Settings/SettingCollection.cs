@@ -14,19 +14,6 @@ namespace ExViewer.Settings
         private SettingCollection()
             : base("Settings") { }
 
-        [Setting("Searching", Index = 30)]
-        public bool SaveLastSearch
-        {
-            get
-            {
-                return GetRoaming(false);
-            }
-            set
-            {
-                SetRoaming(value);
-            }
-        }
-
         [Setting("Searching", Index = 10)]
         public string DefaultSearchString
         {
@@ -42,7 +29,6 @@ namespace ExViewer.Settings
 
         [Setting(
             "Searching",
-
             Index = 20,
             SettingPresenterTemplate = "CatagorySettingTemplate"
         )]
@@ -58,7 +44,21 @@ namespace ExViewer.Settings
             }
         }
 
+        [Setting("Searching", Index = 30)]
+        public bool SaveLastSearch
+        {
+            get
+            {
+                return GetRoaming(false);
+            }
+            set
+            {
+                SetRoaming(value);
+            }
+        }
+
         [Setting("Global", Index = -10)]
+        [EnumRepresent("ApplicationTheme")]
         public ApplicationTheme Theme
         {
             get
@@ -143,6 +143,20 @@ namespace ExViewer.Settings
         [Setting("ImageViewing", Index = 30)]
         [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
         public bool MouseInertial
+        {
+            get
+            {
+                return GetLocal(false);
+            }
+            set
+            {
+                SetLocal(value);
+            }
+        }
+
+        [Setting("ImageViewing", Index = 35)]
+        [BooleanRepresent("BooleanRightToLeft", "BooleanLeftToRight")]
+        public bool ReverseFlowDirection
         {
             get
             {

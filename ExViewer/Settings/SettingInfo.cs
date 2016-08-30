@@ -32,7 +32,8 @@ namespace ExViewer.Settings
             Category = setting.Category;
             Index = setting.Index;
             Range = info.GetCustomAttributes().Select(a => a as IValueRange).SingleOrDefault(a => a != null);
-            BooleanRepresent = info.GetCustomAttributes<BooleanRepresentAttribute>().SingleOrDefault() ?? BooleanRepresentAttribute.Default;
+            BooleanRepresent = info.GetCustomAttribute<BooleanRepresentAttribute>() ?? BooleanRepresentAttribute.Default;
+            EnumRepresent = info.GetCustomAttribute<EnumRepresentAttribute>();
 
             var type = info.PropertyType;
             if(setting.SettingPresenterTemplate != null)
@@ -99,6 +100,11 @@ namespace ExViewer.Settings
         }
 
         public BooleanRepresentAttribute BooleanRepresent
+        {
+            get;
+        }
+
+        public EnumRepresentAttribute EnumRepresent
         {
             get;
         }

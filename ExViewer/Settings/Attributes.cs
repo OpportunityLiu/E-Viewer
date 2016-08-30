@@ -256,4 +256,18 @@ namespace ExViewer.Settings
             get;
         }
     }
+
+    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class EnumRepresentAttribute : Attribute
+    {
+        public EnumRepresentAttribute(string resourcePrefix)
+        {
+            this.ResourcePrefix = resourcePrefix;
+        }
+
+        public string ResourcePrefix
+        {
+            get;
+        }
+    }
 }

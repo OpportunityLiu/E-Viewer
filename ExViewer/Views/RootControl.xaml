@@ -73,7 +73,7 @@
                         </Grid.ColumnDefinitions>
                         <Border Grid.ColumnSpan="999"
                                 Grid.RowSpan="3"
-                                Background="{StaticResource UserBackgroundBrush}" />
+                                Background="{StaticResource UserBackgroundThemeBrush}" />
                         <Button Style="{StaticResource SplitButtonStyle}"
                                 Click="btn_pane_Click"
                                 Grid.ColumnSpan="999" />
