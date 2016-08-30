@@ -372,7 +372,8 @@
         <Setter Property="TopIndicatorTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <ptr:PullRefreshProgressControl Progress="{Binding}"
+                    <ptr:PullRefreshProgressControl x:Uid="PullRefreshProgressControl"
+                                                    Progress="{Binding}"
                                                     PullToRefreshText="Pull to refresh"
                                                     ReleaseToRefreshText="Release to refresh" />
                 </DataTemplate>

@@ -12,7 +12,16 @@ namespace ExViewer.Converters
     {
         protected override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
-            return string.Format(CultureInfo.CurrentCulture, parameter?.ToString() ?? "{0}", value);
+            var format = (string)null;
+            if(parameter == null)
+                return value.ToString();
+            if(string.IsNullOrEmpty(format = LocalizedStrings.Resources.GetString(parameter.ToString())))
+            {
+                System.Diagnostics.Debug.WriteLine($"Can't find resource: {parameter}", "Localization");
+                return value.ToString();
+            }
+
+            return string.Format(CultureInfo.CurrentCulture, format, value);
         }
 
         protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)

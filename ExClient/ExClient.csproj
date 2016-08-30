@@ -105,6 +105,8 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-cn\NameSpace.resw" />
+    <PRIResource Include="Strings\zh-cn\Category.resw" />
     <PRIResource Include="Strings\zh-cn\Resources.resw" />
     <PRIResource Include="Strings\en\Resources.resw" />
   </ItemGroup>
@@ -148,6 +150,8 @@
     <Compile Include="Tag.cs" />
     <Compile Include="TorrentInfo.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
+    <PRIResource Include="Strings\en\NameSpace.resw" />
+    <PRIResource Include="Strings\en\Category.resw" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.cs</LastGenOutput>

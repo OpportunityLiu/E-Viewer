@@ -5,8 +5,9 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                mc:Ignorable="d"
+               x:Uid="LogOnDialogContentDialog"
                Loaded="ContentDialog_Loaded"
-               PrimaryButtonText="Ok"
+               PrimaryButtonText="OK"
                SecondaryButtonText="?"
                PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
                SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
@@ -132,8 +133,10 @@
     </ContentDialog.Template>
     <ContentDialog.Title>
         <Grid>
-            <TextBlock Text="LOG ON" />
-            <HyperlinkButton x:Name="btn_Register"
+            <TextBlock x:Uid="LogOnDialogTitleTextBlock"
+                       Text="LOG ON" />
+            <HyperlinkButton x:Uid="LogOnDialogRegisterHyperlinkButton"
+                             x:Name="btn_Register"
                              Content="Register"
                              HorizontalAlignment="Right"
                              Style="{StaticResource TextBlockButtonStyle}"
@@ -143,12 +146,14 @@
         </Grid>
     </ContentDialog.Title>
     <StackPanel>
-        <TextBox x:Name="tb_user"
+        <TextBox x:Uid="LogOnDialogUserNameTextBox"
+                 x:Name="tb_user"
                  Margin="0,4"
-                 PlaceholderText="User Name"
+                 PlaceholderText="User name"
                  InputScope="AlphanumericHalfWidth"
                  TextChanged="tb_TextChanged" />
-        <PasswordBox x:Name="pb_pass"
+        <PasswordBox x:Uid="LogOnDialogPasswordBox"
+                     x:Name="pb_pass"
                      Margin="0,4"
                      PlaceholderText="Password"
                      PasswordChanged="tb_TextChanged" />
@@ -170,14 +175,16 @@
                 <Image x:Name="img_ReCaptcha"
                        MinHeight="50" />
             </Border>
-            <TextBox x:Name="tb_ReCaptcha"
+            <TextBox x:Uid="LogOnDialogReCaptchaTextBox"
+                     x:Name="tb_ReCaptcha"
                      Margin="0,4"
                      Grid.Row="1"
                      PlaceholderText="ReCaptcha"
                      InputScope="AlphanumericHalfWidth"
                      TextChanged="tb_TextChanged"
                      IsSpellCheckEnabled="False" />
-            <Button x:Name="btn_ReloadReCaptcha"
+            <Button x:Uid="LogOnDialogReloadReCaptchaButton"
+                    x:Name="btn_ReloadReCaptcha"
                     Style="{StaticResource TextBlockButtonStyle}"
                     Grid.Row="1"
                     Grid.Column="1"
@@ -185,7 +192,6 @@
                     Content="&#xE72C;"
                     FontFamily="Segoe MDL2 Assets"
                     Click="btn_ReloadReCaptcha_Click"
-                    AutomationProperties.Name="Reload ReCaptcha"
                     ToolTipService.ToolTip="Reload ReCaptcha"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" />

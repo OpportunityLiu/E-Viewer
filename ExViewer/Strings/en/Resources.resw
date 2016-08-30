@@ -117,14 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutPageForumsHyperlinkButton.Content" xml:space="preserve">
+    <value>E-Hentai Forums</value>
+  </data>
+  <data name="AboutPageHelpTranslateTagsHyperlinkButton.Content" xml:space="preserve">
+    <value>Help translate tags into Chinese</value>
+  </data>
+  <data name="AboutPageLicenceTextBlock.Text" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="AboutPageOnlineContentsTextBlock.Text" xml:space="preserve">
+    <value>Online contents</value>
+  </data>
+  <data name="AboutPageRateHyperlinkButton.Content" xml:space="preserve">
+    <value>Rate and review</value>
+  </data>
+  <data name="AboutPageSourceCodeHyperlinkButton.Content" xml:space="preserve">
+    <value>View source code at GitHub.com</value>
+  </data>
+  <data name="AboutPageTitleTextBlock.Text" xml:space="preserve">
+    <value>ABOUT</value>
+  </data>
   <data name="AppDescription" xml:space="preserve">
     <value>E-Viewer is a client for e-hentai.org and exhentai.org.</value>
   </data>
   <data name="AppDisplayName" xml:space="preserve">
     <value>E-Viewer</value>
   </data>
-  <data name="BackToWindow" xml:space="preserve">
-    <value>Back to window</value>
+  <data name="CachePageClearCacheAppBarButton.Label" xml:space="preserve">
+    <value>Delete all</value>
+  </data>
+  <data name="CachePageDeleteMenuFlyout.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CachePageEmptyTextBlock.Text" xml:space="preserve">
+    <value>No saved galleries</value>
+  </data>
+  <data name="CachePageLoadingMoreTextBlock.Text" xml:space="preserve">
+    <value>Loading more galleries...</value>
+  </data>
+  <data name="CachePageRefreshAppBarButton.Label" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CachePageSaveToMenuFlyout.Text" xml:space="preserve">
+    <value>Save to...</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
@@ -138,19 +174,130 @@
   <data name="Exit" xml:space="preserve">
     <value>Exit</value>
   </data>
-  <data name="FullScreen" xml:space="preserve">
-    <value>Full screen</value>
-  </data>
   <data name="GalleryDeleted" xml:space="preserve">
     <value>Selected gallery has been deleted.</value>
+  </data>
+  <data name="GalleryPageCommentAuthorFormatString" xml:space="preserve">
+    <value>By {0}</value>
+  </data>
+  <data name="GalleryPageCommentEditedFormatString" xml:space="preserve">
+    <value>Last edited on {0}</value>
+  </data>
+  <data name="GalleryPageCommentIsUploaderCommentTextBlock.Text" xml:space="preserve">
+    <value>Uploader Comment</value>
+  </data>
+  <data name="GalleryPageCommentPostedFormatString" xml:space="preserve">
+    <value>Posted on {0}</value>
+  </data>
+  <data name="GalleryPageCommentScoreFormatString" xml:space="preserve">
+    <value>Score {0:+#0;-#0}</value>
+  </data>
+  <data name="GalleryPageCommentsEmptyTextBlock.Text" xml:space="preserve">
+    <value>No comments</value>
+  </data>
+  <data name="GalleryPageCommentsLoadingTextBlock.Text" xml:space="preserve">
+    <value>Loading comments...</value>
+  </data>
+  <data name="GalleryPageGoToDefinitionMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Go to EHWiki for definition</value>
+  </data>
+  <data name="GalleryPageImagesLoadingMoreTextBlock.Text" xml:space="preserve">
+    <value>Loading more items...</value>
+  </data>
+  <data name="GalleryPageOpenInBrowserAppBarButton.Label" xml:space="preserve">
+    <value>Open in browser</value>
+  </data>
+  <data name="GalleryPagePivotHeaderCommentsTextBlock.Text" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="GalleryPagePivotHeaderImagesTextBlock.Text" xml:space="preserve">
+    <value>Images</value>
+  </data>
+  <data name="GalleryPagePivotHeaderNumberFormatString" xml:space="preserve">
+    <value>[{0}]</value>
+  </data>
+  <data name="GalleryPagePivotHeaderTorrentsTextBlock.Text" xml:space="preserve">
+    <value>Torrents</value>
+  </data>
+  <data name="GalleryPageSaveAppBarButton.Label" xml:space="preserve">
+    <value>Save this gallery</value>
+  </data>
+  <data name="GalleryPageSearchTagMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Show galleries with this tag</value>
+  </data>
+  <data name="GalleryPageTorrentDownloadButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="GalleryPageTorrentDownloading" xml:space="preserve">
+    <value>Start downloading...</value>
+  </data>
+  <data name="GalleryPageTorrentDownloadsTextBlock.Text" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="GalleryPageTorrentExpungedTextBlock.Text" xml:space="preserve">
+    <value>Expunged</value>
+  </data>
+  <data name="GalleryPageTorrentPeersTextBlock.Text" xml:space="preserve">
+    <value>Peers</value>
+  </data>
+  <data name="GalleryPageTorrentPostedTextBlock.Text" xml:space="preserve">
+    <value>Posted</value>
+  </data>
+  <data name="GalleryPageTorrentSeedsTextBlock.Text" xml:space="preserve">
+    <value>Seeds</value>
+  </data>
+  <data name="GalleryPageTorrentsEmptyTextBlock.Text" xml:space="preserve">
+    <value>No available torrents</value>
+  </data>
+  <data name="GalleryPageTorrentSizeTextBlock.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="GalleryPageTorrentsLoadingTextBlock.Text" xml:space="preserve">
+    <value>Loading torrents...</value>
+  </data>
+  <data name="GalleryPageTorrentUploaderTextBlock.Text" xml:space="preserve">
+    <value>Uploader</value>
   </data>
   <data name="GallerySavedTo" xml:space="preserve">
     <value>Selected gallery has been saved to provided location.</value>
   </data>
-  <data name="ImageFileInfo" xml:space="preserve">
+  <data name="GalleryViewerRecordCountFormatString" xml:space="preserve">
+    <value>{0} pages</value>
+  </data>
+  <data name="ImagePageBackToWindow" xml:space="preserve">
+    <value>Back to window</value>
+  </data>
+  <data name="ImagePageCounterSeparatorTextBlock.Text" xml:space="preserve">
+    <value>/</value>
+  </data>
+  <data name="ImagePageFullScreen" xml:space="preserve">
+    <value>Full screen</value>
+  </data>
+  <data name="ImagePageFullScreenAppBarButton.Label" xml:space="preserve">
+    <value>Full screen</value>
+  </data>
+  <data name="ImagePageHelpAppBarButton.Label" xml:space="preserve">
+    <value>Tips for keyboard users</value>
+  </data>
+  <data name="ImagePageImageFileInfo" xml:space="preserve">
     <value>File name: {0}
 Size: {1}
 Dimensions: {2} × {3}</value>
+  </data>
+  <data name="ImagePageImageInfoAppBarButton.Label" xml:space="preserve">
+    <value>Image infomation</value>
+  </data>
+  <data name="ImagePageLoadOriginalAppBarButton.Label" xml:space="preserve">
+    <value>Load original image</value>
+  </data>
+  <data name="ImagePageOpenInBrowserAppBarButton.Label" xml:space="preserve">
+    <value>Open in browser</value>
+  </data>
+  <data name="ImagePageOpenInExplorerButton.Content" xml:space="preserve">
+    <value>Open in explorer</value>
+  </data>
+  <data name="ImagePageReloadAppBarButton.Label" xml:space="preserve">
+    <value>Reload</value>
   </data>
   <data name="ImageViewTipsContent" xml:space="preserve">
     <value>Zoom in/out			SPACE
@@ -164,14 +311,32 @@ Full screen			ENTER</value>
   <data name="ImageViewTipsTitle" xml:space="preserve">
     <value>TIPS FOR KEYBOARD USERS</value>
   </data>
-  <data name="NeedVerify" xml:space="preserve">
-    <value>Because of your settings, we need to request the verification.</value>
+  <data name="LogOnDialogContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>OK</value>
   </data>
-  <data name="NoPassword" xml:space="preserve">
+  <data name="LogOnDialogNoPassword" xml:space="preserve">
     <value>Please enter your password.</value>
   </data>
-  <data name="NoUserName" xml:space="preserve">
+  <data name="LogOnDialogNoUserName" xml:space="preserve">
     <value>Please enter your user name.</value>
+  </data>
+  <data name="LogOnDialogPasswordBox.PlaceholderText" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="LogOnDialogReCaptchaTextBox.PlaceholderText" xml:space="preserve">
+    <value>ReCaptcha</value>
+  </data>
+  <data name="LogOnDialogRegisterHyperlinkButton.Content" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="LogOnDialogReloadReCaptchaButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Reload ReCaptcha</value>
+  </data>
+  <data name="LogOnDialogTitleTextBlock.Text" xml:space="preserve">
+    <value>LOG ON</value>
+  </data>
+  <data name="LogOnDialogUserNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>User name</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
@@ -179,11 +344,74 @@ Full screen			ENTER</value>
   <data name="ParseByteException" xml:space="preserve">
     <value>Can't parse the given string to a byte size.</value>
   </data>
-  <data name="TorrentDownloading" xml:space="preserve">
-    <value>Start downloading...</value>
+  <data name="PullRefreshProgressControl.PullToRefreshText" xml:space="preserve">
+    <value>Pull to refresh</value>
+  </data>
+  <data name="PullRefreshProgressControl.ReleaseToRefreshText" xml:space="preserve">
+    <value>Release to refresh</value>
+  </data>
+  <data name="RootControlAboutSplitViewTab.Content" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="RootControlCacheSplitViewTab.Content" xml:space="preserve">
+    <value>Saved galleries</value>
+  </data>
+  <data name="RootControlChangeUserButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Change user</value>
+  </data>
+  <data name="RootControlSearchSplitViewTab.Content" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="RootControlSettingsSplitViewTab.Content" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SearchPageAdvancedToggleButton.OffContent" xml:space="preserve">
+    <value>Show advanced options</value>
+  </data>
+  <data name="SearchPageAdvancedToggleButton.OnContent" xml:space="preserve">
+    <value>Hide advanced options</value>
+  </data>
+  <data name="SearchPageAutoSuggestBox.PlaceholderText" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="SearchPageDescriptionCheckBox.Content" xml:space="preserve">
+    <value>Search gallery description</value>
+  </data>
+  <data name="SearchPageDownvotedTagsCheckBox.Content" xml:space="preserve">
+    <value>Search downvoted tags</value>
+  </data>
+  <data name="SearchPageEmptyTextBlock.Text" xml:space="preserve">
+    <value>No hits found</value>
+  </data>
+  <data name="SearchPageLoadingMoreTextBlock.Text" xml:space="preserve">
+    <value>Loading more galleries...</value>
+  </data>
+  <data name="SearchPageLowPowerTagsCheckBox.Content" xml:space="preserve">
+    <value>Search low-power tags</value>
+  </data>
+  <data name="SearchPageMinRatingTextBlock.Text" xml:space="preserve">
+    <value>Minimum rating: </value>
+  </data>
+  <data name="SearchPageNamesCheckBox.Content" xml:space="preserve">
+    <value>Search gallery name</value>
+  </data>
+  <data name="SearchPageOnlyTorrentsCheckBox.Content" xml:space="preserve">
+    <value>Only show galleries with torrents</value>
+  </data>
+  <data name="SearchPageShowExpungedCheckBox.Content" xml:space="preserve">
+    <value>Show expunged galleries</value>
+  </data>
+  <data name="SearchPageTagsCheckBox.Content" xml:space="preserve">
+    <value>Search gallery tags</value>
+  </data>
+  <data name="SearchPageTorrentNamesCheckBox.Content" xml:space="preserve">
+    <value>Search torrent filenames</value>
   </data>
   <data name="VerifyDeviceBusy" xml:space="preserve">
     <value>Device is busy. Please try again later.</value>
+  </data>
+  <data name="VerifyDialogContent" xml:space="preserve">
+    <value>Because of your settings, we need to request the verification.</value>
   </data>
   <data name="VerifyDisabled" xml:space="preserve">
     <value>Verification has been disabled by group policy. Please contact your administrator.</value>
@@ -198,8 +426,5 @@ Full screen			ENTER</value>
     <value>Please set up a PIN first. 
 
 Go "Settings -&gt; Accounts - Sign-in options -&gt; PIN -&gt; Add" to do this.</value>
-  </data>
-  <data name="WrongCaptcha" xml:space="preserve">
-    <value>The captcha was not entered correctly. Please try again.</value>
   </data>
 </root>

@@ -372,45 +372,4 @@
         <Setter Property="IsTabStop"
                 Value="False" />
     </Style>
-    <ControlTemplate x:Key="p"
-                     TargetType="Button">
-        <Grid Width="32"
-              Height="32"
-              Background="Gray"
-              HorizontalAlignment="Left"
-              VerticalAlignment="Top">
-            <TextBlock Text="&#xE8DA;"
-                       FontFamily="Segoe MDL2 Assets"
-                       FontSize="32"
-                       Opacity="0.5"
-                       RenderTransformOrigin="0.5,0.5"
-                       Margin="-22.125,0,0,-17.625"
-                       UseLayoutRounding="False"
-                       d:LayoutRounding="Auto"
-                       HorizontalAlignment="Left"
-                       Width="32"
-                       Height="32"
-                       VerticalAlignment="Bottom">
-                <TextBlock.RenderTransform>
-                    <CompositeTransform Rotation="-179.4" />
-                </TextBlock.RenderTransform>
-            </TextBlock>
-            <Path Fill="Black"
-                  Opacity="0.8"
-                  Width="32"
-                  Height="32"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Data="M4,0 V16 H6 V2 H26 V17
-                  C26,19,24,20,24,22 
-                  V30 H12 V32 H28 A2,2,0,0,0,30,30 V22
-                  C30,20,28,19,28,17 V2 A2,2,0,0,0,26,0 Z
-                  M26,30 H28 V22.5
-                  Q 28,21.3,27,20.4
-                  Q 26,21.3,26,22.5 Z
-                  M0,32 H10 V30 H0 Z
-                  M4,18 H6 V28.172 L8.586,25.586 L10,27 L7,30 H3 L0,27 L1.414,25.586
-                  L4,28.172 Z" />
-        </Grid>
-    </ControlTemplate>
 </ResourceDictionary>

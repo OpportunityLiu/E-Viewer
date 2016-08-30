@@ -35,11 +35,6 @@
         public static string AppDisplayName => GetString("AppDisplayName");
 
         /// <summary>
-        /// Back to window
-        /// </summary>
-        public static string BackToWindow => GetString("BackToWindow");
-
-        /// <summary>
         /// Cancel
         /// </summary>
         public static string Cancel => GetString("Cancel");
@@ -60,14 +55,39 @@
         public static string Exit => GetString("Exit");
 
         /// <summary>
-        /// Full screen
-        /// </summary>
-        public static string FullScreen => GetString("FullScreen");
-
-        /// <summary>
         /// Selected gallery has been deleted.
         /// </summary>
         public static string GalleryDeleted => GetString("GalleryDeleted");
+
+        /// <summary>
+        /// By {0}
+        /// </summary>
+        public static string GalleryPageCommentAuthorFormatString => GetString("GalleryPageCommentAuthorFormatString");
+
+        /// <summary>
+        /// Last edited on {0}
+        /// </summary>
+        public static string GalleryPageCommentEditedFormatString => GetString("GalleryPageCommentEditedFormatString");
+
+        /// <summary>
+        /// Posted on {0}
+        /// </summary>
+        public static string GalleryPageCommentPostedFormatString => GetString("GalleryPageCommentPostedFormatString");
+
+        /// <summary>
+        /// Score {0:+#0;-#0}
+        /// </summary>
+        public static string GalleryPageCommentScoreFormatString => GetString("GalleryPageCommentScoreFormatString");
+
+        /// <summary>
+        /// [{0}]
+        /// </summary>
+        public static string GalleryPagePivotHeaderNumberFormatString => GetString("GalleryPagePivotHeaderNumberFormatString");
+
+        /// <summary>
+        /// Start downloading...
+        /// </summary>
+        public static string GalleryPageTorrentDownloading => GetString("GalleryPageTorrentDownloading");
 
         /// <summary>
         /// Selected gallery has been saved to provided location.
@@ -75,11 +95,26 @@
         public static string GallerySavedTo => GetString("GallerySavedTo");
 
         /// <summary>
+        /// {0} pages
+        /// </summary>
+        public static string GalleryViewerRecordCountFormatString => GetString("GalleryViewerRecordCountFormatString");
+
+        /// <summary>
+        /// Back to window
+        /// </summary>
+        public static string ImagePageBackToWindow => GetString("ImagePageBackToWindow");
+
+        /// <summary>
+        /// Full screen
+        /// </summary>
+        public static string ImagePageFullScreen => GetString("ImagePageFullScreen");
+
+        /// <summary>
         /// File name: {0}
         /// Size: {1}
         /// Dimensions: {2} × {3}
         /// </summary>
-        public static string ImageFileInfo => GetString("ImageFileInfo");
+        public static string ImagePageImageFileInfo => GetString("ImagePageImageFileInfo");
 
         /// <summary>
         /// Zoom in/out			SPACE
@@ -98,19 +133,14 @@
         public static string ImageViewTipsTitle => GetString("ImageViewTipsTitle");
 
         /// <summary>
-        /// Because of your settings, we need to request the verification.
-        /// </summary>
-        public static string NeedVerify => GetString("NeedVerify");
-
-        /// <summary>
         /// Please enter your password.
         /// </summary>
-        public static string NoPassword => GetString("NoPassword");
+        public static string LogOnDialogNoPassword => GetString("LogOnDialogNoPassword");
 
         /// <summary>
         /// Please enter your user name.
         /// </summary>
-        public static string NoUserName => GetString("NoUserName");
+        public static string LogOnDialogNoUserName => GetString("LogOnDialogNoUserName");
 
         /// <summary>
         /// OK
@@ -123,14 +153,14 @@
         public static string ParseByteException => GetString("ParseByteException");
 
         /// <summary>
-        /// Start downloading...
-        /// </summary>
-        public static string TorrentDownloading => GetString("TorrentDownloading");
-
-        /// <summary>
         /// Device is busy. Please try again later.
         /// </summary>
         public static string VerifyDeviceBusy => GetString("VerifyDeviceBusy");
+
+        /// <summary>
+        /// Because of your settings, we need to request the verification.
+        /// </summary>
+        public static string VerifyDialogContent => GetString("VerifyDialogContent");
 
         /// <summary>
         /// Verification has been disabled by group policy. Please contact your administrator.
@@ -153,11 +183,6 @@
         /// Go &amp;quot;Settings -&gt; Accounts - Sign-in options -&gt; PIN -&gt; Add&amp;quot; to do this.
         /// </summary>
         public static string VerifyNotConfigured => GetString("VerifyNotConfigured");
-
-        /// <summary>
-        /// The captcha was not entered correctly. Please try again.
-        /// </summary>
-        public static string WrongCaptcha => GetString("WrongCaptcha");
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -185,6 +210,31 @@
         }
 
         /// <summary>
+        /// Disabled
+        /// </summary>
+        public static string BooleanDisabled => GetString("BooleanDisabled");
+
+        /// <summary>
+        /// Default title
+        /// </summary>
+        public static string BooleanDT => GetString("BooleanDT");
+
+        /// <summary>
+        /// Enabled
+        /// </summary>
+        public static string BooleanEnabled => GetString("BooleanEnabled");
+
+        /// <summary>
+        /// Japanese title (If available)
+        /// </summary>
+        public static string BooleanJT => GetString("BooleanJT");
+
+        /// <summary>
+        /// No
+        /// </summary>
+        public static string BooleanNo => GetString("BooleanNo");
+
+        /// <summary>
         /// Off
         /// </summary>
         public static string BooleanOff => GetString("BooleanOff");
@@ -195,9 +245,144 @@
         public static string BooleanOn => GetString("BooleanOn");
 
         /// <summary>
+        /// Yes
+        /// </summary>
+        public static string BooleanYes => GetString("BooleanYes");
+
+        /// <summary>
+        /// The latency for the command bar to hide or show after tapping
+        /// </summary>
+        public static string ChangeCommandBarDelay => GetString("ChangeCommandBarDelay");
+
+        /// <summary>
+        /// Connection
+        /// </summary>
+        public static string Connection => GetString("Connection");
+
+        /// <summary>
+        /// Zoom factor for double tapping
+        /// </summary>
+        public static string DefaultFactor => GetString("DefaultFactor");
+
+        /// <summary>
+        /// Default categories on the front page
+        /// </summary>
+        public static string DefaultSearchCategory => GetString("DefaultSearchCategory");
+
+        /// <summary>
+        /// Default keywords on the front page
+        /// </summary>
+        public static string DefaultSearchString => GetString("DefaultSearchString");
+
+        /// <summary>
+        /// Gif support
+        /// </summary>
+        public static string EnableGif => GetString("EnableGif");
+
+        /// <summary>
+        /// Global
+        /// </summary>
+        public static string Global => GetString("Global");
+
+        /// <summary>
+        /// H@H
+        /// </summary>
+        public static string Hah => GetString("Hah");
+
+        /// <summary>
+        /// IP Address:Port (Leave blank to not use)
+        /// </summary>
+        public static string HahAddress => GetString("HahAddress");
+
+        /// <summary>
+        /// Passkey (Optional)
+        /// </summary>
+        public static string HahPasskey => GetString("HahPasskey");
+
+        /// <summary>
+        /// Image viewing
+        /// </summary>
+        public static string ImageViewing => GetString("ImageViewing");
+
+        /// <summary>
+        /// Keep my screen on during image viewing
+        /// </summary>
+        public static string KeepScreenOn => GetString("KeepScreenOn");
+
+        /// <summary>
+        /// Always load compressed image
+        /// </summary>
+        public static string LoadLofiOnAllInternetConnection => GetString("LoadLofiOnAllInternetConnection");
+
+        /// <summary>
+        /// Load compressed image while using metered Internet connection
+        /// </summary>
+        public static string LoadLofiOnMeteredInternetConnection => GetString("LoadLofiOnMeteredInternetConnection");
+
+        /// <summary>
+        /// Maximum zoom factor
+        /// </summary>
+        public static string MaxFactor => GetString("MaxFactor");
+
+        /// <summary>
+        /// Inertia of mouse dragging
+        /// </summary>
+        public static string MouseInertial => GetString("MouseInertial");
+
+        /// <summary>
+        /// Verify my PIN when the app is starting
+        /// </summary>
+        public static string NeedVerify => GetString("NeedVerify");
+
+        /// <summary>
+        /// Save my lastest search as default
+        /// </summary>
+        public static string SaveLastSearch => GetString("SaveLastSearch");
+
+        /// <summary>
         /// Searching
         /// </summary>
         public static string Searching => GetString("Searching");
+
+        /// <summary>
+        /// The theme of the app (Need restart the app)
+        /// </summary>
+        public static string Theme => GetString("Theme");
+
+        /// <summary>
+        /// The default title displayed
+        /// </summary>
+        public static string UseJapaneseTitle => GetString("UseJapaneseTitle");
+
+        /// <summary>
+        /// Use chinese translation of tags
+        /// </summary>
+        public static string UseTagTranslation => GetString("UseTagTranslation");
+
+        /// <summary>
+        /// Dark
+        /// </summary>
+        public static string ApplicationThemeDark => GetString("ApplicationThemeDark");
+
+        /// <summary>
+        /// Light
+        /// </summary>
+        public static string ApplicationThemeLight => GetString("ApplicationThemeLight");
+
+        /// <summary>
+        /// Left to right
+        /// </summary>
+        public static string BooleanLeftToRight => GetString("BooleanLeftToRight");
+
+        /// <summary>
+        /// Right to left
+        /// </summary>
+        public static string BooleanRightToLeft => GetString("BooleanRightToLeft");
+
+        /// <summary>
+        /// Flip direction
+        /// </summary>
+        public static string ReverseFlowDirection => GetString("ReverseFlowDirection");
     }
 
 }

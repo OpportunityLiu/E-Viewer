@@ -120,20 +120,8 @@
   <data name="AccountDenied" xml:space="preserve">
     <value>This account dose not have permittion for exhentai.</value>
   </data>
-  <data name="All" xml:space="preserve">
-    <value>All</value>
-  </data>
-  <data name="ArtistCG" xml:space="preserve">
-    <value>Artist CG</value>
-  </data>
-  <data name="AsianPorn" xml:space="preserve">
-    <value>Asian Porn</value>
-  </data>
   <data name="ClientDisposed" xml:space="preserve">
     <value>The client has been disposed.</value>
-  </data>
-  <data name="Cosplay" xml:space="preserve">
-    <value>Cosplay</value>
   </data>
   <data name="DefaultTitle" xml:space="preserve">
     <value>Gallery Title</value>
@@ -141,35 +129,14 @@
   <data name="DefaultUploader" xml:space="preserve">
     <value>Uploader</value>
   </data>
-  <data name="Doujinshi" xml:space="preserve">
-    <value>Doujinshi</value>
-  </data>
   <data name="ExpungedTorrent" xml:space="preserve">
     <value>This torrent has beem expunged.</value>
-  </data>
-  <data name="GameCG" xml:space="preserve">
-    <value>Game CG</value>
-  </data>
-  <data name="ImageSet" xml:space="preserve">
-    <value>Image Set</value>
-  </data>
-  <data name="Manga" xml:space="preserve">
-    <value>Manga</value>
-  </data>
-  <data name="Misc" xml:space="preserve">
-    <value>Misc</value>
-  </data>
-  <data name="NonH" xml:space="preserve">
-    <value>Non-H</value>
   </data>
   <data name="OnlyIpv4" xml:space="preserve">
     <value>Only IPV4 address supported.</value>
   </data>
-  <data name="Unspecified" xml:space="preserve">
-    <value>Unspecified</value>
-  </data>
-  <data name="Western" xml:space="preserve">
-    <value>Western</value>
+  <data name="WrongAccountInfo" xml:space="preserve">
+    <value>User name or password incorrect.</value>
   </data>
   <data name="WrongCaptcha" xml:space="preserve">
     <value>The captcha was not entered correctly. Please try again.</value>

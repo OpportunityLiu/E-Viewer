@@ -76,7 +76,14 @@ namespace ExClient
                     var errorNode = html.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "") == "postcolor").FirstOrDefault();
                     if(errorNode != null)
                     {
-                        throw new InvalidOperationException(errorNode.InnerText);
+                        var errorText = errorNode.InnerText;
+                        switch(errorText)
+                        {
+                        case "Username or password incorrect":
+                            throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
+                        default:
+                            throw new InvalidOperationException(errorText);
+                        }
                     }
                     var init = await HttpClient.GetAsync(RootUri, HttpCompletionOption.ResponseHeadersRead);
                     if(cookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")

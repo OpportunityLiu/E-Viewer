@@ -139,4 +139,17 @@ namespace ExViewer.Views
             throw new NotImplementedException();
         }
     }
+
+    public class NameSpaceToFriendlyStringConverter : ValueConverter
+    {
+        public override object Convert(object value, Type targetType, object parameter, string language)
+        {
+            return ((NameSpace)value).ToFriendlyNameString();
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

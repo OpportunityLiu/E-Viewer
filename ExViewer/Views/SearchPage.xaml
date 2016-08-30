@@ -41,7 +41,8 @@
                 </Grid.ColumnDefinitions>
                 <Button Style="{StaticResource SplitButtonStyle}"
                         Click="btn_pane_Click" />
-                <AutoSuggestBox x:Name="asb"
+                <AutoSuggestBox x:Uid="SearchPageAutoSuggestBox"
+                                x:Name="asb"
                                 Grid.Column="1"
                                 Margin="8"
                                 Text="{x:Bind VM.KeyWord, Mode=TwoWay}"
@@ -124,7 +125,8 @@
                         <controls:CategorySelector x:Name="cs_Category"
                                                    SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
                                                    HorizontalAlignment="Center" />
-                        <ToggleSwitch x:Name="ts_Advanced"
+                        <ToggleSwitch x:Uid="SearchPageAdvancedToggleButton"
+                                      x:Name="ts_Advanced"
                                       Margin="8"
                                       Style="{StaticResource TextBlockToggleSwitch}"
                                       OffContent="Show advanced options"
@@ -134,26 +136,35 @@
                                   Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
                                   Padding="0,0,0,8"
                                   Style="{StaticResource StackPanelListViewStyle}">
-                            <CheckBox Content="Search gallery name"
+                            <CheckBox x:Uid="SearchPageNamesCheckBox"
+                                      Content="Search gallery name"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox Content="Search gallery tags"
+                            <CheckBox x:Uid="SearchPageTagsCheckBox"
+                                      Content="Search gallery tags"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox Content="Search gallery description"
+                            <CheckBox x:Uid="SearchPageDescriptionCheckBox"
+                                      Content="Search gallery description"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchDescription, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox Content="Search torrent filenames"
+                            <CheckBox x:Uid="SearchPageTorrentNamesCheckBox"
+                                      Content="Search torrent filenames"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchTorrentFilenames, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox Content="Only show galleries with torrents"
+                            <CheckBox x:Uid="SearchPageOnlyTorrentsCheckBox"
+                                      Content="Only show galleries with torrents"
                                       IsChecked="{x:Bind VM.AdvancedSearch.GalleriesWithTorrentsOnly, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox Content="Search low-power tags"
+                            <CheckBox x:Uid="SearchPageLowPowerTagsCheckBox"
+                                      Content="Search low-power tags"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchLowPowerTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox Content="Search downvoted tags"
+                            <CheckBox x:Uid="SearchPageDownvotedTagsCheckBox"
+                                      Content="Search downvoted tags"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox Content="Show expunged galleries"
+                            <CheckBox x:Uid="SearchPageShowExpungedCheckBox"
+                                      Content="Show expunged galleries"
                                       IsChecked="{x:Bind VM.AdvancedSearch.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
                             <CheckBox Padding="8,0,0,0"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource NullableConverter}}">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Minimum rating:"
+                                    <TextBlock x:Uid="SearchPageMinRatingTextBlock"
+                                               Text="Minimum rating:"
                                                VerticalAlignment="Center" />
                                     <ComboBox VerticalAlignment="Center"
                                               SelectedItem="{x:Bind VM.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}">
@@ -191,14 +202,16 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.Header>
-                    <TextBlock HorizontalAlignment="Center"
+                    <TextBlock x:Uid="SearchPageEmptyTextBlock"
+                               HorizontalAlignment="Center"
                                Margin="12"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
                                Text="No hits found" />
                 </ListView.Header>
                 <ListView.Footer>
-                    <TextBlock HorizontalAlignment="Center"
+                    <TextBlock x:Uid="SearchPageLoadingMoreTextBlock"
+                               HorizontalAlignment="Center"
                                Margin="12"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"

@@ -19,6 +19,7 @@
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
+        <local:NameSpaceToFriendlyStringConverter x:Key="NameSpaceToFriendlyStringConverter" />
         <Style x:Key="ListViewItemStyle"
                TargetType="ListViewItem">
             <Setter Property="MinWidth"
@@ -32,12 +33,16 @@
         </Style>
 
         <MenuFlyout x:Name="mfo_Tag">
-            <MenuFlyoutItem Text="{Binding Content}" />
+            <MenuFlyoutItem Text="{Binding Content}"
+                            IsTabStop="False"
+                            IsHitTestVisible="False" />
             <MenuFlyoutSeparator />
-            <MenuFlyoutItem Text="Go to EHWiki for defination"
-                            Command="{x:Bind VM.GoToDefination, Mode=OneWay}"
+            <MenuFlyoutItem x:Uid="GalleryPageGoToDefinitionMenuFlyoutItem"
+                            Text="Go to EHWiki for definition"
+                            Command="{x:Bind VM.GoToDefinition, Mode=OneWay}"
                             CommandParameter="{Binding}" />
-            <MenuFlyoutItem Text="Show galleries with this tag"
+            <MenuFlyoutItem x:Uid="GalleryPageSearchTagMenuFlyoutItem"
+                            Text="Show galleries with this tag"
                             Command="{x:Bind VM.SearchTag, Mode=OneWay}"
                             CommandParameter="{Binding}" />
         </MenuFlyout>
@@ -92,14 +97,16 @@
                            Text="{x:Bind Name}"
                            Style="{StaticResource TorrentNameTextBlockStyle}"
                            VerticalAlignment="Center" />
-                <TextBlock Margin="12,8,4,8"
+                <TextBlock x:Uid="GalleryPageTorrentExpungedTextBlock"
+                           Margin="12,8,4,8"
                            Grid.Column="1"
                            Text="Expunged"
                            Foreground="Red"
                            Style="{StaticResource TorrentNameTextBlockStyle}"
                            VerticalAlignment="Center"
                            Visibility="{x:Bind TorrentUri, Converter={StaticResource NullToVisibleConverter}}" />
-                <Button Grid.RowSpan="2"
+                <Button x:Uid="GalleryPageTorrentDownloadButton"
+                        Grid.RowSpan="2"
                         Grid.Column="2"
                         VerticalAlignment="Stretch"
                         Command="{Binding VM.TorrentDownload, ElementName=page}"
@@ -123,21 +130,27 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Uploader"
+                    <TextBlock x:Uid="GalleryPageTorrentUploaderTextBlock"
+                               Text="Uploader"
                                Style="{StaticResource KeyTextBlockStyle}" />
-                    <TextBlock Text="Posted"
+                    <TextBlock x:Uid="GalleryPageTorrentPostedTextBlock"
+                               Text="Posted"
                                Style="{StaticResource KeyTextBlockStyle}"
                                Grid.Row="1" />
-                    <TextBlock Text="Downloads"
+                    <TextBlock x:Uid="GalleryPageTorrentDownloadsTextBlock"
+                               Text="Downloads"
                                Style="{StaticResource KeyTextBlockStyle}"
                                Grid.Row="2" />
-                    <TextBlock Text="Peers"
+                    <TextBlock x:Uid="GalleryPageTorrentPeersTextBlock"
+                               Text="Peers"
                                Style="{StaticResource KeyTextBlockStyle}"
                                Grid.Row="3" />
-                    <TextBlock Text="Seeds"
+                    <TextBlock x:Uid="GalleryPageTorrentSeedsTextBlock"
+                               Text="Seeds"
                                Style="{StaticResource KeyTextBlockStyle}"
                                Grid.Row="4" />
-                    <TextBlock Text="Size"
+                    <TextBlock x:Uid="GalleryPageTorrentSizeTextBlock"
+                               Text="Size"
                                Style="{StaticResource KeyTextBlockStyle}"
                                Grid.Row="5" />
 
@@ -228,21 +241,22 @@
                                RelativePanel.AlignBottomWith="Author"
                                Margin="0,-4" />
                     <TextBlock x:Name="Posted"
-                               Text="{x:Bind Posted, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Posted on {0}'}"
+                               Text="{x:Bind Posted, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='GalleryPageCommentPostedFormatString'}"
                                Style="{StaticResource CommentHeaderTextBlockStyle}"
                                RelativePanel.AlignTopWithPanel="True"
                                RelativePanel.AlignLeftWithPanel="True" />
                     <TextBlock x:Name="Author"
-                               Text="{x:Bind Author, Converter={StaticResource StringConverter}, ConverterParameter='By {0}'}"
+                               Text="{x:Bind Author, Converter={StaticResource StringConverter}, ConverterParameter='GalleryPageCommentAuthorFormatString'}"
                                Style="{StaticResource CommentHeaderTextBlockStyle}" />
                     <TextBlock x:Name="Score"
-                               Text="{x:Bind Score, Converter={StaticResource StringConverter}, ConverterParameter='Score {0:+#0;-#0}'}"
+                               Text="{x:Bind Score, Converter={StaticResource StringConverter}, ConverterParameter='GalleryPageCommentScoreFormatString'}"
                                Style="{StaticResource CommentHeaderTextBlockStyle}"
                                Visibility="{x:Bind IsUploaderComment, Converter={StaticResource FalseToVisibleConverter}}"
                                HorizontalAlignment="Right"
                                RelativePanel.AlignTopWith="Author"
                                RelativePanel.AlignRightWithPanel="True" />
-                    <TextBlock x:Name="IsUploaderComment"
+                    <TextBlock x:Uid="GalleryPageCommentIsUploaderCommentTextBlock"
+                               x:Name="IsUploaderComment"
                                Text="Uploader Comment"
                                Style="{StaticResource CommentHeaderTextBlockStyle}"
                                Visibility="{x:Bind IsUploaderComment, Converter={StaticResource TrueToVisibleConverter}}"
@@ -258,7 +272,7 @@
                                             RelativePanel.Below="Header"
                                             Pivot.SlideInAnimationGroup="GroupOne" />
                     <TextBlock x:Name="Edited"
-                               Text="{x:Bind Edited, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Last edited on {0}'}"
+                               Text="{x:Bind Edited, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='GalleryPageCommentEditedFormatString'}"
                                Visibility="{x:Bind Edited, Converter={StaticResource NullToCollapsedConverter}}"
                                Style="{StaticResource EditedTextBlockStyle}"
                                Margin="12,4"
@@ -292,7 +306,7 @@
         <Style x:Key="PivotHeaderTextBlockStyle"
                TargetType="TextBlock">
             <Setter Property="HorizontalAlignment"
-                    Value="Stretch" />
+                    Value="Center" />
             <Setter Property="Grid.Row"
                     Value="1" />
             <Setter Property="Grid.ColumnSpan"
@@ -405,7 +419,7 @@
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Column="0"
-                                                   Text="{x:Bind NameSpace}"
+                                                   Text="{x:Bind NameSpace, Converter={StaticResource NameSpaceToFriendlyStringConverter}}"
                                                    MinWidth="80"
                                                    Padding="2,0" />
                                         <GridView Grid.Column="1"
@@ -470,7 +484,6 @@
                                 Style="{StaticResource TextBlockButtonStyle}"
                                 Content="&#xE014;"
                                 FontFamily="Segoe MDL2 Assets"
-                                AutomationProperties.Name="Show/Hide detiles"
                                 Click="btn_Scroll_Click"
                                 IsTabStop="False"
                                 Padding="0"
@@ -517,10 +530,11 @@
                   M 4,12 V8 H28 V24 H24 V22 H26 V10 H6 V12 H4 Z
                   M 8,8 V4 H32 V20 H28 V18 H30 V6 H10 V8 H8 Z"
                                               Style="{StaticResource PivotHeaderIconStyle}" />
-                                    <TextBlock Text="Images"
+                                    <TextBlock x:Uid="GalleryPagePivotHeaderImagesTextBlock"
+                                               Text="Images"
                                                Style="{StaticResource PivotHeaderTextBlockStyle}" />
-                                    <TextBlock Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='[{0}]'}"
-                                               Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"/>
+                                    <TextBlock Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='GalleryPagePivotHeaderNumberFormatString'}"
+                                               Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}" />
                                 </Grid>
                             </PivotItem.Header>
                             <GridView x:Name="gv"
@@ -546,7 +560,8 @@
                                     </DataTemplate>
                                 </GridView.ItemTemplate>
                                 <GridView.Footer>
-                                    <TextBlock HorizontalAlignment="Center"
+                                    <TextBlock x:Uid="GalleryPageImagesLoadingMoreTextBlock"
+                                               HorizontalAlignment="Center"
                                                Margin="12"
                                                Style="{StaticResource BaseTextBlockStyle}"
                                                Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
@@ -571,9 +586,10 @@
                                                FontFamily="Segoe MDL2 Assets"
                                                Style="{StaticResource PivotHeaderIconStyle}"
                                                FontSize="32" />
-                                    <TextBlock Text="Comments"
+                                    <TextBlock x:Uid="GalleryPagePivotHeaderCommentsTextBlock"
+                                               Text="Comments"
                                                Style="{StaticResource PivotHeaderTextBlockStyle}" />
-                                    <TextBlock Text="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='[{0}]'}"
+                                    <TextBlock Text="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='GalleryPagePivotHeaderNumberFormatString'}"
                                                Visibility="{x:Bind VM.Gallery.Comments, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                                                Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}" />
                                 </Grid>
@@ -586,14 +602,16 @@
                                       ItemTemplate="{StaticResource CommentTemplate}"
                                       ItemContainerStyle="{StaticResource ListViewItemStyle}">
                                 <ListView.Header>
-                                    <TextBlock HorizontalAlignment="Center"
+                                    <TextBlock x:Uid="GalleryPageCommentsEmptyTextBlock"
+                                               HorizontalAlignment="Center"
                                                Margin="12"
                                                Style="{StaticResource BaseTextBlockStyle}"
                                                Visibility="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
                                                Text="No comments" />
                                 </ListView.Header>
                                 <ListView.Footer>
-                                    <TextBlock HorizontalAlignment="Center"
+                                    <TextBlock x:Uid="GalleryPageCommentsLoadingTextBlock"
+                                               HorizontalAlignment="Center"
                                                Margin="12"
                                                Style="{StaticResource BaseTextBlockStyle}"
                                                Visibility="{x:Bind VM.Gallery.Comments, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
@@ -609,7 +627,7 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition  />
+                                        <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
@@ -625,9 +643,10 @@
                                           M4,18 H6 V28.172 L8.586,25.586 L10,27 L7,30 H3 L0,27 L1.414,25.586
                                           L4,28.172 Z"
                                               Style="{StaticResource PivotHeaderIconStyle}" />
-                                    <TextBlock Text="Torrents"
+                                    <TextBlock x:Uid="GalleryPagePivotHeaderTorrentsTextBlock"
+                                               Text="Torrents"
                                                Style="{StaticResource PivotHeaderTextBlockStyle}" />
-                                    <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='[{0}]'}"
+                                    <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='GalleryPagePivotHeaderNumberFormatString'}"
                                                Visibility="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                                                Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}" />
                                 </Grid>
@@ -640,14 +659,16 @@
                                       ItemTemplate="{StaticResource TorrentTemplate}"
                                       ItemContainerStyle="{StaticResource ListViewItemStyle}">
                                 <ListView.Header>
-                                    <TextBlock HorizontalAlignment="Center"
+                                    <TextBlock x:Uid="GalleryPageTorrentsEmptyTextBlock"
+                                               HorizontalAlignment="Center"
                                                Margin="12"
                                                Style="{StaticResource BaseTextBlockStyle}"
                                                Visibility="{x:Bind VM.Torrents.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
                                                Text="No available torrents" />
                                 </ListView.Header>
                                 <ListView.Footer>
-                                    <TextBlock HorizontalAlignment="Center"
+                                    <TextBlock x:Uid="GalleryPageTorrentsLoadingTextBlock"
+                                               HorizontalAlignment="Center"
                                                Margin="12"
                                                Style="{StaticResource BaseTextBlockStyle}"
                                                Visibility="{x:Bind VM.Torrents, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
@@ -681,10 +702,12 @@
                 </Grid>
             </CommandBar.Content>
             <CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="abb_open"
+                <AppBarButton x:Uid="GalleryPageOpenInBrowserAppBarButton"
+                              x:Name="abb_open"
                               Label="Open in browser"
                               Command="{x:Bind VM.OpenInBrowser, Mode=OneWay}" />
-                <AppBarButton x:Name="abb_save"
+                <AppBarButton x:Uid="GalleryPageSaveAppBarButton"
+                              x:Name="abb_save"
                               Label="Save this gallery"
                               Command="{x:Bind VM.Save, Mode=OneWay}" />
             </CommandBar.SecondaryCommands>

@@ -38,7 +38,11 @@ namespace ExViewer.Views
 
         private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)
         {
-            ct_btn_Scroll.Rotation = sv_Content.VerticalOffset / gd_Info.ActualHeight * 180d;
+            var infoHeight = gd_Info.ActualHeight;
+            if(infoHeight < 1)
+                this.ct_btn_Scroll.Rotation = 0;
+            else
+                this.ct_btn_Scroll.Rotation = this.sv_Content.VerticalOffset / infoHeight * 180d;
         }
 
         private async void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
