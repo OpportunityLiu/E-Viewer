@@ -117,28 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccountDenied" xml:space="preserve">
-    <value>此账户没有访问 Ex 绅士的权限。</value>
+  <data name="Artist" xml:space="preserve">
+    <value>Artist</value>
   </data>
-  <data name="ClientDisposed" xml:space="preserve">
-    <value>该连接已被销毁。</value>
+  <data name="Character" xml:space="preserve">
+    <value>Character</value>
   </data>
-  <data name="DefaultTitle" xml:space="preserve">
-    <value>画集标题</value>
+  <data name="Female" xml:space="preserve">
+    <value>Female</value>
   </data>
-  <data name="DefaultUploader" xml:space="preserve">
-    <value>上传者</value>
+  <data name="Group" xml:space="preserve">
+    <value>Group</value>
   </data>
-  <data name="ExpungedTorrent" xml:space="preserve">
-    <value>此种子已经被删除。</value>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
   </data>
-  <data name="OnlyIpv4" xml:space="preserve">
-    <value>仅支持 IPv4 地址。</value>
+  <data name="Male" xml:space="preserve">
+    <value>Male</value>
   </data>
-  <data name="WrongAccountInfo" xml:space="preserve">
-    <value>用户名或密码错误。</value>
+  <data name="Misc" xml:space="preserve">
+    <value>Misc</value>
   </data>
-  <data name="WrongCaptcha" xml:space="preserve">
-    <value>验证码输入错误，请重试。</value>
+  <data name="Parody" xml:space="preserve">
+    <value>Parody</value>
+  </data>
+  <data name="Reclass" xml:space="preserve">
+    <value>Reclass</value>
   </data>
 </root>

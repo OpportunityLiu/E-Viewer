@@ -97,7 +97,7 @@ namespace ExViewer.Views
 
         private static async Task verify()
         {
-            var result = await UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.NeedVerify);
+            var result = await UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.VerifyDialogContent);
             string info = null;
             var succeed = false;
             switch(result)

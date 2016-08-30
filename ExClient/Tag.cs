@@ -1,6 +1,7 @@
 ﻿using ExClient.Models;
 using Newtonsoft.Json;
 using System;
+using System.Text;
 
 namespace ExClient
 {
@@ -15,6 +16,24 @@ namespace ExClient
         Male,
         Female,
         Misc
+    }
+
+    public static class NameSpaceExtention
+    {
+        public static string ToFriendlyNameString(this NameSpace that)
+        {
+            if(Enum.IsDefined(typeof(NameSpace), that))
+                return LocalizedStrings.NameSpace.GetString(that.ToString());
+            else
+            {
+                var represent = new StringBuilder(that.ToString());
+                foreach(var item in Enum.GetNames(typeof(NameSpace)))
+                {
+                    represent.Replace(item, LocalizedStrings.NameSpace.GetString(item));
+                }
+                return represent.ToString();
+            }
+        }
     }
 
     public sealed class Tag
@@ -81,7 +100,7 @@ namespace ExClient
             get;
         } = new Uri("https://ehwiki.org/wiki/");
 
-        public Uri TagDefinationUri => new Uri(WikiUri, Content);
+        public Uri TagDefinitionUri => new Uri(WikiUri, Content);
 
         public override string ToString()
         {

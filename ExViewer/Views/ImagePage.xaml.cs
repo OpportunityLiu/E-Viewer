@@ -132,12 +132,12 @@ namespace ExViewer.Views
             if(currentState)
             {
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
-                abb_fullScreen.Label = LocalizedStrings.Resources.BackToWindow;
+                abb_fullScreen.Label = LocalizedStrings.Resources.ImagePageBackToWindow;
             }
             else
             {
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
-                abb_fullScreen.Label = LocalizedStrings.Resources.FullScreen;
+                abb_fullScreen.Label = LocalizedStrings.Resources.ImagePageFullScreen;
             }
             isFullScreen = currentState;
         }

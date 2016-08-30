@@ -32,16 +32,18 @@
                 </Grid>
             </CommandBar.Content>
             <CommandBar.PrimaryCommands>
-                <AppBarButton x:Name="abb_Refresh"
+                <AppBarButton x:Uid="CachePageRefreshAppBarButton"
+                              x:Name="abb_Refresh"
                               Command="{x:Bind VM.Refresh}"
                               Icon="Refresh"
                               Label="Refresh" />
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="abb_ClearCache"
+                <AppBarButton x:Uid="CachePageClearCacheAppBarButton"
+                              x:Name="abb_ClearCache"
                               Click="abb_ClearCache_Click"
                               Icon="Clear"
-                              Label="Clear cache" />
+                              Label="Delete all" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
         <pr:PullToRefreshBox RelativePanel.AlignBottomWithPanel="True"
@@ -69,11 +71,13 @@
                                                 ContinuumNavigationTransitionInfo.IsExitElement="True">
                             <FlyoutBase.AttachedFlyout>
                                 <MenuFlyout>
-                                    <MenuFlyoutItem x:Name="mfi_DeleteGallery"
+                                    <MenuFlyoutItem x:Uid="CachePageDeleteMenuFlyout"
+                                                    x:Name="mfi_DeleteGallery"
                                                     Text="Delete"
                                                     Command="{Binding VM.Delete, ElementName=page}"
                                                     CommandParameter="{x:Bind}" />
-                                    <MenuFlyoutItem x:Name="mfi_SaveTo"
+                                    <MenuFlyoutItem x:Uid="CachePageSaveToMenuFlyout"
+                                                    x:Name="mfi_SaveTo"
                                                     Text="Save to..."
                                                     Command="{Binding VM.SaveTo, ElementName=page}"
                                                     CommandParameter="{x:Bind}" />
@@ -83,18 +87,20 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.Footer>
-                    <TextBlock HorizontalAlignment="Center"
+                    <TextBlock x:Uid="CachePageLoadingMoreTextBlock"
+                               HorizontalAlignment="Center"
                                Margin="12"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Visibility="{x:Bind VM.CachedGalleries.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
                                Text="Loading more galleries..." />
                 </ListView.Footer>
                 <ListView.Header>
-                    <TextBlock HorizontalAlignment="Center"
+                    <TextBlock x:Uid="CachePageEmptyTextBlock"
+                               HorizontalAlignment="Center"
                                Margin="12"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Visibility="{x:Bind VM.CachedGalleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
-                               Text="No cached galleries" />
+                               Text="No saved galleries" />
                 </ListView.Header>
             </ListView>
         </pr:PullToRefreshBox>

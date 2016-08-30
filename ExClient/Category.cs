@@ -25,13 +25,13 @@ namespace ExClient
         public static string ToFriendlyNameString(this Category that)
         {
             if(Enum.IsDefined(typeof(Category), that))
-                return LocalizedStrings.Resources.GetString(that.ToString());
+                return LocalizedStrings.Category.GetString(that.ToString());
             else
             {
                 var represent = new StringBuilder(that.ToString());
                 foreach(var item in Enum.GetNames(typeof(Category)))
                 {
-                    represent.Replace(item, LocalizedStrings.Resources.GetString(item));
+                    represent.Replace(item, LocalizedStrings.Category.GetString(item));
                 }
                 return represent.ToString();
             }

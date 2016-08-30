@@ -27,6 +27,7 @@
                       HorizontalScrollMode="Disabled">
             <StackPanel Padding="8">
                 <TextBlock Text="ABOUT"
+                           x:Uid="AboutPageTitleTextBlock"
                            Style="{StaticResource HeaderTextBlockStyle}"
                            Margin="4" />
                 <TextBlock x:Name="tb_AppName"
@@ -46,6 +47,7 @@
                            Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor sagittis laoreet. Proin posuere dapibus eros, ut condimentum arcu pharetra vel. Cras hendrerit ipsum sed odio pellentesque, sed scelerisque dui finibus. Fusce volutpat, odio eu volutpat mattis, enim tortor aliquam quam, sed aliquam arcu arcu sit amet velit."
                            TextWrapping="WrapWholeWords" />
                 <TextBlock Margin="4,40,4,4"
+                           x:Uid="AboutPageLicenceTextBlock"
                            Text="License"
                            Style="{StaticResource SubtitleTextBlockStyle}" />
                 <HyperlinkButton Margin="4,0"
@@ -177,18 +179,27 @@ M197.5-48.8l-5.4,0c-5.4-0.5-9.5-2.5-11.9-5.7c-0.4-0.6-0.8-1.3-1.2-2.1l0,0c-0.2-0
                           Stretch="Uniform" />
                 </HyperlinkButton>
                 <TextBlock Margin="4,40,4,4"
+                           x:Uid="AboutPageOnlineContentsTextBlock"
                            Text="Online contents"
                            Style="{StaticResource SubtitleTextBlockStyle}" />
                 <HyperlinkButton Margin="4,0"
+                                 x:Uid="AboutPageRateHyperlinkButton"
+                                 Style="{StaticResource TextBlockButtonStyle}"
                                  Content="Rate and review"
                                  NavigateUri="ms-windows-store://review/?ProductId=9NBLGGH4V3X1" />
                 <HyperlinkButton Margin="4,0"
+                                 Style="{StaticResource TextBlockButtonStyle}"
+                                 x:Uid="AboutPageSourceCodeHyperlinkButton"
                                  Content="View source code at GitHub.com"
                                  NavigateUri="https://github.com/OpportunityLiu/ExViewer" />
                 <HyperlinkButton Margin="4,0"
+                                 Style="{StaticResource TextBlockButtonStyle}"
+                                 x:Uid="AboutPageHelpTranslateTagsHyperlinkButton"
                                  Content="Help translate tags into Chinese"
                                  NavigateUri="https://github.com/Mapaler/EhTagTranslator/wiki" />
                 <HyperlinkButton Margin="4,0"
+                                 Style="{StaticResource TextBlockButtonStyle}"
+                                 x:Uid="AboutPageForumsHyperlinkButton"
                                  Content="E-Hentai Forums"
                                  NavigateUri="https://forums.e-hentai.org/index.php" />
             </StackPanel>

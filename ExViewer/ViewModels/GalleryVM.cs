@@ -128,13 +128,13 @@ namespace ExViewer.ViewModels
             });
             TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
             {
-                RootControl.RootController.SendToast(LocalizedStrings.Resources.TorrentDownloading, null);
+                RootControl.RootController.SendToast(LocalizedStrings.Resources.GalleryPageTorrentDownloading, null);
                 var file = await torrent.LoadTorrentAsync();
                 await Launcher.LaunchFileAsync(file);
             }, torrent => torrent != null && torrent.TorrentUri != null);
-            GoToDefination = new RelayCommand<Tag>(async tag =>
+            GoToDefinition = new RelayCommand<Tag>(async tag =>
             {
-                await Launcher.LaunchUriAsync(tag.TagDefinationUri);
+                await Launcher.LaunchUriAsync(tag.TagDefinitionUri);
             }, tag => tag != null);
             SearchTag = new RelayCommand<Tag>(tag =>
             {
@@ -190,7 +190,7 @@ namespace ExViewer.ViewModels
             get;
         }
 
-        public RelayCommand<Tag> GoToDefination
+        public RelayCommand<Tag> GoToDefinition
         {
             get;
         }
@@ -282,7 +282,7 @@ namespace ExViewer.ViewModels
                 }
                 var prop = await current.ImageFile.GetBasicPropertiesAsync();
                 var imageProp = await current.ImageFile.Properties.GetImagePropertiesAsync();
-                CurrentInfo = string.Format(LocalizedStrings.Resources.ImageFileInfo, current.ImageFile.Name,
+                CurrentInfo = string.Format(LocalizedStrings.Resources.ImagePageImageFileInfo, current.ImageFile.Name,
                     Converters.ByteSizeToStringConverter.ByteSizeToString(prop.Size, Converters.UnitPrefix.Binary),
                     imageProp.Width.ToString(), imageProp.Height.ToString());
             });

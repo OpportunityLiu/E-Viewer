@@ -117,14 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutPageForumsHyperlinkButton.Content" xml:space="preserve">
+    <value>E - 绅士论坛</value>
+  </data>
+  <data name="AboutPageHelpTranslateTagsHyperlinkButton.Content" xml:space="preserve">
+    <value>帮助提供标签翻译</value>
+  </data>
+  <data name="AboutPageLicenceTextBlock.Text" xml:space="preserve">
+    <value>协议</value>
+  </data>
+  <data name="AboutPageOnlineContentsTextBlock.Text" xml:space="preserve">
+    <value>在线内容</value>
+  </data>
+  <data name="AboutPageRateHyperlinkButton.Content" xml:space="preserve">
+    <value>打分和评价</value>
+  </data>
+  <data name="AboutPageSourceCodeHyperlinkButton.Content" xml:space="preserve">
+    <value>在 GitHub 上查看源代码</value>
+  </data>
+  <data name="AboutPageTitleTextBlock.Text" xml:space="preserve">
+    <value>关于</value>
+  </data>
   <data name="AppDescription" xml:space="preserve">
     <value>E-Viewer 是一个 E- 绅士和 Ex 绅士的第三方客户端。</value>
   </data>
   <data name="AppDisplayName" xml:space="preserve">
     <value>E-Viewer</value>
   </data>
-  <data name="BackToWindow" xml:space="preserve">
-    <value>退出全屏</value>
+  <data name="CachePageClearCacheAppBarButton.Label" xml:space="preserve">
+    <value>删除全部</value>
+  </data>
+  <data name="CachePageDeleteMenuFlyout.Text" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="CachePageEmptyTextBlock.Text" xml:space="preserve">
+    <value>没有保存的画集</value>
+  </data>
+  <data name="CachePageLoadingMoreTextBlock.Text" xml:space="preserve">
+    <value>正在加载更多画集…</value>
+  </data>
+  <data name="CachePageRefreshAppBarButton.Label" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="CachePageSaveToMenuFlyout.Text" xml:space="preserve">
+    <value>保存到…</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
@@ -138,19 +174,130 @@
   <data name="Exit" xml:space="preserve">
     <value>退出</value>
   </data>
-  <data name="FullScreen" xml:space="preserve">
-    <value>全屏</value>
-  </data>
   <data name="GalleryDeleted" xml:space="preserve">
     <value>选定的画集已删除。</value>
+  </data>
+  <data name="GalleryPageCommentAuthorFormatString" xml:space="preserve">
+    <value> {0}</value>
+  </data>
+  <data name="GalleryPageCommentEditedFormatString" xml:space="preserve">
+    <value>最后编辑于 {0}</value>
+  </data>
+  <data name="GalleryPageCommentIsUploaderCommentTextBlock.Text" xml:space="preserve">
+    <value>上传者评论</value>
+  </data>
+  <data name="GalleryPageCommentPostedFormatString" xml:space="preserve">
+    <value>发表于 {0}</value>
+  </data>
+  <data name="GalleryPageCommentScoreFormatString" xml:space="preserve">
+    <value>评分 {0:+#0;-#0}</value>
+  </data>
+  <data name="GalleryPageCommentsEmptyTextBlock.Text" xml:space="preserve">
+    <value>没有评论</value>
+  </data>
+  <data name="GalleryPageCommentsLoadingTextBlock.Text" xml:space="preserve">
+    <value>正在加载评论...</value>
+  </data>
+  <data name="GalleryPageGoToDefinitionMenuFlyoutItem.Text" xml:space="preserve">
+    <value>前往 EHWiki 查看定义</value>
+  </data>
+  <data name="GalleryPageImagesLoadingMoreTextBlock.Text" xml:space="preserve">
+    <value>正在加载更多...</value>
+  </data>
+  <data name="GalleryPageOpenInBrowserAppBarButton.Label" xml:space="preserve">
+    <value>在浏览器中打开</value>
+  </data>
+  <data name="GalleryPagePivotHeaderCommentsTextBlock.Text" xml:space="preserve">
+    <value>评论</value>
+  </data>
+  <data name="GalleryPagePivotHeaderImagesTextBlock.Text" xml:space="preserve">
+    <value>图片</value>
+  </data>
+  <data name="GalleryPagePivotHeaderNumberFormatString" xml:space="preserve">
+    <value>[{0}]</value>
+  </data>
+  <data name="GalleryPagePivotHeaderTorrentsTextBlock.Text" xml:space="preserve">
+    <value>种子</value>
+  </data>
+  <data name="GalleryPageSaveAppBarButton.Label" xml:space="preserve">
+    <value>保存此画集</value>
+  </data>
+  <data name="GalleryPageSearchTagMenuFlyoutItem.Text" xml:space="preserve">
+    <value>搜索含有此标签的画集</value>
+  </data>
+  <data name="GalleryPageTorrentDownloadButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="GalleryPageTorrentDownloading" xml:space="preserve">
+    <value>开始下载种子…</value>
+  </data>
+  <data name="GalleryPageTorrentDownloadsTextBlock.Text" xml:space="preserve">
+    <value>完成</value>
+  </data>
+  <data name="GalleryPageTorrentExpungedTextBlock.Text" xml:space="preserve">
+    <value>已失效</value>
+  </data>
+  <data name="GalleryPageTorrentPeersTextBlock.Text" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="GalleryPageTorrentPostedTextBlock.Text" xml:space="preserve">
+    <value>发布时间</value>
+  </data>
+  <data name="GalleryPageTorrentSeedsTextBlock.Text" xml:space="preserve">
+    <value>做种</value>
+  </data>
+  <data name="GalleryPageTorrentsEmptyTextBlock.Text" xml:space="preserve">
+    <value>没有可用的种子</value>
+  </data>
+  <data name="GalleryPageTorrentSizeTextBlock.Text" xml:space="preserve">
+    <value>大小</value>
+  </data>
+  <data name="GalleryPageTorrentsLoadingTextBlock.Text" xml:space="preserve">
+    <value>正在加载种子...</value>
+  </data>
+  <data name="GalleryPageTorrentUploaderTextBlock.Text" xml:space="preserve">
+    <value>上传者</value>
   </data>
   <data name="GallerySavedTo" xml:space="preserve">
     <value>选定的画集已保存至给定位置。</value>
   </data>
-  <data name="ImageFileInfo" xml:space="preserve">
+  <data name="GalleryViewerRecordCountFormatString" xml:space="preserve">
+    <value>{0} 页</value>
+  </data>
+  <data name="ImagePageBackToWindow" xml:space="preserve">
+    <value>退出全屏</value>
+  </data>
+  <data name="ImagePageCounterSeparatorTextBlock.Text" xml:space="preserve">
+    <value>/</value>
+  </data>
+  <data name="ImagePageFullScreen" xml:space="preserve">
+    <value>全屏</value>
+  </data>
+  <data name="ImagePageFullScreenAppBarButton.Label" xml:space="preserve">
+    <value>全屏</value>
+  </data>
+  <data name="ImagePageHelpAppBarButton.Label" xml:space="preserve">
+    <value>键盘快捷键提示</value>
+  </data>
+  <data name="ImagePageImageFileInfo" xml:space="preserve">
     <value>文件名：{0}
 大小：{1}
 尺寸：{2} × {3}</value>
+  </data>
+  <data name="ImagePageImageInfoAppBarButton.Label" xml:space="preserve">
+    <value>文件信息</value>
+  </data>
+  <data name="ImagePageLoadOriginalAppBarButton.Label" xml:space="preserve">
+    <value>加载原图</value>
+  </data>
+  <data name="ImagePageOpenInBrowserAppBarButton.Label" xml:space="preserve">
+    <value>在浏览器中打开</value>
+  </data>
+  <data name="ImagePageOpenInExplorerButton.Content" xml:space="preserve">
+    <value>在文件资源管理器中打开</value>
+  </data>
+  <data name="ImagePageReloadAppBarButton.Label" xml:space="preserve">
+    <value>重新加载</value>
   </data>
   <data name="ImageViewTipsContent" xml:space="preserve">
     <value>缩放			空格
@@ -164,14 +311,32 @@
   <data name="ImageViewTipsTitle" xml:space="preserve">
     <value>键盘快捷键</value>
   </data>
-  <data name="NeedVerify" xml:space="preserve">
-    <value>需要使用 Windows Hello 验证身份。</value>
+  <data name="LogOnDialogContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>确定</value>
   </data>
-  <data name="NoPassword" xml:space="preserve">
+  <data name="LogOnDialogNoPassword" xml:space="preserve">
     <value>请输入密码。</value>
   </data>
-  <data name="NoUserName" xml:space="preserve">
+  <data name="LogOnDialogNoUserName" xml:space="preserve">
     <value>请输入用户名。</value>
+  </data>
+  <data name="LogOnDialogPasswordBox.PlaceholderText" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="LogOnDialogReCaptchaTextBox.PlaceholderText" xml:space="preserve">
+    <value>验证码</value>
+  </data>
+  <data name="LogOnDialogRegisterHyperlinkButton.Content" xml:space="preserve">
+    <value>注册</value>
+  </data>
+  <data name="LogOnDialogReloadReCaptchaButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>刷新验证码</value>
+  </data>
+  <data name="LogOnDialogTitleTextBlock.Text" xml:space="preserve">
+    <value>登陆</value>
+  </data>
+  <data name="LogOnDialogUserNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>用户名</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>确定</value>
@@ -179,11 +344,74 @@
   <data name="ParseByteException" xml:space="preserve">
     <value>无法将给定字符串解析为字节数。</value>
   </data>
-  <data name="TorrentDownloading" xml:space="preserve">
-    <value>开始下载种子……</value>
+  <data name="PullRefreshProgressControl.PullToRefreshText" xml:space="preserve">
+    <value>下拉刷新</value>
+  </data>
+  <data name="PullRefreshProgressControl.ReleaseToRefreshText" xml:space="preserve">
+    <value>释放刷新</value>
+  </data>
+  <data name="RootControlAboutSplitViewTab.Content" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="RootControlCacheSplitViewTab.Content" xml:space="preserve">
+    <value>保存的画集</value>
+  </data>
+  <data name="RootControlChangeUserButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>更换用户</value>
+  </data>
+  <data name="RootControlSearchSplitViewTab.Content" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="RootControlSettingsSplitViewTab.Content" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="SearchPageAdvancedToggleButton.OffContent" xml:space="preserve">
+    <value>显示高级选项</value>
+  </data>
+  <data name="SearchPageAdvancedToggleButton.OnContent" xml:space="preserve">
+    <value>隐藏高级选项</value>
+  </data>
+  <data name="SearchPageAutoSuggestBox.PlaceholderText" xml:space="preserve">
+    <value>搜索…</value>
+  </data>
+  <data name="SearchPageDescriptionCheckBox.Content" xml:space="preserve">
+    <value>搜索画集描述</value>
+  </data>
+  <data name="SearchPageDownvotedTagsCheckBox.Content" xml:space="preserve">
+    <value>搜索投过反对票的标签</value>
+  </data>
+  <data name="SearchPageEmptyTextBlock.Text" xml:space="preserve">
+    <value>没有结果</value>
+  </data>
+  <data name="SearchPageLoadingMoreTextBlock.Text" xml:space="preserve">
+    <value>正在加载更多画集…</value>
+  </data>
+  <data name="SearchPageLowPowerTagsCheckBox.Content" xml:space="preserve">
+    <value>搜索低权值的标签</value>
+  </data>
+  <data name="SearchPageMinRatingTextBlock.Text" xml:space="preserve">
+    <value>最低评分：</value>
+  </data>
+  <data name="SearchPageNamesCheckBox.Content" xml:space="preserve">
+    <value>搜索画集名称</value>
+  </data>
+  <data name="SearchPageOnlyTorrentsCheckBox.Content" xml:space="preserve">
+    <value>只显示有种子的画集</value>
+  </data>
+  <data name="SearchPageShowExpungedCheckBox.Content" xml:space="preserve">
+    <value>搜索已失效的画集</value>
+  </data>
+  <data name="SearchPageTagsCheckBox.Content" xml:space="preserve">
+    <value>搜索画集标签</value>
+  </data>
+  <data name="SearchPageTorrentNamesCheckBox.Content" xml:space="preserve">
+    <value>搜索种子文件名</value>
   </data>
   <data name="VerifyDeviceBusy" xml:space="preserve">
     <value>设备忙，请稍后重试。</value>
+  </data>
+  <data name="VerifyDialogContent" xml:space="preserve">
+    <value>需要使用 Windows Hello 验证身份。</value>
   </data>
   <data name="VerifyDisabled" xml:space="preserve">
     <value>验证已通过组策略禁用，请联系管理员。</value>
@@ -198,8 +426,5 @@
     <value>请先设置 PIN。
 
 在 “设置 -&gt; 账户-&gt; 登陆选项 -&gt; PIN -&gt; 添加” 进行此项设定。</value>
-  </data>
-  <data name="WrongCaptcha" xml:space="preserve">
-    <value>验证码输入错误，请重试。</value>
   </data>
 </root>
