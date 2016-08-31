@@ -37,11 +37,9 @@ namespace ExViewer.Views
                 (byte)(backColor.B - 3 * (backColor.B - needColor.B)));
 
             cb_top.Background = new SolidColorBrush(toColor);
-            if(autoOverflowSupported)
+            if(ApiInfo.CommandBarDynamicOverflowSupported)
                 cb_top.IsDynamicOverflowEnabled = false;
         }
-
-        private static bool autoOverflowSupported = Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.CommandBar", "IsDynamicOverflowEnabled");
 
         public GalleryVM VM
         {

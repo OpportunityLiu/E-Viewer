@@ -31,8 +31,5 @@ namespace ExViewer.Converters
             if(e.NewValue == null)
                 throw new ArgumentNullException(nameof(InnerConverter));
         }
-
-        public override abstract object Convert(object value, Type targetType, object parameter, string language);
-        public override abstract object ConvertBack(object value, Type targetType, object parameter, string language);
     }
 }

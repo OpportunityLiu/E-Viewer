@@ -36,7 +36,7 @@ namespace ExViewer.Themes
                 tb.ButtonInactiveForegroundColor = SystemChromeDisabledLowColor;
                 tb.ButtonPressedForegroundColor = SystemBaseMediumHighColor;
             }
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            if(ApiInfo.StatusBarSupported)
             {
                 var sb = StatusBar.GetForCurrentView();
                 sb.BackgroundColor = SystmeChromeMediumColor;
@@ -58,7 +58,7 @@ namespace ExViewer.Themes
                 tb.ButtonBackgroundColor = splashColor;
                 tb.ButtonInactiveBackgroundColor = splashColor;
             }
-            if(Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            if(ApiInfo.StatusBarSupported)
             {
                 var statusBar = StatusBar.GetForCurrentView();
                 var ignore = statusBar.HideAsync();
