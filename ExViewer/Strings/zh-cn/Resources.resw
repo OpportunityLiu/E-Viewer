@@ -178,7 +178,7 @@
     <value>选定的画集已删除。</value>
   </data>
   <data name="GalleryPageCommentAuthorFormatString" xml:space="preserve">
-    <value> {0}</value>
+    <value>{0}</value>
   </data>
   <data name="GalleryPageCommentEditedFormatString" xml:space="preserve">
     <value>最后编辑于 {0}</value>
@@ -187,7 +187,7 @@
     <value>上传者评论</value>
   </data>
   <data name="GalleryPageCommentPostedFormatString" xml:space="preserve">
-    <value>发表于 {0}</value>
+    <value>发布于 {0}</value>
   </data>
   <data name="GalleryPageCommentScoreFormatString" xml:space="preserve">
     <value>评分 {0:+#0;-#0}</value>

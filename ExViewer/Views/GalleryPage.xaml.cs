@@ -34,6 +34,8 @@ namespace ExViewer.Views
             this.InitializeComponent();
             gd_Info.RegisterPropertyChangedCallback(ActualHeightProperty, set_btn_Scroll_Rotation);
             sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, set_btn_Scroll_Rotation);
+            if(ApiInfo.CommandBarDynamicOverflowSupported)
+                cb_top.IsDynamicOverflowEnabled = false;
         }
 
         private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)

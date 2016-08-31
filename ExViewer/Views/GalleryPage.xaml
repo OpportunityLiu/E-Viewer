@@ -685,7 +685,7 @@
             <CommandBar.Content>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Button Style="{StaticResource SplitButtonStyle}"
@@ -701,6 +701,9 @@
                     </TextBlock>
                 </Grid>
             </CommandBar.Content>
+            <CommandBar.PrimaryCommands>
+                
+            </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="GalleryPageOpenInBrowserAppBarButton"
                               x:Name="abb_open"
