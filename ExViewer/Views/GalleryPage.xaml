@@ -701,9 +701,6 @@
                     </TextBlock>
                 </Grid>
             </CommandBar.Content>
-            <CommandBar.PrimaryCommands>
-                
-            </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="GalleryPageOpenInBrowserAppBarButton"
                               x:Name="abb_open"

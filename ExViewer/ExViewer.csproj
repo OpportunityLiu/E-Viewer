@@ -105,7 +105,7 @@
     </PRIResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountManager.cs" />
+    <Compile Include="Helpers\AccountManager.cs" />
     <Compile Include="Converters\ByteSizeToStringConverter.cs" />
     <Compile Include="Converters\ChainConverter.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
@@ -145,7 +145,7 @@
     <Compile Include="Controls\SplitViewTab.cs" />
     <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Database\SearchHistoryDb.cs" />
-    <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="Helpers\ExceptionHandler.cs" />
     <Compile Include="Helpers\TagExtension.cs" />
     <Compile Include="Migrations\20160717021413_MyFirstMigration.cs" />
     <Compile Include="Migrations\20160717021413_MyFirstMigration.designer.cs">
@@ -200,7 +200,7 @@
     <Compile Include="Views\SplashControl.xaml.cs">
       <DependentUpon>SplashControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VisualTreeHelperEx.cs" />
+    <Compile Include="Helpers\VisualTreeHelperEx.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
