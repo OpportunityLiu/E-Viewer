@@ -20,6 +20,8 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.ViewManagement;
 using ExViewer.ViewModels;
 using System.Diagnostics;
+using Microsoft.HockeyApp;
+using Microsoft.HockeyApp.DataContracts;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -103,10 +105,12 @@ namespace ExViewer.Views
             else
                 manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             Controls.SplitViewTab tab;
-            if(pages.TryGetValue(fm_inner.Content.GetType(), out tab))
+            var pageType = fm_inner.Content.GetType();
+            if(this.pages.TryGetValue(pageType, out tab))
             {
                 tab.IsChecked = true;
             }
+            HockeyClient.Current.TrackEvent($"Page viewed: {pageType.Name}");
         }
 
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)

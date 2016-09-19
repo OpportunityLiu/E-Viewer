@@ -42,6 +42,7 @@ namespace ExViewer.Views
 
         public async void prepareCompleted()
         {
+            Microsoft.HockeyApp.HockeyClient.Current.TrackEvent("Application started");
             var initdb = Task.Run(async () =>
             {
                 ExClient.Models.GalleryDb.Migrate();
@@ -157,6 +158,7 @@ namespace ExViewer.Views
         private void ShowPic_Completed(object sender, object e)
         {
             FindName(nameof(pr));
+            Microsoft.HockeyApp.HockeyClient.Current.TrackEvent("Additional loading time needed");
         }
 
         private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
