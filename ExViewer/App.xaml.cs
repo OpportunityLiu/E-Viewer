@@ -18,7 +18,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using AsyncFriendlyStackTrace;
 using Microsoft.HockeyApp;
 using ExViewer.Views;
 
@@ -36,39 +35,33 @@ namespace ExViewer
         public App()
         {
             this.InitializeComponent();
-#if !DEBUG
-            HockeyClient.Current.Configure("9c09ca3908114a38a09c81ca8b68ee39", new TelemetryConfiguration()
+            HockeyClient.Current.Configure("9c09ca3908114a38a09c81ca8b68ee39", new TelemetryConfiguration
             {
                 Collectors =
                     WindowsCollectors.Metadata |
                     WindowsCollectors.Session |
                     WindowsCollectors.UnhandledException
-                //,
-                //DescriptionLoader = ex =>
-                //{
-                //    var sb = new System.Text.StringBuilder();
-                //    do
-                //    {
-                //        sb.AppendLine($"Type: {ex.GetType()}");
-                //        sb.AppendLine($"HResult: {ex.HResult}");
-                //        sb.AppendLine($"Message: {ex.Message}");
-                //        sb.AppendLine();
-                //        sb.AppendLine("Data:");
-                //        foreach(var item in ex.Data.Keys)
-                //        {
-                //            sb.AppendLine($"    {item}: {ex.Data[item]}");
-                //        }
-                //        sb.AppendLine("Stacktrace:");
-                //        sb.AppendLine(ex.StackTrace);
-                //        sb.AppendLine("AsyncStacktrace:");
-                //        sb.AppendLine(ex.ToAsyncString());
-                //        ex = ex.InnerException;
-                //        sb.AppendLine("--------Inner Exception--------");
-                //    } while(ex != null);
-                //    return sb.ToString();
-                //}
+            }).SetExceptionDescriptionLoader(ex =>
+            {
+                var sb = new System.Text.StringBuilder();
+                do
+                {
+                    sb.AppendLine($"Type: {ex.GetType()}");
+                    sb.AppendLine($"HResult: {ex.HResult}");
+                    sb.AppendLine($"Message: {ex.Message}");
+                    sb.AppendLine();
+                    sb.AppendLine("Data:");
+                    foreach(var item in ex.Data.Keys)
+                    {
+                        sb.AppendLine($"    {item}: {ex.Data[item]}");
+                    }
+                    sb.AppendLine("Stacktrace:");
+                    sb.AppendLine(ex.StackTrace);
+                    ex = ex.InnerException;
+                    sb.AppendLine("--------Inner Exception--------");
+                } while(ex != null);
+                return sb.ToString();
             });
-#endif
             this.Suspending += OnSuspending;
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
         }
@@ -94,14 +87,14 @@ namespace ExViewer
             GalaSoft.MvvmLight.Threading.DispatcherHelper.Initialize();
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
-            if(currentContent is SplashControl)
-            {
-            }
-            else if(currentContent == null)
+            if(currentContent == null)
             {
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
                 currentWindow.Content = new SplashControl(e.SplashScreen, e.PreviousExecutionState);
+            }
+            else if(currentContent is SplashControl)
+            {
             }
             else
             {
@@ -119,6 +112,7 @@ namespace ExViewer
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
+            HockeyClient.Current.Flush();
             deferral.Complete();
         }
     }

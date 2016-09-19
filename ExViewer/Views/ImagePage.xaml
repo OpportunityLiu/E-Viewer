@@ -58,11 +58,10 @@
                   RelativePanel.AlignTopWithPanel="True"
                   EntranceNavigationTransitionInfo.IsTargetElement="True"
                   SelectionChanged="fv_SelectionChanged"
-                  ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
                   Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
-                              x:DataType="c:GalleryImage">
+                              x:DataType="local:IImagePageImageView">
                     <Grid DoubleTapped="fvi_DoubleTapped"
                           Tapped="fvi_Tapped">
                         <Grid.Resources>
@@ -73,11 +72,11 @@
                         </Grid.RowDefinitions>
                         <controls:ImagePresenter x:Name="ip"
                                                  Grid.RowSpan="2"
-                                                 Image="{x:Bind}" />
-                        <ProgressBar Value="{x:Bind Progress, Mode=OneWay}"
-                                     Visibility="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                     Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                     IsIndeterminate="{x:Bind State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                                 Image="{x:Bind Image}" />
+                        <ProgressBar Value="{x:Bind Image.Progress, Mode=OneWay}"
+                                     Visibility="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     IsIndeterminate="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
                                      VerticalAlignment="Top"
                                      Grid.Row="1" />
                     </Grid>

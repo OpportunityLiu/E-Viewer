@@ -26,8 +26,6 @@ namespace ExViewer.Views
     {
         public ImagePage()
         {
-            //HACK:防止崩溃，暂时设为 disabled
-            this.NavigationCacheMode = NavigationCacheMode.Disabled;
             this.InitializeComponent();
             var backColor = ((SolidColorBrush)Resources["ApplicationPageBackgroundThemeBrush"]).Color;
             var needColor = (Color)Resources["SystemChromeMediumColor"];
@@ -55,7 +53,21 @@ namespace ExViewer.Views
 
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register("VM", typeof(GalleryVM), typeof(ImagePage), new PropertyMetadata(null));
+            DependencyProperty.Register("VM", typeof(GalleryVM), typeof(ImagePage), new PropertyMetadata(null, VMPropertyChangedCallback));
+
+        private static void VMPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        {
+            var that = (ImagePage)dp;
+            if(that.fv.ItemsSource != null)
+            {
+                var temp = (ImagePageCollectionView)that.fv.ItemsSource;
+                that.fv.ItemsSource = null;
+                temp.Dispose();
+            }
+            var g = ((GalleryVM)e.NewValue)?.Gallery;
+            if(g != null)
+                that.fv.ItemsSource = new ImagePageCollectionView(g);
+        }
 
         private readonly ApplicationView av = ApplicationView.GetForCurrentView();
         private readonly DisplayRequest displayRequest = new DisplayRequest();
@@ -87,7 +99,7 @@ namespace ExViewer.Views
             }
             if(!StatusCollection.Current.ImageViewTipShown)
                 showTip();
-            fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ? 
+            fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
                 FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
 
@@ -180,21 +192,6 @@ namespace ExViewer.Views
                 if(loadItems == null || loadItems.Status != AsyncStatus.Started)
                 {
                     loadItems = VM.Gallery.LoadMoreItemsAsync(5);
-
-                    //HACK:集合改变后应用崩溃的修复，操作系统更新后尝试移除
-                    loadItems.Completed = async (s, arg) =>
-                    {
-                        if(arg != AsyncStatus.Completed)
-                            return;
-                        await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                        {
-                            var current = fv.SelectedIndex;
-                            fv.ItemsSource = null;
-                            Bindings.Update();
-                            fv.SelectedIndex = current;
-                        });
-                    };
-                    ////
                 }
             }
             for(int i = start; i < end; i++)

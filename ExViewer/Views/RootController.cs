@@ -13,6 +13,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Navigation;
 using ExClient;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Microsoft.HockeyApp;
 
 namespace ExViewer.Views
 {
@@ -75,6 +76,7 @@ namespace ExViewer.Views
 
             public static void SendToast(Exception ex, Type source)
             {
+                HockeyClient.Current.TrackEvent($"Handled exception: {ex.GetType().ToString()} {ex.HResult:X8}");
                 SendToast(ex.GetMessage(), source);
             }
 
@@ -108,6 +110,7 @@ namespace ExViewer.Views
                 return Run(async token =>
                 {
                     var result = await new LogOnDialog().ShowAsync();
+                    HockeyClient.Current.TrackEvent($"LogOnDialog closed: {result}");
                     UpdateUserInfo(result == ContentDialogResult.Primary);
                     return result;
                 });
@@ -132,6 +135,8 @@ namespace ExViewer.Views
                     root.userInfo = await UserInfo.LoadFromCache();
                 }
                 root.Bindings.Update();
+                if(root.userInfo != null)
+                    HockeyClient.Current.UpdateContactInfo(root.userInfo.DisplayName, "");
             }
 
             public static bool ViewDisabled

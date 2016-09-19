@@ -183,6 +183,8 @@
     <Compile Include="Views\ImagePage.xaml.cs">
       <DependentUpon>ImagePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ImagePageCollectionView.cs" />
+    <Compile Include="Views\IImagePageImageView.cs" />
     <Compile Include="Views\RootController.cs" />
     <Compile Include="Views\LogOnDialog.xaml.cs">
       <DependentUpon>LogOnDialog.xaml</DependentUpon>
