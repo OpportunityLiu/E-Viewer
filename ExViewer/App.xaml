@@ -16,6 +16,8 @@
                                     Source="Themes/Light.xaml" />
             </ResourceDictionary.ThemeDictionaries>
             <Color x:Key="SplashColor">#ffe7dfca</Color>
+            <SolidColorBrush x:Key="SplashBrush"
+                             Color="{StaticResource SplashColor}" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

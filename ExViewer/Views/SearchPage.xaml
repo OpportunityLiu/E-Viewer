@@ -180,14 +180,11 @@
                 </ScrollViewer>
             </Grid>
         </AppBar>
-
-
         <pr:PullToRefreshBox RelativePanel.Below="ab"
                              RelativePanel.AlignBottomWithPanel="True"
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RefreshInvoked="PullToRefreshBox_RefreshInvoked"
-                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                             RefreshInvoked="PullToRefreshBox_RefreshInvoked">
             <ListView x:Name="lv"
                       ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
                       ContinuumNavigationTransitionInfo.ExitElementContainer="True"

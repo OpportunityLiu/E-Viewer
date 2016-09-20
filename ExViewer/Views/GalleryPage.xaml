@@ -360,8 +360,7 @@
                       Grid.Row="1"
                       VerticalSnapPointsType="Mandatory"
                       VerticalScrollMode="Auto"
-                      VerticalScrollBarVisibility="Hidden"
-                      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                      VerticalScrollBarVisibility="Hidden">
             <StackPanel>
                 <Grid x:Name="gd_Info"
                       MaxHeight="300"

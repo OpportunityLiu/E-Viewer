@@ -159,6 +159,7 @@
                 </ScrollViewer>
             </SplitView.Pane>
             <Frame x:Name="fm_inner"
+                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                    Navigating="fm_inner_Navigating"
                    Navigated="fm_inner_Navigated" />
         </SplitView>

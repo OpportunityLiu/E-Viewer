@@ -78,7 +78,7 @@ namespace ExViewer
             {
                 this.DebugSettings.EnableFrameRateCounter = true;
                 //this.DebugSettings.IsOverdrawHeatMapEnabled = true;
-                //this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
+                this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
             }
 #endif
             if(e.PrelaunchActivated)
