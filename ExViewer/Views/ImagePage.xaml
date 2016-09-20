@@ -58,7 +58,7 @@
                   RelativePanel.AlignTopWithPanel="True"
                   EntranceNavigationTransitionInfo.IsTargetElement="True"
                   SelectionChanged="fv_SelectionChanged"
-                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                  Background="Transparent">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="local:IImagePageImageView">

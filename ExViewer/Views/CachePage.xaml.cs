@@ -93,6 +93,7 @@ namespace ExViewer.Views
 
         private async void abb_ClearCache_Click(object sender, RoutedEventArgs e)
         {
+            cdg_ConfirmClear.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
             await cdg_ConfirmClear.ShowAsync();
         }
 

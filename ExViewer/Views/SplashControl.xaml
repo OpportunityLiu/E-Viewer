@@ -31,7 +31,7 @@
             </DoubleAnimation>
         </Storyboard>
     </UserControl.Resources>
-    <Grid Background="#ffe7dfca">
+    <Grid Background="{ThemeResource SplashBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
