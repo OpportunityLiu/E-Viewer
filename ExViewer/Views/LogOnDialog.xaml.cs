@@ -115,6 +115,14 @@ namespace ExViewer.Views
             }
         }
 
+        private void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
+        {
+            if(args.Result == ContentDialogResult.None && Client.Current.NeedLogOn)
+            {
+                args.Cancel = true;
+            }
+        }
+
         private void tb_TextChanged(object sender, RoutedEventArgs e)
         {
             tb_info.Text = "";

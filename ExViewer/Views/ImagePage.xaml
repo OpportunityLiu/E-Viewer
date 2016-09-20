@@ -33,7 +33,7 @@
                             Duration="0:0:0.15"
                             Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
                             Storyboard.TargetName="cb_top"
-                            To="{StaticResource SystemChromeMediumColor}">
+                            To="{ThemeResource SystemChromeMediumColor}">
                 <ColorAnimation.EasingFunction>
                     <PowerEase EasingMode="EaseOut" />
                 </ColorAnimation.EasingFunction>
@@ -58,7 +58,7 @@
                   RelativePanel.AlignTopWithPanel="True"
                   EntranceNavigationTransitionInfo.IsTargetElement="True"
                   SelectionChanged="fv_SelectionChanged"
-                  Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
             <FlipView.ItemTemplate>
                 <DataTemplate xmlns:c="using:ExClient"
                               x:DataType="local:IImagePageImageView">
@@ -74,9 +74,9 @@
                                                  Grid.RowSpan="2"
                                                  Image="{x:Bind Image}" />
                         <ProgressBar Value="{x:Bind Image.Progress, Mode=OneWay}"
-                                     Visibility="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                     Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
-                                     IsIndeterminate="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}}"
+                                     Visibility="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=Visible}"
+                                     Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
+                                     IsIndeterminate="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=True}"
                                      VerticalAlignment="Top"
                                      Grid.Row="1" />
                     </Grid>
@@ -147,17 +147,17 @@
                               x:Name="abb_reload"
                               Label="Reload"
                               Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
-                              CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay}" />
+                              CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}" />
                 <AppBarButton x:Uid="ImagePageLoadOriginalAppBarButton"
                               x:Name="abb_LoadOriginal"
                               Label="Load original image"
                               Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
-                              CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay}" />
+                              CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}" />
                 <AppBarButton x:Uid="ImagePageOpenInBrowserAppBarButton"
                               x:Name="abb_open"
                               Label="Open in browser"
                               Command="{x:Bind VM.OpenInBrowser, Mode=OneWay}"
-                              CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay}" />
+                              CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}" />
                 <AppBarSeparator />
                 <AppBarButton x:Uid="ImagePageImageInfoAppBarButton"
                               x:Name="abb_Info"

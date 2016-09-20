@@ -19,7 +19,7 @@
         </DataTemplate>
         <DataTemplate x:Key="NormalTemplate"
                       x:DataType="c:GalleryImage">
-            <Image Source="{Binding Image, Mode=OneWay}"
+            <Image Source="{Binding Image, FallbackValue=null, Mode=OneWay}"
                    Stretch="Uniform" />
         </DataTemplate>
         <local:ImagePresenterSelector x:Key="ImageTemplateSelector"

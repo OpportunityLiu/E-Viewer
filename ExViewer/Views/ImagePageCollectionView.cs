@@ -47,7 +47,7 @@ namespace ExViewer.Views
 
         private Gallery collection;
 
-        private sealed class ImagePageImageView : ObservableObject, IImagePageImageView,IDisposable
+        private sealed class ImagePageImageView : ObservableObject, IImagePageImageView, IDisposable
         {
             private static readonly GalleryImage defaultImage = null;
 
