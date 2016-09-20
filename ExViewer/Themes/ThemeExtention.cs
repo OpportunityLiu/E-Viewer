@@ -11,14 +11,16 @@ namespace ExViewer.Themes
 {
     static class ThemeExtention
     {
+        private static ThemeHelperControl helper = new ThemeHelperControl();
+
         public static void SetTitleBar()
         {
-            var resources = Application.Current.Resources;
-            var SystmeChromeMediumColor = (Color)resources["SystemChromeMediumColor"];
-            var SystemChromeMediumLowColor = (Color)resources["SystemChromeMediumLowColor"];
-            var SystemChromeHighColor = (Color)resources["SystemChromeHighColor"];
-            var SystemBaseMediumHighColor = (Color)resources["SystemBaseMediumHighColor"];
-            var SystemChromeDisabledLowColor = (Color)resources["SystemChromeDisabledLowColor"];
+            helper.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
+            var SystmeChromeMediumColor = helper.SystemChromeMediumColor;
+            var SystemChromeMediumLowColor = helper.SystemChromeMediumLowColor;
+            var SystemChromeHighColor = helper.SystemChromeHighColor;
+            var SystemBaseMediumHighColor = helper.SystemBaseMediumHighColor;
+            var SystemChromeDisabledLowColor = helper.SystemChromeDisabledLowColor;
             var tb = ApplicationView.GetForCurrentView().TitleBar;
             if(tb != null)
             {

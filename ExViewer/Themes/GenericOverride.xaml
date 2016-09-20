@@ -346,7 +346,7 @@
                                    StrokeThickness="0"
                                    Width="200"
                                    Height="4"
-                                   Fill="{StaticResource SystemControlForegroundAccentBrush}"
+                                   Fill="{ThemeResource SystemControlForegroundAccentBrush}"
                                    Margin="4"
                                    Opacity="0.5"
                                    VerticalAlignment="Bottom"

@@ -146,6 +146,7 @@
     <Compile Include="Database\SearchHistoryDb.cs" />
     <Compile Include="Helpers\ExceptionHandler.cs" />
     <Compile Include="Helpers\TagExtension.cs" />
+    <Compile Include="Helpers\ThemeExtension.cs" />
     <Compile Include="Migrations\20160717021413_MyFirstMigration.cs" />
     <Compile Include="Migrations\20160717021413_MyFirstMigration.designer.cs">
       <DependentUpon>20160717021413_MyFirstMigration.cs</DependentUpon>
@@ -164,6 +165,9 @@
       <DependentUpon>Strings.tt</DependentUpon>
     </Compile>
     <Compile Include="Themes\ThemeExtention.cs" />
+    <Compile Include="Themes\ThemeHelperControl.xaml.cs">
+      <DependentUpon>ThemeHelperControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\CacheStorage{TKey,TCache}.cs" />
     <Compile Include="ViewModels\CacheVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
@@ -209,7 +213,10 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Splashes\botm.scale-100.png" />
+    <Content Include="Images\Light\ImageLoading.scale-100.png" />
+    <Content Include="Images\Light\ImageLoading.scale-200.png" />
+    <Content Include="Images\Light\ImageLoading.scale-400.png" />
+    <Content Include="Images\Splash.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Images\Dark\ImageLoading.scale-100.png" />
     <Content Include="Images\Dark\ImageLoading.scale-200.png" />
@@ -226,8 +233,8 @@
     <Content Include="Assets\Small.scale-100.png" />
     <Content Include="Assets\Small.scale-200.png" />
     <Content Include="Assets\Small.scale-400.png" />
-    <Content Include="Assets\Splashes\botm.scale-200.png" />
-    <Content Include="Assets\Splashes\botm.scale-400.png" />
+    <Content Include="Images\Splash.scale-200.png" />
+    <Content Include="Images\Splash.scale-400.png" />
     <Content Include="Assets\SplashScreen.scale-400.png" />
     <Content Include="Assets\Store.scale-100.png" />
     <Content Include="Assets\Store.scale-200.png" />
@@ -314,6 +321,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Themes\ThemeHelperControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AboutPage.xaml">
       <SubType>Designer</SubType>

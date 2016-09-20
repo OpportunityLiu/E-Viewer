@@ -361,7 +361,7 @@
                       VerticalSnapPointsType="Mandatory"
                       VerticalScrollMode="Auto"
                       VerticalScrollBarVisibility="Hidden"
-                      Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+                      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
             <StackPanel>
                 <Grid x:Name="gd_Info"
                       MaxHeight="300"

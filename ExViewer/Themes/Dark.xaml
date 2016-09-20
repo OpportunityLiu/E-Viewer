@@ -3,6 +3,8 @@
                     xmlns:local="using:ExViewer.Themes">
     <ImageBrush x:Key="UserBackgroundThemeBrush"
                 ImageSource="ms-appx:///Images/Dark/UserBackground.png" />
+    <BitmapImage x:Key="LoadingImageSource"
+                 UriSource="ms-appx:///Images/Dark/ImageLoading.png" />
     <SolidColorBrush x:Key="CategoryToggleButtonUncheckedForegroundThemeBrush"
                      Color="White"
                      Opacity="0.5" />

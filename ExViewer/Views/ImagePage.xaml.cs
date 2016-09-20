@@ -27,14 +27,6 @@ namespace ExViewer.Views
         public ImagePage()
         {
             this.InitializeComponent();
-            var backColor = ((SolidColorBrush)Resources["ApplicationPageBackgroundThemeBrush"]).Color;
-            var needColor = (Color)Resources["SystemChromeMediumColor"];
-            var toColor = Color.FromArgb(85,
-                (byte)(backColor.R - 3 * (backColor.R - needColor.R)),
-                (byte)(backColor.G - 3 * (backColor.G - needColor.G)),
-                (byte)(backColor.B - 3 * (backColor.B - needColor.B)));
-
-            cb_top.Background = new SolidColorBrush(toColor);
             if(ApiInfo.CommandBarDynamicOverflowSupported)
                 cb_top.IsDynamicOverflowEnabled = false;
         }
@@ -81,7 +73,16 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            var backColor = ((SolidColorBrush)fv.Background).Color;
+            var needColor = cb_top_OpenAnimation.To.GetValueOrDefault();
+            var toColor = Color.FromArgb(85,
+                (byte)(backColor.R - 3 * (backColor.R - needColor.R)),
+                (byte)(backColor.G - 3 * (backColor.G - needColor.G)),
+                (byte)(backColor.B - 3 * (backColor.B - needColor.B)));
+            cb_top.Background = new SolidColorBrush(toColor);
+
             base.OnNavigatedTo(e);
+
             cb_top.Visibility = Visibility.Visible;
             VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             Bindings.Update();
@@ -91,7 +92,6 @@ namespace ExViewer.Views
             await Task.Delay(50);
             fv.SelectedIndex = VM.CurrentIndex;
             fv.Focus(FocusState.Pointer);
-
             if(SettingCollection.Current.KeepScreenOn)
             {
                 displayRequest.RequestActive();
@@ -297,13 +297,14 @@ namespace ExViewer.Views
             showTip();
         }
 
-        private static async void showTip()
+        private async void showTip()
         {
             await new ContentDialog
             {
                 Title = LocalizedStrings.Resources.ImageViewTipsTitle,
                 Content = LocalizedStrings.Resources.ImageViewTipsContent,
-                PrimaryButtonText = LocalizedStrings.Resources.OK
+                PrimaryButtonText = LocalizedStrings.Resources.OK,
+                RequestedTheme = SettingCollection.Current.Theme.ToElementTheme()
             }.ShowAsync();
             StatusCollection.Current.ImageViewTipShown = true;
         }

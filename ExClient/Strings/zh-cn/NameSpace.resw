@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Artist" xml:space="preserve">
-    <value>艺术家</value>
+    <value>画师</value>
   </data>
   <data name="Character" xml:space="preserve">
     <value>角色</value>
