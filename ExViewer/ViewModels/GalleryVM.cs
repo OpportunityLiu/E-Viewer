@@ -125,7 +125,7 @@ namespace ExViewer.ViewModels
                 else
                     await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
                 image.PropertyChanged -= Image_PropertyChanged;
-            });
+            }, image => image != null);
             TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
             {
                 RootControl.RootController.SendToast(LocalizedStrings.Resources.GalleryPageTorrentDownloading, null);

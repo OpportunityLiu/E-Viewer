@@ -16,6 +16,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EhTagTranslatorClient", "Eh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{30895705-61DE-4E36-8D8D-CB72F922F2C2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OriginalResources", "OriginalResources", "{94F5115A-39C7-4C39-8D6E-5BE928A603F9}"
+	ProjectSection(SolutionItems) = preProject
+		OriginalResources\Panda.psd = OriginalResources\Panda.psd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -106,7 +106,10 @@ namespace ExViewer.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            VM.CurrentIndex = fv.SelectedIndex;
+            if(fv.SelectedIndex < VM.Gallery.Count)
+                VM.CurrentIndex = fv.SelectedIndex;
+            else
+                VM.CurrentIndex = VM.Gallery.Count - 1;
             VM = null;
             if(DeviceTrigger.IsMobile)
                 RootControl.RootController.SetFullScreen(false);
@@ -187,16 +190,16 @@ namespace ExViewer.Views
             {
                 end = VM.Gallery.Count;
             }
+            for(int i = start; i < end; i++)
+            {
+                var ignore = VM.Gallery[i].LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
+            }
             if(end + 10 > VM.Gallery.Count && VM.Gallery.HasMoreItems)
             {
                 if(loadItems == null || loadItems.Status != AsyncStatus.Started)
                 {
                     loadItems = VM.Gallery.LoadMoreItemsAsync(5);
                 }
-            }
-            for(int i = start; i < end; i++)
-            {
-                var ignore = VM.Gallery[i].LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
             }
             setScale();
         }

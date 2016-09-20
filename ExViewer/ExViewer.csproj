@@ -20,7 +20,7 @@
     <PackageCertificateKeyFile>ExViewer_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <PackageCertificateThumbprint>923586DE9DA4CC8E3B381F4D8609BC09E7F3E6AC</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
@@ -95,7 +95,6 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="App.config" />
-    <None Include="Assets\Panda.psd" />
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
     <PRIResource Include="Strings\zh-cn\Settings.resw" />
@@ -212,6 +211,9 @@
   <ItemGroup>
     <Content Include="Assets\Splashes\botm.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Images\Dark\ImageLoading.scale-100.png" />
+    <Content Include="Images\Dark\ImageLoading.scale-200.png" />
+    <Content Include="Images\Dark\ImageLoading.scale-400.png" />
     <Content Include="Images\Dark\UserBackground.scale-100.png" />
     <Content Include="Images\Dark\UserBackground.scale-200.png" />
     <Content Include="Images\Dark\UserBackground.scale-400.png" />
@@ -270,6 +272,16 @@
     <Page Include="Settings\SettingPresenterTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Strings\en\Dictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Strings\zh-cn\Dictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Themes\Categories.xaml">
       <SubType>Designer</SubType>

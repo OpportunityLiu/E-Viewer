@@ -7,6 +7,7 @@
                 <ResourceDictionary Source="Themes/GenericOverride.xaml" />
                 <ResourceDictionary Source="Themes/NamedStyles.xaml" />
                 <ResourceDictionary Source="Converters/Converters.xaml" />
+                <ResourceDictionary Source="Strings/Dictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark"
