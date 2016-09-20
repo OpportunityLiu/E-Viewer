@@ -218,6 +218,8 @@
         </Setter>
         <Setter Property="Background"
                 Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
+        <Setter Property="Foreground"
+                Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
         <Setter Property="MinWidth"
                 Value="100" />
         <Setter Property="MinHeight"
@@ -353,23 +355,29 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:HtmlTextBlock">
-                    <RichTextBlock x:Name="Presenter" />
+                    <RichTextBlock x:Name="Presenter"
+                                   Foreground="{TemplateBinding Foreground}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Setter Property="IsTabStop"
                 Value="False" />
+        <Setter Property="Foreground"
+                Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
     </Style>
 
     <Style TargetType="controls:HighlightTextBlock">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:HighlightTextBlock">
-                    <TextBlock x:Name="Presenter" />
+                    <TextBlock x:Name="Presenter"
+                               Foreground="{TemplateBinding Foreground}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Setter Property="IsTabStop"
                 Value="False" />
+        <Setter Property="Foreground"
+                Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
     </Style>
 </ResourceDictionary>

@@ -97,7 +97,7 @@ namespace ExViewer.Controls
             presenter.Blocks.Clear();
             if(content == null)
                 return;
-            var para = new Paragraph() { Foreground = Foreground };
+            var para = new Paragraph();
             foreach(var node in content.ChildNodes)
             {
                 var tbNode = createNode(node, detectLink);

@@ -120,23 +120,21 @@ namespace ExViewer.Views
             {
                 if(setNull)
                 {
-                    root.userInfo = null;
+                    root.UserInfo = null;
                 }
                 if(Client.Current.UserID == -1)
                     return;
-                root.Bindings.Update();
                 try
                 {
-                    root.userInfo = await Client.Current.LoadUserInfo(Client.Current.UserID);
-                    await root.userInfo.SaveToCache();
+                    root.UserInfo = await Client.Current.LoadUserInfo(Client.Current.UserID);
+                    await root.UserInfo.SaveToCache();
                 }
                 catch(Exception)
                 {
-                    root.userInfo = await UserInfo.LoadFromCache();
+                    root.UserInfo = await UserInfo.LoadFromCache();
                 }
-                root.Bindings.Update();
-                if(root.userInfo != null)
-                    HockeyClient.Current.UpdateContactInfo(root.userInfo.DisplayName, "");
+                if(root.UserInfo != null)
+                    HockeyClient.Current.UpdateContactInfo(root.UserInfo.DisplayName, "");
             }
 
             public static bool ViewDisabled

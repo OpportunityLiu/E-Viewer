@@ -42,6 +42,10 @@
         <Grid HorizontalAlignment="Center"
               VerticalAlignment="Center"
               x:Name="gd_ContentRoot">
+            <Image x:Name="img_Loading"
+                   x:DeferLoadStrategy="Lazy"
+                   Source="{ThemeResource LoadingImageSource}" 
+                   Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToVisibleConverter}}"/>
             <Image x:Name="img_Thumb"
                    Source="{x:Bind Image.Thumb, Mode=OneWay}" />
             <ContentControl x:Name="cc_Image"

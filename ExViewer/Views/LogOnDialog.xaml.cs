@@ -26,6 +26,7 @@ namespace ExViewer.Views
         public LogOnDialog()
         {
             this.InitializeComponent();
+            this.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
         }
 
         ReCaptcha recap;

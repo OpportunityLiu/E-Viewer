@@ -74,7 +74,7 @@
                         </Grid.ColumnDefinitions>
                         <Border Grid.ColumnSpan="999"
                                 Grid.RowSpan="3"
-                                Background="{StaticResource UserBackgroundThemeBrush}" />
+                                Background="{ThemeResource UserBackgroundThemeBrush}" />
                         <Button Style="{StaticResource SplitButtonStyle}"
                                 Click="btn_pane_Click"
                                 Grid.ColumnSpan="999" />
@@ -88,7 +88,7 @@
                             <Ellipse.Fill>
                                 <ImageBrush Stretch="Uniform">
                                     <ImageBrush.ImageSource>
-                                        <BitmapImage UriSource="{x:Bind userInfo.Avatar, TargetNullValue=ms-appx:///Images/DefaultUser.png, FallbackValue=ms-appx:///Images/DefaultUser.png}" />
+                                        <BitmapImage UriSource="{x:Bind UserInfo.Avatar, TargetNullValue=ms-appx:///Images/DefaultUser.png, Mode=OneWay, FallbackValue=ms-appx:///Images/DefaultUser.png}" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Ellipse.Fill>
@@ -98,7 +98,7 @@
                                     Margin="8"
                                     MaxWidth="200"
                                     TextTrimming="CharacterEllipsis"
-                                    Text="{Binding userInfo.DisplayName, ElementName=page, FallbackValue={StaticResource GuestUserNameString}}"
+                                    Text="{Binding UserInfo.DisplayName, ElementName=page, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center" />
                         <Button x:Uid="RootControlChangeUserButton"
@@ -171,7 +171,7 @@
                 Visibility="Collapsed"
                 Padding="16,8">
             <Border.Background>
-                <SolidColorBrush Color="{StaticResource SystemChromeMediumLowColor}"
+                <SolidColorBrush Color="{ThemeResource SystemChromeMediumLowColor}"
                                  Opacity="0.75" />
             </Border.Background>
             <TextBlock x:Name="tb_Toast"

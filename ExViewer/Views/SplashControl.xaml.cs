@@ -163,7 +163,7 @@ namespace ExViewer.Views
 
         private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Assets/Splashes/botm.png"));
+            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Images/Splash.png"));
             // After the default image loaded, prepareCompleted() will be called.
         }
 

@@ -56,7 +56,7 @@
                                TargetType="TextBlock"
                                BasedOn="{StaticResource CaptionTextBlockStyle}">
                             <Setter Property="Foreground"
-                                    Value="{StaticResource SystemControlForegroundBaseMediumBrush}" />
+                                    Value="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
                         </Style>
                         <DataTemplate x:Key="SearchHistory"
                                       x:DataType="db:SearchHistory">
@@ -187,7 +187,7 @@
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
                              RefreshInvoked="PullToRefreshBox_RefreshInvoked"
-                             Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
             <ListView x:Name="lv"
                       ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
                       ContinuumNavigationTransitionInfo.ExitElementContainer="True"

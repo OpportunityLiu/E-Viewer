@@ -61,7 +61,15 @@ namespace ExViewer.Views
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
         private readonly Dictionary<Type, Controls.SplitViewTab> pages;
 
-        private UserInfo userInfo;
+        public UserInfo UserInfo
+        {
+            get { return (UserInfo)GetValue(UserInfoProperty); }
+            set { SetValue(UserInfoProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UserInfo.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UserInfoProperty =
+            DependencyProperty.Register("UserInfo", typeof(UserInfo), typeof(RootControl), new PropertyMetadata(null));
 
         SystemNavigationManager manager;
 
@@ -80,7 +88,7 @@ namespace ExViewer.Views
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
             fm_inner.Navigate(homePageType);
-            userInfo = await UserInfo.LoadFromCache();
+            UserInfo = await UserInfo.LoadFromCache();
             RootController.UpdateUserInfo(false);
         }
 

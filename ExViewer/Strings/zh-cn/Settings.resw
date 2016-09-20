@@ -199,7 +199,7 @@
     <value>搜索</value>
   </data>
   <data name="Theme" xml:space="preserve">
-    <value>应用主题（需要重启应用）</value>
+    <value>应用主题</value>
   </data>
   <data name="UseJapaneseTitle" xml:space="preserve">
     <value>默认显示的画集标题</value>

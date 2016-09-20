@@ -199,7 +199,7 @@
     <value>Searching</value>
   </data>
   <data name="Theme" xml:space="preserve">
-    <value>The theme of the app (Need restart the app)</value>
+    <value>The theme of the app</value>
   </data>
   <data name="UseJapaneseTitle" xml:space="preserve">
     <value>The default title displayed</value>

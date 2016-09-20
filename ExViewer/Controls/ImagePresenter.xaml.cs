@@ -46,40 +46,61 @@ namespace ExViewer.Controls
         public static DependencyProperty ImageProperty
         {
             get;
-        } = DependencyProperty.Register("Image", typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null));
+        } = DependencyProperty.Register("Image", typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null, ImagePropertyChangedCallback));
 
         private static void ImagePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (ImagePresenter)d;
+
+            if(e.NewValue == null)
+            {
+                sender.FindName(nameof(img_Loading));
+            }
             if(!sender.loaded)
             {
                 if(e.OldValue != null)
                 {
-                    ((GalleryImage)e.OldValue).PropertyChanged -= sender.Image_PropertyChanged;
+                    stopTrackImage(sender, (GalleryImage)e.OldValue);
                 }
             }
             else
             {
                 if(e.NewValue != null)
                 {
-                    ((GalleryImage)e.NewValue).PropertyChanged += sender.Image_PropertyChanged;
+                    startTrackImage(sender, (GalleryImage)e.NewValue);
                 }
             }
         }
 
         private bool loaded;
 
+        private static void startTrackImage(ImagePresenter sender, GalleryImage image)
+        {
+            image.PropertyChanged += sender.Image_PropertyChanged;
+            if(image.State == ImageLoadingState.Waiting)
+            {
+                var ignore = image.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
+            }
+        }
+
+        private static void stopTrackImage(ImagePresenter sender, GalleryImage image)
+        {
+            image.PropertyChanged -= sender.Image_PropertyChanged;
+        }
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if(this.Image != null)
-                this.Image.PropertyChanged += Image_PropertyChanged;
+            {
+                startTrackImage(this, this.Image);
+            }
             loaded = true;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             if(this.Image != null)
-                this.Image.PropertyChanged -= Image_PropertyChanged;
+                stopTrackImage(this, this.Image);
             loaded = false;
         }
 

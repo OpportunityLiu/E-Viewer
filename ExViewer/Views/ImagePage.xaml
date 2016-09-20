@@ -72,10 +72,10 @@
                         </Grid.RowDefinitions>
                         <controls:ImagePresenter x:Name="ip"
                                                  Grid.RowSpan="2"
-                                                 Image="{x:Bind Image}" />
-                        <ProgressBar Value="{x:Bind Image.Progress, Mode=OneWay}"
+                                                 Image="{x:Bind Image, Mode=OneWay}" />
+                        <ProgressBar Value="{x:Bind Image.Progress, Mode=OneWay, FallbackValue=0}"
                                      Visibility="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=Visible}"
-                                     Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
+                                     Foreground="{Binding Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
                                      IsIndeterminate="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=True}"
                                      VerticalAlignment="Top"
                                      Grid.Row="1" />
@@ -168,6 +168,7 @@
                                 ScrollViewer.VerticalScrollMode="Disabled">
                             <StackPanel>
                                 <TextBlock x:Name="tb_Info"
+                                           Style="{StaticResource BodyTextBlockStyle}"
                                            Text="{x:Bind VM.CurrentInfo, Mode=OneWay, TargetNullValue=The image hasn\&apos;t finished loading}" />
                                 <Button x:Uid="ImagePageOpenInExplorerButton"
                                         x:Name="btn_OpenInExplorer"
@@ -190,7 +191,7 @@
                                                         Background="{TemplateBinding Background}"
                                                         Margin="{TemplateBinding Margin}">
                                                     <ContentPresenter Content="{TemplateBinding Content}"
-                                                                      Foreground="{TemplateBinding Foreground}" />
+                                                                      Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}" />
                                                 </Border>
                                             </ControlTemplate>
                                         </Setter.Value>

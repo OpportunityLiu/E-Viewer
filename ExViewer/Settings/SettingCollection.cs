@@ -68,6 +68,8 @@ namespace ExViewer.Settings
             set
             {
                 SetLocal(value);
+                ((FrameworkElement)Window.Current.Content).RequestedTheme = value.ToElementTheme();
+                Themes.ThemeExtention.SetTitleBar();
             }
         }
 
