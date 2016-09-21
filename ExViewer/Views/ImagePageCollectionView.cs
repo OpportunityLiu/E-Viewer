@@ -25,9 +25,9 @@ namespace ExViewer.Views
             var needItemCount = needSize - imageViewCache.Count;
             if(needItemCount <= 0)
                 return;
+            imageViewCache.Capacity = needSize;
             imageViewCache.AddRange(from i in Enumerable.Range(imageViewCache.Count, needItemCount)
                                     select new ImagePageImageView(this, i));
-            ensureCacheSize(imageViewCache.Capacity);
         }
 
         private void collection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
