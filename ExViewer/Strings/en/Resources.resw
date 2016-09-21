@@ -416,9 +416,6 @@ Full screen			ENTER</value>
   <data name="VerifyDisabled" xml:space="preserve">
     <value>Verification has been disabled by group policy. Please contact your administrator.</value>
   </data>
-  <data name="VerifyFailed" xml:space="preserve">
-    <value>Verify failed. Plaese try again.</value>
-  </data>
   <data name="VerifyFailedDialogTitle" xml:space="preserve">
     <value>VERIFICATION FAILED</value>
   </data>
@@ -426,5 +423,14 @@ Full screen			ENTER</value>
     <value>Please set up a PIN first. 
 
 Go "Settings -&gt; Accounts - Sign-in options -&gt; PIN -&gt; Add" to do this.</value>
+  </data>
+  <data name="VerifyCanceled" xml:space="preserve">
+    <value>The verification has been canceled.</value>
+  </data>
+  <data name="VerifyOtherFailure" xml:space="preserve">
+    <value>Plaese restart the app and try again.</value>
+  </data>
+  <data name="VerifyRetriesExhausted" xml:space="preserve">
+    <value>You have exceeded the allowed number of verification. Plaese restart the app and try again.</value>
   </data>
 </root>

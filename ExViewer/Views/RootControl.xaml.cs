@@ -30,7 +30,7 @@ namespace ExViewer.Views
     /// </summary>
     public sealed partial class RootControl : Page
     {
-        public RootControl(Type homePageType, ApplicationExecutionState previousState)
+        public RootControl()
         {
             this.InitializeComponent();
             tabs = new Dictionary<Controls.SplitViewTab, Type>()
@@ -48,8 +48,6 @@ namespace ExViewer.Views
                 [typeof(SettingsPage)] = this.svt_Settings,
                 [typeof(AboutPage)] = this.svt_About
             };
-            this.homePageType = homePageType;
-            this.previousState = previousState;
             sv_root.IsPaneOpen = false;
 #if DEBUG
             this.GotFocus += OnGotFocus;
@@ -61,8 +59,15 @@ namespace ExViewer.Views
 #endif
         }
 
-        private Type homePageType;
-        private ApplicationExecutionState previousState;
+        public Type HomePageType
+        {
+            get; set;
+        }
+
+        public ApplicationExecutionState PreviousState
+        {
+            get; set;
+        }
 
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
         private readonly Dictionary<Type, Controls.SplitViewTab> pages;
@@ -87,13 +92,13 @@ namespace ExViewer.Views
         private void Control_Loading(FrameworkElement sender, object args)
         {
             RootController.SetRoot(this);
+            manager = SystemNavigationManager.GetForCurrentView();
+            manager.BackRequested += Manager_BackRequested;
+            fm_inner.Navigate(HomePageType ?? typeof(SearchPage));
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            manager = SystemNavigationManager.GetForCurrentView();
-            manager.BackRequested += Manager_BackRequested;
-            fm_inner.Navigate(homePageType);
             UserInfo = await UserInfo.LoadFromCache();
             RootController.UpdateUserInfo(false);
         }

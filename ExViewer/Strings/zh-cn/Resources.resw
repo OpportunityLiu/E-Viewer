@@ -416,8 +416,8 @@
   <data name="VerifyDisabled" xml:space="preserve">
     <value>验证已通过组策略禁用，请联系管理员。</value>
   </data>
-  <data name="VerifyFailed" xml:space="preserve">
-    <value>验证失败，请重试。</value>
+  <data name="VerifyOtherFailure" xml:space="preserve">
+    <value>请重新启动应用后重试。</value>
   </data>
   <data name="VerifyFailedDialogTitle" xml:space="preserve">
     <value>验证失败</value>
@@ -426,5 +426,11 @@
     <value>请先设置 PIN。
 
 在 “设置 -&gt; 账户-&gt; 登陆选项 -&gt; PIN -&gt; 添加” 进行此项设定。</value>
+  </data>
+  <data name="VerifyCanceled" xml:space="preserve">
+    <value>您已取消验证。</value>
+  </data>
+  <data name="VerifyRetriesExhausted" xml:space="preserve">
+    <value>超过允许的重试次数，请重新启动应用后再试一次。</value>
   </data>
 </root>
