@@ -36,6 +36,7 @@ namespace ExViewer.Views
         private void splash_Loading(FrameworkElement sender, object args)
         {
             Themes.ThemeExtention.SetSplashTitleBar();
+            JYAnalytics.TrackPageStart(nameof(SplashControl));
         }
 
         public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
@@ -89,6 +90,7 @@ namespace ExViewer.Views
             Themes.ThemeExtention.SetTitleBar();
             Window.Current.Content = rootControl;
             rootControl = null;
+            JYAnalytics.TrackPageEnd(nameof(SplashControl));
         }
 
         private void setLoadingFinished()
