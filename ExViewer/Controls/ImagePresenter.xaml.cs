@@ -25,9 +25,24 @@ namespace ExViewer.Controls
 {
     public sealed partial class ImagePresenter : UserControl
     {
+        static ImagePresenter()
+        {
+            var r = new ResourceDictionary();
+            Application.LoadComponent(r, new Uri("ms-appx:///Themes/ImagePresenterTemplates.xaml"));
+            dt_Normal = (DataTemplate)r["NormalTemplate"];
+            its_Gif = (ImagePresenterSelector)r["ImagePresenterSelector"];
+        }
+
+        private static readonly DataTemplate dt_Normal;
+        private static readonly ImagePresenterSelector its_Gif;
+
         public ImagePresenter()
         {
             this.InitializeComponent();
+            if(ApiInfo.AnimatedGifSupported)
+                cc_Image.ContentTemplate = dt_Normal;
+            else
+                cc_Image.ContentTemplateSelector = its_Gif;
         }
 
         public GalleryImage Image
@@ -296,6 +311,11 @@ namespace ExViewer.Controls
 
     internal class ImagePresenterSelector : Windows.UI.Xaml.Controls.DataTemplateSelector
     {
+        public ImagePresenterSelector()
+        {
+
+        }
+
         public DataTemplate Template
         {
             get;
@@ -311,7 +331,7 @@ namespace ExViewer.Controls
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
             var img = item as GalleryImage;
-            if(SettingCollection.Current.EnableGif && IsGif(img))
+            if(IsGif(img))
             {
                 initGif();
                 return GifTemplate;

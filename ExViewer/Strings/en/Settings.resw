@@ -156,9 +156,6 @@
   <data name="DefaultSearchString" xml:space="preserve">
     <value>Default keywords on the front page</value>
   </data>
-  <data name="EnableGif" xml:space="preserve">
-    <value>Gif support</value>
-  </data>
   <data name="Global" xml:space="preserve">
     <value>Global</value>
   </data>

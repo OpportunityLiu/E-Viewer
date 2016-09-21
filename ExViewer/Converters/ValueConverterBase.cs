@@ -19,7 +19,7 @@ namespace ExViewer.Converters
 
         // Using a DependencyProperty as the backing store for InnerConverter.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty InnerConverterProperty =
-            DependencyProperty.Register(nameof(InnerConverter), typeof(IValueConverter), typeof(ValueConverterBase), new PropertyMetadata(EmptyConverter.Default, InnerConverterPropertyChangedCallback));
+            DependencyProperty.Register(nameof(InnerConverter), typeof(IValueConverter), typeof(ValueConverterBase), new PropertyMetadata(null, InnerConverterPropertyChangedCallback));
 
         private static void InnerConverterPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -28,8 +28,6 @@ namespace ExViewer.Converters
 
         protected virtual void OnInnerConverterChanged(DependencyPropertyChangedEventArgs e)
         {
-            if(e.NewValue == null)
-                throw new ArgumentNullException(nameof(InnerConverter));
         }
     }
 }
