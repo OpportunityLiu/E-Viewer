@@ -80,6 +80,8 @@ namespace ExViewer.Views
                 (byte)(backColor.G - 3 * (backColor.G - needColor.G)),
                 (byte)(backColor.B - 3 * (backColor.B - needColor.B)));
             cb_top.Background = new SolidColorBrush(toColor);
+            fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
+                FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
             base.OnNavigatedTo(e);
 
@@ -99,8 +101,6 @@ namespace ExViewer.Views
             }
             if(!StatusCollection.Current.ImageViewTipShown)
                 showTip();
-            fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
-                FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -110,7 +110,7 @@ namespace ExViewer.Views
                 VM.CurrentIndex = fv.SelectedIndex;
             else
                 VM.CurrentIndex = VM.Gallery.Count - 1;
-            VM = null;
+
             if(DeviceTrigger.IsMobile)
                 RootControl.RootController.SetFullScreen(false);
             if(displayActived)
