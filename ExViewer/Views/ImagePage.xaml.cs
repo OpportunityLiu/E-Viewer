@@ -47,18 +47,15 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(GalleryVM), typeof(ImagePage), new PropertyMetadata(null, VMPropertyChangedCallback));
 
+        private ImagePageCollectionView collectionView = new ImagePageCollectionView();
+
         private static void VMPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
         {
             var that = (ImagePage)dp;
-            if(that.fv.ItemsSource != null)
-            {
-                var temp = (ImagePageCollectionView)that.fv.ItemsSource;
-                that.fv.ItemsSource = null;
-                temp.Dispose();
-            }
+            that.fv.ItemsSource = null;
             var g = ((GalleryVM)e.NewValue)?.Gallery;
-            if(g != null)
-                that.fv.ItemsSource = new ImagePageCollectionView(g);
+            that.collectionView.Collection = g;
+            that.fv.ItemsSource = that.collectionView;
         }
 
         private readonly ApplicationView av = ApplicationView.GetForCurrentView();

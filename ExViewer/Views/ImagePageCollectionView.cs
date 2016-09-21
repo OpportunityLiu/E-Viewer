@@ -11,20 +11,24 @@ namespace ExViewer.Views
 {
     internal class ImagePageCollectionView : IReadOnlyList<IImagePageImageView>, IDisposable
     {
-        public ImagePageCollectionView(Gallery collection)
+        private const int initialCapacity = 16;
+
+        public ImagePageCollectionView()
         {
-            if(collection == null)
-                throw new ArgumentNullException(nameof(collection));
-            this.collection = collection;
-            this.array = new ImagePageImageView[collection.RecordCount];
-            for(int i = 0; i < array.Length; i++)
-            {
-                array[i] = new ImagePageImageView(this, i);
-            }
-            collection.CollectionChanged += collection_CollectionChanged;
+            ensureCacheSize(initialCapacity);
         }
 
-        private ImagePageImageView[] array;
+        private List<ImagePageImageView> imageViewCache = new List<ImagePageImageView>(initialCapacity);
+
+        private void ensureCacheSize(int needSize)
+        {
+            var needItemCount = needSize - imageViewCache.Count;
+            if(needItemCount <= 0)
+                return;
+            imageViewCache.AddRange(from i in Enumerable.Range(imageViewCache.Count, needItemCount)
+                                    select new ImagePageImageView(this, i));
+            ensureCacheSize(imageViewCache.Capacity);
+        }
 
         private void collection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -33,11 +37,11 @@ namespace ExViewer.Views
             case NotifyCollectionChangedAction.Add:
                 for(int i = 0; i < e.NewItems.Count; i++)
                 {
-                    array[e.NewStartingIndex + i].Refresh();
+                    imageViewCache[e.NewStartingIndex + i].Refresh();
                 }
                 break;
             default:
-                foreach(var item in array)
+                foreach(var item in imageViewCache.GetRange(0, Count))
                 {
                     item.Refresh();
                 }
@@ -46,6 +50,23 @@ namespace ExViewer.Views
         }
 
         private Gallery collection;
+
+        public Gallery Collection
+        {
+            get
+            {
+                return collection;
+            }
+            set
+            {
+                if(collection != null)
+                    collection.CollectionChanged -= collection_CollectionChanged;
+                collection = value;
+                ensureCacheSize(collection.RecordCount);
+                if(collection != null)
+                    collection.CollectionChanged += collection_CollectionChanged;
+            }
+        }
 
         private sealed class ImagePageImageView : ObservableObject, IImagePageImageView, IDisposable
         {
@@ -64,7 +85,7 @@ namespace ExViewer.Views
             {
                 get
                 {
-                    if(parent == null)
+                    if(parent == null || parent.collection == null)
                         return defaultImage;
                     if(index < parent.collection.Count)
                         return parent.collection[index];
@@ -88,11 +109,13 @@ namespace ExViewer.Views
         {
             get
             {
-                return array[index];
+                if((uint)index < (uint)Count)
+                    return imageViewCache[index];
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
         }
 
-        public int Count => collection.RecordCount;
+        public int Count => collection?.RecordCount ?? 0;
 
         public IEnumerator<IImagePageImageView> GetEnumerator()
         {
@@ -117,13 +140,14 @@ namespace ExViewer.Views
                 if(disposing)
                 {
                 }
-                collection.CollectionChanged -= collection_CollectionChanged;
+                if(collection != null)
+                    collection.CollectionChanged -= collection_CollectionChanged;
                 collection = null;
-                foreach(var item in array)
+                foreach(var item in imageViewCache)
                 {
                     item.Dispose();
                 }
-                array = null;
+                imageViewCache = null;
                 disposedValue = true;
             }
         }
