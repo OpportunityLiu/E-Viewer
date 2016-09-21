@@ -18,5 +18,10 @@ namespace ExViewer
         {
             get;
         } = IsTypePresent("Windows.UI.ViewManagement.StatusBar");
+
+        public static bool AnimatedGifSupported
+        {
+            get;
+        } = IsPropertyPresent("Windows.UI.Xaml.Media.Imaging.BitmapImage", "AutoPlay");
     }
 }

@@ -104,11 +104,11 @@
     </PRIResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\EmptyConverter.cs" />
     <Compile Include="Helpers\AccountManager.cs" />
     <Compile Include="Converters\ByteSizeToStringConverter.cs" />
     <Compile Include="Converters\ChainConverter.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
-    <Compile Include="Converters\EmptyConverter.cs" />
     <Compile Include="Converters\EnumToStringConverter.cs" />
     <Compile Include="Converters\FormatStringConverter.cs" />
     <Compile Include="Converters\InvertConverter.cs" />
@@ -267,6 +267,11 @@
     <Page Include="Controls\CategorySelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\ImagePresenterTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Controls\GalleryViewer.xaml">
       <SubType>Designer</SubType>

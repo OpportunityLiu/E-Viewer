@@ -11,20 +11,6 @@
              d:DesignHeight="300"
              d:DesignWidth="400">
     <UserControl.Resources>
-        <DataTemplate x:Key="GifTemplate"
-                      xmlns:img="using:ImageLib.Controls"
-                      x:DataType="c:GalleryImage">
-            <img:ImageView UriSource="{Binding ImageFileUri, Mode=OneWay}"
-                           Stretch="Uniform" />
-        </DataTemplate>
-        <DataTemplate x:Key="NormalTemplate"
-                      x:DataType="c:GalleryImage">
-            <Image Source="{Binding Image, FallbackValue=null, Mode=OneWay}"
-                   Stretch="Uniform" />
-        </DataTemplate>
-        <local:ImagePresenterSelector x:Key="ImageTemplateSelector"
-                                      Template="{StaticResource NormalTemplate}"
-                                      GifTemplate="{StaticResource GifTemplate}" />
     </UserControl.Resources>
     <ScrollViewer x:Name="sv"
                   IsTabStop="True"
@@ -51,7 +37,6 @@
                    Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
             <ContentControl x:Name="cc_Image"
                             Content="{x:Bind Image, Mode=OneWay}"
-                            ContentTemplateSelector="{StaticResource ImageTemplateSelector}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"

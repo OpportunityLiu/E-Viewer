@@ -26,5 +26,11 @@ namespace ExViewer.Converters
         {
             return InnerConverter.Convert(value, targetType, parameter, language);
         }
+
+        protected override void OnInnerConverterChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if(e.NewValue == null)
+                throw new ArgumentNullException(nameof(InnerConverter));
+        }
     }
 }

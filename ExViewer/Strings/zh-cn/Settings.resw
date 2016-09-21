@@ -156,9 +156,6 @@
   <data name="DefaultSearchString" xml:space="preserve">
     <value>默认搜索关键字</value>
   </data>
-  <data name="EnableGif" xml:space="preserve">
-    <value>GIF 支持</value>
-  </data>
   <data name="Global" xml:space="preserve">
     <value>全局</value>
   </data>

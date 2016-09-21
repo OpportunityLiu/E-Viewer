@@ -197,20 +197,6 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("ImageViewing", Index = 50)]
-        [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
-        public bool EnableGif
-        {
-            get
-            {
-                return GetLocal(true);
-            }
-            set
-            {
-                SetLocal(value);
-            }
-        }
-
         [Setting("Connection", Index = 10)]
         [BooleanRepresent("BooleanYes", "BooleanNo")]
         public bool LoadLofiOnMeteredInternetConnection
