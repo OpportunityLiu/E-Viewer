@@ -125,7 +125,7 @@ namespace ExViewer.Views
                 manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             Controls.SplitViewTab tab;
             var pageType = fm_inner.Content.GetType();
-            JYAnalyticsUniversal.JYAnalytics.TrackPageStart(pageType.ToString());
+            JYAnalyticsUniversal.JYAnalytics.TrackPageStart(pageType.Name);
             if(this.pages.TryGetValue(pageType, out tab))
             {
                 tab.IsChecked = true;
@@ -138,7 +138,7 @@ namespace ExViewer.Views
             if(content == null)
                 return;
             var pageType = content.GetType();
-            JYAnalyticsUniversal.JYAnalytics.TrackPageEnd(pageType.ToString());
+            JYAnalyticsUniversal.JYAnalytics.TrackPageEnd(pageType.Name);
             Controls.SplitViewTab tab;
             if(this.pages.TryGetValue(pageType, out tab))
             {
