@@ -28,6 +28,8 @@ namespace ExViewer.Views
                 av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             }
 
+            public static bool Available => root != null;
+
             private static void Av_VisibleBoundsChanged(ApplicationView sender, object args)
             {
                 if(IsFullScreen)

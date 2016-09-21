@@ -38,10 +38,6 @@ namespace ExViewer.Views
             Themes.ThemeExtention.SetSplashTitleBar();
         }
 
-        private void splash_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
         public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
             : this()
         {
@@ -82,24 +78,56 @@ namespace ExViewer.Views
             this.img_pic.Height = l.Height;
         }
 
-        private void goToContent()
+        private RootControl rootControl;
+
+        private async void goToContent()
         {
-            Window.Current.Content = new RootControl(homePageType, previousExecutionState);
+            if(SettingCollection.Current.NeedVerify)
+               await verify();
+            rootControl.PreviousState = previousExecutionState;
+            rootControl.HomePageType = homePageType;
             Themes.ThemeExtention.SetTitleBar();
+            Window.Current.Content = rootControl;
+            rootControl = null;
         }
 
+        private void setLoadingFinished()
+        {
+            lock(goToContentSyncRoot)
+            {
+                if(goToContentEnabled)
+                    goToContent();
+                else
+                    loadingFinished = true;
+            }
+        }
+
+        public void EnableGoToContent()
+        {
+            lock(goToContentSyncRoot)
+            {
+                if(loadingFinished)
+                    goToContent();
+                else
+                    goToContentEnabled = true;
+            }
+        }
+
+        private bool loadingFinished, goToContentEnabled;
+        private object goToContentSyncRoot = new object();
+
         private bool effectLoaded, applicationLoaded;
-        private object syncRoot = new object();
+        private object loadingSyncRoot = new object();
 
         private async void loadEffect()
         {
             await Task.Delay(50);
             Window.Current.Activate();
             ShowPic.Begin();
-            lock(syncRoot)
+            lock(loadingSyncRoot)
             {
                 if(applicationLoaded)
-                    goToContent();
+                    setLoadingFinished();
                 else
                     effectLoaded = true;
             }
@@ -109,7 +137,7 @@ namespace ExViewer.Views
         {
             await Task.Run(async () =>
             {
-                var initdb = Task.Run(async () =>
+                var initDbTask = Task.Run(async () =>
                 {
                     ExClient.Models.GalleryDb.Migrate();
                     Database.SearchHistoryDb.Migrate();
@@ -131,22 +159,17 @@ namespace ExViewer.Views
                     {
                     }
                 }
-                await initdb;
-                IAsyncAction initSearch = null;
+                await initDbTask;
+                var initSearchTask = (Task)null;
                 if(!Client.Current.NeedLogOn)
                 {
-                    initSearch = SearchVM.InitAsync();
+                    initSearchTask = SearchVM.InitAsync().AsTask();
                 }
-
-                if(SettingCollection.Current.NeedVerify)
-                {
-                    await verify();
-                }
-                if(initSearch != null)
+                if(initSearchTask != null)
                 {
                     try
                     {
-                        await await Task.WhenAny(initSearch.AsTask(), Task.Delay(7000));
+                        await await Task.WhenAny(initSearchTask, Task.Delay(7000));
                         homePageType = typeof(SearchPage);
                     }
                     catch(Exception)
@@ -157,10 +180,11 @@ namespace ExViewer.Views
                 else
                     homePageType = typeof(SearchPage);
             });
-            lock(syncRoot)
+            rootControl = new RootControl();
+            lock(loadingSyncRoot)
             {
                 if(effectLoaded)
-                    goToContent();
+                    setLoadingFinished();
                 else
                     applicationLoaded = true;
             }
@@ -168,14 +192,9 @@ namespace ExViewer.Views
 
         private async Task verify()
         {
-            Task<UserConsentVerificationResult> verifyTask = null;
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                verifyTask = UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.VerifyDialogContent).AsTask();
-            });
             string info = null;
             var succeed = false;
-            var result = await verifyTask;
+            var result = await UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.VerifyDialogContent);
             switch(result)
             {
             case UserConsentVerificationResult.Verified:
@@ -192,27 +211,26 @@ namespace ExViewer.Views
                 info = LocalizedStrings.Resources.VerifyDeviceBusy;
                 break;
             case UserConsentVerificationResult.RetriesExhausted:
+                info = LocalizedStrings.Resources.VerifyRetriesExhausted;
+                break;
             case UserConsentVerificationResult.Canceled:
+                info = LocalizedStrings.Resources.VerifyCanceled;
+                break;
             default:
-                info = LocalizedStrings.Resources.VerifyFailed;
+                info = LocalizedStrings.Resources.VerifyOtherFailure;
                 break;
             }
             if(!succeed)
             {
                 if(info != null)
                 {
-                    Task showDialogTask = null;
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    var dialog = new ContentDialog
                     {
-                        var dialog = new ContentDialog
-                        {
-                            Title = LocalizedStrings.Resources.VerifyFailedDialogTitle,
-                            Content = info,
-                            PrimaryButtonText = LocalizedStrings.Resources.OK
-                        };
-                        showDialogTask = dialog.ShowAsync().AsTask();
-                    });
-                    await showDialogTask;
+                        Title = LocalizedStrings.Resources.VerifyFailedDialogTitle,
+                        Content = info,
+                        PrimaryButtonText = LocalizedStrings.Resources.Exit
+                    };
+                    await dialog.ShowAsync();
                 }
                 Application.Current.Exit();
             }

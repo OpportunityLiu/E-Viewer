@@ -79,11 +79,9 @@ namespace ExViewer
             {
                 this.DebugSettings.EnableFrameRateCounter = true;
                 //this.DebugSettings.IsOverdrawHeatMapEnabled = true;
-                this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
+                //this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
             }
 #endif
-            if(e.PrelaunchActivated)
-                return;
             GalaSoft.MvvmLight.Threading.DispatcherHelper.Initialize();
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
@@ -91,10 +89,13 @@ namespace ExViewer
             {
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
-                currentWindow.Content = new SplashControl(e.SplashScreen, e.PreviousExecutionState);
+                currentContent = new SplashControl(e.SplashScreen, e.PreviousExecutionState);
+                currentWindow.Content = currentContent;
             }
-            else if(currentContent is SplashControl)
+            if(currentContent is SplashControl)
             {
+                if(!e.PrelaunchActivated)
+                    ((SplashControl)currentContent).EnableGoToContent();
             }
             else
             {

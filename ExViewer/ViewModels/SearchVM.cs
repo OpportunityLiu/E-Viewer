@@ -165,6 +165,8 @@ namespace ExViewer.ViewModels
 
         private void SearchResult_LoadMoreItemsException(IncrementalLoadingCollection<Gallery> sender, LoadMoreItemsExceptionEventArgs args)
         {
+            if(!RootControl.RootController.Available)
+                return;
             RootControl.RootController.SendToast(args.Exception, typeof(SearchPage));
             args.Handled = true;
         }

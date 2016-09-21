@@ -1,20 +1,14 @@
-﻿<UserControl x:Name="splash"
-             x:Class="ExViewer.Views.SplashControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:ExViewer.Views"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
+             x:Class="ExViewer.Views.SplashControl"
              Loading="splash_Loading"
-             Loaded="splash_Loaded"
              SizeChanged="splash_SizeChanged">
     <UserControl.Resources>
-        <Storyboard x:Name="ShowPic" Completed="ShowPic_Completed">
+        <Storyboard x:Name="ShowPic"
+                    Completed="ShowPic_Completed">
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.Opacity)"
                              Storyboard.TargetName="img_pic"
                              Duration="0:0:0.7"
-                             From="0"
                              To="1">
                 <DoubleAnimation.EasingFunction>
                     <CircleEase EasingMode="EaseIn" />
@@ -23,15 +17,14 @@
             <DoubleAnimation Duration="0:0:2"
                              To="4"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
-                             Storyboard.TargetName="img_splash"
-                             d:IsOptimized="True">
+                             Storyboard.TargetName="img_splash">
                 <DoubleAnimation.EasingFunction>
                     <CircleEase EasingMode="EaseIn" />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
     </UserControl.Resources>
-    <Grid Background="{ThemeResource SplashBrush}">
+    <Grid Background="{StaticResource SplashBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
@@ -53,10 +46,11 @@
                ImageFailed="img_pic_ImageFailed"
                ImageOpened="img_pic_ImageOpened"
                Grid.RowSpan="2" />
-        <ProgressRing x:Name="pr" Grid.Row="1"
+        <ProgressRing x:Name="pr"
+                      x:DeferLoadStrategy="Lazy" 
+                      Grid.Row="1"
                       Width="40"
-                      Height="40" 
-                      IsActive="True"
-                      x:DeferLoadStrategy="Lazy"/>
+                      Height="40"
+                      IsActive="True"/>
     </Grid>
 </UserControl>

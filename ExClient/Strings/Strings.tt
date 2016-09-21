@@ -11,6 +11,9 @@
 <#@ import namespace="System.Web" #>
 <#@ output extension=".cs" #>
 <#
+
+
+
     // TODO: 修改相关配置。
     // 检索 resw 的路径。
     string ResourcePath = "Strings";
@@ -20,10 +23,11 @@
     string SourceLanguagePath = "en";
     // 是否为默认工程，决定是否需要显式定义资源路径。
     bool IsDefaultProject = false;
-#>
-<#
     //是否对生成的代码启用调试。
     bool DebugGeneratedCode = false;
+
+
+
 #>
 <#
     var nameSpace = string.IsNullOrWhiteSpace(LocalizedStringsNameSpace) ? 
