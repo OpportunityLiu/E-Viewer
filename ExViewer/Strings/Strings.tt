@@ -1,12 +1,14 @@
 ﻿<#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Web" #>
 <#@ assembly name="EnvDTE" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Xml" #>
+<#@ import namespace="System.Web" #>
 <#@ output extension=".cs" #>
 <#
     // TODO: 修改相关配置。
@@ -114,10 +116,10 @@ namespace <#=nameSpace#>
         /// <summary>
 <#
             // 转义注释序列
-            var comments = new StringReader(name.Value.Replace("\"", "&quot;").Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;"));
+            var comments = new StringReader(name.Value);
             while(true)
             {
-                var comment = comments.ReadLine();
+                var comment = HttpUtility.HtmlEncode(comments.ReadLine());
                 if(comment == null)
                     break;
 #>
