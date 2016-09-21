@@ -47,7 +47,8 @@
                    Source="{ThemeResource LoadingImageSource}" 
                    Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToVisibleConverter}}"/>
             <Image x:Name="img_Thumb"
-                   Source="{x:Bind Image.Thumb, Mode=OneWay}" />
+                   Source="{x:Bind Image.Thumb, Mode=OneWay}"
+                   Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
             <ContentControl x:Name="cc_Image"
                             Content="{x:Bind Image, Mode=OneWay}"
                             ContentTemplateSelector="{StaticResource ImageTemplateSelector}"
@@ -55,7 +56,8 @@
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            IsTabStop="False" />
+                            IsTabStop="False"
+                            Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
         </Grid>
     </ScrollViewer>
 </UserControl>
