@@ -18,8 +18,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Microsoft.HockeyApp;
 using ExViewer.Views;
+using Microsoft.HockeyApp;
 
 namespace ExViewer
 {
@@ -63,6 +63,7 @@ namespace ExViewer
                 return sb.ToString();
             });
             this.Suspending += OnSuspending;
+            this.Resuming += OnResuming;
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
         }
 
@@ -71,7 +72,7 @@ namespace ExViewer
         /// 将在启动应用程序以打开特定文件等情况下使用。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if(System.Diagnostics.Debugger.IsAttached)
@@ -83,7 +84,6 @@ namespace ExViewer
 #endif
             if(e.PrelaunchActivated)
                 return;
-
             GalaSoft.MvvmLight.Threading.DispatcherHelper.Initialize();
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
@@ -100,6 +100,12 @@ namespace ExViewer
             {
                 currentWindow.Activate();
             }
+            await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("fcf0a9351ea5917ec80d8c1b58b56ff1");
+        }
+
+        private async void OnResuming(object sender, object e)
+        {
+            await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("fcf0a9351ea5917ec80d8c1b58b56ff1");
         }
 
         /// <summary>
@@ -109,10 +115,10 @@ namespace ExViewer
         /// </summary>
         /// <param name="sender">挂起的请求的源。</param>
         /// <param name="e">有关挂起请求的详细信息。</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            HockeyClient.Current.Flush();
+            await JYAnalyticsUniversal.JYAnalytics.EndTrackAsync();
             deferral.Complete();
         }
     }

@@ -20,8 +20,6 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.ViewManagement;
 using ExViewer.ViewModels;
 using System.Diagnostics;
-using Microsoft.HockeyApp;
-using Microsoft.HockeyApp.DataContracts;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -53,6 +51,14 @@ namespace ExViewer.Views
             this.homePageType = homePageType;
             this.previousState = previousState;
             sv_root.IsPaneOpen = false;
+#if DEBUG
+            this.GotFocus += OnGotFocus;
+        }
+
+        private void OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine(e.OriginalSource, "Focus state");
+#endif
         }
 
         private Type homePageType;
@@ -114,11 +120,11 @@ namespace ExViewer.Views
                 manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             Controls.SplitViewTab tab;
             var pageType = fm_inner.Content.GetType();
+            JYAnalyticsUniversal.JYAnalytics.TrackPageStart(pageType.ToString());
             if(this.pages.TryGetValue(pageType, out tab))
             {
                 tab.IsChecked = true;
             }
-            HockeyClient.Current.TrackEvent($"Page viewed: {pageType.Name}");
         }
 
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)
@@ -126,8 +132,10 @@ namespace ExViewer.Views
             var content = fm_inner.Content;
             if(content == null)
                 return;
+            var pageType = content.GetType();
+            JYAnalyticsUniversal.JYAnalytics.TrackPageEnd(pageType.ToString());
             Controls.SplitViewTab tab;
-            if(this.pages.TryGetValue(content.GetType(), out tab))
+            if(this.pages.TryGetValue(pageType, out tab))
             {
                 tab.IsChecked = false;
             }
@@ -142,14 +150,9 @@ namespace ExViewer.Views
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
 
-        private void Grid_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Debug.WriteLine(e.OriginalSource, "Focus state");
-        }
-
         private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)
         {
-            await RootController.RequireLogOn();
+            await RootController.RequestLogOn();
         }
     }
 }

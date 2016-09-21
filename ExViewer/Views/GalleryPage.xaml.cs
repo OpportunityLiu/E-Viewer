@@ -158,11 +158,6 @@ namespace ExViewer.Views
                 EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, false);
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            VM = null;
-        }
-
         UIElement entranceElement;
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)

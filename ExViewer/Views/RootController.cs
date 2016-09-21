@@ -12,8 +12,9 @@ using System.Diagnostics;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Navigation;
 using ExClient;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using JYAnalyticsUniversal;
 using Microsoft.HockeyApp;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.Views
 {
@@ -76,7 +77,12 @@ namespace ExViewer.Views
 
             public static void SendToast(Exception ex, Type source)
             {
-                HockeyClient.Current.TrackEvent($"Handled exception: {ex.GetType().ToString()} {ex.HResult:X8}");
+                var sourceString = source?.ToString() ?? "null";
+                JYAnalytics.TrackError($"Exception {ex.HResult:X8}: {ex.GetType().ToString()} at {sourceString}");
+                HockeyClient.Current.TrackException(ex, new Dictionary<string, string>
+                {
+                    ["Source"] = sourceString
+                });
                 SendToast(ex.GetMessage(), source);
             }
 
@@ -105,12 +111,12 @@ namespace ExViewer.Views
                 root.sv_root.IsPaneOpen = !root.sv_root.IsPaneOpen;
             }
 
-            public static IAsyncOperation<ContentDialogResult> RequireLogOn()
+            public static IAsyncOperation<ContentDialogResult> RequestLogOn()
             {
                 return Run(async token =>
                 {
                     var result = await new LogOnDialog().ShowAsync();
-                    HockeyClient.Current.TrackEvent($"LogOnDialog closed: {result}");
+                    JYAnalytics.TrackEvent("LogOnRequested", $"Result: {result}");
                     UpdateUserInfo(result == ContentDialogResult.Primary);
                     return result;
                 });
@@ -133,8 +139,6 @@ namespace ExViewer.Views
                 {
                     root.UserInfo = await UserInfo.LoadFromCache();
                 }
-                if(root.UserInfo != null)
-                    HockeyClient.Current.UpdateContactInfo(root.UserInfo.DisplayName, "");
             }
 
             public static bool ViewDisabled

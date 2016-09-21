@@ -41,7 +41,7 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             if(Client.Current.NeedLogOn)
             {
-                await RootControl.RootController.RequireLogOn();
+                await RootControl.RootController.RequestLogOn();
             }
             VM = new SearchVM(e.Parameter?.ToString());
             if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
