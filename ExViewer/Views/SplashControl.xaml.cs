@@ -30,6 +30,7 @@ namespace ExViewer.Views
             this.InitializeComponent();
             var imgN = new Random().Next(1, 8);
             this.img_pic.Source = new BitmapImage(new Uri($"http://ehgt.org/c/botm{imgN}.jpg"));
+            this.loadApplication();
         }
 
         private void splash_Loading(FrameworkElement sender, object args)
@@ -41,66 +42,140 @@ namespace ExViewer.Views
         {
         }
 
-        public async void prepareCompleted()
+        public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
+            : this()
         {
-            var initdb = Task.Run(async () =>
-            {
-                ExClient.Models.GalleryDb.Migrate();
-                Database.SearchHistoryDb.Migrate();
-                await TagExtension.Init();
-            });
+            this.splashScreen = splashScreen;
+            this.previousExecutionState = previousExecutionState;
+        }
+
+        private Type homePageType;
+        private ApplicationExecutionState previousExecutionState;
+
+        private void ShowPic_Completed(object sender, object e)
+        {
+            FindName(nameof(pr));
+        }
+
+        private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Images/Splash.png"));
+            // After the default image loaded, prepareCompleted() will be called.
+        }
+
+        private void img_pic_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            loadEffect();
+        }
+
+        private void splash_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(DeviceTrigger.IsMobile)
+                return;
+            var l = splashScreen.ImageLocation;
+            this.img_splash.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
+            this.img_splash.Width = l.Width;
+            this.img_splash.Height = l.Height;
+
+            this.img_pic.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
+            this.img_pic.Width = l.Width;
+            this.img_pic.Height = l.Height;
+        }
+
+        private void goToContent()
+        {
+            Window.Current.Content = new RootControl(homePageType, previousExecutionState);
+            Themes.ThemeExtention.SetTitleBar();
+        }
+
+        private bool effectLoaded, applicationLoaded;
+        private object syncRoot = new object();
+
+        private async void loadEffect()
+        {
             await Task.Delay(50);
             Window.Current.Activate();
             ShowPic.Begin();
-
-            if(Client.Current.NeedLogOn)
+            lock(syncRoot)
             {
-                try
-                {
-                    var pass = AccountManager.CurrentCredential;
-                    if(pass != null)
-                    {
-                        pass.RetrievePassword();
-                        await Client.Current.LogOnAsync(pass.UserName, pass.Password, null);
-                    }
-                }
-                catch(Exception)
-                {
-                }
+                if(applicationLoaded)
+                    goToContent();
+                else
+                    effectLoaded = true;
             }
-            await initdb;
-            IAsyncAction initSearch = null;
-            if(!Client.Current.NeedLogOn)
-            {
-                initSearch = SearchVM.InitAsync();
-            }
-
-            if(SettingCollection.Current.NeedVerify)
-            {
-                await verify();
-            }
-            if(initSearch != null)
-            {
-                try
-                {
-                    await await Task.WhenAny(initSearch.AsTask(), Task.Delay(7000));
-                    rc = new RootControl(typeof(SearchPage), previousExecutionState);
-                }
-                catch(Exception)
-                {
-                    rc = new RootControl(typeof(CachePage), previousExecutionState);
-                }
-            }
-            else
-                rc = new RootControl(typeof(SearchPage), previousExecutionState);
-            GoToContent();
         }
 
-        private static async Task verify()
+        private async void loadApplication()
         {
-            var result = await UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.VerifyDialogContent);
+            await Task.Run(async () =>
+            {
+                var initdb = Task.Run(async () =>
+                {
+                    ExClient.Models.GalleryDb.Migrate();
+                    Database.SearchHistoryDb.Migrate();
+                    await TagExtension.Init();
+                });
+
+                if(Client.Current.NeedLogOn)
+                {
+                    try
+                    {
+                        var pass = AccountManager.CurrentCredential;
+                        if(pass != null)
+                        {
+                            pass.RetrievePassword();
+                            await Client.Current.LogOnAsync(pass.UserName, pass.Password, null);
+                        }
+                    }
+                    catch(Exception)
+                    {
+                    }
+                }
+                await initdb;
+                IAsyncAction initSearch = null;
+                if(!Client.Current.NeedLogOn)
+                {
+                    initSearch = SearchVM.InitAsync();
+                }
+
+                if(SettingCollection.Current.NeedVerify)
+                {
+                    await verify();
+                }
+                if(initSearch != null)
+                {
+                    try
+                    {
+                        await await Task.WhenAny(initSearch.AsTask(), Task.Delay(7000));
+                        homePageType = typeof(SearchPage);
+                    }
+                    catch(Exception)
+                    {
+                        homePageType = typeof(CachePage);
+                    }
+                }
+                else
+                    homePageType = typeof(SearchPage);
+            });
+            lock(syncRoot)
+            {
+                if(effectLoaded)
+                    goToContent();
+                else
+                    applicationLoaded = true;
+            }
+        }
+
+        private async Task verify()
+        {
+            Task<UserConsentVerificationResult> verifyTask = null;
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                verifyTask = UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.VerifyDialogContent).AsTask();
+            });
             string info = null;
             var succeed = false;
+            var result = await verifyTask;
             switch(result)
             {
             case UserConsentVerificationResult.Verified:
@@ -126,63 +201,21 @@ namespace ExViewer.Views
             {
                 if(info != null)
                 {
-                    var dialog = new ContentDialog
+                    Task showDialogTask = null;
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
-                        Title = LocalizedStrings.Resources.VerifyFailedDialogTitle,
-                        Content = info,
-                        PrimaryButtonText = LocalizedStrings.Resources.OK
-                    };
-                    await dialog.ShowAsync();
+                        var dialog = new ContentDialog
+                        {
+                            Title = LocalizedStrings.Resources.VerifyFailedDialogTitle,
+                            Content = info,
+                            PrimaryButtonText = LocalizedStrings.Resources.OK
+                        };
+                        showDialogTask = dialog.ShowAsync().AsTask();
+                    });
+                    await showDialogTask;
                 }
                 Application.Current.Exit();
             }
-        }
-
-        public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
-            : this()
-        {
-            this.splashScreen = splashScreen;
-            this.previousExecutionState = previousExecutionState;
-        }
-
-        private RootControl rc;
-        private ApplicationExecutionState previousExecutionState;
-
-        public void GoToContent()
-        {
-            Window.Current.Content = rc;
-            rc = null;
-            Themes.ThemeExtention.SetTitleBar();
-        }
-
-        private void ShowPic_Completed(object sender, object e)
-        {
-            FindName(nameof(pr));
-        }
-
-        private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Images/Splash.png"));
-            // After the default image loaded, prepareCompleted() will be called.
-        }
-
-        private void img_pic_ImageOpened(object sender, RoutedEventArgs e)
-        {
-            prepareCompleted();
-        }
-
-        private void splash_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if(DeviceTrigger.IsMobile)
-                return;
-            var l = splashScreen.ImageLocation;
-            this.img_splash.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
-            this.img_splash.Width = l.Width;
-            this.img_splash.Height = l.Height;
-
-            this.img_pic.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
-            this.img_pic.Width = l.Width;
-            this.img_pic.Height = l.Height;
         }
     }
 }
