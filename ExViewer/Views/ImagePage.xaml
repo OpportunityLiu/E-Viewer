@@ -169,7 +169,7 @@
                             <StackPanel>
                                 <TextBlock x:Name="tb_Info"
                                            Style="{StaticResource BodyTextBlockStyle}"
-                                           Text="{x:Bind VM.CurrentInfo, Mode=OneWay, TargetNullValue=The image hasn\&apos;t finished loading}" />
+                                           Text="{x:Bind VM.CurrentInfo, Mode=OneWay}" />
                                 <Button x:Uid="ImagePageOpenInExplorerButton"
                                         x:Name="btn_OpenInExplorer"
                                         Content="Open in explorer"

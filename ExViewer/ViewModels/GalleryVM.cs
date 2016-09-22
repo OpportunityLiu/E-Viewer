@@ -277,7 +277,7 @@ namespace ExViewer.ViewModels
                 var current = GetCurrent();
                 if(current?.ImageFile == null)
                 {
-                    CurrentInfo = null;
+                    CurrentInfo = LocalizedStrings.Resources.ImagePageImageFileInfoDefault;
                     return;
                 }
                 var prop = await current.ImageFile.GetBasicPropertiesAsync();
