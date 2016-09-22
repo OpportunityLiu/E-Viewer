@@ -11,7 +11,7 @@
       Loading="Control_Loading"
       Loaded="Control_Loaded"
       Unloaded="Control_Unloaded">
-    <UserControl.Resources>
+    <Page.Resources>
         <Storyboard x:Key="ShowDisablePanel">
             <DoubleAnimation Duration="0:0:0.5"
                              From="0"
@@ -50,7 +50,7 @@
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
-    </UserControl.Resources>
+    </Page.Resources>
     <Grid>
         <SplitView x:Name="sv_root"
                    IsTabStop="False"

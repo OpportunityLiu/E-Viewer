@@ -433,4 +433,7 @@
   <data name="VerifyRetriesExhausted" xml:space="preserve">
     <value>超过允许的重试次数，请重新启动应用后再试一次。</value>
   </data>
+  <data name="ImagePageImageFileInfoDefault" xml:space="preserve">
+    <value>图片未加载完成。</value>
+  </data>
 </root>
