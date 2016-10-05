@@ -30,12 +30,12 @@ namespace ExClient
         {
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
             cookieManager = httpFilter.CookieManager;
-            HttpClient = new HttpClient(new Internal.RedirectFilter(httpFilter));
+            HttpClient = new Internal.MyHttpClient(new HttpClient(new Internal.RedirectFilter(httpFilter)));
         }
 
         private HttpCookieManager cookieManager;
 
-        internal HttpClient HttpClient
+        internal Internal.MyHttpClient HttpClient
         {
             get;
         }
@@ -80,10 +80,13 @@ namespace ExClient
                         switch(errorText)
                         {
                         case "Username or password incorrect":
-                            throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
-                        default:
-                            throw new InvalidOperationException(errorText);
+                            errorText = LocalizedStrings.Resources.WrongAccountInfo;
+                            break;
+                        case "The captcha was not entered correctly. Please try again.":
+                            errorText = LocalizedStrings.Resources.WrongCaptcha;
+                            break;
                         }
+                        throw new InvalidOperationException(errorText);
                     }
                     var init = await HttpClient.GetAsync(RootUri, HttpCompletionOption.ResponseHeadersRead);
                     if(cookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")

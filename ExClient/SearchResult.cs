@@ -67,7 +67,7 @@ namespace ExClient
 
         private IAsyncOperation<uint> init()
         {
-            return Task.Run(async () =>
+            return Run(async token =>
             {
                 var args = new Dictionary<string, string>()
                 {
@@ -89,6 +89,7 @@ namespace ExClient
                 var uri = new Uri(searchUri, $"?{query}");
                 searchResultBaseUri = uri.OriginalString;
                 var lans = client.HttpClient.GetInputStreamAsync(uri);
+                token.Register(lans.Cancel);
                 using(var ans = await lans)
                 {
                     var doc = new HtmlDocument();
@@ -121,14 +122,14 @@ namespace ExClient
                     else
                         return 0u;
                 }
-            }).AsAsyncOperation();
+            });
         }
 
         private static readonly Regex gLinkMatcher = new Regex(@".+?/g/(\d+)/([0-9a-f]+).+?", RegexOptions.Compiled);
 
         private IAsyncOperation<uint> loadPage(HtmlDocument doc)
         {
-            return Task.Run(async () =>
+            return Run(async token =>
             {
                 var table = (from node in doc.DocumentNode.Descendants("table")
                              where node.GetAttributeValue("class", "") == "itg"
@@ -164,7 +165,7 @@ namespace ExClient
                     return item;
                 });
                 return (uint)AddRange(toAdd);
-            }).AsAsyncOperation();
+            });
         }
 
         [JsonArray]
@@ -207,16 +208,18 @@ namespace ExClient
             if(pageIndex == 0)
                 return init();
 
-            return Task.Run(async () =>
+            return Run(async token =>
             {
                 var uri = new Uri($"{this.searchResultBaseUri}&page={pageIndex.ToString()}");
-                using(var stream = (await client.HttpClient.GetInputStreamAsync(uri)).AsStreamForRead())
+                var getStream = client.HttpClient.GetInputStreamAsync(uri);
+                token.Register(getStream.Cancel);
+                using(var stream = (await getStream).AsStreamForRead())
                 {
                     var doc = new HtmlDocument();
                     doc.Load(stream);
                     return await loadPage(doc);
                 }
-            }).AsAsyncOperation();
+            });
         }
     }
 }

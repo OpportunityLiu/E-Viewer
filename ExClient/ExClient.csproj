@@ -117,6 +117,7 @@
     <Compile Include="Comment.cs" />
     <Compile Include="Helpers\HtmlHelper.cs" />
     <Compile Include="Internal\ImageHandle.cs" />
+    <Compile Include="Internal\MyHttpClient.cs" />
     <Compile Include="Internal\RedirectFilter.cs" />
     <Compile Include="Migrations\20160717022029_MyFirstMigration.cs" />
     <Compile Include="Migrations\20160717022029_MyFirstMigration.designer.cs">
