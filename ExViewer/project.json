@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "HockeySDK.UWP": "4.1.4",
+    "HockeySDK.UWP": "4.1.5",
     "ImageLib.UWP": "5.0.0",
     "JyAnalytics": "1.0.10",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.0.1",
