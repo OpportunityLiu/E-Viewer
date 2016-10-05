@@ -73,7 +73,7 @@ namespace ExClient
                     html.LoadHtml(str);
                     var ans = html.DocumentNode.Descendants("textarea").SingleOrDefault();
                     if(ans == null)
-                        throw new ArgumentException(LocalizedStrings.Resources.WrongCaptcha, nameof(response));
+                        throw new ArgumentException(LocalizedStrings.Resources.WrongCaptcha);
                     Answer = ans.InnerText;
                 }
             });

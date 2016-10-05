@@ -56,16 +56,23 @@ namespace ExViewer.Views
                 {
                     if(recap != null)
                         await recap.Submit(tb_ReCaptcha.Text);
-                    await Client.Current.LogOnAsync(username, password, recap);
-
-                    AccountManager.CurrentCredential = AccountManager.CreateCredential(username, password);
                 }
-                catch(ArgumentException ex) when(ex.ParamName == "response")
+                catch(Exception ex)
                 {
                     await loadReCapcha();
                     tb_info.Text = ex.GetMessage();
                     tb_ReCaptcha.Focus(FocusState.Programmatic);
                     args.Cancel = true;
+                }
+                try
+                {
+                    if(args.Cancel)
+                        return;
+                    await Client.Current.LogOnAsync(username, password, recap);
+                    AccountManager.CurrentCredential = AccountManager.CreateCredential(username, password);
+                }
+                catch(ArgumentException ex) when(ex.ParamName == "response")
+                {
                 }
                 catch(NotSupportedException ex)
                 {
@@ -76,10 +83,15 @@ namespace ExViewer.Views
                     tb_user.Focus(FocusState.Programmatic);
                     args.Cancel = true;
                 }
+                catch(InvalidOperationException ex)
+                {
+                    await loadReCapcha();
+                    tb_info.Text = ex.GetMessage();
+                    tb_user.Focus(FocusState.Programmatic);
+                    args.Cancel = true;
+                }
                 catch(Exception ex)
                 {
-                    if((uint)ex.HResult != 0x80072ee7)
-                        await loadReCapcha();
                     tb_info.Text = ex.GetMessage();
                     tb_user.Focus(FocusState.Programmatic);
                     args.Cancel = true;

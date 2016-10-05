@@ -197,12 +197,12 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" />
         </Grid>
-        <TextBlock x:Name="tb_info"
-                   Margin="0,4"
-                   HorizontalAlignment="Stretch"
-                   TextWrapping="WrapWholeWords" />
-        <ProgressBar x:Name="pb_Loading"
-                     Margin="0,4"
-                     Visibility="{x:Bind pb_Loading.IsIndeterminate, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
+        <Grid Margin="0,4">
+            <TextBlock x:Name="tb_info"
+                       HorizontalAlignment="Stretch"
+                       TextWrapping="WrapWholeWords" />
+            <ProgressBar x:Name="pb_Loading"
+                         Visibility="{x:Bind pb_Loading.IsIndeterminate, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
+        </Grid>
     </StackPanel>
 </ContentDialog>

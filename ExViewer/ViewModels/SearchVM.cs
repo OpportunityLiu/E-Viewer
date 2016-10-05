@@ -232,7 +232,7 @@ namespace ExViewer.ViewModels
             }).AsAsyncOperation();
         }
 
-        internal bool AutoComplateFinished(object selectedSuggestion)
+        internal bool AutoCompleteFinished(object selectedSuggestion)
         {
             if(selectedSuggestion is SearchHistory)
                 return true;

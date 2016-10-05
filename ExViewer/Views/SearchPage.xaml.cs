@@ -141,7 +141,7 @@ namespace ExViewer.Views
 
         private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            if(!VM.AutoComplateFinished(args.SelectedItem))
+            if(!VM.AutoCompleteFinished(args.SelectedItem))
                 return;
             sender.Focus(FocusState.Programmatic);
         }
