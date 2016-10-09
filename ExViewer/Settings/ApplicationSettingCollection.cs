@@ -9,13 +9,13 @@ using Windows.Storage;
 namespace ExViewer.Settings
 {
 
-    public class SettingCollectionBase : ExClient.ObservableObject
+    public class ApplicationSettingCollection : ExClient.ObservableObject
     {
-        protected SettingCollectionBase(string containerName)
+        protected ApplicationSettingCollection(string containerName)
         {
             var data = ApplicationData.Current;
-            this.local = data.LocalSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
-            this.roaming = data.RoamingSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
+            this.localStorage = data.LocalSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
+            this.roamingStorage = data.RoamingSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
         }
 
         private bool loaded;
@@ -30,9 +30,10 @@ namespace ExViewer.Settings
                 if(loaded)
                     return;
                 loaded = true;
-                groupedProperties = (from property in this.GetType().GetRuntimeProperties()
-                                     where property.GetCustomAttribute<SettingAttribute>() != null
-                                     select new SettingInfo(property) into setting
+                properties = (from property in this.GetType().GetRuntimeProperties()
+                              where property.GetCustomAttribute<SettingAttribute>() != null
+                              select new SettingInfo(property)).ToDictionary(si => si.Name);
+                groupedProperties = (from setting in properties.Values
                                      orderby setting.Index
                                      group setting by setting.Category into grouped
                                      select new GroupedSettings(grouped.Key, grouped)).ToList();
@@ -53,8 +54,10 @@ namespace ExViewer.Settings
 
         public List<GroupedSettings> GroupedSettings => groupedProperties;
 
-        private readonly IPropertySet local;
-        private readonly IPropertySet roaming;
+        private readonly IPropertySet localStorage;
+        private readonly IPropertySet roamingStorage;
+
+        private Dictionary<string, SettingInfo> properties;
 
         private T Get<T>(IPropertySet container, T @default, string key)
         {
@@ -107,17 +110,17 @@ namespace ExViewer.Settings
 
         protected T GetLocal<T>(T @default, [CallerMemberName]string key = null)
         {
-            return Get(local, @default, key);
+            return Get(localStorage, @default, key);
         }
 
         protected void SetLocal<T>(T value, [CallerMemberName]string key = null)
         {
-            Set(local, value, key, false);
+            Set(localStorage, value, key, false);
         }
 
         protected void ForceSetLocal<T>(T value, [CallerMemberName]string key = null)
         {
-            Set(local, value, key, true);
+            Set(localStorage, value, key, true);
         }
 
         protected T GetRoaming<T>(string key)
@@ -127,17 +130,17 @@ namespace ExViewer.Settings
 
         protected T GetRoaming<T>(T @default, [CallerMemberName]string key = null)
         {
-            return Get(roaming, @default, key);
+            return Get(roamingStorage, @default, key);
         }
 
         protected void SetRoaming<T>(T value, [CallerMemberName]string key = null)
         {
-            Set(roaming, value, key, false);
+            Set(roamingStorage, value, key, false);
         }
 
         protected void ForceSetRoaming<T>(T value, [CallerMemberName]string key = null)
         {
-            Set(roaming, value, key, true);
+            Set(roamingStorage, value, key, true);
         }
     }
 }

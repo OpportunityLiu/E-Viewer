@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace ExViewer.Settings
 {
-    class StatusCollection : SettingCollectionBase
+    class StatusCollection : ApplicationSettingCollection
     {
         public static StatusCollection Current
         {
             get;
-            private set;
         } = new StatusCollection();
 
         private StatusCollection()

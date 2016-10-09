@@ -156,7 +156,7 @@
     <Compile Include="Settings\GroupedSettings.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingInfo.cs" />
-    <Compile Include="Settings\SettingCollectionBase.cs" />
+    <Compile Include="Settings\ApplicationSettingCollection.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Settings\StatusCollection.cs" />
     <Compile Include="Strings\Strings.cs">

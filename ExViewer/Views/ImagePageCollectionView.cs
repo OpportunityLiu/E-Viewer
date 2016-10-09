@@ -62,9 +62,11 @@ namespace ExViewer.Views
                 if(collection != null)
                     collection.CollectionChanged -= collection_CollectionChanged;
                 collection = value;
-                ensureCacheSize(collection.RecordCount);
                 if(collection != null)
+                {
                     collection.CollectionChanged += collection_CollectionChanged;
+                    ensureCacheSize(collection.RecordCount);
+                }
             }
         }
 

@@ -26,14 +26,16 @@ namespace ExViewer.Settings
         internal SettingInfo(PropertyInfo info)
         {
             PropertyInfo = info;
+
             var setting = info.GetCustomAttribute<SettingAttribute>();
             Name = info.Name;
             FriendlyName = LocalizedStrings.Settings.GetString(Name);
             Category = setting.Category;
             Index = setting.Index;
+
             Range = info.GetCustomAttributes().Select(a => a as IValueRange).SingleOrDefault(a => a != null);
             BooleanRepresent = info.GetCustomAttribute<BooleanRepresentAttribute>() ?? BooleanRepresentAttribute.Default;
-            EnumRepresent = info.GetCustomAttribute<EnumRepresentAttribute>();
+            EnumRepresent = info.GetCustomAttribute<EnumRepresentAttribute>() ?? EnumRepresentAttribute.Default;
 
             var type = info.PropertyType;
             if(setting.SettingPresenterTemplate != null)
@@ -55,6 +57,8 @@ namespace ExViewer.Settings
                 Type = SettingType.String;
             else if(type.GetTypeInfo().IsEnum)
                 Type = SettingType.Enum;
+            else
+                throw new InvalidOperationException($"Unsupported property type: {{{type}}}");
             SettingCollection.Current.PropertyChanged += SettingsChanged;
         }
 

@@ -227,7 +227,7 @@ namespace ExViewer.Views
                 s.settingType = sv.PropertyInfo.PropertyType;
                 var selections = Enum.GetNames(s.settingType)
                     .Select(name =>
-                        new EnumSelection(name, LocalizedStrings.Settings.GetString(sv.EnumRepresent.ResourcePrefix + name)))
+                        new EnumSelection(name, sv.EnumRepresent.GetFriendlyNameOf(name)))
                     .ToList();
                 s.ItemsSource = selections;
                 s.SelectedItem = selections.Single(sel => sel.EnumName == sv.Value.ToString());
