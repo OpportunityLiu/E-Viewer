@@ -414,14 +414,16 @@
                                 <DataTemplate x:DataType="VM:TagList">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition x:Uid="GalleryPageTagNameSpaceColumnDefinition"
+                                                              Width="200" />
+                                            <ColumnDefinition  Width="8" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Column="0"
                                                    Text="{x:Bind NameSpace, Converter={StaticResource NameSpaceToFriendlyStringConverter}}"
-                                                   MinWidth="80"
-                                                   Padding="2,0" />
-                                        <GridView Grid.Column="1"
+                                                   Padding="2,0"
+                                                   HorizontalAlignment="Right" />
+                                        <GridView Grid.Column="2"
                                                   ItemsSource="{x:Bind}"
                                                   SelectionMode="None"
                                                   IsItemClickEnabled="True"

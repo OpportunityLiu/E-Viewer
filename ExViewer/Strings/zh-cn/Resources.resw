@@ -436,4 +436,7 @@
   <data name="ImagePageImageFileInfoDefault" xml:space="preserve">
     <value>图片未加载完成。</value>
   </data>
+  <data name="GalleryPageTagNameSpaceColumnDefinition.Width" xml:space="preserve">
+    <value>68</value>
+  </data>
 </root>
