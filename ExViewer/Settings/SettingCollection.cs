@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace ExViewer.Settings
 {
-    public class SettingCollection : SettingCollectionBase
+    public class SettingCollection : ApplicationSettingCollection
     {
         public static SettingCollection Current
         {

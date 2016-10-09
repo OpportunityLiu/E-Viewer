@@ -26,16 +26,19 @@ namespace ExViewer.Settings
     }
 
     [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    sealed class SettingAttribute : Attribute
+    public sealed class SettingAttribute : Attribute
     {
-        readonly string category;
-
         public SettingAttribute(string categoryNameKey)
         {
-            this.category = LocalizedStrings.Settings.GetString(categoryNameKey);
+            CategoryNameKey = categoryNameKey;
         }
 
-        public string Category => category;
+        public string CategoryNameKey
+        {
+            get;
+        }
+
+        public string Category => LocalizedStrings.Settings.GetString(CategoryNameKey);
 
         public int Index
         {
@@ -242,19 +245,23 @@ namespace ExViewer.Settings
 
         public BooleanRepresentAttribute(string trueStringKey, string falseStringKey)
         {
-            TrueString = LocalizedStrings.Settings.GetString(trueStringKey);
-            FalseString = LocalizedStrings.Settings.GetString(falseStringKey);
+            TrueStringKey = trueStringKey;
+            FalseStringKey = falseStringKey;
         }
 
-        public string TrueString
+        public string TrueStringKey
         {
             get;
         }
 
-        public string FalseString
+        public string FalseStringKey
         {
             get;
         }
+
+        public string TrueString => LocalizedStrings.Settings.GetString(TrueStringKey);
+
+        public string FalseString => LocalizedStrings.Settings.GetString(FalseStringKey);
     }
 
     [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
@@ -269,5 +276,17 @@ namespace ExViewer.Settings
         {
             get;
         }
+
+        public string GetFriendlyNameOf(string name)
+        {
+            if(ReferenceEquals(this, Default))
+                return name;
+            return LocalizedStrings.Settings.GetString(ResourcePrefix + name);
+        }
+
+        public static EnumRepresentAttribute Default
+        {
+            get;
+        } = new EnumRepresentAttribute(null);
     }
 }
