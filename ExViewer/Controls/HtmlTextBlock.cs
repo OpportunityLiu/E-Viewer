@@ -167,7 +167,7 @@ namespace ExViewer.Controls
                     u.Inlines.Add(item);
                 return u;
             case "del"://[s]
-                var s = new Span() { Foreground = (Brush)Resources["ApplicationSecondaryForegroundThemeBrush"] };
+                var s = new Span() { Foreground = (Brush)Resources["SystemControlBackgroundChromeMediumBrush"] };
                 foreach(var item in createChildNodes(node, detectLink))
                     s.Inlines.Add(item);
                 return s;
