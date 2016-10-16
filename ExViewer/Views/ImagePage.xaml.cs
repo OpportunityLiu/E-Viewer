@@ -49,13 +49,25 @@ namespace ExViewer.Views
 
         private ImagePageCollectionView collectionView = new ImagePageCollectionView();
 
-        private static void VMPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        private static async void VMPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
         {
             var that = (ImagePage)dp;
-            that.fv.ItemsSource = null;
-            var g = ((GalleryVM)e.NewValue)?.Gallery;
-            that.collectionView.Collection = g;
-            that.fv.ItemsSource = that.collectionView;
+            var pageFlipView = that.fv;
+            var oldVM = (GalleryVM)e.OldValue;
+            var newVM = (GalleryVM)e.NewValue;
+            if(oldVM != null && newVM == null)
+            {
+                if(pageFlipView.SelectedIndex < oldVM.Gallery.Count)
+                    oldVM.CurrentIndex = pageFlipView.SelectedIndex;
+                else
+                    oldVM.CurrentIndex = oldVM.Gallery.Count - 1;
+            }
+            pageFlipView.ItemsSource = null;
+            that.collectionView.Collection = newVM?.Gallery;
+            await Task.Yield();
+            pageFlipView.ItemsSource = that.collectionView;
+            if(newVM != null)
+                that.fv.SelectedIndex = newVM.CurrentIndex;
         }
 
         private readonly ApplicationView av = ApplicationView.GetForCurrentView();
@@ -84,12 +96,8 @@ namespace ExViewer.Views
 
             cb_top.Visibility = Visibility.Visible;
             VM = await GalleryVM.GetVMAsync((long)e.Parameter);
-            Bindings.Update();
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(av, null);
-            fv.SelectedIndex = VM.CurrentIndex;
-            await Task.Delay(50);
-            fv.SelectedIndex = VM.CurrentIndex;
             fv.Focus(FocusState.Pointer);
             if(SettingCollection.Current.KeepScreenOn)
             {
@@ -103,10 +111,7 @@ namespace ExViewer.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            if(fv.SelectedIndex < VM.Gallery.Count)
-                VM.CurrentIndex = fv.SelectedIndex;
-            else
-                VM.CurrentIndex = VM.Gallery.Count - 1;
+            VM = null;
 
             if(DeviceTrigger.IsMobile)
                 RootControl.RootController.SetFullScreen(false);
@@ -128,17 +133,8 @@ namespace ExViewer.Views
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
         {
             var currentState = RootControl.RootController.IsFullScreen;
-            switch(isFullScreen)
-            {
-            case true:
-                if(currentState)
-                    return;
-                break;
-            case false:
-                if(!currentState)
-                    return;
-                break;
-            }
+            if(currentState == isFullScreen)
+                return;
             if(currentState)
             {
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);

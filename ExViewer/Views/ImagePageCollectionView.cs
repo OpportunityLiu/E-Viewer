@@ -11,7 +11,7 @@ namespace ExViewer.Views
 {
     internal class ImagePageCollectionView : IReadOnlyList<IImagePageImageView>, IDisposable
     {
-        private const int initialCapacity = 16;
+        private const int initialCapacity = 10;
 
         public ImagePageCollectionView()
         {

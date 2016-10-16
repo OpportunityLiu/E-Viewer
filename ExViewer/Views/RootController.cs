@@ -24,7 +24,6 @@ namespace ExViewer.Views
         {
             static RootController()
             {
-                Application.Current.UnhandledException += App_UnhandledException;
                 av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             }
 
@@ -42,24 +41,6 @@ namespace ExViewer.Views
                 }
             }
 
-            private static void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-            {
-#if DEBUG
-                if(Debugger.IsAttached)
-                    Debugger.Break();
-#endif
-                SendToast(e.Exception, null);
-                e.Handled = true;
-            }
-
-            private static void Frame_NavigationFailed(object sender, NavigationFailedEventArgs e)
-            {
-#if DEBUG
-                if(Debugger.IsAttached)
-                    Debugger.Break();
-#endif
-            }
-
             private static RootControl root;
 
             private static Storyboard showPanel, hidePanel, playToast;
@@ -67,7 +48,6 @@ namespace ExViewer.Views
             internal static void SetRoot(RootControl root)
             {
                 RootController.root = root;
-                root.fm_inner.NavigationFailed += Frame_NavigationFailed;
                 showPanel = (Storyboard)root.Resources["ShowDisablePanel"];
                 hidePanel = (Storyboard)root.Resources["HideDisablePanel"];
                 playToast = (Storyboard)root.Resources["PlayToastPanel"];
@@ -81,10 +61,6 @@ namespace ExViewer.Views
             {
                 var sourceString = source?.ToString() ?? "null";
                 JYAnalytics.TrackError($"Exception {ex.HResult:X8}: {ex.GetType().ToString()} at {sourceString}");
-                HockeyClient.Current.TrackException(ex, new Dictionary<string, string>
-                {
-                    ["Source"] = sourceString
-                });
                 SendToast(ex.GetMessage(), source);
             }
 
