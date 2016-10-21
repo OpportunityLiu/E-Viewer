@@ -23,7 +23,7 @@ namespace ApplicationDataManager.Settings
 
     public class SettingInfo : ObservableObject
     {
-        internal SettingInfo(PropertyInfo info, ApplicationSettingCollection settingCollection)
+        internal SettingInfo(PropertyInfo info, ApplicationDataCollection settingCollection)
         {
             PropertyInfo = info;
 
@@ -63,7 +63,7 @@ namespace ApplicationDataManager.Settings
             this.settingCollection = settingCollection;
         }
 
-        private ApplicationSettingCollection settingCollection;
+        private ApplicationDataCollection settingCollection;
 
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
