@@ -20,7 +20,7 @@
     <PackageCertificateKeyFile>ExViewer_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
     <PackageCertificateThumbprint>923586DE9DA4CC8E3B381F4D8609BC09E7F3E6AC</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
@@ -152,11 +152,7 @@
       <DependentUpon>20160717021413_MyFirstMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\SearchHistoryDbModelSnapshot.cs" />
-    <Compile Include="Settings\Attributes.cs" />
-    <Compile Include="Settings\GroupedSettings.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
-    <Compile Include="Settings\SettingInfo.cs" />
-    <Compile Include="Settings\ApplicationSettingCollection.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Settings\StatusCollection.cs" />
     <Compile Include="Strings\Strings.cs">
@@ -369,6 +365,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationDataManager\ApplicationDataManager.csproj">
+      <Project>{33ccbcb8-8709-4c6c-ad59-e156f1e04fd0}</Project>
+      <Name>ApplicationDataManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EhTagTranslatorClient\EhTagTranslatorClient.csproj">
       <Project>{7a7c3d38-128a-406d-ad3c-eec617386f14}</Project>
       <Name>EhTagTranslatorClient</Name>

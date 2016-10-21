@@ -11,10 +11,11 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using HtmlAgilityPack;
 using System.IO;
 using System.Runtime.InteropServices;
+using MetroLog;
 
 namespace ExClient
 {
-    public partial class Client : IDisposable
+    public partial class Client : IDisposable, ICanLog
     {
         public static Client Current
         {
@@ -28,6 +29,7 @@ namespace ExClient
 
         private Client()
         {
+            this.Log().Info("Create singleton");
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
             cookieManager = httpFilter.CookieManager;
             HttpClient = new Internal.MyHttpClient(new HttpClient(new Internal.RedirectFilter(httpFilter)));
@@ -114,6 +116,7 @@ namespace ExClient
 
         public void ClearLogOnInfo()
         {
+            this.Log().Info("Clear log on info");
             foreach(var item in cookieManager.GetCookies(RootUri))
             {
                 cookieManager.DeleteCookie(item);
@@ -124,7 +127,7 @@ namespace ExClient
             }
         }
 
-        public IAsyncOperationWithProgress<string, HttpProgress> PostStrAsync(Uri uri, string content)
+        internal IAsyncOperationWithProgress<string, HttpProgress> PostStrAsync(Uri uri, string content)
         {
             if(!uri.IsAbsoluteUri)
                 uri = new Uri(RootUri, uri);
@@ -151,7 +154,7 @@ namespace ExClient
             }
         }
 
-        public IAsyncOperationWithProgress<string, HttpProgress> PostApiAsync(string requestJson)
+        internal IAsyncOperationWithProgress<string, HttpProgress> PostApiAsync(string requestJson)
         {
             return PostStrAsync(apiUri, requestJson);
         }
@@ -160,12 +163,14 @@ namespace ExClient
         {
             if(hah == null)
             {
+                this.Log().Info("Clear hah settings");
                 var uconfig = cookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "uconfig");
                 if(uconfig != null)
                     cookieManager.DeleteCookie(uconfig);
             }
             else
             {
+                this.Log().Info("Set hah settings");
                 cookieManager.SetCookie(hah.GetCookie());
             }
         }

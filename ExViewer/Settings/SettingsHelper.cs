@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ExViewer.Settings
 {
-   internal static  class SettingsHelper
+    internal static class SettingsHelper
     {
         public static ConnectionStrategy GetStrategy(this SettingCollection @this)
         {

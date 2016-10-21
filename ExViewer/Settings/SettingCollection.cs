@@ -1,4 +1,5 @@
-﻿using ExClient;
+﻿using ApplicationDataManager.Settings;
+using ExClient;
 using Windows.UI.Xaml;
 
 namespace ExViewer.Settings

@@ -16,10 +16,11 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Runtime.InteropServices;
 using GalaSoft.MvvmLight.Threading;
+using MetroLog;
 
 namespace ExClient
 {
-    public class SearchResult : IncrementalLoadingCollection<Gallery>
+    public class SearchResult : IncrementalLoadingCollection<Gallery>, ICanLog
     {
         private static readonly Uri searchUri = new Uri("http://exhentai.org/");
 
@@ -58,6 +59,7 @@ namespace ExClient
 
         public void Reset()
         {
+            this.Log().Info("Create or reset");
             ResetAll();
             this.PageCount = 1;
             this.RecordCount = -1;
@@ -83,7 +85,7 @@ namespace ExClient
                 args.Add("f_apply", "Apply Filter");
                 HttpFormUrlEncodedContent query;
                 if(AdvancedSearch != null)
-                    query = new HttpFormUrlEncodedContent(args.Concat(AdvancedSearch.GetParamDictionary()));
+                    query = new HttpFormUrlEncodedContent(args.Concat(AdvancedSearch.AsEnumerable()));
                 else
                     query = new HttpFormUrlEncodedContent(args);
                 var uri = new Uri(searchUri, $"?{query}");
@@ -142,43 +144,13 @@ namespace ExClient
                               where detail != null
                               let match = gLinkMatcher.Match(detail.GetAttributeValue("href", ""))
                               where match.Success
-                              select new gdataRecord
+                              select new GalleryInfo
                               {
-                                  gid = long.Parse(match.Groups[1].Value),
-                                  gtoken = match.Groups[2].Value
+                                  Id = long.Parse(match.Groups[1].Value),
+                                  Token = match.Groups[2].Value
                               };
-                var json = JsonConvert.SerializeObject(new
-                {
-                    method = "gdata",
-                    @namespace = 1,
-                    gidlist = records
-                });
-                var type = new
-                {
-                    gmetadata = (IEnumerable<Gallery>)null
-                };
-                var str = await client.PostApiAsync(json);
-                var toAdd = JsonConvert.DeserializeAnonymousType(str, type).gmetadata.Select(item =>
-                {
-                    item.Owner = client;
-                    var ignore = item.InitAsync();
-                    return item;
-                });
-                return (uint)AddRange(toAdd);
+                return (uint)AddRange(await Gallery.FetchGalleriesAsync(records.ToList()));
             });
-        }
-
-        [JsonArray]
-        private class gdataRecord : IEnumerable
-        {
-            public long gid;
-            public string gtoken;
-
-            public IEnumerator GetEnumerator()
-            {
-                yield return gid;
-                yield return gtoken;
-            }
         }
 
         public string KeyWord
@@ -205,6 +177,7 @@ namespace ExClient
 
         protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
         {
+            this.Log().Info($"Start loading page {pageIndex}, KeyWord = {this.KeyWord}");
             if(pageIndex == 0)
                 return init();
 
@@ -217,7 +190,9 @@ namespace ExClient
                 {
                     var doc = new HtmlDocument();
                     doc.Load(stream);
-                    return await loadPage(doc);
+                    var r = await loadPage(doc);
+                    this.Log().Info($"Finish loading page {pageIndex}, KeyWord = {this.KeyWord}");
+                    return r;
                 }
             });
         }

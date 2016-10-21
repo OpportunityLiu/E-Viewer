@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace ExViewer.Settings
+namespace ApplicationDataManager.Settings
 {
     public class GroupedSettings : List<SettingInfo>
     {
