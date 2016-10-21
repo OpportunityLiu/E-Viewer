@@ -1,4 +1,4 @@
-﻿using ExClient;
+﻿using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExViewer.Settings
+namespace ApplicationDataManager.Settings
 {
     public enum SettingType
     {
@@ -23,13 +23,13 @@ namespace ExViewer.Settings
 
     public class SettingInfo : ObservableObject
     {
-        internal SettingInfo(PropertyInfo info)
+        internal SettingInfo(PropertyInfo info, ApplicationSettingCollection settingCollection)
         {
             PropertyInfo = info;
 
             var setting = info.GetCustomAttribute<SettingAttribute>();
             Name = info.Name;
-            FriendlyName = LocalizedStrings.Settings.GetString(Name);
+            FriendlyName = StringLoader.GetString(Name);
             Category = setting.Category;
             Index = setting.Index;
 
@@ -59,8 +59,11 @@ namespace ExViewer.Settings
                 Type = SettingType.Enum;
             else
                 throw new InvalidOperationException($"Unsupported property type: {{{type}}}");
-            SettingCollection.Current.PropertyChanged += SettingsChanged;
+            settingCollection.PropertyChanged += SettingsChanged;
+            this.settingCollection = settingCollection;
         }
+
+        private ApplicationSettingCollection settingCollection;
 
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -122,13 +125,13 @@ namespace ExViewer.Settings
         {
             get
             {
-                return PropertyInfo.GetValue(SettingCollection.Current);
+                return PropertyInfo.GetValue(settingCollection);
             }
             set
             {
                 if(value == null)
                     return;
-                PropertyInfo.SetValue(SettingCollection.Current, value);
+                PropertyInfo.SetValue(settingCollection, value);
             }
         }
     }

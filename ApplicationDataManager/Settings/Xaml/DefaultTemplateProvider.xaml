@@ -1,0 +1,53 @@
+﻿<ResourceDictionary x:Class="ApplicationDataManager.Settings.Xaml.DefaultTemplateProvider"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="using:ApplicationDataManager.Settings.Xaml"
+                    xmlns:settings="using:ApplicationDataManager.Settings">
+    <DataTemplate x:Name="String"
+                  x:DataType="settings:SettingInfo">
+        <TextBox Text="{x:Bind Value, Converter={StaticResource EmptyConverter}, Mode=TwoWay}"
+                 MinHeight="50">
+            <TextBox.Header>
+                <TextBlock Text="{x:Bind FriendlyName}"
+                           TextWrapping="WrapWholeWords" />
+            </TextBox.Header>
+        </TextBox>
+    </DataTemplate>
+    <DataTemplate x:Name="Number"
+                  x:DataType="settings:SettingInfo">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="{x:Bind FriendlyName}"
+                       FontWeight="{ThemeResource SliderHeaderThemeFontWeight}"
+                       TextWrapping="WrapWholeWords" />
+            <local:SettingSlider Grid.Row="1"
+                                 SettingValue="{x:Bind}">
+            </local:SettingSlider>
+        </Grid>
+    </DataTemplate>
+    <DataTemplate x:Name="Enum"
+                  x:DataType="settings:SettingInfo">
+        <local:SettingComboBox SettingValue="{x:Bind}"
+                               HorizontalAlignment="Stretch">
+            <local:SettingComboBox.Header>
+                <TextBlock Text="{x:Bind FriendlyName}"
+                           TextWrapping="WrapWholeWords" />
+            </local:SettingComboBox.Header>
+        </local:SettingComboBox>
+    </DataTemplate>
+    <DataTemplate x:Name="Boolean"
+                  x:DataType="settings:SettingInfo">
+        <ToggleSwitch HorizontalAlignment="Stretch"
+                      IsOn="{x:Bind Value, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
+                      OnContent="{x:Bind BooleanRepresent.TrueString}"
+                      OffContent="{x:Bind BooleanRepresent.FalseString}">
+            <ToggleSwitch.Header>
+                <TextBlock Text="{x:Bind FriendlyName}"
+                           TextWrapping="WrapWholeWords" />
+            </ToggleSwitch.Header>
+        </ToggleSwitch>
+    </DataTemplate>
+</ResourceDictionary>

@@ -72,7 +72,7 @@ namespace ExViewer
         /// 将在启动应用程序以打开特定文件等情况下使用。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if(System.Diagnostics.Debugger.IsAttached)
@@ -82,6 +82,11 @@ namespace ExViewer
                 //this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
             }
 #endif
+            lanunchCore(e, e.PrelaunchActivated);
+        }
+
+        private async void lanunchCore(IActivatedEventArgs e, bool prelaunchActivated)
+        {
             GalaSoft.MvvmLight.Threading.DispatcherHelper.Initialize();
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
@@ -94,7 +99,7 @@ namespace ExViewer
             }
             if(currentContent is SplashControl)
             {
-                if(!e.PrelaunchActivated)
+                if(!prelaunchActivated)
                     ((SplashControl)currentContent).EnableGoToContent();
             }
             else
@@ -102,6 +107,17 @@ namespace ExViewer
                 currentWindow.Activate();
             }
             await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("fcf0a9351ea5917ec80d8c1b58b56ff1");
+        }
+
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            base.OnActivated(args);
+            if(args.Kind == ActivationKind.Protocol)
+            {
+                var e = (ProtocolActivatedEventArgs)args;
+                
+            }
+            lanunchCore(args, false);
         }
 
         private async void OnResuming(object sender, object e)

@@ -84,7 +84,7 @@ namespace ExViewer.Views
         private async void goToContent()
         {
             if(SettingCollection.Current.NeedVerify)
-               await verify();
+                await verify();
             rootControl.PreviousState = previousExecutionState;
             rootControl.HomePageType = homePageType;
             Themes.ThemeExtention.SetTitleBar();
@@ -145,7 +145,8 @@ namespace ExViewer.Views
                     Database.SearchHistoryDb.Migrate();
                     await TagExtension.Init();
                 });
-
+                MetroLog.LogManagerFactory.DefaultConfiguration.AddTarget(MetroLog.LogLevel.Trace, MetroLog.LogLevel.Fatal, new MetroLog.Targets.StreamingFileTarget());
+                MetroLog.GlobalCrashHandler.Configure();
                 if(Client.Current.NeedLogOn)
                 {
                     try

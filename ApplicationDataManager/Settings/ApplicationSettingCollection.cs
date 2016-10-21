@@ -1,71 +1,48 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Threading;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 
-namespace ExViewer.Settings
+namespace ApplicationDataManager.Settings
 {
-
-    public class ApplicationSettingCollection : ExClient.ObservableObject
+    public class ApplicationSettingCollection : ObservableObject
     {
         protected ApplicationSettingCollection(string containerName)
         {
             var data = ApplicationData.Current;
             this.localStorage = data.LocalSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
             this.roamingStorage = data.RoamingSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
+            this.groupedSettings = new Lazy<ReadOnlyCollection<GroupedSettings>>(loadGroupedSettings, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
-        private bool loaded;
-        private object syncroot = new object();
-
-        private void load()
+        private ReadOnlyCollection<GroupedSettings> loadGroupedSettings()
         {
-            if(loaded)
-                return;
-            lock(syncroot)
-            {
-                if(loaded)
-                    return;
-                loaded = true;
-                properties = (from property in this.GetType().GetRuntimeProperties()
-                              where property.GetCustomAttribute<SettingAttribute>() != null
-                              select new SettingInfo(property)).ToDictionary(si => si.Name);
-                groupedProperties = (from setting in properties.Values
-                                     orderby setting.Index
-                                     group setting by setting.Category into grouped
-                                     select new GroupedSettings(grouped.Key, grouped)).ToList();
-#if DEBUG
-                testingProperties = (from property in this.GetType().GetRuntimeProperties()
-                                     let t = property.GetCustomAttribute<TestingValueAttribute>()
-                                     where t != null
-                                     select Tuple.Create(property.Name, t.Value)).ToDictionary(p => p.Item1, p => p.Item2);
-#endif
-            }
+            var properties = from property in this.GetType().GetRuntimeProperties()
+                             where property.GetCustomAttribute<SettingAttribute>() != null
+                             select new SettingInfo(property, this);
+            return new ReadOnlyCollection<GroupedSettings>(
+                (from setting in properties
+                 orderby setting.Index
+                 group setting by setting.Category into grouped
+                 select new GroupedSettings(grouped.Key, grouped)).ToArray());
         }
 
-        private List<GroupedSettings> groupedProperties;
+        private readonly Lazy<ReadOnlyCollection<GroupedSettings>> groupedSettings;
 
-#if DEBUG
-        private Dictionary<string, object> testingProperties;
-#endif
-
-        public List<GroupedSettings> GroupedSettings => groupedProperties;
+        public IReadOnlyList<GroupedSettings> GroupedSettings => groupedSettings.Value;
 
         private readonly IPropertySet localStorage;
         private readonly IPropertySet roamingStorage;
 
-        private Dictionary<string, SettingInfo> properties;
-
         private T Get<T>(IPropertySet container, T @default, string key)
         {
-            load();
-#if DEBUG
-            if(testingProperties.ContainsKey(key))
-                return (T)testingProperties[key];
-#endif
             try
             {
                 object v;
@@ -82,17 +59,11 @@ namespace ExViewer.Settings
 
         private bool HasValue(IPropertySet container, string key)
         {
-            load();
-#if DEBUG
-            if(testingProperties.ContainsKey(key))
-                return true;
-#endif
             return container.ContainsKey(key);
         }
 
         private void Set<T>(IPropertySet container, T value, string key, bool forceRaiseEvent)
         {
-            load();
             if(!forceRaiseEvent && HasValue(container, key) && Equals(Get(container, value, key), value))
                 return;
             var enu = value as Enum;

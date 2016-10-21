@@ -4,28 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExViewer.Settings
+namespace ApplicationDataManager.Settings
 {
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    sealed class TestingValueAttribute : Attribute
-    {
-        readonly object value;
-
-        public TestingValueAttribute(object value)
-        {
-            this.value = value;
-        }
-
-        public object Value
-        {
-            get
-            {
-                return value;
-            }
-        }
-    }
-
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class SettingAttribute : Attribute
     {
         public SettingAttribute(string categoryNameKey)
@@ -38,7 +19,7 @@ namespace ExViewer.Settings
             get;
         }
 
-        public string Category => LocalizedStrings.Settings.GetString(CategoryNameKey);
+        public string Category => StringLoader.GetString(CategoryNameKey);
 
         public int Index
         {
@@ -80,23 +61,15 @@ namespace ExViewer.Settings
             get;
             set;
         }
-    }
 
-    public interface IValueRange<T> : IValueRange where T : struct
-    {
-        new T Min
-        {
-            get;
-        }
-
-        new T Max
+        Type ValueType
         {
             get;
         }
     }
 
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class Int32RangeAttribute : Attribute, IValueRange<int>
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class Int32RangeAttribute : Attribute, IValueRange
     {
         private readonly int min, max;
 
@@ -106,13 +79,11 @@ namespace ExViewer.Settings
             this.max = max;
         }
 
-        public int Min => min;
+        public object Min => min;
 
-        public int Max => max;
+        public object Max => max;
 
-        object IValueRange.Min => min;
-
-        object IValueRange.Max => max;
+        public Type ValueType => typeof(int);
 
         public double Tick
         {
@@ -130,8 +101,8 @@ namespace ExViewer.Settings
         } = double.NaN;
     }
 
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class Int64RangeAttribute : Attribute, IValueRange<long>
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class Int64RangeAttribute : Attribute, IValueRange
     {
         private readonly long min, max;
 
@@ -141,13 +112,11 @@ namespace ExViewer.Settings
             this.max = max;
         }
 
-        public long Min => min;
+        public object Min => min;
 
-        public long Max => max;
+        public object Max => max;
 
-        object IValueRange.Min => min;
-
-        object IValueRange.Max => max;
+        public Type ValueType => typeof(long);
 
         public double Tick
         {
@@ -165,8 +134,8 @@ namespace ExViewer.Settings
         } = double.NaN;
     }
 
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class DoubleRangeAttribute : Attribute, IValueRange<double>
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class DoubleRangeAttribute : Attribute, IValueRange
     {
         private readonly double min, max;
 
@@ -176,13 +145,11 @@ namespace ExViewer.Settings
             this.max = max;
         }
 
-        public double Min => min;
+        public object Min => min;
 
-        public double Max => max;
+        public object Max => max;
 
-        object IValueRange.Min => min;
-
-        object IValueRange.Max => max;
+        public Type ValueType => typeof(double);
 
         public double Tick
         {
@@ -200,8 +167,8 @@ namespace ExViewer.Settings
         } = double.NaN;
     }
 
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class SingleRangeAttribute : Attribute, IValueRange<float>
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class SingleRangeAttribute : Attribute, IValueRange
     {
         private readonly float min, max;
 
@@ -211,13 +178,11 @@ namespace ExViewer.Settings
             this.max = max;
         }
 
-        public float Min => min;
+        public object Min => min;
 
-        public float Max => max;
+        public object Max => max;
 
-        object IValueRange.Min => min;
-
-        object IValueRange.Max => max;
+        public Type ValueType => typeof(float);
 
         public double Tick
         {
@@ -235,7 +200,7 @@ namespace ExViewer.Settings
         } = double.NaN;
     }
 
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class BooleanRepresentAttribute : Attribute
     {
         public static BooleanRepresentAttribute Default
@@ -259,12 +224,12 @@ namespace ExViewer.Settings
             get;
         }
 
-        public string TrueString => LocalizedStrings.Settings.GetString(TrueStringKey);
+        public string TrueString => StringLoader.GetString(TrueStringKey);
 
-        public string FalseString => LocalizedStrings.Settings.GetString(FalseStringKey);
+        public string FalseString => StringLoader.GetString(FalseStringKey);
     }
 
-    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class EnumRepresentAttribute : Attribute
     {
         public EnumRepresentAttribute(string resourcePrefix)
@@ -281,7 +246,7 @@ namespace ExViewer.Settings
         {
             if(ReferenceEquals(this, Default))
                 return name;
-            return LocalizedStrings.Settings.GetString(ResourcePrefix + name);
+            return StringLoader.GetString(ResourcePrefix + name);
         }
 
         public static EnumRepresentAttribute Default

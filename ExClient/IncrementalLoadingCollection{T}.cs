@@ -12,6 +12,7 @@ using GalaSoft.MvvmLight.Threading;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using Windows.UI.Xaml;
+using System.Collections;
 
 namespace ExClient
 {
@@ -38,15 +39,116 @@ namespace ExClient
         public int AddRange(IEnumerable<T> items)
         {
             CheckReentrancy();
-            var toAdd = items.ToList();
-            foreach(var item in toAdd)
+            var count = 0;
+            foreach(var item in items)
             {
                 this.Items.Add(item);
+                count++;
             }
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, toAdd, this.Count - toAdd.Count));
+            var startingIndex = this.Count - count;
+            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new AddRangeInfo(this, startingIndex, count), startingIndex));
             OnPropertyChanged(nameof(Count));
             OnPropertyChanged("Item[]");
-            return toAdd.Count;
+            return count;
+        }
+
+        private class AddRangeInfo : IList
+        {
+            private int count;
+            private IncrementalLoadingCollection<T> parent;
+            private int startingIndex;
+
+            public AddRangeInfo(IncrementalLoadingCollection<T> parent, int startingIndex, int count)
+            {
+                this.parent = parent;
+                this.startingIndex = startingIndex;
+                this.count = count;
+            }
+
+            public object this[int index]
+            {
+                get
+                {
+                    if((uint)index > (uint)count)
+                        throw new ArgumentOutOfRangeException(nameof(index));
+                    return parent[startingIndex + index];
+                }
+                set
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+
+            public int Count => count;
+
+            public bool IsFixedSize => true;
+
+            public bool IsReadOnly => true;
+
+            public bool IsSynchronized => false;
+
+            public object SyncRoot => null;
+
+            public int Add(object value)
+            {
+                throw new InvalidOperationException();
+            }
+
+            public void Clear()
+            {
+                throw new InvalidOperationException();
+            }
+
+            public bool Contains(object value)
+            {
+                foreach(var item in this)
+                {
+                    if(item == value)
+                        return true;
+                }
+                return false;
+            }
+
+            public void CopyTo(Array array, int index)
+            {
+                for(int i = 0; i < count; i++)
+                {
+                    array.SetValue(this[i], i);
+                }
+            }
+
+            public IEnumerator GetEnumerator()
+            {
+                for(int i = 0; i < count; i++)
+                {
+                    yield return this[i];
+                }
+            }
+
+            public int IndexOf(object value)
+            {
+                for(int i = 0; i < count; i++)
+                {
+                    if(this[i] == value)
+                        return i;
+                }
+                return -1;
+            }
+
+            public void Insert(int index, object value)
+            {
+                throw new InvalidOperationException();
+            }
+
+            public void Remove(object value)
+            {
+                throw new InvalidOperationException();
+            }
+
+            public void RemoveAt(int index)
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         protected void OnPropertyChanged([CallerMemberName]string propertyName = null)

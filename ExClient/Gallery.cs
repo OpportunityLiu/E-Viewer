@@ -20,6 +20,8 @@ using Windows.Storage.Search;
 using ExClient.Models;
 using GalaSoft.MvvmLight.Threading;
 using Windows.Globalization;
+using System.Collections;
+using MetroLog;
 
 namespace ExClient
 {
@@ -36,9 +38,47 @@ namespace ExClient
         }
     }
 
+    [JsonConverter(typeof(GalleryInfoConverter))]
+    public class GalleryInfo
+    {
+        public long Id
+        {
+            get;
+            set;
+        }
+
+        public string Token
+        {
+            get;
+            set;
+        }
+    }
+
+    internal class GalleryInfoConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(GalleryInfo) == objectType;
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var v = (GalleryInfo)value;
+            writer.WriteStartArray();
+            writer.WriteValue(v.Id);
+            writer.WriteValue(v.Token);
+            writer.WriteEndArray();
+        }
+    }
+
     [JsonObject]
     [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count} RecordCount = {RecordCount}\}")]
-    public class Gallery : IncrementalLoadingCollection<GalleryImage>
+    public class Gallery : IncrementalLoadingCollection<GalleryImage>, ICanLog
     {
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
@@ -60,6 +100,36 @@ namespace ExClient
                     }
                 }
             }).AsAsyncOperation();
+        }
+
+        public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IList<GalleryInfo> galleryInfo)
+        {
+            if(galleryInfo == null)
+                throw new ArgumentNullException(nameof(galleryInfo));
+            if(galleryInfo.Count > 25)
+                throw new ArgumentException("Number of GalleryInfo is bigger than 25.", nameof(galleryInfo));
+            return Run(async token =>
+            {
+                var json = JsonConvert.SerializeObject(new
+                {
+                    method = "gdata",
+                    @namespace = 1,
+                    gidlist = galleryInfo
+                });
+                var type = new
+                {
+                    gmetadata = (IEnumerable<Gallery>)null
+                };
+                var str = await Client.Current.PostApiAsync(json);
+                var deser = JsonConvert.DeserializeAnonymousType(str, type);
+                var toAdd = deser.gmetadata.Select(item =>
+                {
+                    item.Owner = Client.Current;
+                    var ignore = item.InitAsync();
+                    return item;
+                });
+                return (IList<Gallery>)toAdd.ToList();
+            });
         }
 
         internal const string ThumbFileName = "thumb.jpg";
@@ -225,7 +295,7 @@ namespace ExClient
 
         private bool setThumbUriWhenInit = true;
 
-        public IAsyncAction InitAsync()
+        protected IAsyncAction InitAsync()
         {
             return Run(async token =>
             {
@@ -245,7 +315,7 @@ namespace ExClient
             });
         }
 
-        public virtual IAsyncAction InitOverrideAsync()
+        protected virtual IAsyncAction InitOverrideAsync()
         {
             return Task.Run(() =>
             {
@@ -368,7 +438,7 @@ namespace ExClient
         {
             get
             {
-                return Tags.FirstOrDefault(t => t.NameSpace == NameSpace.Language && !technicalTags.Contains(t.Content))?.Content.ToUpper();
+                return Tags?.FirstOrDefault(t => t.NameSpace == NameSpace.Language && !technicalTags.Contains(t.Content))?.Content.ToUpper();
             }
         }
 

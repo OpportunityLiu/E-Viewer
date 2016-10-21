@@ -16,10 +16,11 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
 using Windows.UI.Xaml.Data;
 using System.Collections;
+using MetroLog;
 
 namespace ExClient
 {
-    public class CachedGallery : Gallery
+    public class CachedGallery : Gallery, ICanLog
     {
         private class CachedGalleryList : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
         {
@@ -139,13 +140,13 @@ namespace ExClient
                     return 0u;
                 }).AsAsyncOperation();
             }
-            
+
             public void Dispose()
             {
             }
         }
 
-        private static int pageSize = 20;
+        private static readonly int pageSize = 20;
 
         public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
         {
@@ -182,7 +183,7 @@ namespace ExClient
             this.Owner = Client.Current;
         }
 
-        public override IAsyncAction InitOverrideAsync()
+        protected override IAsyncAction InitOverrideAsync()
         {
             var temp = thumbFile;
             return DispatcherHelper.RunAsync(async () =>
@@ -205,26 +206,33 @@ namespace ExClient
         {
             if(imageModels != null)
                 return;
+            this.Log().Debug($"Start loading image model, Id = {Id}");
             using(var db = new GalleryDb())
             {
                 imageModels = (from g in db.GallerySet
                                where g.Id == Id
                                select g.Images).Single();
+                imageModels.Sort((i, j) => i.PageId - j.PageId);
             }
+            this.Log().Debug($"Finish loading image model, Id = {Id}");
         }
 
         protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
         {
+            this.Log().Info($"Start loading page {pageIndex}, Id = {Id}");
             return Task.Run(async () =>
             {
                 if(GalleryFolder == null)
                     await GetFolderAsync();
                 loadImageModel();
-                var toAdd = new List<GalleryImage>(pageSize);
-                while(toAdd.Count < pageSize && Count + toAdd.Count < imageModels.Count)
+                var thisPageSize = pageSize;
+                if(this.RecordCount - pageIndex * pageSize < pageSize)
+                    thisPageSize = this.RecordCount - pageIndex * pageSize;
+                var toAdd = new List<GalleryImage>(thisPageSize);
+                for(int i = 0; i < thisPageSize; i++)
                 {
                     // Load cache
-                    var model = imageModels.Find(i => i.PageId == Count + toAdd.Count + 1);
+                    var model = imageModels[Count + i];
                     var image = await GalleryImage.LoadCachedImageAsync(this, model);
                     if(image == null)
                     // when load fails
@@ -232,7 +240,9 @@ namespace ExClient
                         image = new GalleryImage(this, model.PageId, model.ImageKey, null);
                     }
                     toAdd.Add(image);
+
                 }
+                this.Log().Info($"Finish loading page {pageIndex}, Id = {Id}");
                 return (uint)this.AddRange(toAdd);
             }).AsAsyncOperation();
         }

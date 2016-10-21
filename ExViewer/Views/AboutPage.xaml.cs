@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -14,6 +15,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Storage.Pickers;
+using Windows.Storage;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
 
@@ -37,6 +40,16 @@ namespace ExViewer.Views
         private void btn_Pane_Click(object sender, RoutedEventArgs e)
         {
             RootControl.RootController.SwitchSplitView();
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var fl = await DownloadsFolder.CreateFolderAsync("log", CreationCollisionOption.GenerateUniqueName);
+            var logf = await ApplicationData.Current.LocalFolder.GetFolderAsync("MetroLogs");
+            foreach(var file in await logf.GetFilesAsync())
+            {
+                await file.CopyAsync(fl);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using ExViewer.Settings;
 using ExViewer.ViewModels;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
@@ -67,7 +68,11 @@ namespace ExViewer.Views
             await Task.Yield();
             pageFlipView.ItemsSource = that.collectionView;
             if(newVM != null)
+            {
                 that.fv.SelectedIndex = newVM.CurrentIndex;
+                await Task.Delay(50);
+                that.fv.SelectedIndex = newVM.CurrentIndex;
+            }
         }
 
         private readonly ApplicationView av = ApplicationView.GetForCurrentView();

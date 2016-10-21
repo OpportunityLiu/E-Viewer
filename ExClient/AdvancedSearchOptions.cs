@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,25 +10,21 @@ namespace ExClient
     //advsearch=1
     public class AdvancedSearchOptions
     {
-        public IDictionary<string, string> GetParamDictionary()
+        internal IEnumerable<KeyValuePair<string, string>> AsEnumerable()
         {
-            var args = new Dictionary<string, string>();
+            yield return new KeyValuePair<string, string>("advsearch", "1");
 
-            args.Add("advsearch", "1");
+            yield return new KeyValuePair<string, string>("f_sname", SearchName ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_stags", SearchTags ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_sdesc", SearchDescription ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_storr", SearchTorrentFilenames ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_sto", GalleriesWithTorrentsOnly ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_sdt1", SearchLowPowerTags ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_sdt2", SearchDownvotedTags ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_sh", ShowExpungedGalleries ? "1" : "0");
 
-            args.Add("f_sname", SearchName ? "1" : "0");
-            args.Add("f_stags", SearchTags ? "1" : "0");
-            args.Add("f_sdesc", SearchDescription ? "1" : "0");
-            args.Add("f_storr", SearchTorrentFilenames ? "1" : "0");
-            args.Add("f_sto", GalleriesWithTorrentsOnly ? "1" : "0");
-            args.Add("f_sdt1", SearchLowPowerTags ? "1" : "0");
-            args.Add("f_sdt2", SearchDownvotedTags ? "1" : "0");
-            args.Add("f_sh", ShowExpungedGalleries ? "1" : "0");
-
-            args.Add("f_sr", SearchMinimumRating ? "1" : "0");
-            args.Add("f_srdd", MinimumRating.ToString());
-
-            return args;
+            yield return new KeyValuePair<string, string>("f_sr", SearchMinimumRating ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_srdd", MinimumRating.ToString());
         }
 
         //f_sname=on
@@ -80,14 +77,13 @@ namespace ExClient
             get; set;
         }
 
-        //f_sh
+        //f_sr
         public bool SearchMinimumRating
         {
             get; set;
         }
 
-        //f_sr=on
-        //f_srdd=2
+        //f_srdd
         public int MinimumRating
         {
             get
