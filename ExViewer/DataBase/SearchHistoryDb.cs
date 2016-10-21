@@ -7,41 +7,58 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-
+using System.Collections;
 
 namespace ExViewer.Database
 {
-    class SearchHistoryDb : DbContext
+    struct SearchHistoryDb : ICollection<SearchHistory>
     {
-        private const string dbFilename = "SearchHistory.db";
-
-        public static void Migrate()
-        {
-            using(var db = new SearchHistoryDb())
-            {
-                db.Database.Migrate();
-            }
-        }
-
-        public SearchHistoryDb()
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite($"Filename={dbFilename}");
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<SearchHistory>().HasKey(sh => sh.Time);
-            modelBuilder.Entity<SearchHistory>().Ignore(sh => sh.Highlight);
-        }
-
-        public DbSet<SearchHistory> SearchHistorySet
+        private static ApplicationDataManager.ApplicationDataDictionary<string> SearchHistorySet
         {
             get;
-            set;
+        } = new ApplicationDataManager.ApplicationDataDictionary<string>("SearchHistory", Windows.Storage.ApplicationDataLocality.Local);
+
+        public int Count => SearchHistorySet.Count;
+
+        public bool IsReadOnly => false;
+
+        public void Add(SearchHistory item)
+        {
+            SearchHistorySet[item.Time.ToUnixTimeSeconds().ToString()] = item.Content;
+        }
+
+        public void Clear()
+        {
+            SearchHistorySet.Clear();
+        }
+
+        public bool Contains(SearchHistory item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(SearchHistory[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<SearchHistory> GetEnumerator()
+        {
+            return SearchHistorySet.Select(kv => new SearchHistory
+            {
+                Time = DateTimeOffset.FromUnixTimeSeconds(long.Parse(kv.Key)),
+                Content = kv.Value
+            }).GetEnumerator();
+        }
+
+        public bool Remove(SearchHistory item)
+        {
+            return SearchHistorySet.Remove(item.Time.ToUnixTimeSeconds().ToString());
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 
