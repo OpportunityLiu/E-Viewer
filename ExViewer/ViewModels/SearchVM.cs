@@ -218,17 +218,12 @@ namespace ExViewer.ViewModels
             return Task.Run(() =>
             {
                 input = input?.Trim() ?? "";
-                using(var db = new SearchHistoryDb())
-                {
-                    return (IReadOnlyList<SearchHistory>)
-                    ((IEnumerable<SearchHistory>)
-                        (db.SearchHistorySet
-                            .Where(sh => sh.Content.Contains(input))
-                            .OrderByDescending(sh => sh.Time)))
-                        .Distinct()
-                        .Select(sh => sh.SetHighlight(input))
-                        .ToList();
-                }
+                return (IReadOnlyList<SearchHistory>)(new SearchHistoryDb()
+                    .Where(sh => sh.Content.Contains(input))
+                    .OrderByDescending(sh => sh.Time))
+                    .Distinct()
+                    .Select(sh => sh.SetHighlight(input))
+                    .ToList();
             }).AsAsyncOperation();
         }
 
@@ -239,22 +234,14 @@ namespace ExViewer.ViewModels
             return false;
         }
 
-        public async void ClearHistory()
+        public void ClearHistory()
         {
-            using(var db = new SearchHistoryDb())
-            {
-                db.SearchHistorySet.RemoveRange(db.SearchHistorySet);
-                await db.SaveChangesAsync();
-            }
+            new SearchHistoryDb().Clear();
         }
 
         public static void AddHistory(string content)
         {
-            using(var db = new SearchHistoryDb())
-            {
-                db.SearchHistorySet.Add(SearchHistory.Create(content));
-                db.SaveChanges();
-            }
+            new SearchHistoryDb().Add(SearchHistory.Create(content));
         }
 
         internal RelayCommand<SearchHistory> DeleteHistory
@@ -262,11 +249,7 @@ namespace ExViewer.ViewModels
             get;
         } = new RelayCommand<SearchHistory>(sh =>
         {
-            using(var db = new SearchHistoryDb())
-            {
-                db.SearchHistorySet.Remove(sh);
-                db.SaveChanges();
-            }
+            new SearchHistoryDb().Remove(sh);
         }, sh => sh != null);
     }
 }
