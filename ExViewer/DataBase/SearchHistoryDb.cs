@@ -11,7 +11,7 @@ using System.Collections;
 
 namespace ExViewer.Database
 {
-    class SearchHistoryDb : ICollection<SearchHistory>
+    struct SearchHistoryDb : ICollection<SearchHistory>
     {
         private static ApplicationDataManager.ApplicationDataDictionary<string> SearchHistorySet
         {
