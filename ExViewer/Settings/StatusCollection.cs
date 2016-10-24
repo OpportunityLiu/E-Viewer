@@ -1,5 +1,4 @@
-﻿using ApplicationDataManager;
-using ApplicationDataManager.Settings;
+﻿using ApplicationDataManager.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ExViewer.Settings
 {
-    class StatusCollection : ApplicationDataCollection
+    class StatusCollection : ApplicationSettingCollection
     {
         public static StatusCollection Current
         {

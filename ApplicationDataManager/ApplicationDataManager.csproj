@@ -108,9 +108,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationDataDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ApplicationDataCollection.cs" />
     <Compile Include="Settings\ApplicationSettingCollection.cs" />
     <Compile Include="Settings\Attributes.cs" />
     <Compile Include="Settings\GroupedSettings.cs" />
