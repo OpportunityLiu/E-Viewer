@@ -209,9 +209,11 @@ namespace ExClient
             this.Log().Debug($"Start loading image model, Id = {Id}");
             using(var db = new GalleryDb())
             {
-                imageModels = (from g in db.GallerySet
-                               where g.Id == Id
-                               select g.Images).Single();
+                db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
+                var query = from g in db.GallerySet
+                            where g.Id == Id
+                            select g.Images;
+                imageModels = query.Single();
                 imageModels.Sort((i, j) => i.PageId - j.PageId);
             }
             this.Log().Debug($"Finish loading image model, Id = {Id}");

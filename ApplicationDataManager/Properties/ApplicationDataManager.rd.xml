@@ -28,6 +28,11 @@
     <Library Name="ApplicationDataManager">
 
         <!-- add directives for your library here -->
-        <Namespace Name="ApplicationDataManager.Settings.Xaml" MarshalObject="Required All"/>
+        <Namespace Name="ApplicationDataManager.Settings">
+            <Namespace Name="Xaml"  MarshalObject="Required All"/>
+            <Type Name="SettingAttribute" >
+                <AttributeImplies Dynamic="Required All"/>
+            </Type>
+        </Namespace>
     </Library>
 </Directives>

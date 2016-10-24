@@ -11,7 +11,4 @@
         <Image Source="{Binding Image, FallbackValue=null, Mode=OneWay}"
                Stretch="Uniform" />
     </DataTemplate>
-    <local:ImagePresenterSelector x:Key="ImagePresenterSelector"
-                                  Template="{StaticResource NormalTemplate}"
-                                  GifTemplate="{StaticResource GifTemplate}" />
 </ResourceDictionary>

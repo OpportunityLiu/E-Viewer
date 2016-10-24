@@ -29,20 +29,24 @@ namespace ExViewer.Controls
         {
             var r = new ResourceDictionary();
             Application.LoadComponent(r, new Uri("ms-appx:///Themes/ImagePresenterTemplates.xaml"));
-            dt_Normal = (DataTemplate)r["NormalTemplate"];
-            its_Gif = (ImagePresenterSelector)r["ImagePresenterSelector"];
+            if(ApiInfo.AnimatedGifSupported)
+            {
+                dt = (DataTemplate)r["NormalTemplate"];
+            }
+            else
+            {
+                ImageLoader.Initialize(new ImageConfig.Builder()
+                    .NewApi(false)
+                    .AddDecoder<GifDecoder>().Build());
+                dt = (DataTemplate)r["GifTemplate"];
+            }
         }
-
-        private static readonly DataTemplate dt_Normal;
-        private static readonly ImagePresenterSelector its_Gif;
+        private static readonly DataTemplate dt;
 
         public ImagePresenter()
         {
             this.InitializeComponent();
-            if(ApiInfo.AnimatedGifSupported)
-                cc_Image.ContentTemplate = dt_Normal;
-            else
-                cc_Image.ContentTemplateSelector = its_Gif;
+            cc_Image.ContentTemplate = dt;
         }
 
         public GalleryImage Image
@@ -307,54 +311,5 @@ namespace ExViewer.Controls
         }
 
         private bool spacePressed;
-    }
-
-    internal class ImagePresenterSelector : Windows.UI.Xaml.Controls.DataTemplateSelector
-    {
-        public ImagePresenterSelector()
-        {
-
-        }
-
-        public DataTemplate Template
-        {
-            get;
-            set;
-        }
-
-        public DataTemplate GifTemplate
-        {
-            get;
-            set;
-        }
-
-        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
-        {
-            var img = item as GalleryImage;
-            if(IsGif(img))
-            {
-                initGif();
-                return GifTemplate;
-            }
-            return Template;
-        }
-
-        public static bool IsGif(GalleryImage img)
-        {
-            return img?.ImageFile?.Name.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) == true;
-        }
-
-        private static bool gifInitialized;
-
-        private static void initGif()
-        {
-            if(gifInitialized)
-                return;
-            gifInitialized = true;
-            ImageLoader.Initialize(new ImageConfig.Builder()
-            {
-                CacheMode = ImageLib.Cache.CacheMode.NoCache
-            }.AddDecoder<GifDecoder>().Build());
-        }
     }
 }

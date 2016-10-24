@@ -142,7 +142,6 @@ namespace ExViewer.Views
                 var initDbTask = Task.Run(async () =>
                 {
                     ExClient.Models.GalleryDb.Migrate();
-                    Database.SearchHistoryDb.Migrate();
                     await TagExtension.Init();
                 });
                 MetroLog.LogManagerFactory.DefaultConfiguration.AddTarget(MetroLog.LogLevel.Trace, MetroLog.LogLevel.Fatal, new MetroLog.Targets.StreamingFileTarget());
