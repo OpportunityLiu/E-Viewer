@@ -56,7 +56,7 @@ namespace ExViewer.Views
             var pageFlipView = that.fv;
             var oldVM = (GalleryVM)e.OldValue;
             var newVM = (GalleryVM)e.NewValue;
-            if(oldVM != null)
+            if(oldVM != null && newVM == null)
             {
                 if(pageFlipView.SelectedIndex < oldVM.Gallery.Count)
                     oldVM.CurrentIndex = pageFlipView.SelectedIndex;
@@ -64,17 +64,14 @@ namespace ExViewer.Views
                     oldVM.CurrentIndex = oldVM.Gallery.Count - 1;
             }
             pageFlipView.ItemsSource = null;
-            if(newVM == null)
+            that.collectionView.Collection = newVM?.Gallery;
+            await Task.Yield();
+            pageFlipView.ItemsSource = that.collectionView;
+            if(newVM != null)
             {
-                that.collectionView.Collection = null;
-            }
-            else
-            {
-                that.collectionView.Collection = newVM.Gallery;
-                pageFlipView.ItemsSource = that.collectionView;
-                pageFlipView.SelectedIndex = newVM.CurrentIndex;
+                that.fv.SelectedIndex = newVM.CurrentIndex;
                 await Task.Delay(50);
-                pageFlipView.SelectedIndex = newVM.CurrentIndex;
+                that.fv.SelectedIndex = newVM.CurrentIndex;
             }
         }
 
