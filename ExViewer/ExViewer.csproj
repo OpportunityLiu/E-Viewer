@@ -147,6 +147,11 @@
     <Compile Include="Helpers\ExceptionHandler.cs" />
     <Compile Include="Helpers\TagExtension.cs" />
     <Compile Include="Helpers\ThemeExtension.cs" />
+    <Compile Include="Migrations\20160717021413_MyFirstMigration.cs" />
+    <Compile Include="Migrations\20160717021413_MyFirstMigration.designer.cs">
+      <DependentUpon>20160717021413_MyFirstMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\SearchHistoryDbModelSnapshot.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Settings\StatusCollection.cs" />
