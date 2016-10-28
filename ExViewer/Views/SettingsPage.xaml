@@ -7,14 +7,13 @@
       x:Class="ExViewer.Views.SettingsPage"
       NavigationCacheMode="Enabled"
       mc:Ignorable="d"
-      xmlns:settings="using:ApplicationDataManager.Settings"
-      xmlns:settingXaml="using:ApplicationDataManager.Settings.Xaml">
+      xmlns:settings="using:ApplicationDataManager.Settings">
     <Page.Resources>
-        <settingXaml:SettingTemplateSelector x:Key="SettingTemplateSelector">
-            <settingXaml:SettingTemplateSelector.CustomTemplateDictionary>
+        <settings:SettingTemplateSelector x:Key="SettingTemplateSelector">
+            <settings:SettingTemplateSelector.CustomTemplateDictionary>
                 <ResourceDictionary Source="ms-appx:///Settings/SettingPresenterTemplates.xaml" />
-            </settingXaml:SettingTemplateSelector.CustomTemplateDictionary>
-        </settingXaml:SettingTemplateSelector>
+            </settings:SettingTemplateSelector.CustomTemplateDictionary>
+        </settings:SettingTemplateSelector>
     </Page.Resources>
     <Page.Transitions>
         <TransitionCollection>

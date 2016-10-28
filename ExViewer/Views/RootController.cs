@@ -55,6 +55,13 @@ namespace ExViewer.Views
                 showPanel.Completed += ShowPanel_Completed;
                 hidePanel.Completed += HidePanel_Completed;
                 playToast.Completed += PlayToast_Completed;
+                
+                Frame.Navigated += Frame_Navigated;
+            }
+
+            private static void Frame_Navigated(object sender, NavigationEventArgs e)
+            {
+                CurrentPageName = Frame.Content.GetType().ToString();
             }
 
             public static void SendToast(Exception ex, Type source)
@@ -295,6 +302,12 @@ namespace ExViewer.Views
             }
 
             public static Frame Frame => root?.fm_inner;
+
+            public static string CurrentPageName
+            {
+                get;
+                private set;
+            }
         }
     }
 }

@@ -193,7 +193,12 @@ namespace ExViewer.Views
             }
             for(int i = start; i < end; i++)
             {
-                var ignore = VM.Gallery[i].LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
+                VM.Gallery[i].LoadImageAsync(false, SettingCollection.Current.GetStrategy(), true).Completed =
+                    (task, state) =>
+                    {
+                        if(state == AsyncStatus.Error)
+                            RootControl.RootController.SendToast(task.ErrorCode, typeof(ImagePage));
+                    };
             }
             if(end + 10 > VM.Gallery.Count && VM.Gallery.HasMoreItems)
             {
