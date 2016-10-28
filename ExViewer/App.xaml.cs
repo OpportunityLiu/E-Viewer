@@ -60,6 +60,8 @@ namespace ExViewer
                     ex = ex.InnerException;
                     sb.AppendLine("--------Inner Exception--------");
                 } while(ex != null);
+                sb.AppendLine("--------Other Info--------");
+                sb.AppendLine($"page: {RootControl.RootController.CurrentPageName}");
                 return sb.ToString();
             });
             this.Suspending += OnSuspending;
@@ -115,7 +117,7 @@ namespace ExViewer
             if(args.Kind == ActivationKind.Protocol)
             {
                 var e = (ProtocolActivatedEventArgs)args;
-                
+
             }
             lanunchCore(args, false);
         }

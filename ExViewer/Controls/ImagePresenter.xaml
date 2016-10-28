@@ -10,8 +10,6 @@
              Unloaded="UserControl_Unloaded"
              d:DesignHeight="300"
              d:DesignWidth="400">
-    <UserControl.Resources>
-    </UserControl.Resources>
     <ScrollViewer x:Name="sv"
                   IsTabStop="True"
                   ZoomMode="Enabled"

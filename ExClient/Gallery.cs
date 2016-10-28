@@ -525,13 +525,13 @@ namespace ExClient
                                 height = uint.Parse(matchUri.Groups[2].Value, System.Globalization.NumberStyles.Integer) - 1,
                                 offset = uint.Parse(matchUri.Groups[4].Value, System.Globalization.NumberStyles.Integer)
                             }
-                            group r by r.thumbUri).ToDictionary(group => Owner.HttpClient.GetBufferAsync(group.Key));
+                            group r by r.thumbUri).ToDictionary(group => group.Key);
                 var toAdd = new List<GalleryImage>(40);
                 using(var db = new GalleryDb())
                 {
                     foreach(var group in pics)
                     {
-                        using(var stream = (await group.Key).AsRandomAccessStream())
+                        using(var stream = (await Owner.HttpClient.GetBufferAsync(group.Key)).AsRandomAccessStream())
                         {
                             var decoder = await BitmapDecoder.CreateAsync(stream);
                             var transform = new BitmapTransform();
