@@ -141,8 +141,8 @@ namespace ExViewer.Views
             {
                 var initDbTask = Task.Run(async () =>
                 {
-                    ExClient.Models.GalleryDb.Migrate();
-                    Database.SearchHistoryDb.Migrate();
+                    await ExClient.Models.GalleryDb.MigrateAsync();
+                    await Database.SearchHistoryDb.MigrateAsync();
                     await TagExtension.Init();
                 });
                 MetroLog.LogManagerFactory.DefaultConfiguration.AddTarget(MetroLog.LogLevel.Trace, MetroLog.LogLevel.Fatal, new MetroLog.Targets.StreamingFileTarget());
@@ -177,7 +177,7 @@ namespace ExViewer.Views
                     }
                     catch(Exception)
                     {
-                        homePageType = typeof(CachePage);
+                        homePageType = typeof(SavedPage);
                     }
                 }
                 else

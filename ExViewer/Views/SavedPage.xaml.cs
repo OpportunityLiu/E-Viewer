@@ -29,12 +29,12 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class CachePage : Page
+    public sealed partial class SavedPage : Page
     {
-        public CachePage()
+        public SavedPage()
         {
             this.InitializeComponent();
-            VM = new CacheVM();
+            VM = new SavedVM();
             cdg_ConfirmClear = new ContentDialog()
             {
                 Title = LocalizedStrings.Resources.ClearCacheDialogTitle,
@@ -45,11 +45,11 @@ namespace ExViewer.Views
             };
         }
 
-        public CacheVM VM
+        public SavedVM VM
         {
             get
             {
-                return (CacheVM)GetValue(VMProperty);
+                return (SavedVM)GetValue(VMProperty);
             }
             set
             {
@@ -59,12 +59,12 @@ namespace ExViewer.Views
 
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register("VM", typeof(CacheVM), typeof(CachePage), new PropertyMetadata(null));
+            DependencyProperty.Register("VM", typeof(SavedVM), typeof(SavedPage), new PropertyMetadata(null));
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(e.NavigationMode != NavigationMode.Back || VM.CachedGalleries == null)
+            if(e.NavigationMode != NavigationMode.Back || VM.SavedGalleries == null)
             {
                 VM.Refresh.Execute(null);
             }
@@ -131,7 +131,7 @@ namespace ExViewer.Views
                 var d = request.GetDeferral();
                 try
                 {
-                    var makeCopy = CacheVM.GetCopyOf(item);
+                    var makeCopy = SavedVM.GetCopyOf(item);
                     request.SetData(new IStorageItem[] { await makeCopy });
                 }
                 finally { d.Complete(); }

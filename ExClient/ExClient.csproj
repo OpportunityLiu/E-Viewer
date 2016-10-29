@@ -112,6 +112,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
+    <Compile Include="CachedGallery.cs" />
+    <Compile Include="GalleryImagePlaceHolder.cs" />
+    <Compile Include="Helpers\MathHelper.cs" />
+    <Compile Include="Internal\GalleryList.cs" />
     <Compile Include="SavedGallery.cs" />
     <Compile Include="Client-Forum.cs" />
     <Compile Include="Comment.cs" />

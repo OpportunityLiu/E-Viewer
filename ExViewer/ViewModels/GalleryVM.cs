@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
+using System.Collections.ObjectModel;
 
 namespace ExViewer.ViewModels
 {
@@ -356,9 +357,9 @@ namespace ExViewer.ViewModels
             });
         }
 
-        private List<TorrentInfo> torrents;
+        private ReadOnlyCollection<TorrentInfo> torrents;
 
-        public List<TorrentInfo> Torrents
+        public ReadOnlyCollection<TorrentInfo> Torrents
         {
             get
             {

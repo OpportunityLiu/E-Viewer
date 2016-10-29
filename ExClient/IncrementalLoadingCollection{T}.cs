@@ -156,7 +156,7 @@ namespace ExClient
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
-        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        protected sealed override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
@@ -164,7 +164,7 @@ namespace ExClient
             });
         }
 
-        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        protected sealed override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
@@ -200,7 +200,7 @@ namespace ExClient
             }
         }
 
-        protected abstract IAsyncOperation<uint> LoadPageAsync(int pageIndex);
+        protected abstract IAsyncOperation<IList<T>> LoadPageAsync(int pageIndex);
 
         public bool IsEmpty => RecordCount == 0;
 
@@ -249,11 +249,12 @@ namespace ExClient
                 if(!HasMoreItems)
                     return new LoadMoreItemsResult();
                 var lp = LoadPageAsync(loadedPageCount);
-                uint re = 0;
+                IList<T> re = null;
                 token.Register(lp.Cancel);
                 try
                 {
                     re = await lp;
+                    this.AddRange(re);
                     loadedPageCount++;
                     OnPropertyChanged(nameof(HasMoreItems));
                 }
@@ -262,7 +263,7 @@ namespace ExClient
                     if(!await tryHandle(ex))
                         throw;
                 }
-                return new LoadMoreItemsResult() { Count = re };
+                return new LoadMoreItemsResult() { Count = re == null ? 0u : (uint)re.Count };
             });
         }
 

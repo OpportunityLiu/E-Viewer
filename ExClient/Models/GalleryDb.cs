@@ -15,12 +15,15 @@ namespace ExClient.Models
     {
         private const string dbFilename = "Gallery.db";
 
-        public static void Migrate()
+        public static IAsyncAction MigrateAsync()
         {
-            using(var db = new GalleryDb())
+            return Run(async token =>
             {
-                db.Database.Migrate();
-            }
+                using(var db = new GalleryDb())
+                {
+                    await db.Database.MigrateAsync(token);
+                }
+            });
         }
 
         internal GalleryDb()

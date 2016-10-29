@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 
 namespace ExClient
 {
     public class Comment
     {
-        internal static List<Comment> LoadComment(HtmlDocument document)
+        internal static ReadOnlyCollection<Comment> LoadComment(HtmlDocument document)
         {
             var commentNodes = document.GetElementbyId("cdiv").ChildNodes;
             var comments = new List<Comment>();
@@ -39,10 +40,10 @@ namespace ExClient
                     Posted = posted
                 });
             }
-            return comments;
+            return comments.AsReadOnly();
         }
 
-        internal static IAsyncOperation<List<Comment>> LoadCommentsAsync(Gallery gallery)
+        internal static IAsyncOperation<ReadOnlyCollection<Comment>> LoadCommentsAsync(Gallery gallery)
         {
             return Task.Run(async () =>
             {

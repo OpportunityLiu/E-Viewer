@@ -67,9 +67,9 @@ namespace ExClient
 
         private static readonly Regex recordCountMatcher = new Regex(@"Showing.+of\s+([0-9,]+)", RegexOptions.Compiled);
 
-        private IAsyncOperation<uint> init()
+        private IAsyncOperation<IList<Gallery>> init()
         {
-            return Run(async token =>
+            return Run<IList<Gallery>>(async token =>
             {
                 var uri = createUri();
                 searchResultBaseUri = uri.OriginalString;
@@ -83,7 +83,7 @@ namespace ExClient
                     if(rcNode == null)
                     {
                         RecordCount = 0;
-                        return 0u;
+                        return Array.Empty<Gallery>();
                     }
                     var match = recordCountMatcher.Match(rcNode.InnerText);
                     if(match.Success)
@@ -105,7 +105,7 @@ namespace ExClient
                         return await loadPage(doc);
                     }
                     else
-                        return 0u;
+                        return Array.Empty<Gallery>();
                 }
             });
         }
@@ -134,7 +134,7 @@ namespace ExClient
 
         private static readonly Regex gLinkMatcher = new Regex(@".+?/g/(\d+)/([0-9a-f]+).+?", RegexOptions.Compiled);
 
-        private IAsyncOperation<uint> loadPage(HtmlDocument doc)
+        private IAsyncOperation<IList<Gallery>> loadPage(HtmlDocument doc)
         {
             return Run(async token =>
             {
@@ -154,7 +154,7 @@ namespace ExClient
                                   Id = long.Parse(match.Groups[1].Value),
                                   Token = match.Groups[2].Value
                               };
-                return (uint)AddRange(await Gallery.FetchGalleriesAsync(records.ToList()));
+                return await Gallery.FetchGalleriesAsync(records.ToList());
             });
         }
 
@@ -180,7 +180,7 @@ namespace ExClient
 
         private string searchResultBaseUri;
 
-        protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IList<Gallery>> LoadPageAsync(int pageIndex)
         {
             this.Log().Info($"Start loading page {pageIndex}, KeyWord = {this.KeyWord}");
             if(pageIndex == 0)
