@@ -23,12 +23,12 @@ namespace ExViewer.ViewModels
             {
                 this.CachedGalleries = null;
                 this.Refresh.RaiseCanExecuteChanged();
-                this.CachedGalleries = await CachedGallery.LoadCachedGalleriesAsync();
+                this.CachedGalleries = await SavedGallery.LoadCachedGalleriesAsync();
                 this.Refresh.RaiseCanExecuteChanged();
             });
             Clear = new RelayCommand(() =>
             {
-                RootControl.RootController.TrackAsyncAction(CachedGallery.ClearCachedGalleriesAsync(), (s, e) =>
+                RootControl.RootController.TrackAsyncAction(SavedGallery.ClearCachedGalleriesAsync(), (s, e) =>
                 {
                     Refresh.Execute(null);
                 });

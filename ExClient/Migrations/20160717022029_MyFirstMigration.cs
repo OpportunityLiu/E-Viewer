@@ -34,7 +34,7 @@ namespace ExClient.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CacheSet",
+                name: "SavedSet",
                 columns: table => new
                 {
                     GalleryId = table.Column<long>(nullable: false),
@@ -43,9 +43,9 @@ namespace ExClient.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CacheSet", x => x.GalleryId);
+                    table.PrimaryKey("PK_SavedSet", x => x.GalleryId);
                     table.ForeignKey(
-                        name: "FK_CacheSet_GallerySet_GalleryId",
+                        name: "FK_SavedSet_GallerySet_GalleryId",
                         column: x => x.GalleryId,
                         principalTable: "GallerySet",
                         principalColumn: "Id",
@@ -74,8 +74,8 @@ namespace ExClient.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CacheSet_GalleryId",
-                table: "CacheSet",
+                name: "IX_SavedSet_GalleryId",
+                table: "SavedSet",
                 column: "GalleryId",
                 unique: true);
 
@@ -88,7 +88,7 @@ namespace ExClient.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CacheSet");
+                name: "SavedSet");
 
             migrationBuilder.DropTable(
                 name: "ImageSet");

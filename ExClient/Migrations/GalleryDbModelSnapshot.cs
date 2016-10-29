@@ -15,7 +15,7 @@ namespace ExClient.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431");
 
-            modelBuilder.Entity("ExClient.Models.CachedGalleryModel", b =>
+            modelBuilder.Entity("ExClient.Models.SavedGalleryModel", b =>
                 {
                     b.Property<long>("GalleryId");
 
@@ -28,7 +28,7 @@ namespace ExClient.Migrations
                     b.HasIndex("GalleryId")
                         .IsUnique();
 
-                    b.ToTable("CacheSet");
+                    b.ToTable("SavedSet");
                 });
 
             modelBuilder.Entity("ExClient.Models.GalleryModel", b =>
@@ -87,11 +87,11 @@ namespace ExClient.Migrations
                     b.ToTable("ImageSet");
                 });
 
-            modelBuilder.Entity("ExClient.Models.CachedGalleryModel", b =>
+            modelBuilder.Entity("ExClient.Models.SavedGalleryModel", b =>
                 {
                     b.HasOne("ExClient.Models.GalleryModel", "Gallery")
                         .WithOne()
-                        .HasForeignKey("ExClient.Models.CachedGalleryModel", "GalleryId")
+                        .HasForeignKey("ExClient.Models.SavedGalleryModel", "GalleryId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

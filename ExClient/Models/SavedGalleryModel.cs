@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ExClient.Models
 {
-    internal class CachedGalleryModel
+    internal class SavedGalleryModel
     {
-        public CachedGalleryModel Update(Gallery gallery, byte[] thumbData)
+        public SavedGalleryModel Update(Gallery gallery, byte[] thumbData)
         {
             GalleryId = gallery.Id;
             ThumbData = thumbData;

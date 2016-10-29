@@ -50,15 +50,15 @@ namespace ExClient.Models
             modelBuilder.Entity<GalleryModel>()
                 .Property(g => g.Id).ValueGeneratedNever();
 
-            modelBuilder.Entity<CachedGalleryModel>()
+            modelBuilder.Entity<SavedGalleryModel>()
                 .HasKey(c => c.GalleryId);
-            modelBuilder.Entity<CachedGalleryModel>()
+            modelBuilder.Entity<SavedGalleryModel>()
                 .Property(c => c.GalleryId).ValueGeneratedNever();
 
-            modelBuilder.Entity<CachedGalleryModel>()
+            modelBuilder.Entity<SavedGalleryModel>()
                 .HasOne(c => c.Gallery)
                 .WithOne()
-                .HasForeignKey<CachedGalleryModel>(c => c.GalleryId);
+                .HasForeignKey<SavedGalleryModel>(c => c.GalleryId);
             modelBuilder.Entity<ImageModel>()
                 .HasOne(i => i.Owner)
                 .WithMany(g => g.Images)
@@ -77,7 +77,7 @@ namespace ExClient.Models
             set;
         }
 
-        internal DbSet<CachedGalleryModel> CacheSet
+        internal DbSet<SavedGalleryModel> SavedSet
         {
             get;
             set;

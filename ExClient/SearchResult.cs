@@ -71,24 +71,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var args = new Dictionary<string, string>()
-                {
-                    ["f_search"] = KeyWord
-                };
-                foreach(var item in searchFliterNames)
-                {
-                    if(Category.HasFlag(item.Key))
-                        args.Add(item.Value, "1");
-                    else
-                        args.Add(item.Value, "0");
-                }
-                args.Add("f_apply", "Apply Filter");
-                HttpFormUrlEncodedContent query;
-                if(AdvancedSearch != null)
-                    query = new HttpFormUrlEncodedContent(args.Concat(AdvancedSearch.AsEnumerable()));
-                else
-                    query = new HttpFormUrlEncodedContent(args);
-                var uri = new Uri(searchUri, $"?{query}");
+                var uri = createUri();
                 searchResultBaseUri = uri.OriginalString;
                 var lans = client.HttpClient.GetInputStreamAsync(uri);
                 token.Register(lans.Cancel);
@@ -125,6 +108,28 @@ namespace ExClient
                         return 0u;
                 }
             });
+        }
+
+        private Uri createUri()
+        {
+            var args = new Dictionary<string, string>()
+            {
+                ["f_search"] = KeyWord
+            };
+            foreach(var item in searchFliterNames)
+            {
+                if(Category.HasFlag(item.Key))
+                    args.Add(item.Value, "1");
+                else
+                    args.Add(item.Value, "0");
+            }
+            args.Add("f_apply", "Apply Filter");
+            HttpFormUrlEncodedContent query;
+            if(AdvancedSearch != null)
+                query = new HttpFormUrlEncodedContent(args.Concat(AdvancedSearch.AsEnumerable()));
+            else
+                query = new HttpFormUrlEncodedContent(args);
+            return new Uri(searchUri, $"?{query}");
         }
 
         private static readonly Regex gLinkMatcher = new Regex(@".+?/g/(\d+)/([0-9a-f]+).+?", RegexOptions.Compiled);
@@ -183,7 +188,7 @@ namespace ExClient
 
             return Run(async token =>
             {
-                var uri = new Uri($"{this.searchResultBaseUri}&page={pageIndex.ToString()}");
+                var uri = new Uri($"{this.searchResultBaseUri}&page={pageIndex}");
                 var getStream = client.HttpClient.GetInputStreamAsync(uri);
                 token.Register(getStream.Cancel);
                 using(var stream = (await getStream).AsStreamForRead())

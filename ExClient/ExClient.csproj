@@ -112,7 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
-    <Compile Include="CachedGallery.cs" />
+    <Compile Include="SavedGallery.cs" />
     <Compile Include="Client-Forum.cs" />
     <Compile Include="Comment.cs" />
     <Compile Include="Helpers\HtmlHelper.cs" />
@@ -124,7 +124,7 @@
       <DependentUpon>20160717022029_MyFirstMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\GalleryDbModelSnapshot.cs" />
-    <Compile Include="Models\CachedGalleryModel.cs" />
+    <Compile Include="Models\SavedGalleryModel.cs" />
     <Compile Include="Helpers\StorageHelper.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="Client.cs" />

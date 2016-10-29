@@ -105,7 +105,7 @@ namespace ExViewer.ViewModels
                     }
                     SaveProgress = 1;
                 };
-            }, () => SaveStatus != OperationState.Started && !(Gallery is CachedGallery));
+            }, () => SaveStatus != OperationState.Started && !(Gallery is SavedGallery));
             OpenImage = new RelayCommand<GalleryImage>(image =>
             {
                 CurrentIndex = image.PageId - 1;
@@ -375,7 +375,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        public int? TorrentCount => torrents?.Count ?? (gallery is CachedGallery ? null : gallery?.TorrentCount);
+        public int? TorrentCount => torrents?.Count ?? (gallery is SavedGallery ? null : gallery?.TorrentCount);
 
         #endregion Torrents
     }
