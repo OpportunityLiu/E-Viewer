@@ -20,9 +20,9 @@ using MetroLog;
 
 namespace ExClient
 {
-    public class CachedGallery : Gallery, ICanLog
+    public class SavedGallery : Gallery, ICanLog
     {
-        private class CachedGalleryList : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
+        private sealed class SavedGalleryList : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
         {
             private static Gallery defaultGallery = new Gallery(-1, null, "", "", LocalizedStrings.Resources.DefaultTitle, "", "", "ms-appx:///", LocalizedStrings.Resources.DefaultUploader, "0", "0", 0, false, "2.5", "0", new string[0]);
 
@@ -44,11 +44,11 @@ namespace ExClient
             private BitArray loadStateFlag;
             private int loadedCount;
 
-            public CachedGalleryList() : base(1)
+            public SavedGalleryList() : base(1)
             {
                 using(var db = new GalleryDb())
                 {
-                    RecordCount = db.CacheSet.Count();
+                    RecordCount = db.SavedSet.Count();
                     PageCount = 1;
                     loadStateFlag = new BitArray(RecordCount);
                     AddRange(Enumerable.Repeat(defaultGallery, RecordCount));
@@ -110,7 +110,7 @@ namespace ExClient
                 }
                 if(!needLoad)
                     return;
-                var query = db.CacheSet
+                var query = db.SavedSet
                     .OrderByDescending(c => c.Saved)
                     .Skip(visibleRange.FirstIndex)
                     .Take((int)visibleRange.Length)
@@ -125,7 +125,7 @@ namespace ExClient
                     if(this.loadStateFlag[index])
                         continue;
                     var a = query[i];
-                    var c = new CachedGallery(a.Gallery, a.c);
+                    var c = new SavedGallery(a.Gallery, a.c);
                     var ignore = c.InitAsync();
                     this[index] = c;
                     this.loadStateFlag[index] = true;
@@ -150,7 +150,7 @@ namespace ExClient
 
         public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
         {
-            return Task.Run<IncrementalLoadingCollection<Gallery>>(() => new CachedGalleryList()).AsAsyncOperation();
+            return Task.Run<IncrementalLoadingCollection<Gallery>>(() => new SavedGalleryList()).AsAsyncOperation();
         }
 
         public static IAsyncActionWithProgress<double> ClearCachedGalleriesAsync()
@@ -169,13 +169,13 @@ namespace ExClient
                 using(var db = new GalleryDb())
                 {
                     db.ImageSet.RemoveRange(db.ImageSet);
-                    db.CacheSet.RemoveRange(db.CacheSet);
+                    db.SavedSet.RemoveRange(db.SavedSet);
                     await db.SaveChangesAsync();
                 }
             });
         }
 
-        internal CachedGallery(GalleryModel model, CachedGalleryModel cacheModel)
+        internal SavedGallery(GalleryModel model, SavedGalleryModel cacheModel)
             : base(model, false)
         {
             this.thumbFile = cacheModel.ThumbData;
@@ -253,7 +253,7 @@ namespace ExClient
             {
                 using(var db = new GalleryDb())
                 {
-                    db.CacheSet.Remove(db.CacheSet.Single(c => c.GalleryId == this.Id));
+                    db.SavedSet.Remove(db.SavedSet.Single(c => c.GalleryId == this.Id));
                     await db.SaveChangesAsync();
                 }
                 await base.DeleteAsync();

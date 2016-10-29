@@ -86,7 +86,7 @@ namespace ExClient
             {
                 using(var db = new GalleryDb())
                 {
-                    var cm = db.CacheSet.SingleOrDefault(c => c.GalleryId == galleryId);
+                    var cm = db.SavedSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
                     if(gm == null)
                         return null;
@@ -94,7 +94,7 @@ namespace ExClient
                     {
                         var r = (cm == null) ?
                              new Gallery(gm, true) :
-                             new CachedGallery(gm, cm);
+                             new SavedGallery(gm, cm);
                         await r.InitAsync();
                         return r;
                     }
@@ -182,14 +182,14 @@ namespace ExClient
                     var thumb = (await Owner.HttpClient.GetBufferAsync(ThumbUri)).ToArray();
                     using(var db = new GalleryDb())
                     {
-                        var myModel = db.CacheSet.SingleOrDefault(model => model.GalleryId == this.Id);
+                        var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == this.Id);
                         if(myModel == null)
                         {
-                            db.CacheSet.Add(new CachedGalleryModel().Update(this, thumb));
+                            db.SavedSet.Add(new SavedGalleryModel().Update(this, thumb));
                         }
                         else
                         {
-                            db.CacheSet.Update(myModel.Update(this, thumb));
+                            db.SavedSet.Update(myModel.Update(this, thumb));
                         }
                         await db.SaveChangesAsync();
                     }

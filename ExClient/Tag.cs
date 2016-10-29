@@ -74,10 +74,10 @@ namespace ExClient
 
         private string getKeyWord()
         {
-            var keyword = $"\"{Content}$\"";
             if(NameSpace != NameSpace.Misc)
-                keyword = $"{NameSpace}:{keyword}";
-            return keyword;
+                return $"{NameSpace}:\"{Content}$\"";
+            else
+                return $"\"{Content}$\"";
         }
 
         public SearchResult Search()
