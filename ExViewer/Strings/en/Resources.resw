@@ -144,7 +144,7 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>E-Viewer</value>
   </data>
-  <data name="SavedPageClearCacheAppBarButton.Label" xml:space="preserve">
+  <data name="SavedPageDeleteAllAppBarButton.Label" xml:space="preserve">
     <value>Delete all</value>
   </data>
   <data name="SavedPageDeleteMenuFlyout.Text" xml:space="preserve">

@@ -44,33 +44,21 @@ namespace ExClient.Internal
             {
                 if(asyncInfo != _current)
                     return;
-                switch(asyncStatus)
+                if(asyncStatus == AsyncStatus.Completed)
                 {
-                case AsyncStatus.Canceled:
-                    this.Status = AsyncStatus.Canceled;
-                    break;
-                case AsyncStatus.Completed:
                     var response = asyncInfo.GetResults();
                     if(needRedirect(response))
                     {
-                        this.Status = AsyncStatus.Started;
+                        asyncStatus = AsyncStatus.Started;
                         buildNewRequest(response);
                         current = parent.inner.SendRequestAsync(request);
                     }
-                    else
-                    {
-                        this.Status = AsyncStatus.Completed;
-                    }
-                    break;
-                case AsyncStatus.Error:
-                    this.Status = AsyncStatus.Error;
-                    break;
-                case AsyncStatus.Started:
-                    this.Status = AsyncStatus.Started;
-                    break;
                 }
-                if(this.Status != AsyncStatus.Started)
-                    this.Completed?.Invoke(this, this.Status);
+                this.Status = asyncStatus;
+                if(asyncStatus != AsyncStatus.Started)
+                {
+                    this.Completed?.Invoke(this, asyncStatus);
+                }
             }
 
             private void current_Progress(IHttpAsyncOperation asyncInfo, HttpProgress progressInfo)

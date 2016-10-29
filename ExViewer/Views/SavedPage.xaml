@@ -39,9 +39,9 @@
                               Label="Refresh" />
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
-                <AppBarButton x:Uid="SavedPageClearCacheAppBarButton"
-                              x:Name="abb_ClearCache"
-                              Click="abb_ClearCache_Click"
+                <AppBarButton x:Uid="SavedPageDeleteAllAppBarButton"
+                              x:Name="abb_DeleteAll"
+                              Click="abb_DeleteAll_Click"
                               Icon="Clear"
                               Label="Delete all" />
             </CommandBar.SecondaryCommands>

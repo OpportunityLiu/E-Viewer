@@ -62,9 +62,9 @@ namespace ExClient.Internal
         protected override void RemoveItem(int index)
         {
             RecordCount--;
-            base.RemoveItem(index);
             if(this[index] != DefaultGallery)
                 loadedCount--;
+            base.RemoveItem(index);
         }
 
         public void RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)

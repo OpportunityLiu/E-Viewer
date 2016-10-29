@@ -28,5 +28,17 @@ namespace ExViewer.Settings
                 SetLocal(value);
             }
         }
+
+        public bool FullScreenInImagePage
+        {
+            get
+            {
+                return GetLocal(false);
+            }
+            set
+            {
+                SetLocal(value);
+            }
+        }
     }
 }
