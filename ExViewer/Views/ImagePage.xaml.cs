@@ -107,6 +107,7 @@ namespace ExViewer.Views
             av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(av, null);
             fv.Focus(FocusState.Pointer);
+            RootControl.RootController.SetFullScreen(StatusCollection.Current.FullScreenInImagePage);
             if(SettingCollection.Current.KeepScreenOn)
             {
                 displayRequest.RequestActive();
@@ -121,8 +122,8 @@ namespace ExViewer.Views
             base.OnNavigatingFrom(e);
             VM = null;
 
-            if(DeviceTrigger.IsMobile)
-                RootControl.RootController.SetFullScreen(false);
+            StatusCollection.Current.FullScreenInImagePage = isFullScreen ?? false;
+            RootControl.RootController.SetFullScreen(false);
             if(displayActived)
             {
                 displayRequest.RequestRelease();
@@ -273,7 +274,7 @@ namespace ExViewer.Views
 
         private void abb_fullScreen_Click(object sender, RoutedEventArgs e)
         {
-            RootControl.RootController.SetFullScreen();
+            RootControl.RootController.ChangeFullScreen();
         }
 
         protected override void OnKeyDown(KeyRoutedEventArgs e)
@@ -281,7 +282,7 @@ namespace ExViewer.Views
             base.OnKeyDown(e);
             if(!enterPressed && e.Key == VirtualKey.Enter)
             {
-                RootControl.RootController.SetFullScreen();
+                RootControl.RootController.ChangeFullScreen();
                 enterPressed = true;
                 e.Handled = true;
             }

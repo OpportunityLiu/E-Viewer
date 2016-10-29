@@ -91,7 +91,7 @@ namespace ExViewer.Views
 
         private ContentDialog cdg_ConfirmClear;
 
-        private async void abb_ClearCache_Click(object sender, RoutedEventArgs e)
+        private async void abb_DeleteAll_Click(object sender, RoutedEventArgs e)
         {
             cdg_ConfirmClear.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
             await cdg_ConfirmClear.ShowAsync();
@@ -126,6 +126,7 @@ namespace ExViewer.Views
                 e.Cancel = true;
                 return;
             }
+            FlyoutBase.GetAttachedFlyout((FrameworkElement)((ListViewItem)lv.ContainerFromItem(item)).ContentTemplateRoot).Hide();
             e.Data.SetDataProvider(StandardDataFormats.StorageItems, async request =>
             {
                 var d = request.GetDeferral();
@@ -136,7 +137,6 @@ namespace ExViewer.Views
                 }
                 finally { d.Complete(); }
             });
-            FlyoutBase.GetAttachedFlyout((FrameworkElement)((ListViewItem)lv.ContainerFromItem(item)).ContentTemplateRoot).Hide();
             e.Data.Properties.ApplicationName = Package.Current.DisplayName;
             e.Data.Properties.PackageFamilyName = Package.Current.Id.FamilyName;
             e.Data.Properties.Description = item.Title;

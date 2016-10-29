@@ -296,7 +296,7 @@ namespace ExViewer.Views
                 }
             }
 
-            public static void SetFullScreen()
+            public static void ChangeFullScreen()
             {
                 SetFullScreen(!IsFullScreen);
             }
