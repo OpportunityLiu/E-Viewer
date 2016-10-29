@@ -144,22 +144,22 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>E-Viewer</value>
   </data>
-  <data name="CachePageClearCacheAppBarButton.Label" xml:space="preserve">
+  <data name="SavedPageClearCacheAppBarButton.Label" xml:space="preserve">
     <value>删除全部</value>
   </data>
-  <data name="CachePageDeleteMenuFlyout.Text" xml:space="preserve">
+  <data name="SavedPageDeleteMenuFlyout.Text" xml:space="preserve">
     <value>删除</value>
   </data>
-  <data name="CachePageEmptyTextBlock.Text" xml:space="preserve">
+  <data name="SavedPageEmptyTextBlock.Text" xml:space="preserve">
     <value>没有保存的画集</value>
   </data>
-  <data name="CachePageLoadingMoreTextBlock.Text" xml:space="preserve">
+  <data name="SavedPageLoadingMoreTextBlock.Text" xml:space="preserve">
     <value>正在加载更多画集…</value>
   </data>
-  <data name="CachePageRefreshAppBarButton.Label" xml:space="preserve">
+  <data name="SavedPageRefreshAppBarButton.Label" xml:space="preserve">
     <value>刷新</value>
   </data>
-  <data name="CachePageSaveToMenuFlyout.Text" xml:space="preserve">
+  <data name="SavedPageSaveToMenuFlyout.Text" xml:space="preserve">
     <value>保存到…</value>
   </data>
   <data name="Cancel" xml:space="preserve">

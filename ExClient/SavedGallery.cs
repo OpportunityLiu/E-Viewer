@@ -20,140 +20,55 @@ using MetroLog;
 
 namespace ExClient
 {
-    public class SavedGallery : Gallery, ICanLog
+    public sealed class SavedGallery : Gallery, ICanLog
     {
-        private sealed class SavedGalleryList : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
+        private sealed class SavedGalleryList : Internal.GalleryList
         {
-            private static Gallery defaultGallery = new Gallery(-1, null, "", "", LocalizedStrings.Resources.DefaultTitle, "", "", "ms-appx:///", LocalizedStrings.Resources.DefaultUploader, "0", "0", 0, false, "2.5", "0", new string[0]);
-
-            private class ItemIndexRangeEqualityComparer : EqualityComparer<ItemIndexRange>
-            {
-                public static new ItemIndexRangeEqualityComparer Default { get; } = new ItemIndexRangeEqualityComparer();
-
-                public override bool Equals(ItemIndexRange x, ItemIndexRange y)
-                {
-                    return x.FirstIndex == y.FirstIndex && x.Length == y.Length;
-                }
-
-                public override int GetHashCode(ItemIndexRange obj)
-                {
-                    return obj.FirstIndex ^ ((int)obj.Length << 16);
-                }
-            }
-
-            private BitArray loadStateFlag;
-            private int loadedCount;
-
-            public SavedGalleryList() : base(1)
+            private static int getRecordCount()
             {
                 using(var db = new GalleryDb())
                 {
-                    RecordCount = db.SavedSet.Count();
-                    PageCount = 1;
-                    loadStateFlag = new BitArray(RecordCount);
-                    AddRange(Enumerable.Repeat(defaultGallery, RecordCount));
-                    loadRange(new ItemIndexRange(0, (uint)Math.Min(RecordCount, 10)), db);
+                    return db.SavedSet.Count();
                 }
             }
 
-            protected override void RemoveItem(int index)
+            public SavedGalleryList()
+                : base(getRecordCount())
             {
-                RecordCount--;
-                base.RemoveItem(index);
-                if(loadStateFlag != null)
-                {
-                    if(loadStateFlag[index])
-                        loadedCount--;
-                    var oldFlag = loadStateFlag;
-                    loadStateFlag = new BitArray(RecordCount);
-                    for(int i = 0; i < index; i++)
-                    {
-                        loadStateFlag[i] = oldFlag[i];
-                    }
-                    for(int i = index; i < RecordCount; i++)
-                    {
-                        loadStateFlag[i] = oldFlag[i + 1];
-                    }
-                }
-                else
-                {
-                    loadedCount--;
-                }
             }
 
-            public void RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)
+            protected override IList<Gallery> LoadRange(ItemIndexRange visibleRange, GalleryDb db)
             {
-                if(loadedCount == RecordCount)
-                {
-                    loadStateFlag = null;
-                    return;
-                }
-                using(var db = new GalleryDb())
-                {
-                    foreach(var item in trackedItems.Concat(Enumerable.Repeat(visibleRange, 1)).Distinct(ItemIndexRangeEqualityComparer.Default))
-                    {
-                        loadRange(item, db);
-                    }
-                }
-            }
-
-            private void loadRange(ItemIndexRange visibleRange, GalleryDb db)
-            {
-                var needLoad = false;
-                for(int i = visibleRange.LastIndex; i >= visibleRange.FirstIndex; i--)
-                {
-                    if(!this.loadStateFlag[i])
-                    {
-                        needLoad = true;
-                        break;
-                    }
-                }
-                if(!needLoad)
-                    return;
                 var query = db.SavedSet
                     .OrderByDescending(c => c.Saved)
                     .Skip(visibleRange.FirstIndex)
                     .Take((int)visibleRange.Length)
-                    .Select(c => new
+                    .Select(savedModel => new
                     {
-                        c,
-                        c.Gallery
+                        savedModel,
+                        savedModel.Gallery
                     }).ToList();
+                var list = new Gallery[query.Count];
                 for(int i = 0; i < visibleRange.Length; i++)
                 {
                     var index = i + visibleRange.FirstIndex;
-                    if(this.loadStateFlag[index])
+                    if(this[index] != DefaultGallery)
                         continue;
-                    var a = query[i];
-                    var c = new SavedGallery(a.Gallery, a.c);
-                    var ignore = c.InitAsync();
-                    this[index] = c;
-                    this.loadStateFlag[index] = true;
-                    this.loadedCount++;
+                    var model = query[i];
+                    var sg = new SavedGallery(model.Gallery, model.savedModel);
+                    var ignore = sg.InitAsync();
+                    list[i] = sg;
                 }
-            }
-
-            protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
-            {
-                return Task.Run(() =>
-                {
-                    return 0u;
-                }).AsAsyncOperation();
-            }
-
-            public void Dispose()
-            {
+                return list;
             }
         }
 
-        private static readonly int pageSize = 20;
-
-        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
+        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadSavedGalleriesAsync()
         {
             return Task.Run<IncrementalLoadingCollection<Gallery>>(() => new SavedGalleryList()).AsAsyncOperation();
         }
 
-        public static IAsyncActionWithProgress<double> ClearCachedGalleriesAsync()
+        public static IAsyncActionWithProgress<double> ClearAllGalleriesAsync()
         {
             return Run<double>(async (token, progress) =>
             {
@@ -168,18 +83,18 @@ namespace ExClient
                 progress.Report(1);
                 using(var db = new GalleryDb())
                 {
-                    db.ImageSet.RemoveRange(db.ImageSet);
                     db.SavedSet.RemoveRange(db.SavedSet);
+                    db.ImageSet.RemoveRange(db.ImageSet);
                     await db.SaveChangesAsync();
                 }
             });
         }
 
-        internal SavedGallery(GalleryModel model, SavedGalleryModel cacheModel)
-            : base(model, false)
+        internal SavedGallery(GalleryModel model, SavedGalleryModel savedModel)
+                : base(model, false)
         {
-            this.thumbFile = cacheModel.ThumbData;
-            this.PageCount = (int)Math.Ceiling(RecordCount / (double)pageSize);
+            this.thumbFile = savedModel.ThumbData;
+            this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
             this.Owner = Client.Current;
         }
 
@@ -190,7 +105,7 @@ namespace ExClient
             {
                 if(temp == null)
                     return;
-                using(var stream = temp.AsBuffer().AsRandomAccessStream())
+                using(var stream = temp.AsRandomAccessStream())
                 {
                     await Thumb.SetSourceAsync(stream);
                 }
@@ -204,32 +119,30 @@ namespace ExClient
 
         private void loadImageModel()
         {
-            if(imageModels != null)
-                return;
             this.Log().Debug($"Start loading image model, Id = {Id}");
             using(var db = new GalleryDb())
             {
+                var gid = Id;
                 imageModels = (from g in db.GallerySet
-                               where g.Id == Id
+                               where g.Id == gid
                                select g.Images).Single();
                 imageModels.Sort((i, j) => i.PageId - j.PageId);
             }
             this.Log().Debug($"Finish loading image model, Id = {Id}");
         }
 
-        protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
             this.Log().Info($"Start loading page {pageIndex}, Id = {Id}");
-            return Task.Run(async () =>
+            return Task.Run<IList<GalleryImage>>(async () =>
             {
                 if(GalleryFolder == null)
                     await GetFolderAsync();
-                loadImageModel();
-                var thisPageSize = pageSize;
-                if(this.RecordCount - pageIndex * pageSize < pageSize)
-                    thisPageSize = this.RecordCount - pageIndex * pageSize;
-                var toAdd = new List<GalleryImage>(thisPageSize);
-                for(int i = 0; i < thisPageSize; i++)
+                if(imageModels == null)
+                    loadImageModel();
+                var currentPageSize = MathHelper.GetSizeOfPage(RecordCount, PageSize, pageIndex);
+                var toAdd = new List<GalleryImage>(currentPageSize);
+                for(int i = 0; i < currentPageSize; i++)
                 {
                     // Load cache
                     var model = imageModels[Count + i];
@@ -243,7 +156,7 @@ namespace ExClient
 
                 }
                 this.Log().Info($"Finish loading page {pageIndex}, Id = {Id}");
-                return (uint)this.AddRange(toAdd);
+                return toAdd;
             }).AsAsyncOperation();
         }
 

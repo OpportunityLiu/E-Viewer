@@ -15,20 +15,20 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.ViewModels
 {
-    public class CacheVM : ViewModelBase
+    public class SavedVM : ViewModelBase
     {
-        public CacheVM()
+        public SavedVM()
         {
             this.Refresh = new RelayCommand(async () =>
             {
-                this.CachedGalleries = null;
+                this.SavedGalleries = null;
                 this.Refresh.RaiseCanExecuteChanged();
-                this.CachedGalleries = await SavedGallery.LoadCachedGalleriesAsync();
+                this.SavedGalleries = await CachedGallery.LoadCachedGalleriesAsync();
                 this.Refresh.RaiseCanExecuteChanged();
             });
             Clear = new RelayCommand(() =>
             {
-                RootControl.RootController.TrackAsyncAction(SavedGallery.ClearCachedGalleriesAsync(), (s, e) =>
+                RootControl.RootController.TrackAsyncAction(SavedGallery.ClearAllGalleriesAsync(), (s, e) =>
                 {
                     Refresh.Execute(null);
                 });
@@ -36,8 +36,8 @@ namespace ExViewer.ViewModels
             Delete = new RelayCommand<Gallery>(async g =>
             {
                 await g.DeleteAsync();
-                this.CachedGalleries?.Remove(g);
-                RootControl.RootController.SendToast(LocalizedStrings.Resources.GalleryDeleted, typeof(CachePage));
+                this.SavedGalleries?.Remove(g);
+                RootControl.RootController.SendToast(LocalizedStrings.Resources.GalleryDeleted, typeof(SavedPage));
             });
             SaveTo = new RelayCommand<Gallery>(async g =>
             {
@@ -52,7 +52,7 @@ namespace ExViewer.ViewModels
                 {
                     await file.CopyAsync(target, file.Name, NameCollisionOption.ReplaceExisting);
                 }
-                RootControl.RootController.SendToast(LocalizedStrings.Resources.GallerySavedTo, typeof(CachePage));
+                RootControl.RootController.SendToast(LocalizedStrings.Resources.GallerySavedTo, typeof(SavedPage));
             });
             Open = new RelayCommand<Gallery>(g =>
             {
@@ -145,17 +145,17 @@ namespace ExViewer.ViewModels
             get;
         }
 
-        private IncrementalLoadingCollection<Gallery> cachedGalleries;
+        private IncrementalLoadingCollection<Gallery> savedGalleries;
 
-        public IncrementalLoadingCollection<Gallery> CachedGalleries
+        public IncrementalLoadingCollection<Gallery> SavedGalleries
         {
             get
             {
-                return cachedGalleries;
+                return savedGalleries;
             }
             private set
             {
-                Set(ref cachedGalleries, value);
+                Set(ref savedGalleries, value);
             }
         }
     }

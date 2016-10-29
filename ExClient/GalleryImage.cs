@@ -80,7 +80,6 @@ namespace ExClient
             this.Owner = owner;
             this.PageId = pageId;
             this.imageKey = imageKey;
-            this.PageUri = new Uri(pageBaseUri, $"{imageKey}/{owner.Id.ToString()}-{pageId.ToString()}");
             this.image = new ImageHandle(img =>
             {
                 return Run(async token =>
@@ -139,7 +138,7 @@ namespace ExClient
 
         private IAsyncAction loadImageUri()
         {
-            return Task.Run(async () =>
+            return Run(async token =>
             {
                 var loadPageUri = PageUri;
                 if(failToken != null)
@@ -160,7 +159,7 @@ namespace ExClient
                 }
                 var loadFail = pageResult.GetElementbyId("loadfail").GetAttributeValue("onclick", "");
                 failToken = failTokenMatcher.Match(loadFail).Groups[1].Value;
-            }).AsAsyncAction();
+            });
         }
 
         private ImageLoadingState state;
@@ -171,7 +170,7 @@ namespace ExClient
             {
                 return state;
             }
-            private set
+            protected set
             {
                 Set(ref state, value);
             }
@@ -180,7 +179,7 @@ namespace ExClient
         private readonly ImageHandle thumb;
         private ImageSource thumbSource;
 
-        public ImageSource Thumb
+        public virtual ImageSource Thumb
         {
             get
             {
@@ -198,19 +197,19 @@ namespace ExClient
             get;
         }
 
+        /// <summary>
+        /// 1-based Id for image.
+        /// </summary>
         public int PageId
         {
             get;
         }
 
-        public Uri PageUri
-        {
-            get;
-        }
+        public Uri PageUri => new Uri(pageBaseUri, $"{imageKey}/{Owner.Id}-{PageId}");
 
         private IAsyncAction loadImageAction;
 
-        public IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
+        public virtual IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
             var previousAction = loadImageAction;
             return loadImageAction = Run(async token =>
@@ -365,7 +364,7 @@ namespace ExClient
             }
         }
 
-        private static Uri ImageCacheBaseUri = new Uri("ms-appdata:///localCache/");
+        private static readonly Uri ImageCacheBaseUri = new Uri("ms-appdata:///localCache/");
 
         public Uri ImageFileUri
         {
@@ -379,7 +378,7 @@ namespace ExClient
 
         private readonly ImageHandle image;
 
-        public BitmapImage Image
+        public ImageSource Image
         {
             get
             {
@@ -393,7 +392,18 @@ namespace ExClient
 
         private string imageKey;
 
-        internal string ImageKey => imageKey;
+        public string ImageKey
+        {
+            get
+            {
+                return imageKey;
+            }
+            protected set
+            {
+                Set(ref imageKey, value);
+                RaisePropertyChanged(nameof(PageUri));
+            }
+        }
 
         private string failToken;
 

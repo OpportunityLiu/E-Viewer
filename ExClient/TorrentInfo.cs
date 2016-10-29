@@ -9,6 +9,7 @@ using Windows.Storage;
 using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using HtmlAgilityPack;
+using System.Collections.ObjectModel;
 
 namespace ExClient
 {
@@ -16,7 +17,7 @@ namespace ExClient
     {
         private static readonly Regex infoMatcher = new Regex(@"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+", RegexOptions.Compiled);
 
-        internal static IAsyncOperation<List<TorrentInfo>> LoadTorrentsAsync(Gallery gallery)
+        internal static IAsyncOperation<ReadOnlyCollection<TorrentInfo>> LoadTorrentsAsync(Gallery gallery)
         {
             return Task.Run(async () =>
             {
@@ -39,7 +40,7 @@ namespace ExClient
                                  Uploader = reg.Groups[6].Value.DeEntitize(),
                                  TorrentUri = link == null ? null : new Uri(link.GetAttributeValue("href", "").DeEntitize())
                              }).ToList();
-                return nodes;
+                return nodes.AsReadOnly();
             }).AsAsyncOperation();
         }
 

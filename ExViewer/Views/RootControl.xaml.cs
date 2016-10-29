@@ -35,7 +35,7 @@ namespace ExViewer.Views
             this.InitializeComponent();
             tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
-                [this.svt_Cache] = typeof(CachePage),
+                [this.svt_Cache] = typeof(SavedPage),
                 [this.svt_Search] = typeof(SearchPage),
                 [this.svt_Settings] = typeof(SettingsPage),
                 [this.svt_About] = typeof(AboutPage)
@@ -43,7 +43,7 @@ namespace ExViewer.Views
 
             pages = new Dictionary<Type, Controls.SplitViewTab>()
             {
-                [typeof(CachePage)] = this.svt_Cache,
+                [typeof(SavedPage)] = this.svt_Cache,
                 [typeof(SearchPage)] = this.svt_Search,
                 [typeof(SettingsPage)] = this.svt_Settings,
                 [typeof(AboutPage)] = this.svt_About

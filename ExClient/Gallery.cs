@@ -80,6 +80,8 @@ namespace ExClient
     [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count} RecordCount = {RecordCount}\}")]
     public class Gallery : IncrementalLoadingCollection<GalleryImage>, ICanLog
     {
+        internal static readonly int PageSize = 40;
+
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
             return Task.Run(async () =>
@@ -148,53 +150,49 @@ namespace ExClient
             ["Misc"] = Category.Misc
         };
 
-        private IAsyncActionWithProgress<SaveGalleryProgress> saveTask;
-
         public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync(ConnectionStrategy strategy)
         {
-            if(saveTask?.Status != AsyncStatus.Started)
-                saveTask = Run<SaveGalleryProgress>(async (token, progress) =>
+            return Run<SaveGalleryProgress>(async (token, progress) =>
+            {
+                var toReport = new SaveGalleryProgress
                 {
-                    var toReport = new SaveGalleryProgress
-                    {
-                        ImageCount = this.RecordCount,
-                        ImageLoaded = -1
-                    };
-                    progress.Report(toReport);
-                    while(this.HasMoreItems)
-                    {
-                        await this.LoadMoreItemsAsync(40);
-                    }
-                    toReport.ImageLoaded = 0;
-                    progress.Report(toReport);
+                    ImageCount = this.RecordCount,
+                    ImageLoaded = -1
+                };
+                progress.Report(toReport);
+                while(this.HasMoreItems)
+                {
+                    await this.LoadMoreItemsAsync(40);
+                }
+                toReport.ImageLoaded = 0;
+                progress.Report(toReport);
 
-                    var loadTasks = this.Select(image => Task.Run(async () =>
+                var loadTasks = this.Select(image => Task.Run(async () =>
+                {
+                    await image.LoadImageAsync(false, strategy, true);
+                    lock(toReport)
                     {
-                        await image.LoadImageAsync(false, strategy, true);
-                        lock(toReport)
-                        {
-                            toReport.ImageLoaded++;
-                            progress.Report(toReport);
-                        }
-                    }));
-                    await Task.WhenAll(loadTasks);
-
-                    var thumb = (await Owner.HttpClient.GetBufferAsync(ThumbUri)).ToArray();
-                    using(var db = new GalleryDb())
-                    {
-                        var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == this.Id);
-                        if(myModel == null)
-                        {
-                            db.SavedSet.Add(new SavedGalleryModel().Update(this, thumb));
-                        }
-                        else
-                        {
-                            db.SavedSet.Update(myModel.Update(this, thumb));
-                        }
-                        await db.SaveChangesAsync();
+                        toReport.ImageLoaded++;
+                        progress.Report(toReport);
                     }
-                });
-            return saveTask;
+                }));
+                await Task.WhenAll(loadTasks);
+
+                var thumb = (await Owner.HttpClient.GetBufferAsync(ThumbUri)).ToArray();
+                using(var db = new GalleryDb())
+                {
+                    var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == this.Id);
+                    if(myModel == null)
+                    {
+                        db.SavedSet.Add(new SavedGalleryModel().Update(this, thumb));
+                    }
+                    else
+                    {
+                        db.SavedSet.Update(myModel.Update(this, thumb));
+                    }
+                    await db.SaveChangesAsync();
+                }
+            });
         }
 
         protected Gallery(long id, string token, int loadedPageCount)
@@ -225,8 +223,7 @@ namespace ExClient
             this.ThumbUri = new Uri(model.ThumbUri);
             this.setThumbUriWhenInit = setThumbUriSource;
             this.Owner = Client.Current;
-            if(this.RecordCount > 0)
-                this.PageCount = 1;
+            this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
         }
 
         [JsonConstructor]
@@ -280,8 +277,7 @@ namespace ExClient
             {
                 Available = false;
             }
-            if(this.RecordCount > 0)
-                this.PageCount = 1;
+            this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
         }
 
         private static readonly Regex toExUriRegex = new Regex(@"(?<domain>((gt\d|ul)\.ehgt\.org)|(ehgt\.org/t)|((\d{1,3}\.){3}\d{1,3}))(?<body>.+)(?<tail>_l\.)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
@@ -481,7 +477,7 @@ namespace ExClient
         private static readonly Regex picInfoMatcher = new Regex(@"width:\s*(\d+)px;\s*height:\s*(\d+)px;.*url\((.+)\)\s*-\s*(\d+)px", RegexOptions.Compiled);
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
 
-        protected override IAsyncOperation<uint> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
             return Task.Run(async () =>
             {
@@ -537,7 +533,9 @@ namespace ExClient
                             var transform = new BitmapTransform();
                             foreach(var page in group.Value)
                             {
-                                var imageModel = db.ImageSet.SingleOrDefault(im => im.OwnerId == this.Id && im.PageId == page.pageId);
+                                var gid = this.Id;
+                                var pageId = page.pageId;
+                                var imageModel = db.ImageSet.SingleOrDefault(im => im.OwnerId == gid && im.PageId == pageId);
                                 if(imageModel != null)
                                 {
                                     // Load cache
@@ -566,18 +564,18 @@ namespace ExClient
                         }
                     }
                 }
-                return (uint)AddRange(toAdd);
+                return (IList<GalleryImage>)toAdd;
             }).AsAsyncOperation();
         }
 
-        public IAsyncOperation<List<TorrentInfo>> LoadTorrnetsAsync()
+        public IAsyncOperation<ReadOnlyCollection<TorrentInfo>> LoadTorrnetsAsync()
         {
             return TorrentInfo.LoadTorrentsAsync(this);
         }
 
-        private List<Comment> comments;
+        private ReadOnlyCollection<Comment> comments;
 
-        public List<Comment> Comments
+        public ReadOnlyCollection<Comment> Comments
         {
             get
             {
@@ -589,7 +587,7 @@ namespace ExClient
             }
         }
 
-        public IAsyncOperation<List<Comment>> LoadCommentsAsync()
+        public IAsyncOperation<ReadOnlyCollection<Comment>> LoadCommentsAsync()
         {
             return Run(async token =>
             {
@@ -602,6 +600,7 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
+                var gid = this.Id;
                 if(GalleryFolder == null)
                 {
                     await GetFolderAsync();
@@ -611,14 +610,13 @@ namespace ExClient
                 await temp.DeleteAsync();
                 using(var db = new GalleryDb())
                 {
-                    db.ImageSet.RemoveRange(db.ImageSet.Where(i => i.OwnerId == this.Id));
+                    db.ImageSet.RemoveRange(db.ImageSet.Where(i => i.OwnerId == gid));
                     await db.SaveChangesAsync();
                 }
                 var c = this.RecordCount;
                 ResetAll();
                 this.RecordCount = c;
-                if(this.RecordCount > 0)
-                    this.PageCount = 1;
+                this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
             }).AsAsyncAction();
         }
     }

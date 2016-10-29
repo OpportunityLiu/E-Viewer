@@ -15,12 +15,15 @@ namespace ExViewer.Database
     {
         private const string dbFilename = "SearchHistory.db";
 
-        public static void Migrate()
+        public static IAsyncAction MigrateAsync()
         {
-            using(var db = new SearchHistoryDb())
+            return Run(async token =>
             {
-                db.Database.Migrate();
-            }
+                using(var db = new SearchHistoryDb())
+                {
+                    await db.Database.MigrateAsync(token);
+                }
+            });
         }
 
         public SearchHistoryDb()

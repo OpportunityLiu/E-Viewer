@@ -98,7 +98,9 @@
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
     <PRIResource Include="Strings\zh-cn\Settings.resw" />
-    <PRIResource Include="Strings\zh-cn\Resources.resw" />
+    <PRIResource Include="Strings\zh-cn\Resources.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
     <PRIResource Include="Strings\en\Resources.resw">
       <SubType>Designer</SubType>
     </PRIResource>
@@ -165,14 +167,14 @@
       <DependentUpon>ThemeHelperControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CacheStorage{TKey,TCache}.cs" />
-    <Compile Include="ViewModels\CacheVM.cs" />
+    <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
     <Compile Include="ViewModels\SearchVM.cs" />
     <Compile Include="Views\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CachePage.xaml.cs">
-      <DependentUpon>CachePage.xaml</DependentUpon>
+    <Compile Include="Views\SavedPage.xaml.cs">
+      <DependentUpon>SavedPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Converters.cs" />
     <Compile Include="Views\DeviceTrigger.cs" />
@@ -331,7 +333,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CachePage.xaml">
+    <Page Include="Views\SavedPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

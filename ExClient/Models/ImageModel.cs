@@ -34,6 +34,9 @@ namespace ExClient.Models
             set;
         }
 
+        /// <summary>
+        /// 1-based Id for image.
+        /// </summary>
         public int PageId
         {
             get;

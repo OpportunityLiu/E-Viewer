@@ -17,5 +17,10 @@ namespace Windows.Storage
         {
             return buffer.AsStream().AsRandomAccessStream();
         }
+
+        public static IRandomAccessStream AsRandomAccessStream(this byte[] data)
+        {
+            return data.AsBuffer().AsRandomAccessStream();
+        }
     }
 }
