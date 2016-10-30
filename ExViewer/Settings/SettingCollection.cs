@@ -103,7 +103,21 @@ namespace ExViewer.Settings
 
         [Setting("Global", Index = 40)]
         [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
-        public bool UseTagTranslation
+        public bool UseChineseTagTranslation
+        {
+            get
+            {
+                return GetRoaming(false);
+            }
+            set
+            {
+                SetRoaming(value);
+            }
+        }
+
+        [Setting("Global", Index = 50)]
+        [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
+        public bool UseJapaneseTagTranslation
         {
             get
             {

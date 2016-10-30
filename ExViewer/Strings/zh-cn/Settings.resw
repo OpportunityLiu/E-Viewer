@@ -201,9 +201,6 @@
   <data name="UseJapaneseTitle" xml:space="preserve">
     <value>默认显示的画集标题</value>
   </data>
-  <data name="UseTagTranslation" xml:space="preserve">
-    <value>标签中文翻译</value>
-  </data>
   <data name="ApplicationThemeDark" xml:space="preserve">
     <value>深色</value>
   </data>
@@ -218,5 +215,11 @@
   </data>
   <data name="ReverseFlowDirection" xml:space="preserve">
     <value>翻页方向</value>
+  </data>
+  <data name="UseChineseTagTranslation" xml:space="preserve">
+    <value>标签中文翻译</value>
+  </data>
+  <data name="UseJapaneseTagTranslation" xml:space="preserve">
+    <value>标签日文翻译</value>
   </data>
 </root>

@@ -52,7 +52,7 @@
                              RelativePanel.Below="cb_top"
                              RefreshInvoked="PullToRefreshBox_RefreshInvoked">
             <ListView x:Name="lv"
-                      ItemsSource="{x:Bind VM.SavedGalleries, Mode=OneWay}"
+                      ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
                       Style="{StaticResource GalleryListViewStyle}"
                       CanDragItems="True"
                       DragItemsStarting="lv_DragItemsStarting"
@@ -90,7 +90,7 @@
                                HorizontalAlignment="Center"
                                Margin="12"
                                Style="{StaticResource BaseTextBlockStyle}"
-                               Visibility="{x:Bind VM.SavedGalleries.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                               Visibility="{x:Bind VM.Galleries.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
                                Text="Loading more galleries..." />
                 </ListView.Footer>
                 <ListView.Header>
@@ -98,7 +98,7 @@
                                HorizontalAlignment="Center"
                                Margin="12"
                                Style="{StaticResource BaseTextBlockStyle}"
-                               Visibility="{x:Bind VM.SavedGalleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
+                               Visibility="{x:Bind VM.Galleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
                                Text="No saved galleries" />
                 </ListView.Header>
             </ListView>

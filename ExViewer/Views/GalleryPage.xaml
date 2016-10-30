@@ -39,8 +39,10 @@
             <MenuFlyoutSeparator />
             <MenuFlyoutItem x:Uid="GalleryPageGoToDefinitionMenuFlyoutItem"
                             Text="Go to EHWiki for definition"
-                            Command="{x:Bind VM.GoToDefinition, Mode=OneWay}"
-                            CommandParameter="{Binding}" />
+                            Click="mfi_EhWiki_Click">
+                <!--Command="{x:Bind VM.GoToDefinition, Mode=OneWay}"
+                            CommandParameter="{Binding}">-->
+            </MenuFlyoutItem>
             <MenuFlyoutItem x:Uid="GalleryPageSearchTagMenuFlyoutItem"
                             Text="Show galleries with this tag"
                             Command="{x:Bind VM.SearchTag, Mode=OneWay}"
@@ -210,7 +212,7 @@
                       x:DataType="c:Comment">
             <UserControl VerticalContentAlignment="Stretch"
                          HorizontalContentAlignment="Stretch">
-                <RelativePanel Padding="4,8,4,12">
+                <RelativePanel Padding="4,8,4,20">
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup>
                             <VisualState x:Name="Narrow">
@@ -561,12 +563,14 @@
                                     </DataTemplate>
                                 </GridView.ItemTemplate>
                                 <GridView.Footer>
-                                    <TextBlock x:Uid="GalleryPageImagesLoadingMoreTextBlock"
-                                               HorizontalAlignment="Center"
-                                               Margin="12"
-                                               Style="{StaticResource BaseTextBlockStyle}"
-                                               Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                                               Text="Loading more items..." />
+                                    <Border Height="{x:Bind gd_Info.ActualHeight, Mode=OneWay}">
+                                        <TextBlock x:Uid="GalleryPageImagesLoadingMoreTextBlock"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="12"
+                                                   Style="{StaticResource BaseTextBlockStyle}"
+                                                   Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                                                   Text="Loading more items..." />
+                                    </Border>
                                 </GridView.Footer>
                             </GridView>
                         </PivotItem>

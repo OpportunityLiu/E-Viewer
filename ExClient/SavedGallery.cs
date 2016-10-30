@@ -22,7 +22,7 @@ namespace ExClient
 {
     public sealed class SavedGallery : Gallery, ICanLog
     {
-        private sealed class SavedGalleryList : Internal.GalleryList
+        private sealed class SavedGalleryList : GalleryList<SavedGallery>
         {
             private static int getRecordCount()
             {
@@ -37,7 +37,7 @@ namespace ExClient
             {
             }
 
-            protected override IList<Gallery> LoadRange(ItemIndexRange visibleRange, GalleryDb db)
+            protected override IList<SavedGallery> LoadRange(ItemIndexRange visibleRange, GalleryDb db)
             {
                 var query = db.SavedSet
                     .OrderByDescending(c => c.Saved)
@@ -48,7 +48,7 @@ namespace ExClient
                         savedModel,
                         savedModel.Gallery
                     }).ToList();
-                var list = new Gallery[query.Count];
+                var list = new SavedGallery[query.Count];
                 for(int i = 0; i < visibleRange.Length; i++)
                 {
                     var index = i + visibleRange.FirstIndex;
@@ -63,9 +63,9 @@ namespace ExClient
             }
         }
 
-        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadSavedGalleriesAsync()
+        public static IAsyncOperation<GalleryList<SavedGallery>> LoadSavedGalleriesAsync()
         {
-            return Task.Run<IncrementalLoadingCollection<Gallery>>(() => new SavedGalleryList()).AsAsyncOperation();
+            return Task.Run<GalleryList<SavedGallery>>(() => new SavedGalleryList()).AsAsyncOperation();
         }
 
         public static IAsyncActionWithProgress<double> ClearAllGalleriesAsync()
@@ -166,7 +166,8 @@ namespace ExClient
             {
                 using(var db = new GalleryDb())
                 {
-                    db.SavedSet.Remove(db.SavedSet.Single(c => c.GalleryId == this.Id));
+                    var gid = this.Id;
+                    db.SavedSet.Remove(db.SavedSet.Single(c => c.GalleryId == gid));
                     await db.SaveChangesAsync();
                 }
                 await base.DeleteAsync();

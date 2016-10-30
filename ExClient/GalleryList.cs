@@ -18,9 +18,10 @@ using Windows.UI.Xaml.Data;
 using System.Collections;
 using MetroLog;
 
-namespace ExClient.Internal
+namespace ExClient
 {
-    abstract class GalleryList : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
+    public abstract class GalleryList<T> : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
+         where T : Gallery
     {
         protected static Gallery DefaultGallery
         {
@@ -44,7 +45,7 @@ namespace ExClient.Internal
 
         private int loadedCount;
 
-        public GalleryList(int recordCount)
+        internal GalleryList(int recordCount)
             : base(1)
         {
             this.PageCount = 1;
@@ -106,14 +107,14 @@ namespace ExClient.Internal
             }
         }
 
-        protected abstract IList<Gallery> LoadRange(ItemIndexRange visibleRange, GalleryDb db);
+        protected abstract IList<T> LoadRange(ItemIndexRange visibleRange, GalleryDb db);
 
         protected override IAsyncOperation<IList<Gallery>> LoadPageAsync(int pageIndex)
         {
             return Run<IList<Gallery>>(async token =>
             {
                 await Task.Yield();
-                return Array.Empty<Gallery>();
+                return Array.Empty<T>();
             });
         }
 

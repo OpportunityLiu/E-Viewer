@@ -201,8 +201,8 @@
   <data name="UseJapaneseTitle" xml:space="preserve">
     <value>The default title displayed</value>
   </data>
-  <data name="UseTagTranslation" xml:space="preserve">
-    <value>Use chinese translation of tags</value>
+  <data name="UseChineseTagTranslation" xml:space="preserve">
+    <value>Use Chinese translation of tags</value>
   </data>
   <data name="ApplicationThemeDark" xml:space="preserve">
     <value>Dark</value>
@@ -218,5 +218,8 @@
   </data>
   <data name="ReverseFlowDirection" xml:space="preserve">
     <value>Flip direction</value>
+  </data>
+  <data name="UseJapaneseTagTranslation" xml:space="preserve">
+    <value>Use Japanese translation of tags</value>
   </data>
 </root>

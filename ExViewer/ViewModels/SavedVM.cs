@@ -15,29 +15,16 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.ViewModels
 {
-    public class SavedVM : ViewModelBase
+    public class SavedVM : GalleryListVM<SavedGallery>
     {
         public SavedVM()
         {
             this.Refresh = new RelayCommand(async () =>
             {
-                this.SavedGalleries = null;
+                this.Galleries = null;
                 this.Refresh.RaiseCanExecuteChanged();
-                this.SavedGalleries = await CachedGallery.LoadCachedGalleriesAsync();
+                this.Galleries = await SavedGallery.LoadSavedGalleriesAsync();
                 this.Refresh.RaiseCanExecuteChanged();
-            });
-            Clear = new RelayCommand(() =>
-            {
-                RootControl.RootController.TrackAsyncAction(SavedGallery.ClearAllGalleriesAsync(), (s, e) =>
-                {
-                    Refresh.Execute(null);
-                });
-            });
-            Delete = new RelayCommand<Gallery>(async g =>
-            {
-                await g.DeleteAsync();
-                this.SavedGalleries?.Remove(g);
-                RootControl.RootController.SendToast(LocalizedStrings.Resources.GalleryDeleted, typeof(SavedPage));
             });
             SaveTo = new RelayCommand<Gallery>(async g =>
             {
@@ -53,11 +40,6 @@ namespace ExViewer.ViewModels
                     await file.CopyAsync(target, file.Name, NameCollisionOption.ReplaceExisting);
                 }
                 RootControl.RootController.SendToast(LocalizedStrings.Resources.GallerySavedTo, typeof(SavedPage));
-            });
-            Open = new RelayCommand<Gallery>(g =>
-            {
-                GalleryVM.AddGallery(g);
-                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
             });
         }
 
@@ -102,21 +84,6 @@ namespace ExViewer.ViewModels
             return p;
         }
 
-        public RelayCommand Refresh
-        {
-            get;
-        }
-
-        public RelayCommand Clear
-        {
-            get;
-        }
-
-        public RelayCommand<Gallery> Delete
-        {
-            get;
-        }
-
         public RelayCommand<Gallery> SaveTo
         {
             get;
@@ -138,25 +105,6 @@ namespace ExViewer.ViewModels
                 }
                 return target;
             }).AsAsyncOperation();
-        }
-
-        public RelayCommand<Gallery> Open
-        {
-            get;
-        }
-
-        private IncrementalLoadingCollection<Gallery> savedGalleries;
-
-        public IncrementalLoadingCollection<Gallery> SavedGalleries
-        {
-            get
-            {
-                return savedGalleries;
-            }
-            private set
-            {
-                Set(ref savedGalleries, value);
-            }
         }
     }
 }

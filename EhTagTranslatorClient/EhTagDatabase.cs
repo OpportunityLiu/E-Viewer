@@ -13,19 +13,19 @@ namespace EhTagTranslatorClient
     {
         private static readonly Uri wikiDbRootUri = new Uri("ms-appx:///EhTagTranslatorClient/Data/");
 
-        private static async Task<IEnumerable<Record>> loadDatabaseTableAsync(NameSpace nameSpace)
+        private static async Task<IReadOnlyDictionary<string, Record>> loadDatabaseTableAsync(NameSpace nameSpace)
         {
             var dbUri = new Uri(wikiDbRootUri, $"{nameSpace.ToString().ToLowerInvariant()}.md");
             var file = await StorageFile.GetFileFromApplicationUriAsync(dbUri);
-            return Record.Analyze(await file.OpenSequentialReadAsync(), nameSpace);
+            return Record.Analyze(await file.OpenSequentialReadAsync(), nameSpace).ToDictionary(record => record.Original);
         }
 
-        public static IAsyncOperation<IList<Record>> LoadDatabaseAsync()
+        public static IAsyncOperation<IReadOnlyDictionary<NameSpace, IReadOnlyDictionary<string, Record>>> LoadDatabaseAsync()
         {
-            return Task.Run(async () =>
+            return Task.Run<IReadOnlyDictionary<NameSpace, IReadOnlyDictionary<string, Record>>>(async () =>
             {
-                var l = new List<Record>();
-                var t = new List<Task<IEnumerable<Record>>>();
+                var l = new Dictionary<NameSpace, IReadOnlyDictionary<string, Record>>();
+                var t = new List<Task<IReadOnlyDictionary<string, Record>>>();
                 foreach(NameSpace item in Enum.GetValues(typeof(NameSpace)))
                 {
                     t.Add(loadDatabaseTableAsync(item));
@@ -33,9 +33,10 @@ namespace EhTagTranslatorClient
                 await Task.WhenAll(t);
                 foreach(var item in t)
                 {
-                    l.AddRange(item.Result);
+                    var result = item.Result;
+                    l.Add(result.Values.First().NameSpace, result);
                 }
-                return (IList<Record>)l;
+                return l;
             }).AsAsyncOperation();
         }
     }

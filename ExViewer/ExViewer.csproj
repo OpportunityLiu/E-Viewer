@@ -166,12 +166,20 @@
     <Compile Include="Themes\ThemeHelperControl.xaml.cs">
       <DependentUpon>ThemeHelperControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\CachedVM.cs" />
     <Compile Include="ViewModels\CacheStorage{TKey,TCache}.cs" />
+    <Compile Include="ViewModels\GalleryListVM.cs" />
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
     <Compile Include="ViewModels\SearchVM.cs" />
     <Compile Include="Views\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CachedPage.xaml.cs">
+      <DependentUpon>CachedPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EhWikiDialog.xaml.cs">
+      <DependentUpon>EhWikiDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SavedPage.xaml.cs">
       <DependentUpon>SavedPage.xaml</DependentUpon>
@@ -333,6 +341,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CachedPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EhWikiDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SavedPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -374,6 +390,10 @@
     <ProjectReference Include="..\EhTagTranslatorClient\EhTagTranslatorClient.csproj">
       <Project>{7a7c3d38-128a-406d-ad3c-eec617386f14}</Project>
       <Name>EhTagTranslatorClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EhWikiClient\EhWikiClient.csproj">
+      <Project>{11b1903e-af00-4d7c-90d4-02e4ea20a96e}</Project>
+      <Name>EhWikiClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExClient\ExClient.csproj">
       <Project>{8875a248-ce2e-454b-9090-62ae609d7644}</Project>
