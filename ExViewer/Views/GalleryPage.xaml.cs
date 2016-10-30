@@ -70,7 +70,7 @@ namespace ExViewer.Views
             }
         }
 
-        private bool needResetView;
+        private bool needResetView, needRestoreView;
 
         protected override Size MeasureOverride(Size availableSize)
         {
@@ -85,6 +85,11 @@ namespace ExViewer.Views
                 needResetView = false;
                 resetView();
             }
+            else if(needRestoreView)
+            {
+                needRestoreView = false;
+                restoreView();
+            }
             else
             {
                 changeView(true);
@@ -94,13 +99,25 @@ namespace ExViewer.Views
         private void resetView()
         {
             changeViewTo(false, true);
-            gv.ScrollIntoView(VM.GetCurrent());
+            gv.ScrollIntoView(VM.Gallery.FirstOrDefault());
             lv_Comments.ScrollIntoView(lv_Comments.Items.FirstOrDefault());
             lv_Torrents.ScrollIntoView(lv_Torrents.Items.FirstOrDefault());
             lv_Tags.ScrollIntoView(lv_Tags.Items.FirstOrDefault());
         }
 
-        private bool currentState
+        private void restoreView()
+        {
+            changeViewTo(isGd_InfoHideWhenLeave, true);
+            var current = VM.GetCurrent();
+            if(current != null)
+            {
+                gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
+            }
+        }
+
+        private bool isGd_InfoHideWhenLeave;
+
+        private bool IsGd_InfoHide
         {
             get
             {
@@ -111,7 +128,7 @@ namespace ExViewer.Views
 
         private void changeView(bool keep)
         {
-            changeViewTo(!currentState ^ keep, false);
+            changeViewTo(!IsGd_InfoHide ^ keep, false);
         }
 
         private void changeViewTo(bool view, bool disableAnimation)
@@ -137,22 +154,17 @@ namespace ExViewer.Views
             Bindings.Update();
             if(e.NavigationMode == NavigationMode.Back)
             {
-                var current = VM.GetCurrent();
-                if(current != null)
-                {
-                    if(currentState)
-                        gv.ScrollIntoView(current);
-                    else
-                        gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
-                }
                 entranceElement = (UIElement)gv.ContainerFromIndex(VM.CurrentIndex);
                 if(entranceElement != null)
                     EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
+                await Task.Delay(20);
+                needRestoreView = true;
             }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
+            isGd_InfoHideWhenLeave = IsGd_InfoHide;
             base.OnNavigatingFrom(e);
             if(entranceElement != null)
                 EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, false);
@@ -188,6 +200,8 @@ namespace ExViewer.Views
             RootControl.RootController.SwitchSplitView();
         }
 
+        private EhWikiDialog ewd = new EhWikiDialog();
+
         private void gv_Tags_ItemClick(object sender, ItemClickEventArgs e)
         {
             var s = (ListViewBase)sender;
@@ -196,7 +210,15 @@ namespace ExViewer.Views
             {
                 item.DataContext = e.ClickedItem;
             }
+
+            ewd.RequestedTheme = SettingCollection.Current.Theme.ToElementTheme();
+            ewd.SetTag((Tag)e.ClickedItem);
             mfo_Tag.ShowAt(container);
+        }
+
+        private async void mfi_EhWiki_Click(object sender, RoutedEventArgs e)
+        {
+            await ewd.ShowAsync();
         }
 
         private void lv_Torrents_ItemClick(object sender, ItemClickEventArgs e)

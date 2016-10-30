@@ -212,15 +212,15 @@ namespace ExClient
         public virtual IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
             var previousAction = loadImageAction;
-            return loadImageAction = Run(async token =>
+            return this.loadImageAction = Run(async token =>
             {
                 IAsyncAction load;
                 IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> imageLoad = null;
-                switch(state)
+                switch(this.state)
                 {
                 case ImageLoadingState.Waiting:
                 case ImageLoadingState.Failed:
-                    load = loadImageUri();
+                    load = this.loadImageUri();
                     break;
                 case ImageLoadingState.Loading:
                 case ImageLoadingState.Loaded:
@@ -228,8 +228,8 @@ namespace ExClient
                     {
                         if(previousAction?.Status == AsyncStatus.Started)
                             previousAction.Cancel();
-                        await deleteImageFile();
-                        load = loadImageUri();
+                        await this.deleteImageFile();
+                        load = this.loadImageUri();
                     }
                     else
                         return;
@@ -251,15 +251,15 @@ namespace ExClient
                     var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
                     if(loadFull)
                     {
-                        uri = originalImageUri ?? imageUri;
-                        OriginalLoaded = true;
+                        uri = this.originalImageUri ?? this.imageUri;
+                        this.OriginalLoaded = true;
                     }
                     else
                     {
-                        uri = imageUri;
-                        OriginalLoaded = (originalImageUri == null);
+                        uri = this.imageUri;
+                        this.OriginalLoaded = (this.originalImageUri == null);
                     }
-                    imageLoad = Owner.Owner.HttpClient.GetAsync(uri);
+                    imageLoad = this.Owner.Owner.HttpClient.GetAsync(uri);
                     this.State = ImageLoadingState.Loading;
                     imageLoad.Progress = (sender, progress) =>
                     {
@@ -277,18 +277,19 @@ namespace ExClient
                         }
                     };
                     token.ThrowIfCancellationRequested();
-                    await deleteImageFile();
+                    await this.deleteImageFile();
                     var imageLoadResponse = await imageLoad;
                     if(imageLoadResponse.Content.Headers.ContentType.MediaType == "text/html")
                         throw new InvalidOperationException(HtmlUtilities.ConvertToText(imageLoadResponse.Content.ToString()));
                     token.ThrowIfCancellationRequested();
                     var buffer = await imageLoadResponse.Content.ReadAsBufferAsync();
                     var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
-                    var save = Owner.GalleryFolder.SaveFileAsync($"{PageId}{ext}", buffer);
-                    ImageFile = await save;
+                    var pageId = this.PageId;
+                    this.ImageFile = await this.Owner.GalleryFolder.SaveFileAsync($"{pageId}{ext}", buffer);
                     using(var db = new Models.GalleryDb())
                     {
-                        var myModel = db.ImageSet.SingleOrDefault(model => model.OwnerId == this.Owner.Id && model.PageId == this.PageId);
+                        var gid = this.Owner.Id;
+                        var myModel = db.ImageSet.SingleOrDefault(model => model.OwnerId == gid && model.PageId == pageId);
                         if(myModel == null)
                         {
                             db.ImageSet.Add(new Models.ImageModel().Update(this));
@@ -305,7 +306,7 @@ namespace ExClient
                 catch(Exception)
                 {
                     this.Progress = 100;
-                    State = ImageLoadingState.Failed;
+                    this.State = ImageLoadingState.Failed;
                     if(throwIfFailed)
                         throw;
                 }

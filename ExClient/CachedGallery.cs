@@ -14,7 +14,7 @@ namespace ExClient
 {
     public sealed class CachedGallery : Gallery, ICanLog
     {
-        private sealed class CachedGalleryList : Internal.GalleryList
+        private sealed class CachedGalleryList : GalleryList<CachedGallery>
         {
             public static IAsyncOperation<CachedGalleryList> LoadList()
             {
@@ -51,9 +51,9 @@ namespace ExClient
                 base.ClearItems();
             }
 
-            protected override IList<Gallery> LoadRange(ItemIndexRange visibleRange, GalleryDb db)
+            protected override IList<CachedGallery> LoadRange(ItemIndexRange visibleRange, GalleryDb db)
             {
-                var list = new Gallery[visibleRange.Length];
+                var list = new CachedGallery[visibleRange.Length];
                 for(int i = 0; i < visibleRange.Length; i++)
                 {
                     var index = visibleRange.FirstIndex + i;
@@ -67,9 +67,35 @@ namespace ExClient
             }
         }
 
-        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
+        public static IAsyncOperation<GalleryList<CachedGallery>> LoadCachedGalleriesAsync()
         {
-            return Run<IncrementalLoadingCollection<Gallery>>(async token => await CachedGalleryList.LoadList());
+            return Run<GalleryList<CachedGallery>>(async token => await CachedGalleryList.LoadList());
+        }
+
+        public static IAsyncActionWithProgress<double> ClearCachedGalleriesAsync()
+        {
+            return Run<double>(async (token, progress) =>
+            {
+                progress.Report(double.NaN);
+                using(var db = new GalleryDb())
+                {
+                    var query = from gm in db.GallerySet
+                                where gm.Images.Count != 0
+                                where db.SavedSet.FirstOrDefault(sm => sm.GalleryId == gm.Id) == null
+                                select gm.Images;
+                    var list = query.ToList();
+                    double count = list.Count;
+                    for(int i = 0; i < list.Count; i++)
+                    {
+                        var item = list[i];
+                        progress.Report(i / count);
+                        var folder = await StorageHelper.LocalCache.CreateFolderAsync(item[0].OwnerId.ToString(), Windows.Storage.CreationCollisionOption.OpenIfExists);
+                        await folder.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
+                        db.ImageSet.RemoveRange(item);
+                    }
+                    await db.SaveChangesAsync();
+                }
+            });
         }
 
         internal CachedGallery(GalleryModel model)

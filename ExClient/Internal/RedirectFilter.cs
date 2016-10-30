@@ -141,7 +141,7 @@ namespace ExClient.Internal
 
             public HttpResponseMessage GetResults()
             {
-                return current?.GetResults();
+                return current.GetResults();
             }
         }
 

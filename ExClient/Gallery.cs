@@ -178,10 +178,11 @@ namespace ExClient
                 }));
                 await Task.WhenAll(loadTasks);
 
-                var thumb = (await Owner.HttpClient.GetBufferAsync(ThumbUri)).ToArray();
+                var thumb = (await this.Owner.HttpClient.GetBufferAsync(this.ThumbUri)).ToArray();
                 using(var db = new GalleryDb())
                 {
-                    var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == this.Id);
+                    var gid = this.Id;
+                    var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == gid);
                     if(myModel == null)
                     {
                         db.SavedSet.Add(new SavedGalleryModel().Update(this, thumb));
@@ -317,7 +318,8 @@ namespace ExClient
             {
                 using(var db = new GalleryDb())
                 {
-                    var myModel = db.GallerySet.SingleOrDefault(model => model.Id == this.Id);
+                    var gid = this.Id;
+                    var myModel = db.GallerySet.SingleOrDefault(model => model.Id == gid);
                     if(myModel == null)
                     {
                         db.GallerySet.Add(new GalleryModel().Update(this));
@@ -493,16 +495,24 @@ namespace ExClient
                 if(comments == null)
                     Comments = Comment.LoadComment(html);
                 var pcNodes = html.DocumentNode.Descendants("td")
-                              .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
-                              .Select(node =>
-                              {
-                                  int i;
-                                  var su = int.TryParse(node.InnerText, out i);
-                                  return Tuple.Create(su, i);
-                              })
-                              .Where(select => select.Item1)
-                              .DefaultIfEmpty(Tuple.Create(true, 1))
-                              .Max(select => select.Item2);
+                    .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
+                    .Select(node =>
+                    {
+                        int number;
+                        var succeed = int.TryParse(node.InnerText, out number);
+                        return new
+                        {
+                            succeed,
+                            number
+                        };
+                    })
+                    .Where(select => select.succeed)
+                    .DefaultIfEmpty(new
+                    {
+                        succeed = true,
+                        number = 1
+                    })
+                    .Max(select => select.number);
                 PageCount = pcNodes;
                 var pics = (from node in html.GetElementbyId("gdt").Descendants("div")
                             where node.GetAttributeValue("class", null) == "gdtm"
@@ -533,9 +543,8 @@ namespace ExClient
                             var transform = new BitmapTransform();
                             foreach(var page in group.Value)
                             {
-                                var gid = this.Id;
-                                var pageId = page.pageId;
-                                var imageModel = db.ImageSet.SingleOrDefault(im => im.OwnerId == gid && im.PageId == pageId);
+                                var imageKey = page.imageKey;
+                                var imageModel = db.ImageSet.FirstOrDefault(im => im.ImageKey == imageKey);
                                 if(imageModel != null)
                                 {
                                     // Load cache

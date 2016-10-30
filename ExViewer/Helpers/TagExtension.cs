@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using ExViewer.Settings;
 using EhTagTranslatorClient;
 using Windows.Foundation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {
     static class TagExtension
     {
-        private static IList<Record> tagDb;
+        private static IReadOnlyDictionary<NameSpace, IReadOnlyDictionary<string, Record>> tagDb;
+        private static EhWikiClient.Client wikiClient;
 
         public static IAsyncAction Init()
         {
@@ -22,18 +24,54 @@ namespace ExClient
                 {
                     tagDb = sender.GetResults();
                 };
+                var loadWiki = EhWikiClient.Client.CreateAsync();
+                loadWiki.Completed = (sender, e) =>
+                {
+                    wikiClient = sender.GetResults();
+                };
             }).AsAsyncAction();
         }
 
         public static string GetDisplayContent(this Tag tag)
         {
-            if(!SettingCollection.Current.UseTagTranslation || tagDb == null)
-                return tag.Content;
-            var record = tagDb.SingleOrDefault(r => r.Original == tag.Content && r.NameSpace == tag.NameSpace);
-            if(record == null)
-                return tag.Content;
-            else
-                return record.Translated.Text;
+            var settings = SettingCollection.Current;
+            if(settings.UseChineseTagTranslation)
+            {
+                var r = tag.GetEhTagTranslatorRecord();
+                if(r != null)
+                    return r.Translated.Text;
+            }
+            if(settings.UseJapaneseTagTranslation && wikiClient != null)
+            {
+                var r = tag.GetEhWikiRecord()?.Japanese;
+                if(r != null)
+                    return r;
+            }
+            return tag.Content;
+        }
+
+        public static Record GetEhTagTranslatorRecord(this Tag tag)
+        {
+            if(tagDb == null)
+                return null;
+            var record = (Record)null;
+            if(tagDb[tag.NameSpace].TryGetValue(tag.Content, out record))
+                return record;
+            return null;
+        }
+
+        public static EhWikiClient.Record GetEhWikiRecord(this Tag tag)
+        {
+            if(wikiClient == null)
+                return null;
+            return wikiClient.Get(tag.Content);
+        }
+
+        public static IAsyncOperation<EhWikiClient.Record> FetchEhWikiRecordAsync(this Tag tag)
+        {
+            if(wikiClient == null)
+                return Task.Run(() => (EhWikiClient.Record)null).AsAsyncOperation();
+            return wikiClient.FetchAsync(tag.Content);
         }
     }
 }
