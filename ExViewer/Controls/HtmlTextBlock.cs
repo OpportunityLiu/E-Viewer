@@ -131,7 +131,14 @@ namespace ExViewer.Controls
                         catch(UriFormatException) { }
                         if(uri != null)
                         {
-                            t.Inlines.Add(CreateHyperlink(match.Value, uri));
+                            try
+                            {
+                                t.Inlines.Add(CreateHyperlink(match.Value, uri));
+                            }
+                            catch(Exception)
+                            {
+                                t.Inlines.Add(CreateRun(match.Value));
+                            }
                         }
                         else
                         {
