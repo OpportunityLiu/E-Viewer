@@ -10,6 +10,7 @@
                FullSizeDesired="True">
 
     <Grid>
+        <Border Width="500" />
         <WebView x:Name="wv"
                  NavigationStarting="wv_NavigationStarting" />
     </Grid>

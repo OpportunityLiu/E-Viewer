@@ -7,6 +7,7 @@ using ExViewer.Settings;
 using EhTagTranslatorClient;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Windows.UI.Xaml;
 
 namespace ExClient
 {
@@ -29,7 +30,21 @@ namespace ExClient
                 {
                     wikiClient = sender.GetResults();
                 };
+                Application.Current.Suspending += App_Suspending;
             }).AsAsyncAction();
+        }
+
+        private static async void App_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
+        {
+            var d = e.SuspendingOperation.GetDeferral();
+            try
+            {
+                await wikiClient.SaveAsync();
+            }
+            finally
+            {
+                d.Complete();
+            }
         }
 
         public static string GetDisplayContent(this Tag tag)
