@@ -61,7 +61,8 @@ namespace ExViewer.Views
             var background = ((SolidColorBrush)this.Background);
             var foreground = ((SolidColorBrush)this.Foreground);
             var link = ((SolidColorBrush)this.BorderBrush);
-            style = $@"<style type='text/css'>
+            style = $@"<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
+<style type='text/css'>
 	html {{
 		background: {rgba(background)};
 		font-family: sans-serif;

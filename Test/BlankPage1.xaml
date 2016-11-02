@@ -1,0 +1,34 @@
+﻿<Page
+    x:Class="Test.BlankPage1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Test"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Width="32"
+          Height="32"
+          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top">
+        <Image Source="Assets/无标题.png"
+               Stretch="Fill" />
+        <Image Width="21"
+               Height="21"
+               Source="Assets/Historical-96.png"
+               d:IsHidden="True" />
+        <Path Width="32"
+              Height="32"
+              Data="F1M10,8 l12,0 v1 h-1 v3 a5,5,0,0,1,-10,0 v-3h1v3a4,4,0,0,0,8,0v-3h-10z
+              m2,3h8v1h-8z
+              M10,24h12v-1h-12z
+              m1,0v-3a5,5,0,0,1,10,0v3h-1v-3a4,4,0,0,0,-8,0v3z
+              m8,0l-4,-4l-4,4
+              l1.414,0l2.586,-2.586l2.586,2.586z"
+              Fill="#7F000000"></Path> <!--M10,8 l12,0 v1 h-1 v3 a5,5,0,0,1,-10,0 v-3h-1v-1m2,1
+              h8v2h-8v-3m0,4h8a4,4,0,0,1,-8,0
+              M10,24l12,0v-1h-1v-3a5,5,0,0,0,-10,0v3h-1v1m2,-1
+              v-3a4,4,0,0,1,8,0v3l-4,-4l-4,4m1.414,0h5.172l-2.586,-2.586z-->
+    </Grid>
+</Page>

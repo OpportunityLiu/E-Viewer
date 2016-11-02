@@ -1,4 +1,5 @@
 ﻿<ContentDialog x:Class="ExViewer.Views.EhWikiDialog"
+               x:Uid="EhWikiDialogContentDialog"
                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:local="using:ExViewer.Views"
@@ -12,6 +13,7 @@
     <Grid>
         <Border Width="500" />
         <WebView x:Name="wv"
-                 NavigationStarting="wv_NavigationStarting" />
+                 NavigationStarting="wv_NavigationStarting"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" />
     </Grid>
 </ContentDialog>

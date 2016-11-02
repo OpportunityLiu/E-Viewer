@@ -165,10 +165,10 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="ClearCacheDialogContent" xml:space="preserve">
+  <data name="ClearSavedDialogContent" xml:space="preserve">
     <value>All saved galleries will be deleted.</value>
   </data>
-  <data name="ClearCacheDialogTitle" xml:space="preserve">
+  <data name="ClearSavedDialogTitle" xml:space="preserve">
     <value>ARE YOU SURE</value>
   </data>
   <data name="Exit" xml:space="preserve">
@@ -353,7 +353,7 @@ Full screen			ENTER</value>
   <data name="RootControlAboutSplitViewTab.Content" xml:space="preserve">
     <value>About</value>
   </data>
-  <data name="RootControlCacheSplitViewTab.Content" xml:space="preserve">
+  <data name="RootControlSavedSplitViewTab.Content" xml:space="preserve">
     <value>Saved galleries</value>
   </data>
   <data name="RootControlChangeUserButton.ToolTipService.ToolTip" xml:space="preserve">
@@ -438,5 +438,29 @@ Go "Settings -&gt; Accounts - Sign-in options -&gt; PIN -&gt; Add" to do this.</
   </data>
   <data name="GalleryPageTagNameSpaceColumnDefinition.Width" xml:space="preserve">
     <value>72</value>
+  </data>
+  <data name="EhWikiDialogContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ClearCachedDialogContent" xml:space="preserve">
+    <value>All cached galleries will be deleted.</value>
+  </data>
+  <data name="ClearCachedDialogTitle" xml:space="preserve">
+    <value>ARE YOU SURE</value>
+  </data>
+  <data name="CachedPageDeleteAllAppBarButton.Label" xml:space="preserve">
+    <value>Delete all</value>
+  </data>
+  <data name="CachedPageDeleteMenuFlyout.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CachedPageEmptyTextBlock.Text" xml:space="preserve">
+    <value>No cached galleries</value>
+  </data>
+  <data name="CachedPageLoadingMoreTextBlock.Text" xml:space="preserve">
+    <value>Loading more galleries...</value>
+  </data>
+  <data name="CachedPageRefreshAppBarButton.Label" xml:space="preserve">
+    <value>Refresh</value>
   </data>
 </root>
