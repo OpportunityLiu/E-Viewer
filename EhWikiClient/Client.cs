@@ -27,26 +27,10 @@ namespace EhWikiClient
 
         private Client(Dictionary<string, Record> dic)
         {
-            saveTimer = new System.Threading.Timer(saveTimerCallBack, this, 30000, 30000);
             this.dic = dic ?? new Dictionary<string, Record>(StringComparer.OrdinalIgnoreCase);
         }
 
         private HttpClient http = new HttpClient();
-
-        private System.Threading.Timer saveTimer;
-
-        private static async void saveTimerCallBack(object state)
-        {
-            try
-            {
-                var client = (Client)state;
-                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("EhWiki.json", CreationCollisionOption.ReplaceExisting);
-                await FileIO.WriteTextAsync(file, JsonConvert.SerializeObject(client.dic.Values.Where(r => r != null)));
-            }
-            catch
-            {
-            }
-        }
 
         private Dictionary<string, Record> dic;
 
@@ -85,6 +69,15 @@ namespace EhWikiClient
             });
         }
 
+        public IAsyncAction SaveAsync()
+        {
+            return Run(async token =>
+            {
+                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("EhWiki.json", CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteTextAsync(file, JsonConvert.SerializeObject(this.dic.Values.Where(r => r != null)));
+            });
+        }
+
         private IEnumerable<KeyValuePair<string, string>> getRequestParameters(string title)
         {
             //https://ehwiki.org/api.php?action=parse&page={pageName}&prop=text&format=jsonfm&utf8=
@@ -105,7 +98,6 @@ namespace EhWikiClient
                 if(disposing)
                 {
                     http.Dispose();
-                    saveTimer.Dispose();
                 }
                 disposedValue = true;
             }

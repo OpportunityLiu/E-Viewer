@@ -55,7 +55,7 @@ namespace ExViewer.Views
                 showPanel.Completed += ShowPanel_Completed;
                 hidePanel.Completed += HidePanel_Completed;
                 playToast.Completed += PlayToast_Completed;
-                
+
                 Frame.Navigated += Frame_Navigated;
             }
 
@@ -73,10 +73,10 @@ namespace ExViewer.Views
 
             public static void SendToast(string content, Type source)
             {
+                if(source != root.fm_inner.Content?.GetType() && source != null)
+                    return;
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    if(source != root.fm_inner.Content?.GetType() && source != null)
-                        return;
                     root.FindName(nameof(root.bd_Toast));
                     root.tb_Toast.Text = content;
                     root.bd_Toast.Visibility = Visibility.Visible;
