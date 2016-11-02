@@ -35,7 +35,8 @@ namespace ExViewer.Views
             this.InitializeComponent();
             tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
-                [this.svt_Cache] = typeof(SavedPage),
+                [this.svt_Saved] = typeof(SavedPage),
+                [this.svt_Cached] = typeof(CachedPage),
                 [this.svt_Search] = typeof(SearchPage),
                 [this.svt_Settings] = typeof(SettingsPage),
                 [this.svt_About] = typeof(AboutPage)
@@ -43,7 +44,8 @@ namespace ExViewer.Views
 
             pages = new Dictionary<Type, Controls.SplitViewTab>()
             {
-                [typeof(SavedPage)] = this.svt_Cache,
+                [typeof(CachedPage)] = this.svt_Cached,
+                [typeof(SavedPage)] = this.svt_Saved,
                 [typeof(SearchPage)] = this.svt_Search,
                 [typeof(SettingsPage)] = this.svt_Settings,
                 [typeof(AboutPage)] = this.svt_About
@@ -74,8 +76,14 @@ namespace ExViewer.Views
 
         public UserInfo UserInfo
         {
-            get { return (UserInfo)GetValue(UserInfoProperty); }
-            set { SetValue(UserInfoProperty, value); }
+            get
+            {
+                return (UserInfo)GetValue(UserInfoProperty);
+            }
+            set
+            {
+                SetValue(UserInfoProperty, value);
+            }
         }
 
         // Using a DependencyProperty as the backing store for UserInfo.  This enables animation, styling, binding, etc...

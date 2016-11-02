@@ -168,7 +168,7 @@
     </Compile>
     <Compile Include="ViewModels\CachedVM.cs" />
     <Compile Include="ViewModels\CacheStorage{TKey,TCache}.cs" />
-    <Compile Include="ViewModels\GalleryListVM.cs" />
+    <Compile Include="ViewModels\GalleryListVM{T}.cs" />
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
     <Compile Include="ViewModels\SearchVM.cs" />

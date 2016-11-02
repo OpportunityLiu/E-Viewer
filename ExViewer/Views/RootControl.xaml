@@ -124,13 +124,28 @@
                                               FontSize="16" />
                                 </controls:SplitViewTab.Icon>
                             </controls:SplitViewTab>
-                            <controls:SplitViewTab x:Uid="RootControlCacheSplitViewTab"
-                                                   x:Name="svt_Cache"
+                            <controls:SplitViewTab x:Uid="RootControlSavedSplitViewTab"
+                                                   x:Name="svt_Saved"
                                                    Content="Saved galleries"
                                                    Click="svt_Click">
                                 <controls:SplitViewTab.Icon>
                                     <FontIcon Glyph="&#xE8B7;"
                                               FontSize="16" />
+                                </controls:SplitViewTab.Icon>
+                            </controls:SplitViewTab>
+                            <controls:SplitViewTab x:Uid="RootControlCachedSplitViewTab"
+                                                   x:Name="svt_Cached"
+                                                   Content="Cached galleries"
+                                                   Click="svt_Click">
+                                <controls:SplitViewTab.Icon>
+                                    <PathIcon Data="F1M10,8 l12,0 v1 h-1 v3 a5,5,0,0,1,-10,0 v-3h1v3a4,4,0,0,0,8,0v-3h-10z
+              m2,3h8v1h-8z
+              M10,24h12v-1h-12z
+              m1,0v-3a5,5,0,0,1,10,0v3h-1v-3a4,4,0,0,0,-8,0v3z
+              m8,0l-4,-4l-4,4
+              l1.414,0l2.586,-2.586l2.586,2.586z"
+                                              Width="32"
+                                              Height="32" />
                                 </controls:SplitViewTab.Icon>
                             </controls:SplitViewTab>
                             <controls:SplitViewTab x:Uid="RootControlSettingsSplitViewTab"
