@@ -45,6 +45,8 @@ namespace ExClient
                 this.Items.Add(item);
                 count++;
             }
+            if(count == 0)
+                return 0;
             var startingIndex = this.Count - count;
             this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new AddRangeInfo(this, startingIndex, count), startingIndex));
             OnPropertyChanged(nameof(Count));
