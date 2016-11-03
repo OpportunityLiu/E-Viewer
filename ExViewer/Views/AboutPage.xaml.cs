@@ -41,15 +41,5 @@ namespace ExViewer.Views
         {
             RootControl.RootController.SwitchSplitView();
         }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var fl = await DownloadsFolder.CreateFolderAsync("log", CreationCollisionOption.GenerateUniqueName);
-            var logf = await ApplicationData.Current.LocalFolder.GetFolderAsync("MetroLogs");
-            foreach(var file in await logf.GetFilesAsync())
-            {
-                await file.CopyAsync(fl);
-            }
-        }
     }
 }

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using ExClient.Models;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using MetroLog;
 using GalaSoft.MvvmLight.Threading;
 using Windows.UI.Xaml.Data;
+using Windows.Foundation.Diagnostics;
 
 namespace ExClient
 {
-    public sealed class CachedGallery : Gallery, ICanLog
+    public sealed class CachedGallery : Gallery
     {
         private sealed class CachedGalleryList : GalleryList<CachedGallery>
         {
@@ -112,10 +112,8 @@ namespace ExClient
         }
 
         private List<ImageModel> imageModels;
-
         private void loadImageModel()
         {
-            this.Log().Debug($"Start loading image model, Id = {Id}");
             using(var db = new GalleryDb())
             {
                 var gid = Id;
@@ -125,7 +123,6 @@ namespace ExClient
                 // 倒序
                 imageModels.Sort((a, b) => b.PageId - a.PageId);
             }
-            this.Log().Debug($"Finish loading image model, Id = {Id}");
         }
 
         protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)

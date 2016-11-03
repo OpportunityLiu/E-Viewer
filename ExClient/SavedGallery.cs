@@ -16,11 +16,10 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
 using Windows.UI.Xaml.Data;
 using System.Collections;
-using MetroLog;
 
 namespace ExClient
 {
-    public sealed class SavedGallery : Gallery, ICanLog
+    public sealed class SavedGallery : Gallery
     {
         private sealed class SavedGalleryList : GalleryList<SavedGallery>
         {
@@ -119,7 +118,6 @@ namespace ExClient
 
         private void loadImageModel()
         {
-            this.Log().Debug($"Start loading image model, Id = {Id}");
             using(var db = new GalleryDb())
             {
                 var gid = Id;
@@ -128,12 +126,10 @@ namespace ExClient
                                select g.Images).Single();
                 imageModels.Sort((i, j) => i.PageId - j.PageId);
             }
-            this.Log().Debug($"Finish loading image model, Id = {Id}");
         }
 
         protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
-            this.Log().Info($"Start loading page {pageIndex}, Id = {Id}");
             return Task.Run<IList<GalleryImage>>(async () =>
             {
                     await GetFolderAsync();
@@ -154,7 +150,6 @@ namespace ExClient
                     toAdd.Add(image);
 
                 }
-                this.Log().Info($"Finish loading page {pageIndex}, Id = {Id}");
                 return toAdd;
             }).AsAsyncOperation();
         }
