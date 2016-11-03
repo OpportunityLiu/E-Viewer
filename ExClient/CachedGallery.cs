@@ -83,15 +83,23 @@ namespace ExClient
                                 where gm.Images.Count != 0
                                 where db.SavedSet.FirstOrDefault(sm => sm.GalleryId == gm.Id) == null
                                 select gm.Images;
-                    var list = query.ToList();
-                    double count = list.Count;
-                    for(int i = 0; i < list.Count; i++)
+                    var cacheDic = query.ToDictionary(dm => dm.First().OwnerId.ToString());
+                    var saveDic = db.SavedSet.Select(sm => sm.GalleryId).ToDictionary(id => id.ToString());
+                    double count = cacheDic.Count;
+                    int i = 0;
+                    foreach(var item in cacheDic)
                     {
-                        var item = list[i];
                         progress.Report(i / count);
-                        var folder = await StorageHelper.LocalCache.CreateFolderAsync(item[0].OwnerId.ToString(), Windows.Storage.CreationCollisionOption.OpenIfExists);
+                        var folder = await StorageHelper.LocalCache.CreateFolderAsync(item.Key, Windows.Storage.CreationCollisionOption.OpenIfExists);
                         await folder.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
-                        db.ImageSet.RemoveRange(item);
+                        db.ImageSet.RemoveRange(item.Value);
+                        i++;
+                    }
+                    var folders = await StorageHelper.LocalCache.GetItemsAsync();
+                    foreach(var item in folders)
+                    {
+                        if(!saveDic.ContainsKey(item.Name))
+                            await item.DeleteAsync();
                     }
                     await db.SaveChangesAsync();
                 }
@@ -124,7 +132,6 @@ namespace ExClient
         {
             return Task.Run<IList<GalleryImage>>(async () =>
             {
-                if(GalleryFolder == null)
                     await GetFolderAsync();
                 if(this.imageModels == null)
                     this.loadImageModel();
@@ -172,7 +179,6 @@ namespace ExClient
         {
             return DispatcherHelper.RunAsync(async () =>
             {
-                if(GalleryFolder == null)
                     await GetFolderAsync();
                 var file = (await GalleryFolder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).SingleOrDefault();
                 if(file == null)

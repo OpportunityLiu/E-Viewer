@@ -136,7 +136,6 @@ namespace ExClient
             this.Log().Info($"Start loading page {pageIndex}, Id = {Id}");
             return Task.Run<IList<GalleryImage>>(async () =>
             {
-                if(GalleryFolder == null)
                     await GetFolderAsync();
                 if(imageModels == null)
                     loadImageModel();
