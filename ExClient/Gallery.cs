@@ -470,7 +470,8 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                GalleryFolder = await StorageHelper.LocalCache.CreateFolderAsync(Id.ToString(), CreationCollisionOption.OpenIfExists);
+                if(galleryFolder == null)
+                    GalleryFolder = await StorageHelper.LocalCache.CreateFolderAsync(Id.ToString(), CreationCollisionOption.OpenIfExists);
                 return galleryFolder;
             });
         }
@@ -483,10 +484,7 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                if(GalleryFolder == null)
-                {
-                    await GetFolderAsync();
-                }
+                await GetFolderAsync();
                 var uri = new Uri(GalleryUri, $"?p={pageIndex.ToString()}{(comments == null ? "hc=1" : "")}");
                 var request = Owner.PostStrAsync(uri, null);
                 var res = await request;
@@ -610,10 +608,7 @@ namespace ExClient
             return Task.Run(async () =>
             {
                 var gid = this.Id;
-                if(GalleryFolder == null)
-                {
-                    await GetFolderAsync();
-                }
+                await GetFolderAsync();
                 var temp = GalleryFolder;
                 GalleryFolder = null;
                 await temp.DeleteAsync();
