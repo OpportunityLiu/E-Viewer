@@ -129,7 +129,7 @@ namespace ExClient
         {
             return Task.Run<IList<GalleryImage>>(async () =>
             {
-                    await GetFolderAsync();
+                await GetFolderAsync();
                 if(this.imageModels == null)
                     this.loadImageModel();
                 var currentPageSize = MathHelper.GetSizeOfPage(RecordCount, PageSize, pageIndex);
@@ -176,7 +176,7 @@ namespace ExClient
         {
             return DispatcherHelper.RunAsync(async () =>
             {
-                    await GetFolderAsync();
+                await GetFolderAsync();
                 var file = (await GalleryFolder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).SingleOrDefault();
                 if(file == null)
                     return;

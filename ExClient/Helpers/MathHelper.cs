@@ -19,7 +19,7 @@ namespace System
             if(remainRecordCount < pageSize)
                 return remainRecordCount;
             else
-                return pageIndex;
+                return pageSize;
         }
 
         public static int GetPageIndexOfRecord(int pageSize, int recordIndex)

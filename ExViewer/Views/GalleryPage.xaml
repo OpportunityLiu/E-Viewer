@@ -442,8 +442,8 @@
                                             </GridView.ItemContainerStyle>
                                             <GridView.ItemTemplate>
                                                 <DataTemplate x:DataType="client:Tag">
-                                                    <TextBlock DataContext="{x:Bind Converter={StaticResource TagToStringConverter}}"
-                                                               Text="{Binding Value, Mode=OneWay}"
+                                                    <TextBlock Tag="{x:Bind Converter={StaticResource TagToStringConverter}}"
+                                                               Text="{Binding Tag.Value, RelativeSource={RelativeSource Mode=Self}}"
                                                                Padding="4,0" />
                                                 </DataTemplate>
                                             </GridView.ItemTemplate>
