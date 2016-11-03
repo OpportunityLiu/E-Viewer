@@ -21,7 +21,6 @@ using ExClient.Models;
 using GalaSoft.MvvmLight.Threading;
 using Windows.Globalization;
 using System.Collections;
-using MetroLog;
 
 namespace ExClient
 {
@@ -78,7 +77,7 @@ namespace ExClient
 
     [JsonObject]
     [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count} RecordCount = {RecordCount}\}")]
-    public class Gallery : IncrementalLoadingCollection<GalleryImage>, ICanLog
+    public class Gallery : IncrementalLoadingCollection<GalleryImage>
     {
         internal static readonly int PageSize = 40;
 
