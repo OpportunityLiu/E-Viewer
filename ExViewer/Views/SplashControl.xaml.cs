@@ -145,8 +145,6 @@ namespace ExViewer.Views
                     await Database.SearchHistoryDb.MigrateAsync();
                     await TagExtension.Init();
                 });
-                MetroLog.LogManagerFactory.DefaultConfiguration.AddTarget(MetroLog.LogLevel.Trace, MetroLog.LogLevel.Fatal, new MetroLog.Targets.StreamingFileTarget());
-                MetroLog.GlobalCrashHandler.Configure();
                 if(Client.Current.NeedLogOn)
                 {
                     try

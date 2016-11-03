@@ -16,7 +16,6 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
 using Windows.UI.Xaml.Data;
 using System.Collections;
-using MetroLog;
 
 namespace ExClient
 {
