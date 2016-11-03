@@ -123,6 +123,7 @@
     <Compile Include="Converters\ValueConverter.cs" />
     <Compile Include="Converters\ValueConverterBase.cs" />
     <Compile Include="Helpers\ApiInfo.cs" />
+    <Compile Include="Helpers\Box{T}.cs" />
     <Compile Include="Helpers\DocumentHelper.cs" />
     <Compile Include="Helpers\GalleryExtension.cs" />
     <Compile Include="App.xaml.cs">
