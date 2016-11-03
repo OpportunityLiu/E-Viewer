@@ -16,11 +16,10 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Runtime.InteropServices;
 using GalaSoft.MvvmLight.Threading;
-using MetroLog;
 
 namespace ExClient
 {
-    public class SearchResult : IncrementalLoadingCollection<Gallery>, ICanLog
+    public class SearchResult : IncrementalLoadingCollection<Gallery>
     {
         private static readonly Uri searchUri = new Uri("http://exhentai.org/");
 
@@ -59,7 +58,6 @@ namespace ExClient
 
         public void Reset()
         {
-            this.Log().Info("Create or reset");
             ResetAll();
             this.PageCount = 1;
             this.RecordCount = -1;
@@ -182,7 +180,6 @@ namespace ExClient
 
         protected override IAsyncOperation<IList<Gallery>> LoadPageAsync(int pageIndex)
         {
-            this.Log().Info($"Start loading page {pageIndex}, KeyWord = {this.KeyWord}");
             if(pageIndex == 0)
                 return init();
 
@@ -196,7 +193,6 @@ namespace ExClient
                     var doc = new HtmlDocument();
                     doc.Load(stream);
                     var r = await loadPage(doc);
-                    this.Log().Info($"Finish loading page {pageIndex}, KeyWord = {this.KeyWord}");
                     return r;
                 }
             });
