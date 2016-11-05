@@ -149,11 +149,70 @@ namespace ExClient
             }).AsAsyncOperation();
         }
 
+        private Dictionary<int, LoadPageAction> loadingPageDic = new Dictionary<int, LoadPageAction>();
+
+        private class LoadPageAction : IAsyncAction
+        {
+            private IAsyncAction action;
+
+            public LoadPageAction(IAsyncAction action)
+            {
+                this.action = action;
+                this.action.Completed = action_Completed;
+            }
+
+            private void action_Completed(IAsyncAction sender, AsyncStatus e)
+            {
+                foreach(var item in completed)
+                {
+                    item(this, e);
+                }
+                action = null;
+                completed = null;
+            }
+
+            public bool Disposed => action == null;
+
+            public AsyncActionCompletedHandler Completed
+            {
+                get
+                {
+                    return this.action.Completed;
+                }
+                set
+                {
+                    completed.Add(value);
+                }
+            }
+
+            private List<AsyncActionCompletedHandler> completed = new List<AsyncActionCompletedHandler>();
+
+            public Exception ErrorCode => this.action.ErrorCode;
+
+            public uint Id => this.action.Id;
+
+            public AsyncStatus Status => this.action.Status;
+
+            public void Cancel() => this.action.Cancel();
+
+            public void Close()=>this.action.Close();
+
+            public void GetResults()=> this.action.GetResults();
+        }
+
         internal IAsyncAction LoadImageAsync(GalleryImagePlaceHolder image)
         {
-            return Run(async token =>
+            var pageIndex = MathHelper.GetPageIndexOfRecord(PageSize, image.PageId - 1);
+            var lpAc = (LoadPageAction)null;
+            if(loadingPageDic.TryGetValue(pageIndex, out lpAc))
             {
-                var pageIndex = MathHelper.GetPageIndexOfRecord(PageSize, image.PageId - 1);
+                if(!lpAc.Disposed)
+                    return lpAc;
+                else
+                    loadingPageDic.Remove(pageIndex);
+            }
+            var action = Run(async token =>
+            {
                 var images = await base.LoadPageAsync(pageIndex);
                 var offset = MathHelper.GetStartIndexOfPage(PageSize, pageIndex);
                 for(int i = 0; i < images.Count; i++)
@@ -164,6 +223,9 @@ namespace ExClient
                     ph.Init(images[i].ImageKey, images[i].Thumb);
                 }
             });
+            lpAc = new LoadPageAction(action);
+            loadingPageDic[pageIndex] = lpAc;
+            return lpAc;
         }
 
         public override IAsyncAction DeleteAsync()

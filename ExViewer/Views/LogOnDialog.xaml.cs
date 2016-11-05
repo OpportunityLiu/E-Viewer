@@ -34,6 +34,8 @@ namespace ExViewer.Views
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var username = tb_user.Text;
+            if(string.Equals("eviewer", username))
+                Settings.SettingCollection.Current.DefaultSearchCategory = Category.NonH;
             var password = pb_pass.Password;
             if(string.IsNullOrWhiteSpace(username))
             {
