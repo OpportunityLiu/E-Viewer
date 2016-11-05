@@ -165,8 +165,8 @@
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
-  <data name="ClearSacedDialogContent" xml:space="preserve">
-    <value>所有保存的画集将被删除！</value>
+  <data name="ClearSavedDialogContent" xml:space="preserve">
+    <value>所有保存的画集和缓存的画集将被删除！</value>
   </data>
   <data name="ClearSavedDialogTitle" xml:space="preserve">
     <value>警告</value>
@@ -462,5 +462,26 @@
   </data>
   <data name="CachedPageRefreshAppBarButton.Label" xml:space="preserve">
     <value>刷新</value>
+  </data>
+  <data name="RootControlCachedSplitViewTab.Content" xml:space="preserve">
+    <value>缓存的画集</value>
+  </data>
+  <data name="RootControlDisableInfoTextBlock.Text" xml:space="preserve">
+    <value>少女祈祷中…</value>
+  </data>
+  <data name="AboutPageChineseTagProviderHyperlinkButton.Content" xml:space="preserve">
+    <value>Mapaler / EhTagTranslator @ Github.com</value>
+  </data>
+  <data name="AboutPageChineseTagProviderTextBlock.Text" xml:space="preserve">
+    <value>标签中文翻译</value>
+  </data>
+  <data name="AboutPageDataProvidersTextBlock.Text" xml:space="preserve">
+    <value>数据提供方</value>
+  </data>
+  <data name="AboutPageEHWikiTextBlock.Text" xml:space="preserve">
+    <value>EHWiki.org</value>
+  </data>
+  <data name="AboutPageJapaneseTagProviderTextBlock.Text" xml:space="preserve">
+    <value>标签日文翻译</value>
   </data>
 </root>

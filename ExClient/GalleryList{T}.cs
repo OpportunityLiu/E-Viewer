@@ -84,6 +84,11 @@ namespace ExClient
 
         private void loadRange(ItemIndexRange visibleRange, GalleryDb db)
         {
+            if(visibleRange.FirstIndex < 0)
+                visibleRange = new ItemIndexRange(0, (uint)visibleRange.LastIndex + 1);
+            if(visibleRange.LastIndex >= this.Count)
+                visibleRange = new ItemIndexRange(visibleRange.FirstIndex, (uint)(this.Count - visibleRange.FirstIndex));
+
             var needLoad = false;
             for(int i = visibleRange.LastIndex; i >= visibleRange.FirstIndex; i--)
             {

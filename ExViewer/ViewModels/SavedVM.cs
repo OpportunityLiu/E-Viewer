@@ -17,9 +17,22 @@ namespace ExViewer.ViewModels
 {
     public class SavedVM : GalleryListVM<SavedGallery>
     {
-        public SavedVM()
+        public static SavedVM Instance
         {
-            this.Refresh = new RelayCommand(async () =>
+            get;
+        } = new SavedVM();
+
+        private SavedVM()
+        {
+            Clear = new RelayCommand(() =>
+            {
+                RootControl.RootController.TrackAsyncAction(SavedGallery.ClearAllGalleriesAsync(), (s, e) =>
+                {
+                    CachedVM.Instance.Refresh.Execute(null);
+                    Refresh.Execute(null);
+                });
+            });
+            Refresh = new RelayCommand(async () =>
             {
                 this.Galleries = null;
                 this.Refresh.RaiseCanExecuteChanged();

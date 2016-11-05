@@ -145,7 +145,7 @@
     <value>The latency for the command bar to hide or show after tapping</value>
   </data>
   <data name="Connection" xml:space="preserve">
-    <value>Connection</value>
+    <value>CONNECTION</value>
   </data>
   <data name="DefaultFactor" xml:space="preserve">
     <value>Zoom factor for double tapping</value>
@@ -157,7 +157,7 @@
     <value>Default keywords on the front page</value>
   </data>
   <data name="Global" xml:space="preserve">
-    <value>Global</value>
+    <value>GLOBAL</value>
   </data>
   <data name="Hah" xml:space="preserve">
     <value>H@H</value>
@@ -169,7 +169,7 @@
     <value>Passkey (Optional)</value>
   </data>
   <data name="ImageViewing" xml:space="preserve">
-    <value>Image viewing</value>
+    <value>IMAGE VIEWING</value>
   </data>
   <data name="KeepScreenOn" xml:space="preserve">
     <value>Keep my screen on during image viewing</value>
@@ -193,7 +193,7 @@
     <value>Save my lastest search as default</value>
   </data>
   <data name="Searching" xml:space="preserve">
-    <value>Searching</value>
+    <value>SEARCHING</value>
   </data>
   <data name="Theme" xml:space="preserve">
     <value>The theme of the app</value>
