@@ -220,6 +220,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\EHWiki.scale-100.png" />
+    <Content Include="Images\EHWiki.scale-200.png" />
+    <Content Include="Images\EHWiki.scale-400.png" />
     <Content Include="Images\Light\ImageLoading.scale-100.png" />
     <Content Include="Images\Light\ImageLoading.scale-200.png" />
     <Content Include="Images\Light\ImageLoading.scale-400.png" />

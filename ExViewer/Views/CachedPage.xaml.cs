@@ -32,7 +32,7 @@ namespace ExViewer.Views
         public CachedPage()
         {
             this.InitializeComponent();
-            VM = new CachedVM();
+            VM = CachedVM.Instance;
             cdg_ConfirmClear = new ContentDialog()
             {
                 Title = LocalizedStrings.Resources.ClearCachedDialogTitle,

@@ -166,7 +166,7 @@
     <value>Cancel</value>
   </data>
   <data name="ClearSavedDialogContent" xml:space="preserve">
-    <value>All saved galleries will be deleted.</value>
+    <value>All saved galleries and cached galleries will be deleted.</value>
   </data>
   <data name="ClearSavedDialogTitle" xml:space="preserve">
     <value>ARE YOU SURE</value>
@@ -462,5 +462,26 @@ Go "Settings -&gt; Accounts - Sign-in options -&gt; PIN -&gt; Add" to do this.</
   </data>
   <data name="CachedPageRefreshAppBarButton.Label" xml:space="preserve">
     <value>Refresh</value>
+  </data>
+  <data name="RootControlCachedSplitViewTab.Content" xml:space="preserve">
+    <value>Cached galleries</value>
+  </data>
+  <data name="RootControlDisableInfoTextBlock.Text" xml:space="preserve">
+    <value>Operation in progress, plaese wait...</value>
+  </data>
+  <data name="AboutPageChineseTagProviderHyperlinkButton.Content" xml:space="preserve">
+    <value>Mapaler / EhTagTranslator @ Github.com</value>
+  </data>
+  <data name="AboutPageChineseTagProviderTextBlock.Text" xml:space="preserve">
+    <value>Chinese translation of tags</value>
+  </data>
+  <data name="AboutPageDataProvidersTextBlock.Text" xml:space="preserve">
+    <value>Data providers</value>
+  </data>
+  <data name="AboutPageEHWikiTextBlock.Text" xml:space="preserve">
+    <value>EHWiki.org</value>
+  </data>
+  <data name="AboutPageJapaneseTagProviderTextBlock.Text" xml:space="preserve">
+    <value>Japanese translation of tags</value>
   </data>
 </root>

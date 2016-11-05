@@ -14,46 +14,77 @@
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
+    <Page.Resources>
+        <Style x:Key="AboutPageHyperLinkButtonStyle"
+               TargetType="HyperlinkButton"
+               BasedOn="{StaticResource TextBlockButtonStyle}">
+            <Setter Property="Padding"
+                    Value="0" />
+            <Setter Property="Margin"
+                    Value="4" />
+        </Style>
+        <Style x:Key="AboutPageSubtitleTextBlockStyle"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource SubtitleTextBlockStyle}">
+            <Setter Property="Margin"
+                    Value="4,40,4,4" />
+        </Style>
+        <Style x:Key="AboutPageBodyTextBlockStyle"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource BodyTextBlockStyle}">
+            <Setter Property="Margin"
+                    Value="4" />
+        </Style>
+        <Style x:Key="AboutPageBaseTextBlockStyle"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource BaseTextBlockStyle}">
+            <Setter Property="Margin"
+                    Value="4" />
+        </Style>
+        <Style x:Key="AboutPageSubheaderTextBlockStyle"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource BaseTextBlockStyle}">
+            <Setter Property="Margin"
+                    Value="4,4,4,0" />
+        </Style>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
-            <Button Style="{StaticResource SplitButtonStyle}"
-                    Click="btn_Pane_Click" />
+            <TextBlock Text="ABOUT"
+                       x:Uid="AboutPageTitleTextBlock"
+                       Style="{StaticResource TitleTextBlockStyle}"
+                       Margin="56,0,0,0"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Left" />
         </Border>
+        <Button Style="{StaticResource SplitButtonStyle}"
+                Click="btn_Pane_Click" />
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollMode="Disabled">
             <StackPanel Padding="8">
-                <TextBlock Text="ABOUT"
-                           x:Uid="AboutPageTitleTextBlock"
-                           Style="{StaticResource HeaderTextBlockStyle}"
-                           Margin="4" />
                 <TextBlock x:Name="tb_AppName"
                            Margin="4"
                            Style="{StaticResource TitleTextBlockStyle}"
                            Text="AppName" />
                 <TextBlock x:Name="tb_AppAuthor"
-                           Margin="4"
-                           Style="{StaticResource BaseTextBlockStyle}"
-                           Text="AppAuthor" />
+                           Text="AppAuthor"
+                           Style="{StaticResource AboutPageBaseTextBlockStyle}" />
                 <TextBlock x:Name="tb_AppVersion"
-                           Margin="4"
                            Text="AppVersion"
-                           Style="{StaticResource BaseTextBlockStyle}" />
+                           Style="{StaticResource AboutPageBaseTextBlockStyle}" />
                 <TextBlock x:Name="tb_AppDescription"
-                           Margin="4"
-                           Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor sagittis laoreet. Proin posuere dapibus eros, ut condimentum arcu pharetra vel. Cras hendrerit ipsum sed odio pellentesque, sed scelerisque dui finibus. Fusce volutpat, odio eu volutpat mattis, enim tortor aliquam quam, sed aliquam arcu arcu sit amet velit."
-                           TextWrapping="WrapWholeWords" />
-                <TextBlock Margin="4,40,4,4"
-                           x:Uid="AboutPageLicenceTextBlock"
+                           Style="{StaticResource AboutPageBodyTextBlockStyle}"
+                           Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor sagittis laoreet. Proin posuere dapibus eros, ut condimentum arcu pharetra vel. Cras hendrerit ipsum sed odio pellentesque, sed scelerisque dui finibus. Fusce volutpat, odio eu volutpat mattis, enim tortor aliquam quam, sed aliquam arcu arcu sit amet velit." />
+                <TextBlock x:Uid="AboutPageLicenceTextBlock"
                            Text="License"
-                           Style="{StaticResource SubtitleTextBlockStyle}" />
-                <HyperlinkButton Margin="4,0"
-                                 NavigateUri="http://www.gnu.org/licenses/gpl.html"
-                                 Style="{StaticResource TextBlockButtonStyle}">
+                           Style="{StaticResource AboutPageSubtitleTextBlockStyle}" />
+                <HyperlinkButton NavigateUri="http://www.gnu.org/licenses/gpl.html"
+                                 Style="{StaticResource AboutPageHyperLinkButtonStyle}">
                     <PathIcon Data="
 M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.5-2.2c0.3-1.2,0.9-2.3,2-2.3
 	c0.1,0,0.2,0.1,0.3,0.1l0.4-1.7c-0.1,0-0.2,0-0.3,0c-0.8,0-1.5,0.6-2,1.4l0,0C9,44.8,9,44.4,9.1,44H7.6c-0.1,0.5-0.2,1.5-0.4,2.3
@@ -152,27 +183,46 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
 	c2-2,3.7-4.1,4.6-5.9C94.4,16.8,94.6,15.3,94,14.5z
 " />
                 </HyperlinkButton>
-                <TextBlock Margin="4,40,4,4"
-                           x:Uid="AboutPageOnlineContentsTextBlock"
+                <TextBlock x:Uid="AboutPageDataProvidersTextBlock"
+                           Text="Data providers"
+                           Style="{StaticResource AboutPageSubtitleTextBlockStyle}" />
+                <TextBlock x:Uid="AboutPageChineseTagProviderTextBlock"
+                           Text="Chinese translation of tags"
+                           Style="{StaticResource AboutPageSubheaderTextBlockStyle}" />
+                <HyperlinkButton x:Uid="AboutPageChineseTagProviderHyperlinkButton"
+                                 Content="Mapaler / EhTagTranslator @ Github.com"
+                                 NavigateUri="https://github.com/Mapaler/EhTagTranslator"
+                                 Style="{StaticResource AboutPageHyperLinkButtonStyle}" />
+                <TextBlock x:Uid="AboutPageJapaneseTagProviderTextBlock"
+                           Text="Japanese translation of tags"
+                           Style="{StaticResource AboutPageSubheaderTextBlockStyle}" />
+                <HyperlinkButton NavigateUri="https://ehwiki.org/"
+                                 Style="{StaticResource AboutPageHyperLinkButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="ms-appx:///Images/EHWiki.png"
+                               Width="50" />
+                        <TextBlock x:Uid="AboutPageEHWikiTextBlock" Text="EHWiki.org"
+                                   Style="{StaticResource AboutPageBodyTextBlockStyle}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </HyperlinkButton>
+                <TextBlock x:Uid="AboutPageOnlineContentsTextBlock"
                            Text="Online contents"
-                           Style="{StaticResource SubtitleTextBlockStyle}" />
-                <HyperlinkButton Margin="4,0"
-                                 x:Uid="AboutPageRateHyperlinkButton"
-                                 Style="{StaticResource TextBlockButtonStyle}"
+                           Style="{StaticResource AboutPageSubtitleTextBlockStyle}" />
+                <HyperlinkButton x:Uid="AboutPageRateHyperlinkButton"
+                                 Style="{StaticResource AboutPageHyperLinkButtonStyle}"
                                  Content="Rate and review"
                                  NavigateUri="ms-windows-store://review/?ProductId=9NBLGGH4V3X1" />
-                <HyperlinkButton Margin="4,0"
-                                 Style="{StaticResource TextBlockButtonStyle}"
+                <HyperlinkButton Style="{StaticResource AboutPageHyperLinkButtonStyle}"
                                  x:Uid="AboutPageSourceCodeHyperlinkButton"
                                  Content="View source code at GitHub.com"
                                  NavigateUri="https://github.com/OpportunityLiu/ExViewer" />
-                <HyperlinkButton Margin="4,0"
-                                 Style="{StaticResource TextBlockButtonStyle}"
+                <HyperlinkButton Style="{StaticResource AboutPageHyperLinkButtonStyle}"
                                  x:Uid="AboutPageHelpTranslateTagsHyperlinkButton"
                                  Content="Help translate tags into Chinese"
                                  NavigateUri="https://github.com/Mapaler/EhTagTranslator/wiki" />
-                <HyperlinkButton Margin="4,0"
-                                 Style="{StaticResource TextBlockButtonStyle}"
+                <HyperlinkButton Style="{StaticResource AboutPageHyperLinkButtonStyle}"
                                  x:Uid="AboutPageForumsHyperlinkButton"
                                  Content="E-Hentai Forums"
                                  NavigateUri="https://forums.e-hentai.org/index.php" />

@@ -15,13 +15,6 @@ namespace ExViewer.ViewModels
     {
         protected GalleryListVM()
         {
-            Clear = new RelayCommand(() =>
-            {
-                RootControl.RootController.TrackAsyncAction(CachedGallery.ClearCachedGalleriesAsync(), (s, e) =>
-                {
-                    Refresh.Execute(null);
-                });
-            });
             Delete = new RelayCommand<Gallery>(async g =>
             {
                 await g.DeleteAsync();
@@ -58,6 +51,7 @@ namespace ExViewer.ViewModels
         public RelayCommand Clear
         {
             get;
+            protected set;
         }
 
         public RelayCommand<Gallery> Delete

@@ -34,7 +34,7 @@ namespace ExViewer.Views
         public SavedPage()
         {
             this.InitializeComponent();
-            VM = new SavedVM();
+            VM = SavedVM.Instance;
             cdg_ConfirmClear = new ContentDialog()
             {
                 Title = LocalizedStrings.Resources.ClearSavedDialogTitle,
