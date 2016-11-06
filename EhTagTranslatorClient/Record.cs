@@ -52,11 +52,15 @@ namespace EhTagTranslatorClient
 
         private static string unescape(string value)
         {
-            var sb = new StringBuilder(value);
-            sb.Replace(@"\|", @"|");
-            sb.Replace(@"\\", @"\");
-            sb.Replace("<br>", Environment.NewLine);
-            return sb.ToString();
+            if(value.Contains("<br>") || value.Contains(@"\"))
+            {
+                var sb = new StringBuilder(value);
+                sb.Replace(@"\|", @"|");
+                sb.Replace(@"\\", @"\");
+                sb.Replace("<br>", Environment.NewLine);
+                return sb.ToString();
+            }
+            return value;
         }
 
         private Record(NameSpace nameSpace, string original, string translated, string introduction)

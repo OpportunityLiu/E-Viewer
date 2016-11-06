@@ -83,7 +83,20 @@ namespace ExViewer.Controls
         }
 
         private static readonly string eof = " ";
-        private static readonly Regex linkDetector = new Regex(@"((?<explict>[a-zA-z]+://[^\s]*)|(?<implict>(?<=\s|^)([^:\.\s]+\.)+([^:\.\s]+:)?([^:\.\s]+\.)+[^\.\s]+(?=\s|$)))", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex linkDetector = new Regex(
+            @"
+(
+  (?<explict>[a-zA-z]+://[^\s]*)
+|
+  (?<implict>
+    (?<=\s|^)
+    ([^:@\.\s]+\.)+
+    (a[d-gil-oq-uwz]|aero|b[abd-jmnorstvwyz]|biz|c[acf-ik-oqruvxyz]|com|coop|d[ejkmoz]|e[ceghstv]|edu|f[ijkmor]|g[abdefhilmnprtuwy]|gov|h[kmnrtu]|i[delnoq-t]|info|in[kt]|j[mop]|k[eghimnprwyz]|l[abcikr-vy]|m[acdeghl-tv-z]|mil|mobi|moe|na(?:me)?|n[cefgiloprtuz]|net|[opstz]m|org|p[ae-hklnrtwy]|pro|pub|[qsuvz]a|red?|r[ouw]|s[b-eg-lnortuyz]|t[cdfghjklnoprtvwz]|tech|top|u[gksy]|v[cegnu]|w[fs]|y[eu]|z[rw])
+    (:\d+)?
+    [^\.\s]*
+    (?=\s|$)
+  )
+)", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
 
         private void reload()
         {
