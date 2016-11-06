@@ -53,11 +53,11 @@ namespace ExClient
             case "B":
                 return (long)value;
             case "KB":
-                return (long)(value * 1024);
+                return (long)(value * (1 << 10));
             case "MB":
-                return (long)(value * 1024 * 1024);
+                return (long)(value * (1 << 20));
             case "GB":
-                return (long)(value * 1024 * 1024 * 1024);
+                return (long)(value * (1 << 30));
             default:
                 return 0;
             }
