@@ -47,41 +47,13 @@ namespace ExViewer.ViewModels
                 var target = await getTarget;
                 if(target == null)
                     return;
-                target = await target.CreateFolderAsync(toValidFolderName(g.GetDisplayTitle()), CreationCollisionOption.GenerateUniqueName);
+                target = await target.CreateFolderAsync(StorageHelper.ToValidFolderName(g.GetDisplayTitle()), CreationCollisionOption.GenerateUniqueName);
                 foreach(var file in files)
                 {
                     await file.CopyAsync(target, file.Name, NameCollisionOption.ReplaceExisting);
                 }
                 RootControl.RootController.SendToast(LocalizedStrings.Resources.GallerySavedTo, typeof(SavedPage));
             });
-        }
-
-        private static Dictionary<char, char> alternateFolderChars = new Dictionary<char, char>()
-        {
-            ['?'] = '？',
-            ['\\'] = '＼',
-            ['/'] = '／',
-            ['"'] = '＂',
-            ['|'] = '｜',
-            ['*'] = '＊',
-            ['<'] = '＜',
-            ['>'] = '＞',
-            [':'] = '：'
-        };
-
-        private static string toValidFolderName(string raw)
-        {
-            var sb = new StringBuilder(raw);
-            foreach(var item in alternateFolderChars)
-            {
-                sb.Replace(item.Key, item.Value);
-            }
-            var invalid = Path.GetInvalidFileNameChars();
-            foreach(var item in invalid)
-            {
-                sb.Replace(item.ToString(), "");
-            }
-            return sb.ToString().Trim();
         }
 
         private static FolderPicker savePicker = initSavePicker();
@@ -102,22 +74,23 @@ namespace ExViewer.ViewModels
             get;
         }
 
-        public static IAsyncOperation<StorageFolder> GetCopyOf(Gallery gallery)
+        public static IAsyncOperationWithProgress<StorageFolder, double> GetCopyOf(Gallery gallery)
         {
-            return Task.Run(async () =>
+            return Run<StorageFolder, double>(async (token, progress) =>
             {
-                var p = new SaveGalleryProgress();
+                progress.Report(double.NaN);
                 var source = await gallery.GetFolderAsync();
-                var files = await source.GetFilesAsync();
-                var name = toValidFolderName(gallery.GetDisplayTitle());
-                var temp = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync(DateTimeOffset.Now.Ticks.ToString());
+                var temp = await StorageHelper.CreateTempFolderAsync();
+                var name = StorageHelper.ToValidFolderName(gallery.GetDisplayTitle());
                 var target = await temp.CreateFolderAsync(name);
-                foreach(var item in files)
+                var files = await source.GetFilesAsync();
+                for(int i = 0; i < files.Count; i++)
                 {
-                    await item.CopyAsync(target);
+                    progress.Report((double)i / files.Count);
+                    await files[i].CopyAsync(target);
                 }
                 return target;
-            }).AsAsyncOperation();
+            });
         }
     }
 }

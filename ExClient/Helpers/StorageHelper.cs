@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
+using System.Linq;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
@@ -13,7 +14,7 @@ namespace ExClient
     /// <summary>
     /// 用于操作缓存文件夹的辅助类
     /// </summary>
-    internal static class StorageHelper
+    public static class StorageHelper
     {
         private readonly static StorageFolder localCache = ApplicationData.Current.LocalCacheFolder;
         private readonly static StorageFolder localState = ApplicationData.Current.LocalFolder;
@@ -81,15 +82,27 @@ namespace ExClient
             [':'] = '：'
         };
 
+        private static HashSet<char> invalidChars = new HashSet<char>(Path.GetInvalidFileNameChars());
+
         public static string ToValidFolderName(string raw)
         {
+            var needReplace = false;
+            foreach(var ch in raw)
+            {
+                if(invalidChars.Contains(ch))
+                {
+                    needReplace = true;
+                    break;
+                }
+            }
+            if(!needReplace)
+                return raw;
             var sb = new StringBuilder(raw);
             foreach(var item in alternateFolderChars)
             {
                 sb.Replace(item.Key, item.Value);
             }
-            var invalid = Path.GetInvalidFileNameChars();
-            foreach(var item in invalid)
+            foreach(var item in invalidChars)
             {
                 sb.Replace(item.ToString(), "");
             }
