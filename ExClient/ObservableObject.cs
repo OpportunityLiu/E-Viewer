@@ -13,11 +13,26 @@ namespace ExClient
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void Set<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
+        protected bool Set(ref bool field, bool value, [CallerMemberName]string propertyName = null)
+        {
+            if(field == value)
+                return false;
+            ForceSet(ref field, value, propertyName);
+            return true;
+        }
+
+        protected void ForceSet(ref bool field, bool value, [CallerMemberName]string propertyName = null)
+        {
+            field = value;
+            RaisePropertyChanged(propertyName);
+        }
+
+        protected bool Set<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
         {
             if(Equals(field, value))
-                return;
+                return false;
             ForceSet(ref field, value, propertyName);
+            return true;
         }
 
         protected void ForceSet<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)

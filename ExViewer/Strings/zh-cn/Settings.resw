@@ -222,4 +222,7 @@
   <data name="UseJapaneseTagTranslation" xml:space="preserve">
     <value>标签日文翻译</value>
   </data>
+  <data name="ExcludedLanguages" xml:space="preserve">
+    <value>排除语言</value>
+  </data>
 </root>

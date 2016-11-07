@@ -20,6 +20,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.ViewManagement;
 using ExViewer.ViewModels;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -97,12 +98,14 @@ namespace ExViewer.Views
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
         }
 
-        private void Control_Loading(FrameworkElement sender, object args)
+        private async void Control_Loading(FrameworkElement sender, object args)
         {
             RootController.SetRoot(this);
             manager = SystemNavigationManager.GetForCurrentView();
             manager.BackRequested += Manager_BackRequested;
             fm_inner.Navigate(HomePageType ?? typeof(SearchPage));
+            await Task.Yield();
+            this.Focus(FocusState.Pointer);
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)

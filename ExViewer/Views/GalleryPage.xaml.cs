@@ -133,7 +133,6 @@ namespace ExViewer.Views
 
         private void changeViewTo(bool view, bool disableAnimation)
         {
-            Bindings.Update();
             var fullOffset = gd_Info.ActualHeight;
             if(view)
                 sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
@@ -151,7 +150,6 @@ namespace ExViewer.Views
                 needResetView = true;
             }
             VM = await GalleryVM.GetVMAsync((long)e.Parameter);
-            Bindings.Update();
             if(e.NavigationMode == NavigationMode.Back)
             {
                 entranceElement = (UIElement)gv.ContainerFromIndex(VM.CurrentIndex);
@@ -275,6 +273,11 @@ namespace ExViewer.Views
             sv_pv.PointerWheelChanged += pv_Content_PointerWheelChanged;
             sv_pv2.PointerWheelChanged += pv_Content_PointerWheelChanged;
             pv.Loaded -= pv_Loaded;
+        }
+
+        private void gd_Info_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            bd_GvFooter.Height = e.NewSize.Height;
         }
 
         private void pv_Content_Loaded(object sender, RoutedEventArgs e)

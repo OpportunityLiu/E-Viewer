@@ -74,7 +74,7 @@
                        Grid.Column="1"
                        HorizontalAlignment="Right"
                        TextTrimming="CharacterEllipsis" />
-            <TextBlock Text="{x:Bind Gallery.Language, Mode=OneWay}"
+            <TextBlock Text="{x:Bind Gallery.Language, Mode=OneWay, Converter={StaticResource StringConverter}}"
                        Grid.Row="2"
                        MaxLines="1"
                        Grid.Column="1"

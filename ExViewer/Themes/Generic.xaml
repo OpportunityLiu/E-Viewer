@@ -371,7 +371,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:HighlightTextBlock">
                     <TextBlock x:Name="Presenter"
-                               Foreground="{TemplateBinding Foreground}" />
+                               Foreground="{TemplateBinding Foreground}"
+                               Padding="{TemplateBinding Padding}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -379,5 +380,19 @@
                 Value="False" />
         <Setter Property="Foreground"
                 Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
+    </Style>
+
+    <Style TargetType="controls:TagPresenter">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:TagPresenter">
+                    <TextBlock x:Name="Presenter"
+                               Foreground="{TemplateBinding Foreground}"
+                               Padding="{TemplateBinding Padding}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="IsTabStop"
+                Value="False" />
     </Style>
 </ResourceDictionary>

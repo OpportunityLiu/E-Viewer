@@ -46,13 +46,10 @@ namespace ExViewer.Views
             VM = new SearchVM(e.Parameter?.ToString());
             if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
                 VM?.SearchResult.Reset();
-            Bindings.Update();
-            await Task.Yield();
             if(e.NavigationMode == NavigationMode.Back)
             {
                 //TODO: restore scroll position.
             }
-            ab.Focus(FocusState.Pointer);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -64,16 +61,6 @@ namespace ExViewer.Views
         {
             if(VM.Open.CanExecute(e.ClickedItem))
                 VM.Open.Execute(e.ClickedItem);
-        }
-
-        private void init_sv_AdvancedSearch()
-        {
-            if(sv_AdvancedSearch == null)
-            {
-                Bindings.StopTracking();
-                FindName(nameof(sv_AdvancedSearch));
-                Bindings.Update();
-            }
         }
 
         public SearchVM VM
@@ -100,13 +87,11 @@ namespace ExViewer.Views
 
         private void ab_Opening(object sender, object e)
         {
-            init_sv_AdvancedSearch();
             sv_AdvancedSearch.IsEnabled = true;
         }
 
         private void ab_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            init_sv_AdvancedSearch();
             var newState = e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch;
             if(newState == cs_Category.TouchAdaptive)
                 return;

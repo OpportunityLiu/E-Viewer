@@ -116,7 +116,6 @@
                     </AutoSuggestBox.ItemContainerStyle>
                 </AutoSuggestBox>
                 <ScrollViewer x:Name="sv_AdvancedSearch"
-                              x:DeferLoadStrategy="Lazy"
                               Grid.Row="1"
                               Grid.Column="1"
                               IsEnabled="False"

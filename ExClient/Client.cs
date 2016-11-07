@@ -11,6 +11,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using HtmlAgilityPack;
 using System.IO;
 using System.Runtime.InteropServices;
+using ExClient.Settings;
 
 namespace ExClient
 {
@@ -29,18 +30,22 @@ namespace ExClient
         private Client()
         {
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
-            cookieManager = httpFilter.CookieManager;
+            CookieManager = httpFilter.CookieManager;
             HttpClient = new Internal.MyHttpClient(new HttpClient(new Internal.RedirectFilter(httpFilter)));
+            settings = new SettingCollection(this);
         }
 
-        private HttpCookieManager cookieManager;
+        internal HttpCookieManager CookieManager
+        {
+            get;
+        }
 
         internal Internal.MyHttpClient HttpClient
         {
             get;
         }
 
-        public bool NeedLogOn => cookieManager.GetCookies(RootUri).Count < 2 && cookieManager.GetCookies(EhUri).Count < 2;
+        public bool NeedLogOn => CookieManager.GetCookies(RootUri).Count < 2 && CookieManager.GetCookies(EhUri).Count < 2;
 
         public IAsyncOperation<Client> LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
         {
@@ -89,7 +94,7 @@ namespace ExClient
                         throw new InvalidOperationException(errorText);
                     }
                     var init = await HttpClient.GetAsync(RootUri, HttpCompletionOption.ResponseHeadersRead);
-                    if(cookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")
+                    if(CookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")
                     {
                         throw new NotSupportedException(LocalizedStrings.Resources.AccountDenied);
                     }
@@ -100,7 +105,7 @@ namespace ExClient
                     ClearLogOnInfo();
                     foreach(var item in cookieBackUp)
                     {
-                        cookieManager.SetCookie(item);
+                        CookieManager.SetCookie(item);
                     }
                     throw;
                 }
@@ -109,18 +114,18 @@ namespace ExClient
 
         private List<HttpCookie> getLogOnInfo()
         {
-            return cookieManager.GetCookies(RootUri).Concat(cookieManager.GetCookies(EhUri)).ToList();
+            return CookieManager.GetCookies(RootUri).Concat(CookieManager.GetCookies(EhUri)).ToList();
         }
 
         public void ClearLogOnInfo()
         {
-            foreach(var item in cookieManager.GetCookies(RootUri))
+            foreach(var item in CookieManager.GetCookies(RootUri))
             {
-                cookieManager.DeleteCookie(item);
+                CookieManager.DeleteCookie(item);
             }
-            foreach(var item in cookieManager.GetCookies(EhUri))
+            foreach(var item in CookieManager.GetCookies(EhUri))
             {
-                cookieManager.DeleteCookie(item);
+                CookieManager.DeleteCookie(item);
             }
         }
 
@@ -144,7 +149,7 @@ namespace ExClient
         {
             get
             {
-                var cookie = cookieManager.GetCookies(EhUri).FirstOrDefault(c => c.Name == "ipb_member_id");
+                var cookie = CookieManager.GetCookies(EhUri).FirstOrDefault(c => c.Name == "ipb_member_id");
                 if(cookie == null)
                     return -1;
                 return int.Parse(cookie.Value);
@@ -156,19 +161,9 @@ namespace ExClient
             return PostStrAsync(apiUri, requestJson);
         }
 
-        public void SetHahProxy(HahProxyConfig hah)
-        {
-            if(hah == null)
-            {
-                var uconfig = cookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "uconfig");
-                if(uconfig != null)
-                    cookieManager.DeleteCookie(uconfig);
-            }
-            else
-            {
-                cookieManager.SetCookie(hah.GetCookie());
-            }
-        }
+        public SettingCollection Settings => settings;
+
+        private readonly SettingCollection settings;
 
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用

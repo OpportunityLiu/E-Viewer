@@ -1,5 +1,6 @@
 ﻿using ApplicationDataManager.Settings;
 using ExClient;
+using ExClient.Settings;
 using Windows.UI.Xaml;
 
 namespace ExViewer.Settings
@@ -55,6 +56,22 @@ namespace ExViewer.Settings
             set
             {
                 SetRoaming(value);
+            }
+        }
+
+        [Setting("Searching", Index = 40, SettingPresenterTemplate = "ExcludedLanguagesTemplate")]
+        public string ExcludedLanguages
+        {
+            get
+            {
+                return GetRoaming("");
+            }
+            set
+            {
+                SetRoaming(value);
+                var el = Client.Current.Settings.ExcludedLanguages;
+                el.Clear();
+                el.AddRange(ExcludedLanguagesSettingProvider.FromString(value));
             }
         }
 
@@ -256,19 +273,17 @@ namespace ExViewer.Settings
             {
                 var old = GetLocal("");
                 if(string.IsNullOrWhiteSpace(value))
-                    ForceSetLocal("");
-                else
-                    try
-                    {
-                        var hah = new HahProxyConfig(value);
-                        ForceSetLocal(hah.AddressAndPort);
-                    }
-                    catch
-                    {
-                        ForceSetLocal(old);
-                        throw;
-                    }
-                SetHah();
+                    value = "";
+                try
+                {
+                    Client.Current.Settings.HahProxy.AddressAndPort = value;
+                    ForceSetLocal(Client.Current.Settings.HahProxy.AddressAndPort);
+                }
+                catch(System.Exception ex)
+                {
+                    ForceSetLocal(old);
+                    Views.RootControl.RootController.SendToast(ex, null);
+                }
             }
         }
 
@@ -281,19 +296,9 @@ namespace ExViewer.Settings
             }
             set
             {
-                ForceSetLocal((value ?? "").Trim());
-                SetHah();
+                Client.Current.Settings.HahProxy.Passkey = value;
+                ForceSetLocal(Client.Current.Settings.HahProxy.Passkey);
             }
-        }
-
-        public static void SetHah()
-        {
-            // set H@H proxy
-            var hah = Current.HahAddress;
-            if(!string.IsNullOrEmpty(hah))
-                Client.Current.SetHahProxy(new HahProxyConfig(hah, Current.HahPasskey));
-            else
-                Client.Current.SetHahProxy(null);
         }
     }
 }

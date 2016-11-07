@@ -145,7 +145,8 @@ namespace ExViewer.Views
                     await Database.SearchHistoryDb.MigrateAsync();
                     await TagExtension.Init();
                 });
-                if(Client.Current.NeedLogOn)
+                var client = Client.Current;
+                if(client.NeedLogOn)
                 {
                     try
                     {
@@ -153,7 +154,7 @@ namespace ExViewer.Views
                         if(pass != null)
                         {
                             pass.RetrievePassword();
-                            await Client.Current.LogOnAsync(pass.UserName, pass.Password, null);
+                            await client.LogOnAsync(pass.UserName, pass.Password, null);
                         }
                     }
                     catch(Exception)
@@ -162,8 +163,13 @@ namespace ExViewer.Views
                 }
                 await initDbTask;
                 var initSearchTask = (Task)null;
-                if(!Client.Current.NeedLogOn)
+                if(!client.NeedLogOn)
                 {
+                    var settingCollection = SettingCollection.Current;
+                    var clientSettings = client.Settings;
+                    clientSettings.HahProxy.AddressAndPort = settingCollection.HahAddress;
+                    clientSettings.HahProxy.Passkey = settingCollection.HahPasskey;
+                    clientSettings.ExcludedLanguages.AddRange(ExClient.Settings.ExcludedLanguagesSettingProvider.FromString(settingCollection.ExcludedLanguages));
                     initSearchTask = SearchVM.InitAsync().AsTask();
                 }
                 if(initSearchTask != null)
@@ -171,15 +177,15 @@ namespace ExViewer.Views
                     try
                     {
                         await await Task.WhenAny(initSearchTask, Task.Delay(7000));
-                        homePageType = typeof(SearchPage);
+                        this.homePageType = typeof(SearchPage);
                     }
                     catch(Exception)
                     {
-                        homePageType = typeof(SavedPage);
+                        this.homePageType = typeof(SavedPage);
                     }
                 }
                 else
-                    homePageType = typeof(SearchPage);
+                    this.homePageType = typeof(SearchPage);
             });
             rootControl = new RootControl();
             lock(loadingSyncRoot)

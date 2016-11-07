@@ -222,4 +222,7 @@
   <data name="UseJapaneseTagTranslation" xml:space="preserve">
     <value>Use Japanese translation of tags</value>
   </data>
+  <data name="ExcludedLanguages" xml:space="preserve">
+    <value>Excluded languages</value>
+  </data>
 </root>
