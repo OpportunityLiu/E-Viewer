@@ -143,7 +143,6 @@ namespace ExViewer.Controls
         private void sv_Loading(FrameworkElement sender, object args)
         {
             sv.MaxZoomFactor = SettingCollection.Current.MaxFactor;
-            Bindings.Update();
         }
 
         private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)

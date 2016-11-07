@@ -10,6 +10,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.UI.Xaml;
 using ExViewer;
 using GalaSoft.MvvmLight.Threading;
+using ExViewer.Helpers;
 
 namespace ExClient
 {
@@ -49,31 +50,24 @@ namespace ExClient
             }
         }
 
-        public static Box<string> GetDisplayContent(this Tag tag)
+        public static IAsyncOperation<string> GetDisplayContentAsync(this Tag tag)
         {
             var settings = SettingCollection.Current;
             if(settings.UseChineseTagTranslation)
             {
                 var r = tag.GetEhTagTranslatorRecord();
                 if(r != null)
-                    return new Box<string>(r.Translated.Text);
+                    return new AsyncWarpper<string>(r.Translated.Text);
             }
             if(settings.UseJapaneseTagTranslation && wikiClient != null)
             {
-                var r = tag.GetEhWikiRecordAsync();
-                var ret = new Box<string>(tag.Content);
-                r.Completed = (sender, e) =>
+                return Run(async token =>
                 {
-                    if(e != AsyncStatus.Completed)
-                        return;
-                    var jap = sender.GetResults()?.Japanese;
-                    if(jap == null)
-                        return;
-                    ret.Value = jap;
-                };
-                return ret;
+                    var r = await tag.GetEhWikiRecordAsync();
+                    return r.Japanese ?? tag.Content;
+                });
             }
-            return new Box<string>(tag.Content);
+            return new AsyncWarpper<string>(tag.Content);
         }
 
         public static Record GetEhTagTranslatorRecord(this Tag tag)
@@ -96,7 +90,7 @@ namespace ExClient
         public static IAsyncOperation<EhWikiClient.Record> FetchEhWikiRecordAsync(this Tag tag)
         {
             if(wikiClient == null)
-                return Task.Run(() => (EhWikiClient.Record)null).AsAsyncOperation();
+                return new AsyncWarpper<EhWikiClient.Record>();
             return wikiClient.FetchAsync(tag.Content);
         }
     }

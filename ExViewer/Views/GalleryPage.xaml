@@ -328,8 +328,6 @@
             <Setter Property="Margin"
                     Value="0,-8,-8,0" />
         </Style>
-
-        <local:TagToStringConverter x:Key="TagToStringConverter" />
     </Page.Resources>
     <Grid x:Name="gd_Root">
         <VisualStateManager.VisualStateGroups>
@@ -365,6 +363,7 @@
                       VerticalScrollBarVisibility="Hidden">
             <StackPanel>
                 <Grid x:Name="gd_Info"
+                      SizeChanged="gd_Info_SizeChanged"
                       MaxHeight="300"
                       MinHeight="100">
                     <Grid.Background>
@@ -381,7 +380,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Image x:Name="img_Thumb"
-                           Source="{x:Bind VM.Gallery.Thumb}"
+                           Source="{x:Bind VM.Gallery.Thumb, Mode=OneWay}"
                            Margin="8"
                            Width="160"
                            Grid.RowSpan="2" />
@@ -409,7 +408,7 @@
                                   Grid.Row="1"
                                   Padding="6"
                                   SelectionMode="None"
-                                  ItemsSource="{x:Bind VM.SortedTags}"
+                                  ItemsSource="{x:Bind VM.SortedTags, Mode=OneWay}"
                                   ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
                                   ScrollViewer.IsVerticalScrollChainingEnabled="True">
                             <ListView.ItemTemplate>
@@ -442,9 +441,8 @@
                                             </GridView.ItemContainerStyle>
                                             <GridView.ItemTemplate>
                                                 <DataTemplate x:DataType="client:Tag">
-                                                    <TextBlock Tag="{x:Bind Converter={StaticResource TagToStringConverter}}"
-                                                               Text="{Binding Tag.Value, RelativeSource={RelativeSource Mode=Self}}"
-                                                               Padding="4,0" />
+                                                    <controls:TagPresenter Padding="4,0"
+                                                                           GalleryTag="{x:Bind}" />
                                                 </DataTemplate>
                                             </GridView.ItemTemplate>
                                             <GridView.ItemsPanel>
@@ -564,7 +562,7 @@
                                     </DataTemplate>
                                 </GridView.ItemTemplate>
                                 <GridView.Footer>
-                                    <Border Height="{x:Bind gd_Info.ActualHeight, Mode=OneWay}">
+                                    <Border x:Name="bd_GvFooter">
                                         <TextBlock x:Uid="GalleryPageImagesLoadingMoreTextBlock"
                                                    HorizontalAlignment="Center"
                                                    Margin="12"

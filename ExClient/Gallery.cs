@@ -37,6 +37,47 @@ namespace ExClient
         }
     }
 
+    public struct Language
+    {
+        internal Language(string name, LanguageModifier modifier)
+        {
+            var ca = name.ToCharArray();
+            ca[0] = char.ToUpperInvariant(ca[0]);
+            Name = new string(ca);
+            Modifier = modifier;
+        }
+
+        public string Name
+        {
+            get;
+        }
+
+        public LanguageModifier Modifier
+        {
+            get;
+        }
+
+        public override string ToString()
+        {
+            switch(Modifier)
+            {
+            case LanguageModifier.Translated:
+                return $"{Name} TR";
+            case LanguageModifier.Rewrite:
+                return $"{Name} RW";
+            default:
+                return Name;
+            }
+        }
+    }
+
+    public enum LanguageModifier
+    {
+        None,
+        Translated,
+        Rewrite
+    }
+
     [JsonConverter(typeof(GalleryInfoConverter))]
     public class GalleryInfo
     {
@@ -426,16 +467,47 @@ namespace ExClient
         private static readonly string[] technicalTags = new string[]
         {
             "rewrite",
-            "speechless",
-            "text cleaned",
             "translated"
         };
 
-        public string Language
+        private static readonly string[] naTags = new string[]
+        {
+            "speechless",
+            "text cleaned"
+        };
+
+        public Language Language
         {
             get
             {
-                return Tags?.FirstOrDefault(t => t.NameSpace == NameSpace.Language && !technicalTags.Contains(t.Content))?.Content.ToUpper();
+                if(Tags == null)
+                    return default(Language);
+                var languageTags = Tags.Where(t => t.NameSpace == NameSpace.Language).ToArray();
+                var modi = LanguageModifier.None;
+                var language = (string)null;
+                foreach(var item in languageTags)
+                {
+                    if(modi == LanguageModifier.None)
+                    {
+                        switch(item.Content)
+                        {
+                        case "rewrite":
+                            modi = LanguageModifier.Rewrite;
+                            continue;
+                        case "translated":
+                            modi = LanguageModifier.Translated;
+                            continue;
+                        }
+                    }
+                    if(language == null)
+                    {
+                        if(naTags.Contains(item.Content))
+                            language = "N/A";
+                        else
+                            language = item.Content;
+                    }
+                }
+                return new Language(language ?? "japanese", modi);
             }
         }
 

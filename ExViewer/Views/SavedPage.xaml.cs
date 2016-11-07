@@ -61,15 +61,13 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(SavedVM), typeof(SavedPage), new PropertyMetadata(null));
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if(e.NavigationMode != NavigationMode.Back || VM.Galleries == null)
             {
                 VM.Refresh.Execute(null);
             }
-            await Task.Yield();
-            abb_Refresh.Focus(FocusState.Pointer);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

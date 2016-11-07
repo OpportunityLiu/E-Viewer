@@ -118,7 +118,6 @@ namespace ExViewer.ViewModels
 
         private SearchVM()
         {
-            SettingCollection.SetHah();
             Search = new RelayCommand<string>(queryText =>
             {
                 if(SettingCollection.Current.SaveLastSearch)

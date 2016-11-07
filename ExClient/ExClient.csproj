@@ -135,7 +135,8 @@
     <Compile Include="Helpers\ConnectionHelper.cs" />
     <Compile Include="DictionaryExtention.cs" />
     <Compile Include="GalleryImage.cs" />
-    <Compile Include="HahProxyConfig.cs" />
+    <Compile Include="Settings\ExcludedLanguagesSettingProvider.cs" />
+    <Compile Include="Settings\HahProxySettingProvider.cs" />
     <Compile Include="IncrementalLoadingCollection{T}.cs" />
     <Compile Include="Helpers\IOHelper.cs" />
     <Compile Include="ObservableObject.cs" />
@@ -147,6 +148,8 @@
     <Compile Include="ReCaptcha.cs" />
     <Compile Include="SearchResult.cs" />
     <Compile Include="Gallery.cs" />
+    <Compile Include="Settings\SettingCollection.cs" />
+    <Compile Include="Settings\SettingProvider.cs" />
     <Compile Include="Strings\Strings.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

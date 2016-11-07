@@ -99,22 +99,6 @@ namespace ExViewer.Views
         }
     }
 
-    public class TagToStringConverter : ValueConverter
-    {
-        public override object Convert(object value, Type targetType, object parameter, string language)
-        {
-            var t = value as Tag;
-            if(t == null)
-                return "";
-            return t.GetDisplayContent();
-        }
-
-        public override object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class OperationStateToBrushConverter : ValueConverter
     {
         public override object Convert(object value, Type targetType, object parameter, string language)

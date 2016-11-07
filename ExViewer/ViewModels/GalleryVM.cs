@@ -130,8 +130,15 @@ namespace ExViewer.ViewModels
             TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
             {
                 RootControl.RootController.SendToast(LocalizedStrings.Resources.GalleryPageTorrentDownloading, null);
-                var file = await torrent.LoadTorrentAsync();
-                await Launcher.LaunchFileAsync(file);
+                try
+                {
+                    var file = await torrent.LoadTorrentAsync();
+                    await Launcher.LaunchFileAsync(file);
+                }
+                catch(Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+                }
             }, torrent => torrent != null && torrent.TorrentUri != null);
             GoToDefinition = new RelayCommand<Tag>(async tag =>
             {
@@ -365,7 +372,7 @@ namespace ExViewer.ViewModels
             {
                 return torrents;
             }
-            set
+            private set
             {
                 torrents = value;
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
