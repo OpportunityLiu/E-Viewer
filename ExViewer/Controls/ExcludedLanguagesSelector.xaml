@@ -78,52 +78,33 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <ListView x:Name="lv_Original"
-                  Style="{StaticResource StackPanelListViewStyle}"
+        <ListView Style="{StaticResource StackPanelListViewStyle}"
                   ItemsSource="{x:Bind filters}"
                   Grid.Column="1"
-                  Grid.Row="1">
+                  Grid.Row="1"
+                  Grid.ColumnSpan="4">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:ExcludedLanguageFilter">
-                    <CheckBox IsChecked="{x:Bind Original, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
-                              IsEnabled="{x:Bind OriginalEnabled}"
-                              Style="{StaticResource SelectorStyle}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <ListView x:Name="lv_Translated"
-                  Style="{StaticResource StackPanelListViewStyle}"
-                  ItemsSource="{x:Bind filters}"
-                  Grid.Column="2"
-                  Grid.Row="1">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:ExcludedLanguageFilter">
-                    <CheckBox IsChecked="{x:Bind Translated, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
-                              Style="{StaticResource SelectorStyle}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <ListView x:Name="lv_Rewrite"
-                  Style="{StaticResource StackPanelListViewStyle}"
-                  ItemsSource="{x:Bind filters}"
-                  Grid.Column="3"
-                  Grid.Row="1">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:ExcludedLanguageFilter">
-                    <CheckBox IsChecked="{x:Bind Rewrite, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
-                              Style="{StaticResource SelectorStyle}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <ListView x:Name="lv_All"
-                  Style="{StaticResource StackPanelListViewStyle}"
-                  ItemsSource="{x:Bind filters}"
-                  Grid.Column="4"
-                  Grid.Row="1">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:ExcludedLanguageFilter">
-                    <CheckBox IsChecked="{x:Bind All, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
-                              Style="{StaticResource SelectorStyle}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{x:Bind Original, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
+                                  IsEnabled="{x:Bind OriginalEnabled}"
+                                  Style="{StaticResource SelectorStyle}" />
+                        <CheckBox IsChecked="{x:Bind Translated, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
+                                  Style="{StaticResource SelectorStyle}" 
+                                  Grid.Column="1"/>
+                        <CheckBox IsChecked="{x:Bind Rewrite, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
+                                  Style="{StaticResource SelectorStyle}"
+                                  Grid.Column="2" />
+                        <CheckBox IsChecked="{x:Bind All, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
+                                  Style="{StaticResource SelectorStyle}"
+                                  Grid.Column="3" />
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
