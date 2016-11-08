@@ -63,8 +63,15 @@ namespace ExClient
             {
                 return Run(async token =>
                 {
-                    var r = await tag.GetEhWikiRecordAsync();
-                    return r.Japanese ?? tag.Content;
+                    try
+                    {
+                        var r = await tag.GetEhWikiRecordAsync();
+                        return r?.Japanese ?? tag.Content;
+                    }
+                    catch(Exception)
+                    {
+                        return tag.Content;
+                    }
                 });
             }
             return new AsyncWarpper<string>(tag.Content);
