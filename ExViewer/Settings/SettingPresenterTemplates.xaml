@@ -18,7 +18,10 @@
             <TextBlock Text="{Binding FriendlyName}" />
             <ScrollViewer HorizontalScrollMode="Auto"
                           HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Disabled">
+                          VerticalScrollBarVisibility="Disabled"
+                          VerticalScrollMode="Disabled"
+                          IsVerticalScrollChainingEnabled="True"
+                          IsHorizontalScrollChainingEnabled="True">
                 <controls:ExcludedLanguagesSelector ExcludedLanguages="{Binding Value, Mode=TwoWay}"
                                                     MinWidth="500" />
             </ScrollViewer>
