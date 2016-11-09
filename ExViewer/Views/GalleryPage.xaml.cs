@@ -34,8 +34,6 @@ namespace ExViewer.Views
             this.InitializeComponent();
             gd_Info.RegisterPropertyChangedCallback(ActualHeightProperty, set_btn_Scroll_Rotation);
             sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, set_btn_Scroll_Rotation);
-            if(ApiInfo.CommandBarDynamicOverflowSupported)
-                cb_top.IsDynamicOverflowEnabled = false;
         }
 
         private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)
@@ -157,9 +155,17 @@ namespace ExViewer.Views
                 {
                     EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
                 }
-                await Task.Delay(20);
+            }
+            await Task.Delay(20);
+            switch(e.NavigationMode)
+            {
+            case NavigationMode.New:
+                pv.Focus(FocusState.Programmatic);
+                break;
+            case NavigationMode.Back:
                 needRestoreView = true;
                 ((Control)entranceElement)?.Focus(FocusState.Programmatic);
+                break;
             }
         }
 
@@ -282,6 +288,22 @@ namespace ExViewer.Views
         {
             bd_GvFooter.Height = e.NewSize.Height;
         }
+
+        private void page_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if(e.Key == VirtualKey.Menu || e.Key == VirtualKey.GamepadMenu)
+            {
+                if(cb_top.IsOpen = !cb_top.IsOpen)
+                {
+                    if(btn_MoreButton == null)
+                        btn_MoreButton = ((Button)VisualTreeHelperEx.GetFirstNamedChild(cb_top, "MoreButton"));
+                    btn_MoreButton.Focus(FocusState.Programmatic);
+                }
+                e.Handled = true;
+            }
+        }
+
+        private Button btn_MoreButton;
 
         private void pv_Content_Loaded(object sender, RoutedEventArgs e)
         {

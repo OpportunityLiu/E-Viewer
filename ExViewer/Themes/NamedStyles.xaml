@@ -59,13 +59,8 @@
     </Style>
 
     <Style x:Key="GalleryListViewItemStyle"
-           TargetType="ListViewItem">
-        <Setter Property="HorizontalContentAlignment"
-                Value="Stretch" />
-        <Setter Property="VerticalContentAlignment"
-                Value="Stretch" />
-        <Setter Property="Padding"
-                Value="0" />
+           TargetType="ListViewItem"
+           BasedOn="{StaticResource ListViewItemStyle}">
     </Style>
 
     <Style x:Key="GalleryListViewStyle"

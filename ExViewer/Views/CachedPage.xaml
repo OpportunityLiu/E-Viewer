@@ -55,6 +55,7 @@
                       ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
                       Style="{StaticResource GalleryListViewStyle}"
                       ItemClick="lv_ItemClick"
+                      RightTapped="lv_RightTapped"
                       ContinuumNavigationTransitionInfo.ExitElementContainer="True">
                 <ListView.ItemTemplate>
                     <DataTemplate xmlns:c="using:ExClient"

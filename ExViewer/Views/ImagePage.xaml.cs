@@ -28,8 +28,6 @@ namespace ExViewer.Views
         public ImagePage()
         {
             this.InitializeComponent();
-            if(ApiInfo.CommandBarDynamicOverflowSupported)
-                cb_top.IsDynamicOverflowEnabled = false;
         }
 
         public GalleryVM VM
@@ -211,47 +209,45 @@ namespace ExViewer.Views
             setScale();
         }
 
-        private System.Threading.CancellationTokenSource changeCbVisibility;
+        private System.Threading.CancellationTokenSource changingCbVisibility;
 
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            changeCbVisibility = new System.Threading.CancellationTokenSource();
-            await Task.Delay(SettingCollection.Current.ChangeCommandBarDelay, this.changeCbVisibility.Token).ContinueWith(async t =>
+            changingCbVisibility = new System.Threading.CancellationTokenSource();
+            await Task.Delay(SettingCollection.Current.ChangeCommandBarDelay, this.changingCbVisibility.Token).ContinueWith(async t =>
             {
                 if(t.IsCanceled)
                     return;
                 await this.cb_top.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    this.changeCbVisibility.Cancel();
-                    switch(this.cb_top.Visibility)
-                    {
-                    case Visibility.Visible:
-                        this.cb_top.Visibility = Visibility.Collapsed;
-                        break;
-                    case Visibility.Collapsed:
-                        this.cb_top.Visibility = Visibility.Visible;
-                        break;
-                    }
+                    this.changingCbVisibility.Cancel();
+                    changeCbVisibility();
                 });
             });
         }
 
+        private bool changeCbVisibility()
+        {
+            switch(this.cb_top.Visibility)
+            {
+            case Visibility.Visible:
+                this.cb_top.Visibility = Visibility.Collapsed;
+                return false;
+            case Visibility.Collapsed:
+                this.cb_top.Visibility = Visibility.Visible;
+                return true;
+            }
+            return false;
+        }
+
         private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            if(changeCbVisibility != null)
+            if(changingCbVisibility != null)
             {
-                if(changeCbVisibility.IsCancellationRequested)
-                    switch(cb_top.Visibility)
-                    {
-                    case Visibility.Visible:
-                        cb_top.Visibility = Visibility.Collapsed;
-                        break;
-                    case Visibility.Collapsed:
-                        cb_top.Visibility = Visibility.Visible;
-                        break;
-                    }
+                if(changingCbVisibility.IsCancellationRequested)
+                    changeCbVisibility();
                 else
-                    changeCbVisibility.Cancel();
+                    changingCbVisibility.Cancel();
             }
             e.Handled = true;
         }
@@ -314,6 +310,18 @@ namespace ExViewer.Views
                 RequestedTheme = SettingCollection.Current.Theme.ToElementTheme()
             }.ShowAsync();
             StatusCollection.Current.ImageViewTipShown = true;
+        }
+
+        private void page_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if(e.Key == VirtualKey.Menu || e.Key == VirtualKey.GamepadMenu)
+            {
+                if(!changeCbVisibility())
+                    fv.Focus(FocusState.Programmatic);
+                else
+                    btn_pane.Focus(FocusState.Programmatic);
+                e.Handled = true;
+            }
         }
     }
 }
