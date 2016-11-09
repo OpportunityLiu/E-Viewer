@@ -484,4 +484,19 @@
   <data name="AboutPageJapaneseTagProviderTextBlock.Text" xml:space="preserve">
     <value>标签日文翻译</value>
   </data>
+  <data name="ExcludedLanguagesSelectorAllTextBlock.Text" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="ExcludedLanguagesSelectorOriginalTextBlock.Text" xml:space="preserve">
+    <value>原始</value>
+  </data>
+  <data name="ExcludedLanguagesSelectorRewriteTextBlock.Text" xml:space="preserve">
+    <value>重写</value>
+  </data>
+  <data name="ExcludedLanguagesSelectorTranslatedTextBlock.Text" xml:space="preserve">
+    <value>翻译</value>
+  </data>
+  <data name="SettingsPageExcludedLanguagesSelector.MinWidth" xml:space="preserve">
+    <value>280</value>
+  </data>
 </root>

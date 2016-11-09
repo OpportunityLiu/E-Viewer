@@ -2,8 +2,29 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:ExViewer.Views"
                     xmlns:pr="using:PullToRefresh.UWP">
-    <Style x:Key="StackPanelListViewItemStyle"
+
+    <Style x:Key="ListViewItemStyle"
            TargetType="ListViewItem">
+        <Setter Property="MinWidth"
+                Value="0" />
+        <Setter Property="MinHeight"
+                Value="0" />
+        <Setter Property="Padding"
+                Value="0" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+    </Style>
+
+    <Style x:Key="UnfocusableListViewItemStyle"
+           TargetType="ListViewItem"
+           BasedOn="{StaticResource ListViewItemStyle}">
+        <Setter Property="IsTabStop"
+                Value="False" />
+    </Style>
+
+    <Style x:Key="StackPanelListViewItemStyle"
+           TargetType="ListViewItem"
+           BasedOn="{StaticResource UnfocusableListViewItemStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListViewItem">
@@ -11,16 +32,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Margin"
-                Value="0" />
-        <Setter Property="Padding"
-                Value="0" />
-        <Setter Property="MinHeight"
-                Value="0" />
-        <Setter Property="MinWidth"
-                Value="0" />
-        <Setter Property="IsTabStop"
-                Value="False" />
     </Style>
 
     <Style x:Key="StackPanelListViewStyle"

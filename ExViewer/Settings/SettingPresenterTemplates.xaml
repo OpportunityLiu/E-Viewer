@@ -22,8 +22,8 @@
                           VerticalScrollMode="Disabled"
                           IsVerticalScrollChainingEnabled="True"
                           IsHorizontalScrollChainingEnabled="True">
-                <controls:ExcludedLanguagesSelector ExcludedLanguages="{Binding Value, Mode=TwoWay}"
-                                                    MinWidth="500" />
+                <controls:ExcludedLanguagesSelector x:Uid="SettingsPageExcludedLanguagesSelector"
+                                                    ExcludedLanguages="{Binding Value, Mode=TwoWay}" />
             </ScrollViewer>
         </StackPanel>
     </DataTemplate>

@@ -93,7 +93,16 @@ namespace ExViewer.Views
             {
                 if(root == null)
                     return;
-                root.sv_root.IsPaneOpen = !root.sv_root.IsPaneOpen;
+                var open = root.sv_root.IsPaneOpen;
+                if(!open)
+                {
+                    root.sv_root.IsPaneOpen = true;
+                    (root.tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? root.svt_Search).Focus(FocusState.Programmatic);
+                }
+                else
+                {
+                    root.sv_root.IsPaneOpen = false;
+                }
             }
 
             public static IAsyncOperation<ContentDialogResult> RequestLogOn()

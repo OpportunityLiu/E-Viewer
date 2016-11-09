@@ -170,5 +170,14 @@ namespace ExViewer.Views
         {
             await RootController.RequestLogOn();
         }
+
+        private void page_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if(e.Key == Windows.System.VirtualKey.GamepadView)
+            {
+                RootController.SwitchSplitView();
+                e.Handled = true;
+            }
+        }
     }
 }

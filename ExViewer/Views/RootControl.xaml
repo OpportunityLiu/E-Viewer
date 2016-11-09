@@ -10,7 +10,8 @@
       IsTextScaleFactorEnabled="False"
       Loading="Control_Loading"
       Loaded="Control_Loaded"
-      Unloaded="Control_Unloaded">
+      Unloaded="Control_Unloaded"
+      KeyUp="page_KeyUp">
     <Page.Resources>
         <Storyboard x:Key="ShowDisablePanel">
             <DoubleAnimation Duration="0:0:0.5"
@@ -76,7 +77,8 @@
                                 Background="{ThemeResource UserBackgroundThemeBrush}" />
                         <Button Style="{StaticResource SplitButtonStyle}"
                                 Click="btn_pane_Click"
-                                Grid.ColumnSpan="999" />
+                                Grid.ColumnSpan="999"
+                                XYFocusDown="{x:Bind btn_ChangeUser}"/>
                         <Ellipse x:Name="eps_Avatar"
                                  Grid.Row="1"
                                  Grid.ColumnSpan="999"
@@ -118,7 +120,8 @@
                             <controls:SplitViewTab x:Uid="RootControlSearchSplitViewTab"
                                                    x:Name="svt_Search"
                                                    Content="Search"
-                                                   Click="svt_Click">
+                                                   Click="svt_Click"
+                                                   XYFocusUp="{x:Bind btn_ChangeUser}">
                                 <controls:SplitViewTab.Icon>
                                     <FontIcon Glyph="&#xE7C5;"
                                               FontSize="16" />

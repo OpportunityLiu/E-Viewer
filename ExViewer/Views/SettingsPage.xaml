@@ -60,6 +60,8 @@
                                     Value="8" />
                             <Setter Property="UseSystemFocusVisuals"
                                     Value="True" />
+                            <Setter Property="IsFocusEngagementEnabled"
+                                    Value="True" />
                         </Style>
                     </ListView.ItemContainerStyle>
                     <ListView.ItemContainerTransitions>

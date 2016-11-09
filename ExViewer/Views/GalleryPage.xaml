@@ -20,17 +20,6 @@
     </Page.Transitions>
     <Page.Resources>
         <local:NameSpaceToFriendlyStringConverter x:Key="NameSpaceToFriendlyStringConverter" />
-        <Style x:Key="ListViewItemStyle"
-               TargetType="ListViewItem">
-            <Setter Property="MinWidth"
-                    Value="0" />
-            <Setter Property="MinHeight"
-                    Value="0" />
-            <Setter Property="Padding"
-                    Value="0" />
-            <Setter Property="HorizontalContentAlignment"
-                    Value="Stretch" />
-        </Style>
 
         <MenuFlyout x:Name="mfo_Tag">
             <MenuFlyoutItem Text="{Binding Content}"
@@ -661,7 +650,7 @@
                                       SelectionChanged="lv_Torrents_SelectionChanged"
                                       Loaded="pv_Content_Loaded"
                                       ItemTemplate="{StaticResource TorrentTemplate}"
-                                      ItemContainerStyle="{StaticResource ListViewItemStyle}">
+                                      ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}">
                                 <ListView.Header>
                                     <TextBlock x:Uid="GalleryPageTorrentsEmptyTextBlock"
                                                HorizontalAlignment="Center"
