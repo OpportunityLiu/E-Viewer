@@ -27,7 +27,7 @@ namespace ExViewer.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CachedPage : Page
+    public sealed partial class CachedPage : Page,IHasAppBar
     {
         public CachedPage()
         {
@@ -77,7 +77,6 @@ namespace ExViewer.Views
 
         private void btn_Pane_Click(object sender, RoutedEventArgs e)
         {
-            cb_top.IsOpen = false;
             RootControl.RootController.SwitchSplitView();
         }
 
@@ -131,6 +130,11 @@ namespace ExViewer.Views
                 return;
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)source.ContentTemplateRoot);
             e.Handled = true;
+        }
+
+        public void CloseAll()
+        {
+            cb_top.IsOpen = false;
         }
     }
 }

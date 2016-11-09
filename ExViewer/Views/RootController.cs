@@ -96,6 +96,7 @@ namespace ExViewer.Views
                 var open = root.sv_root.IsPaneOpen;
                 if(!open)
                 {
+                    (root.fm_inner.Content as IHasAppBar)?.CloseAll();
                     root.sv_root.IsPaneOpen = true;
                     (root.tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? root.svt_Search).Focus(FocusState.Programmatic);
                 }

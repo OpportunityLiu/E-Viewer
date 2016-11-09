@@ -27,7 +27,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class GalleryPage : Page
+    public sealed partial class GalleryPage : Page,IHasAppBar
     {
         public GalleryPage()
         {
@@ -203,7 +203,6 @@ namespace ExViewer.Views
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
-            cb_top.IsOpen = false;
             RootControl.RootController.SwitchSplitView();
         }
 
@@ -288,18 +287,24 @@ namespace ExViewer.Views
         {
             bd_GvFooter.Height = e.NewSize.Height;
         }
-
-        private void page_KeyUp(object sender, KeyRoutedEventArgs e)
+        protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
-            if(e.Key == VirtualKey.Menu || e.Key == VirtualKey.GamepadMenu)
+            base.OnKeyUp(e);
+            e.Handled = true;
+            switch(e.Key)
             {
+            case VirtualKey.GamepadMenu:
+            case VirtualKey.Application:
                 if(cb_top.IsOpen = !cb_top.IsOpen)
                 {
                     if(btn_MoreButton == null)
                         btn_MoreButton = ((Button)VisualTreeHelperEx.GetFirstNamedChild(cb_top, "MoreButton"));
                     btn_MoreButton.Focus(FocusState.Programmatic);
                 }
-                e.Handled = true;
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 
@@ -312,6 +317,11 @@ namespace ExViewer.Views
             var sv_Content = (ScrollViewer)VisualTreeHelper.GetChild(bd_Content, 0);
             sv_Content.ViewChanging += pv_Content_ViewChanging;
             fe_Content.Loaded -= pv_Content_Loaded;
+        }
+
+        public void CloseAll()
+        {
+            cb_top.IsOpen = false;
         }
     }
 }

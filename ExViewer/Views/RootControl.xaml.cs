@@ -175,8 +175,9 @@ namespace ExViewer.Views
             await RootController.RequestLogOn();
         }
 
-        private void page_KeyUp(object sender, KeyRoutedEventArgs e)
+        protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
+            base.OnKeyUp(e);
             if(e.Key == Windows.System.VirtualKey.GamepadView)
             {
                 RootController.SwitchSplitView();

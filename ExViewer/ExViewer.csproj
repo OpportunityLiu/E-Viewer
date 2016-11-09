@@ -188,6 +188,7 @@
     <Compile Include="Views\EhWikiDialog.xaml.cs">
       <DependentUpon>EhWikiDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\IHasAppBar.cs" />
     <Compile Include="Views\SavedPage.xaml.cs">
       <DependentUpon>SavedPage.xaml</DependentUpon>
     </Compile>

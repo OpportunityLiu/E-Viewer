@@ -29,7 +29,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SearchPage : Page
+    public sealed partial class SearchPage : Page,IHasAppBar
     {
         public SearchPage()
         {
@@ -81,7 +81,6 @@ namespace ExViewer.Views
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
-            ab.IsOpen = false;
             RootControl.RootController.SwitchSplitView();
         }
 
@@ -133,13 +132,37 @@ namespace ExViewer.Views
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            ab.IsOpen = false;
+            CloseAll();
             VM.Search.Execute(args.QueryText);
         }
 
         private void lv_RefreshRequested(object sender, EventArgs e)
         {
             VM?.SearchResult.Reset();
+        }
+
+        protected override void OnKeyUp(KeyRoutedEventArgs e)
+        {
+            base.OnKeyUp(e);
+            e.Handled = true;
+            switch(e.Key)
+            {
+            case Windows.System.VirtualKey.GamepadY:
+                asb.Focus(FocusState.Programmatic);
+                break;
+            case Windows.System.VirtualKey.GamepadMenu:
+            case Windows.System.VirtualKey.Application:
+                ab.IsOpen = !ab.IsOpen;
+                break;
+            default:
+                e.Handled = false;
+                break;
+            }
+        }
+
+        public void CloseAll()
+        {
+            ab.IsOpen = false;
         }
     }
 }

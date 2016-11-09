@@ -9,7 +9,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
       SizeChanged="page_SizeChanged"
-      KeyUp="page_KeyUp"
       NavigationCacheMode="Enabled"
       x:Name="page">
     <Page.Transitions>

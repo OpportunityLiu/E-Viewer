@@ -8,8 +8,7 @@
       xmlns:converters="using:ExViewer.Converters"
       mc:Ignorable="d"
       xmlns:controls="using:ExViewer.Controls"
-      NavigationCacheMode="Enabled"
-      KeyUp="page_KeyUp">
+      NavigationCacheMode="Enabled">
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
