@@ -10,8 +10,7 @@
       IsTextScaleFactorEnabled="False"
       Loading="Control_Loading"
       Loaded="Control_Loaded"
-      Unloaded="Control_Unloaded"
-      KeyUp="page_KeyUp">
+      Unloaded="Control_Unloaded">
     <Page.Resources>
         <Storyboard x:Key="ShowDisablePanel">
             <DoubleAnimation Duration="0:0:0.5"

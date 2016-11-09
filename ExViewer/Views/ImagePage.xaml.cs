@@ -23,7 +23,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class ImagePage : Page
+    public sealed partial class ImagePage : Page, IHasAppBar
     {
         public ImagePage()
         {
@@ -82,7 +82,6 @@ namespace ExViewer.Views
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
-            cb_top.IsOpen = false;
             RootControl.RootController.SwitchSplitView();
         }
 
@@ -287,9 +286,22 @@ namespace ExViewer.Views
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             base.OnKeyUp(e);
-            if(e.Key == VirtualKey.Enter)
+            e.Handled = true;
+            switch(e.Key)
             {
+            case VirtualKey.Enter:
                 enterPressed = false;
+                break;
+            case VirtualKey.Application:
+            case VirtualKey.GamepadMenu:
+                if(!changeCbVisibility())
+                    fv.Focus(FocusState.Programmatic);
+                else
+                    btn_pane.Focus(FocusState.Programmatic);
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 
@@ -312,16 +324,9 @@ namespace ExViewer.Views
             StatusCollection.Current.ImageViewTipShown = true;
         }
 
-        private void page_KeyUp(object sender, KeyRoutedEventArgs e)
+        public void CloseAll()
         {
-            if(e.Key == VirtualKey.Menu || e.Key == VirtualKey.GamepadMenu)
-            {
-                if(!changeCbVisibility())
-                    fv.Focus(FocusState.Programmatic);
-                else
-                    btn_pane.Focus(FocusState.Programmatic);
-                e.Handled = true;
-            }
+            cb_top.IsOpen = false;
         }
     }
 }

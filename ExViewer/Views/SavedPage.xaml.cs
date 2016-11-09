@@ -29,7 +29,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SavedPage : Page
+    public sealed partial class SavedPage : Page,IHasAppBar
     {
         public SavedPage()
         {
@@ -77,7 +77,6 @@ namespace ExViewer.Views
 
         private void btn_Pane_Click(object sender, RoutedEventArgs e)
         {
-            cb_top.IsOpen = false;
             RootControl.RootController.SwitchSplitView();
         }
 
@@ -158,6 +157,11 @@ namespace ExViewer.Views
                 return;
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)source.ContentTemplateRoot);
             e.Handled = true;
+        }
+
+        public void CloseAll()
+        {
+            cb_top.IsOpen = false;
         }
     }
 }
