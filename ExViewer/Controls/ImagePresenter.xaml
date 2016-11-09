@@ -10,8 +10,19 @@
              Unloaded="UserControl_Unloaded"
              d:DesignHeight="300"
              d:DesignWidth="400">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ImageTemplate" x:DataType="c:GalleryImage">
+            <Image Source="{x:Bind Image, FallbackValue=null, Mode=OneWay}"
+                   Stretch="Uniform" />
+        </DataTemplate>
+    </UserControl.Resources>
     <ScrollViewer x:Name="sv"
                   IsTabStop="True"
+                  FocusVisualMargin="{x:Bind FocusVisualMargin, Mode=OneWay}"
+                  FocusVisualPrimaryBrush="{x:Bind FocusVisualPrimaryBrush, Mode=OneWay}"
+                  FocusVisualPrimaryThickness="{x:Bind FocusVisualPrimaryThickness, Mode=OneWay}"
+                  FocusVisualSecondaryBrush="{x:Bind FocusVisualSecondaryBrush, Mode=OneWay}"
+                  FocusVisualSecondaryThickness="{x:Bind FocusVisualSecondaryThickness, Mode=OneWay}"
                   ZoomMode="Enabled"
                   Template="{StaticResource ScrollViewerScrollBarlessTemplate}"
                   HorizontalScrollBarVisibility="Hidden"
@@ -40,6 +51,7 @@
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
                             IsTabStop="False"
+                            ContentTemplate="{StaticResource ImageTemplate}"
                             Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
         </Grid>
     </ScrollViewer>

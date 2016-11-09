@@ -98,6 +98,7 @@ namespace ExViewer.Views
         private void gv_Gallery_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+            e.Handled = true;
         }
 
         private void gv_Gallery_Holding(object sender, HoldingRoutedEventArgs e)
@@ -107,9 +108,11 @@ namespace ExViewer.Views
             {
             case Windows.UI.Input.HoldingState.Started:
                 FlyoutBase.ShowAttachedFlyout(s);
+                e.Handled = true;
                 break;
             case Windows.UI.Input.HoldingState.Canceled:
                 FlyoutBase.GetAttachedFlyout(s).Hide();
+                e.Handled = true;
                 break;
             default:
                 break;
@@ -119,6 +122,15 @@ namespace ExViewer.Views
         private void PullToRefreshBox_RefreshInvoked(DependencyObject sender, object args)
         {
             VM.Refresh.Execute(null);
+        }
+
+        private void lv_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            var source = e.OriginalSource as ListViewItem;
+            if(source == null)
+                return;
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)source.ContentTemplateRoot);
+            e.Handled = true;
         }
     }
 }

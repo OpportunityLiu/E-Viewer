@@ -25,28 +25,9 @@ namespace ExViewer.Controls
 {
     public sealed partial class ImagePresenter : UserControl
     {
-        static ImagePresenter()
-        {
-            var r = new ResourceDictionary();
-            Application.LoadComponent(r, new Uri("ms-appx:///Themes/ImagePresenterTemplates.xaml"));
-            if(ApiInfo.AnimatedGifSupported)
-            {
-                dt = (DataTemplate)r["NormalTemplate"];
-            }
-            else
-            {
-                ImageLoader.Initialize(new ImageConfig.Builder()
-                    .NewApi(false)
-                    .AddDecoder<GifDecoder>().Build());
-                dt = (DataTemplate)r["GifTemplate"];
-            }
-        }
-        private static readonly DataTemplate dt;
-
         public ImagePresenter()
         {
             this.InitializeComponent();
-            cc_Image.ContentTemplate = dt;
         }
 
         public GalleryImage Image

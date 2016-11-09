@@ -55,6 +55,7 @@
                       ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
                       Style="{StaticResource GalleryListViewStyle}"
                       CanDragItems="True"
+                      RightTapped="lv_RightTapped"
                       DragItemsStarting="lv_DragItemsStarting"
                       ItemClick="lv_ItemClick"
                       ContinuumNavigationTransitionInfo.ExitElementContainer="True">

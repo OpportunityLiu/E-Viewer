@@ -8,7 +8,8 @@
       xmlns:converters="using:ExViewer.Converters"
       mc:Ignorable="d"
       xmlns:controls="using:ExViewer.Controls"
-      NavigationCacheMode="Enabled">
+      NavigationCacheMode="Enabled"
+      KeyUp="page_KeyUp">
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -72,6 +73,7 @@
                         </Grid.RowDefinitions>
                         <controls:ImagePresenter x:Name="ip"
                                                  Grid.RowSpan="2"
+                                                 FocusVisualPrimaryThickness="2,0,2,2"
                                                  Image="{x:Bind Image, Mode=OneWay}" />
                         <ProgressBar Value="{x:Bind Image.Progress, Mode=OneWay, FallbackValue=0}"
                                      Visibility="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=Visible}"
@@ -94,7 +96,8 @@
                     RelativePanel.AlignRightWithPanel="True"
                     HorizontalContentAlignment="Stretch"
                     Opening="cb_top_Opening"
-                    Closing="cb_top_Closing">
+                    Closing="cb_top_Closing"
+                    IsDynamicOverflowEnabled="False">
             <CommandBar.Content>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -107,7 +110,7 @@
                     <Button x:Name="btn_pane"
                             Style="{StaticResource SplitButtonStyle}"
                             Click="btn_pane_Click"
-                            XYFocusDown="{x:Bind fv}" />
+                            XYFocusDown="{x:Bind}"/>
                     <TextBlock x:Name="tb_Title"
                                Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                Style="{StaticResource GalleryTitleTextBlockStyle}"
@@ -141,8 +144,7 @@
                               x:Name="abb_fullScreen"
                               Label="Full screen"
                               Click="abb_fullScreen_Click"
-                              Icon="FullScreen"
-                              XYFocusDown="{x:Bind fv}" />
+                              Icon="FullScreen"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="ImagePageReloadAppBarButton"
