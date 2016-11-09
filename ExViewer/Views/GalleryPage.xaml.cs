@@ -154,9 +154,12 @@ namespace ExViewer.Views
             {
                 entranceElement = (UIElement)gv.ContainerFromIndex(VM.CurrentIndex);
                 if(entranceElement != null)
+                {
                     EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
+                }
                 await Task.Delay(20);
                 needRestoreView = true;
+                ((Control)entranceElement)?.Focus(FocusState.Programmatic);
             }
         }
 

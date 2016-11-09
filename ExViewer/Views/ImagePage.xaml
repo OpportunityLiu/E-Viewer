@@ -106,7 +106,8 @@
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btn_pane"
                             Style="{StaticResource SplitButtonStyle}"
-                            Click="btn_pane_Click" />
+                            Click="btn_pane_Click"
+                            XYFocusDown="{x:Bind fv}" />
                     <TextBlock x:Name="tb_Title"
                                Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                Style="{StaticResource GalleryTitleTextBlockStyle}"
@@ -140,7 +141,8 @@
                               x:Name="abb_fullScreen"
                               Label="Full screen"
                               Click="abb_fullScreen_Click"
-                              Icon="FullScreen" />
+                              Icon="FullScreen"
+                              XYFocusDown="{x:Bind fv}" />
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Uid="ImagePageReloadAppBarButton"

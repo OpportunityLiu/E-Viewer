@@ -24,8 +24,8 @@
                        FontWeight="{ThemeResource SliderHeaderThemeFontWeight}"
                        TextWrapping="WrapWholeWords" />
             <local:SettingSlider Grid.Row="1"
-                                 SettingValue="{x:Bind}">
-            </local:SettingSlider>
+                                 SettingValue="{x:Bind}"
+                                 IsFocusEngagementEnabled="False" />
         </Grid>
     </DataTemplate>
     <DataTemplate x:Name="Enum"

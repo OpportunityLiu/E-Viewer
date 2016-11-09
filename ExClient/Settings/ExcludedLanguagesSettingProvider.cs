@@ -9,7 +9,11 @@ namespace ExClient.Settings
 {
     public enum ExcludedLanguage : ushort
     {
-        JapaneseTranslated = 0 + 1024, JapaneseRewrite = 0 + 2048,
+        /// <summary>
+        /// Do not use.
+        /// </summary>
+        [Obsolete("Do not use this enum, JapaneseOriginal can't be an excluded language.")]
+        JapaneseOriginal=0,   JapaneseTranslated = 0 + 1024, JapaneseRewrite = 0 + 2048,
         EnglishOriginal = 1, EnglishTranslated = EnglishOriginal + 1024, EnglishRewrite = EnglishOriginal + 2048,
         ChineseOriginal = 10, ChineseTranslated = ChineseOriginal + 1024, ChineseRewrite = ChineseOriginal + 2048,
         DutchOriginal = 20, DutchTranslated = DutchOriginal + 1024, DutchRewrite = DutchOriginal + 2048,

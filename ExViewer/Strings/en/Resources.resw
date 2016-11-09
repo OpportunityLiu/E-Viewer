@@ -484,4 +484,19 @@ Go "Settings -&gt; Accounts - Sign-in options -&gt; PIN -&gt; Add" to do this.</
   <data name="AboutPageJapaneseTagProviderTextBlock.Text" xml:space="preserve">
     <value>Japanese translation of tags</value>
   </data>
+  <data name="SettingsPageExcludedLanguagesSelector.MinWidth" xml:space="preserve">
+    <value>400</value>
+  </data>
+  <data name="ExcludedLanguagesSelectorAllTextBlock.Text" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="ExcludedLanguagesSelectorOriginalTextBlock.Text" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="ExcludedLanguagesSelectorRewriteTextBlock.Text" xml:space="preserve">
+    <value>Rewrite</value>
+  </data>
+  <data name="ExcludedLanguagesSelectorTranslatedTextBlock.Text" xml:space="preserve">
+    <value>Translated</value>
+  </data>
 </root>

@@ -158,7 +158,9 @@ namespace ExViewer.Controls
     {
         public ExcludedLanguageFilter(ExcludedLanguage language)
         {
-            Name = language.ToString();
+            var n = language.ToString();
+            n = n.Substring(0, n.Length - "Original".Length);
+            Name = LocalizedStrings.Settings.GetString(n);
             Language = language;
         }
 
