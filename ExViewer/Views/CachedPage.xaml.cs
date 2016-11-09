@@ -119,7 +119,7 @@ namespace ExViewer.Views
             }
         }
 
-        private void PullToRefreshBox_RefreshInvoked(DependencyObject sender, object args)
+        private void lv_RefreshRequested(object sender, EventArgs args)
         {
             VM.Refresh.Execute(null);
         }

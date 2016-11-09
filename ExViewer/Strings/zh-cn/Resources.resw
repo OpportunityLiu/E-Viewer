@@ -344,10 +344,10 @@
   <data name="ParseByteException" xml:space="preserve">
     <value>无法将给定字符串解析为字节数。</value>
   </data>
-  <data name="PullRefreshProgressControl.PullToRefreshText" xml:space="preserve">
+  <data name="PullToRefreshIndicatorPullTextBlock.Text" xml:space="preserve">
     <value>下拉刷新</value>
   </data>
-  <data name="PullRefreshProgressControl.ReleaseToRefreshText" xml:space="preserve">
+  <data name="PullToRefreshIndicatorReleaseTextBlock.Text" xml:space="preserve">
     <value>释放刷新</value>
   </data>
   <data name="RootControlAboutSplitViewTab.Content" xml:space="preserve">
@@ -389,7 +389,7 @@
   <data name="SearchPageLowPowerTagsCheckBox.Content" xml:space="preserve">
     <value>搜索低权值的标签</value>
   </data>
-  <data name="SearchPageMinRatingTextBlock.Text" xml:space="preserve">
+  <data name="SearchPageMinRatingCheckBox.Content" xml:space="preserve">
     <value>最低评分：</value>
   </data>
   <data name="SearchPageNamesCheckBox.Content" xml:space="preserve">

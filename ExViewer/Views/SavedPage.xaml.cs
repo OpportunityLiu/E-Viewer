@@ -146,7 +146,7 @@ namespace ExViewer.Views
             e.Data.RequestedOperation = DataPackageOperation.Move;
         }
 
-        private void PullToRefreshBox_RefreshInvoked(DependencyObject sender, object args)
+        private void lv_RefreshRequested(object sender, EventArgs args)
         {
             VM.Refresh.Execute(null);
         }
