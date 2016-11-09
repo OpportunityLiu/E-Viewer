@@ -7,7 +7,7 @@
       NavigationCacheMode="Enabled"
       x:Name="page"
       mc:Ignorable="d"
-      xmlns:pr="using:PullToRefresh.UWP">
+      xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls">
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -46,56 +46,58 @@
                               Label="Delete all" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
-        <pr:PullToRefreshBox RelativePanel.AlignBottomWithPanel="True"
-                             RelativePanel.AlignLeftWithPanel="True"
-                             RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.Below="cb_top"
-                             RefreshInvoked="PullToRefreshBox_RefreshInvoked">
-            <ListView x:Name="lv"
-                      ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
-                      Style="{StaticResource GalleryListViewStyle}"
-                      ItemClick="lv_ItemClick"
-                      RightTapped="lv_RightTapped"
-                      ContinuumNavigationTransitionInfo.ExitElementContainer="True">
-                <ListView.ItemTemplate>
-                    <DataTemplate xmlns:c="using:ExClient"
-                                  xmlns:controls="using:ExViewer.Controls"
-                                  x:DataType="c:Gallery">
-                        <controls:GalleryViewer x:Name="gv_Gallery"
-                                                Gallery="{x:Bind}"
-                                                RightTapped="gv_Gallery_RightTapped"
-                                                Holding="gv_Gallery_Holding"
-                                                Background="Transparent"
-                                                ContinuumNavigationTransitionInfo.IsExitElement="True">
-                            <FlyoutBase.AttachedFlyout>
-                                <MenuFlyout>
-                                    <MenuFlyoutItem x:Uid="CachedPageDeleteMenuFlyout"
-                                                    x:Name="mfi_DeleteGallery"
-                                                    Text="Delete"
-                                                    Command="{Binding VM.Delete, ElementName=page}"
-                                                    CommandParameter="{x:Bind}" />
-                                </MenuFlyout>
-                            </FlyoutBase.AttachedFlyout>
-                        </controls:GalleryViewer>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.Footer>
-                    <TextBlock x:Uid="CachedPageLoadingMoreTextBlock"
-                               HorizontalAlignment="Center"
-                               Margin="12"
-                               Style="{StaticResource BaseTextBlockStyle}"
-                               Visibility="{x:Bind VM.Galleries.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                               Text="Loading more galleries..." />
-                </ListView.Footer>
-                <ListView.Header>
-                    <TextBlock x:Uid="CachedPageEmptyTextBlock"
-                               HorizontalAlignment="Center"
-                               Margin="12"
-                               Style="{StaticResource BaseTextBlockStyle}"
-                               Visibility="{x:Bind VM.Galleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
-                               Text="No cached galleries" />
-                </ListView.Header>
-            </ListView>
-        </pr:PullToRefreshBox>
+        <tk:PullToRefreshListView x:Name="lv"
+                                  RefreshRequested="lv_RefreshRequested"
+                                  RelativePanel.AlignBottomWithPanel="True"
+                                  RelativePanel.AlignLeftWithPanel="True"
+                                  RelativePanel.AlignRightWithPanel="True"
+                                  RelativePanel.Below="cb_top"
+                                  ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
+                                  Style="{StaticResource GalleryListViewStyle}"
+                                  ItemClick="lv_ItemClick"
+                                  RightTapped="lv_RightTapped"
+                                  ContinuumNavigationTransitionInfo.ExitElementContainer="True">
+            <tk:PullToRefreshListView.RefreshIndicatorContent>
+                <tk:PullToRefreshIndicator />
+            </tk:PullToRefreshListView.RefreshIndicatorContent>
+            <ListView.ItemTemplate>
+                <DataTemplate xmlns:c="using:ExClient"
+                              xmlns:controls="using:ExViewer.Controls"
+                              x:DataType="c:Gallery">
+                    <controls:GalleryViewer x:Name="gv_Gallery"
+                                            Gallery="{x:Bind}"
+                                            RightTapped="gv_Gallery_RightTapped"
+                                            Holding="gv_Gallery_Holding"
+                                            Background="Transparent"
+                                            ContinuumNavigationTransitionInfo.IsExitElement="True">
+                        <FlyoutBase.AttachedFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem x:Uid="CachedPageDeleteMenuFlyout"
+                                                x:Name="mfi_DeleteGallery"
+                                                Text="Delete"
+                                                Command="{Binding VM.Delete, ElementName=page}"
+                                                CommandParameter="{x:Bind}" />
+                            </MenuFlyout>
+                        </FlyoutBase.AttachedFlyout>
+                    </controls:GalleryViewer>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Footer>
+                <TextBlock x:Uid="CachedPageLoadingMoreTextBlock"
+                           HorizontalAlignment="Center"
+                           Margin="12"
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           Visibility="{x:Bind VM.Galleries.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                           Text="Loading more galleries..." />
+            </ListView.Footer>
+            <ListView.Header>
+                <TextBlock x:Uid="CachedPageEmptyTextBlock"
+                           HorizontalAlignment="Center"
+                           Margin="12"
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           Visibility="{x:Bind VM.Galleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
+                           Text="No cached galleries" />
+            </ListView.Header>
+        </tk:PullToRefreshListView>
     </RelativePanel>
 </Page>

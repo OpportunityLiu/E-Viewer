@@ -137,7 +137,7 @@ namespace ExViewer.Views
             VM.Search.Execute(args.QueryText);
         }
 
-        private void PullToRefreshBox_RefreshInvoked(DependencyObject sender, object args)
+        private void lv_RefreshRequested(object sender, EventArgs e)
         {
             VM?.SearchResult.Reset();
         }

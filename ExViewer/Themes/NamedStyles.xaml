@@ -65,18 +65,10 @@
 
     <Style x:Key="GalleryListViewStyle"
            TargetType="ListView">
-        <Setter Property="ScrollViewer.VerticalScrollMode"
-                Value="Auto" />
-        <Setter Property="ScrollViewer.IsVerticalScrollChainingEnabled"
-                Value="True" />
-        <Setter Property="ScrollViewer.HorizontalScrollMode"
-                Value="Disabled" />
         <Setter Property="IsItemClickEnabled"
                 Value="True" />
         <Setter Property="SelectionMode"
                 Value="None" />
-        <Setter Property="VerticalAlignment"
-                Value="Top" />
         <Setter Property="ItemContainerStyle"
                 Value="{StaticResource GalleryListViewItemStyle}" />
         <Setter Property="ContinuumNavigationTransitionInfo.IsExitElement"

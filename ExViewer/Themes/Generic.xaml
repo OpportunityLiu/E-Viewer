@@ -5,6 +5,7 @@
                     xmlns:views="using:ExViewer.Views"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d"
+                    xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:pr="using:PullToRefresh.UWP">
     <Style TargetType="controls:SplitViewButton">
@@ -394,5 +395,82 @@
         </Setter>
         <Setter Property="IsTabStop"
                 Value="False" />
+    </Style>
+
+    <Style TargetType="tk:PullToRefreshIndicator">
+        <Setter Property="Height"
+                Value="100" />
+        <Setter Property="Width"
+                Value="Auto" />
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="tk:PullToRefreshIndicator">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="VisualStateGroup">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="Actived">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="txt"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0"
+                                                         Duration="0"
+                                                         BeginTime="0:0:0.05">
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="txt2"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="1"
+                                                         Duration="0"
+                                                         BeginTime="0:0:0.05">
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="rect"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="1"
+                                                         Duration="0:0:0.1">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseIn" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <TextBlock x:Name="txt"
+                                   x:Uid="PullToRefreshIndicatorPullTextBlock" 
+                                   Text="Pull"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Bottom" />
+                        <TextBlock x:Name="txt2"
+                                   x:Uid="PullToRefreshIndicatorReleaseTextBlock"
+                                   Text="Release"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Bottom"
+                                   Opacity="0" />
+                        <Rectangle x:Name="rect"
+                                   StrokeThickness="0"
+                                   Width="200"
+                                   Height="4"
+                                   Fill="{ThemeResource SystemControlForegroundAccentBrush}"
+                                   Margin="4"
+                                   Opacity="0.5"
+                                   VerticalAlignment="Bottom"
+                                   RenderTransformOrigin="0.5,0.5"
+                                   Grid.Row="1">
+                            <Rectangle.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="{Binding PullProgress, RelativeSource={RelativeSource TemplatedParent}}" />
+                                </TransformGroup>
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>

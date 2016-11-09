@@ -5,7 +5,7 @@
       xmlns:local="using:ExViewer.Views"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:pr="using:PullToRefresh.UWP"
+      xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
       xmlns:vm="using:ExViewer.ViewModels"
       xmlns:db="using:ExViewer.Database"
       mc:Ignorable="d"
@@ -122,6 +122,7 @@
                               VerticalScrollBarVisibility="Hidden">
                     <StackPanel>
                         <controls:CategorySelector x:Name="cs_Category"
+                                                   XYFocusDown="{x:Bind ts_Advanced}"
                                                    SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
                                                    HorizontalAlignment="Center" />
                         <ToggleSwitch x:Uid="SearchPageAdvancedToggleButton"
@@ -136,6 +137,7 @@
                                   Padding="0,0,0,8"
                                   Style="{StaticResource StackPanelListViewStyle}">
                             <CheckBox x:Uid="SearchPageNamesCheckBox"
+                                      XYFocusUp="{x:Bind ts_Advanced}"
                                       Content="Search gallery name"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
                             <CheckBox x:Uid="SearchPageTagsCheckBox"
@@ -159,61 +161,62 @@
                             <CheckBox x:Uid="SearchPageShowExpungedCheckBox"
                                       Content="Show expunged galleries"
                                       IsChecked="{x:Bind VM.AdvancedSearch.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox Padding="8,0,0,0"
-                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource NullableConverter}}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock x:Uid="SearchPageMinRatingTextBlock"
-                                               Text="Minimum rating:"
-                                               VerticalAlignment="Center" />
-                                    <ComboBox VerticalAlignment="Center"
-                                              SelectedItem="{x:Bind VM.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}">
-                                        <x:Int32>2</x:Int32>
-                                        <x:Int32>3</x:Int32>
-                                        <x:Int32>4</x:Int32>
-                                        <x:Int32>5</x:Int32>
-                                    </ComboBox>
-                                </StackPanel>
-                            </CheckBox>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox x:Uid="SearchPageMinRatingCheckBox"
+                                          MinWidth="0"
+                                          Content="Minimum rating: "
+                                          IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                                <ComboBox VerticalAlignment="Center"
+                                          SelectedItem="{x:Bind VM.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
+                                          Margin="12,0">
+                                    <x:Int32>2</x:Int32>
+                                    <x:Int32>3</x:Int32>
+                                    <x:Int32>4</x:Int32>
+                                    <x:Int32>5</x:Int32>
+                                </ComboBox>
+                            </StackPanel>
                         </ListView>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
         </AppBar>
-        <pr:PullToRefreshBox RelativePanel.Below="ab"
-                             RelativePanel.AlignBottomWithPanel="True"
-                             RelativePanel.AlignLeftWithPanel="True"
-                             RelativePanel.AlignRightWithPanel="True"
-                             RefreshInvoked="PullToRefreshBox_RefreshInvoked">
-            <ListView x:Name="lv"
-                      ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
-                      ContinuumNavigationTransitionInfo.ExitElementContainer="True"
-                      Style="{StaticResource GalleryListViewStyle}"
-                      ItemClick="lv_ItemClick">
-                <ListView.ItemTemplate>
-                    <DataTemplate xmlns:c="using:ExClient"
-                                  xmlns:controls="using:ExViewer.Controls"
-                                  x:DataType="c:Gallery">
-                        <controls:GalleryViewer Gallery="{x:Bind}"
-                                                ContinuumNavigationTransitionInfo.IsExitElement="True" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.Header>
-                    <TextBlock x:Uid="SearchPageEmptyTextBlock"
-                               HorizontalAlignment="Center"
-                               Margin="12"
-                               Style="{StaticResource BaseTextBlockStyle}"
-                               Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                               Text="No hits found" />
-                </ListView.Header>
-                <ListView.Footer>
-                    <TextBlock x:Uid="SearchPageLoadingMoreTextBlock"
-                               HorizontalAlignment="Center"
-                               Margin="12"
-                               Style="{StaticResource BaseTextBlockStyle}"
-                               Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                               Text="Loading more galleries..." />
-                </ListView.Footer>
-            </ListView>
-        </pr:PullToRefreshBox>
+        <tk:PullToRefreshListView x:Name="lv"
+                                  RelativePanel.Below="ab"
+                                  RelativePanel.AlignBottomWithPanel="True"
+                                  RelativePanel.AlignLeftWithPanel="True"
+                                  RelativePanel.AlignRightWithPanel="True"
+                                  RefreshRequested="lv_RefreshRequested"
+                                  ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
+                                  ContinuumNavigationTransitionInfo.ExitElementContainer="True"
+                                  Style="{StaticResource GalleryListViewStyle}"
+                                  ItemClick="lv_ItemClick">
+            <tk:PullToRefreshListView.RefreshIndicatorContent>
+                <tk:PullToRefreshIndicator />
+            </tk:PullToRefreshListView.RefreshIndicatorContent>
+            <ListView.ItemTemplate>
+                <DataTemplate xmlns:c="using:ExClient"
+                              xmlns:controls="using:ExViewer.Controls"
+                              x:DataType="c:Gallery">
+                    <controls:GalleryViewer Gallery="{x:Bind}"
+                                            ContinuumNavigationTransitionInfo.IsExitElement="True" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Header>
+                <TextBlock x:Uid="SearchPageEmptyTextBlock"
+                           HorizontalAlignment="Center"
+                           Margin="12"
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                           Text="No hits found" />
+            </ListView.Header>
+            <ListView.Footer>
+                <TextBlock x:Uid="SearchPageLoadingMoreTextBlock"
+                           HorizontalAlignment="Center"
+                           Margin="12"
+                           Style="{StaticResource BaseTextBlockStyle}"
+                           Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                           Text="Loading more galleries..." />
+            </ListView.Footer>
+        </tk:PullToRefreshListView>
     </RelativePanel>
 </Page>

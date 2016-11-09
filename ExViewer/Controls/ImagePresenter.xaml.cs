@@ -1,7 +1,5 @@
 ﻿using ExClient;
 using ExViewer.Settings;
-using ImageLib;
-using ImageLib.Gif;
 using System;
 using System.Collections.Generic;
 using System.IO;

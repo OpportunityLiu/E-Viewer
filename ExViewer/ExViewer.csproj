@@ -110,6 +110,7 @@
     <Compile Include="Controls\ExcludedLanguagesSelector.xaml.cs">
       <DependentUpon>ExcludedLanguagesSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PullToRefreshIndicator.cs" />
     <Compile Include="Controls\TagPresenter.cs" />
     <Compile Include="Converters\EmptyConverter.cs" />
     <Compile Include="Helpers\AccountManager.cs" />

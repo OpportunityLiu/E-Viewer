@@ -641,7 +641,7 @@
                                                Text="Torrents"
                                                Style="{StaticResource PivotHeaderTextBlockStyle}" />
                                     <TextBlock Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='GalleryPagePivotHeaderNumberFormatString'}"
-                                               Visibility="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
+                                               Visibility="{x:Bind VM.Torrents, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                                                Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}" />
                                 </Grid>
                             </PivotItem.Header>
