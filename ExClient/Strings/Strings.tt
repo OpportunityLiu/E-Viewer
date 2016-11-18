@@ -9,7 +9,7 @@
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Xml" #>
 <#@ import namespace="System.Web" #>
-<#@ output extension=".cs" #>
+<#@ output extension=".tt.cs" #>
 <#
 
 

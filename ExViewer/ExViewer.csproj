@@ -164,7 +164,7 @@
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Settings\StatusCollection.cs" />
-    <Compile Include="Strings\Strings.cs">
+    <Compile Include="Strings\Strings.tt.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.tt</DependentUpon>
@@ -267,7 +267,7 @@
     <PRIResource Include="Strings\en\Settings.resw" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Strings.cs</LastGenOutput>
+      <LastGenOutput>Strings.tt.cs</LastGenOutput>
     </None>
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Images\Light\UserBackground.scale-100.png" />
