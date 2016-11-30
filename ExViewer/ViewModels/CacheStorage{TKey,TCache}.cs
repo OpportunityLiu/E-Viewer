@@ -14,25 +14,39 @@ namespace ExViewer.ViewModels
             : this(loader, 100) { }
 
         public CacheStorage(Func<TKey, IAsyncOperation<TCache>> loader, int maxCount)
+            : this(loader, maxCount, null) { }
+
+        public CacheStorage(Func<TKey, IAsyncOperation<TCache>> loader, int maxCount, IEqualityComparer<TKey> comparer)
+            : this(maxCount, comparer)
         {
             this.asyncLoader = loader;
-            this.MaxCount = maxCount;
         }
 
         public CacheStorage(Func<TKey, TCache> loader)
-            : this(loader, 100) { }
+                : this(loader, 100, null) { }
 
         public CacheStorage(Func<TKey, TCache> loader, int maxCount)
+                : this(loader, maxCount, null) { }
+
+        public CacheStorage(Func<TKey, TCache> loader, int maxCount, IEqualityComparer<TKey> comparer)
+                : this(maxCount, comparer)
         {
             this.loader = loader;
-            this.MaxCount = maxCount;
         }
 
-        private Queue<TKey> cacheQueue = new Queue<TKey>();
-        private Dictionary<TKey, TCache> cacheDictionary = new Dictionary<TKey, TCache>();
+        private CacheStorage(int maxCount, IEqualityComparer<TKey> comparer)
+        {
+            this.MaxCount = maxCount;
+            this.cacheDictionary = new Dictionary<TKey, TCache>(maxCount, comparer);
+            this.cacheQueue = new Queue<TKey>(maxCount);
+        }
 
-        private Func<TKey, IAsyncOperation<TCache>> asyncLoader;
-        private Func<TKey, TCache> loader;
+        private readonly Queue<TKey> cacheQueue;
+        private readonly Dictionary<TKey, TCache> cacheDictionary;
+
+        private readonly Func<TKey, IAsyncOperation<TCache>> asyncLoader;
+        private readonly Func<TKey, TCache> loader;
+
         public int MaxCount
         {
             get; set;
