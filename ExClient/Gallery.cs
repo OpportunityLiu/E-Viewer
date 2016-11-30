@@ -61,12 +61,12 @@ namespace ExClient
         {
             switch(Modifier)
             {
-            case LanguageModifier.Translated:
-                return $"{Name} TR";
-            case LanguageModifier.Rewrite:
-                return $"{Name} RW";
-            default:
-                return Name;
+                case LanguageModifier.Translated:
+                    return $"{Name} TR";
+                case LanguageModifier.Rewrite:
+                    return $"{Name} RW";
+                default:
+                    return Name;
             }
         }
     }
@@ -79,18 +79,41 @@ namespace ExClient
     }
 
     [JsonConverter(typeof(GalleryInfoConverter))]
-    public class GalleryInfo
+    public struct GalleryInfo : IEquatable<GalleryInfo>
     {
+        public GalleryInfo(long id, string token)
+        {
+            Id = id;
+            Token = token;
+        }
+
         public long Id
         {
             get;
-            set;
         }
 
         public string Token
         {
             get;
-            set;
+        }
+
+        public bool Equals(GalleryInfo other)
+        {
+            return this.Id == other.Id && this.Token == other.Token;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(obj == null || typeof(GalleryInfo) != obj.GetType())
+            {
+                return false;
+            }
+            return Equals((GalleryInfo)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode() ^ (Token ?? "").GetHashCode();
         }
     }
 
@@ -491,12 +514,12 @@ namespace ExClient
                     {
                         switch(item.Content)
                         {
-                        case "rewrite":
-                            modi = LanguageModifier.Rewrite;
-                            continue;
-                        case "translated":
-                            modi = LanguageModifier.Translated;
-                            continue;
+                            case "rewrite":
+                                modi = LanguageModifier.Rewrite;
+                                continue;
+                            case "translated":
+                                modi = LanguageModifier.Translated;
+                                continue;
                         }
                     }
                     if(language == null)

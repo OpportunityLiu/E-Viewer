@@ -67,7 +67,7 @@ namespace ExClient
 
         private IAsyncOperation<IList<Gallery>> init()
         {
-            return Run<IList<Gallery>>(async token =>
+            return Run(async token =>
             {
                 var uri = createUri();
                 searchResultBaseUri = uri.OriginalString;
@@ -147,11 +147,7 @@ namespace ExClient
                               where detail != null
                               let match = gLinkMatcher.Match(detail.GetAttributeValue("href", ""))
                               where match.Success
-                              select new GalleryInfo
-                              {
-                                  Id = long.Parse(match.Groups[1].Value),
-                                  Token = match.Groups[2].Value
-                              };
+                              select new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value);
                 return await Gallery.FetchGalleriesAsync(records.ToList());
             });
         }

@@ -35,27 +35,41 @@ namespace ExViewer.ViewModels
 
     public class GalleryVM : ViewModelBase
     {
-        private static CacheStorage<long, GalleryVM> Cache
+        private static CacheStorage<GalleryInfo, GalleryVM> Cache
         {
             get;
-        } = new CacheStorage<long, GalleryVM>(id => Run(async token => new GalleryVM(await Gallery.TryLoadGalleryAsync(id))), 25);
+        } = new CacheStorage<GalleryInfo, GalleryVM>(gi => Run(async token => new GalleryVM((await Gallery.FetchGalleriesAsync(new[] { gi })).Single())), 25, new GalleryInfoComparer());
+
+        private class GalleryInfoComparer : IEqualityComparer<GalleryInfo>
+        {
+            public bool Equals(GalleryInfo x, GalleryInfo y)
+            {
+                return x.Id == y.Id;
+            }
+
+            public int GetHashCode(GalleryInfo obj)
+            {
+                return obj.Id.GetHashCode();
+            }
+        }
 
         public static void AddGallery(Gallery gallery)
         {
             GalleryVM vm;
-            if(Cache.TryGet(gallery.Id, out vm))
+            var gi = new GalleryInfo(gallery.Id, gallery.Token);
+            if(Cache.TryGet(gi, out vm))
             {
                 vm.Gallery = gallery;
                 if(gallery.Count <= vm.currentIndex)
                     vm.currentIndex = -1;
             }
             else
-                Cache.Add(gallery.Id, new GalleryVM(gallery));
+                Cache.Add(gi, new GalleryVM(gallery));
         }
 
         public static IAsyncOperation<GalleryVM> GetVMAsync(long parameter)
         {
-            return Cache.GetAsync(parameter);
+            return Cache.GetAsync(new GalleryInfo(parameter, null));
         }
 
         public GalleryImage GetCurrent()
@@ -92,17 +106,17 @@ namespace ExViewer.ViewModels
                 {
                     switch(e)
                     {
-                    case AsyncStatus.Canceled:
-                    case AsyncStatus.Error:
-                        SaveStatus = OperationState.Failed;
-                        RootControl.RootController.SendToast(sender.ErrorCode, null);
-                        break;
-                    case AsyncStatus.Completed:
-                        SaveStatus = OperationState.Completed;
-                        break;
-                    case AsyncStatus.Started:
-                        SaveStatus = OperationState.Started;
-                        break;
+                        case AsyncStatus.Canceled:
+                        case AsyncStatus.Error:
+                            SaveStatus = OperationState.Failed;
+                            RootControl.RootController.SendToast(sender.ErrorCode, null);
+                            break;
+                        case AsyncStatus.Completed:
+                            SaveStatus = OperationState.Completed;
+                            break;
+                        case AsyncStatus.Started:
+                            SaveStatus = OperationState.Started;
+                            break;
                     }
                     SaveProgress = 1;
                 };
