@@ -150,7 +150,7 @@
     <Compile Include="Gallery.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingProvider.cs" />
-    <Compile Include="Strings\Strings.cs">
+    <Compile Include="Strings\Strings.tt.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.tt</DependentUpon>
@@ -162,7 +162,7 @@
     <PRIResource Include="Strings\en\Category.resw" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Strings.cs</LastGenOutput>
+      <LastGenOutput>Strings.tt.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
