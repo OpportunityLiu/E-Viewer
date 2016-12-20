@@ -27,13 +27,14 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class GalleryPage : Page,IHasAppBar
+    public sealed partial class GalleryPage : Page, IHasAppBar
     {
         public GalleryPage()
         {
             this.InitializeComponent();
             gd_Info.RegisterPropertyChangedCallback(ActualHeightProperty, set_btn_Scroll_Rotation);
             sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, set_btn_Scroll_Rotation);
+            lv_Torrents.RegisterPropertyChangedCallback(ItemsControl.ItemsSourceProperty, lv_Torrents_ItemSourceChanged);
         }
 
         private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)
@@ -251,6 +252,13 @@ namespace ExViewer.Views
                     await VM.LoadTorrents();
                 break;
             }
+        }
+
+        private async void lv_Torrents_ItemSourceChanged(DependencyObject sender, DependencyProperty e)
+        {
+            await Task.Delay(150);
+            if(lv_Torrents.Items.Count > 0)
+                lv_Torrents.SelectedIndex = 0;
         }
 
         private void lv_Torrents_SelectionChanged(object sender, SelectionChangedEventArgs e)

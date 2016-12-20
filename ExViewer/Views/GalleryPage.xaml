@@ -383,11 +383,9 @@
                                                  Grid.Column="1"
                                                  HorizontalAlignment="Left"
                                                  Margin="2,4">
-                            <controls:CategoryTag x:Name="Category"
-                                                  Margin="6,4"
+                            <controls:CategoryTag Margin="6,4"
                                                   Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
-                            <TextBlock x:Name="Rating"
-                                       Margin="6,4"
+                            <TextBlock Margin="6,4"
                                        VerticalAlignment="Center"
                                        Text="{x:Bind VM.Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
                                        FontFamily="Segoe MDL2 Assets" />
@@ -589,27 +587,26 @@
                             </PivotItem.Header>
                             <ListView x:Name="lv_Comments"
                                       ItemsSource="{x:Bind VM.Gallery.Comments, Mode=OneWay}"
-                                      VerticalAlignment="Top"
                                       Loaded="pv_Content_Loaded"
                                       SelectionMode="None"
                                       ItemTemplate="{StaticResource CommentTemplate}"
                                       ItemContainerStyle="{StaticResource ListViewItemStyle}">
                                 <ListView.Header>
-                                    <TextBlock x:Uid="GalleryPageCommentsEmptyTextBlock"
-                                               HorizontalAlignment="Center"
-                                               Margin="12"
-                                               Style="{StaticResource BaseTextBlockStyle}"
-                                               Visibility="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
-                                               Text="No comments" />
+                                    <Grid>
+                                        <TextBlock x:Uid="GalleryPageCommentsEmptyTextBlock"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="12"
+                                                   Style="{StaticResource BaseTextBlockStyle}"
+                                                   Visibility="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
+                                                   Text="No comments" />
+                                        <TextBlock x:Uid="GalleryPageCommentsLoadingTextBlock"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="12"
+                                                   Style="{StaticResource BaseTextBlockStyle}"
+                                                   Visibility="{x:Bind VM.Gallery.Comments, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
+                                                   Text="Loading comments..." />
+                                    </Grid>
                                 </ListView.Header>
-                                <ListView.Footer>
-                                    <TextBlock x:Uid="GalleryPageCommentsLoadingTextBlock"
-                                               HorizontalAlignment="Center"
-                                               Margin="12"
-                                               Style="{StaticResource BaseTextBlockStyle}"
-                                               Visibility="{x:Bind VM.Gallery.Comments, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
-                                               Text="Loading comments..." />
-                                </ListView.Footer>
                             </ListView>
                         </PivotItem>
                         <PivotItem>
@@ -646,27 +643,26 @@
                             </PivotItem.Header>
                             <ListView x:Name="lv_Torrents"
                                       ItemsSource="{x:Bind VM.Torrents, Mode=OneWay}"
-                                      VerticalAlignment="Top"
                                       SelectionChanged="lv_Torrents_SelectionChanged"
                                       Loaded="pv_Content_Loaded"
                                       ItemTemplate="{StaticResource TorrentTemplate}"
                                       ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}">
                                 <ListView.Header>
-                                    <TextBlock x:Uid="GalleryPageTorrentsEmptyTextBlock"
-                                               HorizontalAlignment="Center"
-                                               Margin="12"
-                                               Style="{StaticResource BaseTextBlockStyle}"
-                                               Visibility="{x:Bind VM.Torrents.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
-                                               Text="No available torrents" />
+                                    <Grid>
+                                        <TextBlock x:Uid="GalleryPageTorrentsEmptyTextBlock"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="12"
+                                                   Style="{StaticResource BaseTextBlockStyle}"
+                                                   Visibility="{x:Bind VM.Torrents.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
+                                                   Text="No available torrents" />
+                                        <TextBlock x:Uid="GalleryPageTorrentsLoadingTextBlock"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="12"
+                                                   Style="{StaticResource BaseTextBlockStyle}"
+                                                   Visibility="{x:Bind VM.Torrents, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
+                                                   Text="Loading torrents..." />
+                                    </Grid>
                                 </ListView.Header>
-                                <ListView.Footer>
-                                    <TextBlock x:Uid="GalleryPageTorrentsLoadingTextBlock"
-                                               HorizontalAlignment="Center"
-                                               Margin="12"
-                                               Style="{StaticResource BaseTextBlockStyle}"
-                                               Visibility="{x:Bind VM.Torrents, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
-                                               Text="Loading torrents..." />
-                                </ListView.Footer>
                             </ListView>
                         </PivotItem>
                     </Pivot>
