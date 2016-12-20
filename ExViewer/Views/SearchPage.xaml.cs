@@ -29,7 +29,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SearchPage : Page,IHasAppBar
+    public sealed partial class SearchPage : Page, IHasAppBar
     {
         public SearchPage()
         {
@@ -125,14 +125,15 @@ namespace ExViewer.Views
 
         private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            if(!VM.AutoCompleteFinished(args.SelectedItem))
-                return;
             sender.Focus(FocusState.Programmatic);
         }
 
-        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
+            if(args.ChosenSuggestion != null && VM.AutoCompleteFinished(args.ChosenSuggestion) == false)
+                return;
             CloseAll();
+            this.lv.Focus(FocusState.Pointer);
             VM.Search.Execute(args.QueryText);
         }
 
@@ -147,16 +148,16 @@ namespace ExViewer.Views
             e.Handled = true;
             switch(e.Key)
             {
-            case Windows.System.VirtualKey.GamepadY:
-                asb.Focus(FocusState.Programmatic);
-                break;
-            case Windows.System.VirtualKey.GamepadMenu:
-            case Windows.System.VirtualKey.Application:
-                ab.IsOpen = !ab.IsOpen;
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case Windows.System.VirtualKey.GamepadY:
+                    asb.Focus(FocusState.Keyboard);
+                    break;
+                case Windows.System.VirtualKey.GamepadMenu:
+                case Windows.System.VirtualKey.Application:
+                    ab.IsOpen = !ab.IsOpen;
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 
