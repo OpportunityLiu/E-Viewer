@@ -154,6 +154,7 @@
     <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Database\SearchHistoryDb.cs" />
     <Compile Include="Helpers\ExceptionHandler.cs" />
+    <Compile Include="Helpers\ShareHandler.cs" />
     <Compile Include="Helpers\TagExtension.cs" />
     <Compile Include="Helpers\ThemeExtension.cs" />
     <Compile Include="Migrations\20160717021413_MyFirstMigration.cs" />
