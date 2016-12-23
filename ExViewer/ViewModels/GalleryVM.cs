@@ -86,12 +86,27 @@ namespace ExViewer.ViewModels
 
         private GalleryVM()
         {
-            OpenInBrowser = new RelayCommand<GalleryImage>(async image =>
+            OpenInBrowser = new RelayCommand<GalleryImage>(image =>
             {
                 if(image == null)
-                    await Launcher.LaunchUriAsync(gallery.GalleryUri);
+                {
+                    Helpers.ShareHandler.Share((s, e) =>
+                    {
+                        e.Request.Data.Properties.Description = gallery.GetDisplayTitle();
+                        e.Request.Data.Properties.ContentSourceWebLink = gallery.GalleryUri;
+                        e.Request.Data.SetWebLink(gallery.GalleryUri);
+                    });
+                }
+                //await Launcher.LaunchUriAsync(gallery.GalleryUri);
                 else
-                    await Launcher.LaunchUriAsync(image.PageUri);
+                {
+                    Helpers.ShareHandler.Share((s, e) =>
+                    {
+                        e.Request.Data.Properties.Description = gallery.GetDisplayTitle();
+                        e.Request.Data.SetWebLink(image.PageUri);
+                    });
+                }
+                //await Launcher.LaunchUriAsync(image.PageUri);
             }, image => gallery != null);
             OpenInExplorer = new RelayCommand(async () => await Launcher.LaunchFolderAsync(gallery.GalleryFolder), () => gallery != null);
             Save = new RelayCommand(() =>
@@ -106,17 +121,17 @@ namespace ExViewer.ViewModels
                 {
                     switch(e)
                     {
-                        case AsyncStatus.Canceled:
-                        case AsyncStatus.Error:
-                            SaveStatus = OperationState.Failed;
-                            RootControl.RootController.SendToast(sender.ErrorCode, null);
-                            break;
-                        case AsyncStatus.Completed:
-                            SaveStatus = OperationState.Completed;
-                            break;
-                        case AsyncStatus.Started:
-                            SaveStatus = OperationState.Started;
-                            break;
+                    case AsyncStatus.Canceled:
+                    case AsyncStatus.Error:
+                        SaveStatus = OperationState.Failed;
+                        RootControl.RootController.SendToast(sender.ErrorCode, null);
+                        break;
+                    case AsyncStatus.Completed:
+                        SaveStatus = OperationState.Completed;
+                        break;
+                    case AsyncStatus.Started:
+                        SaveStatus = OperationState.Started;
+                        break;
                     }
                     SaveProgress = 1;
                 };
@@ -160,8 +175,8 @@ namespace ExViewer.ViewModels
             }, tag => tag != null);
             SearchTag = new RelayCommand<Tag>(tag =>
             {
-                var param = SearchVM.Cache.AddSearchResult(tag.Search());
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), param);
+                var vm = SearchVM.GetVM(tag.Search());
+                RootControl.RootController.Frame.Navigate(typeof(SearchPage),vm.SearchQuery);
             }, tag => tag != null);
         }
 

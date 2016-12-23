@@ -36,75 +36,94 @@ namespace ExViewer.ViewModels
 
         internal static class Cache
         {
-            private static CacheStorage<string, SearchResult> srCache = new CacheStorage<string, SearchResult>(query =>
+            private static CacheStorage<string, SearchVM> srCache = new CacheStorage<string, SearchVM>(query =>
                 {
-                    var data = JsonConvert.DeserializeObject<SearchResultData>(query);
-                    AddHistory(data.KeyWord);
-                    return Client.Current.Search(data.KeyWord, data.Category, data.AdvancedSearch);
-                }, 10
-            );
+                    var vm = new SearchVM(query);
+                    AddHistory(vm.KeyWord);
+                    return vm;
+                }, 10);
 
-            public static SearchResult GetSearchResult(string query)
+            public static SearchVM GetSearchVM(string query)
             {
                 return srCache.Get(query);
             }
 
-            public static string GetSearchQuery(string keyWord)
-            {
-                return JsonConvert.SerializeObject(new SearchResultData()
-                {
-                    KeyWord = keyWord
-                });
-            }
-
-            public static string GetSearchQuery(string keyWord, Category filter)
-            {
-                return JsonConvert.SerializeObject(new SearchResultData()
-                {
-                    KeyWord = keyWord,
-                    Category = filter
-                });
-            }
-
-            public static string GetSearchQuery(string keyWord, Category filter, AdvancedSearchOptions advancedSearch)
-            {
-                return JsonConvert.SerializeObject(new SearchResultData()
-                {
-                    KeyWord = keyWord,
-                    Category = filter,
-                    AdvancedSearch = advancedSearch
-                });
-            }
-
-            public static string AddSearchResult(SearchResult searchResult)
+            public static string AddSearchVM(SearchVM searchVM)
             {
                 var query = JsonConvert.SerializeObject(new SearchResultData()
                 {
-                    KeyWord = searchResult.KeyWord,
-                    Category = searchResult.Category,
-                    AdvancedSearch = searchResult.AdvancedSearch
+                    KeyWord = searchVM.KeyWord,
+                    Category = searchVM.Category,
+                    AdvancedSearch = searchVM.AdvancedSearch
                 });
-                AddHistory(searchResult.KeyWord);
-                srCache.Add(query, searchResult);
+                AddHistory(searchVM.KeyWord);
+                srCache.Add(query, searchVM);
                 return query;
             }
         }
 
+        public static string GetSearchQuery(string keyWord)
+        {
+            return JsonConvert.SerializeObject(new SearchResultData()
+            {
+                KeyWord = keyWord
+            });
+        }
+
+        public static string GetSearchQuery(string keyWord, Category filter)
+        {
+            return JsonConvert.SerializeObject(new SearchResultData()
+            {
+                KeyWord = keyWord,
+                Category = filter
+            });
+        }
+
+        public static string GetSearchQuery(string keyWord, Category filter, AdvancedSearchOptions advancedSearch)
+        {
+            return JsonConvert.SerializeObject(new SearchResultData()
+            {
+                KeyWord = keyWord,
+                Category = filter,
+                AdvancedSearch = advancedSearch
+            });
+        }
+
         public static IAsyncAction InitAsync()
         {
-            var defaultVM = new SearchVM(null);
+            var defaultVM = GetVM(string.Empty);
             return defaultVM.searchResult.LoadMoreItemsAsync(40).AsTask().AsAsyncAction();
         }
 
-        public SearchVM(string parameter)
+        public static SearchVM GetVM(string parameter)
+        {
+            return Cache.GetSearchVM(parameter ?? string.Empty);
+        }
+
+        public static SearchVM GetVM(SearchResult searchResult)
+        {
+            var vm = new SearchVM(searchResult);
+            Cache.AddSearchVM(vm);
+            return vm;
+        }
+
+        private SearchVM(SearchResult searchResult)
             : this()
         {
-            if(parameter == null)
+            keyWord = searchResult.KeyWord;
+            category = searchResult.Category;
+            advancedSearch = searchResult.AdvancedSearch;
+            SearchResult = searchResult;
+        }
+
+        private SearchVM(string parameter)
+            : this()
+        {
+            if(string.IsNullOrEmpty(parameter))
             {
                 keyWord = SettingCollection.Current.DefaultSearchString;
                 category = SettingCollection.Current.DefaultSearchCategory;
                 advancedSearch = new AdvancedSearchOptions();
-                SearchResult = Cache.GetSearchResult(Cache.GetSearchQuery(keyWord, category, advancedSearch));
             }
             else
             {
@@ -112,8 +131,8 @@ namespace ExViewer.ViewModels
                 keyWord = q.KeyWord;
                 category = q.Category;
                 advancedSearch = q.AdvancedSearch;
-                SearchResult = Cache.GetSearchResult(parameter);
             }
+            SearchResult = Client.Current.Search(keyWord, category, advancedSearch);
         }
 
         private SearchVM()
@@ -125,13 +144,14 @@ namespace ExViewer.ViewModels
                     SettingCollection.Current.DefaultSearchCategory = category;
                     SettingCollection.Current.DefaultSearchString = queryText;
                 }
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), Cache.GetSearchQuery(queryText, category, advancedSearch));
+                RootControl.RootController.Frame.Navigate(typeof(SearchPage), GetSearchQuery(queryText, category, advancedSearch));
             });
             Open = new RelayCommand<Gallery>(g =>
             {
+                SelectedGallery = g;
                 GalleryVM.AddGallery(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
-            });
+            }, g => g != null);
         }
 
         public RelayCommand<string> Search
@@ -142,6 +162,20 @@ namespace ExViewer.ViewModels
         public RelayCommand<Gallery> Open
         {
             get;
+        }
+
+        private Gallery selectedGallery;
+
+        public Gallery SelectedGallery
+        {
+            get
+            {
+                return selectedGallery;
+            }
+            private set
+            {
+                Set(ref selectedGallery, value);
+            }
         }
 
         private SearchResult searchResult;
@@ -267,5 +301,7 @@ namespace ExViewer.ViewModels
                 db.SaveChanges();
             }
         }, sh => sh != null);
+
+        public string SearchQuery => GetSearchQuery(this.keyWord, this.category, this.advancedSearch);
     }
 }

@@ -43,12 +43,18 @@ namespace ExViewer.Views
             {
                 await RootControl.RootController.RequestLogOn();
             }
-            VM = new SearchVM(e.Parameter?.ToString());
+            VM = SearchVM.GetVM(e.Parameter?.ToString());
             if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
                 VM?.SearchResult.Reset();
             if(e.NavigationMode == NavigationMode.Back)
             {
-                //TODO: restore scroll position.
+                var selectedGallery = VM.SelectedGallery;
+                if(selectedGallery != null)
+                {
+                    await Task.Delay(100);
+                    this.lv.ScrollIntoView(selectedGallery);
+                    ((Control)this.lv.ContainerFromItem(selectedGallery))?.Focus(FocusState.Programmatic);
+                }
             }
         }
 
