@@ -34,7 +34,6 @@ namespace ExViewer.Views
             this.InitializeComponent();
             gd_Info.RegisterPropertyChangedCallback(ActualHeightProperty, set_btn_Scroll_Rotation);
             sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, set_btn_Scroll_Rotation);
-            lv_Torrents.RegisterPropertyChangedCallback(ItemsControl.ItemsSourceProperty, lv_Torrents_ItemSourceChanged);
         }
 
         private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)
@@ -235,7 +234,7 @@ namespace ExViewer.Views
 
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Yield();
+            await Task.Delay(50);
             changeView(false);
         }
 
@@ -250,15 +249,14 @@ namespace ExViewer.Views
             case 2://Torrents
                 if(VM.Torrents == null)
                     await VM.LoadTorrents();
+                await Task.Delay(150);
+                if(lv_Torrents.Items.Count > 0)
+                {
+                    lv_Torrents.SelectedIndex = -1;
+                    lv_Torrents.SelectedIndex = 0;
+                }
                 break;
             }
-        }
-
-        private async void lv_Torrents_ItemSourceChanged(DependencyObject sender, DependencyProperty e)
-        {
-            await Task.Delay(150);
-            if(lv_Torrents.Items.Count > 0)
-                lv_Torrents.SelectedIndex = 0;
         }
 
         private void lv_Torrents_SelectionChanged(object sender, SelectionChangedEventArgs e)
