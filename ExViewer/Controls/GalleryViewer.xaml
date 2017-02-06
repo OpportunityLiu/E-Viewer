@@ -25,7 +25,7 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 MaxHeight="240">
-            <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay}"
+            <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}"
                    Stretch="Uniform" />
         </Border>
         <Grid Grid.Column="2">

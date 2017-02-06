@@ -113,6 +113,7 @@
     <Compile Include="Controls\PullToRefreshIndicator.cs" />
     <Compile Include="Controls\TagPresenter.cs" />
     <Compile Include="Converters\EmptyConverter.cs" />
+    <Compile Include="Converters\SoftwareBitmapToImageSourceConverter.cs" />
     <Compile Include="Helpers\AccountManager.cs" />
     <Compile Include="Converters\ByteSizeToStringConverter.cs" />
     <Compile Include="Converters\ChainConverter.cs" />

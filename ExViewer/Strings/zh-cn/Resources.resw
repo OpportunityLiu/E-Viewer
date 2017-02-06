@@ -204,8 +204,8 @@
   <data name="GalleryPageImagesLoadingMoreTextBlock.Text" xml:space="preserve">
     <value>正在加载更多...</value>
   </data>
-  <data name="GalleryPageOpenInBrowserAppBarButton.Label" xml:space="preserve">
-    <value>在浏览器中打开</value>
+  <data name="GalleryPageShareAppBarButton.Label" xml:space="preserve">
+    <value>共享</value>
   </data>
   <data name="GalleryPagePivotHeaderCommentsTextBlock.Text" xml:space="preserve">
     <value>评论</value>
@@ -290,8 +290,8 @@
   <data name="ImagePageLoadOriginalAppBarButton.Label" xml:space="preserve">
     <value>加载原图</value>
   </data>
-  <data name="ImagePageOpenInBrowserAppBarButton.Label" xml:space="preserve">
-    <value>在浏览器中打开</value>
+  <data name="ImagePageShareAppBarButton.Label" xml:space="preserve">
+    <value>共享</value>
   </data>
   <data name="ImagePageOpenInExplorerButton.Content" xml:space="preserve">
     <value>在文件资源管理器中打开</value>

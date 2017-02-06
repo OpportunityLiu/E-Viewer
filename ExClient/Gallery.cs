@@ -61,12 +61,12 @@ namespace ExClient
         {
             switch(Modifier)
             {
-                case LanguageModifier.Translated:
-                    return $"{Name} TR";
-                case LanguageModifier.Rewrite:
-                    return $"{Name} RW";
-                default:
-                    return Name;
+            case LanguageModifier.Translated:
+                return $"{Name} TR";
+            case LanguageModifier.Rewrite:
+                return $"{Name} RW";
+            default:
+                return Name;
             }
         }
     }
@@ -366,12 +366,16 @@ namespace ExClient
 
         private IAsyncAction initCoreAsync()
         {
-            return DispatcherHelper.RunAsync(() =>
+            return Run(async token =>
             {
-                var t = new BitmapImage();
-                if(setThumbUriWhenInit)
-                    t.UriSource = ThumbUri;
-                this.Thumb = t;
+                if(!setThumbUriWhenInit)
+                    return;
+                var buffer = await Client.Current.HttpClient.GetBufferAsync(ThumbUri);
+                using(var stream = buffer.AsRandomAccessStream())
+                {
+                    var decoder = await BitmapDecoder.CreateAsync(stream);
+                    Thumb = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                }
             });
         }
 
@@ -433,17 +437,17 @@ namespace ExClient
             get; protected set;
         }
 
-        private BitmapImage thumbImage;
+        private SoftwareBitmap thumbImage;
 
-        public BitmapImage Thumb
+        public SoftwareBitmap Thumb
         {
             get
             {
                 return thumbImage;
             }
-            private set
+            protected set
             {
-                Set(ref thumbImage, value);
+                Set(ref thumbImage, value?.GetReadOnlyView());
             }
         }
 
@@ -514,12 +518,12 @@ namespace ExClient
                     {
                         switch(item.Content)
                         {
-                            case "rewrite":
-                                modi = LanguageModifier.Rewrite;
-                                continue;
-                            case "translated":
-                                modi = LanguageModifier.Translated;
-                                continue;
+                        case "rewrite":
+                            modi = LanguageModifier.Rewrite;
+                            continue;
+                        case "translated":
+                            modi = LanguageModifier.Translated;
+                            continue;
                         }
                     }
                     if(language == null)

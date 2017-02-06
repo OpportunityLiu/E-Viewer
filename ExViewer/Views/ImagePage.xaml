@@ -156,10 +156,10 @@
                               Label="Load original image"
                               Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
                               CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}" />
-                <AppBarButton x:Uid="ImagePageOpenInBrowserAppBarButton"
-                              x:Name="abb_open"
-                              Label="Open in browser"
-                              Command="{x:Bind VM.OpenInBrowser, Mode=OneWay}"
+                <AppBarButton x:Uid="ImagePageShareAppBarButton"
+                              x:Name="abb_Share"
+                              Label="Share"
+                              Command="{x:Bind VM.Share, Mode=OneWay}"
                               CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}" />
                 <AppBarSeparator />
                 <AppBarButton x:Uid="ImagePageImageInfoAppBarButton"
