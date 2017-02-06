@@ -43,12 +43,18 @@ namespace ExViewer.Views
             {
                 await RootControl.RootController.RequestLogOn();
             }
-            VM = new SearchVM(e.Parameter?.ToString());
+            VM = SearchVM.GetVM(e.Parameter?.ToString());
             if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
                 VM?.SearchResult.Reset();
             if(e.NavigationMode == NavigationMode.Back)
             {
-                //TODO: restore scroll position.
+                var selectedGallery = VM.SelectedGallery;
+                if(selectedGallery != null)
+                {
+                    await Task.Delay(100);
+                    this.lv.ScrollIntoView(selectedGallery);
+                    ((Control)this.lv.ContainerFromItem(selectedGallery))?.Focus(FocusState.Programmatic);
+                }
             }
         }
 
@@ -127,9 +133,12 @@ namespace ExViewer.Views
 
         private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
+            if(!VM.AutoCompleteFinished(args.SelectedItem))
+                return;
+            sender.Focus(FocusState.Programmatic);
         }
 
-        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             if(args.ChosenSuggestion == null || VM.AutoCompleteFinished(args.ChosenSuggestion))
             {
@@ -154,16 +163,16 @@ namespace ExViewer.Views
             e.Handled = true;
             switch(e.Key)
             {
-            case Windows.System.VirtualKey.GamepadY:
-                asb.Focus(FocusState.Programmatic);
-                break;
-            case Windows.System.VirtualKey.GamepadMenu:
-            case Windows.System.VirtualKey.Application:
-                ab.IsOpen = !ab.IsOpen;
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case Windows.System.VirtualKey.GamepadY:
+                    asb.Focus(FocusState.Keyboard);
+                    break;
+                case Windows.System.VirtualKey.GamepadMenu:
+                case Windows.System.VirtualKey.Application:
+                    ab.IsOpen = !ab.IsOpen;
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 
