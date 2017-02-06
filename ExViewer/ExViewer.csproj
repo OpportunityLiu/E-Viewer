@@ -233,7 +233,6 @@
     <Content Include="Images\Light\ImageLoading.scale-100.png" />
     <Content Include="Images\Light\ImageLoading.scale-200.png" />
     <Content Include="Images\Light\ImageLoading.scale-400.png" />
-    <Content Include="Images\Splash.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Images\Dark\ImageLoading.scale-100.png" />
     <Content Include="Images\Dark\ImageLoading.scale-200.png" />
@@ -250,8 +249,6 @@
     <Content Include="Assets\Small.scale-100.png" />
     <Content Include="Assets\Small.scale-200.png" />
     <Content Include="Assets\Small.scale-400.png" />
-    <Content Include="Images\Splash.scale-200.png" />
-    <Content Include="Images\Splash.scale-400.png" />
     <Content Include="Assets\SplashScreen.scale-400.png" />
     <Content Include="Assets\Store.scale-100.png" />
     <Content Include="Assets\Store.scale-200.png" />
@@ -396,6 +393,10 @@
     <ProjectReference Include="..\ApplicationDataManager\ApplicationDataManager.csproj">
       <Project>{33ccbcb8-8709-4c6c-ad59-e156f1e04fd0}</Project>
       <Name>ApplicationDataManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BannerProvider\BannerProvider.csproj">
+      <Project>{2f461f3a-2f53-4c3a-805c-52ea6f297066}</Project>
+      <Name>BannerProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\EhTagTranslatorClient\EhTagTranslatorClient.csproj">
       <Project>{7a7c3d38-128a-406d-ad3c-eec617386f14}</Project>

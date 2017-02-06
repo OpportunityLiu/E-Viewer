@@ -54,64 +54,65 @@
     <Grid>
         <SplitView x:Name="sv_root"
                    IsTabStop="False"
-                   IsPaneOpen="True">
+                   IsPaneOpen="True"
+                   LightDismissOverlayMode="On">
             <SplitView.Pane>
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollMode="Disabled">
-                    <Grid x:Name="gd_Pane">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.ColumnSpan="999"
-                                Grid.RowSpan="3"
-                                Background="{ThemeResource UserBackgroundThemeBrush}" />
-                        <Button Style="{StaticResource SplitButtonStyle}"
-                                Click="btn_pane_Click"
-                                Grid.ColumnSpan="999"
-                                XYFocusDown="{x:Bind btn_ChangeUser}"/>
-                        <Ellipse x:Name="eps_Avatar"
-                                 Grid.Row="1"
-                                 Grid.ColumnSpan="999"
-                                 Width="80"
-                                 Height="80"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center">
-                            <Ellipse.Fill>
-                                <ImageBrush Stretch="Uniform">
-                                    <ImageBrush.ImageSource>
-                                        <BitmapImage UriSource="{x:Bind UserInfo.Avatar, TargetNullValue=ms-appx:///Images/DefaultUser.png, Mode=OneWay, FallbackValue=ms-appx:///Images/DefaultUser.png}" />
-                                    </ImageBrush.ImageSource>
-                                </ImageBrush>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <TextBlock  Grid.Row="2"
-                                    Grid.Column="1"
-                                    Margin="8"
-                                    MaxWidth="200"
-                                    TextTrimming="CharacterEllipsis"
-                                    Text="{Binding UserInfo.DisplayName, ElementName=page, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center" />
-                        <Button x:Uid="RootControlChangeUserButton"
-                                Grid.Row="2"
-                                Grid.Column="2"
-                                x:Name="btn_ChangeUser"
-                                Content="&#xE895;"
-                                Click="btn_ChangeUser_Click"
-                                ToolTipService.ToolTip="Change user"
-                                Style="{StaticResource NavigationBackButtonSmallStyle}" />
-                        <ListView x:Name="lv_Pane"
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.ColumnSpan="999"
+                            Grid.RowSpan="3"
+                            Background="{ThemeResource UserBackgroundThemeBrush}" />
+                    <Button Style="{StaticResource SplitButtonStyle}"
+                            Grid.ColumnSpan="999"
+                            Click="btn_pane_Click"
+                            XYFocusDown="{x:Bind btn_ChangeUser}" />
+                    <Ellipse x:Name="eps_Avatar"
+                             Grid.Row="1"
+                             Grid.ColumnSpan="999"
+                             Width="80"
+                             Height="80"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center">
+                        <Ellipse.Fill>
+                            <ImageBrush Stretch="Uniform">
+                                <ImageBrush.ImageSource>
+                                    <BitmapImage UriSource="{x:Bind UserInfo.Avatar, TargetNullValue=ms-appx:///Images/DefaultUser.png, Mode=OneWay, FallbackValue=ms-appx:///Images/DefaultUser.png}" />
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock  Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="8"
+                                MaxWidth="200"
+                                TextTrimming="CharacterEllipsis"
+                                Text="{Binding UserInfo.DisplayName, ElementName=page, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                    <Button x:Uid="RootControlChangeUserButton"
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            x:Name="btn_ChangeUser"
+                            Content="&#xE895;"
+                            Click="btn_ChangeUser_Click"
+                            ToolTipService.ToolTip="Change user"
+                            Style="{StaticResource NavigationBackButtonSmallStyle}" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollMode="Disabled"
                                   Grid.Row="3"
-                                  Grid.ColumnSpan="4"
+                                  Grid.ColumnSpan="4">
+                        <ListView x:Name="lv_Pane"
                                   Style="{StaticResource StackPanelListViewStyle}">
                             <ListView.Transitions>
                                 <TransitionCollection />
@@ -159,6 +160,7 @@
                                               FontSize="16" />
                                 </controls:SplitViewTab.Icon>
                             </controls:SplitViewTab>
+                            <Grid MinHeight="48" />
                             <ListView.Footer>
                                 <controls:SplitViewTab x:Uid="RootControlAboutSplitViewTab"
                                                        x:Name="svt_About"
@@ -171,8 +173,8 @@
                                 </controls:SplitViewTab>
                             </ListView.Footer>
                         </ListView>
-                    </Grid>
-                </ScrollViewer>
+                    </ScrollViewer>
+                </Grid>
             </SplitView.Pane>
             <Frame x:Name="fm_inner"
                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"

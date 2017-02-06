@@ -29,7 +29,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SearchPage : Page,IHasAppBar
+    public sealed partial class SearchPage : Page, IHasAppBar
     {
         public SearchPage()
         {
@@ -115,7 +115,9 @@ namespace ExViewer.Views
 
         private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            if(args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput
+                                || args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen;
+            if(needAutoComplete)
             {
                 var r = await VM.LoadSuggestion(sender.Text);
                 if(args.CheckCurrent())
@@ -125,15 +127,20 @@ namespace ExViewer.Views
 
         private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            if(!VM.AutoCompleteFinished(args.SelectedItem))
-                return;
-            sender.Focus(FocusState.Programmatic);
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            CloseAll();
-            VM.Search.Execute(args.QueryText);
+            if(args.ChosenSuggestion == null || VM.AutoCompleteFinished(args.ChosenSuggestion))
+            {
+                CloseAll();
+                VM.Search.Execute(args.QueryText);
+                FocusManager.TryMoveFocus(FocusNavigationDirection.Down);
+            }
+            else
+            {
+                asb.Focus(FocusState.Keyboard);
+            }
         }
 
         private void lv_RefreshRequested(object sender, EventArgs e)

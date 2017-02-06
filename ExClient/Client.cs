@@ -22,8 +22,8 @@ namespace ExClient
             get;
         } = new Client();
 
-        internal static readonly Uri RootUri = new Uri("http://exhentai.org/");
-        internal static readonly Uri EhUri = new Uri("http://e-hentai.org/");
+        internal static readonly Uri RootUri = new Uri("https://exhentai.org/");
+        internal static readonly Uri EhUri = new Uri("https://e-hentai.org/");
         private static readonly Uri apiUri = new Uri(RootUri, "api.php");
         internal static readonly Uri LogOnUri = new Uri("https://forums.e-hentai.org/index.php?act=Login&CODE=01");
 
