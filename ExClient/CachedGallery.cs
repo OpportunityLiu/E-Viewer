@@ -195,9 +195,9 @@ namespace ExClient
 
             public void Cancel() => this.action.Cancel();
 
-            public void Close()=>this.action.Close();
+            public void Close() => this.action.Close();
 
-            public void GetResults()=> this.action.GetResults();
+            public void GetResults() => this.action.GetResults();
         }
 
         internal IAsyncAction LoadImageAsync(GalleryImagePlaceHolder image)
@@ -246,7 +246,8 @@ namespace ExClient
                 {
                     using(var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                     {
-                        await Thumb.SetSourceAsync(stream);
+                        var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
+                        Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
                     }
                 }
                 catch(Exception)

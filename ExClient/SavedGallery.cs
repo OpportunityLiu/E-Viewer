@@ -106,7 +106,8 @@ namespace ExClient
                     return;
                 using(var stream = temp.AsRandomAccessStream())
                 {
-                    await Thumb.SetSourceAsync(stream);
+                    var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
+                    Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
                 }
                 thumbFile = null;
             });
@@ -132,7 +133,7 @@ namespace ExClient
         {
             return Task.Run<IList<GalleryImage>>(async () =>
             {
-                    await GetFolderAsync();
+                await GetFolderAsync();
                 if(imageModels == null)
                     loadImageModel();
                 var currentPageSize = MathHelper.GetSizeOfPage(RecordCount, PageSize, pageIndex);

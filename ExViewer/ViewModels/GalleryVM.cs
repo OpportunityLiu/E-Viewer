@@ -15,6 +15,9 @@ using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
 using System.Collections.ObjectModel;
+using Windows.Storage.Streams;
+using Windows.Storage;
+using Windows.Graphics.Imaging;
 
 namespace ExViewer.ViewModels
 {
@@ -86,27 +89,54 @@ namespace ExViewer.ViewModels
 
         private GalleryVM()
         {
-            OpenInBrowser = new RelayCommand<GalleryImage>(image =>
+            Share = new RelayCommand<GalleryImage>(async image =>
             {
-                if(image == null)
+                if(Helpers.ShareHandler.IsShareSupported)
                 {
-                    Helpers.ShareHandler.Share((s, e) =>
+                    Helpers.ShareHandler.Share(async (s, e) =>
                     {
-                        e.Request.Data.Properties.Description = gallery.GetDisplayTitle();
-                        e.Request.Data.Properties.ContentSourceWebLink = gallery.GalleryUri;
-                        e.Request.Data.SetWebLink(gallery.GalleryUri);
+                        var deferral = e.Request.GetDeferral();
+                        try
+                        {
+                            e.Request.Data.Properties.Title = gallery.GetDisplayTitle();
+                            e.Request.Data.Properties.Description = gallery.GetSecondaryTitle();
+                            if(image == null)
+                            {
+                                var ms = new InMemoryRandomAccessStream();
+                                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
+                                encoder.SetSoftwareBitmap(gallery.Thumb);
+                                await encoder.FlushAsync();
+                                e.Request.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
+                                var firstImage = gallery.FirstOrDefault()?.ImageFile;
+                                if(firstImage != null)
+                                    e.Request.Data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
+                                e.Request.Data.Properties.ContentSourceWebLink = gallery.GalleryUri;
+                                e.Request.Data.SetWebLink(gallery.GalleryUri);
+                            }
+                            else
+                            {
+                                if(image.ImageFile != null)
+                                {
+                                    e.Request.Data.SetBitmap(RandomAccessStreamReference.CreateFromFile(image.ImageFile));
+                                    e.Request.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(await image.ImageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem));
+                                }
+                                e.Request.Data.Properties.ContentSourceWebLink = image.PageUri;
+                                e.Request.Data.SetWebLink(image.PageUri);
+                            }
+                        }
+                        finally
+                        {
+                            deferral.Complete();
+                        }
                     });
                 }
-                //await Launcher.LaunchUriAsync(gallery.GalleryUri);
                 else
                 {
-                    Helpers.ShareHandler.Share((s, e) =>
-                    {
-                        e.Request.Data.Properties.Description = gallery.GetDisplayTitle();
-                        e.Request.Data.SetWebLink(image.PageUri);
-                    });
+                    if(image == null)
+                        await Launcher.LaunchUriAsync(gallery.GalleryUri);
+                    else
+                        await Launcher.LaunchUriAsync(image.PageUri);
                 }
-                //await Launcher.LaunchUriAsync(image.PageUri);
             }, image => gallery != null);
             OpenInExplorer = new RelayCommand(async () => await Launcher.LaunchFolderAsync(gallery.GalleryFolder), () => gallery != null);
             Save = new RelayCommand(() =>
@@ -176,7 +206,7 @@ namespace ExViewer.ViewModels
             SearchTag = new RelayCommand<Tag>(tag =>
             {
                 var vm = SearchVM.GetVM(tag.Search());
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage),vm.SearchQuery);
+                RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
             }, tag => tag != null);
         }
 
@@ -192,7 +222,7 @@ namespace ExViewer.ViewModels
             this.Gallery = gallery;
         }
 
-        public RelayCommand<GalleryImage> OpenInBrowser
+        public RelayCommand<GalleryImage> Share
         {
             get;
         }
@@ -253,7 +283,7 @@ namespace ExViewer.ViewModels
                 if(gallery != null)
                     gallery.LoadMoreItemsException += Gallery_LoadMoreItemsException;
                 Save.RaiseCanExecuteChanged();
-                OpenInBrowser.RaiseCanExecuteChanged();
+                Share.RaiseCanExecuteChanged();
                 OpenInExplorer.RaiseCanExecuteChanged();
                 Torrents = null;
                 RaisePropertyChanged(nameof(SortedTags));

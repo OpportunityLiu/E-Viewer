@@ -204,8 +204,8 @@
   <data name="GalleryPageImagesLoadingMoreTextBlock.Text" xml:space="preserve">
     <value>Loading more items...</value>
   </data>
-  <data name="GalleryPageOpenInBrowserAppBarButton.Label" xml:space="preserve">
-    <value>Open in browser</value>
+  <data name="GalleryPageShareAppBarButton.Label" xml:space="preserve">
+    <value>Share</value>
   </data>
   <data name="GalleryPagePivotHeaderCommentsTextBlock.Text" xml:space="preserve">
     <value>Comments</value>
@@ -290,8 +290,8 @@ Dimensions: {2} × {3}</value>
   <data name="ImagePageLoadOriginalAppBarButton.Label" xml:space="preserve">
     <value>Load original image</value>
   </data>
-  <data name="ImagePageOpenInBrowserAppBarButton.Label" xml:space="preserve">
-    <value>Open in browser</value>
+  <data name="ImagePageShareAppBarButton.Label" xml:space="preserve">
+    <value>Share</value>
   </data>
   <data name="ImagePageOpenInExplorerButton.Content" xml:space="preserve">
     <value>Open in File Explorer</value>

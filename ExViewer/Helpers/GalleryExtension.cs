@@ -16,5 +16,13 @@ namespace ExClient
             else
                 return gallery.Title;
         }
+
+        public static string GetSecondaryTitle(this Gallery gallery)
+        {
+            if(SettingCollection.Current.UseJapaneseTitle && !string.IsNullOrWhiteSpace(gallery.TitleJpn))
+                return gallery.Title;
+            else
+                return gallery.TitleJpn;
+        }
     }
 }

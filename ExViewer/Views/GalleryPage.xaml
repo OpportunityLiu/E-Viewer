@@ -369,7 +369,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Image x:Name="img_Thumb"
-                           Source="{x:Bind VM.Gallery.Thumb, Mode=OneWay}"
+                           Source="{x:Bind VM.Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}"
                            Margin="8"
                            Width="160"
                            Grid.RowSpan="2" />
@@ -692,10 +692,10 @@
                 </Grid>
             </CommandBar.Content>
             <CommandBar.SecondaryCommands>
-                <AppBarButton x:Uid="GalleryPageOpenInBrowserAppBarButton"
-                              x:Name="abb_open"
-                              Label="Open in browser"
-                              Command="{x:Bind VM.OpenInBrowser, Mode=OneWay}" />
+                <AppBarButton x:Uid="GalleryPageShareAppBarButton"
+                              x:Name="abb_share"
+                              Label="Share"
+                              Command="{x:Bind VM.Share, Mode=OneWay}" />
                 <AppBarButton x:Uid="GalleryPageSaveAppBarButton"
                               x:Name="abb_save"
                               Label="Save this gallery"

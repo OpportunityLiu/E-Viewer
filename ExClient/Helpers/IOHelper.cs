@@ -11,7 +11,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Windows.Storage
 {
-    internal static class IOHelper
+    public static class IOHelper
     {
         public static IRandomAccessStream AsRandomAccessStream(this IBuffer buffer)
         {
