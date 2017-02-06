@@ -29,7 +29,7 @@ namespace ExViewer.Views
 
             public static bool Available => root != null;
 
-            private static void Av_VisibleBoundsChanged(ApplicationView sender, object args)
+            private static async void Av_VisibleBoundsChanged(ApplicationView sender, object args)
             {
                 if(IsFullScreen)
                 {
@@ -39,6 +39,17 @@ namespace ExViewer.Views
                 {
                     av.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
                 }
+                if(ApiInfo.StatusBarSupported)
+                {
+                    if(av.Orientation == ApplicationViewOrientation.Landscape)
+                    {
+                        await StatusBar.GetForCurrentView().HideAsync();
+                    }
+                    else
+                    {
+                        await StatusBar.GetForCurrentView().ShowAsync();
+                    }
+                }
             }
 
             private static RootControl root;
@@ -47,6 +58,8 @@ namespace ExViewer.Views
 
             internal static void SetRoot(RootControl root)
             {
+                Av_VisibleBoundsChanged(av, null);
+
                 RootController.root = root;
                 showPanel = (Storyboard)root.Resources["ShowDisablePanel"];
                 hidePanel = (Storyboard)root.Resources["HideDisablePanel"];

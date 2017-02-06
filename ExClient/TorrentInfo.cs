@@ -21,26 +21,27 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                var torrentHtml = await gallery.Owner.HttpClient.GetStringAsync(new Uri($"http://exhentai.org/gallerytorrents.php?gid={gallery.Id}&t={gallery.Token}"));
+                var torrentUri = new Uri(Client.RootUri, $"gallerytorrents.php?gid={gallery.Id}&t={gallery.Token}");
+                var torrentHtml = await gallery.Owner.HttpClient.GetStringAsync(torrentUri);
                 var doc = new HtmlDocument();
                 doc.LoadHtml(torrentHtml);
-                var nodes = (from n in doc.DocumentNode.Descendants("table")
-                             where n.GetAttributeValue("style", "") == "width:99%"
-                             let reg = infoMatcher.Match(n.InnerText)
-                             let name = n.Descendants("tr").Last()
-                             let link = name.Descendants("a").SingleOrDefault()
-                             select new TorrentInfo()
-                             {
-                                 Name = name.InnerText.DeEntitize().Trim(),
-                                 Posted = DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
-                                 Size = parseSize(reg.Groups[2].Value),
-                                 Seeds = int.Parse(reg.Groups[3].Value),
-                                 Peers = int.Parse(reg.Groups[4].Value),
-                                 Downloads = int.Parse(reg.Groups[5].Value),
-                                 Uploader = reg.Groups[6].Value.DeEntitize(),
-                                 TorrentUri = link == null ? null : new Uri(link.GetAttributeValue("href", "").DeEntitize())
-                             }).ToList();
-                return nodes.AsReadOnly();
+                var nodes = from n in doc.DocumentNode.Descendants("table")
+                            where n.GetAttributeValue("style", "") == "width:99%"
+                            let reg = infoMatcher.Match(n.InnerText)
+                            let name = n.Descendants("tr").Last()
+                            let link = name.Descendants("a").SingleOrDefault()
+                            select new TorrentInfo()
+                            {
+                                Name = name.InnerText.DeEntitize().Trim(),
+                                Posted = DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
+                                Size = parseSize(reg.Groups[2].Value),
+                                Seeds = int.Parse(reg.Groups[3].Value),
+                                Peers = int.Parse(reg.Groups[4].Value),
+                                Downloads = int.Parse(reg.Groups[5].Value),
+                                Uploader = reg.Groups[6].Value.DeEntitize(),
+                                TorrentUri = link == null ? null : new Uri(link.GetAttributeValue("href", "").DeEntitize())
+                            };
+                return nodes.ToList().AsReadOnly();
             }).AsAsyncOperation();
         }
 

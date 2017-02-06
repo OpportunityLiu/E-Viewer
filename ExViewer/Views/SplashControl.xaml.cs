@@ -28,8 +28,8 @@ namespace ExViewer.Views
         public SplashControl()
         {
             this.InitializeComponent();
-            var imgN = new Random().Next(1, 8);
-            this.img_pic.Source = new BitmapImage(new Uri($"http://ehgt.org/c/botm{imgN}.jpg"));
+            BannerProvider.Provider.GetBannerAsync().Completed =
+                async (s, e) => await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => img_pic.Source = s.GetResults());
             this.loadApplication();
         }
 
@@ -56,8 +56,8 @@ namespace ExViewer.Views
 
         private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            this.img_pic.Source = new BitmapImage(new Uri($"ms-appx:///Images/Splash.png"));
-            // After the default image loaded, prepareCompleted() will be called.
+            this.img_pic.Source = BannerProvider.Provider.GetDefaultBanner();
+            // After the default image loaded, img_pic_ImageOpened() will be called.
         }
 
         private void img_pic_ImageOpened(object sender, RoutedEventArgs e)
@@ -195,6 +195,7 @@ namespace ExViewer.Views
                 else
                     applicationLoaded = true;
             }
+            var ignore = Task.Delay(30000).ContinueWith(async t => await BannerProvider.Provider.FetchBanners());
         }
 
         private async Task verify()

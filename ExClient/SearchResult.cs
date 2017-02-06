@@ -21,7 +21,7 @@ namespace ExClient
 {
     public class SearchResult : IncrementalLoadingCollection<Gallery>
     {
-        private static readonly Uri searchUri = new Uri("http://exhentai.org/");
+        private static readonly Uri searchUri = Client.RootUri;
 
         public static readonly Category DefaultFliter = Category.All;
         private static readonly IReadOnlyDictionary<Category, string> searchFliterNames = new Dictionary<Category, string>()

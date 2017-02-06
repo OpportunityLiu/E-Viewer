@@ -94,11 +94,32 @@
                                       L-0.75,0.311" />
                             </Grid>
                         </DataTemplate>
+                        <DataTemplate x:Key="AutoCompletion"
+                                      x:DataType="vm:AutoCompletion">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{x:Bind Content}"
+                                           Grid.Column="1" />
+                                <Path Fill="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                      StrokeThickness="0"
+                                      Stretch="Uniform"
+                                      Grid.RowSpan="2"
+                                      VerticalAlignment="Center"
+                                      Margin="8,0"
+                                      Data="M0,18.5 H14 V20 H0Z
+                                      M16,20 L20,16 L23.8258,7.0269 A2.1742,2.1742,0,1,0,19.8528,5.3215 L16,14.2945Z" />
+                            </Grid>
+                        </DataTemplate>
                     </AutoSuggestBox.Resources>
                     <AutoSuggestBox.ItemTemplateSelector>
                         <controls:DataTemplateSelector>
                             <controls:DataTemplateKeyValuePair Key="ExViewer.DataBase.SearchHistory"
                                                                Value="{StaticResource SearchHistory}" />
+                            <controls:DataTemplateKeyValuePair Key="ExViewer.ViewModels.AutoCompletion"
+                                                               Value="{StaticResource AutoCompletion}" />
                         </controls:DataTemplateSelector>
                     </AutoSuggestBox.ItemTemplateSelector>
                     <AutoSuggestBox.TextBoxStyle>

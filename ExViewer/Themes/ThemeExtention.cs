@@ -44,7 +44,6 @@ namespace ExViewer.Themes
                 sb.BackgroundColor = SystmeChromeMediumColor;
                 sb.BackgroundOpacity = 1;
                 sb.ForegroundColor = SystemBaseMediumHighColor;
-                var ignore = sb.ShowAsync();
             }
         }
 

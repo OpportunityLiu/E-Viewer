@@ -28,6 +28,9 @@ namespace ExViewer
     /// </summary>
     sealed partial class App : Application
     {
+
+       // [STAThread()]
+        //public extern void a();
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。
