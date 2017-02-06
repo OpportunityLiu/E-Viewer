@@ -47,7 +47,7 @@
                                 Margin="8"
                                 Text="{x:Bind VM.KeyWord, Mode=TwoWay}"
                                 PlaceholderText="Search..."
-                                QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+                                QuerySubmitted="asb_QuerySubmitted"
                                 TextChanged="asb_TextChanged"
                                 SuggestionChosen="asb_SuggestionChosen"
                                 QueryIcon="Find">
@@ -206,6 +206,7 @@
                                   RelativePanel.AlignBottomWithPanel="True"
                                   RelativePanel.AlignLeftWithPanel="True"
                                   RelativePanel.AlignRightWithPanel="True"
+                                  SelectionMode="None"
                                   RefreshRequested="lv_RefreshRequested"
                                   ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
                                   ContinuumNavigationTransitionInfo.ExitElementContainer="True"

@@ -27,7 +27,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class GalleryPage : Page,IHasAppBar
+    public sealed partial class GalleryPage : Page, IHasAppBar
     {
         public GalleryPage()
         {
@@ -234,7 +234,7 @@ namespace ExViewer.Views
 
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Yield();
+            await Task.Delay(50);
             changeView(false);
         }
 
@@ -249,6 +249,12 @@ namespace ExViewer.Views
             case 2://Torrents
                 if(VM.Torrents == null)
                     await VM.LoadTorrents();
+                await Task.Delay(150);
+                if(lv_Torrents.Items.Count > 0)
+                {
+                    lv_Torrents.SelectedIndex = -1;
+                    lv_Torrents.SelectedIndex = 0;
+                }
                 break;
             }
         }
