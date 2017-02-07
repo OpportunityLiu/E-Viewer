@@ -100,7 +100,7 @@ namespace ExViewer.Views
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
-        }
+        }        
 
         private async void Control_Loading(FrameworkElement sender, object args)
         {

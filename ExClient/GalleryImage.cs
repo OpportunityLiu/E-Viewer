@@ -75,7 +75,7 @@ namespace ExClient
             });
         }
 
-        internal GalleryImage(Gallery owner, int pageId, string imageKey, ImageSource thumb)
+        internal GalleryImage(Gallery owner, int pageId, string imageKey, Uri thumb)
         {
             this.Owner = owner;
             this.PageId = pageId;
@@ -102,7 +102,7 @@ namespace ExClient
                     }
                 });
             });
-            this.thumbSource = thumb;
+            this.thumbUri = thumb;
             this.thumb = new ImageHandle(img =>
             {
                 return Run(async token =>
@@ -130,7 +130,7 @@ namespace ExClient
 
         private void Thumb_ImageLoaded(object sender, EventArgs e)
         {
-            thumbSource = null;
+            thumbUri = null;
             RaisePropertyChanged(nameof(Thumb));
         }
 
@@ -177,14 +177,14 @@ namespace ExClient
         }
 
         private readonly ImageHandle thumb;
-        private ImageSource thumbSource;
+        private Uri thumbUri;
 
         public virtual ImageSource Thumb
         {
             get
             {
-                if(thumbSource != null)
-                    return thumbSource;
+                if(thumbUri != null)
+                    return new BitmapImage(thumbUri);
                 if(thumb.Loaded)
                     return thumb.Image;
                 thumb.StartLoading();

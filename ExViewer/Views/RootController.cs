@@ -27,6 +27,29 @@ namespace ExViewer.Views
                 av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             }
 
+            private static Uri launchUri;
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="uri"></param>
+            /// <returns>表示是否在应用内处理</returns>
+            public static bool HandleUriLaunch(Uri uri)
+            {
+                if(uri == null)
+                    return true;
+                if(!UriHandler.CanHandleInApp(uri))
+                {
+                    UriHandler.Handle(uri);
+                    return false;
+                }
+                if(Available)
+                    UriHandler.Handle(uri);
+                else
+                    launchUri = uri;
+                return true;
+            }
+
             public static bool Available => root != null;
 
             private static async void Av_VisibleBoundsChanged(ApplicationView sender, object args)
@@ -70,6 +93,9 @@ namespace ExViewer.Views
                 playToast.Completed += PlayToast_Completed;
 
                 Frame.Navigated += Frame_Navigated;
+
+                if(launchUri != null)
+                    HandleUriLaunch(launchUri);
             }
 
             private static void Frame_Navigated(object sender, NavigationEventArgs e)

@@ -29,7 +29,7 @@ namespace ExViewer
     sealed partial class App : Application
     {
 
-       // [STAThread()]
+        // [STAThread()]
         //public extern void a();
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -121,7 +121,11 @@ namespace ExViewer
             if(args.Kind == ActivationKind.Protocol)
             {
                 var e = (ProtocolActivatedEventArgs)args;
-
+                var needHandleInApp = RootControl.RootController.HandleUriLaunch(e.Uri);
+                if(!needHandleInApp
+                    && e.PreviousExecutionState != ApplicationExecutionState.Running
+                    && e.PreviousExecutionState != ApplicationExecutionState.Suspended)
+                    Exit();
             }
             lanunchCore(args, false);
         }

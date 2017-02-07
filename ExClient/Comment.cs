@@ -30,18 +30,39 @@ namespace ExClient
                 var posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                 var score = id == 0 ? //Uploader Comment
                     0 : int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
+
+                List<KeyValuePair<string, int>> recordList = null;
+                if(id != 0)
+                {
+                    recordList = new List<KeyValuePair<string, int>>();
+                    var recordsNode = document.GetElementbyId($"cvotes_{id}");
+                    var voteBase = recordsNode.FirstChild.InnerText;
+                    voteBase = voteBase.Substring(5, voteBase.Length - (voteBase.EndsWith(" ") ? 7 : 5));
+                    recordList.Add(new KeyValuePair<string, int>(null, int.Parse(voteBase)));
+                    foreach(var item in recordsNode.Descendants("span"))
+                    {
+                        var vote = item.InnerText.DeEntitize();
+                        var m = voteRegex.Match(vote);
+                        if(m.Success == false)
+                            throw new Exception();
+                        recordList.Add(new KeyValuePair<string, int>(m.Groups[1].Value, int.Parse(m.Groups[2].Value)));
+                    }
+                }
                 comments.Add(new Comment()
                 {
                     Id = id,
                     Score = score,
-                    Content = content,
+                    Content = content.Clone(),
                     Edited = edit,
                     Author = author,
-                    Posted = posted
+                    Posted = posted,
+                    VoteRecords = recordList?.AsReadOnly()
                 });
             }
             return comments.AsReadOnly();
         }
+
+        private static Regex voteRegex = new Regex(@"^(.+?)\s+([+-]\d+)$", RegexOptions.Compiled | RegexOptions.Singleline);
 
         internal static IAsyncOperation<ReadOnlyCollection<Comment>> LoadCommentsAsync(Gallery gallery)
         {
@@ -85,6 +106,12 @@ namespace ExClient
         }
 
         public int Score
+        {
+            get;
+            private set;
+        }
+
+        public IReadOnlyList<KeyValuePair<string, int>> VoteRecords
         {
             get;
             private set;

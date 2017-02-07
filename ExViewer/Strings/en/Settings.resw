@@ -165,9 +165,6 @@
   <data name="HahAddress" xml:space="preserve">
     <value>IP Address:Port (Leave blank to not use)</value>
   </data>
-  <data name="HahPasskey" xml:space="preserve">
-    <value>Passkey (Optional)</value>
-  </data>
   <data name="ImageViewing" xml:space="preserve">
     <value>IMAGE VIEWING</value>
   </data>

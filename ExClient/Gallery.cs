@@ -126,7 +126,28 @@ namespace ExClient
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            if(reader.TokenType != JsonToken.StartObject)
+                return null;
+            long gid = 0;
+            string token = null;
+            reader.Read();
+            do
+            {
+                switch(reader.Value.ToString())
+                {
+                case "gid":
+                    gid = reader.ReadAsInt32().GetValueOrDefault();
+                    break;
+                case "token":
+                    token = reader.ReadAsString();
+                    break;
+                default:
+                    break;
+                }
+                reader.Read();
+            } while(reader.TokenType != JsonToken.EndObject);
+
+            return new GalleryInfo(gid, token);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -575,7 +596,6 @@ namespace ExClient
         }
 
         private static Uri galleryBaseUri = new Uri(Client.RootUri, "g/");
-        private static readonly Regex picInfoMatcher = new Regex(@"width:\s*(\d+)px;\s*height:\s*(\d+)px;.*url\((.+)\)\s*-\s*(\d+)px", RegexOptions.Compiled);
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
 
         protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
@@ -610,63 +630,38 @@ namespace ExClient
                     })
                     .Max(select => select.number);
                 PageCount = pcNodes;
-                var pics = (from node in html.GetElementbyId("gdt").Descendants("div")
-                            where node.GetAttributeValue("class", null) == "gdtm"
-                            let nodeBackGround = node.Descendants("div").Single()
-                            let matchUri = picInfoMatcher.Match(nodeBackGround.GetAttributeValue("style", ""))
-                            where matchUri.Success
-                            let nodeA = nodeBackGround.Descendants("a").Single()
-                            let match = imgLinkMatcher.Match(nodeA.GetAttributeValue("href", ""))
-                            where match.Success
-                            let r = new
-                            {
-                                pageId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer),
-                                imageKey = match.Groups[1].Value,
-                                thumbUri = new Uri(matchUri.Groups[3].Value),
-                                width = uint.Parse(matchUri.Groups[1].Value, System.Globalization.NumberStyles.Integer),
-                                height = uint.Parse(matchUri.Groups[2].Value, System.Globalization.NumberStyles.Integer) - 1,
-                                offset = uint.Parse(matchUri.Groups[4].Value, System.Globalization.NumberStyles.Integer)
-                            }
-                            group r by r.thumbUri).ToDictionary(group => group.Key);
-                var toAdd = new List<GalleryImage>(40);
+                var pics = from node in html.GetElementbyId("gdt").Descendants("div")
+                           where node.GetAttributeValue("class", null) == "gdtl"
+                           let nodeA = node.Descendants("a").Single()
+                           let nodeI = nodeA.Descendants("img").Single()
+                           let thumb = nodeI.GetAttributeValue("src", null)
+                           let imgLink = nodeA.GetAttributeValue("href", null)
+                           let match = imgLinkMatcher.Match(nodeA.GetAttributeValue("href", ""))
+                           where match.Success && thumb != null
+                           select new
+                           {
+                               pageId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer),
+                               imageKey = match.Groups[1].Value,
+                               thumbUri = new Uri(thumb)
+                           };
+                var toAdd = new List<GalleryImage>(20);
                 using(var db = new GalleryDb())
                 {
-                    foreach(var group in pics)
+                    foreach(var page in pics)
                     {
-                        using(var stream = (await Owner.HttpClient.GetBufferAsync(group.Key)).AsRandomAccessStream())
+                        var imageKey = page.imageKey;
+                        var imageModel = db.ImageSet.FirstOrDefault(im => im.ImageKey == imageKey);
+                        if(imageModel != null)
                         {
-                            var decoder = await BitmapDecoder.CreateAsync(stream);
-                            var transform = new BitmapTransform();
-                            foreach(var page in group.Value)
+                            // Load cache
+                            var galleryImage = await GalleryImage.LoadCachedImageAsync(this, imageModel);
+                            if(galleryImage != null)
                             {
-                                var imageKey = page.imageKey;
-                                var imageModel = db.ImageSet.FirstOrDefault(im => im.ImageKey == imageKey);
-                                if(imageModel != null)
-                                {
-                                    // Load cache
-                                    var galleryImage = await GalleryImage.LoadCachedImageAsync(this, imageModel);
-                                    if(galleryImage != null)
-                                    {
-                                        toAdd.Add(galleryImage);
-                                        continue;
-                                    }
-                                }
-                                transform.Bounds = new BitmapBounds()
-                                {
-                                    Height = page.height,
-                                    Width = page.width,
-                                    X = page.offset,
-                                    Y = 0
-                                };
-                                var pix = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, transform, ExifOrientationMode.IgnoreExifOrientation, ColorManagementMode.ColorManageToSRgb);
-                                await DispatcherHelper.RunAsync(async () =>
-                                {
-                                    var image = new SoftwareBitmapSource();
-                                    toAdd.Add(new GalleryImage(this, page.pageId, page.imageKey, image));
-                                    await image.SetBitmapAsync(pix);
-                                });
+                                toAdd.Add(galleryImage);
+                                continue;
                             }
                         }
+                        toAdd.Add(new GalleryImage(this, page.pageId, page.imageKey, page.thumbUri));
                     }
                 }
                 return (IList<GalleryImage>)toAdd;

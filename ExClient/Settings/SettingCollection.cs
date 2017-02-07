@@ -15,18 +15,20 @@ namespace ExClient.Settings
             this.owner = owner;
             foreach(var item in items)
             {
-                item.Owner = this;
+                item.Value.Owner = this;
             }
+            ApplyChanges();
         }
 
-        private readonly List<SettingProvider> items = new List<SettingProvider>
+        private readonly Dictionary<Type, SettingProvider> items = new Dictionary<Type, SettingProvider>
         {
-            new HahProxySettingProvider(),
-            new ExcludedLanguagesSettingProvider()
+            [typeof(DefaultSettingProvider)] = new DefaultSettingProvider(),
+            [typeof(HahProxySettingProvider)] = new HahProxySettingProvider(),
+            [typeof(ExcludedLanguagesSettingProvider)] = new ExcludedLanguagesSettingProvider()
         };
 
-        public HahProxySettingProvider HahProxy => (HahProxySettingProvider)items[0];
-        public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)items[1];
+        public HahProxySettingProvider HahProxy => (HahProxySettingProvider)items[typeof(HahProxySettingProvider)];
+        public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)items[typeof(ExcludedLanguagesSettingProvider)];
 
         internal void ApplyChanges()
         {
@@ -35,9 +37,17 @@ namespace ExClient.Settings
                 Expires = DateTimeOffset.Now.AddYears(1),
                 HttpOnly = false,
                 Secure = false,
-                Value = string.Join("-", items.Select(s => s.GetCookieContent()).ToArray())
+                Value = string.Join("-", items.Values.Select(s => s.GetCookieContent()).ToArray())
             };
             owner.CookieManager.SetCookie(cookie);
+        }
+
+        private class DefaultSettingProvider : SettingProvider
+        {
+            internal override string GetCookieContent()
+            {
+                return "ts_l";
+            }
         }
 
         private readonly Client owner;

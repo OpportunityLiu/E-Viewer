@@ -90,10 +90,13 @@ namespace ExViewer.Controls
 |
   (?<implict>
     (?<=\s|^)
-    ([^:@\.\s]+\.)+
+    ([^:@/\\\.\s]+\.)+
     (a[d-gil-oq-uwz]|aero|b[abd-jmnorstvwyz]|biz|c[acf-ik-oqruvxyz]|com|coop|d[ejkmoz]|e[ceghstv]|edu|f[ijkmor]|g[abdefhilmnprtuwy]|gov|h[kmnrtu]|i[delnoq-t]|info|in[kt]|j[mop]|k[eghimnprwyz]|l[abcikr-vy]|m[acdeghl-tv-z]|mil|mobi|moe|na(?:me)?|n[cefgiloprtuz]|net|[opstz]m|org|p[ae-hklnrtwy]|pro|pub|[qsuvz]a|red?|r[ouw]|s[b-eg-lnortuyz]|t[cdfghjklnoprtvwz]|tech|top|u[gksy]|v[cegnu]|w[fs]|y[eu]|z[rw])
     (:\d+)?
-    [^\.\s]*
+    (
+        [/\\?\.]
+        [^\s]*
+    )?
     (?=\s|$)
   )
 )", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
@@ -196,8 +199,8 @@ namespace ExViewer.Controls
                 var target = (Uri)null;
                 try
                 {
-                    target = new Uri(node.GetAttributeValue("href", "http://exhentai.org"));
-                    container = new Hyperlink { NavigateUri = target };
+                    target = new Uri(node.GetAttributeValue("href", "https://exhentai.org"));
+                    container = CreateHyperlink(null, target); 
                 }
                 catch(UriFormatException)
                 {
@@ -213,13 +216,7 @@ namespace ExViewer.Controls
                 {
                     var aBtnContent = new RichTextBlock { IsTextSelectionEnabled = false };
                     loadHtml(aBtnContent, node, false);
-                    var aBtn = new HyperlinkButton()
-                    {
-                        NavigateUri = target,
-                        Content = aBtnContent,
-                        Padding = new Thickness()
-                    };
-                    ToolTipService.SetToolTip(aBtn, target);
+                    var aBtn = CreateHyperlinkButton(aBtnContent, target);
                     return new InlineUIContainer { Child = aBtn };
                 }
             case "img"://[img]
