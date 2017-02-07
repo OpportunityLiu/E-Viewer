@@ -21,14 +21,12 @@ using Windows.ApplicationModel.DataTransfer;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
 
-namespace ExViewer.Views
+namespace ExViewer.Controls
 {
-    /// <summary>
-    /// 可用于自身或导航至 Frame 内部的空白页。
-    /// </summary>
-    public sealed partial class AboutPage : Page
+
+    public sealed partial class AboutControl : UserControl
     {
-        public AboutPage()
+        public AboutControl()
         {
             this.InitializeComponent();
             var version = Package.Current.Id.Version;
@@ -36,11 +34,6 @@ namespace ExViewer.Views
             this.tb_AppName.Text = Package.Current.DisplayName;
             this.tb_AppAuthor.Text = Package.Current.PublisherDisplayName;
             this.tb_AppDescription.Text = LocalizedStrings.Resources.AppDescription;
-        }
-
-        private void btn_Pane_Click(object sender, RoutedEventArgs e)
-        {
-            RootControl.RootController.SwitchSplitView();
         }
     }
 }

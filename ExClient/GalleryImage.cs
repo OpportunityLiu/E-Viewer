@@ -46,16 +46,20 @@ namespace ExClient
             {
                 var info = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
                 thumbWidth = (uint)(100 * info.RawPixelsPerViewPixel);
-                defaultThumb = new BitmapImage();
+                DefaultThumb = new BitmapImage();
                 using(var stream = await StorageHelper.GetIconOfExtension("jpg"))
                 {
-                    await defaultThumb.SetSourceAsync(stream);
+                    await DefaultThumb.SetSourceAsync(stream);
                 }
             });
         }
 
         private static uint thumbWidth = 100;
-        private static BitmapImage defaultThumb;
+
+        protected static BitmapImage DefaultThumb
+        {
+            get; private set;
+        }
 
         internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, Models.ImageModel model)
         {
@@ -107,21 +111,26 @@ namespace ExClient
             {
                 return Run(async token =>
                 {
-                    img.DecodePixelType = DecodePixelType.Logical;
-                    img.DecodePixelWidth = 100;
-                    try
+                    if(this.imageFile != null)
                     {
+                        img.DecodePixelType = DecodePixelType.Logical;
+                        img.DecodePixelWidth = 100;
                         using(var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 18 / 10))
                         {
                             await img.SetSourceAsync(stream);
                         }
                     }
-                    catch
+                    else if(this.thumbUri != null)
                     {
-                        using(var stream = await StorageHelper.GetIconOfExtension("jpg"))
+                        var r = await Client.Current.HttpClient.GetBufferAsync(this.thumbUri);
+                        using(var s = r.AsRandomAccessStream())
                         {
-                            await img.SetSourceAsync(stream);
+                            await img.SetSourceAsync(s);
                         }
+                    }
+                    else
+                    {
+                        throw new Exception();
                     }
                 });
             });
@@ -130,7 +139,6 @@ namespace ExClient
 
         private void Thumb_ImageLoaded(object sender, EventArgs e)
         {
-            thumbUri = null;
             RaisePropertyChanged(nameof(Thumb));
         }
 
@@ -183,12 +191,10 @@ namespace ExClient
         {
             get
             {
-                if(thumbUri != null)
-                    return new BitmapImage(thumbUri);
                 if(thumb.Loaded)
                     return thumb.Image;
                 thumb.StartLoading();
-                return defaultThumb;
+                return DefaultThumb;
             }
         }
 

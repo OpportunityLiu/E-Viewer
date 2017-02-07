@@ -16,34 +16,14 @@ namespace ExClient
         {
         }
 
-        internal void Init(string imageKey, ImageSource thumb)
-        {
-            this.ImageKey = imageKey;
-            this.thumb = thumb;
-            RaisePropertyChanged(nameof(Thumb));
-        }
-
-        private ImageSource thumb;
-
-        public override ImageSource Thumb
-        {
-            get
-            {
-                if(thumb != null && State != ImageLoadingState.Loaded)
-                    return thumb;
-                return base.Thumb;
-            }
-        }
+        public override ImageSource Thumb => DefaultThumb;
 
         public override IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
-            if(thumb == null)
-                return Run(async token =>
-                {
-                    await ((CachedGallery)Owner).LoadImageAsync(this);
-                    await base.LoadImageAsync(reload, strategy, throwIfFailed);
-                });
-            return base.LoadImageAsync(reload, strategy, throwIfFailed);
+            return Run(async token =>
+            {
+                await ((CachedGallery)Owner).LoadImageAsync(this);
+            });
         }
     }
 }

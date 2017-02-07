@@ -164,7 +164,7 @@ namespace ExClient
     [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count} RecordCount = {RecordCount}\}")]
     public class Gallery : IncrementalLoadingCollection<GalleryImage>
     {
-        internal static readonly int PageSize = 40;
+        internal static readonly int PageSize = 20;
 
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
@@ -246,7 +246,7 @@ namespace ExClient
                 progress.Report(toReport);
                 while(this.HasMoreItems)
                 {
-                    await this.LoadMoreItemsAsync(40);
+                    await this.LoadMoreItemsAsync((uint)PageSize);
                 }
                 toReport.ImageLoaded = 0;
                 progress.Report(toReport);
@@ -603,7 +603,7 @@ namespace ExClient
             return Task.Run(async () =>
             {
                 await GetFolderAsync();
-                var uri = new Uri(GalleryUri, $"?p={pageIndex.ToString()}{(comments == null ? "hc=1" : "")}");
+                var uri = new Uri(GalleryUri, $"?inline_set=ts_l&p={pageIndex.ToString()}{(comments == null ? "hc=1" : "")}");
                 var request = Owner.PostStrAsync(uri, null);
                 var res = await request;
                 var html = new HtmlDocument();
@@ -644,7 +644,7 @@ namespace ExClient
                                imageKey = match.Groups[1].Value,
                                thumbUri = new Uri(thumb)
                            };
-                var toAdd = new List<GalleryImage>(20);
+                var toAdd = new List<GalleryImage>(PageSize);
                 using(var db = new GalleryDb())
                 {
                     foreach(var page in pics)

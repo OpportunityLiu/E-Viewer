@@ -117,26 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutPageForumsHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlForumsHyperlinkButton.Content" xml:space="preserve">
     <value>E - 绅士论坛</value>
   </data>
-  <data name="AboutPageHelpTranslateTagsHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlHelpTranslateTagsHyperlinkButton.Content" xml:space="preserve">
     <value>帮助提供标签翻译</value>
   </data>
-  <data name="AboutPageLicenceTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlLicenceTextBlock.Text" xml:space="preserve">
     <value>协议</value>
   </data>
-  <data name="AboutPageOnlineContentsTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlOnlineContentsTextBlock.Text" xml:space="preserve">
     <value>在线内容</value>
   </data>
-  <data name="AboutPageRateHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlRateHyperlinkButton.Content" xml:space="preserve">
     <value>打分和评价</value>
   </data>
-  <data name="AboutPageSourceCodeHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlSourceCodeHyperlinkButton.Content" xml:space="preserve">
     <value>在 GitHub 上查看源代码</value>
-  </data>
-  <data name="AboutPageTitleTextBlock.Text" xml:space="preserve">
-    <value>关于</value>
   </data>
   <data name="AppDescription" xml:space="preserve">
     <value>E-Viewer 是一个 E- 绅士和 Ex 绅士的第三方客户端。</value>
@@ -350,9 +347,6 @@
   <data name="PullToRefreshIndicatorReleaseTextBlock.Text" xml:space="preserve">
     <value>释放刷新</value>
   </data>
-  <data name="RootControlAboutSplitViewTab.Content" xml:space="preserve">
-    <value>关于</value>
-  </data>
   <data name="RootControlSavedSplitViewTab.Content" xml:space="preserve">
     <value>保存的画集</value>
   </data>
@@ -469,19 +463,19 @@
   <data name="RootControlDisableInfoTextBlock.Text" xml:space="preserve">
     <value>少女祈祷中…</value>
   </data>
-  <data name="AboutPageChineseTagProviderHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlChineseTagProviderHyperlinkButton.Content" xml:space="preserve">
     <value>Mapaler / EhTagTranslator @ Github.com</value>
   </data>
-  <data name="AboutPageChineseTagProviderTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlChineseTagProviderTextBlock.Text" xml:space="preserve">
     <value>标签中文翻译</value>
   </data>
-  <data name="AboutPageDataProvidersTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlDataProvidersTextBlock.Text" xml:space="preserve">
     <value>数据提供方</value>
   </data>
-  <data name="AboutPageEHWikiTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlEHWikiTextBlock.Text" xml:space="preserve">
     <value>EHWiki.org</value>
   </data>
-  <data name="AboutPageJapaneseTagProviderTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlJapaneseTagProviderTextBlock.Text" xml:space="preserve">
     <value>标签日文翻译</value>
   </data>
   <data name="ExcludedLanguagesSelectorAllTextBlock.Text" xml:space="preserve">

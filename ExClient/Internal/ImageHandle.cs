@@ -32,13 +32,7 @@ namespace ExClient.Internal
 
         private WeakReference<BitmapImage> image;
 
-        public BitmapImage Image
-        {
-            get
-            {
-                return getImage();
-            }
-        }
+        public BitmapImage Image => getImage();
 
         private BitmapImage getImage()
         {
@@ -50,10 +44,25 @@ namespace ExClient.Internal
             var loadImage = imageLoader(image);
             loadImage.Completed = (sender, e) =>
             {
-                Loaded = true;
-                var temp = ImageLoaded;
-                if(temp != null)
-                    DispatcherHelper.CheckBeginInvokeOnUI(() => temp.Invoke(this, EventArgs.Empty));
+                switch(e)
+                {
+                case AsyncStatus.Completed:
+                    Loaded = true;
+                    var temp = ImageLoaded;
+                    if(temp != null)
+                        DispatcherHelper.CheckBeginInvokeOnUI(() => temp.Invoke(this, EventArgs.Empty));
+                    break;
+                case AsyncStatus.Canceled:
+                    var temp2 = ImageFailed;
+                    if(temp2 != null)
+                        DispatcherHelper.CheckBeginInvokeOnUI(() => temp2.Invoke(this, new TaskCanceledException()));
+                    break;
+                case AsyncStatus.Error:
+                    var temp3 = ImageFailed;
+                    if(temp3 != null)
+                        DispatcherHelper.CheckBeginInvokeOnUI(() => temp3.Invoke(this, sender.ErrorCode));
+                    break;
+                }
             };
             return image;
         }
@@ -64,7 +73,8 @@ namespace ExClient.Internal
             private set;
         }
 
-        public event EventHandler ImageLoaded;
+        public event TypedEventHandler<ImageHandle,EventArgs> ImageLoaded;
+        public event TypedEventHandler<ImageHandle,Exception> ImageFailed;
     }
 
     internal delegate IAsyncAction ImageLoader(BitmapImage image);
