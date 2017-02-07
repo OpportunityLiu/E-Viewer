@@ -60,21 +60,6 @@ namespace ExClient.Settings
             }
         }
 
-        public string Passkey
-        {
-            get
-            {
-                return pk;
-            }
-            set
-            {
-                pk = value?.Trim() ?? "";
-                ApplyChanges();
-            }
-        }
-
-        private string pk = "";
-
         public string AddressAndPort
         {
             get
@@ -107,7 +92,7 @@ namespace ExClient.Settings
 
         internal override string GetCookieContent()
         {
-            return $"hp_{AddressAndPort}-hk_{pk}";
+            return $"hh_{AddressAndPort}";
         }
     }
 }

@@ -110,6 +110,7 @@
     <Compile Include="Controls\ExcludedLanguagesSelector.xaml.cs">
       <DependentUpon>ExcludedLanguagesSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InAppNavigator.cs" />
     <Compile Include="Controls\PullToRefreshIndicator.cs" />
     <Compile Include="Controls\TagPresenter.cs" />
     <Compile Include="Converters\EmptyConverter.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Themes\ThemeHelperControl.xaml.cs">
       <DependentUpon>ThemeHelperControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UriHandler.cs" />
     <Compile Include="ViewModels\CachedVM.cs" />
     <Compile Include="ViewModels\CacheStorage{TKey,TCache}.cs" />
     <Compile Include="ViewModels\GalleryListVM{T}.cs" />

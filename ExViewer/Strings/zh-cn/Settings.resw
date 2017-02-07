@@ -165,9 +165,6 @@
   <data name="HahAddress" xml:space="preserve">
     <value>IP 地址：端口（留空以停用）</value>
   </data>
-  <data name="HahPasskey" xml:space="preserve">
-    <value>Passkey（可选）</value>
-  </data>
   <data name="ImageViewing" xml:space="preserve">
     <value>浏览</value>
   </data>

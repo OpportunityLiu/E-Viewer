@@ -1,10 +1,13 @@
-﻿using System;
+﻿using ExViewer.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 
 namespace ExViewer.Helpers
@@ -39,9 +42,30 @@ namespace ExViewer.Helpers
 
         public static Hyperlink CreateHyperlink(string text, Uri navigateUri)
         {
-            var u = new Hyperlink { NavigateUri = navigateUri };
-            u.Inlines.Add(new Run { Text = text });
+            var u = new Hyperlink();
+            u.Click += Uri_Click;
+            InAppNavigator.SetInAppUri(u, navigateUri);
+            if(text != null)
+                u.Inlines.Add(new Run { Text = text });
             return u;
+        }
+
+        public static HyperlinkButton CreateHyperlinkButton(object content, Uri navigateUri)
+        {
+            var aBtn = new HyperlinkButton()
+            {
+                Content = content,
+                Padding = new Thickness()
+            };
+            aBtn.Click += Uri_Click;
+            InAppNavigator.SetInAppUri(aBtn, navigateUri);
+            ToolTipService.SetToolTip(aBtn, navigateUri.ToString());
+            return aBtn;
+        }
+
+        private static void Uri_Click(object sender, RoutedEventArgs e)
+        {
+            InAppNavigator.Navigate((DependencyObject)sender);
         }
     }
 }

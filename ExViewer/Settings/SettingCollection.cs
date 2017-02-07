@@ -286,19 +286,5 @@ namespace ExViewer.Settings
                 }
             }
         }
-
-        [Setting("Hah", Index = 20)]
-        public string HahPasskey
-        {
-            get
-            {
-                return GetLocal("");
-            }
-            set
-            {
-                Client.Current.Settings.HahProxy.Passkey = value;
-                ForceSetLocal(Client.Current.Settings.HahProxy.Passkey);
-            }
-        }
     }
 }

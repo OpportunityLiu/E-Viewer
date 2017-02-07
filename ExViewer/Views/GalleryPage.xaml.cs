@@ -167,6 +167,8 @@ namespace ExViewer.Views
                 ((Control)entranceElement)?.Focus(FocusState.Programmatic);
                 break;
             }
+            if(needResetView)
+                sv_Content.ChangeView(null, 0, null);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
