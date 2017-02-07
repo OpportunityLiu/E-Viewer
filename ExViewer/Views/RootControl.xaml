@@ -151,23 +151,14 @@
                                               Height="32" />
                                 </controls:SplitViewTab.Icon>
                             </controls:SplitViewTab>
-                            <controls:SplitViewTab x:Uid="RootControlSettingsSplitViewTab"
-                                                   x:Name="svt_Settings"
-                                                   Content="Settings"
-                                                   Click="svt_Click">
-                                <controls:SplitViewTab.Icon>
-                                    <FontIcon Glyph="&#xE713;"
-                                              FontSize="16" />
-                                </controls:SplitViewTab.Icon>
-                            </controls:SplitViewTab>
                             <Grid MinHeight="48" />
                             <ListView.Footer>
-                                <controls:SplitViewTab x:Uid="RootControlAboutSplitViewTab"
-                                                       x:Name="svt_About"
-                                                       Content="About"
+                                <controls:SplitViewTab x:Uid="RootControlSettingsSplitViewTab"
+                                                       x:Name="svt_Settings"
+                                                       Content="Settings"
                                                        Click="svt_Click">
                                     <controls:SplitViewTab.Icon>
-                                        <FontIcon Glyph="&#xE946;"
+                                        <FontIcon Glyph="&#xE713;"
                                                   FontSize="16" />
                                     </controls:SplitViewTab.Icon>
                                 </controls:SplitViewTab>

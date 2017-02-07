@@ -273,4 +273,10 @@
   <data name="Vietnamese" xml:space="preserve">
     <value>Vietnamese</value>
   </data>
+  <data name="About" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="AboutContent" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -220,7 +220,8 @@ namespace ExClient
                     var ph = this[i + offset] as GalleryImagePlaceHolder;
                     if(ph == null)
                         continue;
-                    ph.Init(images[i].ImageKey, images[i].Thumb);
+                    this[i + offset] = images[i];
+                    //ph.Init(images[i].ImageKey, images[i].Thumb);
                 }
             });
             lpAc = new LoadPageAction(action);

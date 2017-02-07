@@ -286,5 +286,11 @@ namespace ExViewer.Settings
                 }
             }
         }
+
+        [Setting("About",Index = int.MaxValue, SettingPresenterTemplate = "AboutContentTemplate")]
+        public object AboutContent
+        {
+            get; set;
+        }
     }
 }

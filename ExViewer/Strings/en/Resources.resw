@@ -117,26 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutPageForumsHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlForumsHyperlinkButton.Content" xml:space="preserve">
     <value>E-Hentai Forums</value>
   </data>
-  <data name="AboutPageHelpTranslateTagsHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlHelpTranslateTagsHyperlinkButton.Content" xml:space="preserve">
     <value>Help translate tags into Chinese</value>
   </data>
-  <data name="AboutPageLicenceTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlLicenceTextBlock.Text" xml:space="preserve">
     <value>License</value>
   </data>
-  <data name="AboutPageOnlineContentsTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlOnlineContentsTextBlock.Text" xml:space="preserve">
     <value>Online contents</value>
   </data>
-  <data name="AboutPageRateHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlRateHyperlinkButton.Content" xml:space="preserve">
     <value>Rate and review</value>
   </data>
-  <data name="AboutPageSourceCodeHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlSourceCodeHyperlinkButton.Content" xml:space="preserve">
     <value>View source code at GitHub.com</value>
-  </data>
-  <data name="AboutPageTitleTextBlock.Text" xml:space="preserve">
-    <value>ABOUT</value>
   </data>
   <data name="AppDescription" xml:space="preserve">
     <value>E-Viewer is a client for e-hentai.org and exhentai.org.</value>
@@ -350,9 +347,6 @@ Full screen			ENTER</value>
   <data name="PullToRefreshIndicatorReleaseTextBlock.Text" xml:space="preserve">
     <value>Release to refresh</value>
   </data>
-  <data name="RootControlAboutSplitViewTab.Content" xml:space="preserve">
-    <value>About</value>
-  </data>
   <data name="RootControlSavedSplitViewTab.Content" xml:space="preserve">
     <value>Saved galleries</value>
   </data>
@@ -469,19 +463,19 @@ Go "Settings -&gt; Accounts - Sign-in options -&gt; PIN -&gt; Add" to do this.</
   <data name="RootControlDisableInfoTextBlock.Text" xml:space="preserve">
     <value>Operation in progress, plaese wait...</value>
   </data>
-  <data name="AboutPageChineseTagProviderHyperlinkButton.Content" xml:space="preserve">
+  <data name="AboutControlChineseTagProviderHyperlinkButton.Content" xml:space="preserve">
     <value>Mapaler / EhTagTranslator @ Github.com</value>
   </data>
-  <data name="AboutPageChineseTagProviderTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlChineseTagProviderTextBlock.Text" xml:space="preserve">
     <value>Chinese translation of tags</value>
   </data>
-  <data name="AboutPageDataProvidersTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlDataProvidersTextBlock.Text" xml:space="preserve">
     <value>Data providers</value>
   </data>
-  <data name="AboutPageEHWikiTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlEHWikiTextBlock.Text" xml:space="preserve">
     <value>EHWiki.org</value>
   </data>
-  <data name="AboutPageJapaneseTagProviderTextBlock.Text" xml:space="preserve">
+  <data name="AboutControlJapaneseTagProviderTextBlock.Text" xml:space="preserve">
     <value>Japanese translation of tags</value>
   </data>
   <data name="SettingsPageExcludedLanguagesSelector.MinWidth" xml:space="preserve">

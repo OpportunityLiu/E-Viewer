@@ -183,8 +183,8 @@
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
     <Compile Include="ViewModels\SearchVM.cs" />
-    <Compile Include="Views\AboutPage.xaml.cs">
-      <DependentUpon>AboutPage.xaml</DependentUpon>
+    <Compile Include="Controls\AboutControl.xaml.cs">
+      <DependentUpon>AboutControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CachedPage.xaml.cs">
       <DependentUpon>CachedPage.xaml</DependentUpon>
@@ -348,7 +348,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AboutPage.xaml">
+    <Page Include="Controls\AboutControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

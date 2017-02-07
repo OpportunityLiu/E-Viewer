@@ -39,8 +39,7 @@ namespace ExViewer.Views
                 [this.svt_Saved] = typeof(SavedPage),
                 [this.svt_Cached] = typeof(CachedPage),
                 [this.svt_Search] = typeof(SearchPage),
-                [this.svt_Settings] = typeof(SettingsPage),
-                [this.svt_About] = typeof(AboutPage)
+                [this.svt_Settings] = typeof(SettingsPage)
             };
 
             pages = new Dictionary<Type, Controls.SplitViewTab>()
@@ -48,8 +47,7 @@ namespace ExViewer.Views
                 [typeof(CachedPage)] = this.svt_Cached,
                 [typeof(SavedPage)] = this.svt_Saved,
                 [typeof(SearchPage)] = this.svt_Search,
-                [typeof(SettingsPage)] = this.svt_Settings,
-                [typeof(AboutPage)] = this.svt_About
+                [typeof(SettingsPage)] = this.svt_Settings
             };
             sv_root.IsPaneOpen = false;
 #if DEBUG

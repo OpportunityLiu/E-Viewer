@@ -27,4 +27,8 @@
             </ScrollViewer>
         </StackPanel>
     </DataTemplate>
+    <DataTemplate x:Name="AboutContentTemplate"
+                  x:DataType="settings:SettingInfo">
+        <controls:AboutControl />
+    </DataTemplate>
 </ResourceDictionary>
