@@ -131,7 +131,6 @@
     <Compile Include="Converters\ValueConverter.cs" />
     <Compile Include="Converters\ValueConverterBase.cs" />
     <Compile Include="Helpers\ApiInfo.cs" />
-    <Compile Include="Helpers\AsyncWarpper.cs" />
     <Compile Include="Helpers\DocumentHelper.cs" />
     <Compile Include="Helpers\GalleryExtension.cs" />
     <Compile Include="App.xaml.cs">
@@ -153,7 +152,6 @@
     </Compile>
     <Compile Include="Controls\SplitViewButton.cs" />
     <Compile Include="Controls\SplitViewTab.cs" />
-    <Compile Include="Controls\WrapStackPanel.cs" />
     <Compile Include="Database\SearchHistoryDb.cs" />
     <Compile Include="Helpers\ExceptionHandler.cs" />
     <Compile Include="Helpers\ShareHandler.cs" />

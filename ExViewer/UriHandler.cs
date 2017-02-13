@@ -43,11 +43,12 @@ namespace ExViewer
                 {
                 case Windows.Foundation.AsyncStatus.Completed:
                     var r = s.GetResults();
-                    GalleryVM.AddGallery(r.Item1);
+                    var vm = GalleryVM.AddGallery(r.Item1);
                     RootControl.RootController.Frame.Navigate(typeof(GalleryPage), r.Item1.Id);
                     if(r.Item2 > 0)
                     {
-                        //RootControl.RootController.Frame.Navigate(typeof(ImagePage), r.Item1.Id);
+                        vm.CurrentIndex = r.Item2 - 1;
+                        RootControl.RootController.Frame.Navigate(typeof(ImagePage), r.Item1.Id);
                     }
                     break;
                 case Windows.Foundation.AsyncStatus.Error:

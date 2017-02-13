@@ -42,7 +42,7 @@ namespace ExClient
         {
             if(category == Category.Unspecified)
                 category = DefaultFliter;
-            var result = new SearchResult(client, keyWord, category, advancedSearch);
+            var result = new SearchResult(client, keyWord, category, advancedSearch?.Clone(true));
             return result;
         }
 
@@ -155,19 +155,16 @@ namespace ExClient
         public string KeyWord
         {
             get;
-            private set;
         }
 
         public Category Category
         {
             get;
-            private set;
         }
 
         public AdvancedSearchOptions AdvancedSearch
         {
             get;
-            private set;
         }
 
         private Client client;

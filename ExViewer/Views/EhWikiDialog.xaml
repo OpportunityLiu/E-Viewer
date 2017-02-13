@@ -1,20 +1,24 @@
 ﻿<ContentDialog x:Class="ExViewer.Views.EhWikiDialog"
-               x:Uid="EhWikiDialogContentDialog"
                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-               xmlns:local="using:ExViewer.Views"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:local="using:ExViewer.Views"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-               mc:Ignorable="d"
+               x:Uid="EhWikiDialogContentDialog"
                Title="TITLE"
+               FullSizeDesired="True"
                PrimaryButtonText="Ok"
                RequiresPointer="WhenFocused"
-               FullSizeDesired="True">
+               mc:Ignorable="d">
 
     <Grid>
         <Border Width="500" />
         <WebView x:Name="wv"
                  NavigationStarting="wv_NavigationStarting"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Visibility="Collapsed" />
+        <ProgressBar x:Name="pb"
+                     VerticalAlignment="Top"
+                     IsIndeterminate="True" />
     </Grid>
 </ContentDialog>

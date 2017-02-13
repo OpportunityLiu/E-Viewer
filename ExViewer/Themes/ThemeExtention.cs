@@ -21,7 +21,8 @@ namespace ExViewer.Themes
             var SystemChromeHighColor = helper.SystemChromeHighColor;
             var SystemBaseMediumHighColor = helper.SystemBaseMediumHighColor;
             var SystemChromeDisabledLowColor = helper.SystemChromeDisabledLowColor;
-            var tb = ApplicationView.GetForCurrentView().TitleBar;
+            var view = ApplicationView.GetForCurrentView();
+            var tb = view.TitleBar;
             if(tb != null)
             {
                 tb.BackgroundColor = SystmeChromeMediumColor;
@@ -61,8 +62,8 @@ namespace ExViewer.Themes
             }
             if(ApiInfo.StatusBarSupported)
             {
-                var statusBar = StatusBar.GetForCurrentView();
-                var ignore = statusBar.HideAsync();
+                var sb = StatusBar.GetForCurrentView();
+                var ignore = sb.HideAsync();
             }
         }
     }

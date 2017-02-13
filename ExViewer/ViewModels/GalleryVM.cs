@@ -56,7 +56,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        public static void AddGallery(Gallery gallery)
+        public static GalleryVM AddGallery(Gallery gallery)
         {
             GalleryVM vm;
             var gi = new GalleryInfo(gallery.Id, gallery.Token);
@@ -67,7 +67,11 @@ namespace ExViewer.ViewModels
                     vm.currentIndex = -1;
             }
             else
-                Cache.Add(gi, new GalleryVM(gallery));
+            {
+                vm = new GalleryVM(gallery);
+                Cache.Add(gi, vm);
+            }
+            return vm;
         }
 
         public static IAsyncOperation<GalleryVM> GetVMAsync(long parameter)

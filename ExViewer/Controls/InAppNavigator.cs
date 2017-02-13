@@ -22,11 +22,5 @@ namespace ExViewer.Controls
         // Using a DependencyProperty as the backing store for InAppUri.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty InAppUriProperty =
             DependencyProperty.RegisterAttached("InAppUri", typeof(Uri), typeof(DependencyObject), new PropertyMetadata(null));
-
-        internal static void Navigate(DependencyObject sender)
-        {
-            var uri = GetInAppUri(sender);
-            UriHandler.Handle(uri);
-        }
     }
 }

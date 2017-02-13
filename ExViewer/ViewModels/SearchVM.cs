@@ -206,10 +206,8 @@ namespace ExViewer.ViewModels
         private SearchVM(SearchResult searchResult)
             : this()
         {
-            keyWord = searchResult.KeyWord;
-            category = searchResult.Category;
-            advancedSearch = searchResult.AdvancedSearch;
             SearchResult = searchResult;
+            SetQueryWithSearchResult();
         }
 
         private SearchVM(string parameter)
@@ -298,6 +296,17 @@ namespace ExViewer.ViewModels
                 return;
             RootControl.RootController.SendToast(args.Exception, typeof(SearchPage));
             args.Handled = true;
+        }
+
+        public void SetQueryWithSearchResult()
+        {
+            KeyWord = searchResult.KeyWord;
+            Category = searchResult.Category;
+            var adv = searchResult.AdvancedSearch;
+            if(adv == null)
+                AdvancedSearch = new AdvancedSearchOptions();
+            else
+                AdvancedSearch = adv.Clone(false);
         }
 
         private string keyWord;

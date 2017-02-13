@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncWarpper.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Record.cs" />

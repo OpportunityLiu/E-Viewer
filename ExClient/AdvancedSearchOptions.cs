@@ -27,60 +27,175 @@ namespace ExClient
             yield return new KeyValuePair<string, string>("f_srdd", MinimumRating.ToString());
         }
 
+        public AdvancedSearchOptions Clone(bool isReadOnly)
+        {
+            return new AdvancedSearchOptions(isReadOnly) { data = this.data };
+        }
+
+        public AdvancedSearchOptions()
+        {
+        }
+
+        private AdvancedSearchOptions(bool isReadOnly)
+        {
+            this.IsReadOnly = isReadOnly;
+        }
+
+        public bool IsReadOnly
+        {
+            get;
+        }
+
+        private ushort data;
+
+        private bool getData(int pos)
+        {
+            unchecked
+            {
+                return ((data >> (pos + offset)) & 1) == 1;
+            }
+        }
+
+        private void setData(int pos, bool value)
+        {
+            checkWritable();
+            unchecked
+            {
+                pos += offset;
+                if(value)
+                {
+                    data |= (ushort)(1 << pos);
+                }
+                else
+                {
+                    data &= (ushort)~(1 << pos);
+                }
+            }
+        }
+
+        private void checkWritable()
+        {
+            if(IsReadOnly)
+                throw new InvalidOperationException("The instanse is read only.");
+        }
+
+        private const int offset = 2;
+
         //f_sname=on
         public bool SearchName
         {
-            get;
-            set;
-        } = true;
+            get
+            {
+                return !getData(0);
+            }
+            set
+            {
+                setData(0, !value);
+            }
+        }
 
         //f_stags=on
         public bool SearchTags
         {
-            get;
-            set;
-        } = true;
+            get
+            {
+                return !getData(1);
+            }
+            set
+            {
+                setData(1, !value);
+            }
+        }
 
         //f_sdesc=on
         public bool SearchDescription
         {
-            get; set;
+            get
+            {
+                return getData(2);
+            }
+            set
+            {
+                setData(2, value);
+            }
         }
 
         //f_storr=on
         public bool SearchTorrentFilenames
         {
-            get; set;
+            get
+            {
+                return getData(3);
+            }
+            set
+            {
+                setData(3, value);
+            }
         }
 
         //f_sto=on
         public bool GalleriesWithTorrentsOnly
         {
-            get; set;
+            get
+            {
+                return getData(4);
+            }
+            set
+            {
+                setData(4, value);
+            }
         }
 
         //f_sdt1
         public bool SearchLowPowerTags
         {
-            get; set;
+            get
+            {
+                return getData(5);
+            }
+            set
+            {
+                setData(5, value);
+            }
         }
 
         //f_sdt2
         public bool SearchDownvotedTags
         {
-            get; set;
+            get
+            {
+                return getData(6);
+            }
+            set
+            {
+                setData(6, value);
+            }
         }
 
         //f_sh
         public bool ShowExpungedGalleries
         {
-            get; set;
+            get
+            {
+                return getData(7);
+            }
+            set
+            {
+                setData(7, value);
+            }
         }
 
         //f_sr
         public bool SearchMinimumRating
         {
-            get; set;
+            get
+            {
+                return getData(8);
+            }
+            set
+            {
+                setData(8, value);
+            }
         }
 
         //f_srdd
@@ -88,19 +203,38 @@ namespace ExClient
         {
             get
             {
-                return minRating;
+                return (data & 3) + 2;
             }
             set
             {
+                checkWritable();
                 if(value > 5)
-                    minRating = 5;
+                    value = 5;
                 else if(value < 2)
-                    minRating = 2;
-                else
-                    minRating = value;
+                    value = 2;
+                value -= 2;
+                unchecked
+                {
+                    data &= (ushort)~3;
+                    data |= (ushort)value;
+                }
             }
         }
 
-        private int minRating = 2;
+        public override bool Equals(object obj)
+        {
+            if(obj == null || !(obj is AdvancedSearchOptions))
+            {
+                return false;
+            }
+            var other = (AdvancedSearchOptions)obj;
+            return this.data == other.data;
+        }
+
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            return data.GetHashCode();
+        }
     }
 }
