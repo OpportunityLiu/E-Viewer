@@ -37,6 +37,8 @@ namespace ExViewer.Views
 
         internal async void SetTag(Tag tag)
         {
+            wv.Visibility = Visibility.Collapsed;
+            pb.Visibility = Visibility.Visible;
             var str = (string)null;
             Title = tag.Content;
             try
@@ -54,6 +56,8 @@ namespace ExViewer.Views
                 str = ex.GetMessage();
             }
             wv.NavigateToString(style + str);
+            wv.Visibility = Visibility.Visible;
+            pb.Visibility = Visibility.Collapsed;
         }
 
         private void initStyle()

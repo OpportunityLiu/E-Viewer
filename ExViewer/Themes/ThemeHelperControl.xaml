@@ -1,7 +1,12 @@
 ﻿<UserControl x:Class="ExViewer.Themes.ThemeHelperControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:ExViewer.Themes">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.FocusVisualSecondaryBrush>
+        <SolidColorBrush Color="{ThemeResource SystemChromeDisabledLowColor}" />
+    </UserControl.FocusVisualSecondaryBrush>
+    <UserControl.FocusVisualPrimaryBrush>
+        <SolidColorBrush Color="{ThemeResource SystemBaseMediumHighColor}" />
+    </UserControl.FocusVisualPrimaryBrush>
     <UserControl.Background>
         <SolidColorBrush Color="{ThemeResource SystemChromeMediumColor}" />
     </UserControl.Background>
@@ -11,12 +16,4 @@
     <UserControl.Foreground>
         <SolidColorBrush Color="{ThemeResource SystemChromeHighColor}" />
     </UserControl.Foreground>
-    <Grid x:Name="gd_Root">
-        <Grid.Background>
-            <SolidColorBrush Color="{ThemeResource SystemBaseMediumHighColor}" />
-        </Grid.Background>
-        <Grid.BorderBrush>
-            <SolidColorBrush Color="{ThemeResource SystemChromeDisabledLowColor}" />
-        </Grid.BorderBrush>
-    </Grid>
 </UserControl>

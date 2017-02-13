@@ -51,7 +51,7 @@ namespace EhWikiClient
         {
             var r = (Record)null;
             if(dic.TryGetValue(title, out r))
-                return Task.Run(() => r).AsAsyncOperation();
+                return new Helpers.AsyncWarpper<Record>(r); 
             return FetchAsync(title);
         }
 

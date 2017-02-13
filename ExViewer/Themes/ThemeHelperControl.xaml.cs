@@ -28,7 +28,7 @@ namespace ExViewer.Themes
         public Color SystemChromeMediumColor => ((SolidColorBrush)this.Background).Color;
         public Color SystemChromeMediumLowColor => ((SolidColorBrush)this.BorderBrush).Color;
         public Color SystemChromeHighColor => ((SolidColorBrush)this.Foreground).Color;
-        public Color SystemBaseMediumHighColor => ((SolidColorBrush)this.gd_Root.Background).Color;
-        public Color SystemChromeDisabledLowColor => ((SolidColorBrush)this.gd_Root.BorderBrush).Color;
+        public Color SystemBaseMediumHighColor => ((SolidColorBrush)this.FocusVisualPrimaryBrush).Color;
+        public Color SystemChromeDisabledLowColor => ((SolidColorBrush)this.FocusVisualSecondaryBrush).Color;
     }
 }

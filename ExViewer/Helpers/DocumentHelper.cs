@@ -65,7 +65,8 @@ namespace ExViewer.Helpers
 
         private static void Uri_Click(object sender, RoutedEventArgs e)
         {
-            InAppNavigator.Navigate((DependencyObject)sender);
+            var uri = InAppNavigator.GetInAppUri((DependencyObject)sender);
+            UriHandler.Handle(uri);
         }
     }
 }

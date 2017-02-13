@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
-namespace ExViewer.Helpers
+namespace EhWikiClient.Helpers
 {
     public class AsyncWarpper<T> : IAsyncOperation<T>
     {
@@ -28,7 +28,7 @@ namespace ExViewer.Helpers
             set
             {
                 completed = value;
-                value(this, AsyncStatus.Completed);
+                value?.Invoke(this, AsyncStatus.Completed);
             }
         }
 
@@ -50,5 +50,43 @@ namespace ExViewer.Helpers
         }
 
         public T GetResults() => result;
+    }
+
+    public class AsyncWarpper: IAsyncAction
+    {
+        public AsyncWarpper() { }
+
+        public AsyncActionCompletedHandler Completed
+        {
+            get
+            {
+                return completed;
+            }
+            set
+            {
+                completed = value;
+                value?.Invoke(this, AsyncStatus.Completed);
+            }
+        }
+
+        private AsyncActionCompletedHandler completed;
+
+        public Exception ErrorCode => null;
+
+        public uint Id => uint.MaxValue;
+
+        public AsyncStatus Status => AsyncStatus.Completed;
+
+        public void Cancel()
+        {
+        }
+
+        public void Close()
+        {
+        }
+
+        public void GetResults()
+        {
+        }
     }
 }

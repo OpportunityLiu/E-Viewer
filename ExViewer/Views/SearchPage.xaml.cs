@@ -45,9 +45,14 @@ namespace ExViewer.Views
             }
             VM = SearchVM.GetVM(e.Parameter?.ToString());
             if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
+            {
                 VM?.SearchResult.Reset();
+                await Task.Delay(100);
+                lv.Focus(FocusState.Programmatic);
+            }
             if(e.NavigationMode == NavigationMode.Back)
             {
+                VM.SetQueryWithSearchResult();
                 var selectedGallery = VM.SelectedGallery;
                 if(selectedGallery != null)
                 {
@@ -144,7 +149,6 @@ namespace ExViewer.Views
             {
                 CloseAll();
                 VM.Search.Execute(args.QueryText);
-                FocusManager.TryMoveFocus(FocusNavigationDirection.Down);
             }
             else
             {
@@ -163,21 +167,22 @@ namespace ExViewer.Views
             e.Handled = true;
             switch(e.Key)
             {
-                case Windows.System.VirtualKey.GamepadY:
-                    asb.Focus(FocusState.Keyboard);
-                    break;
-                case Windows.System.VirtualKey.GamepadMenu:
-                case Windows.System.VirtualKey.Application:
-                    ab.IsOpen = !ab.IsOpen;
-                    break;
-                default:
-                    e.Handled = false;
-                    break;
+            case Windows.System.VirtualKey.GamepadY:
+                asb.Focus(FocusState.Keyboard);
+                break;
+            case Windows.System.VirtualKey.GamepadMenu:
+            case Windows.System.VirtualKey.Application:
+                ab.IsOpen = !ab.IsOpen;
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 
         public void CloseAll()
         {
+            asb.IsSuggestionListOpen = false;
             ab.IsOpen = false;
         }
     }

@@ -11,6 +11,7 @@ using Windows.UI.Xaml;
 using ExViewer;
 using GalaSoft.MvvmLight.Threading;
 using ExViewer.Helpers;
+using EhWikiClient.Helpers;
 
 namespace ExClient
 {
