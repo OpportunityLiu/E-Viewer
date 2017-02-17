@@ -261,6 +261,11 @@ namespace ExViewer.Views
             }
         }
 
+        public void ChangePivotSelection(int index)
+        {
+            pv.SelectedIndex = index;
+        }
+
         private void lv_Torrents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             foreach(var item in e.RemovedItems)
@@ -295,6 +300,7 @@ namespace ExViewer.Views
         {
             bd_GvFooter.Height = e.NewSize.Height;
         }
+
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             base.OnKeyUp(e);

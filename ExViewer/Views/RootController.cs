@@ -93,7 +93,10 @@ namespace ExViewer.Views
                 playToast.Completed += PlayToast_Completed;
 
                 Frame.Navigated += Frame_Navigated;
+            }
 
+            internal static void HandleUriLaunch()
+            {
                 if(launchUri != null)
                     HandleUriLaunch(launchUri);
             }

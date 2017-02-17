@@ -114,8 +114,11 @@
     <Compile Include="AdvancedSearchOptions.cs" />
     <Compile Include="CachedGallery.cs" />
     <Compile Include="GalleryImagePlaceHolder.cs" />
+    <Compile Include="Helpers\AsyncWarpper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="GalleryList{T}.cs" />
+    <Compile Include="Internal\ApiRequest.cs" />
+    <Compile Include="LaunchResult.cs" />
     <Compile Include="SavedGallery.cs" />
     <Compile Include="Client-Forum.cs" />
     <Compile Include="Comment.cs" />

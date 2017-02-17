@@ -72,27 +72,29 @@ namespace ExClient
             get;
         }
 
+        private Client GetClient() => Owner?.Owner ?? Client.Current;
+
         private string getKeyWord()
         {
             if(NameSpace != NameSpace.Misc)
-                return $"{NameSpace}:\"{Content}$\"";
+                return $"{NameSpace.ToString().ToLowerInvariant()}:\"{Content}$\"";
             else
                 return $"\"{Content}$\"";
         }
 
         public SearchResult Search()
         {
-            return Owner.Owner.Search(getKeyWord());
+            return GetClient().Search(getKeyWord());
         }
 
         public SearchResult Search(Category filter)
         {
-            return Owner.Owner.Search(getKeyWord(), filter);
+            return GetClient().Search(getKeyWord(), filter);
         }
 
         public SearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
         {
-            return Owner.Owner.Search(getKeyWord(), filter, advancedSearch);
+            return GetClient().Search(getKeyWord(), filter, advancedSearch);
         }
 
         public static Uri WikiUri

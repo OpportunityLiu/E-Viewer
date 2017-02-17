@@ -126,8 +126,7 @@ namespace ExViewer.Views
 
         private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput
-                                || args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen;
+            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput;
             if(needAutoComplete)
             {
                 var r = await VM.LoadSuggestion(sender.Text);

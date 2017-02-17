@@ -23,7 +23,7 @@ namespace ExViewer.ViewModels
             });
             Open = new RelayCommand<Gallery>(g =>
             {
-                GalleryVM.AddGallery(g);
+                GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
             });
         }
