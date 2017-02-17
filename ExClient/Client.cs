@@ -12,6 +12,7 @@ using HtmlAgilityPack;
 using System.IO;
 using System.Runtime.InteropServices;
 using ExClient.Settings;
+using Newtonsoft.Json;
 
 namespace ExClient
 {
@@ -156,9 +157,9 @@ namespace ExClient
             }
         }
 
-        internal IAsyncOperationWithProgress<string, HttpProgress> PostApiAsync(string requestJson)
+        internal IAsyncOperationWithProgress<string, HttpProgress> PostApiAsync(Internal.ApiRequest request)
         {
-            return PostStrAsync(apiUri, requestJson);
+            return PostStrAsync(apiUri, JsonConvert.SerializeObject(request));
         }
 
         public SettingCollection Settings => settings;

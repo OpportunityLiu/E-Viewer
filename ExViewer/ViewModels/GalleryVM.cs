@@ -56,7 +56,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        public static GalleryVM AddGallery(Gallery gallery)
+        public static GalleryVM GetVM(Gallery gallery)
         {
             GalleryVM vm;
             var gi = new GalleryInfo(gallery.Id, gallery.Token);

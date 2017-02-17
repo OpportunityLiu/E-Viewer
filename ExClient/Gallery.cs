@@ -188,6 +188,23 @@ namespace ExClient
             }).AsAsyncOperation();
         }
 
+        private class GalleryData : Internal.ApiRequest
+        {
+            public override string Method => "gdata";
+
+            public int @namespace => 1;
+
+            public IList<GalleryInfo> gidlist
+            {
+                get;
+            }
+
+            public GalleryData(IList<GalleryInfo> list)
+            {
+                gidlist = list;
+            }
+        }
+
         public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IList<GalleryInfo> galleryInfo)
         {
             if(galleryInfo == null)
@@ -196,17 +213,11 @@ namespace ExClient
                 throw new ArgumentException("Number of GalleryInfo is bigger than 25.", nameof(galleryInfo));
             return Run(async token =>
             {
-                var json = JsonConvert.SerializeObject(new
-                {
-                    method = "gdata",
-                    @namespace = 1,
-                    gidlist = galleryInfo
-                });
                 var type = new
                 {
                     gmetadata = (IEnumerable<Gallery>)null
                 };
-                var str = await Client.Current.PostApiAsync(json);
+                var str = await Client.Current.PostApiAsync(new GalleryData(galleryInfo));
                 var deser = JsonConvert.DeserializeAnonymousType(str, type);
                 var toAdd = deser.gmetadata.Select(item =>
                 {
@@ -606,6 +617,7 @@ namespace ExClient
                 var uri = new Uri(GalleryUri, $"?inline_set=ts_l&p={pageIndex.ToString()}{(comments == null ? "hc=1" : "")}");
                 var request = Owner.PostStrAsync(uri, null);
                 var res = await request;
+                Internal.ApiRequest.UpdateToken(res);
                 var html = new HtmlDocument();
                 html.LoadHtml(res);
                 if(comments == null)

@@ -22,7 +22,7 @@ namespace ExViewer.Views
 {
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
-    /// </summary>
+    /// </summary> 
     public sealed partial class ImagePage : Page, IHasAppBar
     {
         public ImagePage()
@@ -227,6 +227,7 @@ namespace ExViewer.Views
 
         private bool changeCbVisibility()
         {
+            ApplicationView.GetForCurrentView().ShowStandardSystemOverlays();
             switch(this.cb_top.Visibility)
             {
             case Visibility.Visible:
@@ -327,6 +328,11 @@ namespace ExViewer.Views
         public void CloseAll()
         {
             cb_top.IsOpen = false;
+        }
+
+        public void SetImageIndex(int value)
+        {
+            this.fv.SelectedIndex = value;
         }
     }
 }

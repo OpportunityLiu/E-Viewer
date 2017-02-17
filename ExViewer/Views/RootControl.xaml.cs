@@ -114,6 +114,7 @@ namespace ExViewer.Views
         {
             UserInfo = await UserInfo.LoadFromCache();
             RootController.UpdateUserInfo(false);
+            RootController.HandleUriLaunch();
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)

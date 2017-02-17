@@ -43,7 +43,11 @@ namespace ExViewer.ViewModels
         {
             var ns = Enum.GetNames(typeof(NameSpace)).ToList();
             ns.Remove(NameSpace.Misc.ToString());
-            ns.Add("Uploader");
+            for(int i = 0; i < ns.Count; i++)
+            {
+                ns[i] = ns[i].ToLowerInvariant();
+            }
+            ns.Add("uploader");
             namedNameSpaces = ns.AsReadOnly();
         }
 
@@ -146,12 +150,7 @@ namespace ExViewer.ViewModels
 
             public static string AddSearchVM(SearchVM searchVM)
             {
-                var query = JsonConvert.SerializeObject(new SearchResultData()
-                {
-                    KeyWord = searchVM.KeyWord,
-                    Category = searchVM.Category,
-                    AdvancedSearch = searchVM.AdvancedSearch
-                });
+                var query = searchVM.SearchQuery; 
                 AddHistory(searchVM.KeyWord);
                 srCache.Add(query, searchVM);
                 return query;
@@ -243,7 +242,7 @@ namespace ExViewer.ViewModels
             Open = new RelayCommand<Gallery>(g =>
             {
                 SelectedGallery = g;
-                GalleryVM.AddGallery(g);
+                GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
             }, g => g != null);
         }

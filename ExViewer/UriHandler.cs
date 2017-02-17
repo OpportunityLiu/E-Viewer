@@ -37,18 +37,39 @@ namespace ExViewer
                 return false;
             }
             var h = UriLauncher.HandleAsync(uri);
-            RootControl.RootController.TrackAsyncAction(h, (s, e) =>
+            RootControl.RootController.TrackAsyncAction(h, async (s, e) =>
             {
                 switch(e)
                 {
                 case Windows.Foundation.AsyncStatus.Completed:
                     var r = s.GetResults();
-                    var vm = GalleryVM.AddGallery(r.Item1);
-                    RootControl.RootController.Frame.Navigate(typeof(GalleryPage), r.Item1.Id);
-                    if(r.Item2 > 0)
+                    var g = r as GalleryLaunchResult;
+                    if(g != null)
                     {
-                        vm.CurrentIndex = r.Item2 - 1;
-                        RootControl.RootController.Frame.Navigate(typeof(ImagePage), r.Item1.Id);
+                        GalleryVM.GetVM(g.Gallery);
+                        RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Gallery.Id);
+                        await Task.Delay(200);
+                        switch(g.Status)
+                        {
+                        case GalleryLaunchStatus.Default:
+                            break;
+                        case GalleryLaunchStatus.Image:
+                            RootControl.RootController.Frame.Navigate(typeof(ImagePage), g.Gallery.Id);
+                            await Task.Delay(200);
+                            (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
+                            break;
+                        case GalleryLaunchStatus.Torrent:
+                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
+                            break;
+                        }
+                        return;
+                    }
+                    var sr = r as SearchLaunchResult;
+                    if(sr != null)
+                    {
+                        var vm = SearchVM.GetVM(sr.Data);
+                        RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
+                        return;
                     }
                     break;
                 case Windows.Foundation.AsyncStatus.Error:

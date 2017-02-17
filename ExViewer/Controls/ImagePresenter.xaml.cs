@@ -50,10 +50,6 @@ namespace ExViewer.Controls
         {
             var sender = (ImagePresenter)d;
 
-            if(e.NewValue == null)
-            {
-                sender.FindName(nameof(img_Loading));
-            }
             if(!sender.loaded)
             {
                 if(e.OldValue != null)
