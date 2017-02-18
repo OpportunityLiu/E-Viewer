@@ -118,7 +118,8 @@
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="GalleryList{T}.cs" />
     <Compile Include="Internal\ApiRequest.cs" />
-    <Compile Include="LaunchResult.cs" />
+    <Compile Include="Launch\LaunchResult.cs" />
+    <Compile Include="Launch\UriHandler.cs" />
     <Compile Include="SavedGallery.cs" />
     <Compile Include="Client-Forum.cs" />
     <Compile Include="Comment.cs" />
@@ -160,7 +161,7 @@
     </Compile>
     <Compile Include="Tag.cs" />
     <Compile Include="TorrentInfo.cs" />
-    <Compile Include="UriLauncher.cs" />
+    <Compile Include="Launch\UriLauncher.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
     <PRIResource Include="Strings\en\NameSpace.resw" />
     <PRIResource Include="Strings\en\Category.resw" />
@@ -172,6 +173,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

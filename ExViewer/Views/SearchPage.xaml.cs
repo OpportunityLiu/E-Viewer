@@ -48,7 +48,7 @@ namespace ExViewer.Views
             {
                 VM?.SearchResult.Reset();
                 await Task.Delay(100);
-                lv.Focus(FocusState.Programmatic);
+                btnPane.Focus(FocusState.Pointer);
             }
             if(e.NavigationMode == NavigationMode.Back)
             {
@@ -90,7 +90,7 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(SearchVM), typeof(SearchPage), new PropertyMetadata(null));
 
-        private void btn_pane_Click(object sender, RoutedEventArgs e)
+        private void btnPane_Click(object sender, RoutedEventArgs e)
         {
             RootControl.RootController.SwitchSplitView();
         }

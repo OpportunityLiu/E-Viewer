@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ExClient;
+using ExClient.Launch;
 using ExViewer.Views;
 using ExViewer.ViewModels;
 using Windows.System;
