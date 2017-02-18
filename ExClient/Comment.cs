@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 
 namespace ExClient
 {
-    public class Comment
+    public sealed class Comment
     {
         internal static ReadOnlyCollection<Comment> LoadComment(HtmlDocument document)
         {
@@ -18,16 +18,17 @@ namespace ExClient
             var comments = new List<Comment>();
             for(int i = 0; i < commentNodes.Count; i += 2)
             {
+                var culture = System.Globalization.CultureInfo.InvariantCulture;
                 if(commentNodes[i].Name != "a" || commentNodes[i + 1].Name != "div")
                     break;
                 var id = int.Parse(commentNodes[i].GetAttributeValue("name", "c0").Substring(1));
                 var commentNode = commentNodes[i + 1];
                 var content = HtmlNode.CreateNode(document.GetElementbyId($"comment_{id}").OuterHtml);
                 var editNode = commentNode.ChildNodes.FirstOrDefault(node => node.GetAttributeValue("class", "") == "c8");
-                var edit = editNode != null ? DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal) : (DateTimeOffset?)null;
+                var edit = editNode != null ? DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal) : (DateTimeOffset?)null;
                 var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.GetAttributeValue("class", "") == "c3");
                 var author = postedAndAuthorNode.LastChild.InnerText.DeEntitize();
-                var posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+                var posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                 var score = id == 0 ? //Uploader Comment
                     0 : int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
 
@@ -52,7 +53,7 @@ namespace ExClient
                 {
                     Id = id,
                     Score = score,
-                    Content = content.Clone(),
+                    Content = content,
                     Edited = edit,
                     Author = author,
                     Posted = posted,

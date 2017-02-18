@@ -15,17 +15,22 @@ namespace ExClient
         {
             yield return new KeyValuePair<string, string>("advsearch", "1");
 
-            yield return new KeyValuePair<string, string>("f_sname", SearchName ? "1" : "0");
-            yield return new KeyValuePair<string, string>("f_stags", SearchTags ? "1" : "0");
-            yield return new KeyValuePair<string, string>("f_sdesc", SearchDescription ? "1" : "0");
-            yield return new KeyValuePair<string, string>("f_storr", SearchTorrentFilenames ? "1" : "0");
-            yield return new KeyValuePair<string, string>("f_sto", GalleriesWithTorrentsOnly ? "1" : "0");
-            yield return new KeyValuePair<string, string>("f_sdt1", SearchLowPowerTags ? "1" : "0");
-            yield return new KeyValuePair<string, string>("f_sdt2", SearchDownvotedTags ? "1" : "0");
-            yield return new KeyValuePair<string, string>("f_sh", ShowExpungedGalleries ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_sname", toString(SearchName));
+            yield return new KeyValuePair<string, string>("f_stags", toString(SearchTags));
+            yield return new KeyValuePair<string, string>("f_sdesc", toString(SearchDescription));
+            yield return new KeyValuePair<string, string>("f_storr", toString(SearchTorrentFilenames));
+            yield return new KeyValuePair<string, string>("f_sto", toString(GalleriesWithTorrentsOnly));
+            yield return new KeyValuePair<string, string>("f_sdt1", toString(SearchLowPowerTags));
+            yield return new KeyValuePair<string, string>("f_sdt2", toString(SearchDownvotedTags));
+            yield return new KeyValuePair<string, string>("f_sh", toString(ShowExpungedGalleries));
 
-            yield return new KeyValuePair<string, string>("f_sr", SearchMinimumRating ? "1" : "0");
+            yield return new KeyValuePair<string, string>("f_sr", toString(SearchMinimumRating));
             yield return new KeyValuePair<string, string>("f_srdd", MinimumRating.ToString());
+        }
+
+        private static string toString(bool value)
+        {
+            return value ? "1" : "0";
         }
 
         public AdvancedSearchOptions Clone(bool isReadOnly)

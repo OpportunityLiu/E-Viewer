@@ -19,6 +19,8 @@
     string ResourcePath = "Strings";
     // 生成辅助类的命名空间，默认使用 "<ProjectDefaultNamespace>.LocalizedStrings"。
     string LocalizedStringsNameSpace = "";
+    // 生成辅助类的修饰符
+    string modifier = "public";
     // 检索 resw 并生成注释时使用的语言相对 ResourcePath 的路径。
     string SourceLanguagePath = "en";
     // 是否为默认工程，决定是否需要显式定义资源路径。
@@ -89,7 +91,7 @@ namespace <#=nameSpace#>
         }
 #>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator","1.0")]
-    public static class <#=localizedClass.Key#>
+    <#=modifier#> static class <#=localizedClass.Key#>
     {
         private static readonly global::System.Collections.Generic.Dictionary<string, string> cache 
             = new global::System.Collections.Generic.Dictionary<string, string>();
