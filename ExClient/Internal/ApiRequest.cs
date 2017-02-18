@@ -11,10 +11,7 @@ namespace ExClient.Internal
     internal abstract class ApiRequest
     {
         [JsonProperty("method")]
-        public abstract string Method
-        {
-            get;
-        }
+        public abstract string Method { get; }
 
         private static long uid;
         private static string key;

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
-namespace ExClient
+namespace ExClient.Launch
 {
-    public abstract class LanunchResult
+    public abstract class LaunchResult
     {
-        internal LanunchResult() { }
+        internal LaunchResult() { }
     }
 
     public enum GalleryLaunchStatus
@@ -21,7 +21,7 @@ namespace ExClient
         Torrent
     }
 
-    public sealed class GalleryLaunchResult : LanunchResult
+    public sealed class GalleryLaunchResult : LaunchResult
     {
         public Gallery Gallery
         {
@@ -46,7 +46,7 @@ namespace ExClient
         }
     }
 
-    public sealed class SearchLaunchResult : LanunchResult
+    public sealed class SearchLaunchResult : LaunchResult
     {
         internal SearchLaunchResult(SearchResult data)
         {
