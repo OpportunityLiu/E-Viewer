@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Collections.Generic;
 using JYAnalyticsUniversal;
+using Windows.Storage;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -29,8 +30,16 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
             BannerProvider.Provider.GetBannerAsync().Completed =
-                async (s, e) => await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => img_pic.Source = s.GetResults());
+                async (s, e) => await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => loadBanner(s.GetResults()));
             this.loadApplication();
+        }
+
+        private async void loadBanner(StorageFile banner)
+        {
+            using(var stream = await banner.OpenReadAsync())
+            {
+                await ((BitmapImage)img_pic.Source).SetSourceAsync(stream); 
+            }
         }
 
         private void splash_Loading(FrameworkElement sender, object args)
@@ -54,9 +63,9 @@ namespace ExViewer.Views
             FindName(nameof(pr));
         }
 
-        private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        private async void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            this.img_pic.Source = BannerProvider.Provider.GetDefaultBanner();
+            loadBanner(await BannerProvider.Provider.GetDefaultBanner());
             // After the default image loaded, img_pic_ImageOpened() will be called.
         }
 
@@ -123,7 +132,7 @@ namespace ExViewer.Views
 
         private async void loadEffect()
         {
-            await Task.Delay(50);
+            await Task.Delay(100);
             Window.Current.Activate();
             ShowPic.Begin();
             lock(loadingSyncRoot)

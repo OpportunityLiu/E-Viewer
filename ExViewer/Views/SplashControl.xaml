@@ -45,12 +45,17 @@
                VerticalAlignment="Center"
                ImageFailed="img_pic_ImageFailed"
                ImageOpened="img_pic_ImageOpened"
-               Opacity="0" />
+               Opacity="0">
+            <Image.Source>
+                <BitmapImage />
+            </Image.Source>
+        </Image>
         <ProgressRing x:Name="pr"
                       Grid.Row="1"
                       Width="40"
                       Height="40"
                       x:DeferLoadStrategy="Lazy"
-                      IsActive="True" />
+                      IsActive="True"
+                      VerticalAlignment="Top" />
     </Grid>
 </UserControl>

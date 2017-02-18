@@ -8,7 +8,6 @@ using Windows.UI.Xaml.Media.Imaging;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.Storage;
 using Windows.Web.Http;
-using GalaSoft.MvvmLight.Threading;
 
 namespace BannerProvider
 {
@@ -23,36 +22,26 @@ namespace BannerProvider
             bannerFolder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Banners", CreationCollisionOption.OpenIfExists);
         }
 
-        public static IAsyncOperation<BitmapImage> GetBannerAsync()
+        public static IAsyncOperation<StorageFile> GetBannerAsync()
         {
             return Run(async token =>
             {
                 await init();
                 var files = await bannerFolder.GetItemsAsync();
                 if(files.Count == 0)
-                    return GetDefaultBanner();
-                var file = (StorageFile)files[new Random().Next(0, files.Count)];
-                BitmapImage result = null;
-                await DispatcherHelper.RunAsync(async () =>
-                {
-                    result = new BitmapImage();
-                    using(var stream = await file.OpenAsync(FileAccessMode.Read))
-                    {
-                        await result.SetSourceAsync(stream);
-                    }
-                });
-                return result;
+                    return await GetDefaultBanner();
+                return (StorageFile)files[new Random().Next(0, files.Count)];
             });
         }
 
-        public static BitmapImage GetDefaultBanner()
+        public static IAsyncOperation<StorageFile> GetDefaultBanner()
         {
-            return new BitmapImage(new Uri($"ms-appx:///BannerProvider/Images/DefaultBanner.png"));
+            return StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///BannerProvider/Images/DefaultBanner.png"));
         }
 
         public static IAsyncAction FetchBanners()
         {
-            return Task.Run(async () =>
+            return Run(async token =>
             {
                 await init();
                 using(var client = new HttpClient())
@@ -64,7 +53,7 @@ namespace BannerProvider
                         await FileIO.WriteBufferAsync(f, r);
                     }
                 }
-            }).AsAsyncAction();
+            });
         }
     }
 }

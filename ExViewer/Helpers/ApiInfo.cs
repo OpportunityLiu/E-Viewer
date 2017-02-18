@@ -10,7 +10,6 @@ namespace ExViewer
 {
     public static class ApiInfo
     {
-        [PlatformSpecific]
         public static bool StatusBarSupported
         {
             get;
