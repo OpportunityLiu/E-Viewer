@@ -199,8 +199,8 @@ namespace ExViewer.Controls
                 var target = (Uri)null;
                 try
                 {
-                    target = new Uri(node.GetAttributeValue("href", "https://exhentai.org"));
-                    container = CreateHyperlink(null, target); 
+                    target = new Uri(HtmlEntity.DeEntitize(node.GetAttributeValue("href", "https://exhentai.org")));
+                    container = CreateHyperlink(null, target);
                 }
                 catch(UriFormatException)
                 {

@@ -18,47 +18,12 @@ namespace ExClient
             var comments = new List<Comment>();
             for(int i = 0; i < commentNodes.Count; i += 2)
             {
-                var culture = System.Globalization.CultureInfo.InvariantCulture;
-                if(commentNodes[i].Name != "a" || commentNodes[i + 1].Name != "div")
-                    break;
-                var id = int.Parse(commentNodes[i].GetAttributeValue("name", "c0").Substring(1));
+                var headerNode = commentNodes[i];
                 var commentNode = commentNodes[i + 1];
-                var content = HtmlNode.CreateNode(document.GetElementbyId($"comment_{id}").OuterHtml);
-                var editNode = commentNode.ChildNodes.FirstOrDefault(node => node.GetAttributeValue("class", "") == "c8");
-                var edit = editNode != null ? DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal) : (DateTimeOffset?)null;
-                var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.GetAttributeValue("class", "") == "c3");
-                var author = postedAndAuthorNode.LastChild.InnerText.DeEntitize();
-                var posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
-                var score = id == 0 ? //Uploader Comment
-                    0 : int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
-
-                List<KeyValuePair<string, int>> recordList = null;
-                if(id != 0)
-                {
-                    recordList = new List<KeyValuePair<string, int>>();
-                    var recordsNode = document.GetElementbyId($"cvotes_{id}");
-                    var voteBase = recordsNode.FirstChild.InnerText;
-                    voteBase = voteBase.Substring(5, voteBase.Length - (voteBase.EndsWith(" ") ? 7 : 5));
-                    recordList.Add(new KeyValuePair<string, int>(null, int.Parse(voteBase)));
-                    foreach(var item in recordsNode.Descendants("span"))
-                    {
-                        var vote = item.InnerText.DeEntitize();
-                        var m = voteRegex.Match(vote);
-                        if(m.Success == false)
-                            throw new Exception();
-                        recordList.Add(new KeyValuePair<string, int>(m.Groups[1].Value, int.Parse(m.Groups[2].Value)));
-                    }
-                }
-                comments.Add(new Comment()
-                {
-                    Id = id,
-                    Score = score,
-                    Content = content,
-                    Edited = edit,
-                    Author = author,
-                    Posted = posted,
-                    VoteRecords = recordList?.AsReadOnly()
-                });
+                if(headerNode.Name != "a" || commentNode.Name != "div")
+                    break;
+                var id = int.Parse(headerNode.GetAttributeValue("name", "c0").Substring(1));
+                comments.Add(new Comment(id, commentNode));
             }
             return comments.AsReadOnly();
         }
@@ -76,52 +41,57 @@ namespace ExClient
             }).AsAsyncOperation();
         }
 
-        private Comment()
+        private Comment(int id, HtmlNode commentNode)
         {
+            var culture = System.Globalization.CultureInfo.InvariantCulture;
+            var document = commentNode.OwnerDocument;
+            this.Id = id;
+
+            var contentHtml = document.GetElementbyId($"comment_{id}").OuterHtml.Replace("://forums.exhentai.org", "://forums.e-hentai.org");
+            this.Content = HtmlNode.CreateNode(contentHtml);
+
+            var editNode = commentNode.Descendants("div").FirstOrDefault(node => node.GetAttributeValue("class", "") == "c8");
+            if(editNode != null)
+                this.Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
+            var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.GetAttributeValue("class", "") == "c3");
+            this.Author = postedAndAuthorNode.LastChild.InnerText.DeEntitize();
+            this.Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+
+            if(!this.IsUploaderComment)
+            {
+                this.Score = int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
+
+                var recordList = new List<KeyValuePair<string, int>>();
+                var recordsNode = document.GetElementbyId($"cvotes_{id}");
+                var voteBase = recordsNode.FirstChild.InnerText;
+                voteBase = voteBase.Substring(5, voteBase.Length - (voteBase.EndsWith(" ") ? 7 : 5));
+                recordList.Add(new KeyValuePair<string, int>(null, int.Parse(voteBase)));
+                foreach(var item in recordsNode.Descendants("span"))
+                {
+                    var vote = item.InnerText.DeEntitize();
+                    var m = voteRegex.Match(vote);
+                    if(m.Success == false)
+                        throw new Exception();
+                    recordList.Add(new KeyValuePair<string, int>(m.Groups[1].Value, int.Parse(m.Groups[2].Value)));
+                }
+                this.VoteRecords = recordList.AsReadOnly();
+            }
         }
+
+        public int Id { get; }
+
+        public string Author { get; }
 
         public bool IsUploaderComment => Id == 0;
 
-        public string Author
-        {
-            get;
-            private set;
-        }
+        public DateTimeOffset Posted { get; }
 
-        public DateTimeOffset Posted
-        {
-            get;
-            private set;
-        }
+        public DateTimeOffset? Edited { get; }
 
-        public DateTimeOffset? Edited
-        {
-            get;
-            private set;
-        }
+        public HtmlNode Content { get; }
 
-        public HtmlNode Content
-        {
-            get;
-            private set;
-        }
+        public int Score { get; }
 
-        public int Score
-        {
-            get;
-            private set;
-        }
-
-        public IReadOnlyList<KeyValuePair<string, int>> VoteRecords
-        {
-            get;
-            private set;
-        }
-
-        public int Id
-        {
-            get;
-            private set;
-        }
+        public ReadOnlyCollection<KeyValuePair<string, int>> VoteRecords { get; }
     }
 }
