@@ -41,17 +41,17 @@ namespace ExViewer.ViewModels
 
         static AutoCompletion()
         {
-            var ns = Enum.GetNames(typeof(NameSpace)).ToList();
-            ns.Remove(NameSpace.Misc.ToString());
+            var ns = Enum.GetNames(typeof(Namespace)).ToList();
+            ns.Remove(Namespace.Misc.ToString());
             for(int i = 0; i < ns.Count; i++)
             {
                 ns[i] = ns[i].ToLowerInvariant();
             }
             ns.Add("uploader");
-            namedNameSpaces = ns.AsReadOnly();
+            namedNamespaces = ns.AsReadOnly();
         }
 
-        private static readonly IReadOnlyList<string> namedNameSpaces;
+        private static readonly IReadOnlyList<string> namedNamespaces;
 
         private static IEnumerable<AutoCompletion> getCompletionsWithEmptyInput()
         {
@@ -86,7 +86,7 @@ namespace ExViewer.ViewModels
             case ' ':
             case '-':
                 // Too many results
-                //foreach(var item in namedNameSpaces)
+                //foreach(var item in namedNamespaces)
                 //{
                 //    yield return new AutoCompletion($"{input}{item}:");
                 //}
@@ -103,7 +103,7 @@ namespace ExViewer.ViewModels
                 if(lastTerm.Length > 0 && lastTerm.All(c => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')))
                 {
                     var beforeLastTerm = input.Substring(0, input.Length - lastTerm.Length);
-                    foreach(var item in namedNameSpaces)
+                    foreach(var item in namedNamespaces)
                     {
                         if(item.StartsWith(lastTerm, StringComparison.OrdinalIgnoreCase))
                             yield return new AutoCompletion($"{beforeLastTerm}{item}:");

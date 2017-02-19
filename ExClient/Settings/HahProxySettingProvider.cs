@@ -92,7 +92,10 @@ namespace ExClient.Settings
 
         internal override string GetCookieContent()
         {
-            return $"hh_{AddressAndPort}";
+            var ap = AddressAndPort;
+            if(ap == null)
+                return null;
+            return $"hh_{ap}";
         }
     }
 }

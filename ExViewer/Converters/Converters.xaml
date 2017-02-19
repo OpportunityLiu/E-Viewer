@@ -64,4 +64,5 @@
     <local:RateStringConverter x:Key="RateStringConverter" />
     <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />
     <local:OperationStateToBrushConverter x:Key="OperationStateToBrushConverter" />
+    <local:NamespaceToFriendlyStringConverter x:Key="NamespaceToFriendlyStringConverter" />
 </uwp:ResourceDictionary>

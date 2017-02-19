@@ -430,7 +430,7 @@ Go "Settings -&gt; Accounts - Sign-in options -&gt; PIN -&gt; Add" to do this.</
   <data name="ImagePageImageFileInfoDefault" xml:space="preserve">
     <value>The image hasn't finished loading.</value>
   </data>
-  <data name="GalleryPageTagNameSpaceColumnDefinition.Width" xml:space="preserve">
+  <data name="GalleryPageTagNamespaceColumnDefinition.Width" xml:space="preserve">
     <value>72</value>
   </data>
   <data name="EhWikiDialogContentDialog.PrimaryButtonText" xml:space="preserve">

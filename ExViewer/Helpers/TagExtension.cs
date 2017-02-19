@@ -17,7 +17,7 @@ namespace ExClient
 {
     static class TagExtension
     {
-        private static IReadOnlyDictionary<NameSpace, IReadOnlyDictionary<string, Record>> tagDb;
+        private static IReadOnlyDictionary<Namespace, IReadOnlyDictionary<string, Record>> tagDb;
         private static EhWikiClient.Client wikiClient;
 
         public static IAsyncAction Init()
@@ -83,7 +83,7 @@ namespace ExClient
             if(tagDb == null)
                 return null;
             var record = (Record)null;
-            if(tagDb[tag.NameSpace].TryGetValue(tag.Content, out record))
+            if(tagDb[tag.Namespace].TryGetValue(tag.Content, out record))
                 return record;
             return null;
         }

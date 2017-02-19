@@ -541,7 +541,7 @@ namespace ExClient
             {
                 if(Tags == null)
                     return default(Language);
-                var languageTags = Tags.Where(t => t.NameSpace == NameSpace.Language).ToArray();
+                var languageTags = Tags.Where(t => t.Namespace == Namespace.Language).ToArray();
                 var modi = LanguageModifier.None;
                 var language = (string)null;
                 foreach(var item in languageTags)

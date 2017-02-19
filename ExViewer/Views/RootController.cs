@@ -110,6 +110,9 @@ namespace ExViewer.Views
             {
                 var sourceString = source?.ToString() ?? "null";
                 JYAnalytics.TrackError($"Exception {ex.HResult:X8}: {ex.GetType().ToString()} at {sourceString}");
+#if DEBUG
+                Debug.WriteLine(ex, "Exception");
+#endif
                 SendToast(ex.GetMessage(), source);
             }
 

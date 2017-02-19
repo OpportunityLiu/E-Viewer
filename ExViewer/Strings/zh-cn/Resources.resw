@@ -430,7 +430,7 @@
   <data name="ImagePageImageFileInfoDefault" xml:space="preserve">
     <value>图片未加载完成。</value>
   </data>
-  <data name="GalleryPageTagNameSpaceColumnDefinition.Width" xml:space="preserve">
+  <data name="GalleryPageTagNamespaceColumnDefinition.Width" xml:space="preserve">
     <value>68</value>
   </data>
   <data name="EhWikiDialogContentDialog.PrimaryButtonText" xml:space="preserve">

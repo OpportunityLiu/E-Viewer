@@ -279,4 +279,7 @@
   <data name="AboutContent" xml:space="preserve">
     <value />
   </data>
+  <data name="ExcludedTagNamespaces" xml:space="preserve">
+    <value>排除标签类型</value>
+  </data>
 </root>
