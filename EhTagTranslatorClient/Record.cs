@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using System.Diagnostics;
-using NameSpace = ExClient.NameSpace;
+using Namespace = ExClient.Namespace;
 
 namespace EhTagTranslatorClient
 {
@@ -23,21 +23,21 @@ namespace EhTagTranslatorClient
 		    (?<{nameof(Introduction)}>.*?)
 		    \s*(?<!\\)\|?\s*$", RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace);
 
-        public static IEnumerable<Record> Analyze(IInputStream stream, NameSpace nameSpace)
+        public static IEnumerable<Record> Analyze(IInputStream stream, Namespace @namespace)
         {
             using(stream)
             {
                 var reader = new StreamReader(stream.AsStreamForRead());
                 while(!reader.EndOfStream)
                 {
-                    var r = AnalyzeLine(reader.ReadLine(), nameSpace);
+                    var r = AnalyzeLine(reader.ReadLine(), @namespace);
                     if(r != null)
                         yield return r;
                 }
             }
         }
 
-        internal static Record AnalyzeLine(string line, NameSpace nameSpace)
+        internal static Record AnalyzeLine(string line, Namespace @namespace)
         {
             var match = lineRegex.Match(line);
             if(!match.Success)
@@ -47,7 +47,7 @@ namespace EhTagTranslatorClient
                 return null;
             var tra = match.Groups[nameof(Translated)].Value;
             var intro = match.Groups[nameof(Introduction)].Value;
-            return new Record(nameSpace, unescape(ori), unescape(tra), unescape(intro));
+            return new Record(@namespace, unescape(ori), unescape(tra), unescape(intro));
         }
 
         private static string unescape(string value)
@@ -63,9 +63,9 @@ namespace EhTagTranslatorClient
             return value;
         }
 
-        private Record(NameSpace nameSpace, string original, string translated, string introduction)
+        private Record(Namespace @namespace, string original, string translated, string introduction)
         {
-            this.NameSpace = nameSpace;
+            this.Namespace = @namespace;
             this.Original = original;
             this.Translated = new MarkdownText(translated);
             this.Introduction = new MarkdownText(introduction);
@@ -86,7 +86,7 @@ namespace EhTagTranslatorClient
             get;
         }
 
-        public NameSpace NameSpace
+        public Namespace Namespace
         {
             get;
         }

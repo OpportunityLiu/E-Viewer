@@ -20,15 +20,22 @@ namespace ExClient.Settings
             ApplyChanges();
         }
 
-        private readonly Dictionary<Type, SettingProvider> items = new Dictionary<Type, SettingProvider>
+        private readonly Dictionary<string, SettingProvider> items = new Dictionary<string, SettingProvider>
         {
-            [typeof(DefaultSettingProvider)] = new DefaultSettingProvider(),
-            [typeof(HahProxySettingProvider)] = new HahProxySettingProvider(),
-            [typeof(ExcludedLanguagesSettingProvider)] = new ExcludedLanguagesSettingProvider()
+            ["Default"] = new DefaultSettingProvider(),
+            [nameof(HahProxy)] = new HahProxySettingProvider(),
+            [nameof(ExcludedLanguages)] = new ExcludedLanguagesSettingProvider(),
+            [nameof(ExcludedTagNamespaces)] = new ExcludedTagNamespacesSettingProvider()
         };
 
-        public HahProxySettingProvider HahProxy => (HahProxySettingProvider)items[typeof(HahProxySettingProvider)];
-        public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)items[typeof(ExcludedLanguagesSettingProvider)];
+        private SettingProvider getProvider([System.Runtime.CompilerServices.CallerMemberName]string key = null)
+        {
+            return items[key];
+        }
+
+        public HahProxySettingProvider HahProxy => (HahProxySettingProvider)getProvider();
+        public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)getProvider();
+        public ExcludedTagNamespacesSettingProvider ExcludedTagNamespaces => (ExcludedTagNamespacesSettingProvider)getProvider();
 
         internal void ApplyChanges()
         {
@@ -37,7 +44,7 @@ namespace ExClient.Settings
                 Expires = DateTimeOffset.Now.AddYears(1),
                 HttpOnly = false,
                 Secure = false,
-                Value = string.Join("-", items.Values.Select(s => s.GetCookieContent()).ToArray())
+                Value = string.Join("-", items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray())
             };
             owner.CookieManager.SetCookie(cookie);
         }
@@ -46,7 +53,7 @@ namespace ExClient.Settings
         {
             internal override string GetCookieContent()
             {
-                return "ts_l";
+                return "ts_l-tr_2-rc_0";
             }
         }
 

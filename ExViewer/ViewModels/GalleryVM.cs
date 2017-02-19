@@ -33,7 +33,7 @@ namespace ExViewer.ViewModels
     {
         public TagList(IEnumerable<Tag> items) : base(items) { }
 
-        public NameSpace NameSpace => this.FirstOrDefault()?.NameSpace ?? NameSpace.Misc;
+        public Namespace Namespace => this.FirstOrDefault()?.Namespace ?? Namespace.Misc;
     }
 
     public class GalleryVM : ViewModelBase
@@ -335,9 +335,9 @@ namespace ExViewer.ViewModels
                 if(gallery == null)
                     return null;
                 var query = from tag in gallery.Tags
-                            group tag by tag.NameSpace into taggroup
+                            group tag by tag.Namespace into taggroup
                             select new TagList(taggroup);
-                return new SortedSet<TagList>(query, Comparer<TagList>.Create((x, y) => x.NameSpace - y.NameSpace));
+                return new SortedSet<TagList>(query, Comparer<TagList>.Create((x, y) => x.Namespace - y.Namespace));
             }
         }
 

@@ -6,29 +6,35 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Globalization" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Xml" #>
 <#@ import namespace="System.Web" #>
 <#@ output extension=".tt.cs" #>
 <#
+
+
+
     // TODO: 修改相关配置。
     // 检索 resw 的路径。
     string ResourcePath = "Strings";
-    // 生成辅助类的命名空间，默认使用 "<ProjectDefaultNamespace>.LocalizedStrings"。
-    string LocalizedStringsNameSpace = "";
     // 检索 resw 并生成注释时使用的语言相对 ResourcePath 的路径。
     string SourceLanguagePath = "en";
+    // 生成辅助类的命名空间，默认使用 "<ProjectDefaultNamespace>.LocalizedStrings"。
+    string LocalizedStringsNamespace = null;
+    // 生成辅助类的修饰符
+    string modifier = "public";
     // 是否为默认工程，决定是否需要显式定义资源路径。
     bool IsDefaultProject = true;
-#>
-<#
     //是否对生成的代码启用调试。
     bool DebugGeneratedCode = false;
+
+
+
 #>
 <#
-    var nameSpace = string.IsNullOrWhiteSpace(LocalizedStringsNameSpace) ? 
-        (GetProjectDefaultNamespace()+ ".LocalizedStrings") :
-        LocalizedStringsNameSpace;
+    var ns = LocalizedStringsNamespace ?? 
+        (GetProjectDefaultNamespace()+ ".LocalizedStrings");
 
     // 用于存放所有 resw 的 key。
     var names = new Dictionary<string, Dictionary<string, string>>();
@@ -70,10 +76,15 @@
         if(content.Count != 0)
             names.Add(className, content);
     }
+
+    if(!string.IsNullOrWhiteSpace(ns))
+    {
 #>
-namespace <#=nameSpace#>
+namespace <#=ns#>
 {    
 <#
+    }
+
     foreach(var localizedClass in names)
     {
         var resourcePath = (IsDefaultProject ? "" : GetProjectAssemblyName()) + "/" + localizedClass.Key;
@@ -83,28 +94,30 @@ namespace <#=nameSpace#>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 <#
         }
+        var cache = GetRandomName("_cache");
+        var loader = GetRandomName("_loader");
 #>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator","1.0")]
-    public static class <#=localizedClass.Key#>
+    <#=modifier#> static class <#=Refine(localizedClass.Key)#>
     {
-        private static readonly global::System.Collections.Generic.Dictionary<string, string> cache 
+        private static readonly global::System.Collections.Generic.Dictionary<string, string> <#=cache#>
             = new global::System.Collections.Generic.Dictionary<string, string>();
 
-        private static readonly global::Windows.ApplicationModel.Resources.ResourceLoader loader 
+        private static readonly global::Windows.ApplicationModel.Resources.ResourceLoader <#=loader#>
             = global::Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse("<#=resourcePath#>");
 
         public static string GetString(string resourceKey)
         {
             string value;
-            if(cache.TryGetValue(resourceKey, out value))
+            if(<#=cache#>.TryGetValue(resourceKey, out value))
                 return value;
             else
-                return cache[resourceKey] = loader.GetString(resourceKey);
+                return <#=cache#>[resourceKey] = <#=loader#>.GetString(resourceKey);
         }
 
         public static void ClearCache()
         {
-            cache.Clear();
+            <#=cache#>.Clear();
         }
 <#
         foreach(var name in localizedClass.Value)
@@ -123,12 +136,12 @@ namespace <#=nameSpace#>
                 if(comment == null)
                     break;
 #>
-        /// <#=comment#>
+        /// <para><#=comment#></para>
 <#
             }
 #>
         /// </summary>
-        public static string <#=name.Key#> => GetString("<#=name.Key#>");
+        public static string <#=Refine(name.Key)#> => GetString("<#=name.Key#>");
 <#
         }
 #>
@@ -136,8 +149,15 @@ namespace <#=nameSpace#>
 
 <#
     }
+    
+    if(!string.IsNullOrWhiteSpace(ns))
+    {
 #>
 }
+<#
+    }
+#>
+
 <#+
     // 获取当前 T4 模板所在的工程的目录。
     public string GetProjectPath()
@@ -161,5 +181,164 @@ namespace <#=nameSpace#>
         EnvDTE.DTE dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
         EnvDTE.Project project = (EnvDTE.Project)dte.Solution.FindProjectItem(this.Host.TemplateFile).ContainingProject;
         return project.Properties.Item("AssemblyName").Value.ToString();
+    }
+
+    private HashSet<string> keywords = new HashSet<string>()
+    {
+        "abstract",
+        "as",
+        "base",
+        "bool",
+        "break",
+        "byte",
+        "case",
+        "catch",
+        "char",
+        "checked",
+        "class",
+        "const",
+        "continue",
+        "decimal",
+        "default",
+        "delegate",
+        "do",
+        "double",
+        "else",
+        "enum",
+        "event",
+        "explicit",
+        "extern",
+        "false",
+        "finally",
+        "fixed",
+        "float",
+        "for",
+        "foreach",
+        "goto",
+        "if",
+        "implicit",
+        "in",
+        "int",
+        "interface",
+        "internal",
+        "is",
+        "lock",
+        "long",
+        "namespace",
+        "new",
+        "null",
+        "object",
+        "operator",
+        "out",
+        "override",
+        "params",
+        "private",
+        "protected",
+        "public",
+        "readonly",
+        "ref",
+        "return",
+        "sbyte",
+        "sealed",
+        "short",
+        "sizeof",
+        "stackalloc",
+        "static",
+        "string",
+        "struct",
+        "switch",
+        "this",
+        "throw",
+        "true",
+        "try",
+        "typeof",
+        "uint",
+        "ulong",
+        "unchecked",
+        "unsafe",
+        "ushort",
+        "using",
+        "virtual",
+        "void",
+        "volatile",
+        "while",
+        "add",
+        "alias",
+        "ascending",
+        "async",
+        "await",
+        "descending",
+        "dynamic",
+        "from",
+        "get",
+        "global",
+        "group",
+        "into",
+        "join",
+        "let",
+        "orderby",
+        "partial", 
+        "remove",
+        "select",
+        "set",
+        "value",
+        "var",
+        "where", 
+        "yield"
+    };
+
+    private HashSet<string> used = new HashSet<string>()
+    {
+        "GetString",
+        "ClearCache",
+        "ReferenceEquals",
+        "Equals"
+    };
+
+    public string Refine(string name)
+    {
+        if(keywords.Contains(name))
+            return "@" + name;
+        if(used.Contains(name))
+            return "_" + name;
+        if(string.IsNullOrWhiteSpace(name))
+            return GetRandomName("__");
+        if(!isValidStartChar(name[0]))
+            name = "_" + name;
+        for(var i = 1; i < name.Length; i++)
+        {
+            if(!isValidPartChar(name[i]))
+                name = name.Replace(name[i], '_');
+        }
+        return name;
+    }
+
+    private bool isValidStartChar(char ch)
+    {
+        return ch == '_' || isLetter(ch); 
+    }
+
+    private bool isValidPartChar(char ch)
+    {
+        var c = (int)char.GetUnicodeCategory(ch);
+        return c == 5
+            || c == 6
+            || c == 8
+            || c == 18
+            || c == 15
+            || isLetter(ch);
+    }
+
+    private bool isLetter(char ch)
+    {
+        var c = (int)char.GetUnicodeCategory(ch);
+        return c < 5 || c == 9;
+    }
+
+    private Random ran = new Random();
+
+    public string GetRandomName(string head)
+    {
+        return head + ran.Next();
     }
 #>

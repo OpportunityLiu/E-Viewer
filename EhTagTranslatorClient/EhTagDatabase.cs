@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
-using NameSpace = ExClient.NameSpace;
+using Namespace = ExClient.Namespace;
 
 namespace EhTagTranslatorClient
 {
@@ -13,20 +13,20 @@ namespace EhTagTranslatorClient
     {
         private static readonly Uri wikiDbRootUri = new Uri("ms-appx:///EhTagTranslatorClient/Data/");
 
-        private static async Task<IReadOnlyDictionary<string, Record>> loadDatabaseTableAsync(NameSpace nameSpace)
+        private static async Task<IReadOnlyDictionary<string, Record>> loadDatabaseTableAsync(Namespace @namespace)
         {
-            var dbUri = new Uri(wikiDbRootUri, $"{nameSpace.ToString().ToLowerInvariant()}.md");
+            var dbUri = new Uri(wikiDbRootUri, $"{@namespace.ToString().ToLowerInvariant()}.md");
             var file = await StorageFile.GetFileFromApplicationUriAsync(dbUri);
-            return Record.Analyze(await file.OpenSequentialReadAsync(), nameSpace).ToDictionary(record => record.Original);
+            return Record.Analyze(await file.OpenSequentialReadAsync(), @namespace).ToDictionary(record => record.Original);
         }
 
-        public static IAsyncOperation<IReadOnlyDictionary<NameSpace, IReadOnlyDictionary<string, Record>>> LoadDatabaseAsync()
+        public static IAsyncOperation<IReadOnlyDictionary<Namespace, IReadOnlyDictionary<string, Record>>> LoadDatabaseAsync()
         {
-            return Task.Run<IReadOnlyDictionary<NameSpace, IReadOnlyDictionary<string, Record>>>(async () =>
+            return Task.Run<IReadOnlyDictionary<Namespace, IReadOnlyDictionary<string, Record>>>(async () =>
             {
-                var l = new Dictionary<NameSpace, IReadOnlyDictionary<string, Record>>();
+                var l = new Dictionary<Namespace, IReadOnlyDictionary<string, Record>>();
                 var t = new List<Task<IReadOnlyDictionary<string, Record>>>();
-                foreach(NameSpace item in Enum.GetValues(typeof(NameSpace)))
+                foreach(Namespace item in Enum.GetValues(typeof(Namespace)))
                 {
                     t.Add(loadDatabaseTableAsync(item));
                 }
@@ -34,7 +34,7 @@ namespace EhTagTranslatorClient
                 foreach(var item in t)
                 {
                     var result = item.Result;
-                    l.Add(result.Values.First().NameSpace, result);
+                    l.Add(result.Values.First().Namespace, result);
                 }
                 return l;
             }).AsAsyncOperation();

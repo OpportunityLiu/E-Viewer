@@ -107,6 +107,9 @@
     </PRIResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ExcludedTagNamespacesSelector.xaml.cs">
+      <DependentUpon>ExcludedTagNamespacesSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ExcludedLanguagesSelector.xaml.cs">
       <DependentUpon>ExcludedLanguagesSelector.xaml</DependentUpon>
     </Compile>
@@ -283,6 +286,10 @@
     <Page Include="Controls\CategorySelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ExcludedTagNamespacesSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ExcludedLanguagesSelector.xaml">
       <SubType>Designer</SubType>

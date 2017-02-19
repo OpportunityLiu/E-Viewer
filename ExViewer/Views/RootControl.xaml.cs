@@ -56,10 +56,11 @@ namespace ExViewer.Views
 
         private void OnGotFocus(object sender, RoutedEventArgs e)
         {
-            FrameworkElement focus = FocusManager.GetFocusedElement() as FrameworkElement;
+            var focus = FocusManager.GetFocusedElement() as FrameworkElement;
             if(focus != null)
             {
-                Debug.WriteLine(focus.Name + " (" + focus.GetType().ToString() + ")", "Focus state");
+                var c = focus as Control;
+                Debug.WriteLine($"{focus.Name}({focus.GetType()}) {c?.FocusState}", "Focus state");
             }
 #endif
         }
@@ -98,7 +99,7 @@ namespace ExViewer.Views
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
-        }        
+        }
 
         private async void Control_Loading(FrameworkElement sender, object args)
         {

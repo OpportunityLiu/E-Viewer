@@ -124,11 +124,11 @@ namespace ExViewer.Views
         }
     }
 
-    public class NameSpaceToFriendlyStringConverter : ValueConverter
+    public class NamespaceToFriendlyStringConverter : ValueConverter
     {
         public override object Convert(object value, Type targetType, object parameter, string language)
         {
-            return ((NameSpace)value).ToFriendlyNameString();
+            return ((Namespace)value).ToFriendlyNameString();
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, string language)

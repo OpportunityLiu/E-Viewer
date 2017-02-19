@@ -55,6 +55,8 @@ namespace ExClient.Settings
 
         internal override string GetCookieContent()
         {
+            if(items.Count == 0)
+                return null;
             return $"xl_{string.Join("x", items)}";
         }
 

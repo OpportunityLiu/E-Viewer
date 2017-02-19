@@ -5,31 +5,33 @@ using System.Text;
 
 namespace ExClient
 {
-    public enum NameSpace
+    [Flags]
+    public enum Namespace
     {
-        Reclass,
-        Language,
-        Parody,
-        Character,
-        Group,
-        Artist,
-        Male,
-        Female,
-        Misc
+        Misc = 0,
+
+        Reclass = 1,
+        Language = 2,
+        Parody = 4,
+        Character = 8,
+        Group = 16,
+        Artist = 32,
+        Male = 64,
+        Female = 128,
     }
 
-    public static class NameSpaceExtention
+    public static class NamespaceExtention
     {
-        public static string ToFriendlyNameString(this NameSpace that)
+        public static string ToFriendlyNameString(this Namespace that)
         {
-            if(Enum.IsDefined(typeof(NameSpace), that))
-                return LocalizedStrings.NameSpace.GetString(that.ToString());
+            if(Enum.IsDefined(typeof(Namespace), that))
+                return LocalizedStrings.Namespace.GetString(that.ToString());
             else
             {
                 var represent = new StringBuilder(that.ToString());
-                foreach(var item in Enum.GetNames(typeof(NameSpace)))
+                foreach(var item in Enum.GetNames(typeof(Namespace)))
                 {
-                    represent.Replace(item, LocalizedStrings.NameSpace.GetString(item));
+                    represent.Replace(item, LocalizedStrings.Namespace.GetString(item));
                 }
                 return represent.ToString();
             }
@@ -46,13 +48,13 @@ namespace ExClient
             var splited = content.Split(split, 2);
             if(splited.Length == 2)
             {
-                NameSpace = (NameSpace)Enum.Parse(typeof(NameSpace), splited[0], true);
+                Namespace = (Namespace)Enum.Parse(typeof(Namespace), splited[0], true);
                 Content = splited[1];
             }
             else
             {
                 Content = splited[0];
-                NameSpace = NameSpace.Misc;
+                Namespace = Namespace.Misc;
             }
             this.Owner = owner;
         }
@@ -62,7 +64,7 @@ namespace ExClient
             get;
         }
 
-        public NameSpace NameSpace
+        public Namespace Namespace
         {
             get;
         }
@@ -76,8 +78,8 @@ namespace ExClient
 
         private string getKeyWord()
         {
-            if(NameSpace != NameSpace.Misc)
-                return $"{NameSpace.ToString().ToLowerInvariant()}:\"{Content}$\"";
+            if(Namespace != Namespace.Misc)
+                return $"{Namespace.ToString().ToLowerInvariant()}:\"{Content}$\"";
             else
                 return $"\"{Content}$\"";
         }
@@ -106,9 +108,9 @@ namespace ExClient
 
         public override string ToString()
         {
-            if(NameSpace == NameSpace.Misc)
+            if(Namespace == Namespace.Misc)
                 return Content;
-            return $"{NameSpace}:{Content}";
+            return $"{Namespace}:{Content}";
         }
     }
 }

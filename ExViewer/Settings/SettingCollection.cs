@@ -1,6 +1,7 @@
 ﻿using ApplicationDataManager.Settings;
 using ExClient;
 using ExClient.Settings;
+using System.Diagnostics;
 using Windows.UI.Xaml;
 
 namespace ExViewer.Settings
@@ -56,6 +57,20 @@ namespace ExViewer.Settings
             set
             {
                 SetRoaming(value);
+            }
+        }
+
+        [Setting("Searching", Index = 35, SettingPresenterTemplate = "ExcludedTagNamespacesTemplate")]
+        public Namespace ExcludedTagNamespaces
+        {
+            get
+            {
+                return GetRoaming(Namespace.Misc);
+            }
+            set
+            {
+                SetRoaming(value);
+                Client.Current.Settings.ExcludedTagNamespaces.Value = value;
             }
         }
 

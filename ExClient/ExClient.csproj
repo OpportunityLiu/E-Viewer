@@ -105,8 +105,10 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
-    <PRIResource Include="Strings\zh-cn\NameSpace.resw" />
-    <PRIResource Include="Strings\zh-cn\Category.resw" />
+    <PRIResource Include="Strings\zh-cn\Namespace.resw" />
+    <PRIResource Include="Strings\zh-cn\Category.resw">
+      <SubType>Designer</SubType>
+    </PRIResource>
     <PRIResource Include="Strings\zh-cn\Resources.resw" />
     <PRIResource Include="Strings\en\Resources.resw" />
   </ItemGroup>
@@ -154,6 +156,7 @@
     <Compile Include="Gallery.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingProvider.cs" />
+    <Compile Include="Settings\ExcludedTagNamespacesSettingProvider.cs" />
     <Compile Include="Strings\Strings.tt.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -163,7 +166,7 @@
     <Compile Include="TorrentInfo.cs" />
     <Compile Include="Launch\UriLauncher.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
-    <PRIResource Include="Strings\en\NameSpace.resw" />
+    <PRIResource Include="Strings\en\Namespace.resw" />
     <PRIResource Include="Strings\en\Category.resw" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

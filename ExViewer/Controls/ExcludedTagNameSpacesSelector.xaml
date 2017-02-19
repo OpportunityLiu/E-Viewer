@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="ExViewer.Controls.ExcludedTagNamespacesSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:ExViewer.Controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sys="using:System"
+             xmlns:client="using:ExClient"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="400">
+    <GridView x:Name="gv"
+              HorizontalAlignment="Center">
+        <GridView.ItemContainerStyle>
+            <Style TargetType="GridViewItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="GridViewItem">
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Margin"
+                        Value="0" />
+                <Setter Property="MinHeight"
+                        Value="0" />
+                <Setter Property="MinWidth"
+                        Value="0" />
+            </Style>
+        </GridView.ItemContainerStyle>
+        <GridView.ItemTemplate>
+            <DataTemplate x:DataType="client:Namespace">
+                <CheckBox Content="{x:Bind Converter={StaticResource NamespaceToFriendlyStringConverter}}"
+                          Checked="CheckBox_Checked"
+                          Unchecked="CheckBox_Unchecked"
+                          Loaded="CheckBox_Loaded" />
+            </DataTemplate>
+        </GridView.ItemTemplate>
+        <client:Namespace>Reclass</client:Namespace>
+        <client:Namespace>Language</client:Namespace>
+        <client:Namespace>Parody</client:Namespace>
+        <client:Namespace>Character</client:Namespace>
+        <client:Namespace>Group</client:Namespace>
+        <client:Namespace>Artist</client:Namespace>
+        <client:Namespace>Male</client:Namespace>
+        <client:Namespace>Female</client:Namespace>
+    </GridView>
+</UserControl>

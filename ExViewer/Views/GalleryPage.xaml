@@ -20,8 +20,6 @@
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
-        <local:NameSpaceToFriendlyStringConverter x:Key="NameSpaceToFriendlyStringConverter" />
-
         <MenuFlyout x:Name="mfo_Tag">
             <MenuFlyoutItem IsHitTestVisible="False"
                             IsTabStop="False"
@@ -367,7 +365,7 @@
                                 <DataTemplate x:DataType="VM:TagList">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition x:Uid="GalleryPageTagNameSpaceColumnDefinition"
+                                            <ColumnDefinition x:Uid="GalleryPageTagNamespaceColumnDefinition"
                                                               Width="200" />
                                             <ColumnDefinition Width="8" />
                                             <ColumnDefinition />
@@ -375,7 +373,7 @@
                                         <TextBlock Grid.Column="0"
                                                    Padding="2,0"
                                                    HorizontalAlignment="Right"
-                                                   Text="{x:Bind NameSpace, Converter={StaticResource NameSpaceToFriendlyStringConverter}}" />
+                                                   Text="{x:Bind Namespace, Converter={StaticResource NamespaceToFriendlyStringConverter}}" />
                                         <GridView Grid.Column="2"
                                                   Padding="0,0,0,4"
                                                   IsItemClickEnabled="True"
