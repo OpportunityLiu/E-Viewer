@@ -8,7 +8,7 @@ namespace ExClient
     [Flags]
     public enum Namespace
     {
-        Misc = 0,
+        Unknown = 0,
 
         Reclass = 1,
         Language = 2,
@@ -18,6 +18,7 @@ namespace ExClient
         Artist = 32,
         Male = 64,
         Female = 128,
+        Misc = 256
     }
 
     public static class NamespaceExtention
@@ -36,6 +37,11 @@ namespace ExClient
                 return represent.ToString();
             }
         }
+
+        public static bool IsValid(this Namespace that)
+        {
+            return that != Namespace.Unknown && Enum.IsDefined(typeof(Namespace), that);
+        }
     }
 
     public sealed class Tag
@@ -43,25 +49,24 @@ namespace ExClient
         // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };
         private static readonly char[] split = new char[] { ':' };
 
-        internal Tag(Gallery owner, string content)
+        public static Tag Parse(string content)
         {
             var splited = content.Split(split, 2);
             if(splited.Length == 2)
-            {
-                Namespace = (Namespace)Enum.Parse(typeof(Namespace), splited[0], true);
-                Content = splited[1];
-            }
+                return new Tag((Namespace)Enum.Parse(typeof(Namespace), splited[0], true), splited[1]);
             else
-            {
-                Content = splited[0];
-                Namespace = Namespace.Misc;
-            }
-            this.Owner = owner;
+                return new Tag(Namespace.Misc, content);
+
         }
 
-        public Gallery Owner
+        public Tag(Namespace @namespace, string content)
         {
-            get;
+            if(!@namespace.IsValid())
+                throw new ArgumentOutOfRangeException(nameof(@namespace));
+            if(string.IsNullOrWhiteSpace(content))
+                throw new ArgumentNullException(nameof(content));
+            this.Namespace = @namespace;
+            this.Content = content.Trim();
         }
 
         public Namespace Namespace
@@ -74,7 +79,7 @@ namespace ExClient
             get;
         }
 
-        private Client GetClient() => Owner?.Owner ?? Client.Current;
+        private Client getClient() => Client.Current;
 
         private string getKeyWord()
         {
@@ -86,17 +91,17 @@ namespace ExClient
 
         public SearchResult Search()
         {
-            return GetClient().Search(getKeyWord());
+            return getClient().Search(getKeyWord());
         }
 
         public SearchResult Search(Category filter)
         {
-            return GetClient().Search(getKeyWord(), filter);
+            return getClient().Search(getKeyWord(), filter);
         }
 
         public SearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
         {
-            return GetClient().Search(getKeyWord(), filter, advancedSearch);
+            return getClient().Search(getKeyWord(), filter, advancedSearch);
         }
 
         public static Uri WikiUri

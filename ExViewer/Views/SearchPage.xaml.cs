@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using ExViewer.ViewModels;
 using System.Threading.Tasks;
+using Windows.UI.ViewManagement;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -36,9 +37,12 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
+        private int navId;
+
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            navId++;
             if(Client.Current.NeedLogOn)
             {
                 await RootControl.RootController.RequestLogOn();
@@ -48,7 +52,7 @@ namespace ExViewer.Views
             {
                 VM?.SearchResult.Reset();
                 await Task.Delay(100);
-                btnPane.Focus(FocusState.Pointer);
+                btnPane.Focus(FocusState.Programmatic);
             }
             if(e.NavigationMode == NavigationMode.Back)
             {
@@ -126,20 +130,23 @@ namespace ExViewer.Views
 
         private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput;
+            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput
+                || args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen;
+            var currentId = navId;
             if(needAutoComplete)
             {
                 var r = await VM.LoadSuggestion(sender.Text);
-                if(args.CheckCurrent())
+                if(args.CheckCurrent() && currentId == navId)
+                {
                     asb.ItemsSource = r;
+                    Debug.WriteLine("updated");
+                }
             }
         }
 
         private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            if(!VM.AutoCompleteFinished(args.SelectedItem))
-                return;
-            sender.Focus(FocusState.Programmatic);
+            sender.ItemsSource = null;
         }
 
         private void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)

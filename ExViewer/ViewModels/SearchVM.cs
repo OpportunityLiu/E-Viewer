@@ -43,6 +43,7 @@ namespace ExViewer.ViewModels
         {
             var ns = Enum.GetNames(typeof(Namespace)).ToList();
             ns.Remove(Namespace.Misc.ToString());
+            ns.Remove(Namespace.Unknown.ToString());
             for(int i = 0; i < ns.Count; i++)
             {
                 ns[i] = ns[i].ToLowerInvariant();
