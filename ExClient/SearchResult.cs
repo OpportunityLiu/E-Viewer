@@ -49,7 +49,7 @@ namespace ExClient
         private SearchResult(Client client, string keyWord, Category category, AdvancedSearchOptions advancedSearch)
             : base(0)
         {
-            this.client = client;
+            this.owner = client;
             this.KeyWord = keyWord ?? "";
             this.Category = category;
             this.AdvancedSearch = advancedSearch;
@@ -71,7 +71,7 @@ namespace ExClient
             {
                 var uri = createUri();
                 searchResultBaseUri = uri.OriginalString;
-                var lans = client.HttpClient.GetInputStreamAsync(uri);
+                var lans = owner.HttpClient.GetInputStreamAsync(uri);
                 token.Register(lans.Cancel);
                 using(var ans = await lans)
                 {
@@ -139,16 +139,26 @@ namespace ExClient
                 var table = (from node in doc.DocumentNode.Descendants("table")
                              where node.GetAttributeValue("class", "") == "itg"
                              select node).Single();
-                var records = from node in table.Descendants("tr")
-                              where node.GetAttributeValue("class", null) != null
-                              let detail = (from node2 in node.Descendants("a")
-                                            where node2.GetAttributeValue("onmouseover", "").StartsWith("show_image_pane")
-                                            select node2).SingleOrDefault()
-                              where detail != null
-                              let match = gLinkMatcher.Match(detail.GetAttributeValue("href", ""))
-                              where match.Success
-                              select new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value);
-                return await Gallery.FetchGalleriesAsync(records.ToList());
+                var gInfoList = new List<GalleryInfo>(25);
+                var gFavList = new List<FavoriteCategory>(25);
+                foreach(var node in table.ChildNodes.Skip(3))//skip table header
+                {
+                    if(node.NodeType == HtmlNodeType.Text)
+                        continue;
+                    var infoNode = node.ChildNodes[2].FirstChild;
+                    var attributeNode = infoNode.ChildNodes[1];
+                    var detailNode = infoNode.ChildNodes[2];
+                    var match = gLinkMatcher.Match(detailNode.FirstChild.GetAttributeValue("href", ""));
+                    var favNode = attributeNode.FirstChild;
+                    gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value));
+                    gFavList.Add(owner.Favorites.GetCategory(favNode));
+                }
+                var galleries = await Gallery.FetchGalleriesAsync(gInfoList);
+                for(int i = 0; i < galleries.Count; i++)
+                {
+                    galleries[i].FavoriteCategory = gFavList[i];
+                }
+                return galleries;
             });
         }
 
@@ -167,7 +177,7 @@ namespace ExClient
             get;
         }
 
-        private Client client;
+        private Client owner;
 
         private string searchResultBaseUri;
 
@@ -179,7 +189,7 @@ namespace ExClient
             return Run(async token =>
             {
                 var uri = new Uri($"{this.searchResultBaseUri}&page={pageIndex}");
-                var getStream = client.HttpClient.GetInputStreamAsync(uri);
+                var getStream = owner.HttpClient.GetInputStreamAsync(uri);
                 token.Register(getStream.Cancel);
                 using(var stream = (await getStream).AsStreamForRead())
                 {

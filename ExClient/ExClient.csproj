@@ -115,6 +115,8 @@
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
     <Compile Include="CachedGallery.cs" />
+    <Compile Include="FavoriteCategory.cs" />
+    <Compile Include="FavoriteCollection.cs" />
     <Compile Include="GalleryImagePlaceHolder.cs" />
     <Compile Include="Helpers\AsyncWarpper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />

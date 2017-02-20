@@ -28,6 +28,8 @@ namespace EhTagTranslatorClient
                 var t = new List<Task<IReadOnlyDictionary<string, Record>>>();
                 foreach(Namespace item in Enum.GetValues(typeof(Namespace)))
                 {
+                    if(item == Namespace.Unknown)
+                        continue;
                     t.Add(loadDatabaseTableAsync(item));
                 }
                 await Task.WhenAll(t);

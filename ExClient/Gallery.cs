@@ -2,25 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using HtmlAgilityPack;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Net;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using System.Threading;
 using Windows.Storage;
-using Windows.Storage.Search;
 using ExClient.Models;
-using GalaSoft.MvvmLight.Threading;
-using Windows.Globalization;
 using System.Collections;
+using Windows.Web.Http;
 
 namespace ExClient
 {
@@ -194,18 +189,18 @@ namespace ExClient
 
             public int @namespace => 1;
 
-            public IList<GalleryInfo> gidlist
+            public ICollection<GalleryInfo> gidlist
             {
                 get;
             }
 
-            public GalleryData(IList<GalleryInfo> list)
+            public GalleryData(ICollection<GalleryInfo> list)
             {
                 gidlist = list;
             }
         }
 
-        public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IList<GalleryInfo> galleryInfo)
+        public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(ICollection<GalleryInfo> galleryInfo)
         {
             if(galleryInfo == null)
                 throw new ArgumentNullException(nameof(galleryInfo));
@@ -314,7 +309,7 @@ namespace ExClient
             this.FileSize = model.FileSize;
             this.Expunged = model.Expunged;
             this.Rating = model.Rating;
-            this.Tags = JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => new Tag(this, t)).ToList();
+            this.Tags = JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)).ToList().AsReadOnly();
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
             this.setThumbUriWhenInit = setThumbUriSource;
@@ -353,20 +348,20 @@ namespace ExClient
             {
                 this.Token = token;
                 this.ArchiverKey = archiver_key;
-                this.Title = WebUtility.HtmlDecode(title);
-                this.TitleJpn = WebUtility.HtmlDecode(title_jpn);
+                this.Title = HtmlEntity.DeEntitize(title);
+                this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
                 Category ca;
                 if(!categoriesForRestApi.TryGetValue(category, out ca))
                     ca = Category.Unspecified;
                 this.Category = ca;
-                this.Uploader = WebUtility.HtmlDecode(uploader);
+                this.Uploader = HtmlEntity.DeEntitize(uploader);
                 this.Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture));
                 this.RecordCount = int.Parse(filecount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
                 this.FileSize = filesize;
                 this.Expunged = expunged;
                 this.Rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
                 this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
-                this.Tags = new ReadOnlyCollection<Tag>(tags.Select(tag => new Tag(this, tag)).ToList());
+                this.Tags = tags.Select(tag => Tag.Parse(tag)).ToList().AsReadOnly();
                 this.ThumbUri = toExUri(thumb);
             }
             catch(Exception)
@@ -541,10 +536,9 @@ namespace ExClient
             {
                 if(Tags == null)
                     return default(Language);
-                var languageTags = Tags.Where(t => t.Namespace == Namespace.Language).ToArray();
                 var modi = LanguageModifier.None;
                 var language = (string)null;
-                foreach(var item in languageTags)
+                foreach(var item in this.Tags.Where(t => t.Namespace == Namespace.Language))
                 {
                     if(modi == LanguageModifier.None)
                     {
@@ -570,11 +564,39 @@ namespace ExClient
             }
         }
 
+        public FavoriteCategory FavoriteCategory
+        {
+            get
+            {
+                return favorite;
+            }
+            protected internal set
+            {
+                Set(ref favorite, value);
+            }
+        }
+
+        private FavoriteCategory favorite;
+
+        public string FavoriteNote
+        {
+            get
+            {
+                return favNote;
+            }
+            protected internal set
+            {
+                Set(ref favNote, value);
+            }
+        }
+
+        private string favNote;
+
         #endregion
 
-        public Client Owner
+        protected internal Client Owner
         {
-            get; internal set;
+            get; protected set;
         }
 
         public Uri GalleryUri
@@ -606,22 +628,32 @@ namespace ExClient
             });
         }
 
-        private static Uri galleryBaseUri = new Uri(Client.RootUri, "g/");
+        private static readonly Uri galleryBaseUri = new Uri(Client.RootUri, "g/");
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
+        internal static readonly Regex favStyleMatcher = new Regex(@"background-position:\s*0\s*px\s+-(\d+)\s*px", RegexOptions.Compiled);
+
+        private void updateFavoriteInfo(HtmlDocument html)
+        {
+            var favNode = html.GetElementbyId("fav");
+            var favContentNode = favNode.Element("div");
+            this.FavoriteCategory = Owner.Favorites.GetCategory(favContentNode);
+        }
 
         protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
             return Task.Run(async () =>
             {
-                await GetFolderAsync();
-                var uri = new Uri(GalleryUri, $"?inline_set=ts_l&p={pageIndex.ToString()}{(comments == null ? "hc=1" : "")}");
-                var request = Owner.PostStrAsync(uri, null);
+                await this.GetFolderAsync();
+                var needLoadComments = comments == null;
+                var uri = new Uri(this.GalleryUri, $"?inline_set=ts_l&p={pageIndex.ToString()}{(needLoadComments ? "hc=1" : "")}");
+                var request = this.Owner.PostStrAsync(uri, null);
                 var res = await request;
                 Internal.ApiRequest.UpdateToken(res);
                 var html = new HtmlDocument();
                 html.LoadHtml(res);
-                if(comments == null)
-                    Comments = Comment.LoadComment(html);
+                updateFavoriteInfo(html);
+                if(needLoadComments)
+                    this.Comments = Comment.LoadComment(html);
                 var pcNodes = html.DocumentNode.Descendants("td")
                     .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
                     .Select(node =>
@@ -705,6 +737,33 @@ namespace ExClient
             {
                 Comments = await Comment.LoadCommentsAsync(this);
                 return comments;
+            });
+        }
+
+        private IEnumerable<KeyValuePair<string, string>> getInfo(string favcat, string favnote)
+        {
+            yield return new KeyValuePair<string, string>("apply", "Apply+Changes");
+            yield return new KeyValuePair<string, string>("favcat", favcat);
+            yield return new KeyValuePair<string, string>("favnote", favnote);
+            yield return new KeyValuePair<string, string>("update", "1");
+        }
+
+        private static readonly Regex favNoteMatcher = new Regex(@"'Note: (.+?) ';", RegexOptions.Compiled);
+
+        public IAsyncAction AddToFavorites(FavoriteCategory category, string note)
+        {
+            return Run(async token =>
+            {
+                var requestUri = new Uri(Client.RootUri, $"gallerypopups.php?gid={Id}&t={Token}&act=addfav");
+                var requestContent = new HttpFormUrlEncodedContent(getInfo(category == null ? "favdel" : category.CollectionIndex.ToString(), note));
+                var response = await Owner.HttpClient.PostAsync(requestUri, requestContent);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var match = favNoteMatcher.Match(responseContent, 1300);
+                if(match.Success)
+                    FavoriteNote = HtmlEntity.DeEntitize(match.Groups[1].Value);
+                else
+                    FavoriteNote = null;
+                FavoriteCategory = category;
             });
         }
 

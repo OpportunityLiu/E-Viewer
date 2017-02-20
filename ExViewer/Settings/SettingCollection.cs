@@ -65,7 +65,7 @@ namespace ExViewer.Settings
         {
             get
             {
-                return GetRoaming(Namespace.Misc);
+                return GetRoaming(Namespace.Unknown);
             }
             set
             {

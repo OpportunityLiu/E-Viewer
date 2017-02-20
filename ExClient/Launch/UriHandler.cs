@@ -353,7 +353,7 @@ namespace ExClient.Launch
             switch(data.Path0)
             {
             case "tag":
-                return Helpers.AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(new Tag(null, v).Search()));
+                return Helpers.AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(Tag.Parse(v).Search()));
             case "uploader":
                 return Helpers.AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search($"uploader:\"{v}\"")));
             }

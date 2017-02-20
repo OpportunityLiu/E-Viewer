@@ -166,6 +166,8 @@ namespace ExClient
 
         private readonly SettingCollection settings;
 
+        public FavoriteCollection Favorites { get; } = new FavoriteCollection();
+
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
 
