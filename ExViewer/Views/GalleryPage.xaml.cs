@@ -289,8 +289,8 @@ namespace ExViewer.Views
 
         private void pv_Loaded(object sender, RoutedEventArgs e)
         {
-            var sv_pv = (UIElement)VisualTreeHelperEx.GetFirstNamedChild(pv, "PivotItemPresenter");
-            var sv_pv2 = (UIElement)VisualTreeHelperEx.GetFirstNamedChild(pv, "HeaderClipper");
+            var sv_pv = VisualTreeHelperEx.GetFirstChild(pv, "PivotItemPresenter");
+            var sv_pv2 = VisualTreeHelperEx.GetFirstChild(pv, "HeaderClipper");
             sv_pv.PointerWheelChanged += pv_Content_PointerWheelChanged;
             sv_pv2.PointerWheelChanged += pv_Content_PointerWheelChanged;
             pv.Loaded -= pv_Loaded;
@@ -312,7 +312,7 @@ namespace ExViewer.Views
                 if(cb_top.IsOpen = !cb_top.IsOpen)
                 {
                     if(btn_MoreButton == null)
-                        btn_MoreButton = ((Button)VisualTreeHelperEx.GetFirstNamedChild(cb_top, "MoreButton"));
+                        btn_MoreButton = ((Button)VisualTreeHelperEx.GetFirstChild(cb_top, "MoreButton"));
                     btn_MoreButton.Focus(FocusState.Programmatic);
                 }
                 break;

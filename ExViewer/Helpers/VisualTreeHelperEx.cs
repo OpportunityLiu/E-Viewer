@@ -10,34 +10,30 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
 using static Windows.UI.Xaml.Media.VisualTreeHelper;
 
-namespace ExViewer
+namespace Windows.UI.Xaml.Media
 {
     public static class VisualTreeHelperEx
     {
-        public static FrameworkElement GetFirstNamedChild(DependencyObject reference, string childName)
+        public static FrameworkElement GetFirstChild(DependencyObject reference, string childName)
         {
-            return GetNamedChildren(reference, childName).FirstOrDefault();
+            return GetFirstChild<FrameworkElement>(reference, childName);
         }
 
-        public static IEnumerable<FrameworkElement> GetNamedChildren(DependencyObject reference, string childName)
+        public static IEnumerable<FrameworkElement> GetChildren(DependencyObject reference, string childName)
         {
-            if(string.IsNullOrEmpty(childName))
-                throw new ArgumentNullException(nameof(childName));
-            var searchQueue = new Queue<DependencyObject>();
-            searchQueue.Enqueue(reference);
-            while(searchQueue.Count != 0)
-            {
-                var currentSearching = searchQueue.Dequeue();
-                var childrenCount = GetChildrenCount(currentSearching);
-                for(int i = 0; i < childrenCount; i++)
-                {
-                    var currentChild = GetChild(currentSearching, i);
-                    var feChild = currentChild as FrameworkElement;
-                    if(feChild?.Name == childName)
-                        yield return feChild;
-                    searchQueue.Enqueue(currentChild);
-                }
-            }
+            return GetChildren<FrameworkElement>(reference, childName);
+        }
+
+        public static T GetFirstChild<T>(DependencyObject reference, string childName)
+            where T : FrameworkElement
+        {
+            return GetChildren<T>(reference, childName).FirstOrDefault();
+        }
+
+        public static IEnumerable<T> GetChildren<T>(DependencyObject reference, string childName)
+            where T : FrameworkElement
+        {
+            return GetChildren<T>(reference).Where(item => item.Name == childName);
         }
 
         public static T GetFirstChild<T>(DependencyObject reference)
@@ -49,6 +45,16 @@ namespace ExViewer
         public static IEnumerable<T> GetChildren<T>(DependencyObject reference)
             where T : DependencyObject
         {
+            return GetChildren(reference).OfType<T>();
+        }
+
+        public static DependencyObject GetFirstChild(DependencyObject reference)
+        {
+            return GetChildren(reference).FirstOrDefault();
+        }
+
+        public static IEnumerable<DependencyObject> GetChildren(DependencyObject reference)
+        {
             var searchQueue = new Queue<DependencyObject>();
             searchQueue.Enqueue(reference);
             while(searchQueue.Count != 0)
@@ -58,10 +64,8 @@ namespace ExViewer
                 for(int i = 0; i < childrenCount; i++)
                 {
                     var currentChild = GetChild(currentSearching, i);
-                    var tChild = currentChild as T;
-                    if(tChild != null)
-                        yield return tChild;
                     searchQueue.Enqueue(currentChild);
+                    yield return currentChild;
                 }
             }
         }

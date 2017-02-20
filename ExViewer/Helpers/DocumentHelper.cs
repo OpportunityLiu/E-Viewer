@@ -43,8 +43,12 @@ namespace ExViewer.Helpers
         public static Hyperlink CreateHyperlink(string text, Uri navigateUri)
         {
             var u = new Hyperlink();
-            u.Click += Uri_Click;
-            InAppNavigator.SetInAppUri(u, navigateUri);
+            if(navigateUri != null)
+            {
+                u.Click += Uri_Click;
+                InAppNavigator.SetInAppUri(u, navigateUri);
+                ToolTipService.SetToolTip(u, navigateUri.ToString());
+            }
             if(text != null)
                 u.Inlines.Add(new Run { Text = text });
             return u;
@@ -57,9 +61,12 @@ namespace ExViewer.Helpers
                 Content = content,
                 Padding = new Thickness()
             };
-            aBtn.Click += Uri_Click;
-            InAppNavigator.SetInAppUri(aBtn, navigateUri);
-            ToolTipService.SetToolTip(aBtn, navigateUri.ToString());
+            if(navigateUri != null)
+            {
+                aBtn.Click += Uri_Click;
+                InAppNavigator.SetInAppUri(aBtn, navigateUri);
+                ToolTipService.SetToolTip(aBtn, navigateUri.ToString());
+            }
             return aBtn;
         }
 
