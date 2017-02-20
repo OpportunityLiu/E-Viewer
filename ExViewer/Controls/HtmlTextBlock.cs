@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -82,48 +84,32 @@ namespace ExViewer.Controls
             s.reload();
         }
 
-        private static readonly string eof = " ";
-        private static readonly Regex linkDetector = new Regex(
-            @"
-(
-  (?<explict>[a-zA-z]+://[^\s]*)
-|
-  (?<implict>
-    (?<=\s|^)
-    ([^:@/\\\.\s]+\.)+
-    (a[d-gil-oq-uwz]|aero|b[abd-jmnorstvwyz]|biz|c[acf-ik-oqruvxyz]|com|coop|d[ejkmoz]|e[ceghstv]|edu|f[ijkmor]|g[abdefhilmnprtuwy]|gov|h[kmnrtu]|i[delnoq-t]|info|in[kt]|j[mop]|k[eghimnprwyz]|l[abcikr-vy]|m[acdeghl-tv-z]|mil|mobi|moe|na(?:me)?|n[cefgiloprtuz]|net|[opstz]m|org|p[ae-hklnrtwy]|pro|pub|[qsuvz]a|red?|r[ouw]|s[b-eg-lnortuyz]|t[cdfghjklnoprtvwz]|tech|top|u[gksy]|v[cegnu]|w[fs]|y[eu]|z[rw])
-    (:\d+)?
-    (
-        [/\\?\.]
-        [^\s]*
-    )?
-    (?=\s|$)
-  )
-)", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
-
         private void reload()
         {
-            if(this.Presenter == null)
+            var presenter = this.Presenter;
+            var htmlContent = this.HtmlContent;
+            if(presenter == null)
                 return;
-            this.loadHtml(this.Presenter, this.HtmlContent, this.DetectLink);
-        }
-
-        private void loadHtml(RichTextBlock presenter, HtmlNode content, bool detectLink)
-        {
             presenter.Blocks.Clear();
-            if(content == null)
+            if(htmlContent == null)
                 return;
             var para = new Paragraph();
-            foreach(var node in content.ChildNodes)
-            {
-                var tbNode = createNode(node, detectLink);
-                para.Inlines.Add(tbNode);
-            }
-            para.Inlines.Add(new Run { Text = eof });
             presenter.Blocks.Add(para);
+            var ignore = loadHtmlAsync(para, htmlContent, this.DetectLink);
         }
 
-        private Inline createNode(HtmlNode node, bool detectLink)
+        private async Task loadHtmlAsync(Paragraph target, HtmlNode content, bool detectLink)
+        {
+            foreach(var node in content.ChildNodes)
+            {
+                var tbNode = await createNodeAsync(node, detectLink);
+                target.Inlines.Add(tbNode);
+                await Task.Yield();
+            }
+            target.Inlines.Add(new Run { Text = eof });
+        }
+
+        private async Task<Inline> createNodeAsync(HtmlNode node, bool detectLink)
         {
             if(node is HtmlTextNode)
             {
@@ -176,23 +162,23 @@ namespace ExViewer.Controls
                 return new LineBreak();
             case "strong"://[b]
                 var b = new Bold();
-                foreach(var item in createChildNodes(node, detectLink))
-                    b.Inlines.Add(item);
+                foreach(var item in createChildNodesAsync(node, detectLink))
+                    b.Inlines.Add(await item);
                 return b;
             case "em"://[i]
                 var i = new Italic();
-                foreach(var item in createChildNodes(node, detectLink))
-                    i.Inlines.Add(item);
+                foreach(var item in createChildNodesAsync(node, detectLink))
+                    i.Inlines.Add(await item);
                 return i;
             case "span"://[u]
                 var u = new Underline();
-                foreach(var item in createChildNodes(node, detectLink))
-                    u.Inlines.Add(item);
+                foreach(var item in createChildNodesAsync(node, detectLink))
+                    u.Inlines.Add(await item);
                 return u;
             case "del"://[s]
                 var s = new Span() { Foreground = (Brush)Resources["SystemControlBackgroundChromeMediumBrush"] };
-                foreach(var item in createChildNodes(node, detectLink))
-                    s.Inlines.Add(item);
+                foreach(var item in createChildNodesAsync(node, detectLink))
+                    s.Inlines.Add(await item);
                 return s;
             case "a"://[url]
                 var container = (Span)null;
@@ -208,14 +194,16 @@ namespace ExViewer.Controls
                 }
                 try
                 {
-                    foreach(var item in createChildNodes(node, false))
-                        container.Inlines.Add(item);
+                    foreach(var item in createChildNodesAsync(node, false))
+                        container.Inlines.Add(await item);
                     return container;
                 }
                 catch(ArgumentException)// has InlineUIContainer in childnodes
                 {
                     var aBtnContent = new RichTextBlock { IsTextSelectionEnabled = false };
-                    loadHtml(aBtnContent, node, false);
+                    var para = new Paragraph();
+                    aBtnContent.Blocks.Add(para);
+                    var ignore = loadHtmlAsync(para, node, false);
                     var aBtn = CreateHyperlinkButton(aBtnContent, target);
                     return new InlineUIContainer { Child = aBtn };
                 }
@@ -242,22 +230,46 @@ namespace ExViewer.Controls
             }
         }
 
-        private void Image_ImageOpened(object sender, RoutedEventArgs e)
+        private static readonly string eof = " ";
+        private static readonly Regex linkDetector = new Regex(
+            @"
+(
+  (?<explict>[a-zA-z]+://[^\s]*)
+|
+  (?<implict>
+    (?<=\s|^)
+    ([^:@/\\\.\s]+\.)+
+    (a[d-gil-oq-uwz]|aero|b[abd-jmnorstvwyz]|biz|c[acf-ik-oqruvxyz]|com|coop|d[ejkmoz]|e[ceghstv]|edu|f[ijkmor]|g[abdefhilmnprtuwy]|gov|h[kmnrtu]|i[delnoq-t]|info|in[kt]|j[mop]|k[eghimnprwyz]|l[abcikr-vy]|m[acdeghl-tv-z]|mil|mobi|moe|na(?:me)?|n[cefgiloprtuz]|net|[opstz]m|org|p[ae-hklnrtwy]|pro|pub|[qsuvz]a|red?|r[ouw]|s[b-eg-lnortuyz]|t[cdfghjklnoprtvwz]|tech|top|u[gksy]|v[cegnu]|w[fs]|y[eu]|z[rw])
+    (:\d+)?
+    (
+        [/\\?\.]
+        [^\s]*
+    )?
+    (?=\s|$)
+  )
+)", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
+
+        private static void Image_ImageOpened(object sender, RoutedEventArgs e)
         {
-            var scaleRate = Math.Sqrt(dpi.RawPixelsPerViewPixel);
             var image = (Image)sender;
-            var bitmap = (BitmapImage)image.Source;
-            image.Width = bitmap.PixelWidth / scaleRate;
-            image.Height = bitmap.PixelHeight / scaleRate;
+            setScale(image);
             image.ImageOpened -= Image_ImageOpened;
         }
 
-        private static DisplayInformation dpi = DisplayInformation.GetForCurrentView();
-
-        private IEnumerable<Inline> createChildNodes(HtmlNode node, bool detectLink)
+        private IEnumerable<Task<Inline>> createChildNodesAsync(HtmlNode node, bool detectLink)
         {
-            return node.ChildNodes.Select(n => createNode(n, detectLink));
+            return node.ChildNodes.Select(n => createNodeAsync(n, detectLink));
         }
+
+        private static void setScale(Image image)
+        {
+            var scaleRate = Math.Sqrt(dpi.RawPixelsPerViewPixel);
+            var bitmap = (BitmapImage)image.Source;
+            image.Width = bitmap.PixelWidth / scaleRate;
+            image.Height = bitmap.PixelHeight / scaleRate;
+        }
+
+        private static DisplayInformation dpi = DisplayInformation.GetForCurrentView();
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -271,7 +283,10 @@ namespace ExViewer.Controls
 
         private void Dpi_DpiChanged(DisplayInformation sender, object args)
         {
-            reload();
+            foreach(var item in VisualTreeHelperEx.GetChildren<Image>(this))
+            {
+                setScale(item);
+            }
         }
     }
 }
