@@ -39,6 +39,7 @@ namespace ExViewer.Views
                 [this.svt_Saved] = typeof(SavedPage),
                 [this.svt_Cached] = typeof(CachedPage),
                 [this.svt_Search] = typeof(SearchPage),
+                [this.svt_Favorites] = typeof(FavoritesPage),
                 [this.svt_Settings] = typeof(SettingsPage)
             };
 
@@ -47,6 +48,7 @@ namespace ExViewer.Views
                 [typeof(CachedPage)] = this.svt_Cached,
                 [typeof(SavedPage)] = this.svt_Saved,
                 [typeof(SearchPage)] = this.svt_Search,
+                [typeof(FavoritesPage)] = this.svt_Favorites,
                 [typeof(SettingsPage)] = this.svt_Settings
             };
             sv_root.IsPaneOpen = false;
@@ -99,8 +101,6 @@ namespace ExViewer.Views
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
-            var r = Client.Current.Favorites.Search("");
-            r.LoadMoreItemsAsync(1);
         }
 
         private async void Control_Loading(FrameworkElement sender, object args)

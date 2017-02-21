@@ -493,4 +493,16 @@ Go "Settings -&gt; Accounts - Sign-in options -&gt; PIN -&gt; Add" to do this.</
   <data name="ExcludedLanguagesSelectorTranslatedTextBlock.Text" xml:space="preserve">
     <value>Translated</value>
   </data>
+  <data name="RootControlFavoritesSplitViewTab.Content" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="FavoritesPageAutoSuggestBox.PlaceholderText" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="FavoritesPageEmptyTextBlock.Text" xml:space="preserve">
+    <value>No hits found</value>
+  </data>
+  <data name="FavoritesPageLoadingMoreTextBlock.Text" xml:space="preserve">
+    <value>Loading more galleries...</value>
+  </data>
 </root>

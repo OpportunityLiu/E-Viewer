@@ -493,4 +493,16 @@
   <data name="SettingsPageExcludedLanguagesSelector.MinWidth" xml:space="preserve">
     <value>280</value>
   </data>
+  <data name="RootControlFavoritesSplitViewTab.Content" xml:space="preserve">
+    <value>收藏</value>
+  </data>
+  <data name="FavoritesPageAutoSuggestBox.PlaceholderText" xml:space="preserve">
+    <value>搜索…</value>
+  </data>
+  <data name="FavoritesPageEmptyTextBlock.Text" xml:space="preserve">
+    <value>没有结果</value>
+  </data>
+  <data name="FavoritesPageLoadingMoreTextBlock.Text" xml:space="preserve">
+    <value>正在加载更多画集…</value>
+  </data>
 </root>

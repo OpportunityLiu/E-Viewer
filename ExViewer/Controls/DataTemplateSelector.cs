@@ -54,13 +54,21 @@ namespace ExViewer.Controls
             get;
         }
 
+        public DataTemplate DefaultTemplate { get; set; }
+
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            foreach(var template in Templates)
+            if(item != null)
             {
-                if(template.KeyType.IsInstanceOfType(item))
-                    return template.Value;
+                var tName = item.GetType().FullName;
+                foreach(var template in Templates)
+                {
+                    if(template.Key == tName)
+                        return template.Value;
+                }
             }
+            if(DefaultTemplate != null)
+                return DefaultTemplate;
             return base.SelectTemplateCore(item);
         }
     }
@@ -70,20 +78,13 @@ namespace ExViewer.Controls
     {
         public string Key
         {
-            get
-            {
-                return KeyType?.FullName;
-            }
-            set
-            {
-                KeyType = Type.GetType(value, true, true);
-            }
+            get { return (string)GetValue(KeyProperty); }
+            set { SetValue(KeyProperty, value); }
         }
 
-        internal Type KeyType
-        {
-            get; private set;
-        }
+        // Using a DependencyProperty as the backing store for Key.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty KeyProperty =
+            DependencyProperty.Register("Key", typeof(string), typeof(DataTemplateKeyValuePair), new PropertyMetadata(""));
 
         public DataTemplate Value
         {

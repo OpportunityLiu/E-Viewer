@@ -44,99 +44,15 @@
                         Click="btnPane_Click" />
                 <AutoSuggestBox x:Uid="SearchPageAutoSuggestBox"
                                 x:Name="asb"
+                                Style="{StaticResource SearchAutoSuggestBoxStyle}"
                                 Grid.Column="1"
+                                QueryIcon="Find"
                                 Margin="8"
                                 Text="{x:Bind VM.Keyword, Mode=TwoWay}"
                                 PlaceholderText="Search..."
                                 QuerySubmitted="asb_QuerySubmitted"
                                 TextChanged="asb_TextChanged"
-                                SuggestionChosen="asb_SuggestionChosen"
-                                QueryIcon="Find">
-                    <AutoSuggestBox.Resources>
-                        <Style x:Key="SuggestionCaptionTextBlockStyle"
-                               TargetType="TextBlock"
-                               BasedOn="{StaticResource CaptionTextBlockStyle}">
-                            <Setter Property="Foreground"
-                                    Value="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
-                        </Style>
-                        <DataTemplate x:Key="SearchHistory"
-                                      x:DataType="db:SearchHistory">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <controls:HighlightTextBlock Text="{x:Bind Content}"
-                                                             HighlightText="{x:Bind Highlight}"
-                                                             Grid.Column="1" />
-                                <TextBlock Text="{x:Bind Time, Converter={StaticResource DateTimeToStringConverter}}"
-                                           Style="{StaticResource SuggestionCaptionTextBlockStyle}"
-                                           Grid.Row="1"
-                                           Grid.Column="1" />
-                                <Path Fill="{ThemeResource SystemControlPageTextBaseHighBrush}"
-                                      StrokeThickness="0"
-                                      Stretch="Uniform"
-                                      Grid.RowSpan="2"
-                                      VerticalAlignment="Center"
-                                      Margin="8,0"
-                                      Data="M-12,-9 L-12,-3 L-6,-3 L-6,-4.5 L-10.5,-4.5 L-10.5,-9 Z
-                                      M-10.5,-5.809 
-                                      A12,12,0,1,1,-11.55,3.255
-                                      L-10.106,2.848
-                                      A10.5,10.5,0,1,0,-9.487,-4.5
-                                      L-10.5,-4.5 Z
-                                      M-0.75,-6
-                                      L0.75,-6 L0.75,-0.311
-                                      L4.95,3.889 L3.889,4.95
-                                      L-0.75,0.311" />
-                            </Grid>
-                        </DataTemplate>
-                        <DataTemplate x:Key="AutoCompletion"
-                                      x:DataType="vm:AutoCompletion">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{x:Bind Content}"
-                                           Grid.Column="1" />
-                                <Path Fill="{ThemeResource SystemControlPageTextBaseHighBrush}"
-                                      StrokeThickness="0"
-                                      Stretch="Uniform"
-                                      Grid.RowSpan="2"
-                                      VerticalAlignment="Center"
-                                      Margin="8,0"
-                                      Data="M0,18.5 H14 V20 H0Z
-                                      M16,20 L20,16 L23.8258,7.0269 A2.1742,2.1742,0,1,0,19.8528,5.3215 L16,14.2945Z" />
-                            </Grid>
-                        </DataTemplate>
-                    </AutoSuggestBox.Resources>
-                    <AutoSuggestBox.ItemTemplateSelector>
-                        <controls:DataTemplateSelector>
-                            <controls:DataTemplateKeyValuePair Key="ExViewer.DataBase.SearchHistory"
-                                                               Value="{StaticResource SearchHistory}" />
-                            <controls:DataTemplateKeyValuePair Key="ExViewer.ViewModels.AutoCompletion"
-                                                               Value="{StaticResource AutoCompletion}" />
-                        </controls:DataTemplateSelector>
-                    </AutoSuggestBox.ItemTemplateSelector>
-                    <AutoSuggestBox.TextBoxStyle>
-                        <Style TargetType="TextBox"
-                               BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}">
-                            <Setter Property="InputScope"
-                                    Value="AlphanumericHalfWidth" />
-                        </Style>
-                    </AutoSuggestBox.TextBoxStyle>
-                    <AutoSuggestBox.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Padding"
-                                    Value="4,0" />
-                        </Style>
-                    </AutoSuggestBox.ItemContainerStyle>
-                </AutoSuggestBox>
+                                SuggestionChosen="asb_SuggestionChosen" />
                 <ScrollViewer x:Name="sv_AdvancedSearch"
                               Grid.Row="1"
                               Grid.Column="1"
@@ -150,7 +66,7 @@
                         <ToggleSwitch x:Uid="SearchPageAdvancedToggleButton"
                                       x:Name="ts_Advanced"
                                       Margin="8"
-                                      Style="{StaticResource TextBlockToggleSwitch}"
+                                      Style="{StaticResource TextBlockToggleSwitchStyle}"
                                       OffContent="Show advanced options"
                                       OnContent="Hide advanced options"
                                       HorizontalAlignment="Center" />

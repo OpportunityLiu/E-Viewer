@@ -120,6 +120,9 @@
   <data name="AccountDenied" xml:space="preserve">
     <value>This account dose not have permittion for exhentai.</value>
   </data>
+  <data name="AllFavorites" xml:space="preserve">
+    <value>All favorites</value>
+  </data>
   <data name="ClientDisposed" xml:space="preserve">
     <value>The client has been disposed.</value>
   </data>

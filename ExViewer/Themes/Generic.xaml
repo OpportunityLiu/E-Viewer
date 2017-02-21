@@ -442,7 +442,7 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <TextBlock x:Name="txt"
-                                   x:Uid="PullToRefreshIndicatorPullTextBlock" 
+                                   x:Uid="PullToRefreshIndicatorPullTextBlock"
                                    Text="Pull"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Bottom" />
@@ -469,6 +469,27 @@
                             </Rectangle.RenderTransform>
                         </Rectangle>
                     </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="controls:FavoriteCategoryPresenter">
+        <Setter Property="HorizontalAlignment"
+                Value="Left" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:FavoriteCategoryPresenter">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="Icon"
+                                   Text="&#x2BC1;" />
+                        <TextBlock x:Name="Label" 
+                                   Margin="4,0,0,0"/>
+                    </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
