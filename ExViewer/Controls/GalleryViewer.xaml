@@ -58,10 +58,15 @@
                                HorizontalAlignment="Left" />
             <TextBlock Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='GalleryViewerRecordCountFormatString'}"
                        Grid.Row="4" />
-            <TextBlock Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
+            <StackPanel Orientation="Horizontal"
+                       Grid.Row="3">
+                <local:FavoriteCategoryPresenter Category="{x:Bind Gallery.FavoriteCategory, Mode=OneWay}" 
+                                                 IsLabelVisible="False"/>
+                <TextBlock Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
                        FontFamily="Segoe MDL2 Assets"
-                       VerticalAlignment="Center"
-                       Grid.Row="3" />
+                       VerticalAlignment="Center" />
+                
+            </StackPanel>
             <TextBlock Text="{x:Bind Gallery.Uploader, Mode=OneWay}"
                        Grid.Row="4"
                        MaxLines="1"
