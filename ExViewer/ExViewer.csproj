@@ -107,6 +107,7 @@
     </PRIResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\FavoriteCategoryPresenter.cs" />
     <Compile Include="Controls\ExcludedTagNamespacesSelector.xaml.cs">
       <DependentUpon>ExcludedTagNamespacesSelector.xaml</DependentUpon>
     </Compile>
@@ -117,6 +118,7 @@
     <Compile Include="Controls\PullToRefreshIndicator.cs" />
     <Compile Include="Controls\TagPresenter.cs" />
     <Compile Include="Converters\EmptyConverter.cs" />
+    <Compile Include="Converters\NullCoalescingConverter.cs" />
     <Compile Include="Converters\SoftwareBitmapToImageSourceConverter.cs" />
     <Compile Include="Helpers\AccountManager.cs" />
     <Compile Include="Converters\ByteSizeToStringConverter.cs" />
@@ -180,9 +182,11 @@
     <Compile Include="UriHandler.cs" />
     <Compile Include="ViewModels\CachedVM.cs" />
     <Compile Include="ViewModels\CacheStorage{TKey,TCache}.cs" />
+    <Compile Include="ViewModels\FavoritesVM.cs" />
     <Compile Include="ViewModels\GalleryListVM{T}.cs" />
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
+    <Compile Include="ViewModels\SearchResultVM{T}.cs" />
     <Compile Include="ViewModels\SearchVM.cs" />
     <Compile Include="Controls\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
@@ -215,6 +219,9 @@
       <DependentUpon>RootControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\FavoritesPage.xaml.cs">
+      <DependentUpon>FavoritesPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
@@ -347,7 +354,6 @@
     <Page Include="Themes\NamedStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Themes\ThemeHelperControl.xaml">
       <SubType>Designer</SubType>
@@ -382,6 +388,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RootControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\FavoritesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

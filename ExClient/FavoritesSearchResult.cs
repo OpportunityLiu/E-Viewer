@@ -27,8 +27,8 @@ namespace ExClient
 
         internal static FavoritesSearchResult Search(Client client, string keyword, FavoriteCategory category)
         {
-            if(category?.Index < 0)
-                category = null;
+            if(category == null || category.Index < 0)
+                category = FavoriteCategory.All;
             var result = new FavoritesSearchResult(client, keyword, category);
             return result;
         }
@@ -43,7 +43,12 @@ namespace ExClient
         protected override IEnumerable<KeyValuePair<string, string>> GetUriQuery()
         {
             //?favcat=all&f_search=&f_apply=Search+Favorites
-            yield return new KeyValuePair<string, string>("favcat", Category == null ? "all" : Category.Index.ToString());
+            string cat;
+            if(Category == null || Category.Index < 0)
+                cat = "all";
+            else
+                cat = Category.Index.ToString();
+            yield return new KeyValuePair<string, string>("favcat", cat);
             yield return new KeyValuePair<string, string>("f_search", Keyword);
             yield return new KeyValuePair<string, string>("f_apply", "Search Favorites");
         }
@@ -57,6 +62,21 @@ namespace ExClient
                 gallery.FavoriteNote = favNote.Substring(6);
             else
                 gallery.FavoriteNote = "";
+        }
+
+        protected override void LoadPageOverride(HtmlDocument doc)
+        {
+            var noselNode = doc.DocumentNode
+                .Element("html")
+                .Element("body")
+                .Element("div")
+                .Elements("div").First();
+            var fpNodes = noselNode.Elements("div").Take(10);
+            fpNodes.Select(n =>
+            {
+                var fav = n.Elements("div").First(nn => nn.GetAttributeValue("class", null) == "i");
+                return Owner.Favorites.GetCategory(fav);
+            }).ToList();
         }
 
         public string Keyword

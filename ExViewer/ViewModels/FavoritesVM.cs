@@ -14,8 +14,7 @@ using System.Linq;
 
 namespace ExViewer.ViewModels
 {
-
-    public class SearchVM : SearchResultVM<SearchResult>
+    public class FavoritesVM : SearchResultVM<FavoritesSearchResult>
     {
         private class SearchResultData
         {
@@ -24,12 +23,7 @@ namespace ExViewer.ViewModels
                 get; set;
             }
 
-            public Category Category
-            {
-                get; set;
-            }
-
-            public AdvancedSearchOptions AdvancedSearch
+            public int CategoryIndex
             {
                 get; set;
             }
@@ -37,19 +31,19 @@ namespace ExViewer.ViewModels
 
         private static class Cache
         {
-            private static CacheStorage<string, SearchVM> srCache = new CacheStorage<string, SearchVM>(query =>
+            private static CacheStorage<string, FavoritesVM> srCache = new CacheStorage<string, FavoritesVM>(query =>
             {
-                var vm = new SearchVM(query);
+                var vm = new FavoritesVM(query);
                 AddHistory(vm.Keyword);
                 return vm;
             }, 10);
 
-            public static SearchVM GetSearchVM(string query)
+            public static FavoritesVM GetSearchVM(string query)
             {
                 return srCache.Get(query);
             }
 
-            public static string AddSearchVM(SearchVM searchVM)
+            public static string AddSearchVM(FavoritesVM searchVM)
             {
                 var query = searchVM.SearchQuery;
                 AddHistory(searchVM.Keyword);
@@ -66,79 +60,59 @@ namespace ExViewer.ViewModels
             });
         }
 
-        public static string GetSearchQuery(string keyword, Category filter)
+        public static string GetSearchQuery(string keyword, FavoriteCategory filter)
         {
             return JsonConvert.SerializeObject(new SearchResultData()
             {
                 Keyword = keyword,
-                Category = filter
+                CategoryIndex = filter?.Index ?? -1
             });
         }
 
-        public static string GetSearchQuery(string keyword, Category filter, AdvancedSearchOptions advancedSearch)
-        {
-            return JsonConvert.SerializeObject(new SearchResultData()
-            {
-                Keyword = keyword,
-                Category = filter,
-                AdvancedSearch = advancedSearch
-            });
-        }
-
-        public static IAsyncAction InitAsync()
-        {
-            var defaultVM = GetVM(string.Empty);
-            return defaultVM.SearchResult.LoadMoreItemsAsync(40).AsTask().AsAsyncAction();
-        }
-
-        public static SearchVM GetVM(string parameter)
+        public static FavoritesVM GetVM(string parameter)
         {
             return Cache.GetSearchVM(parameter ?? string.Empty);
         }
 
-        public static SearchVM GetVM(SearchResult searchResult)
+        public static FavoritesVM GetVM(FavoritesSearchResult searchResult)
         {
-            var vm = new SearchVM(searchResult);
+            var vm = new FavoritesVM(searchResult);
             Cache.AddSearchVM(vm);
             return vm;
         }
 
-        private SearchVM(SearchResult searchResult)
+        private FavoritesVM(FavoritesSearchResult searchResult)
             : this()
         {
             SearchResult = searchResult;
             SetQueryWithSearchResult();
         }
 
-        private SearchVM(string parameter)
+        private FavoritesVM(string parameter)
             : this()
         {
             if(string.IsNullOrEmpty(parameter))
             {
-                keyword = SettingCollection.Current.DefaultSearchString;
-                category = SettingCollection.Current.DefaultSearchCategory;
-                advancedSearch = new AdvancedSearchOptions();
+                keyword = "";
+                category = FavoriteCategory.All;
             }
             else
             {
                 var q = JsonConvert.DeserializeObject<SearchResultData>(parameter);
                 keyword = q.Keyword;
-                category = q.Category;
-                advancedSearch = q.AdvancedSearch;
+                if(q.CategoryIndex > 0)
+                    category = Client.Current.Favorites[q.CategoryIndex];
+                else
+                    category = FavoriteCategory.All;
             }
-            SearchResult = Client.Current.Search(keyword, category, advancedSearch);
+            SearchResult = Client.Current.Favorites.Search(keyword, category);
         }
 
-        private SearchVM()
+        private FavoritesVM()
         {
             Search = new RelayCommand<string>(queryText =>
             {
-                if(SettingCollection.Current.SaveLastSearch)
-                {
-                    SettingCollection.Current.DefaultSearchCategory = category;
-                    SettingCollection.Current.DefaultSearchString = queryText;
-                }
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), GetSearchQuery(queryText, category, advancedSearch));
+                RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), GetSearchQuery(queryText, category));
             });
             Open = new RelayCommand<Gallery>(g =>
             {
@@ -162,11 +136,6 @@ namespace ExViewer.ViewModels
         {
             Keyword = SearchResult.Keyword;
             Category = SearchResult.Category;
-            var adv = SearchResult.AdvancedSearch;
-            if(adv == null)
-                AdvancedSearch = new AdvancedSearchOptions();
-            else
-                AdvancedSearch = adv.Clone(false);
         }
 
         private string keyword;
@@ -183,9 +152,9 @@ namespace ExViewer.ViewModels
             }
         }
 
-        private Category category;
+        private FavoriteCategory category;
 
-        public Category Category
+        public FavoriteCategory Category
         {
             get
             {
@@ -197,20 +166,6 @@ namespace ExViewer.ViewModels
             }
         }
 
-        private AdvancedSearchOptions advancedSearch;
-
-        public AdvancedSearchOptions AdvancedSearch
-        {
-            get
-            {
-                return advancedSearch;
-            }
-            set
-            {
-                Set(ref advancedSearch, value);
-            }
-        }
-
-        public string SearchQuery => GetSearchQuery(this.keyword, this.category, this.advancedSearch);
+        public string SearchQuery => GetSearchQuery(this.keyword, this.category);
     }
 }

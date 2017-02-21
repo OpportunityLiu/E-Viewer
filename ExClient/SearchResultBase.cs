@@ -103,6 +103,8 @@ namespace ExClient
             gallery.FavoriteCategory = Owner.Favorites.GetCategory(favNode);
         }
 
+        protected virtual void LoadPageOverride(HtmlDocument doc) { }
+
         private IAsyncOperation<IList<Gallery>> loadPage(HtmlDocument doc)
         {
             return Run(async token =>
@@ -123,6 +125,7 @@ namespace ExClient
                 {
                     HandleAdditionalInfo(trNodeList[i], galleries[i]);
                 }
+                LoadPageOverride(doc);
                 return galleries;
             });
         }

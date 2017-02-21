@@ -127,6 +127,15 @@
                                               FontSize="16" />
                                 </controls:SplitViewTab.Icon>
                             </controls:SplitViewTab>
+                            <controls:SplitViewTab x:Uid="RootControlFavoritesSplitViewTab"
+                                                   x:Name="svt_Favorites"
+                                                   Content="Favorites"
+                                                   Click="svt_Click">
+                                <controls:SplitViewTab.Icon>
+                                    <FontIcon Glyph="&#xE728;"
+                                              FontSize="16" />
+                                </controls:SplitViewTab.Icon>
+                            </controls:SplitViewTab>
                             <controls:SplitViewTab x:Uid="RootControlSavedSplitViewTab"
                                                    x:Name="svt_Saved"
                                                    Content="Saved galleries"

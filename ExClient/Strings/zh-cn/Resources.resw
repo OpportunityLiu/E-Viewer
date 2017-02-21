@@ -120,6 +120,9 @@
   <data name="AccountDenied" xml:space="preserve">
     <value>此账户没有访问 Ex 绅士的权限。</value>
   </data>
+  <data name="AllFavorites" xml:space="preserve">
+    <value>全部收藏</value>
+  </data>
   <data name="ClientDisposed" xml:space="preserve">
     <value>该连接已被销毁。</value>
   </data>

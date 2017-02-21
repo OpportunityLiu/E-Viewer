@@ -15,6 +15,8 @@ namespace ExClient
     {
         public static FavoriteCategory Removed { get; } = new FavoriteCategory(-1);
 
+        public static FavoriteCategory All { get; } = new FavoriteCategory(-1) { Name = LocalizedStrings.Resources.AllFavorites };
+
         internal FavoriteCategory(int index)
         {
             Index = index;
@@ -42,7 +44,12 @@ namespace ExClient
         private IEnumerable<KeyValuePair<string, string>> getInfo(string favnote)
         {
             yield return new KeyValuePair<string, string>("apply", "Apply+Changes");
-            yield return new KeyValuePair<string, string>("favcat", this.Index == -1 ? "favdel" : this.Index.ToString());
+            var cat = this.Index.ToString();
+            if(ReferenceEquals(this, All))
+                cat = "0";
+            if(ReferenceEquals(this, Removed))
+                cat = "favdel";
+            yield return new KeyValuePair<string, string>("favcat", cat);
             yield return new KeyValuePair<string, string>("favnote", favnote);
             yield return new KeyValuePair<string, string>("update", "1");
         }
@@ -87,6 +94,11 @@ namespace ExClient
         public IAsyncAction Remove(GalleryInfo gallery, string note)
         {
             return Removed.Add(gallery, note);
+        }
+
+        public override string ToString()
+        {
+            return Name ?? "";
         }
     }
 }
