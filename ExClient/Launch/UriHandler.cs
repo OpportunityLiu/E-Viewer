@@ -48,10 +48,15 @@ namespace ExClient.Launch
 
         public static string Unescape(string value)
         {
-            value = Uri.UnescapeDataString(value);
             value = value.Replace('+', ' ');
             value = Uri.UnescapeDataString(value);
             return value;
+        }
+
+        public static string Unescape2(string value)
+        {
+            value = Uri.UnescapeDataString(value);
+            return Unescape(value);
         }
     }
 
@@ -140,14 +145,14 @@ namespace ExClient.Launch
             }
         }
 
-        protected static IAsyncOperation<IList<GalleryInfo>> GetGalleryInfoAsync(IEnumerable<ImageInfo> pageList)
+        protected static IAsyncOperation<IReadOnlyList<GalleryInfo>> GetGalleryInfoAsync(IEnumerable<ImageInfo> pageList)
         {
             return Run(async token =>
             {
                 var result = await Client.Current.PostApiAsync(new GalleryToken(pageList));
                 var type = new
                 {
-                    tokenlist = (IList<GalleryInfo>)null
+                    tokenlist = (IReadOnlyList<GalleryInfo>)null
                 };
                 return JsonConvert.DeserializeAnonymousType(result, type).tokenlist;
             });
@@ -244,6 +249,11 @@ namespace ExClient.Launch
 
     internal class SearchHandler : UriHandler
     {
+        protected static string UnescapeKeyword(string query)
+        {
+            return query.Replace("+", "").Replace("&", "");
+        }
+
         public override bool CanHandle(UriHandlerData data)
         {
             return data.Paths.Count == 0;
@@ -294,7 +304,7 @@ namespace ExClient.Launch
                     if(QueryValueAsBoolean(item.Value)) category |= Category.Misc;
                     break;
                 case "f_search":
-                    keyword = item.Value;
+                    keyword = UnescapeKeyword(item.Value);
                     break;
                 case "advsearch":
                     av = QueryValueAsBoolean(item.Value);
@@ -349,7 +359,7 @@ namespace ExClient.Launch
 
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
-            var v = UriHandlerData.Unescape(data.Paths[1]);
+            var v = UriHandlerData.Unescape2(data.Paths[1]);
             switch(data.Path0)
             {
             case "tag":

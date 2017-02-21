@@ -33,7 +33,8 @@ namespace ExClient
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
             CookieManager = httpFilter.CookieManager;
             HttpClient = new Internal.MyHttpClient(new HttpClient(new Internal.RedirectFilter(httpFilter)));
-            settings = new SettingCollection(this);
+            this.Settings = new SettingCollection(this);
+            this.Favorites = new FavoriteCollection(this);
         }
 
         internal HttpCookieManager CookieManager
@@ -162,11 +163,9 @@ namespace ExClient
             return PostStrAsync(apiUri, JsonConvert.SerializeObject(request));
         }
 
-        public SettingCollection Settings => settings;
+        public SettingCollection Settings { get; }
 
-        private readonly SettingCollection settings;
-
-        public FavoriteCollection Favorites { get; } = new FavoriteCollection();
+        public FavoriteCollection Favorites { get; }
 
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用

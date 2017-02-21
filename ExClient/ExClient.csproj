@@ -117,6 +117,7 @@
     <Compile Include="CachedGallery.cs" />
     <Compile Include="FavoriteCategory.cs" />
     <Compile Include="FavoriteCollection.cs" />
+    <Compile Include="FavoritesSearchResult.cs" />
     <Compile Include="GalleryImagePlaceHolder.cs" />
     <Compile Include="Helpers\AsyncWarpper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Helpers\ConnectionHelper.cs" />
     <Compile Include="DictionaryExtention.cs" />
     <Compile Include="GalleryImage.cs" />
+    <Compile Include="SearchResultBase.cs" />
     <Compile Include="Settings\ExcludedLanguagesSettingProvider.cs" />
     <Compile Include="Settings\HahProxySettingProvider.cs" />
     <Compile Include="IncrementalLoadingCollection{T}.cs" />

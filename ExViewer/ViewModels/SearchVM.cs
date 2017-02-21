@@ -119,7 +119,7 @@ namespace ExViewer.ViewModels
     {
         private class SearchResultData
         {
-            public string KeyWord
+            public string Keyword
             {
                 get; set;
             }
@@ -140,7 +140,7 @@ namespace ExViewer.ViewModels
             private static CacheStorage<string, SearchVM> srCache = new CacheStorage<string, SearchVM>(query =>
                 {
                     var vm = new SearchVM(query);
-                    AddHistory(vm.KeyWord);
+                    AddHistory(vm.Keyword);
                     return vm;
                 }, 10);
 
@@ -152,34 +152,34 @@ namespace ExViewer.ViewModels
             public static string AddSearchVM(SearchVM searchVM)
             {
                 var query = searchVM.SearchQuery; 
-                AddHistory(searchVM.KeyWord);
+                AddHistory(searchVM.Keyword);
                 srCache.Add(query, searchVM);
                 return query;
             }
         }
 
-        public static string GetSearchQuery(string keyWord)
+        public static string GetSearchQuery(string keyword)
         {
             return JsonConvert.SerializeObject(new SearchResultData()
             {
-                KeyWord = keyWord
+                Keyword = keyword
             });
         }
 
-        public static string GetSearchQuery(string keyWord, Category filter)
+        public static string GetSearchQuery(string keyword, Category filter)
         {
             return JsonConvert.SerializeObject(new SearchResultData()
             {
-                KeyWord = keyWord,
+                Keyword = keyword,
                 Category = filter
             });
         }
 
-        public static string GetSearchQuery(string keyWord, Category filter, AdvancedSearchOptions advancedSearch)
+        public static string GetSearchQuery(string keyword, Category filter, AdvancedSearchOptions advancedSearch)
         {
             return JsonConvert.SerializeObject(new SearchResultData()
             {
-                KeyWord = keyWord,
+                Keyword = keyword,
                 Category = filter,
                 AdvancedSearch = advancedSearch
             });
@@ -215,18 +215,18 @@ namespace ExViewer.ViewModels
         {
             if(string.IsNullOrEmpty(parameter))
             {
-                keyWord = SettingCollection.Current.DefaultSearchString;
+                keyword = SettingCollection.Current.DefaultSearchString;
                 category = SettingCollection.Current.DefaultSearchCategory;
                 advancedSearch = new AdvancedSearchOptions();
             }
             else
             {
                 var q = JsonConvert.DeserializeObject<SearchResultData>(parameter);
-                keyWord = q.KeyWord;
+                keyword = q.Keyword;
                 category = q.Category;
                 advancedSearch = q.AdvancedSearch;
             }
-            SearchResult = Client.Current.Search(keyWord, category, advancedSearch);
+            SearchResult = Client.Current.Search(keyword, category, advancedSearch);
         }
 
         private SearchVM()
@@ -300,7 +300,7 @@ namespace ExViewer.ViewModels
 
         public void SetQueryWithSearchResult()
         {
-            KeyWord = searchResult.KeyWord;
+            Keyword = searchResult.Keyword;
             Category = searchResult.Category;
             var adv = searchResult.AdvancedSearch;
             if(adv == null)
@@ -309,17 +309,17 @@ namespace ExViewer.ViewModels
                 AdvancedSearch = adv.Clone(false);
         }
 
-        private string keyWord;
+        private string keyword;
 
-        public string KeyWord
+        public string Keyword
         {
             get
             {
-                return keyWord;
+                return keyword;
             }
             set
             {
-                Set(ref keyWord, value);
+                Set(ref keyword, value);
             }
         }
 
@@ -405,6 +405,6 @@ namespace ExViewer.ViewModels
             }
         }, sh => sh != null);
 
-        public string SearchQuery => GetSearchQuery(this.keyWord, this.category, this.advancedSearch);
+        public string SearchQuery => GetSearchQuery(this.keyword, this.category, this.advancedSearch);
     }
 }

@@ -185,42 +185,69 @@ namespace ExClient
 
         private class GalleryData : Internal.ApiRequest
         {
+            private class RangedCollection : IReadOnlyList<GalleryInfo>
+            {
+                public IReadOnlyList<GalleryInfo> Items { get; set; }
+
+                public GalleryInfo this[int index] => Items[this.StratIndex + index];
+
+                public int Count { get; set; }
+                public int StratIndex { get; set; }
+
+                public IEnumerator<GalleryInfo> GetEnumerator()
+                {
+                    for(int i = this.StratIndex; i < this.StratIndex + this.Count; i++)
+                        yield return Items[i];
+                }
+
+                IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            }
+
             public override string Method => "gdata";
 
             public int @namespace => 1;
 
-            public ICollection<GalleryInfo> gidlist
+            public IReadOnlyCollection<GalleryInfo> gidlist
             {
                 get;
             }
 
-            public GalleryData(ICollection<GalleryInfo> list)
+            public GalleryData(IReadOnlyList<GalleryInfo> list, int startIndex, int count)
             {
-                gidlist = list;
+                gidlist = new RangedCollection
+                {
+                    Items = list,
+                    StratIndex = startIndex,
+                    Count = count
+                };
             }
         }
 
-        public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(ICollection<GalleryInfo> galleryInfo)
+        public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
         {
             if(galleryInfo == null)
                 throw new ArgumentNullException(nameof(galleryInfo));
-            if(galleryInfo.Count > 25)
-                throw new ArgumentException("Number of GalleryInfo is bigger than 25.", nameof(galleryInfo));
             return Run(async token =>
             {
                 var type = new
                 {
-                    gmetadata = (IEnumerable<Gallery>)null
+                    gmetadata = (IList<Gallery>)null
                 };
-                var str = await Client.Current.PostApiAsync(new GalleryData(galleryInfo));
-                var deser = JsonConvert.DeserializeAnonymousType(str, type);
-                var toAdd = deser.gmetadata.Select(item =>
+                var result = new Gallery[galleryInfo.Count];
+                for(int i = 0; i < galleryInfo.Count; i += 25)
                 {
-                    item.Owner = Client.Current;
-                    var ignore = item.InitAsync();
-                    return item;
-                });
-                return (IList<Gallery>)toAdd.ToList();
+                    var pageCount = i + 25 < galleryInfo.Count ? 25 : galleryInfo.Count - i;
+                    var str = await Client.Current.PostApiAsync(new GalleryData(galleryInfo, i, pageCount));
+                    var re = JsonConvert.DeserializeAnonymousType(str, type).gmetadata;
+                    for(int j = 0; j < re.Count; j++)
+                    {
+                        var item = re[j];
+                        item.Owner = Client.Current;
+                        var ignore = item.InitAsync();
+                        result[i + j] = item;
+                    }
+                }
+                return (IList<Gallery>)result;
             });
         }
 
@@ -630,7 +657,6 @@ namespace ExClient
 
         private static readonly Uri galleryBaseUri = new Uri(Client.RootUri, "g/");
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
-        internal static readonly Regex favStyleMatcher = new Regex(@"background-position:\s*0\s*px\s+-(\d+)\s*px", RegexOptions.Compiled);
 
         private void updateFavoriteInfo(HtmlDocument html)
         {
@@ -737,33 +763,6 @@ namespace ExClient
             {
                 Comments = await Comment.LoadCommentsAsync(this);
                 return comments;
-            });
-        }
-
-        private IEnumerable<KeyValuePair<string, string>> getInfo(string favcat, string favnote)
-        {
-            yield return new KeyValuePair<string, string>("apply", "Apply+Changes");
-            yield return new KeyValuePair<string, string>("favcat", favcat);
-            yield return new KeyValuePair<string, string>("favnote", favnote);
-            yield return new KeyValuePair<string, string>("update", "1");
-        }
-
-        private static readonly Regex favNoteMatcher = new Regex(@"'Note: (.+?) ';", RegexOptions.Compiled);
-
-        public IAsyncAction AddToFavorites(FavoriteCategory category, string note)
-        {
-            return Run(async token =>
-            {
-                var requestUri = new Uri(Client.RootUri, $"gallerypopups.php?gid={Id}&t={Token}&act=addfav");
-                var requestContent = new HttpFormUrlEncodedContent(getInfo(category == null ? "favdel" : category.CollectionIndex.ToString(), note));
-                var response = await Owner.HttpClient.PostAsync(requestUri, requestContent);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var match = favNoteMatcher.Match(responseContent, 1300);
-                if(match.Success)
-                    FavoriteNote = HtmlEntity.DeEntitize(match.Groups[1].Value);
-                else
-                    FavoriteNote = null;
-                FavoriteCategory = category;
             });
         }
 
