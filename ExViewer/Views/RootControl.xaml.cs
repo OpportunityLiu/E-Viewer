@@ -99,6 +99,8 @@ namespace ExViewer.Views
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
             sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
+            var r = Client.Current.Favorites.Search("");
+            r.LoadMoreItemsAsync(1);
         }
 
         private async void Control_Loading(FrameworkElement sender, object args)

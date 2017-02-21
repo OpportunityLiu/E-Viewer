@@ -348,8 +348,8 @@
                                     Orientation="Horizontal">
                             <controls:CategoryTag Margin="6,4"
                                                   Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
-                            <TextBlock Text="{x:Bind VM.Gallery.Favorite.CollectionIndex, FallbackValue=Empty, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
-                            <TextBlock Text="{x:Bind VM.Gallery.Favorite.CollectionName, FallbackValue=AddTo, Mode=OneWay}" />
+                            <!--<TextBlock Text="{x:Bind VM.Gallery.FavoriteCategory.CollectionIndex, FallbackValue=Empty, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
+                            <TextBlock Text="{x:Bind VM.Gallery.FavoriteCategory.CollectionName, FallbackValue=AddTo, Mode=OneWay}" />-->
                             <TextBlock Margin="6,4"
                                        VerticalAlignment="Center"
                                        FontFamily="Segoe MDL2 Assets"

@@ -81,7 +81,7 @@ namespace ExClient
 
         private Client getClient() => Client.Current;
 
-        private string getKeyWord()
+        private string getKeyword()
         {
             if(Namespace != Namespace.Misc)
                 return $"{Namespace.ToString().ToLowerInvariant()}:\"{Content}$\"";
@@ -91,17 +91,17 @@ namespace ExClient
 
         public SearchResult Search()
         {
-            return getClient().Search(getKeyWord());
+            return getClient().Search(getKeyword());
         }
 
         public SearchResult Search(Category filter)
         {
-            return getClient().Search(getKeyWord(), filter);
+            return getClient().Search(getKeyword(), filter);
         }
 
         public SearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
         {
-            return getClient().Search(getKeyWord(), filter, advancedSearch);
+            return getClient().Search(getKeyword(), filter, advancedSearch);
         }
 
         public static Uri WikiUri

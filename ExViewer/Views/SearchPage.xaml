@@ -46,7 +46,7 @@
                                 x:Name="asb"
                                 Grid.Column="1"
                                 Margin="8"
-                                Text="{x:Bind VM.KeyWord, Mode=TwoWay}"
+                                Text="{x:Bind VM.Keyword, Mode=TwoWay}"
                                 PlaceholderText="Search..."
                                 QuerySubmitted="asb_QuerySubmitted"
                                 TextChanged="asb_TextChanged"

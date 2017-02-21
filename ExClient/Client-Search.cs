@@ -15,19 +15,19 @@ namespace ExClient
 {
     public partial class Client
     {
-        public SearchResult Search(string keyWord, Category category, AdvancedSearchOptions advancedSearch)
+        public SearchResult Search(string keyword, Category category, AdvancedSearchOptions advancedSearch)
         {
-            return SearchResult.Search(this, keyWord, category, advancedSearch);
+            return SearchResult.Search(this, keyword, category, advancedSearch);
         }
 
-        public SearchResult Search(string keyWord, Category category)
+        public SearchResult Search(string keyword, Category category)
         {
-            return Search(keyWord, category, null);
+            return Search(keyword, category, null);
         }
 
-        public SearchResult Search(string keyWord)
+        public SearchResult Search(string keyword)
         {
-            return Search(keyWord, Category.Unspecified);
+            return Search(keyword, Category.Unspecified);
         }
     }
 }
