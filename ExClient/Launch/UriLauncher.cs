@@ -19,7 +19,8 @@ namespace ExClient.Launch
             new SearchUploaderAndTagHandler(),
             new GalleryHandler(),
             new GalleryTorrentHandler(),
-            new GalleryImageHandler()
+            new GalleryImageHandler(),
+            new FavoritesSearchHandler()
         };
 
         private static UriHandlerData previousData;

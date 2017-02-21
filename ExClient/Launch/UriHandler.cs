@@ -67,6 +67,23 @@ namespace ExClient.Launch
             return value != "0" && value != "";
         }
 
+        protected static int QueryValueAsInt32(string value)
+        {
+            var r = 0;
+            if(int.TryParse(value, out r))
+                return r;
+            value = value.Trim();
+            var i = 0;
+            for(; i < value.Length; i++)
+            {
+                if(value[i] < '0' || value[i] > '9')
+                    break;
+            }
+            if(int.TryParse(value.Substring(0, i), out r))
+                return r;
+            return 0;
+        }
+
         public abstract bool CanHandle(UriHandlerData data);
         public abstract IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data);
     }
@@ -350,7 +367,7 @@ namespace ExClient.Launch
         }
     }
 
-    internal sealed class SearchUploaderAndTagHandler : SearchHandler
+    internal sealed class SearchUploaderAndTagHandler : UriHandler
     {
         public override bool CanHandle(UriHandlerData data)
         {
@@ -371,7 +388,7 @@ namespace ExClient.Launch
         }
     }
 
-    internal sealed class SearchCategoryHandler : SearchHandler
+    internal sealed class SearchCategoryHandler : UriHandler
     {
         private static Dictionary<string, Category> categoryDic = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
@@ -396,6 +413,46 @@ namespace ExClient.Launch
         {
             var category = categoryDic[data.Path0];
             return Helpers.AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(Client.Current.Search("", category)));
+        }
+    }
+
+    internal sealed class FavoritesSearchHandler : SearchHandler
+    {
+        public override bool CanHandle(UriHandlerData data)
+        {
+            return data.Paths.Count == 1 && data.Path0 == "favorites.php";
+        }
+
+        public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
+        {
+            var keyword = "";
+            var category = (FavoriteCategory)null;
+            var ap = false;
+            foreach(var item in data.Queries)
+            {
+                switch(item.Key)
+                {
+                case "f_apply":
+                    ap = QueryValueAsBoolean(item.Value);
+                    break;
+                case "favcat":
+                    if(item.Value != "all")
+                    {
+                        var index = QueryValueAsInt32(item.Value);
+                        index = Math.Max(0, index);
+                        index = Math.Min(9, index);
+                        category = Client.Current.Favorites[index];
+                    }
+                    break;
+                case "f_search":
+                    keyword = UnescapeKeyword(item.Value);
+                    break;
+                }
+            }
+            if(!ap)
+                return Helpers.AsyncWarpper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search("",category)));
+            else
+                return Helpers.AsyncWarpper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search(keyword, category)));
         }
     }
 }

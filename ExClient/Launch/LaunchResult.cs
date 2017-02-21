@@ -58,4 +58,17 @@ namespace ExClient.Launch
             get;
         }
     }
+
+    public sealed class FavoritesSearchLaunchResult : LaunchResult
+    {
+        internal FavoritesSearchLaunchResult(FavoritesSearchResult data)
+        {
+            Data = data;
+        }
+
+        public FavoritesSearchResult Data
+        {
+            get;
+        }
+    }
 }
