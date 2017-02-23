@@ -395,7 +395,7 @@ namespace ExClient
             }
         }
 
-        private static readonly Uri pageBaseUri = new Uri(Client.RootUri, "s/");
+        private static readonly Uri pageBaseUri = new Uri(Client.ExUri, "s/");
 
         private string imageKey;
 

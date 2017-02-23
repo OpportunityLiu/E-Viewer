@@ -313,6 +313,7 @@
         <ScrollViewer x:Name="sv_Content"
                       Grid.Row="1"
                       VerticalScrollBarVisibility="Hidden"
+                      IsVerticalScrollChainingEnabled="True"
                       VerticalScrollMode="Auto"
                       VerticalSnapPointsType="Mandatory">
             <StackPanel>

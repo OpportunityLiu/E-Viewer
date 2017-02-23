@@ -655,7 +655,7 @@ namespace ExClient
             });
         }
 
-        private static readonly Uri galleryBaseUri = new Uri(Client.RootUri, "g/");
+        private static readonly Uri galleryBaseUri = new Uri(Client.ExUri, "g/");
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
 
         private void updateFavoriteInfo(HtmlDocument html)

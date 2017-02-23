@@ -30,7 +30,7 @@ namespace ExClient.Launch
         {
             if(uri == null)
                 return false;
-            if(uri.Host != Client.RootUri.Host && uri.Host != Client.EhUri.Host)
+            if(uri.Host != Client.ExUri.Host && uri.Host != Client.EhUri.Host)
                 return false;
             var data = new UriHandlerData(uri);
             foreach(var item in handlers)

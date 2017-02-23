@@ -60,8 +60,7 @@
                        Grid.Row="4" />
             <StackPanel Orientation="Horizontal"
                        Grid.Row="3">
-                <local:FavoriteCategoryPresenter Category="{x:Bind Gallery.FavoriteCategory, Mode=OneWay}" 
-                                                 IsLabelVisible="False"/>
+                <local:FavoriteCategoryPresenter Category="{x:Bind Gallery.FavoriteCategory, Mode=OneWay}" />
                 <TextBlock Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
                        FontFamily="Segoe MDL2 Assets"
                        VerticalAlignment="Center" />

@@ -47,7 +47,7 @@
                       VerticalAlignment="Stretch">
                 <ComboBox.ItemTemplate>
                     <DataTemplate x:DataType="client:FavoriteCategory">
-                        <controls:FavoriteCategoryPresenter Category="{x:Bind}" />
+                        <controls:FavoriteCategoryPresenter Category="{x:Bind}" IsLabelVisible="True"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
