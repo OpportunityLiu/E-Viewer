@@ -23,10 +23,10 @@ namespace ExClient
             get;
         } = new Client();
 
-        internal static readonly Uri RootUri = new Uri("https://exhentai.org/");
-        internal static readonly Uri EhUri = new Uri("https://e-hentai.org/");
-        private static readonly Uri apiUri = new Uri(RootUri, "api.php");
-        internal static readonly Uri LogOnUri = new Uri("https://forums.e-hentai.org/index.php?act=Login&CODE=01");
+        public static Uri ExUri { get; } = new Uri("https://exhentai.org/");
+        public static Uri EhUri { get; } = new Uri("https://e-hentai.org/");
+
+        private static readonly Uri apiUri = new Uri(ExUri, "api.php");
 
         private Client()
         {
@@ -47,7 +47,7 @@ namespace ExClient
             get;
         }
 
-        public bool NeedLogOn => CookieManager.GetCookies(RootUri).Count < 2 && CookieManager.GetCookies(EhUri).Count < 2;
+        public bool NeedLogOn => CookieManager.GetCookies(ExUri).Count < 2 && CookieManager.GetCookies(EhUri).Count < 2;
 
         public IAsyncOperation<Client> LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
         {
@@ -74,7 +74,7 @@ namespace ExClient
                         clientParam.Add("recaptcha_challenge_field", reCaptcha.Answer);
                         clientParam.Add("recaptcha_response_field", "manual_challenge");
                     }
-                    var log = await HttpClient.PostAsync(LogOnUri, new HttpFormUrlEncodedContent(clientParam));
+                    var log = await HttpClient.PostAsync(logOnUri, new HttpFormUrlEncodedContent(clientParam));
                     var html = new HtmlDocument();
                     using(var stream = await log.Content.ReadAsInputStreamAsync())
                     {
@@ -95,8 +95,8 @@ namespace ExClient
                         }
                         throw new InvalidOperationException(errorText);
                     }
-                    var init = await HttpClient.GetAsync(RootUri, HttpCompletionOption.ResponseHeadersRead);
-                    if(CookieManager.GetCookies(RootUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")
+                    var init = await HttpClient.GetAsync(ExUri, HttpCompletionOption.ResponseHeadersRead);
+                    if(CookieManager.GetCookies(ExUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")
                     {
                         throw new NotSupportedException(LocalizedStrings.Resources.AccountDenied);
                     }
@@ -116,12 +116,12 @@ namespace ExClient
 
         private List<HttpCookie> getLogOnInfo()
         {
-            return CookieManager.GetCookies(RootUri).Concat(CookieManager.GetCookies(EhUri)).ToList();
+            return CookieManager.GetCookies(ExUri).Concat(CookieManager.GetCookies(EhUri)).ToList();
         }
 
         public void ClearLogOnInfo()
         {
-            foreach(var item in CookieManager.GetCookies(RootUri))
+            foreach(var item in CookieManager.GetCookies(ExUri))
             {
                 CookieManager.DeleteCookie(item);
             }
@@ -134,7 +134,7 @@ namespace ExClient
         internal IAsyncOperationWithProgress<string, HttpProgress> PostStrAsync(Uri uri, string content)
         {
             if(!uri.IsAbsoluteUri)
-                uri = new Uri(RootUri, uri);
+                uri = new Uri(ExUri, uri);
             if(content == null)
                 return HttpClient.GetStringAsync(uri);
             return Run<string, HttpProgress>(async (token, progress) =>

@@ -126,8 +126,7 @@ namespace ExViewer.Controls
                 return;
             var dx = e.Delta.Translation.X;
             var dy = e.Delta.Translation.Y;
-            sv.ScrollToHorizontalOffset(sv.HorizontalOffset - dx);
-            sv.ScrollToVerticalOffset(sv.VerticalOffset - dy);
+            sv.ChangeView(sv.HorizontalOffset - dx, sv.VerticalOffset - dy, null, true);
         }
 
         private void setSvManipulationMode(object sender, PointerRoutedEventArgs e)

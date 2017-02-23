@@ -51,17 +51,21 @@ namespace EhWikiClient
         {
             var r = (Record)null;
             if(dic.TryGetValue(title, out r))
-                return new Helpers.AsyncWarpper<Record>(r); 
+                return new Helpers.AsyncWarpper<Record>(r);
             return FetchAsync(title);
         }
 
-        private static readonly Uri apiUri = new Uri("https://ehwiki.org/api.php");
+        public static Uri WikiUri { get; } = new Uri("https://ehwiki.org/");
+
+        private static readonly Uri apiUri = new Uri(WikiUri, "api.php");
 
         public IAsyncOperation<Record> FetchAsync(string title)
         {
             return Run(async token =>
             {
-                var res = await http.PostAsync(apiUri, new HttpFormUrlEncodedContent(getRequestParameters(title)));
+                var post = http.PostAsync(apiUri, new HttpFormUrlEncodedContent(getRequestParameters(title)));
+                token.Register(post.Cancel);
+                var res = await post;
                 var resStr = await res.Content.ReadAsStringAsync();
                 var record = Record.Load(resStr);
                 dic[title] = record;

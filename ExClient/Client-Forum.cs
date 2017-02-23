@@ -18,13 +18,14 @@ namespace ExClient
 {
     public partial class Client
     {
-        private static readonly Uri forumUri = new Uri("https://forums.e-hentai.org/");
+        public static Uri ForumsUri { get; } = new Uri("https://forums.e-hentai.org/");
+        private static readonly Uri logOnUri = new Uri(ForumsUri, "index.php?act=Login&CODE=01");
 
         public IAsyncOperation<UserInfo> LoadUserInfo(int userID)
         {
             return Task.Run(async () =>
             {
-                var userInfoPage = await HttpClient.GetStringAsync(new Uri(forumUri, $"index.php?showuser={userID}"));
+                var userInfoPage = await HttpClient.GetStringAsync(new Uri(ForumsUri, $"index.php?showuser={userID}"));
                 var document = new HtmlDocument();
                 document.LoadHtml(userInfoPage);
                 var profileName = document.GetElementbyId("profilename");
@@ -52,7 +53,7 @@ namespace ExClient
                     DisplayName = profileName.InnerText.DeEntitize(),
                     UserID = userID,
                     Infomation = (info.ChildNodes.Count == 1 && info.ChildNodes[0].Name == "i" && info.InnerText == "No Information") ? null : info.InnerText.DeEntitize(),
-                    Avatar = (avatar == null) ? null : new Uri(forumUri, avatar.Attributes["src"].Value),
+                    Avatar = (avatar == null) ? null : new Uri(ForumsUri, avatar.Attributes["src"].Value),
                     MemberGroup = groupAndJoin.FirstChild.InnerText.Trim().Substring(14).DeEntitize(),
                     RegisterDate = register.Date
                 };

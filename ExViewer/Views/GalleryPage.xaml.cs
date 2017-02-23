@@ -19,6 +19,7 @@ using ExViewer.Settings;
 using ExClient;
 using ExViewer.ViewModels;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -58,7 +59,7 @@ namespace ExViewer.Views
             }
         }
 
-        private void pv_Content_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        private void pv_Header_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
         {
             var prop = e.GetCurrentPoint(this).Properties;
             if(!prop.IsHorizontalMouseWheel && prop.MouseWheelDelta != 0)
@@ -291,8 +292,8 @@ namespace ExViewer.Views
         {
             var sv_pv = VisualTreeHelperEx.GetFirstChild(pv, "PivotItemPresenter");
             var sv_pv2 = VisualTreeHelperEx.GetFirstChild(pv, "HeaderClipper");
-            sv_pv.PointerWheelChanged += pv_Content_PointerWheelChanged;
-            sv_pv2.PointerWheelChanged += pv_Content_PointerWheelChanged;
+            sv_pv.PointerWheelChanged += pv_Header_PointerWheelChanged;
+            sv_pv2.PointerWheelChanged += pv_Header_PointerWheelChanged;
             pv.Loaded -= pv_Loaded;
         }
 

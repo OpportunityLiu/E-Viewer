@@ -13,6 +13,15 @@ namespace ExViewer.Controls
 {
     public class FavoriteCategoryPresenter : Control
     {
+        private static readonly ResourceDictionary favoritesBrushes = getResource();
+
+        private static ResourceDictionary getResource()
+        {
+            var r = new ResourceDictionary();
+            Application.LoadComponent(r, new Uri("ms-appx:///Themes/Favorites.xaml"));
+            return r;
+        }
+
         public FavoriteCategoryPresenter()
         {
             this.DefaultStyleKey = typeof(FavoriteCategoryPresenter);
@@ -20,51 +29,80 @@ namespace ExViewer.Controls
             this.Unloaded += FavoriteCategoryPresenter_Unloaded;
         }
 
-        private TextBlock Label;
-        private TextBlock Icon;
-
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            Label = GetTemplateChild("Label") as TextBlock;
-            Icon = GetTemplateChild("Icon") as TextBlock;
-            setCategory();
-            setLabelVisibility();
+            Icon = null;
+            Label = null;
+            set();
         }
 
-        private static SolidColorBrush[] table = new SolidColorBrush[]
-        {
-            new SolidColorBrush(Color.FromArgb(255, 127, 127, 127)),
-            new SolidColorBrush(Color.FromArgb(255, 222,35, 35)),
-            new SolidColorBrush(Color.FromArgb(255, 222, 116,35)),
-            new SolidColorBrush(Color.FromArgb(255, 222, 212, 35)),
-            new SolidColorBrush(Color.FromArgb(255, 35, 222, 79)),
-            new SolidColorBrush(Color.FromArgb(255, 147, 222, 35)),
-            new SolidColorBrush(Color.FromArgb(255, 35, 221, 222)),
-            new SolidColorBrush(Color.FromArgb(255, 47,35, 222)),
-            new SolidColorBrush(Color.FromArgb(255, 131,35, 222)),
-            new SolidColorBrush(Color.FromArgb(255, 222, 35, 165))
-        };
+        private TextBlock Icon, Label;
 
-        private void setCategory()
+        private void set()
         {
-            var cat = Category;
-            if(cat == null || cat.Index < 0)
+            var cat = getCategory(Category);
+            var labelVisibility = IsLabelVisible;
+            setIcon(cat);
+            setLabel(cat, labelVisibility);
+        }
+
+        private static FavoriteCategory getCategory(FavoriteCategory category)
+        {
+            if(category == null || category.Index < 0)
+                category = FavoriteCategory.All;
+            return category;
+        }
+
+        private void setIcon(FavoriteCategory category)
+        {
+            var icon = Icon;
+            if(icon == null)
             {
-                cat = FavoriteCategory.All;
-                if(Icon != null)
-                    Icon.Visibility = Visibility.Collapsed;
+                icon = GetTemplateChild("Icon") as TextBlock;
+                if(icon == null)
+                    return;
+                else
+                    Icon = icon;
+            }
+            if(category.Index < 0)
+                icon.Visibility = Visibility.Collapsed;
+            else
+            {
+                icon.Visibility = Visibility.Visible;
+                icon.Foreground = (Brush)favoritesBrushes[$"FavoriteCategory{category.Index}"];
+            }
+        }
+
+        private void setLabel(FavoriteCategory category, bool value)
+        {
+            if(value)
+            {
+                var label = Label;
+                if(label == null)
+                {
+                    label = GetTemplateChild("Label") as TextBlock;
+                    if(label == null)
+                        return;
+                    else
+                        Label = label;
+                }
+                label.Visibility = Visibility.Visible;
+                label.Text = category.Name ?? "";
             }
             else
             {
-                if(Icon != null)
-                {
-                    Icon.Visibility = Visibility.Visible;
-                    Icon.Foreground = table[cat.Index];
-                }
+                if(Label == null)
+                    return;
+                Label.Visibility = Visibility.Collapsed;
             }
-            if(Label != null)
-                Label.Text = cat.Name ?? "";
+        }
+
+        private void setLabel(FavoriteCategory category)
+        {
+            if(!IsLabelVisible)
+                return;
+            setLabel(category, true);
         }
 
         public FavoriteCategory Category
@@ -88,7 +126,9 @@ namespace ExViewer.Controls
                 o.PropertyChanged -= dp.Category_PropertyChanged;
             if(dp.loaded && n != null)
                 n.PropertyChanged += dp.Category_PropertyChanged;
-            dp.setCategory();
+            var cat = getCategory(dp.Category);
+            dp.setIcon(cat);
+            dp.setLabel(cat);
             if(n == null || n.Index < 0)
             {
                 dp.ClearValue(CategoryProperty);
@@ -98,14 +138,14 @@ namespace ExViewer.Controls
 
         private void Category_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            setCategory();
+            setLabel(getCategory(Category));
         }
 
         private void FavoriteCategoryPresenter_Loaded(object sender, RoutedEventArgs e)
         {
             loaded = true;
             Category.PropertyChanged += Category_PropertyChanged;
-            setCategory();
+            set();
         }
 
         private void FavoriteCategoryPresenter_Unloaded(object sender, RoutedEventArgs e)
@@ -122,18 +162,13 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for IsLabelVisible.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsLabelVisibleProperty =
-            DependencyProperty.Register("IsLabelVisible", typeof(bool), typeof(FavoriteCategoryPresenter), new PropertyMetadata(true, IsLabelVisiblePropertyChanged));
+            DependencyProperty.Register("IsLabelVisible", typeof(bool), typeof(FavoriteCategoryPresenter), new PropertyMetadata(false, IsLabelVisiblePropertyChanged));
 
         private static void IsLabelVisiblePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var dp = (FavoriteCategoryPresenter)sender;
-            dp.setLabelVisibility();
-        }
-
-        private void setLabelVisibility()
-        {
-            if(Label != null)
-                Label.Visibility = IsLabelVisible ? Visibility.Visible : Visibility.Collapsed;
+            var cat = getCategory(dp.Category);
+            dp.setLabel(cat, (bool)e.NewValue);
         }
     }
 }

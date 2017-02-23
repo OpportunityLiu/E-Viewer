@@ -505,4 +505,7 @@
   <data name="FavoritesPageLoadingMoreTextBlock.Text" xml:space="preserve">
     <value>正在加载更多画集…</value>
   </data>
+  <data name="EhWikiDialogTagNotFound" xml:space="preserve">
+    <value>在 EhWiki 中未找到此标签。</value>
+  </data>
 </root>

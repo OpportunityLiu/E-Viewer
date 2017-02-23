@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="using:ExViewer.Themes">
+    <SolidColorBrush x:Key="FavoriteCategory0"
+                     Color="#FF7f7f7f" />
+    <SolidColorBrush x:Key="FavoriteCategory1"
+                     Color="#FFde2323" />
+    <SolidColorBrush x:Key="FavoriteCategory2"
+                     Color="#ffde7423" />
+    <SolidColorBrush x:Key="FavoriteCategory3"
+                     Color="#FFded423" />
+    <SolidColorBrush x:Key="FavoriteCategory4"
+                     Color="#FF23de4f" />
+    <SolidColorBrush x:Key="FavoriteCategory5"
+                     Color="#FF93de23" />
+    <SolidColorBrush x:Key="FavoriteCategory6"
+                     Color="#FF23dcde" />
+    <SolidColorBrush x:Key="FavoriteCategory7"
+                     Color="#FF2f23de" />
+    <SolidColorBrush x:Key="FavoriteCategory8"
+                     Color="#FF8323de" />
+    <SolidColorBrush x:Key="FavoriteCategory9"
+                     Color="#FFde23a5" /> 
+</ResourceDictionary>

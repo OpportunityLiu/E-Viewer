@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.System;
+using EhWikiClient;
 
 // The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -35,19 +36,24 @@ namespace ExViewer.Views
 
         private string style;
 
+        private IAsyncOperation<Record> loadRecord;
+
         internal async void SetTag(Tag tag)
         {
+            loadRecord?.Cancel();
             wv.Visibility = Visibility.Collapsed;
             pb.Visibility = Visibility.Visible;
             var str = (string)null;
             Title = tag.Content;
             try
             {
-                var record = await tag.FetchEhWikiRecordAsync();
+                loadRecord = tag.FetchEhWikiRecordAsync();
+                var record = await loadRecord;
+                loadRecord = null;
                 if(style == null)
                     initStyle();
                 if(record?.Html == null)
-                    str = "Tag not fount in wiki.";
+                    str = LocalizedStrings.Resources.EhWikiDialogTagNotFound;
                 else
                     str = record.Html;
             }
@@ -67,57 +73,64 @@ namespace ExViewer.Views
             var link = ((SolidColorBrush)this.BorderBrush);
             style = $@"<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
 <style type='text/css'>
-	html {{
-		background: {rgba(background)};
-		font-family: sans-serif;
-		font-size: 15px;
-		color: {rgba(foreground)};
-	}}
-	
-	a {{
-		color:{rgba(link)}
-	}}
-	
-	a:hover {{
-		color: {rgba(foreground)}
-	}}
-	
-	ul {{
-		margin: 0px;
-		padding: 0px;
-		padding-left: 20px;
-	}}
-	
-	li {{
-		margin-top: 4px;
-		margin-bottom: 4px;
-		list-style-type: square;
-	}}
-	
-	dd {{
-		margin: 0px;
-		margin-left: 20px;
-	}}
-	
-	dl {{
-		margin-top: 4px;
-		margin-bottom: 4px;
-	}}
+    html {{
+        background: {color(background)};
+        font-family: sans-serif;
+        font-size: 15px;
+        color: {color(foreground)};
+    }}
+    
+    a {{
+        color:{color(link)}
+    }}
+    
+    a:hover {{
+        color: {color(foreground)}
+    }}
+    
+    ul {{
+        margin: 0px;
+        padding: 0px;
+        padding-left: 20px;
+    }}
+    
+    li {{
+        margin-top: 4px;
+        margin-bottom: 4px;
+        list-style-type: square;
+    }}
+    
+    dd {{
+        margin: 0px;
+        margin-left: 20px;
+    }}
+    
+    dl {{
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }}
 </style>
 <base href='https://ehwiki.org/'>";
         }
 
-        private static string rgba(SolidColorBrush color)
+        private static string color(SolidColorBrush color)
         {
-            return $"rgba({color.Color.R},{color.Color.G},{color.Color.B},{color.Color.A})";
+            if(color.Color.A == 255)
+                return $"#{color.Color.R:X2}{color.Color.G:X2}{color.Color.B:X2}";
+            return $"rgba({color.Color.R},{color.Color.G},{color.Color.B},{color.Color.A / 256d})";
         }
 
         private async void wv_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
-            if(args.Uri != null)
+            var uri = args.Uri;
+            if(uri != null)
             {
                 args.Cancel = true;
-                await Launcher.LaunchUriAsync(args.Uri);
+                if(uri.Host == "g.e-hentai.org")
+                {
+                    uri = new Uri(ExClient.Client.EhUri, uri.PathAndQuery + uri.Fragment);
+                }
+                await Launcher.LaunchUriAsync(uri);
             }
         }
     }

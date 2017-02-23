@@ -488,6 +488,7 @@
                         <TextBlock x:Name="Icon"
                                    Text="&#x2BC1;" />
                         <TextBlock x:Name="Label" 
+                                   x:DeferLoadStrategy="Lazy"
                                    Margin="4,0,0,0"/>
                     </StackPanel>
                 </ControlTemplate>
