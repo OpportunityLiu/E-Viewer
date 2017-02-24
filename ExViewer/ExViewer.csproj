@@ -273,6 +273,7 @@
     <Content Include="Assets\Wide.scale-100.png" />
     <Content Include="Assets\Wide.scale-200.png" />
     <Content Include="Assets\Wide.scale-400.png" />
+    <PRIResource Include="Strings\en\Resources.resJson" />
     <PRIResource Include="Strings\en\Settings.resw" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

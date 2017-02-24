@@ -19,7 +19,7 @@ using System.Collections;
 
 namespace ExClient
 {
-    public sealed class SavedGallery : Gallery
+    public sealed class SavedGallery : CachedGallery
     {
         private sealed class SavedGalleryList : GalleryList<SavedGallery>
         {
@@ -90,7 +90,7 @@ namespace ExClient
         }
 
         internal SavedGallery(GalleryModel model, SavedGalleryModel savedModel)
-                : base(model, false)
+                : base(model)
         {
             this.thumbFile = savedModel.ThumbData;
             this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
@@ -99,61 +99,21 @@ namespace ExClient
 
         protected override IAsyncAction InitOverrideAsync()
         {
-            var temp = thumbFile;
+            var temp = this.thumbFile;
+            this.thumbFile = null;
+            if(temp == null)
+                return base.InitOverrideAsync();
             return DispatcherHelper.RunAsync(async () =>
             {
-                if(temp == null)
-                    return;
                 using(var stream = temp.AsRandomAccessStream())
                 {
                     var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
                     Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
                 }
-                thumbFile = null;
             });
         }
 
-        private List<ImageModel> imageModels;
-
         private byte[] thumbFile;
-
-        private void loadImageModel()
-        {
-            using(var db = new GalleryDb())
-            {
-                var gid = Id;
-                imageModels = (from g in db.GallerySet
-                               where g.Id == gid
-                               select g.Images).Single();
-                imageModels.Sort((i, j) => i.PageId - j.PageId);
-            }
-        }
-
-        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
-        {
-            return Task.Run<IList<GalleryImage>>(async () =>
-            {
-                await GetFolderAsync();
-                if(imageModels == null)
-                    loadImageModel();
-                var currentPageSize = MathHelper.GetSizeOfPage(RecordCount, PageSize, pageIndex);
-                var toAdd = new List<GalleryImage>(currentPageSize);
-                for(int i = 0; i < currentPageSize; i++)
-                {
-                    // Load cache
-                    var model = imageModels[Count + i];
-                    var image = await GalleryImage.LoadCachedImageAsync(this, model);
-                    if(image == null)
-                    // when load fails
-                    {
-                        image = new GalleryImage(this, model.PageId, model.ImageKey, null);
-                    }
-                    toAdd.Add(image);
-
-                }
-                return toAdd;
-            }).AsAsyncOperation();
-        }
 
         public override IAsyncAction DeleteAsync()
         {

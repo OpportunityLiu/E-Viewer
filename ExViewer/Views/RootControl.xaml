@@ -92,14 +92,14 @@
                             </ImageBrush>
                         </Ellipse.Fill>
                     </Ellipse>
-                    <TextBlock  Grid.Row="2"
-                                Grid.Column="1"
-                                Margin="8"
-                                MaxWidth="200"
-                                TextTrimming="CharacterEllipsis"
-                                Text="{Binding UserInfo.DisplayName, ElementName=page, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="2"
+                               Grid.Column="1"
+                               Margin="8"
+                               MaxWidth="200"
+                               TextTrimming="CharacterEllipsis"
+                               Text="{Binding UserInfo.DisplayName, ElementName=page, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
                     <Button x:Uid="RootControlChangeUserButton"
                             Grid.Row="2"
                             Grid.Column="2"

@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Runtime.InteropServices;
 using GalaSoft.MvvmLight.Threading;
+using ExClient.Api;
 
 namespace ExClient
 {

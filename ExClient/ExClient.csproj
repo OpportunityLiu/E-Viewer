@@ -114,6 +114,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
+    <Compile Include="Api\GalleryData.cs" />
+    <Compile Include="Api\GalleryInfo.cs" />
+    <Compile Include="Api\GalleryToken.cs" />
+    <Compile Include="Api\ImageInfo.cs" />
     <Compile Include="CachedGallery.cs" />
     <Compile Include="FavoriteCategory.cs" />
     <Compile Include="FavoriteCollection.cs" />
@@ -122,7 +126,9 @@
     <Compile Include="Helpers\AsyncWarpper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="GalleryList{T}.cs" />
-    <Compile Include="Internal\ApiRequest.cs" />
+    <Compile Include="Api\ApiRequest.cs" />
+    <Compile Include="Internal\RangedCollection{T}.cs" />
+    <Compile Include="Language.cs" />
     <Compile Include="Launch\LaunchResult.cs" />
     <Compile Include="Launch\UriHandler.cs" />
     <Compile Include="SavedGallery.cs" />
@@ -167,6 +173,7 @@
       <DependentUpon>Strings.tt</DependentUpon>
     </Compile>
     <Compile Include="Tag.cs" />
+    <Compile Include="TagCollection.cs" />
     <Compile Include="TorrentInfo.cs" />
     <Compile Include="Launch\UriLauncher.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
