@@ -274,10 +274,7 @@
     <value>Vietnamese</value>
   </data>
   <data name="About" xml:space="preserve">
-    <value>关于</value>
-  </data>
-  <data name="AboutContent" xml:space="preserve">
-    <value />
+    <value>ABOUT</value>
   </data>
   <data name="ExcludedTagNamespaces" xml:space="preserve">
     <value>Excluded tag namespaces</value>
