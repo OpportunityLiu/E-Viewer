@@ -1,15 +1,14 @@
 ﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Web" #>
 <#@ assembly name="System.Runtime.Serialization" #>
 <#@ assembly name="EnvDTE" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="System.Globalization" #>
+<#@ import namespace="System" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Xml" #>
+<#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Runtime.Serialization.Json" #>
 <#@ import namespace="System.Web" #>
 <#@ output extension=".tt.cs" #>
@@ -25,7 +24,7 @@
     // 生成辅助类的命名空间，默认使用 "<ProjectDefaultNamespace>.LocalizedStrings"。
     string LocalizedStringsNamespace = null;
     // 生成辅助类的修饰符
-    string modifier = "public";
+    string modifier = "internal";
     // 是否为默认工程，决定是否需要显式定义资源路径。
     bool IsDefaultProject = true;
     //是否对生成的代码启用调试。
@@ -35,72 +34,58 @@
 
 #>
 <#
-    var ns = LocalizedStringsNamespace ?? 
-        (GetProjectDefaultNamespace()+ ".LocalizedStrings");
+    var ns = LocalizedStringsNamespace ?? (GetProjectDefaultNamespace() + ".LocalizedStrings");
 
-    // 用于存放所有 resw 的 key。
-    var names = new Dictionary<string, Dictionary<string, string>>();
+    // 用于存放所有资源的 key。
+    var names = new Dictionary<string, Dictionary<string, object>>();
     var stringsPath = Path.Combine(GetProjectPath(), ResourcePath, SourceLanguagePath);
     string[] reswPaths;
+    string[] resJsonPaths;
 
     // 当前项目存在 Strings 文件夹。
     if(Directory.Exists(stringsPath))
     {
-        // 获取 Strings 文件夹下所有的 .resw 文件的路径。
+        // 获取 Strings 文件夹下所有的资源文件的路径。
         reswPaths = Directory.GetFiles(stringsPath, "*.resw", SearchOption.AllDirectories);
+        resJsonPaths = Directory.GetFiles(stringsPath, "*.resJson", SearchOption.AllDirectories);
     }
     else
     {
         reswPaths = new string[0];
+        resJsonPaths = new string[0];
     }
-    foreach(string reswPath in reswPaths)
+    foreach(var reswPath in reswPaths)
     {
-        var className = Path.GetFileNameWithoutExtension(reswPath);
-        var content = new Dictionary<string, string>();
-
-        var document = new XmlDocument();
-        document.Load(reswPath);
-
-        // 获取 resw 文件中的 data 节点。
-        var dataNodes = document.GetElementsByTagName("data");
-        foreach(XmlElement dataNode in dataNodes)
-        {
-            if(dataNode != null)
-            {
-                var value = dataNode.GetAttribute("name");
-                // key 中包含 ‘.’ 的作为控件的多语言化，不处理。
-                if(value.Contains("."))
-                    continue;
-                content.Add(value, dataNode["value"].InnerText);
-            }
-        }
-
-        if(content.Count != 0)
-            names.Add(className, content);
+        AnalyzeResw(names, reswPath);
+    }
+    foreach(var resJsonPath in resJsonPaths)
+    {
+        AnalyzeResJson(names, resJsonPath);
     }
 
     if(!string.IsNullOrWhiteSpace(ns))
     {
 #>
 namespace <#=ns#>
-{    
+{
 <#
     }
 
     foreach(var localizedClass in names)
     {
         var resourcePath = (IsDefaultProject ? "" : GetProjectAssemblyName()) + "/" + localizedClass.Key;
+        var cache = GetRandomName("_cache");
+        var loader = GetRandomName("_loader");
+        var className = Refine(localizedClass.Key);
         if(!DebugGeneratedCode)
         {
 #>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 <#
         }
-        var cache = GetRandomName("_cache");
-        var loader = GetRandomName("_loader");
 #>
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator","1.0")]
-    <#=modifier#> static class <#=Refine(localizedClass.Key)#>
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator", "1.0")]
+    <#=modifier#> static class <#=className#>
     {
         private static readonly global::System.Collections.Generic.Dictionary<string, string> <#=cache#>
             = new global::System.Collections.Generic.Dictionary<string, string>();
@@ -126,25 +111,15 @@ namespace <#=ns#>
         {
             if(string.IsNullOrWhiteSpace(name.Key))
                 continue;
-#>
-
-        /// <summary>
-<#
-            // 转义注释序列
-            var comments = new StringReader(name.Value);
-            while(true)
+            var value = name.Value as string;
+            if(value != null)
             {
-                var comment = HttpUtility.HtmlEncode(comments.ReadLine());
-                if(comment == null)
-                    break;
-#>
-        /// <para><#=comment#></para>
-<#
+                WriteProperty("        ", name.Key, value);
             }
-#>
-        /// </summary>
-        public static string <#=Refine(name.Key)#> => GetString("<#=name.Key#>");
-<#
+            else
+            {
+                WriteNestedClass("        ", localizedClass.Key, className, name.Key, (Dictionary<string, object>)name.Value);
+            }
         }
 #>
     }
@@ -161,141 +136,160 @@ namespace <#=ns#>
 #>
 
 <#+
-    // 获取当前 T4 模板所在的工程的目录。
-    public string GetProjectPath()
+
+    public void WriteProperty(string indent, string key, string value)
     {
-        return Host.ResolveAssemblyReference("$(ProjectDir)");
+        WriteLine("");
+        WriteLine($"{indent}/// <summary>");
+        // 转义注释序列
+        var comments = new StringReader(value);
+        while(true)
+        {
+            var comment = HttpUtility.HtmlEncode(comments.ReadLine());
+            if(comment == null)
+                break;
+            WriteLine($"{indent}/// <para>{comment}</para>");
+        }
+        WriteLine($@"{indent}/// </summary>");
+        WriteLine($@"{indent}public static string {Refine(key)} => GetString(@""{AsRaw(key)}"");");
     }
 
-    // 获取当前 T4 模板所在的工程的默认命名空间。
-    public string GetProjectDefaultNamespace()
+    public void WriteNestedClass(string indent, string parent, string parentClass, string key, Dictionary<string, object> value)
     {
-        IServiceProvider serviceProvider = (IServiceProvider)this.Host;
-        EnvDTE.DTE dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
-        EnvDTE.Project project = (EnvDTE.Project)dte.Solution.FindProjectItem(this.Host.TemplateFile).ContainingProject;
-        return project.Properties.Item("DefaultNamespace").Value.ToString();
+        var cName = Refine(key);
+        WriteLine("");
+        WriteLine($@"{indent}public static class {cName}");
+        WriteLine($@"{indent}{{");
+        WriteLine($@"{indent}    public static string GetString(string key)");
+        WriteLine($@"{indent}    {{");
+        WriteLine($@"{indent}        if(string.IsNullOrEmpty(key))");
+        WriteLine($@"{indent}            return {parentClass}.GetString(@""{AsRaw(key)}"");");
+        WriteLine($@"{indent}        return {parentClass}.GetString(@""{AsRaw(key)}/"" + key);");
+        WriteLine($@"{indent}    }}");
+        foreach(var item in value)
+        {
+            var v = item.Value as string;
+            if(v != null)
+                WriteProperty(indent + "    ", item.Key, v);
+            else
+                WriteNestedClass(indent + "    ", key, cName, item.Key, (Dictionary<string, object>)item.Value);
+        }
+        WriteLine($"{indent}}}");
     }
 
-    // 获取当前 T4 模板所在的工程的程序集名称。
-    public string GetProjectAssemblyName()
+    public void SetValue(Dictionary<string, Dictionary<string, object>> output, string root, IList<string> path, string value)
     {
-        IServiceProvider serviceProvider = (IServiceProvider)this.Host;
-        EnvDTE.DTE dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
-        EnvDTE.Project project = (EnvDTE.Project)dte.Solution.FindProjectItem(this.Host.TemplateFile).ContainingProject;
-        return project.Properties.Item("AssemblyName").Value.ToString();
+        Dictionary<string, object> o;
+        output.TryGetValue(root, out o);
+        if(o == null)
+            output[root] = o = new Dictionary<string, object>();
+        SetValueCore(o, path, 0, value);
     }
 
-    private HashSet<string> keywords = new HashSet<string>()
+    public void SetValueCore(Dictionary<string, object> output, IList<string> path, int index, string value)
     {
-        "abstract",
-        "as",
-        "base",
-        "bool",
-        "break",
-        "byte",
-        "case",
-        "catch",
-        "char",
-        "checked",
-        "class",
-        "const",
-        "continue",
-        "decimal",
-        "default",
-        "delegate",
-        "do",
-        "double",
-        "else",
-        "enum",
-        "event",
-        "explicit",
-        "extern",
-        "false",
-        "finally",
-        "fixed",
-        "float",
-        "for",
-        "foreach",
-        "goto",
-        "if",
-        "implicit",
-        "in",
-        "int",
-        "interface",
-        "internal",
-        "is",
-        "lock",
-        "long",
-        "namespace",
-        "new",
-        "null",
-        "object",
-        "operator",
-        "out",
-        "override",
-        "params",
-        "private",
-        "protected",
-        "public",
-        "readonly",
-        "ref",
-        "return",
-        "sbyte",
-        "sealed",
-        "short",
-        "sizeof",
-        "stackalloc",
-        "static",
-        "string",
-        "struct",
-        "switch",
-        "this",
-        "throw",
-        "true",
-        "try",
-        "typeof",
-        "uint",
-        "ulong",
-        "unchecked",
-        "unsafe",
-        "ushort",
-        "using",
-        "virtual",
-        "void",
-        "volatile",
-        "while",
-        "add",
-        "alias",
-        "ascending",
-        "async",
-        "await",
-        "descending",
-        "dynamic",
-        "from",
-        "get",
-        "global",
-        "group",
-        "into",
-        "join",
-        "let",
-        "orderby",
-        "partial", 
-        "remove",
-        "select",
-        "set",
-        "value",
-        "var",
-        "where", 
-        "yield"
-    };
+        if(index == path.Count - 1)
+            SetValueCore(output, path[index], value);
+        else
+        {
+            object o;
+            output.TryGetValue(path[index], out o);
+            var dic = o as Dictionary<string, object>;
+            if(dic == null)
+                output[path[index]] = dic = new Dictionary<string, object>();
+            SetValueCore(dic, path, index + 1, value);
+        }
+    }
 
-    private HashSet<string> used = new HashSet<string>()
+    public void SetValueCore(Dictionary<string, object> output, string path, string value)
     {
-        "GetString",
-        "ClearCache",
-        "ReferenceEquals",
-        "Equals"
-    };
+        output[path] = value;
+    }
+
+    public void AnalyzeResw(Dictionary<string, Dictionary<string, object>> output, string path)
+    {
+        var className = Path.GetFileNameWithoutExtension(path);
+        var document = new XmlDocument();
+        document.Load(path);
+
+        // 获取 resw 文件中的 data 节点。
+        var dataNodes = document.GetElementsByTagName("data");
+        foreach(XmlElement dataNode in dataNodes)
+        {
+            if(dataNode != null)
+            {
+                var value = dataNode.GetAttribute("name");
+                // key 中包含 ‘.’ 的作为控件的多语言化，不处理。
+                SetValue(output, className, value.Split('.', '/'), dataNode["value"].InnerText);
+            }
+        }
+    }
+
+    public void AnalyzeResJson(Dictionary<string, Dictionary<string, object>> output, string path)
+    {
+        var className = Path.GetFileNameWithoutExtension(path);
+        using(var reader = new StreamReader(path, true))
+        using(var ms = new MemoryStream())
+        using(var writer = new StreamWriter(ms, new System.Text.UTF8Encoding(false)))
+        {
+            writer.Write(reader.ReadToEnd());
+            writer.Flush();
+            ms.Position = 0;
+            var xmlreader = JsonReaderWriterFactory.CreateJsonReader(ms, new XmlDictionaryReaderQuotas());
+            var doc = new XmlDocument();
+            doc.Load(xmlreader);
+            var root = doc.FirstChild;
+            var p = new List<string>();
+            foreach(XmlElement item in root.ChildNodes)
+            {
+                AnalyzeNode(output, className, p, item);
+            }
+
+        }
+    }
+
+    public void AnalyzeNode(Dictionary<string, Dictionary<string, object>> output, string root, List<string> path, XmlElement node)
+    {
+        var nodeName = GetNodeName(node);
+        if(string.IsNullOrWhiteSpace(nodeName)||nodeName.StartsWith("_"))
+            return;
+        var currentName = GetNodeName(node).Split('/');
+        path.AddRange(currentName);
+        if(node.ChildNodes.Count == 1)
+        {
+            var singleNode = node.ChildNodes.Item(0);
+            if(singleNode.NodeType == XmlNodeType.Text)
+                SetValue(output, root, path, singleNode.InnerText);
+            else
+                AnalyzeNode(output, root, path, (XmlElement)singleNode);
+        }
+        else
+        {
+            foreach(XmlElement item in node.ChildNodes)
+            {
+                AnalyzeNode(output, root, path, item);
+            }
+        }
+        var currentNameLength = currentName.Length;
+        path.RemoveRange(path.Count - currentNameLength, currentNameLength);
+    }
+
+    public string GetNodeName(XmlElement node)
+    {
+        var name = node.GetAttribute("item");
+        if(string.IsNullOrEmpty(name))
+            return node.Name;
+        return name;
+    }
+
+    private HashSet<string> keywords = new HashSet<string>() { "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char", "checked", "class", "const", "continue", "decimal", "default", "delegate", "do", "double", "else", "enum", "event", "explicit", "extern", "false", "finally", "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface", "internal", "is", "lock", "long", "namespace", "new", "null", "object", "operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using", "virtual", "void", "volatile", "while" };
+
+    private HashSet<string> used = new HashSet<string>() { "GetString", "ClearCache", "ReferenceEquals", "Equals" };
+
+    public string AsRaw(string value)
+    {
+        return value?.Replace("\"", "\"\"") ?? "";
+    }
 
     public string Refine(string name)
     {
@@ -317,7 +311,7 @@ namespace <#=ns#>
 
     private bool isValidStartChar(char ch)
     {
-        return ch == '_' || isLetter(ch); 
+        return ch == '_' || isLetter(ch);
     }
 
     private bool isValidPartChar(char ch)
@@ -342,5 +336,29 @@ namespace <#=ns#>
     public string GetRandomName(string head)
     {
         return head + ran.Next();
+    }
+
+    // 获取当前 T4 模板所在的工程的目录。
+    public string GetProjectPath()
+    {
+        return Host.ResolveAssemblyReference("$(ProjectDir)");
+    }
+
+    // 获取当前 T4 模板所在的工程的默认命名空间。
+    public string GetProjectDefaultNamespace()
+    {
+        IServiceProvider serviceProvider = (IServiceProvider)this.Host;
+        EnvDTE.DTE dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
+        EnvDTE.Project project = (EnvDTE.Project)dte.Solution.FindProjectItem(this.Host.TemplateFile).ContainingProject;
+        return project.Properties.Item("DefaultNamespace").Value.ToString();
+    }
+
+    // 获取当前 T4 模板所在的工程的程序集名称。
+    public string GetProjectAssemblyName()
+    {
+        IServiceProvider serviceProvider = (IServiceProvider)this.Host;
+        EnvDTE.DTE dte = (EnvDTE.DTE)serviceProvider.GetService(typeof(EnvDTE.DTE));
+        EnvDTE.Project project = (EnvDTE.Project)dte.Solution.FindProjectItem(this.Host.TemplateFile).ContainingProject;
+        return project.Properties.Item("AssemblyName").Value.ToString();
     }
 #>

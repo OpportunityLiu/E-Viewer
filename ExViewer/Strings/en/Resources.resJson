@@ -1,3 +1,11 @@
 ﻿{
-    "a/b/Text":"aaa"
+    "a":{
+        "b/Text":"aaa",
+        "c":{
+            "d":"abbb",
+            "e":{
+                "f":"aaaabbb"
+            }
+        }
+    }
 }
