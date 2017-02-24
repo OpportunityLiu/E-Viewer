@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
-namespace ExClient.Internal
+namespace ExClient.Api
 {
     internal abstract class ApiRequest
     {
@@ -22,7 +22,7 @@ namespace ExClient.Internal
         [JsonProperty("apikey", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string ApiKey => key;
 
-        public static void UpdateToken(long uid,string key)
+        public static void UpdateToken(long uid, string key)
         {
             ApiRequest.uid = uid;
             ApiRequest.key = key;

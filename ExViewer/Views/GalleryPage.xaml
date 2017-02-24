@@ -361,11 +361,11 @@
                                   Grid.Column="1"
                                   Padding="6"
                                   ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
-                                  ItemsSource="{x:Bind VM.SortedTags, Mode=OneWay}"
+                                  ItemsSource="{x:Bind VM.Gallery.Tags, Mode=OneWay}"
                                   ScrollViewer.IsVerticalScrollChainingEnabled="True"
                                   SelectionMode="None">
                             <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="VM:TagList">
+                                <DataTemplate x:DataType="client:NamespaceTagCollection">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition x:Uid="GalleryPageTagNamespaceColumnDefinition"

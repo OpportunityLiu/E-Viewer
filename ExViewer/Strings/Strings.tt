@@ -2,6 +2,7 @@
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Web" #>
+<#@ assembly name="System.Runtime.Serialization" #>
 <#@ assembly name="EnvDTE" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
@@ -9,6 +10,7 @@
 <#@ import namespace="System.Globalization" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Xml" #>
+<#@ import namespace="System.Runtime.Serialization.Json" #>
 <#@ import namespace="System.Web" #>
 <#@ output extension=".tt.cs" #>
 <#

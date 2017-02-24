@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using Windows.Storage.Streams;
 using Windows.Storage;
 using Windows.Graphics.Imaging;
+using ExClient.Api;
 
 namespace ExViewer.ViewModels
 {
@@ -290,7 +291,6 @@ namespace ExViewer.ViewModels
                 Share.RaiseCanExecuteChanged();
                 OpenInExplorer.RaiseCanExecuteChanged();
                 Torrents = null;
-                RaisePropertyChanged(nameof(SortedTags));
             }
         }
 
@@ -325,19 +325,6 @@ namespace ExViewer.ViewModels
             private set
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref currentInfo, value));
-            }
-        }
-
-        public SortedSet<TagList> SortedTags
-        {
-            get
-            {
-                if(gallery == null)
-                    return null;
-                var query = from tag in gallery.Tags
-                            group tag by tag.Namespace into taggroup
-                            select new TagList(taggroup);
-                return new SortedSet<TagList>(query, Comparer<TagList>.Create((x, y) => x.Namespace - y.Namespace));
             }
         }
 

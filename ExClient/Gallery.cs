@@ -1,21 +1,19 @@
-﻿using Newtonsoft.Json;
+﻿using ExClient.Api;
+using ExClient.Models;
+using HtmlAgilityPack;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Windows.Foundation;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using HtmlAgilityPack;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Graphics.Imaging;
-using System.Threading;
 using Windows.Storage;
-using ExClient.Models;
-using System.Collections;
-using Windows.Web.Http;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {
@@ -29,129 +27,6 @@ namespace ExClient
         public int ImageCount
         {
             get; internal set;
-        }
-    }
-
-    public struct Language
-    {
-        internal Language(string name, LanguageModifier modifier)
-        {
-            var ca = name.ToCharArray();
-            ca[0] = char.ToUpperInvariant(ca[0]);
-            Name = new string(ca);
-            Modifier = modifier;
-        }
-
-        public string Name
-        {
-            get;
-        }
-
-        public LanguageModifier Modifier
-        {
-            get;
-        }
-
-        public override string ToString()
-        {
-            switch(Modifier)
-            {
-            case LanguageModifier.Translated:
-                return $"{Name} TR";
-            case LanguageModifier.Rewrite:
-                return $"{Name} RW";
-            default:
-                return Name;
-            }
-        }
-    }
-
-    public enum LanguageModifier
-    {
-        None,
-        Translated,
-        Rewrite
-    }
-
-    [JsonConverter(typeof(GalleryInfoConverter))]
-    public struct GalleryInfo : IEquatable<GalleryInfo>
-    {
-        public GalleryInfo(long id, string token)
-        {
-            Id = id;
-            Token = token;
-        }
-
-        public long Id
-        {
-            get;
-        }
-
-        public string Token
-        {
-            get;
-        }
-
-        public bool Equals(GalleryInfo other)
-        {
-            return this.Id == other.Id && this.Token == other.Token;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if(obj == null || typeof(GalleryInfo) != obj.GetType())
-            {
-                return false;
-            }
-            return Equals((GalleryInfo)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode() ^ (Token ?? "").GetHashCode();
-        }
-    }
-
-    internal class GalleryInfoConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return typeof(GalleryInfo) == objectType;
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            if(reader.TokenType != JsonToken.StartObject)
-                return null;
-            long gid = 0;
-            string token = null;
-            reader.Read();
-            do
-            {
-                switch(reader.Value.ToString())
-                {
-                case "gid":
-                    gid = reader.ReadAsInt32().GetValueOrDefault();
-                    break;
-                case "token":
-                    token = reader.ReadAsString();
-                    break;
-                default:
-                    break;
-                }
-                reader.Read();
-            } while(reader.TokenType != JsonToken.EndObject);
-
-            return new GalleryInfo(gid, token);
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var v = (GalleryInfo)value;
-            writer.WriteStartArray();
-            writer.WriteValue(v.Id);
-            writer.WriteValue(v.Token);
-            writer.WriteEndArray();
         }
     }
 
@@ -174,53 +49,13 @@ namespace ExClient
                     else
                     {
                         var r = (cm == null) ?
-                             new Gallery(gm, true) :
+                             new Gallery(gm) :
                              new SavedGallery(gm, cm);
                         await r.InitAsync();
                         return r;
                     }
                 }
             }).AsAsyncOperation();
-        }
-
-        private class GalleryData : Internal.ApiRequest
-        {
-            private class RangedCollection : IReadOnlyList<GalleryInfo>
-            {
-                public IReadOnlyList<GalleryInfo> Items { get; set; }
-
-                public GalleryInfo this[int index] => Items[this.StratIndex + index];
-
-                public int Count { get; set; }
-                public int StratIndex { get; set; }
-
-                public IEnumerator<GalleryInfo> GetEnumerator()
-                {
-                    for(int i = this.StratIndex; i < this.StratIndex + this.Count; i++)
-                        yield return Items[i];
-                }
-
-                IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-            }
-
-            public override string Method => "gdata";
-
-            public int @namespace => 1;
-
-            public IReadOnlyCollection<GalleryInfo> gidlist
-            {
-                get;
-            }
-
-            public GalleryData(IReadOnlyList<GalleryInfo> list, int startIndex, int count)
-            {
-                gidlist = new RangedCollection
-                {
-                    Items = list,
-                    StratIndex = startIndex,
-                    Count = count
-                };
-            }
         }
 
         public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
@@ -313,21 +148,19 @@ namespace ExClient
             });
         }
 
-        protected Gallery(long id, string token, int loadedPageCount)
-            : base(loadedPageCount)
+        private Gallery(long id, string token)
+            : base(0)
         {
             this.Id = id;
             this.Token = token;
             this.GalleryUri = new Uri(galleryBaseUri, $"{Id.ToString()}/{Token}/");
         }
 
-        internal Gallery(GalleryModel model, bool setThumbUriSource)
-            : this(model.Id, model.Token, 0)
+        internal Gallery(GalleryModel model)
+            : this(model.Id, model.Token)
         {
-            this.Id = model.Id;
             this.Available = model.Available;
             this.ArchiverKey = model.ArchiverKey;
-            this.Token = model.Token;
             this.Title = model.Title;
             this.TitleJpn = model.TitleJpn;
             this.Category = model.Category;
@@ -336,10 +169,9 @@ namespace ExClient
             this.FileSize = model.FileSize;
             this.Expunged = model.Expunged;
             this.Rating = model.Rating;
-            this.Tags = JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)).ToList().AsReadOnly();
+            this.Tags = new TagCollection(JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)));
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
-            this.setThumbUriWhenInit = setThumbUriSource;
             this.Owner = Client.Current;
             this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
         }
@@ -362,9 +194,8 @@ namespace ExClient
             string rating = null,
             string torrentcount = null,
             string[] tags = null)
-            : this(gid, token, 0)
+            : this(gid, token)
         {
-            this.Id = gid;
             if(error != null)
             {
                 Available = false;
@@ -373,7 +204,6 @@ namespace ExClient
             Available = !expunged;
             try
             {
-                this.Token = token;
                 this.ArchiverKey = archiver_key;
                 this.Title = HtmlEntity.DeEntitize(title);
                 this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
@@ -388,7 +218,7 @@ namespace ExClient
                 this.Expunged = expunged;
                 this.Rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
                 this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
-                this.Tags = tags.Select(tag => Tag.Parse(tag)).ToList().AsReadOnly();
+                this.Tags = new TagCollection(tags.Select(tag => Tag.Parse(tag)));
                 this.ThumbUri = toExUri(thumb);
             }
             catch(Exception)
@@ -407,22 +237,12 @@ namespace ExClient
             return new Uri(toExUriRegex.Replace(uri, @"exhentai.org/t${body}_250."));
         }
 
-        private bool setThumbUriWhenInit = true;
-
         protected IAsyncAction InitAsync()
         {
             return Run(async token =>
             {
-                await initCoreAsync();
                 await InitOverrideAsync();
-            });
-        }
-
-        private IAsyncAction initCoreAsync()
-        {
-            return Run(async token =>
-            {
-                if(!setThumbUriWhenInit)
+                if(thumbImage != null)
                     return;
                 var buffer = await Client.Current.HttpClient.GetBufferAsync(ThumbUri);
                 using(var stream = buffer.AsRandomAccessStream())
@@ -540,56 +360,12 @@ namespace ExClient
             get; protected set;
         }
 
-        public IReadOnlyList<Tag> Tags
+        public TagCollection Tags
         {
-            get; protected set;
+            get;
         }
 
-        private static readonly string[] technicalTags = new string[]
-        {
-            "rewrite",
-            "translated"
-        };
-
-        private static readonly string[] naTags = new string[]
-        {
-            "speechless",
-            "text cleaned"
-        };
-
-        public Language Language
-        {
-            get
-            {
-                if(Tags == null)
-                    return default(Language);
-                var modi = LanguageModifier.None;
-                var language = (string)null;
-                foreach(var item in this.Tags.Where(t => t.Namespace == Namespace.Language))
-                {
-                    if(modi == LanguageModifier.None)
-                    {
-                        switch(item.Content)
-                        {
-                        case "rewrite":
-                            modi = LanguageModifier.Rewrite;
-                            continue;
-                        case "translated":
-                            modi = LanguageModifier.Translated;
-                            continue;
-                        }
-                    }
-                    if(language == null)
-                    {
-                        if(naTags.Contains(item.Content))
-                            language = "N/A";
-                        else
-                            language = item.Content;
-                    }
-                }
-                return new Language(language ?? "japanese", modi);
-            }
-        }
+        public Language Language => Language.Parse(this);
 
         public FavoriteCategory FavoriteCategory
         {
@@ -626,10 +402,7 @@ namespace ExClient
             get; protected set;
         }
 
-        public Uri GalleryUri
-        {
-            get; private set;
-        }
+        public Uri GalleryUri { get; }
 
         private StorageFolder galleryFolder;
 
@@ -674,7 +447,7 @@ namespace ExClient
                 var uri = new Uri(this.GalleryUri, $"?inline_set=ts_l&p={pageIndex.ToString()}{(needLoadComments ? "hc=1" : "")}");
                 var request = this.Owner.PostStrAsync(uri, null);
                 var res = await request;
-                Internal.ApiRequest.UpdateToken(res);
+                ApiRequest.UpdateToken(res);
                 var html = new HtmlDocument();
                 html.LoadHtml(res);
                 updateFavoriteInfo(html);
