@@ -27,7 +27,7 @@ namespace ExViewer.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CachedPage : Page,IHasAppBar
+    public sealed partial class CachedPage : Page, IHasAppBar
     {
         public CachedPage()
         {
@@ -35,8 +35,8 @@ namespace ExViewer.Views
             VM = CachedVM.Instance;
             cdg_ConfirmClear = new ContentDialog()
             {
-                Title = LocalizedStrings.Resources.ClearCachedDialogTitle,
-                Content = LocalizedStrings.Resources.ClearCachedDialogContent,
+                Title = LocalizedStrings.Resources.Views.ClearCachedDialog.Title,
+                Content = LocalizedStrings.Resources.Views.ClearCachedDialog.Content,
                 PrimaryButtonText = LocalizedStrings.Resources.OK,
                 SecondaryButtonText = LocalizedStrings.Resources.Cancel,
                 PrimaryButtonCommand = VM.Clear

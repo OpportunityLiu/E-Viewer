@@ -37,8 +37,8 @@ namespace ExViewer.Views
             VM = SavedVM.Instance;
             cdg_ConfirmClear = new ContentDialog()
             {
-                Title = LocalizedStrings.Resources.ClearSavedDialogTitle,
-                Content = LocalizedStrings.Resources.ClearSavedDialogContent,
+                Title = LocalizedStrings.Resources.Views.ClearSavedDialog.Title,
+                Content = LocalizedStrings.Resources.Views.ClearSavedDialog.Content,
                 PrimaryButtonText = LocalizedStrings.Resources.OK,
                 SecondaryButtonText = LocalizedStrings.Resources.Cancel,
                 PrimaryButtonCommand = VM.Clear

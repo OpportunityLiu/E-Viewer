@@ -56,20 +56,20 @@
             <RowDefinition Height="9*" />
         </Grid.RowDefinitions>
         <TextBlock Style="{StaticResource TopHeaderTextBlockStyle}"
-                   x:Uid="ExcludedLanguagesSelectorOriginalTextBlock"
+                   x:Uid="Controls/ExcludedLanguagesSelector/OriginalTextBlock"
                    Text="Original"
                    Grid.Column="1" />
         <TextBlock Style="{StaticResource TopHeaderTextBlockStyle}"
                    Text="Translated"
-                   x:Uid="ExcludedLanguagesSelectorTranslatedTextBlock"
+                   x:Uid="Controls/ExcludedLanguagesSelector/TranslatedTextBlock"
                    Grid.Column="2" />
         <TextBlock Style="{StaticResource TopHeaderTextBlockStyle}"
                    Text="Rewrite"
-                   x:Uid="ExcludedLanguagesSelectorRewriteTextBlock"
+                   x:Uid="Controls/ExcludedLanguagesSelector/RewriteTextBlock"
                    Grid.Column="3" />
         <TextBlock Style="{StaticResource TopHeaderTextBlockStyle}"
                    Text="All"
-                   x:Uid="ExcludedLanguagesSelectorAllTextBlock"
+                   x:Uid="Controls/ExcludedLanguagesSelector/AllTextBlock"
                    Grid.Column="4" />
         <ListView x:Name="lv_LeftHeader"
                   Style="{StaticResource StackPanelListViewStyle}"

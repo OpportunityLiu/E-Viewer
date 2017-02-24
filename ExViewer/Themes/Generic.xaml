@@ -442,12 +442,12 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <TextBlock x:Name="txt"
-                                   x:Uid="PullToRefreshIndicatorPullTextBlock"
+                                   x:Uid="Controls/PullToRefreshIndicator/PullTextBlock"
                                    Text="Pull"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Bottom" />
                         <TextBlock x:Name="txt2"
-                                   x:Uid="PullToRefreshIndicatorReleaseTextBlock"
+                                   x:Uid="Controls/PullToRefreshIndicator/ReleaseTextBlock"
                                    Text="Release"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Bottom"

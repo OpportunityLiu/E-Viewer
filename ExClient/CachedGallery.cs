@@ -9,6 +9,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using GalaSoft.MvvmLight.Threading;
 using Windows.UI.Xaml.Data;
 using Windows.Foundation.Diagnostics;
+using System.Collections.Specialized;
 
 namespace ExClient
 {
@@ -239,6 +240,27 @@ namespace ExClient
         {
             ImageModels = null;
             return base.DeleteAsync();
+        }
+
+        public override IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync(ConnectionStrategy strategy)
+        {
+            return Run<SaveGalleryProgress>(async (token, p) =>
+            {
+                p.Report(new SaveGalleryProgress { ImageCount = this.RecordCount, ImageLoaded = -1 });
+                for(int i = 0; i < this.Count; i++)
+                {
+                    var ph = this[i] as GalleryImagePlaceHolder;
+                    if(ph != null)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await ph.LoadImageAsync(false, strategy, true);
+                    }
+                }
+                var load = base.SaveGalleryAsync(strategy);
+                load.Progress = (sender, pro) => p.Report(pro);
+                token.Register(load.Cancel);
+                await load;
+            });
         }
 
         protected override IAsyncAction InitOverrideAsync()

@@ -54,7 +54,7 @@
         <TextBlock x:Name="tb_AppDescription"
                    Style="{StaticResource AboutControlBodyTextBlockStyle}"
                    Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor sagittis laoreet. Proin posuere dapibus eros, ut condimentum arcu pharetra vel. Cras hendrerit ipsum sed odio pellentesque, sed scelerisque dui finibus. Fusce volutpat, odio eu volutpat mattis, enim tortor aliquam quam, sed aliquam arcu arcu sit amet velit." />
-        <TextBlock x:Uid="AboutControlLicenceTextBlock"
+        <TextBlock x:Uid="Controls/AboutControl/LicenceTextBlock"
                    Text="License"
                    Style="{StaticResource AboutControlSubtitleTextBlockStyle}" />
         <HyperlinkButton NavigateUri="http://www.gnu.org/licenses/gpl.html"
@@ -157,17 +157,17 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
     c2-2,3.7-4.1,4.6-5.9C94.4,16.8,94.6,15.3,94,14.5z
 " />
         </HyperlinkButton>
-        <TextBlock x:Uid="AboutControlDataProvidersTextBlock"
+        <TextBlock x:Uid="Controls/AboutControl/DataProvidersTextBlock"
                    Text="Data providers"
                    Style="{StaticResource AboutControlSubtitleTextBlockStyle}" />
-        <TextBlock x:Uid="AboutControlChineseTagProviderTextBlock"
+        <TextBlock x:Uid="Controls/AboutControl/ChineseTagProviderTextBlock"
                    Text="Chinese translation of tags"
                    Style="{StaticResource AboutControlSubheaderTextBlockStyle}" />
-        <HyperlinkButton x:Uid="AboutControlChineseTagProviderHyperlinkButton"
+        <HyperlinkButton x:Uid="Controls/AboutControl/ChineseTagProviderHyperlinkButton"
                          Content="Mapaler / EhTagTranslator @ Github.com"
                          NavigateUri="https://github.com/Mapaler/EhTagTranslator"
                          Style="{StaticResource AboutControlHyperLinkButtonStyle}" />
-        <TextBlock x:Uid="AboutControlJapaneseTagProviderTextBlock"
+        <TextBlock x:Uid="Controls/AboutControl/JapaneseTagProviderTextBlock"
                    Text="Japanese translation of tags"
                    Style="{StaticResource AboutControlSubheaderTextBlockStyle}" />
         <HyperlinkButton NavigateUri="https://ehwiki.org/"
@@ -175,30 +175,30 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
             <StackPanel Orientation="Horizontal">
                 <Image Source="ms-appx:///Images/EHWiki.png"
                        Width="50"/>
-                <TextBlock x:Uid="AboutControlEHWikiTextBlock"
+                <TextBlock x:Uid="Controls/AboutControl/EHWikiTextBlock"
                            Text="EHWiki.org"
                            Style="{StaticResource AboutControlBodyTextBlockStyle}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center" />
             </StackPanel>
         </HyperlinkButton>
-        <TextBlock x:Uid="AboutControlOnlineContentsTextBlock"
+        <TextBlock x:Uid="Controls/AboutControl/OnlineContentsTextBlock"
                    Text="Online contents"
                    Style="{StaticResource AboutControlSubtitleTextBlockStyle}" />
-        <!--<HyperlinkButton x:Uid="AboutControlRateHyperlinkButton"
+        <!--<HyperlinkButton x:Uid="Controls/AboutControl/RateHyperlinkButton"
                          Style="{StaticResource AboutControlHyperLinkButtonStyle}"
                          Content="Rate and review"
                          NavigateUri="ms-windows-store://review/?ProductId=9NBLGGH4V3X1" />-->
         <HyperlinkButton Style="{StaticResource AboutControlHyperLinkButtonStyle}"
-                         x:Uid="AboutControlSourceCodeHyperlinkButton"
+                         x:Uid="Controls/AboutControl/SourceCodeHyperlinkButton"
                          Content="View source code at GitHub.com"
                          NavigateUri="https://github.com/OpportunityLiu/ExViewer" />
         <HyperlinkButton Style="{StaticResource AboutControlHyperLinkButtonStyle}"
-                         x:Uid="AboutControlHelpTranslateTagsHyperlinkButton"
+                         x:Uid="Controls/AboutControl/HelpTranslateTagsHyperlinkButton"
                          Content="Help translate tags into Chinese"
                          NavigateUri="https://github.com/Mapaler/EhTagTranslator/wiki" />
         <HyperlinkButton Style="{StaticResource AboutControlHyperLinkButtonStyle}"
-                         x:Uid="AboutControlForumsHyperlinkButton"
+                         x:Uid="Controls/AboutControl/ForumsHyperlinkButton"
                          Content="E-Hentai Forums"
                          NavigateUri="https://forums.e-hentai.org/index.php" />
     </StackPanel>

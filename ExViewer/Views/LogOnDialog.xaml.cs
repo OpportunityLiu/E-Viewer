@@ -39,13 +39,13 @@ namespace ExViewer.Views
             var password = pb_pass.Password;
             if(string.IsNullOrWhiteSpace(username))
             {
-                tb_info.Text = LocalizedStrings.Resources.LogOnDialogNoUserName;
+                tb_info.Text = LocalizedStrings.Resources.Views.LogOnDialog.NoUserName;
                 tb_user.Focus(FocusState.Programmatic);
                 args.Cancel = true;
             }
             else if(string.IsNullOrEmpty(password))
             {
-                tb_info.Text = LocalizedStrings.Resources.LogOnDialogNoPassword;
+                tb_info.Text = LocalizedStrings.Resources.Views.LogOnDialog.NoPassword;
                 pb_pass.Focus(FocusState.Programmatic);
                 args.Cancel = true;
             }

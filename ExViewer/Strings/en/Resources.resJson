@@ -1,11 +1,175 @@
 ﻿{
-    "a":{
-        "b/Text":"aaa",
-        "c":{
-            "d":"abbb",
-            "e":{
-                "f":"aaaabbb"
-            }
+    "AppDescription" : "E-Viewer is a client for e-hentai.org and exhentai.org.",
+    "AppDisplayName" : "E-Viewer",
+
+    "Controls" : {
+        "AboutControl" : {
+            "ChineseTagProviderHyperlinkButton/Content" : "Mapaler / EhTagTranslator @ Github.com",
+            "ChineseTagProviderTextBlock/Text" : "Chinese translation of tags",
+            "DataProvidersTextBlock/Text" : "Data providers",
+            "EHWikiTextBlock/Text" : "EHWiki.org",
+            "ForumsHyperlinkButton/Content" : "E-Hentai Forums",
+            "HelpTranslateTagsHyperlinkButton/Content" : "Help translate tags into Chinese",
+            "JapaneseTagProviderTextBlock/Text" : "Japanese translation of tags",
+            "LicenceTextBlock/Text" : "License",
+            "OnlineContentsTextBlock/Text" : "Online contents",
+            "RateHyperlinkButton/Content" : "Rate and review",
+            "SourceCodeHyperlinkButton/Content" : "View source code at GitHub.com"
+        },
+        "ExcludedLanguagesSelector" : {
+            "AllTextBlock/Text" : "All",
+            "OriginalTextBlock/Text" : "Original",
+            "RewriteTextBlock/Text" : "Rewrite",
+            "TranslatedTextBlock/Text" : "Translated"
+        },
+        "GalleryViewer" : {
+            "RecordCountFormatString" : "{0} pages"
+        },
+        "PullToRefreshIndicator" : {
+            "PullTextBlock/Text" : "Pull to refresh",
+            "ReleaseTextBlock/Text" : "Release to refresh"
         }
-    }
+    },
+
+    "Views" : {
+        "CachedPage" : {
+            "DeleteAllAppBarButton/Label" : "Delete all",
+            "DeleteMenuFlyout/Text" : "Delete",
+            "EmptyTextBlock/Text" : "No cached galleries",
+            "LoadingMoreTextBlock/Text" : "Loading more galleries...",
+            "RefreshAppBarButton/Label" : "Refresh"
+        },
+        "ClearCachedDialog" : {
+            "Content" : "All cached galleries will be deleted.",
+            "Title" : "ARE YOU SURE"
+        },
+        "ClearSavedDialog" : {
+            "Content" : "All saved galleries and cached galleries will be deleted.",
+            "Title" : "ARE YOU SURE"
+        },
+        "EhWikiDialog" : {
+            "ContentDialog/PrimaryButtonText" : "OK",
+            "TagNotFound" : "Tag not found in wiki."
+        },
+        "FavoritesPage" : {
+            "AutoSuggestBox/PlaceholderText" : "Search...",
+            "EmptyTextBlock/Text" : "No hits found",
+            "LoadingMoreTextBlock/Text" : "Loading more galleries..."
+        },
+        "GalleryPage" : {
+            "CommentAuthorFormatString" : "By {0}",
+            "CommentEditedFormatString" : "Last edited on {0}",
+            "CommentIsUploaderCommentTextBlock/Text" : "Uploader Comment",
+            "CommentPostedFormatString" : "Posted on {0}",
+            "CommentScoreFormatString" : "Score {0:+#0;-#0}",
+            "CommentsEmptyTextBlock/Text" : "No comments",
+            "CommentsLoadingTextBlock/Text" : "Loading comments...",
+            "GoToDefinitionMenuFlyoutItem/Text" : "Go to EHWiki for definition",
+            "ImagesLoadingMoreTextBlock/Text" : "Loading more items...",
+            "PivotHeaderCommentsTextBlock/Text" : "Comments",
+            "PivotHeaderImagesTextBlock/Text" : "Images",
+            "PivotHeaderNumberFormatString" : "[{0}]",
+            "PivotHeaderTorrentsTextBlock/Text" : "Torrents",
+            "SaveAppBarButton/Label" : "Save this gallery",
+            "SearchTagMenuFlyoutItem/Text" : "Show galleries with this tag",
+            "ShareAppBarButton/Label" : "Share",
+            "TagNamespaceColumnDefinition/Width" : "72",
+            "TorrentDownloadButton/ToolTipService/ToolTip" : "Download",
+            "TorrentDownloading" : "Start downloading...",
+            "TorrentDownloadsTextBlock/Text" : "Downloads",
+            "TorrentExpungedTextBlock/Text" : "Expunged",
+            "TorrentPeersTextBlock/Text" : "Peers",
+            "TorrentPostedTextBlock/Text" : "Posted",
+            "TorrentSeedsTextBlock/Text" : "Seeds",
+            "TorrentsEmptyTextBlock/Text" : "No available torrents",
+            "TorrentSizeTextBlock/Text" : "Size",
+            "TorrentsLoadingTextBlock/Text" : "Loading torrents...",
+            "TorrentUploaderTextBlock/Text" : "Uploader"
+        },
+        "ImagePage" : {
+            "BackToWindow" : "Back to window",
+            "CounterSeparatorTextBlock/Text" : "/",
+            "FullScreen" : "Full screen",
+            "FullScreenAppBarButton/Label" : "Full screen",
+            "HelpAppBarButton/Label" : "Tips for keyboard users",
+            "ImageFileInfo" : "File name: {0}\nSize: {1}\nDimensions: {2} × {3}",
+            "ImageFileInfoDefault" : "The image hasn't finished loading.",
+            "ImageInfoAppBarButton/Label" : "Image infomation",
+            "LoadOriginalAppBarButton/Label" : "Load original image",
+            "OpenInExplorerButton/Content" : "Open in File Explorer",
+            "ReloadAppBarButton/Label" : "Reload",
+            "ShareAppBarButton/Label" : "Share",
+            "ImageViewTipsContent" : "Zoom in/out\t\t\tSPACE\nZoom to maximum\t\t=\nZoom to minimun\t\t\t-\nZoom in\t\t\t\t]\nZoom out\t\t\t[\nPan / Next/Previous Image\t\tARROW KEYS\nFull screen\t\t\tENTER",
+            "ImageViewTipsTitle" : "TIPS FOR KEYBOARD USERS"
+        },
+        "LogOnDialog" : {
+            "ContentDialog/PrimaryButtonText" : "OK",
+            "NoPassword" : "Please enter your password.",
+            "NoUserName" : "Please enter your user name.",
+            "PasswordBox/PlaceholderText" : "Password",
+            "ReCaptchaTextBox/PlaceholderText" : "ReCaptcha",
+            "RegisterHyperlinkButton/Content" : "Register",
+            "ReloadReCaptchaButton/ToolTipService/ToolTip" : "Reload ReCaptcha",
+            "TitleTextBlock/Text" : "LOG ON",
+            "UserNameTextBox/PlaceholderText" : "User name"
+        },
+        "RootControl" : {    
+            "CachedSplitViewTab/Content" : "Cached galleries",
+            "ChangeUserButton/ToolTipService/ToolTip" : "Change user",
+            "DisableInfoTextBlock/Text" : "Operation in progress, plaese wait...",
+            "FavoritesSplitViewTab/Content" : "Favorites",
+            "SavedSplitViewTab/Content" : "Saved galleries",
+            "SearchSplitViewTab/Content" : "Search",
+            "SettingsSplitViewTab/Content" : "Settings"
+        },
+        "SavedPage" : {    
+            "DeleteAllAppBarButton/Label" : "Delete all",
+            "DeleteMenuFlyout/Text" : "Delete",
+            "EmptyTextBlock/Text" : "No saved galleries",
+            "LoadingMoreTextBlock/Text" : "Loading more galleries...",
+            "RefreshAppBarButton/Label" : "Refresh",
+            "SaveToMenuFlyout/Text" : "Save to..."
+        },
+        "SearchPage" : {    
+            "AdvancedToggleButton/OffContent" : "Show advanced options",
+            "AdvancedToggleButton/OnContent" : "Hide advanced options",
+            "AutoSuggestBox/PlaceholderText" : "Search...",
+            "DescriptionCheckBox/Content" : "Search gallery description",
+            "DownvotedTagsCheckBox/Content" : "Search downvoted tags",
+            "EmptyTextBlock/Text" : "No hits found",
+            "LoadingMoreTextBlock/Text" : "Loading more galleries...",
+            "LowPowerTagsCheckBox/Content" : "Search low-power tags",
+            "MinRatingCheckBox/Content" : "Minimum rating:",
+            "NamesCheckBox/Content" : "Search gallery name",
+            "OnlyTorrentsCheckBox/Content" : "Only show galleries with torrents",
+            "ShowExpungedCheckBox/Content" : "Show expunged galleries",
+            "TagsCheckBox/Content" : "Search gallery tags",
+            "TorrentNamesCheckBox/Content" : "Search torrent filenames"
+        },
+        "SettingsPage" : {    
+            "ExcludedLanguagesSelector/MinWidth" : "400"
+        }
+    },
+
+    "Verify" : {
+        "Dialog" : {
+            "Content" : "Because of your settings, we need to request the verification."
+        },
+        "Canceled" : "The verification has been canceled.",
+        "DeviceBusy" : "Device is busy. Please try again later.",
+        "Disabled" : "Verification has been disabled by group policy. Please contact your administrator.",
+        "FailedDialogTitle" : "VERIFICATION FAILED",
+        "NotConfigured" : "Please set up a PIN first. \n\nGo \"Settings -> Accounts - Sign-in options -> PIN -> Add\" to do this.",
+        "OtherFailure" : "Plaese restart the app and try again.",
+        "RetriesExhausted" : "You have exceeded the allowed number of verification. Plaese restart the app and try again."
+    },
+
+    "Cancel" : "Cancel",
+    "Exit" : "Exit",
+    "OK" : "OK",
+
+    "GalleryDeleted" : "Selected gallery has been deleted.",
+    "GallerySavedTo" : "Selected gallery has been saved to provided location.",
+
+    "ParseByteException" : "Can't parse the given string to a byte size."
 }

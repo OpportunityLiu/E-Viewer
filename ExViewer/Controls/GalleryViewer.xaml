@@ -56,7 +56,7 @@
             <local:CategoryTag Category="{x:Bind Gallery.Category, Mode=OneWay}"
                                Grid.Row="2"
                                HorizontalAlignment="Left" />
-            <TextBlock Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='GalleryViewerRecordCountFormatString'}"
+            <TextBlock Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/GalleryViewer/RecordCountFormatString'}"
                        Grid.Row="4" />
             <StackPanel Orientation="Horizontal"
                        Grid.Row="3">

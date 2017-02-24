@@ -53,7 +53,7 @@ namespace ExViewer.Views
                 if(style == null)
                     initStyle();
                 if(record?.Html == null)
-                    str = LocalizedStrings.Resources.EhWikiDialogTagNotFound;
+                    str = LocalizedStrings.Resources.Views.EhWikiDialog.TagNotFound;
                 else
                     str = record.Html;
             }
