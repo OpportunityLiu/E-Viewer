@@ -26,7 +26,7 @@ namespace ExClient.Models
             this.FileSize = toCache.FileSize;
             this.Expunged = toCache.Expunged;
             this.Rating = toCache.Rating;
-            this.Tags = JsonConvert.SerializeObject(toCache.Tags.Select(tag => tag.ToString()));
+            this.Tags = JsonConvert.SerializeObject(toCache.Tags.Items.Select(tag => tag.ToString()));
             this.RecordCount = toCache.RecordCount;
             this.ThumbUri = toCache.ThumbUri.ToString();
             return this;
