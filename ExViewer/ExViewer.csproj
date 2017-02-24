@@ -99,12 +99,6 @@
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
     <PRIResource Include="Strings\zh-cn\Settings.resw" />
-    <PRIResource Include="Strings\zh-cn\Resources.resw">
-      <SubType>Designer</SubType>
-    </PRIResource>
-    <PRIResource Include="Strings\en\Resources.resw">
-      <SubType>Designer</SubType>
-    </PRIResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\FavoriteCategoryPresenter.cs" />
@@ -273,6 +267,7 @@
     <Content Include="Assets\Wide.scale-100.png" />
     <Content Include="Assets\Wide.scale-200.png" />
     <Content Include="Assets\Wide.scale-400.png" />
+    <PRIResource Include="Strings\zh-cn\Resources.resJson" />
     <PRIResource Include="Strings\en\Resources.resJson" />
     <PRIResource Include="Strings\en\Settings.resw" />
     <None Include="Strings\Strings.tt">

@@ -123,7 +123,7 @@
                                Style="{StaticResource BodyTextBlockStyle}"
                                Text="{x:Bind fv.SelectedIndex, Mode=OneWay, Converter={StaticResource IndexToStringConverter}}" />
                     <TextBlock x:Name="tb_sep"
-                               x:Uid="ImagePageCounterSeparatorTextBlock"
+                               x:Uid="Views/ImagePage/CounterSeparatorTextBlock"
                                Grid.Column="3"
                                VerticalAlignment="Center"
                                Style="{StaticResource BodyTextBlockStyle}"
@@ -138,30 +138,30 @@
             </CommandBar.Content>
             <CommandBar.PrimaryCommands>
                 <AppBarButton x:Name="abb_fullScreen"
-                              x:Uid="ImagePageFullScreenAppBarButton"
+                              x:Uid="Views/ImagePage/FullScreenAppBarButton"
                               Click="abb_fullScreen_Click"
                               Icon="FullScreen"
                               Label="Full screen" />
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_reload"
-                              x:Uid="ImagePageReloadAppBarButton"
+                              x:Uid="Views/ImagePage/ReloadAppBarButton"
                               Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
                               CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}"
                               Label="Reload" />
                 <AppBarButton x:Name="abb_LoadOriginal"
-                              x:Uid="ImagePageLoadOriginalAppBarButton"
+                              x:Uid="Views/ImagePage/LoadOriginalAppBarButton"
                               Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
                               CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}"
                               Label="Load original image" />
                 <AppBarButton x:Name="abb_Share"
-                              x:Uid="ImagePageShareAppBarButton"
+                              x:Uid="Views/ImagePage/ShareAppBarButton"
                               Command="{x:Bind VM.Share, Mode=OneWay}"
                               CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}"
                               Label="Share" />
                 <AppBarSeparator />
                 <AppBarButton x:Name="abb_Info"
-                              x:Uid="ImagePageImageInfoAppBarButton"
+                              x:Uid="Views/ImagePage/ImageInfoAppBarButton"
                               Label="Image infomation">
                     <AppBarButton.Flyout>
                         <Flyout Opening="Flyout_Opening"
@@ -172,7 +172,7 @@
                                            Style="{StaticResource BodyTextBlockStyle}"
                                            Text="{x:Bind VM.CurrentInfo, Mode=OneWay}" />
                                 <Button x:Name="btn_OpenInExplorer"
-                                        x:Uid="ImagePageOpenInExplorerButton"
+                                        x:Uid="Views/ImagePage/OpenInExplorerButton"
                                         Margin="0,4,0,0"
                                         Padding="0"
                                         BorderThickness="0"
@@ -204,7 +204,7 @@
                 </AppBarButton>
                 <AppBarSeparator />
                 <AppBarButton x:Name="abb_Help"
-                              x:Uid="ImagePageHelpAppBarButton"
+                              x:Uid="Views/ImagePage/HelpAppBarButton"
                               Click="abb_Help_Click"
                               Label="Tips for keyboard users" />
             </CommandBar.SecondaryCommands>

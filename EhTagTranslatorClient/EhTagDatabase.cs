@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Namespace = ExClient.Namespace;
+using IRecordDictionary = System.Collections.Generic.IReadOnlyDictionary<string, EhTagTranslatorClient.Record>;
 
 namespace EhTagTranslatorClient
 {
@@ -13,32 +14,38 @@ namespace EhTagTranslatorClient
     {
         private static readonly Uri wikiDbRootUri = new Uri("ms-appx:///EhTagTranslatorClient/Data/");
 
-        private static async Task<IReadOnlyDictionary<string, Record>> loadDatabaseTableAsync(Namespace @namespace)
+        private static readonly Namespace[] tables = new[]
+        {
+            Namespace.Reclass,
+            Namespace.Language,
+            Namespace.Parody,
+            Namespace.Character,
+            Namespace.Group,
+            Namespace.Artist,
+            Namespace.Male,
+            Namespace.Female,
+            Namespace.Misc
+        };
+
+        private static async Task<IRecordDictionary> loadDatabaseTableAsync(Namespace @namespace)
         {
             var dbUri = new Uri(wikiDbRootUri, $"{@namespace.ToString().ToLowerInvariant()}.md");
             var file = await StorageFile.GetFileFromApplicationUriAsync(dbUri);
-            return Record.Analyze(await file.OpenSequentialReadAsync(), @namespace).ToDictionary(record => record.Original);
+            using(var stream = await file.OpenSequentialReadAsync())
+                return new ReadOnlyDictionary<string, Record>(Record.Analyze(stream, @namespace).ToDictionary(record => record.Original));
         }
 
-        public static IAsyncOperation<IReadOnlyDictionary<Namespace, IReadOnlyDictionary<string, Record>>> LoadDatabaseAsync()
+        public static IAsyncOperation<IReadOnlyDictionary<Namespace, IRecordDictionary>> LoadDatabaseAsync()
         {
-            return Task.Run<IReadOnlyDictionary<Namespace, IReadOnlyDictionary<string, Record>>>(async () =>
+            return Task.Run<IReadOnlyDictionary<Namespace, IRecordDictionary>>(async () =>
             {
-                var l = new Dictionary<Namespace, IReadOnlyDictionary<string, Record>>();
-                var t = new List<Task<IReadOnlyDictionary<string, Record>>>();
-                foreach(Namespace item in Enum.GetValues(typeof(Namespace)))
+                var l = new Dictionary<Namespace, IRecordDictionary>();
+                foreach(var item in tables)
                 {
-                    if(item == Namespace.Unknown)
-                        continue;
-                    t.Add(loadDatabaseTableAsync(item));
+                    var r = await loadDatabaseTableAsync(item);
+                    l.Add(item, r);
                 }
-                await Task.WhenAll(t);
-                foreach(var item in t)
-                {
-                    var result = item.Result;
-                    l.Add(result.Values.First().Namespace, result);
-                }
-                return l;
+                return new ReadOnlyDictionary<Namespace, IRecordDictionary>(l);
             }).AsAsyncOperation();
         }
     }

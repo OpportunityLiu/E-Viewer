@@ -38,7 +38,7 @@ namespace ExViewer.Views
         {
             using(var stream = await banner.OpenReadAsync())
             {
-                await ((BitmapImage)img_pic.Source).SetSourceAsync(stream); 
+                await ((BitmapImage)img_pic.Source).SetSourceAsync(stream);
             }
         }
 
@@ -211,7 +211,7 @@ namespace ExViewer.Views
         {
             string info = null;
             var succeed = false;
-            var result = await UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.VerifyDialogContent);
+            var result = await UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.Verify.Dialog.Content);
             switch(result)
             {
             case UserConsentVerificationResult.Verified:
@@ -219,22 +219,22 @@ namespace ExViewer.Views
                 break;
             case UserConsentVerificationResult.DeviceNotPresent:
             case UserConsentVerificationResult.NotConfiguredForUser:
-                info = LocalizedStrings.Resources.VerifyNotConfigured;
+                info = LocalizedStrings.Resources.Verify.NotConfigured;
                 break;
             case UserConsentVerificationResult.DisabledByPolicy:
-                info = LocalizedStrings.Resources.VerifyDisabled;
+                info = LocalizedStrings.Resources.Verify.Disabled;
                 break;
             case UserConsentVerificationResult.DeviceBusy:
-                info = LocalizedStrings.Resources.VerifyDeviceBusy;
+                info = LocalizedStrings.Resources.Verify.DeviceBusy;
                 break;
             case UserConsentVerificationResult.RetriesExhausted:
-                info = LocalizedStrings.Resources.VerifyRetriesExhausted;
+                info = LocalizedStrings.Resources.Verify.RetriesExhausted;
                 break;
             case UserConsentVerificationResult.Canceled:
-                info = LocalizedStrings.Resources.VerifyCanceled;
+                info = LocalizedStrings.Resources.Verify.Canceled;
                 break;
             default:
-                info = LocalizedStrings.Resources.VerifyOtherFailure;
+                info = LocalizedStrings.Resources.Verify.OtherFailure;
                 break;
             }
             if(!succeed)
@@ -243,7 +243,7 @@ namespace ExViewer.Views
                 {
                     var dialog = new ContentDialog
                     {
-                        Title = LocalizedStrings.Resources.VerifyFailedDialogTitle,
+                        Title = LocalizedStrings.Resources.Verify.FailedDialogTitle,
                         Content = info,
                         PrimaryButtonText = LocalizedStrings.Resources.Exit
                     };

@@ -42,7 +42,7 @@
                 <Button x:Name="btnPane"
                         Style="{StaticResource SplitButtonStyle}"
                         Click="btnPane_Click" />
-                <AutoSuggestBox x:Uid="SearchPageAutoSuggestBox"
+                <AutoSuggestBox x:Uid="Views/SearchPage/AutoSuggestBox"
                                 x:Name="asb"
                                 Style="{StaticResource SearchAutoSuggestBoxStyle}"
                                 Grid.Column="1"
@@ -63,7 +63,7 @@
                                                    XYFocusDown="{x:Bind ts_Advanced}"
                                                    SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
                                                    HorizontalAlignment="Center" />
-                        <ToggleSwitch x:Uid="SearchPageAdvancedToggleButton"
+                        <ToggleSwitch x:Uid="Views/SearchPage/AdvancedToggleButton"
                                       x:Name="ts_Advanced"
                                       Margin="8"
                                       Style="{StaticResource TextBlockToggleSwitchStyle}"
@@ -74,33 +74,33 @@
                                   Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
                                   Padding="0,0,0,8"
                                   Style="{StaticResource StackPanelListViewStyle}">
-                            <CheckBox x:Uid="SearchPageNamesCheckBox"
+                            <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
                                       XYFocusUp="{x:Bind ts_Advanced}"
                                       Content="Search gallery name"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox x:Uid="SearchPageTagsCheckBox"
+                            <CheckBox x:Uid="Views/SearchPage/TagsCheckBox"
                                       Content="Search gallery tags"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox x:Uid="SearchPageDescriptionCheckBox"
+                            <CheckBox x:Uid="Views/SearchPage/DescriptionCheckBox"
                                       Content="Search gallery description"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchDescription, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox x:Uid="SearchPageTorrentNamesCheckBox"
+                            <CheckBox x:Uid="Views/SearchPage/TorrentNamesCheckBox"
                                       Content="Search torrent filenames"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchTorrentFilenames, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox x:Uid="SearchPageOnlyTorrentsCheckBox"
+                            <CheckBox x:Uid="Views/SearchPage/OnlyTorrentsCheckBox"
                                       Content="Only show galleries with torrents"
                                       IsChecked="{x:Bind VM.AdvancedSearch.GalleriesWithTorrentsOnly, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox x:Uid="SearchPageLowPowerTagsCheckBox"
+                            <CheckBox x:Uid="Views/SearchPage/LowPowerTagsCheckBox"
                                       Content="Search low-power tags"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchLowPowerTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox x:Uid="SearchPageDownvotedTagsCheckBox"
+                            <CheckBox x:Uid="Views/SearchPage/DownvotedTagsCheckBox"
                                       Content="Search downvoted tags"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
-                            <CheckBox x:Uid="SearchPageShowExpungedCheckBox"
+                            <CheckBox x:Uid="Views/SearchPage/ShowExpungedCheckBox"
                                       Content="Show expunged galleries"
                                       IsChecked="{x:Bind VM.AdvancedSearch.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox x:Uid="SearchPageMinRatingCheckBox"
+                                <CheckBox x:Uid="Views/SearchPage/MinRatingCheckBox"
                                           MinWidth="0"
                                           Content="Minimum rating: "
                                           IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
@@ -141,7 +141,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
-                <TextBlock x:Uid="SearchPageEmptyTextBlock"
+                <TextBlock x:Uid="Views/SearchPage/EmptyTextBlock"
                            HorizontalAlignment="Center"
                            Margin="12"
                            Style="{StaticResource BaseTextBlockStyle}"
@@ -149,7 +149,7 @@
                            Text="No hits found" />
             </ListView.Header>
             <ListView.Footer>
-                <TextBlock x:Uid="SearchPageLoadingMoreTextBlock"
+                <TextBlock x:Uid="Views/SearchPage/LoadingMoreTextBlock"
                            HorizontalAlignment="Center"
                            Margin="12"
                            Style="{StaticResource BaseTextBlockStyle}"

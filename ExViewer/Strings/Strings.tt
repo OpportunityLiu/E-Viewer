@@ -232,7 +232,11 @@ namespace <#=ns#>
         using(var ms = new MemoryStream())
         using(var writer = new StreamWriter(ms, new System.Text.UTF8Encoding(false)))
         {
-            writer.Write(reader.ReadToEnd());
+            var line = default(string);
+            while((line = reader.ReadLine()) != null)
+            {
+                writer.WriteLine(line);
+            }
             writer.Flush();
             ms.Position = 0;
             var xmlreader = JsonReaderWriterFactory.CreateJsonReader(ms, new XmlDictionaryReaderQuotas());
@@ -255,13 +259,14 @@ namespace <#=ns#>
             return;
         var currentName = GetNodeName(node).Split('/');
         path.AddRange(currentName);
-        if(node.ChildNodes.Count == 1)
+        if(node.FirstChild.NodeType == XmlNodeType.Text)
         {
-            var singleNode = node.ChildNodes.Item(0);
-            if(singleNode.NodeType == XmlNodeType.Text)
-                SetValue(output, root, path, singleNode.InnerText);
-            else
-                AnalyzeNode(output, root, path, (XmlElement)singleNode);
+            var text = default(string);
+            foreach(XmlText item in node.ChildNodes)
+            {
+                text += item.InnerText;
+            }
+            SetValue(output, root, path, text);
         }
         else
         {

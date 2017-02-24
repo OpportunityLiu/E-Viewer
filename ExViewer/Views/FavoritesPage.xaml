@@ -51,7 +51,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <AutoSuggestBox x:Uid="FavoritesPageAutoSuggestBox"
+            <AutoSuggestBox x:Uid="Views/FavoritesPage/AutoSuggestBox"
                             RelativePanel.AlignLeftWithPanel="True"
                             RelativePanel.AlignRightWithPanel="True"
                             RelativePanel.AlignBottomWithPanel="True"
@@ -87,7 +87,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
-                <TextBlock x:Uid="FavoritesPageEmptyTextBlock"
+                <TextBlock x:Uid="Views/FavoritesPage/EmptyTextBlock"
                            HorizontalAlignment="Center"
                            Margin="12"
                            Style="{StaticResource BaseTextBlockStyle}"
@@ -95,7 +95,7 @@
                            Text="No hits found" />
             </ListView.Header>
             <ListView.Footer>
-                <TextBlock x:Uid="FavoritesPageLoadingMoreTextBlock"
+                <TextBlock x:Uid="Views/FavoritesPage/LoadingMoreTextBlock"
                            HorizontalAlignment="Center"
                            Margin="12"
                            Style="{StaticResource BaseTextBlockStyle}"

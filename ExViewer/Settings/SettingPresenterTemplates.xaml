@@ -29,7 +29,7 @@
                           IsVerticalScrollChainingEnabled="True"
                           VerticalScrollBarVisibility="Disabled"
                           VerticalScrollMode="Disabled">
-                <controls:ExcludedLanguagesSelector x:Uid="SettingsPageExcludedLanguagesSelector"
+                <controls:ExcludedLanguagesSelector x:Uid="Views/SettingsPage/ExcludedLanguagesSelector"
                                                     ExcludedLanguages="{Binding Value, Mode=TwoWay}" />
             </ScrollViewer>
         </StackPanel>

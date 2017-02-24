@@ -100,7 +100,7 @@
                                Text="{Binding UserInfo.DisplayName, ElementName=page, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center" />
-                    <Button x:Uid="RootControlChangeUserButton"
+                    <Button x:Uid="Views/RootControl/ChangeUserButton"
                             Grid.Row="2"
                             Grid.Column="2"
                             x:Name="btn_ChangeUser"
@@ -117,7 +117,7 @@
                             <ListView.Transitions>
                                 <TransitionCollection />
                             </ListView.Transitions>
-                            <controls:SplitViewTab x:Uid="RootControlSearchSplitViewTab"
+                            <controls:SplitViewTab x:Uid="Views/RootControl/SearchSplitViewTab"
                                                    x:Name="svt_Search"
                                                    Content="Search"
                                                    Click="svt_Click"
@@ -127,7 +127,7 @@
                                               FontSize="16" />
                                 </controls:SplitViewTab.Icon>
                             </controls:SplitViewTab>
-                            <controls:SplitViewTab x:Uid="RootControlFavoritesSplitViewTab"
+                            <controls:SplitViewTab x:Uid="Views/RootControl/FavoritesSplitViewTab"
                                                    x:Name="svt_Favorites"
                                                    Content="Favorites"
                                                    Click="svt_Click">
@@ -136,7 +136,7 @@
                                               FontSize="16" />
                                 </controls:SplitViewTab.Icon>
                             </controls:SplitViewTab>
-                            <controls:SplitViewTab x:Uid="RootControlSavedSplitViewTab"
+                            <controls:SplitViewTab x:Uid="Views/RootControl/SavedSplitViewTab"
                                                    x:Name="svt_Saved"
                                                    Content="Saved galleries"
                                                    Click="svt_Click">
@@ -145,7 +145,7 @@
                                               FontSize="16" />
                                 </controls:SplitViewTab.Icon>
                             </controls:SplitViewTab>
-                            <controls:SplitViewTab x:Uid="RootControlCachedSplitViewTab"
+                            <controls:SplitViewTab x:Uid="Views/RootControl/CachedSplitViewTab"
                                                    x:Name="svt_Cached"
                                                    Content="Cached galleries"
                                                    Click="svt_Click">
@@ -162,7 +162,7 @@
                             </controls:SplitViewTab>
                             <Grid MinHeight="48" />
                             <ListView.Footer>
-                                <controls:SplitViewTab x:Uid="RootControlSettingsSplitViewTab"
+                                <controls:SplitViewTab x:Uid="Views/RootControl/SettingsSplitViewTab"
                                                        x:Name="svt_Settings"
                                                        Content="Settings"
                                                        Click="svt_Click">
@@ -203,7 +203,7 @@
                        Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}"
                        Visibility="Collapsed">
             <TextBlock x:Name="tb_DisableInfo"
-                       x:Uid="RootControlDisableInfoTextBlock"
+                       x:Uid="Views/RootControl/DisableInfoTextBlock"
                        Text="Operation in progress, plaese wait..."
                        RelativePanel.AlignVerticalCenterWithPanel="True"
                        RelativePanel.AlignHorizontalCenterWithPanel="True" />

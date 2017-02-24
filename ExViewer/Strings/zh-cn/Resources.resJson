@@ -1,0 +1,175 @@
+﻿ {
+    "AppDescription" : "E-Viewer 是一个 E- 绅士和 Ex 绅士的第三方客户端。",
+    "AppDisplayName" : "E-Viewer",
+
+    "Controls" : {
+        "AboutControl" : {
+            "ChineseTagProviderHyperlinkButton/Content" : "Mapaler / EhTagTranslator @ Github.com",
+            "ChineseTagProviderTextBlock/Text" : "标签中文翻译",
+            "DataProvidersTextBlock/Text" : "数据提供方",
+            "EHWikiTextBlock/Text" : "EHWiki.org",
+            "ForumsHyperlinkButton/Content" : "E - 绅士论坛",
+            "HelpTranslateTagsHyperlinkButton/Content" : "帮助提供标签翻译",
+            "JapaneseTagProviderTextBlock/Text" : "标签日文翻译",
+            "LicenceTextBlock/Text" : "协议",
+            "OnlineContentsTextBlock/Text" : "在线内容",
+            "RateHyperlinkButton/Content" : "打分和评价",
+            "SourceCodeHyperlinkButton/Content" : "在 GitHub 上查看源代码"
+        },
+        "ExcludedLanguagesSelector" : {
+            "AllTextBlock/Text" : "全部",
+            "OriginalTextBlock/Text" : "原始",
+            "RewriteTextBlock/Text" : "重写",
+            "TranslatedTextBlock/Text" : "翻译"
+        },
+        "GalleryViewer" : {
+            "RecordCountFormatString" : "{0} 页"
+        },
+        "PullToRefreshIndicator" : {
+            "PullTextBlock/Text" : "下拉刷新",
+            "ReleaseTextBlock/Text" : "释放刷新"
+        }
+    },
+
+    "Views" : {
+        "CachedPage" : {
+            "DeleteAllAppBarButton/Label" : "删除全部",
+            "DeleteMenuFlyout/Text" : "删除",
+            "EmptyTextBlock/Text" : "没有缓存的画集",
+            "LoadingMoreTextBlock/Text" : "正在加载更多画集…",
+            "RefreshAppBarButton/Label" : "刷新"
+        },
+        "ClearCachedDialog" : {
+            "Content" : "所有缓存的画集将被删除！",
+            "Title" : "警告"
+        },
+        "ClearSavedDialog" : {
+            "Content" : "所有保存的画集和缓存的画集将被删除！",
+            "Title" : "警告"
+        },
+        "EhWikiDialog" : {
+            "ContentDialog/PrimaryButtonText" : "确定",
+            "TagNotFound" : "在 EhWiki 中未找到此标签。"
+        },
+        "FavoritesPage" : {
+            "AutoSuggestBox/PlaceholderText" : "搜索…",
+            "EmptyTextBlock/Text" : "没有结果",
+            "LoadingMoreTextBlock/Text" : "正在加载更多画集…"
+        },
+        "GalleryPage" : {
+            "CommentAuthorFormatString" : "{0}",
+            "CommentEditedFormatString" : "最后编辑于 {0}",
+            "CommentIsUploaderCommentTextBlock/Text" : "上传者评论",
+            "CommentPostedFormatString" : "发布于 {0}",
+            "CommentScoreFormatString" : "评分 {0:+#0;-#0}",
+            "CommentsEmptyTextBlock/Text" : "没有评论",
+            "CommentsLoadingTextBlock/Text" : "正在加载评论...",
+            "GoToDefinitionMenuFlyoutItem/Text" : "前往 EHWiki 查看定义",
+            "ImagesLoadingMoreTextBlock/Text" : "正在加载更多...",
+            "PivotHeaderCommentsTextBlock/Text" : "评论",
+            "PivotHeaderImagesTextBlock/Text" : "图片",
+            "PivotHeaderNumberFormatString" : "[{0}]",
+            "PivotHeaderTorrentsTextBlock/Text" : "种子",
+            "SaveAppBarButton/Label" : "保存此画集",
+            "SearchTagMenuFlyoutItem/Text" : "搜索含有此标签的画集",
+            "ShareAppBarButton/Label" : "共享",
+            "TagNamespaceColumnDefinition/Width" : "68",
+            "TorrentDownloadButton/ToolTipService/ToolTip" : "下载",
+            "TorrentDownloading" : "开始下载种子…",
+            "TorrentDownloadsTextBlock/Text" : "完成",
+            "TorrentExpungedTextBlock/Text" : "已失效",
+            "TorrentPeersTextBlock/Text" : "下载",
+            "TorrentPostedTextBlock/Text" : "发布时间",
+            "TorrentSeedsTextBlock/Text" : "做种",
+            "TorrentsEmptyTextBlock/Text" : "没有可用的种子",
+            "TorrentSizeTextBlock/Text" : "大小",
+            "TorrentsLoadingTextBlock/Text" : "正在加载种子...",
+            "TorrentUploaderTextBlock/Text" : "上传者"
+        },
+        "ImagePage" : {
+            "BackToWindow" : "退出全屏",
+            "CounterSeparatorTextBlock/Text" : "/",
+            "FullScreen" : "全屏",
+            "FullScreenAppBarButton/Label" : "全屏",
+            "HelpAppBarButton/Label" : "键盘快捷键提示",
+            "ImageFileInfo" : "文件名：{0}\n大小：{1}\n尺寸：{2} × {3}",
+            "ImageFileInfoDefault" : "图片未加载完成。",
+            "ImageInfoAppBarButton/Label" : "文件信息",
+            "LoadOriginalAppBarButton/Label" : "加载原图",
+            "OpenInExplorerButton/Content" : "在文件资源管理器中打开",
+            "ReloadAppBarButton/Label" : "重新加载",
+            "ShareAppBarButton/Label" : "共享",
+            "ImageViewTipsContent" : "缩放\t\t\t空格\n放大至最大\t\t=\n缩小至最小\t\t-\n放大\t\t\t]\n缩小\t\t\t[\n平移/切换图片\t\t方向键\n全屏\t\t\t回车",
+            "ImageViewTipsTitle" : "键盘快捷键"
+        },
+        "LogOnDialog" : {
+            "ContentDialog/PrimaryButtonText" : "确定",
+            "NoPassword" : "请输入密码。",
+            "NoUserName" : "请输入用户名。",
+            "PasswordBox/PlaceholderText" : "密码",
+            "ReCaptchaTextBox/PlaceholderText" : "验证码",
+            "RegisterHyperlinkButton/Content" : "注册",
+            "ReloadReCaptchaButton/ToolTipService/ToolTip" : "刷新验证码",
+            "TitleTextBlock/Text" : "登陆",
+            "UserNameTextBox/PlaceholderText" : "用户名"
+        },
+        "RootControl" : {    
+            "CachedSplitViewTab/Content" : "缓存的画集",
+            "ChangeUserButton/ToolTipService/ToolTip" : "更换用户",
+            "DisableInfoTextBlock/Text" : "少女祈祷中…",
+            "FavoritesSplitViewTab/Content" : "收藏",
+            "SavedSplitViewTab/Content" : "保存的画集",
+            "SearchSplitViewTab/Content" : "搜索",
+            "SettingsSplitViewTab/Content" : "设置"
+        },
+        "SavedPage" : {    
+            "DeleteAllAppBarButton/Label" : "删除全部",
+            "DeleteMenuFlyout/Text" : "删除",
+            "EmptyTextBlock/Text" : "没有保存的画集",
+            "LoadingMoreTextBlock/Text" : "正在加载更多画集…",
+            "RefreshAppBarButton/Label" : "刷新",
+            "SaveToMenuFlyout/Text" : "保存到…"
+        },
+        "SearchPage" : {    
+            "AdvancedToggleButton/OffContent" : "显示高级选项",
+            "AdvancedToggleButton/OnContent" : "隐藏高级选项",
+            "AutoSuggestBox/PlaceholderText" : "搜索…",
+            "DescriptionCheckBox/Content" : "搜索画集描述",
+            "DownvotedTagsCheckBox/Content" : "搜索投过反对票的标签",
+            "EmptyTextBlock/Text" : "没有结果",
+            "LoadingMoreTextBlock/Text" : "正在加载更多画集…",
+            "LowPowerTagsCheckBox/Content" : "搜索低权值的标签",
+            "MinRatingCheckBox/Content" : "最低评分：",
+            "NamesCheckBox/Content" : "搜索画集名称",
+            "OnlyTorrentsCheckBox/Content" : "只显示有种子的画集",
+            "ShowExpungedCheckBox/Content" : "搜索已失效的画集",
+            "TagsCheckBox/Content" : "搜索画集标签",
+            "TorrentNamesCheckBox/Content" : "搜索种子文件名"
+        },
+        "SettingsPage" : {    
+            "ExcludedLanguagesSelector/MinWidth" : "280"
+        }
+    },
+
+    "Verify" : {
+        "Dialog" :{
+            "Content" : "需要使用 Windows Hello 验证身份。"
+        },
+        "Canceled" : "您已取消验证。",
+        "DeviceBusy" : "设备忙，请稍后重试。",
+        "Disabled" : "验证已通过组策略禁用，请联系管理员。",
+        "FailedDialogTitle" : "验证失败",
+        "NotConfigured" : "请先设置 PIN。\n\n在 “设置 -> 账户-> 登陆选项 -> PIN -> 添加” 进行此项设定。",
+        "OtherFailure" : "请重新启动应用后重试。",
+        "RetriesExhausted" : "超过允许的重试次数，请重新启动应用后再试一次。"
+    },
+
+    "Cancel" : "取消",
+    "Exit" : "退出",
+    "OK" : "确定",
+
+    "GalleryDeleted" : "选定的画集已删除。",
+    "GallerySavedTo" : "选定的画集已保存至给定位置。",
+
+    "ParseByteException" : "无法将给定字符串解析为字节数。"
+}

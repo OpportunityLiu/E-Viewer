@@ -25,15 +25,12 @@ namespace EhTagTranslatorClient
 
         public static IEnumerable<Record> Analyze(IInputStream stream, Namespace @namespace)
         {
-            using(stream)
+            var reader = new StreamReader(stream.AsStreamForRead());
+            while(!reader.EndOfStream)
             {
-                var reader = new StreamReader(stream.AsStreamForRead());
-                while(!reader.EndOfStream)
-                {
-                    var r = AnalyzeLine(reader.ReadLine(), @namespace);
-                    if(r != null)
-                        yield return r;
-                }
+                var r = AnalyzeLine(reader.ReadLine(), @namespace);
+                if(r != null)
+                    yield return r;
             }
         }
 
