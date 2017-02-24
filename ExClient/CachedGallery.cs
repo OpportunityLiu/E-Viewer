@@ -12,7 +12,7 @@ using Windows.Foundation.Diagnostics;
 
 namespace ExClient
 {
-    public sealed class CachedGallery : Gallery
+    public class CachedGallery : Gallery
     {
         private sealed class CachedGalleryList : GalleryList<CachedGallery>
         {
@@ -107,21 +107,27 @@ namespace ExClient
         }
 
         internal CachedGallery(GalleryModel model)
-            : base(model, false)
+            : base(model)
         {
         }
 
-        private List<ImageModel> imageModels;
-        private void loadImageModel()
+        internal ImageModel[] ImageModels { get; private set; }
+
+        internal void LoadImageModels()
         {
+            if(ImageModels != null)
+                return;
+            ImageModels = new ImageModel[RecordCount];
             using(var db = new GalleryDb())
             {
                 var gid = Id;
-                imageModels = (from im in db.ImageSet
-                               where im.OwnerId == gid
-                               select im).ToList();
-                // 倒序
-                imageModels.Sort((a, b) => b.PageId - a.PageId);
+                var models = from im in db.ImageSet
+                             where im.OwnerId == gid
+                             select im;
+                foreach(var item in models)
+                {
+                    ImageModels[item.PageId - 1] = item;
+                }
             }
         }
 
@@ -130,19 +136,20 @@ namespace ExClient
             return Task.Run<IList<GalleryImage>>(async () =>
             {
                 await GetFolderAsync();
-                if(this.imageModels == null)
-                    this.loadImageModel();
+                this.LoadImageModels();
                 var currentPageSize = MathHelper.GetSizeOfPage(RecordCount, PageSize, pageIndex);
-                var loadList = new List<GalleryImage>(currentPageSize);
+                var loadList = new GalleryImage[currentPageSize];
                 for(int i = 0; i < currentPageSize; i++)
                 {
-                    var currentPageId = Count + i + 1;
-                    if(imageModels.Count == 0 || imageModels[imageModels.Count - 1].PageId != currentPageId)
-                        loadList.Add(new GalleryImagePlaceHolder(this, currentPageId));
+                    var model = ImageModels[Count + i];
+                    if(model == null)
+                    {
+                        loadList[i] = new GalleryImagePlaceHolder(this, Count + i + 1);
+                    }
                     else
                     {
-                        loadList.Add(await GalleryImage.LoadCachedImageAsync(this, imageModels[imageModels.Count - 1]));
-                        imageModels.RemoveAt(imageModels.Count - 1);
+                        loadList[i] = await GalleryImage.LoadCachedImageAsync(this, model)
+                                ?? new GalleryImage(this, model.PageId, model.ImageKey, null);
                     }
                 }
                 return loadList;
@@ -221,7 +228,6 @@ namespace ExClient
                     if(ph == null)
                         continue;
                     this[i + offset] = images[i];
-                    //ph.Init(images[i].ImageKey, images[i].Thumb);
                 }
             });
             lpAc = new LoadPageAction(action);
@@ -231,7 +237,7 @@ namespace ExClient
 
         public override IAsyncAction DeleteAsync()
         {
-            imageModels = null;
+            ImageModels = null;
             return base.DeleteAsync();
         }
 
