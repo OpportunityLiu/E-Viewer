@@ -1,5 +1,4 @@
 ﻿using ExClient.Internal;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace ExClient.Api

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using GalaSoft.MvvmLight.Threading;
+using System;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight.Threading;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media.Imaging;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Internal
 {

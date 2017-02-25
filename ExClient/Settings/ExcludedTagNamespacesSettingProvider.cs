@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ExClient.Settings
+﻿namespace ExClient.Settings
 {
     public sealed class ExcludedTagNamespacesSettingProvider : SettingProvider
     {

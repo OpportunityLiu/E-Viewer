@@ -1,15 +1,12 @@
-﻿using System;
+﻿using ExClient.Models;
+using GalaSoft.MvvmLight.Threading;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using ExClient.Models;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using GalaSoft.MvvmLight.Threading;
 using Windows.UI.Xaml.Data;
-using Windows.Foundation.Diagnostics;
-using System.Collections.Specialized;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {

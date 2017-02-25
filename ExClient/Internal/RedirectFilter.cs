@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using IHttpAsyncOperation = Windows.Foundation.IAsyncOperationWithProgress<Windows.Web.Http.HttpResponseMessage, Windows.Web.Http.HttpProgress>;
 
 namespace ExClient.Internal

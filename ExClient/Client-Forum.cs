@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Web.Http;
-using Windows.Web.Http.Filters;
-using Windows.Foundation;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using HtmlAgilityPack;
-using Windows.Storage;
-using System.Runtime.InteropServices;
-using System.Globalization;
+﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Storage;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {

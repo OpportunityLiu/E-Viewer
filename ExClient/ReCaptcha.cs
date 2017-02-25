@@ -1,15 +1,8 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HtmlAgilityPack;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Text.RegularExpressions;
 using Windows.Foundation;
-using Windows.UI.Xaml.Data;
 using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
