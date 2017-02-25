@@ -12,7 +12,7 @@ using static Windows.UI.Xaml.Media.VisualTreeHelper;
 
 namespace Windows.UI.Xaml.Media
 {
-    public static class VisualTreeHelperEx
+    public static class VisualTreeHelperExtension
     {
         #region Children
 
@@ -62,6 +62,16 @@ namespace Windows.UI.Xaml.Media
                 yield return GetChild(reference, i);
         }
 
+        public static DependencyObject Child(this DependencyObject reference, int childIndex)
+        {
+            return GetChild(reference, childIndex);
+        }
+
+        public static int ChildrenCount(this DependencyObject reference)
+        {
+            return GetChildrenCount(reference);
+        }
+
         #endregion Children
 
         #region Descendants
@@ -107,7 +117,7 @@ namespace Windows.UI.Xaml.Media
 
         public static IEnumerable<DependencyObject> Descendants(this DependencyObject reference)
         {
-            var searchQueue = new Queue<DependencyObject>();
+            var searchQueue = new Queue<DependencyObject>(10);
             searchQueue.Enqueue(reference);
             while(searchQueue.Count != 0)
             {
@@ -171,7 +181,7 @@ namespace Windows.UI.Xaml.Media
         public static T Parent<T>(this DependencyObject reference)
             where T : DependencyObject
         {
-            return Parent(reference) as T;
+            return GetParent(reference) as T;
         }
 
         public static DependencyObject Parent(this DependencyObject reference)
