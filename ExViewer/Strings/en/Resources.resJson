@@ -16,6 +16,13 @@
             "RateHyperlinkButton/Content" : "Rate and review",
             "SourceCodeHyperlinkButton/Content" : "View source code at GitHub.com"
         },
+        "CommentViewer" : {
+            "AuthorFormatString" : "By {0}",
+            "EditedFormatString" : "Last edited on {0}",
+            "IsUploaderCommentTextBlock/Text" : "Uploader Comment",
+            "PostedFormatString" : "Posted on {0}",
+            "ScoreFormatString" : "Score {0:+#0;-#0}"
+        },
         "ExcludedLanguagesSelector" : {
             "AllTextBlock/Text" : "All",
             "OriginalTextBlock/Text" : "Original",
@@ -57,11 +64,6 @@
             "LoadingMoreTextBlock/Text" : "Loading more galleries..."
         },
         "GalleryPage" : {
-            "CommentAuthorFormatString" : "By {0}",
-            "CommentEditedFormatString" : "Last edited on {0}",
-            "CommentIsUploaderCommentTextBlock/Text" : "Uploader Comment",
-            "CommentPostedFormatString" : "Posted on {0}",
-            "CommentScoreFormatString" : "Score {0:+#0;-#0}",
             "CommentsEmptyTextBlock/Text" : "No comments",
             "CommentsLoadingTextBlock/Text" : "Loading comments...",
             "GoToDefinitionMenuFlyoutItem/Text" : "Go to EHWiki for definition",

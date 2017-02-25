@@ -84,7 +84,7 @@ namespace ExViewer.Controls
             s.reload();
         }
 
-        private void reload()
+        private async void reload()
         {
             var presenter = this.Presenter;
             var htmlContent = this.HtmlContent;
@@ -95,21 +95,95 @@ namespace ExViewer.Controls
                 return;
             var para = new Paragraph();
             presenter.Blocks.Add(para);
-            var ignore = loadHtmlAsync(para, htmlContent, this.DetectLink);
+            var links = await loadHtmlAsync(para, htmlContent, this.DetectLink);
+            if(presenter == this.Presenter && htmlContent == this.HtmlContent)
+            {
+                this.HasHyperlinks = links.Count != 0;
+                if(links.Count > 1)
+                {
+                    for(int i = 0; i < links.Count - 1; i++)
+                    {
+                        link(links[i], links[i + 1]);
+                    }
+                }
+            }
         }
 
-        private async Task loadHtmlAsync(Paragraph target, HtmlNode content, bool detectLink)
+        private void link(DependencyObject obj1, DependencyObject obj2)
         {
+            var o1h = obj1 as Hyperlink;
+            var o1b = obj1 as HyperlinkButton;
+            var o2h = obj2 as Hyperlink;
+            var o2b = obj2 as HyperlinkButton;
+            if(o1h != null)
+            {
+                if(o2h != null)
+                {
+                    o1h.XYFocusDown = o2h;
+                    o2h.XYFocusUp = o1h;
+                }
+                else
+                {
+                    o1h.XYFocusDown = o2b;
+                    o2b.XYFocusUp = o1h;
+                }
+            }
+            else
+            {
+                if(o2h != null)
+                {
+                    o1b.XYFocusDown = o2h;
+                    o2h.XYFocusUp = o1b;
+                }
+                else
+                {
+                    o1b.XYFocusDown = o2b;
+                    o2b.XYFocusUp = o1b;
+                }
+            }
+        }
+
+        private bool canChangeHasHyperlinks;
+
+        public bool HasHyperlinks
+        {
+            get { return (bool)GetValue(HasHyperlinksProperty); }
+            private set
+            {
+                canChangeHasHyperlinks = true;
+                SetValue(HasHyperlinksProperty, value);
+                canChangeHasHyperlinks = false;
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for HasHyperlinks.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HasHyperlinksProperty =
+            DependencyProperty.Register("HasHyperlinks", typeof(bool), typeof(HtmlTextBlock), new PropertyMetadata(false, HasHyperlinksPropertyChangedCallback));
+
+        private static void HasHyperlinksPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var s = (HtmlTextBlock)sender;
+            if(!s.canChangeHasHyperlinks)
+            {
+                s.HasHyperlinks = (bool)e.OldValue;
+                throw new InvalidOperationException();
+            }
+        }
+
+        private async Task<List<DependencyObject>> loadHtmlAsync(Paragraph target, HtmlNode content, bool detectLink)
+        {
+            var hyperlinks = new List<DependencyObject>();
             foreach(var node in content.ChildNodes)
             {
-                var tbNode = await createNodeAsync(node, detectLink);
+                var tbNode = createNode(node, hyperlinks, detectLink);
                 target.Inlines.Add(tbNode);
                 await Task.Yield();
             }
             target.Inlines.Add(new Run { Text = eof });
+            return hyperlinks;
         }
 
-        private async Task<Inline> createNodeAsync(HtmlNode node, bool detectLink)
+        private Inline createNode(HtmlNode node, List<DependencyObject> hyperlinks, bool detectLink)
         {
             if(node is HtmlTextNode)
             {
@@ -135,7 +209,9 @@ namespace ExViewer.Controls
                         {
                             try
                             {
-                                t.Inlines.Add(CreateHyperlink(match.Value, uri));
+                                var hl = CreateHyperlink(match.Value, uri);
+                                hyperlinks.Add(hl);
+                                t.Inlines.Add(hl);
                             }
                             catch(Exception)
                             {
@@ -162,23 +238,23 @@ namespace ExViewer.Controls
                 return new LineBreak();
             case "strong"://[b]
                 var b = new Bold();
-                foreach(var item in createChildNodesAsync(node, detectLink))
-                    b.Inlines.Add(await item);
+                foreach(var item in createChildNodes(node, hyperlinks, detectLink))
+                    b.Inlines.Add(item);
                 return b;
             case "em"://[i]
                 var i = new Italic();
-                foreach(var item in createChildNodesAsync(node, detectLink))
-                    i.Inlines.Add(await item);
+                foreach(var item in createChildNodes(node, hyperlinks, detectLink))
+                    i.Inlines.Add(item);
                 return i;
             case "span"://[u]
                 var u = new Underline();
-                foreach(var item in createChildNodesAsync(node, detectLink))
-                    u.Inlines.Add(await item);
+                foreach(var item in createChildNodes(node, hyperlinks, detectLink))
+                    u.Inlines.Add(item);
                 return u;
             case "del"://[s]
                 var s = new Span() { Foreground = (Brush)Resources["SystemControlBackgroundChromeMediumBrush"] };
-                foreach(var item in createChildNodesAsync(node, detectLink))
-                    s.Inlines.Add(await item);
+                foreach(var item in createChildNodes(node, hyperlinks, detectLink))
+                    s.Inlines.Add(item);
                 return s;
             case "a"://[url]
                 var container = (Span)null;
@@ -194,8 +270,10 @@ namespace ExViewer.Controls
                 }
                 try
                 {
-                    foreach(var item in createChildNodesAsync(node, false))
-                        container.Inlines.Add(await item);
+                    foreach(var item in createChildNodes(node, hyperlinks, false))
+                        container.Inlines.Add(item);
+                    if(container is Hyperlink)
+                        hyperlinks.Add(container);
                     return container;
                 }
                 catch(ArgumentException)// has InlineUIContainer in childnodes
@@ -205,6 +283,7 @@ namespace ExViewer.Controls
                     aBtnContent.Blocks.Add(para);
                     var ignore = loadHtmlAsync(para, node, false);
                     var aBtn = CreateHyperlinkButton(aBtnContent, target);
+                    hyperlinks.Add(aBtn);
                     return new InlineUIContainer { Child = aBtn };
                 }
             case "img"://[img]
@@ -256,9 +335,9 @@ namespace ExViewer.Controls
             image.ImageOpened -= Image_ImageOpened;
         }
 
-        private IEnumerable<Task<Inline>> createChildNodesAsync(HtmlNode node, bool detectLink)
+        private IEnumerable<Inline> createChildNodes(HtmlNode node, List<DependencyObject> hyperlinks, bool detectLink)
         {
-            return node.ChildNodes.Select(n => createNodeAsync(n, detectLink));
+            return node.ChildNodes.Select(n => createNode(n, hyperlinks, detectLink));
         }
 
         private static void setScale(Image image)

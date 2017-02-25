@@ -97,6 +97,7 @@
                         ToolTipService.ToolTip="Download" />
                 <Grid x:Name="gd_TorrentDetail"
                       Grid.Row="1"
+                      x:DeferLoadStrategy="Lazy"
                       Margin="20,0,4,8"
                       Visibility="Collapsed">
                     <Grid.ColumnDefinitions>
@@ -161,101 +162,6 @@
                                Text="{x:Bind Size, Converter={StaticResource SizeConverter}}" />
                 </Grid>
             </Grid>
-        </DataTemplate>
-
-        <Style x:Key="HeaderRectangleStyle"
-               TargetType="Rectangle">
-            <Setter Property="Fill" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-            <Setter Property="StrokeThickness" Value="0" />
-        </Style>
-        <Style x:Key="CommentHeaderTextBlockStyle"
-               TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="FontWeight" Value="Medium" />
-            <Setter Property="Margin" Value="8,0" />
-        </Style>
-        <Style x:Key="EditedTextBlockStyle"
-               BasedOn="{StaticResource CaptionTextBlockStyle}"
-               TargetType="TextBlock">
-            <Setter Property="FontStyle" Value="Italic" />
-            <Setter Property="FontWeight" Value="Medium" />
-        </Style>
-        <DataTemplate xmlns:c="using:ExClient"
-                      x:Key="CommentTemplate"
-                      x:DataType="c:Comment">
-            <UserControl HorizontalContentAlignment="Stretch"
-                         VerticalContentAlignment="Stretch">
-                <RelativePanel Padding="4,8,4,20">
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroup>
-                            <VisualState x:Name="Narrow">
-                                <VisualState.StateTriggers>
-                                    <AdaptiveTrigger MinWindowWidth="0" />
-                                </VisualState.StateTriggers>
-                                <VisualState.Setters>
-                                    <Setter Target="Author.(RelativePanel.Below)" Value="Posted" />
-                                </VisualState.Setters>
-                            </VisualState>
-                            <VisualState x:Name="Normal">
-                                <VisualState.StateTriggers>
-                                    <AdaptiveTrigger MinWindowWidth="500" />
-                                </VisualState.StateTriggers>
-                                <VisualState.Setters>
-                                    <Setter Target="Author.(RelativePanel.RightOf)" Value="Posted" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateManager.VisualStateGroups>
-                    <Rectangle x:Name="Header"
-                               Margin="0,-4"
-                               RelativePanel.AlignBottomWith="Author"
-                               RelativePanel.AlignLeftWithPanel="True"
-                               RelativePanel.AlignRightWithPanel="True"
-                               RelativePanel.AlignTopWithPanel="True"
-                               Style="{StaticResource HeaderRectangleStyle}" />
-                    <TextBlock x:Name="Posted"
-                               RelativePanel.AlignLeftWithPanel="True"
-                               RelativePanel.AlignTopWithPanel="True"
-                               Style="{StaticResource CommentHeaderTextBlockStyle}"
-                               Text="{x:Bind Posted, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Views/GalleryPage/CommentPostedFormatString'}" />
-                    <TextBlock x:Name="Author"
-                               Style="{StaticResource CommentHeaderTextBlockStyle}"
-                               Text="{x:Bind Author, Converter={StaticResource StringConverter}, ConverterParameter='Views/GalleryPage/CommentAuthorFormatString'}" />
-                    <TextBlock x:Name="Score"
-                               HorizontalAlignment="Right"
-                               RelativePanel.AlignRightWithPanel="True"
-                               RelativePanel.AlignTopWith="Author"
-                               Style="{StaticResource CommentHeaderTextBlockStyle}"
-                               Text="{x:Bind Score, Converter={StaticResource StringConverter}, ConverterParameter='Views/GalleryPage/CommentScoreFormatString'}"
-                               Visibility="{x:Bind IsUploaderComment, Converter={StaticResource FalseToVisibleConverter}}" />
-                    <TextBlock x:Name="IsUploaderComment"
-                               x:Uid="Views/GalleryPage/CommentIsUploaderCommentTextBlock"
-                               HorizontalAlignment="Right"
-                               RelativePanel.AlignRightWithPanel="True"
-                               RelativePanel.AlignTopWith="Author"
-                               Style="{StaticResource CommentHeaderTextBlockStyle}"
-                               Text="Uploader Comment"
-                               Visibility="{x:Bind IsUploaderComment, Converter={StaticResource TrueToVisibleConverter}}" />
-                    <controls:HtmlTextBlock x:Name="Content"
-                                            Margin="12,12,12,4"
-                                            DetectLink="True"
-                                            HtmlContent="{x:Bind Content}"
-                                            Pivot.SlideInAnimationGroup="GroupOne"
-                                            RelativePanel.AlignLeftWithPanel="True"
-                                            RelativePanel.AlignRightWithPanel="True"
-                                            RelativePanel.Below="Header" />
-                    <TextBlock x:Name="Edited"
-                               Margin="12,4"
-                               Pivot.SlideInAnimationGroup="GroupTwo"
-                               RelativePanel.AlignBottomWithPanel="True"
-                               RelativePanel.AlignLeftWithPanel="True"
-                               RelativePanel.AlignRightWithPanel="True"
-                               RelativePanel.Below="Content"
-                               Style="{StaticResource EditedTextBlockStyle}"
-                               Text="{x:Bind Edited, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Views/GalleryPage/CommentEditedFormatString'}"
-                               Visibility="{x:Bind Edited, Converter={StaticResource NullToCollapsedConverter}}" />
-                </RelativePanel>
-            </UserControl>
         </DataTemplate>
 
         <Style x:Key="PivotHeaderGridStyle"
@@ -548,11 +454,22 @@
                                 </Grid>
                             </PivotItem.Header>
                             <ListView x:Name="lv_Comments"
-                                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
-                                      ItemTemplate="{StaticResource CommentTemplate}"
                                       ItemsSource="{x:Bind VM.Gallery.Comments, Mode=OneWay}"
                                       Loaded="pv_Content_Loaded"
                                       SelectionMode="None">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate xmlns:c="using:ExClient"
+                                                  x:DataType="c:Comment">
+                                        <controls:CommentViewer Comment="{x:Bind}" />
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem"
+                                           BasedOn="{StaticResource ListViewItemStyle}">
+                                        <Setter Property="IsTabStop"
+                                                Value="False" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
                                 <ListView.Header>
                                     <Grid>
                                         <TextBlock x:Uid="Views/GalleryPage/CommentsEmptyTextBlock"

@@ -230,11 +230,6 @@ namespace ExViewer.Views
             await ewd.ShowAsync();
         }
 
-        private void lv_Torrents_ItemClick(object sender, ItemClickEventArgs e)
-        {
-
-        }
-
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
             await Task.Delay(50);

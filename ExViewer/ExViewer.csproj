@@ -101,6 +101,9 @@
     <PRIResource Include="Strings\zh-cn\Settings.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CommentViewer.xaml.cs">
+      <DependentUpon>CommentViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FavoriteCategoryPresenter.cs" />
     <Compile Include="Controls\ExcludedTagNamespacesSelector.xaml.cs">
       <DependentUpon>ExcludedTagNamespacesSelector.xaml</DependentUpon>
@@ -287,6 +290,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Controls\CategorySelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CommentViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
