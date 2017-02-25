@@ -180,10 +180,15 @@ namespace ExViewer.Views
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             base.OnKeyUp(e);
-            if(e.Key == Windows.System.VirtualKey.GamepadView)
+            e.Handled = true;
+            switch(e.OriginalKey)
             {
+            case Windows.System.VirtualKey.GamepadView:
                 RootController.SwitchSplitView();
-                e.Handled = true;
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
     }

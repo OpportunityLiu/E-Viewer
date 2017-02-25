@@ -153,6 +153,7 @@ namespace ExViewer.Views
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
+                cbCategory.Focus(FocusState.Programmatic);
                 break;
             default:
                 e.Handled = false;

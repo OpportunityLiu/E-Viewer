@@ -8,6 +8,18 @@
       x:Name="page"
       mc:Ignorable="d"
       xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls">
+    <Page.Resources>
+        <MenuFlyout x:Name="mf_Gallery">
+            <MenuFlyoutItem x:Uid="Views/SavedPage/DeleteMenuFlyout"
+                            x:Name="mfi_DeleteGallery"
+                            Text="Delete"
+                            Command="{x:Bind VM.Delete, Mode=OneWay}"/>
+            <MenuFlyoutItem x:Uid="Views/SavedPage/SaveToMenuFlyout"
+                            x:Name="mfi_SaveTo"
+                            Text="Save to..."
+                            Command="{x:Bind VM.SaveTo, Mode=OneWay}" />
+        </MenuFlyout>
+    </Page.Resources>
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
@@ -55,10 +67,10 @@
                                   ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
                                   Style="{StaticResource GalleryListViewStyle}"
                                   CanDragItems="True"
-                                  RightTapped="lv_RightTapped"
                                   DragItemsStarting="lv_DragItemsStarting"
                                   ItemClick="lv_ItemClick"
-                                  ContinuumNavigationTransitionInfo.ExitElementContainer="True">
+                                  ContextCanceled="lv_ContextCanceled"
+                                  ContextRequested="lv_ContextRequested">
             <tk:PullToRefreshListView.RefreshIndicatorContent>
                 <tk:PullToRefreshIndicator />
             </tk:PullToRefreshListView.RefreshIndicatorContent>
@@ -67,26 +79,7 @@
                               xmlns:controls="using:ExViewer.Controls"
                               x:DataType="c:Gallery">
                     <controls:GalleryViewer x:Name="gv_Gallery"
-                                            Gallery="{x:Bind}"
-                                            RightTapped="gv_Gallery_RightTapped"
-                                            Holding="gv_Gallery_Holding"
-                                            Background="Transparent"
-                                            ContinuumNavigationTransitionInfo.IsExitElement="True">
-                        <FlyoutBase.AttachedFlyout>
-                            <MenuFlyout>
-                                <MenuFlyoutItem x:Uid="Views/SavedPage/DeleteMenuFlyout"
-                                                x:Name="mfi_DeleteGallery"
-                                                Text="Delete"
-                                                Command="{Binding VM.Delete, ElementName=page}"
-                                                CommandParameter="{x:Bind}" />
-                                <MenuFlyoutItem x:Uid="Views/SavedPage/SaveToMenuFlyout"
-                                                x:Name="mfi_SaveTo"
-                                                Text="Save to..."
-                                                Command="{Binding VM.SaveTo, ElementName=page}"
-                                                CommandParameter="{x:Bind}" />
-                            </MenuFlyout>
-                        </FlyoutBase.AttachedFlyout>
-                    </controls:GalleryViewer>
+                                            Gallery="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Footer>

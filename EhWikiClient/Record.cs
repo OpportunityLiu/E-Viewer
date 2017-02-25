@@ -39,7 +39,13 @@ namespace EhWikiClient
             this.Japanese = j;
         }
 
-        public static Record Load(string json)
+        private Record(string title, string japanese, string html)
+            : this(title, japanese)
+        {
+            this.DetialHtml = html;
+        }
+
+        internal static Record Load(string json)
         {
             var res = JsonConvert.DeserializeObject<Response>(json);
             if(res.parse == null)
@@ -49,10 +55,7 @@ namespace EhWikiClient
             var j = (string)null;
             if(match.Success)
                 j = match.Groups["Value"].Value;
-            return new Record(res.parse.title, j)
-            {
-                Html = res.parse.text.str
-            };
+            return new Record(res.parse.title, j, res.parse.text.str);
         }
 
         [JsonProperty("t")]
@@ -68,7 +71,7 @@ namespace EhWikiClient
         }
 
         [JsonIgnore]
-        public string Html
+        public string DetialHtml
         {
             get;
             private set;

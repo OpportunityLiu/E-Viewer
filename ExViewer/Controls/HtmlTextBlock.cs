@@ -283,7 +283,7 @@ namespace ExViewer.Controls
 
         private void Dpi_DpiChanged(DisplayInformation sender, object args)
         {
-            foreach(var item in VisualTreeHelperEx.GetChildren<Image>(this))
+            foreach(var item in this.Descendants<Image>())
             {
                 setScale(item);
             }

@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using EhWikiClient;
 using ExClient;
+using System;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Windows.System;
-using EhWikiClient;
 
 // The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -52,10 +43,10 @@ namespace ExViewer.Views
                 loadRecord = null;
                 if(style == null)
                     initStyle();
-                if(record?.Html == null)
+                if(record?.DetialHtml == null)
                     str = LocalizedStrings.Resources.Views.EhWikiDialog.TagNotFound;
                 else
-                    str = record.Html;
+                    str = record.DetialHtml;
             }
             catch(Exception ex)
             {
@@ -71,7 +62,8 @@ namespace ExViewer.Views
             var background = ((SolidColorBrush)this.Background);
             var foreground = ((SolidColorBrush)this.Foreground);
             var link = ((SolidColorBrush)this.BorderBrush);
-            style = $@"<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
+            style = $@"
+<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
 <style type='text/css'>
     html {{
         background: {color(background)};

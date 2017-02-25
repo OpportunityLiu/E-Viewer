@@ -1,21 +1,11 @@
 ﻿using ExClient.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Windows.Storage.Streams;
-using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
-using GalaSoft.MvvmLight.Threading;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Storage;
 using Windows.UI.Xaml.Data;
-using System.Collections;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {
