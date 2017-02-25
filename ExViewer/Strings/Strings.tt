@@ -11,10 +11,15 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Runtime.Serialization.Json" #>
 <#@ import namespace="System.Web" #>
+<#@ import namespace="System.Linq" #>
 <#@ output extension=".tt.cs" #>
 <#
 
+    var ProductName = "Resource Genereter";
+    var ProductVersion = "2.0.1";
 
+#>
+<#
 
     // TODO: 修改相关配置。
     // 检索 resw 的路径。
@@ -22,19 +27,22 @@
     // 检索 resw 并生成注释时使用的语言相对 ResourcePath 的路径。
     string SourceLanguagePath = "en";
     // 生成辅助类的命名空间，默认使用 "<ProjectDefaultNamespace>.LocalizedStrings"。
-    string LocalizedStringsNamespace = null;
+    string LocalizedStringsNamespace = default(string);
     // 生成辅助类的修饰符
-    string modifier = "internal";
+    string Modifier = "public";
     // 是否为默认工程，决定是否需要显式定义资源路径。
     bool IsDefaultProject = true;
-    //是否对生成的代码启用调试。
-    bool DebugGeneratedCode = false;
-
-
 
 #>
 <#
-    var ns = LocalizedStringsNamespace ?? (GetProjectDefaultNamespace() + ".LocalizedStrings");
+
+    var DebugGeneratedCode = false;
+
+    var ns = (LocalizedStringsNamespace ?? (GetProjectDefaultNamespace() + ".LocalizedStrings")).Trim();
+    if(!string.IsNullOrEmpty(ns))
+        ns = Refine(ns, true);
+    Modifier = (Modifier ?? "").Trim();
+    var mf = string.IsNullOrEmpty(Modifier) ? "" : Modifier + " ";
 
     // 用于存放所有资源的 key。
     var names = new Dictionary<string, Dictionary<string, object>>();
@@ -77,6 +85,7 @@ namespace <#=ns#>
         var cache = GetRandomName("_cache");
         var loader = GetRandomName("_loader");
         var className = Refine(localizedClass.Key);
+        var classFullName =  $"{ns}.{className}";
         if(!DebugGeneratedCode)
         {
 #>
@@ -84,8 +93,8 @@ namespace <#=ns#>
 <#
         }
 #>
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("ResourceGenerator", "1.0")]
-    <#=modifier#> static class <#=className#>
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("<#=ProductName#>", "<#=ProductVersion#>")]
+    <#=mf#>static class <#=className#>
     {
         private static readonly global::System.Collections.Generic.Dictionary<string, string> <#=cache#>
             = new global::System.Collections.Generic.Dictionary<string, string>();
@@ -114,11 +123,11 @@ namespace <#=ns#>
             var value = name.Value as string;
             if(value != null)
             {
-                WriteProperty("        ", name.Key, value);
+                WriteProperty("        ", classFullName, "", className, name.Key, value);
             }
             else
             {
-                WriteNestedClass("        ", localizedClass.Key, className, name.Key, (Dictionary<string, object>)name.Value);
+                WriteNestedClass("        ", classFullName, "", className, name.Key, (Dictionary<string, object>)name.Value);
             }
         }
 #>
@@ -134,11 +143,13 @@ namespace <#=ns#>
 <#
     }
 #>
-
 <#+
+    public string CombineResourcePath(string root, string reletive)
+        => string.IsNullOrEmpty(root) ? reletive : $"{root}/{reletive}";
 
-    public void WriteProperty(string indent, string key, string value)
+    public void WriteProperty(string indent, string rootClass, string parent, string parentClass, string key, string value)
     {
+        var fullPath = CombineResourcePath(parent, key);
         WriteLine("");
         WriteLine($"{indent}/// <summary>");
         // 转义注释序列
@@ -151,28 +162,30 @@ namespace <#=ns#>
             WriteLine($"{indent}/// <para>{comment}</para>");
         }
         WriteLine($@"{indent}/// </summary>");
-        WriteLine($@"{indent}public static string {Refine(key)} => GetString(@""{AsRaw(key)}"");");
+        WriteLine($@"{indent}public static string {Refine(key)} => {rootClass}.GetString(@""{AsRaw(fullPath)}"");");
     }
 
-    public void WriteNestedClass(string indent, string parent, string parentClass, string key, Dictionary<string, object> value)
+    public void WriteNestedClass(string indent, string rootClass, string parent, string parentClass, string key, Dictionary<string, object> value)
     {
         var cName = Refine(key);
+        var fullPath = CombineResourcePath(parent, key);
+        var fullCName = $"{parentClass}.{cName}";
         WriteLine("");
         WriteLine($@"{indent}public static class {cName}");
         WriteLine($@"{indent}{{");
         WriteLine($@"{indent}    public static string GetString(string key)");
         WriteLine($@"{indent}    {{");
         WriteLine($@"{indent}        if(string.IsNullOrEmpty(key))");
-        WriteLine($@"{indent}            return {parentClass}.GetString(@""{AsRaw(key)}"");");
-        WriteLine($@"{indent}        return {parentClass}.GetString(@""{AsRaw(key)}/"" + key);");
+        WriteLine($@"{indent}            return {rootClass}.GetString(@""{AsRaw(fullPath)}"");");
+        WriteLine($@"{indent}        return {rootClass}.GetString(@""{AsRaw(fullPath)}/"" + key);");
         WriteLine($@"{indent}    }}");
         foreach(var item in value)
         {
             var v = item.Value as string;
             if(v != null)
-                WriteProperty(indent + "    ", item.Key, v);
+                WriteProperty(indent + "    ", rootClass, fullPath, fullCName, item.Key, v);
             else
-                WriteNestedClass(indent + "    ", key, cName, item.Key, (Dictionary<string, object>)item.Value);
+                WriteNestedClass(indent + "    ",rootClass, fullPath, fullCName, item.Key, (Dictionary<string, object>)item.Value);
         }
         WriteLine($"{indent}}}");
     }
@@ -296,22 +309,30 @@ namespace <#=ns#>
         return value?.Replace("\"", "\"\"") ?? "";
     }
 
-    public string Refine(string name)
+    public string Refine(string name, bool allowDot = false)
     {
-        if(keywords.Contains(name))
-            return "@" + name;
-        if(used.Contains(name))
-            return "_" + name;
-        if(string.IsNullOrWhiteSpace(name))
-            return GetRandomName("__");
-        if(!isValidStartChar(name[0]))
-            name = "_" + name;
-        for(var i = 1; i < name.Length; i++)
+        if(allowDot)
         {
-            if(!isValidPartChar(name[i]))
-                name = name.Replace(name[i], '_');
+            var names = name.Split('.');
+            return string.Join(".", names.Select(n => Refine(n)));
         }
-        return name;
+        else
+        {
+            if(keywords.Contains(name))
+                return "@" + name;
+            if(used.Contains(name))
+                return "_" + name;
+            if(string.IsNullOrWhiteSpace(name))
+                return GetRandomName("__");
+            if(!isValidStartChar(name[0]))
+                name = "_" + name;
+            for(var i = 1; i < name.Length; i++)
+            {
+                if(!isValidPartChar(name[i]))
+                    name = name.Replace(name[i], '_');
+            }
+            return name;
+        }
     }
 
     private bool isValidStartChar(char ch)

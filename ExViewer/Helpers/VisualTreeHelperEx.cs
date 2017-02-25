@@ -14,60 +14,171 @@ namespace Windows.UI.Xaml.Media
 {
     public static class VisualTreeHelperEx
     {
-        public static FrameworkElement GetFirstChild(DependencyObject reference, string childName)
+        #region Children
+
+        public static FrameworkElement FirstChild(this DependencyObject reference, string childName)
         {
-            return GetFirstChild<FrameworkElement>(reference, childName);
+            return FirstChild<FrameworkElement>(reference, childName);
         }
 
-        public static IEnumerable<FrameworkElement> GetChildren(DependencyObject reference, string childName)
+        public static IEnumerable<FrameworkElement> Children(this DependencyObject reference, string childName)
         {
-            return GetChildren<FrameworkElement>(reference, childName);
+            return Children<FrameworkElement>(reference, childName);
         }
 
-        public static T GetFirstChild<T>(DependencyObject reference, string childName)
+        public static T FirstChild<T>(this DependencyObject reference, string childName)
             where T : FrameworkElement
         {
-            return GetChildren<T>(reference, childName).FirstOrDefault();
+            return Children<T>(reference, childName).FirstOrDefault();
         }
 
-        public static IEnumerable<T> GetChildren<T>(DependencyObject reference, string childName)
+        public static IEnumerable<T> Children<T>(this DependencyObject reference, string childName)
             where T : FrameworkElement
         {
-            return GetChildren<T>(reference).Where(item => item.Name == childName);
+            return Children<T>(reference).Where(item => item.Name == childName);
         }
 
-        public static T GetFirstChild<T>(DependencyObject reference)
+        public static T FirstChild<T>(this DependencyObject reference)
             where T : DependencyObject
         {
-            return GetChildren<T>(reference).FirstOrDefault();
+            return Children<T>(reference).FirstOrDefault();
         }
 
-        public static IEnumerable<T> GetChildren<T>(DependencyObject reference)
+        public static IEnumerable<T> Children<T>(this DependencyObject reference)
             where T : DependencyObject
         {
-            return GetChildren(reference).OfType<T>();
+            return Children(reference).OfType<T>();
         }
 
-        public static DependencyObject GetFirstChild(DependencyObject reference)
+        public static DependencyObject FirstChild(this DependencyObject reference)
         {
-            return GetChildren(reference).FirstOrDefault();
+            return Children(reference).FirstOrDefault();
         }
 
-        public static IEnumerable<DependencyObject> GetChildren(DependencyObject reference)
+        public static IEnumerable<DependencyObject> Children(this DependencyObject reference)
+        {
+            var childrenCount = GetChildrenCount(reference);
+            for(int i = 0; i < childrenCount; i++)
+                yield return GetChild(reference, i);
+        }
+
+        #endregion Children
+
+        #region Descendants
+
+        public static FrameworkElement FirstDescendant(this DependencyObject reference, string descendantName)
+        {
+            return FirstDescendant<FrameworkElement>(reference, descendantName);
+        }
+
+        public static IEnumerable<FrameworkElement> Descendants(this DependencyObject reference, string descendantName)
+        {
+            return Descendants<FrameworkElement>(reference, descendantName);
+        }
+
+        public static T FirstDescendant<T>(this DependencyObject reference, string descendantName)
+            where T : FrameworkElement
+        {
+            return Descendants<T>(reference, descendantName).FirstOrDefault();
+        }
+
+        public static IEnumerable<T> Descendants<T>(this DependencyObject reference, string descendantName)
+            where T : FrameworkElement
+        {
+            return Descendants<T>(reference).Where(item => item.Name == descendantName);
+        }
+
+        public static T FirstDescendant<T>(this DependencyObject reference)
+            where T : DependencyObject
+        {
+            return Descendants<T>(reference).FirstOrDefault();
+        }
+
+        public static IEnumerable<T> Descendants<T>(this DependencyObject reference)
+            where T : DependencyObject
+        {
+            return Descendants(reference).OfType<T>();
+        }
+
+        public static DependencyObject FirstDescendant(this DependencyObject reference)
+        {
+            return Descendants(reference).FirstOrDefault();
+        }
+
+        public static IEnumerable<DependencyObject> Descendants(this DependencyObject reference)
         {
             var searchQueue = new Queue<DependencyObject>();
             searchQueue.Enqueue(reference);
             while(searchQueue.Count != 0)
             {
                 var currentSearching = searchQueue.Dequeue();
-                var childrenCount = GetChildrenCount(currentSearching);
-                for(int i = 0; i < childrenCount; i++)
+                foreach(var item in currentSearching.Children())
                 {
-                    var currentChild = GetChild(currentSearching, i);
-                    searchQueue.Enqueue(currentChild);
-                    yield return currentChild;
+                    searchQueue.Enqueue(item);
+                    yield return item;
                 }
             }
         }
+
+        #endregion Descendants
+
+        #region Ancestors
+
+        public static FrameworkElement FirstAncestor(this DependencyObject reference, string ancestorName)
+        {
+            return FirstAncestor<FrameworkElement>(reference, ancestorName);
+        }
+
+        public static IEnumerable<FrameworkElement> Ancestors(this DependencyObject reference, string ancestorName)
+        {
+            return Ancestors<FrameworkElement>(reference, ancestorName);
+        }
+
+        public static T FirstAncestor<T>(this DependencyObject reference, string ancestorName)
+            where T : FrameworkElement
+        {
+            return Ancestors<T>(reference, ancestorName).FirstOrDefault();
+        }
+
+        public static IEnumerable<T> Ancestors<T>(this DependencyObject reference, string ancestorName)
+            where T : FrameworkElement
+        {
+            return Ancestors<T>(reference).Where(item => item.Name == ancestorName);
+        }
+
+        public static T FirstAncestor<T>(this DependencyObject reference)
+            where T : DependencyObject
+        {
+            return Ancestors<T>(reference).FirstOrDefault();
+        }
+
+        public static IEnumerable<T> Ancestors<T>(this DependencyObject reference)
+            where T : DependencyObject
+        {
+            return Ancestors(reference).OfType<T>();
+        }
+
+        public static IEnumerable<DependencyObject> Ancestors(this DependencyObject reference)
+        {
+            while((reference = GetParent(reference)) != null)
+                yield return reference;
+        }
+
+        #endregion Ancestors
+
+        #region Parent
+
+        public static T Parent<T>(this DependencyObject reference)
+            where T : DependencyObject
+        {
+            return Parent(reference) as T;
+        }
+
+        public static DependencyObject Parent(this DependencyObject reference)
+        {
+            return GetParent(reference);
+        }
+
+        #endregion Parent
     }
 }
