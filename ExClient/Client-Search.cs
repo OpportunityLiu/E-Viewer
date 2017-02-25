@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Web.Http;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Windows.Foundation;
-using HtmlAgilityPack;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Collections;
-
-namespace ExClient
+﻿namespace ExClient
 {
     public partial class Client
     {

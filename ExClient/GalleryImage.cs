@@ -1,23 +1,18 @@
-﻿using HtmlAgilityPack;
-using Newtonsoft.Json;
+﻿using ExClient.Internal;
+using GalaSoft.MvvmLight.Threading;
+using HtmlAgilityPack;
 using System;
-using System.ComponentModel;
-using System.Net;
-using System.Runtime.CompilerServices;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Windows.Data.Html;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using System.Linq;
-using Windows.Data.Html;
-using System.IO;
-using GalaSoft.MvvmLight.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using ExClient.Internal;
 
 namespace ExClient
 {

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media.Imaging;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.Storage;
 using Windows.Web.Http;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace BannerProvider
 {

@@ -1,9 +1,8 @@
-﻿using System;
+﻿using ExClient.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using ExClient.Models;
+using System;
 
 namespace ExClient.Migrations
 {

@@ -6,7 +6,6 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
-using System.Linq;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient

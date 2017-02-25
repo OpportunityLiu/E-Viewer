@@ -1,19 +1,15 @@
-﻿using System;
+﻿using ExClient.Api;
+using ExClient.Settings;
+using HtmlAgilityPack;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
-using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using HtmlAgilityPack;
-using System.IO;
-using System.Runtime.InteropServices;
-using ExClient.Settings;
-using Newtonsoft.Json;
-using ExClient.Api;
 
 namespace ExClient
 {

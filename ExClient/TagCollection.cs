@@ -1,14 +1,11 @@
 ﻿using ExClient.Internal;
 using System;
-using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IReadOnlyList = System.Collections.Generic.IReadOnlyList<ExClient.Tag>;
-using KeyValuePair = System.Collections.Generic.KeyValuePair<ExClient.Namespace, ExClient.NamespaceTagCollection>;
 using static ExClient.Namespace;
+using IReadOnlyList = System.Collections.Generic.IReadOnlyList<ExClient.Tag>;
 
 namespace ExClient
 {

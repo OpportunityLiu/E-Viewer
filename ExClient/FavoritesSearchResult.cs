@@ -1,21 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI.Xaml.Data;
-using Windows.Web.Http;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Newtonsoft.Json;
-using System.Net;
-using System.Runtime.InteropServices;
-using GalaSoft.MvvmLight.Threading;
 
 namespace ExClient
 {

@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
-using Namespace = ExClient.Namespace;
 using IRecordDictionary = System.Collections.Generic.IReadOnlyDictionary<string, EhTagTranslatorClient.Record>;
+using Namespace = ExClient.Namespace;
 
 namespace EhTagTranslatorClient
 {
