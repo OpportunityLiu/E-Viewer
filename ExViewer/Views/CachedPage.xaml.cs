@@ -106,7 +106,7 @@ namespace ExViewer.Views
 
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
-            var lvi = (args.OriginalSource as DependencyObject)?.FirstAncestor<ListViewItem>();
+            var lvi = (args.OriginalSource as DependencyObject)?.FirstAncestorOrSelf<ListViewItem>();
             if(lvi == null)
                 return;
             var dc = lvi.DataContext;

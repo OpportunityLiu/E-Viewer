@@ -16,6 +16,13 @@
             "RateHyperlinkButton/Content" : "打分和评价",
             "SourceCodeHyperlinkButton/Content" : "在 GitHub 上查看源代码"
         },
+        "CommentViewer" : {
+            "AuthorFormatString" : "{0}",
+            "EditedFormatString" : "最后编辑于 {0}",
+            "IsUploaderCommentTextBlock/Text" : "上传者评论",
+            "PostedFormatString" : "发布于 {0}",
+            "ScoreFormatString" : "评分 {0:+#0;-#0}"
+        },
         "ExcludedLanguagesSelector" : {
             "AllTextBlock/Text" : "全部",
             "OriginalTextBlock/Text" : "原始",
@@ -57,11 +64,6 @@
             "LoadingMoreTextBlock/Text" : "正在加载更多画集…"
         },
         "GalleryPage" : {
-            "CommentAuthorFormatString" : "{0}",
-            "CommentEditedFormatString" : "最后编辑于 {0}",
-            "CommentIsUploaderCommentTextBlock/Text" : "上传者评论",
-            "CommentPostedFormatString" : "发布于 {0}",
-            "CommentScoreFormatString" : "评分 {0:+#0;-#0}",
             "CommentsEmptyTextBlock/Text" : "没有评论",
             "CommentsLoadingTextBlock/Text" : "正在加载评论...",
             "GoToDefinitionMenuFlyoutItem/Text" : "前往 EHWiki 查看定义",

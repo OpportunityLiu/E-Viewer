@@ -1,0 +1,114 @@
+﻿<UserControl x:Class="ExViewer.Controls.CommentViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:ExViewer.Controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="200"
+             d:DesignWidth="400"
+             HorizontalContentAlignment="Stretch"
+             VerticalContentAlignment="Stretch"
+             UseSystemFocusVisuals="True"
+             IsFocusEngagementEnabled="True"
+             IsTabStop="True"
+             FocusEngaged="UserControl_FocusEngaged">
+    <UserControl.Resources>
+        <Style x:Key="HeaderRectangleStyle"
+               TargetType="Rectangle">
+            <Setter Property="Fill"
+                    Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+            <Setter Property="StrokeThickness"
+                    Value="0" />
+        </Style>
+        <Style x:Key="CommentHeaderTextBlockStyle"
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="FontWeight"
+                    Value="Medium" />
+            <Setter Property="Margin"
+                    Value="8,0" />
+        </Style>
+        <Style x:Key="EditedTextBlockStyle"
+               BasedOn="{StaticResource CaptionTextBlockStyle}"
+               TargetType="TextBlock">
+            <Setter Property="FontStyle"
+                    Value="Italic" />
+            <Setter Property="FontWeight"
+                    Value="Medium" />
+        </Style>
+    </UserControl.Resources>
+    <RelativePanel Padding="4,8,4,20">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Author.(RelativePanel.Below)"
+                                Value="Posted" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Normal">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="500" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Author.(RelativePanel.RightOf)"
+                                Value="Posted" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Rectangle x:Name="Header"
+                   Margin="0,-4"
+                   RelativePanel.AlignBottomWith="Author"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.AlignRightWithPanel="True"
+                   RelativePanel.AlignTopWithPanel="True"
+                   Style="{StaticResource HeaderRectangleStyle}" />
+        <TextBlock x:Name="Posted"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.AlignTopWithPanel="True"
+                   Style="{StaticResource CommentHeaderTextBlockStyle}"
+                   Text="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Controls/CommentViewer/PostedFormatString'}" />
+        <TextBlock x:Name="Author"
+                   Style="{StaticResource CommentHeaderTextBlockStyle}"
+                   Text="{x:Bind Comment.Author, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/AuthorFormatString'}" />
+        <TextBlock x:Name="Score"
+                   HorizontalAlignment="Right"
+                   RelativePanel.AlignRightWithPanel="True"
+                   RelativePanel.AlignTopWith="Author"
+                   Style="{StaticResource CommentHeaderTextBlockStyle}"
+                   Text="{x:Bind Comment.Score, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/ScoreFormatString'}"
+                   Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}" />
+        <TextBlock x:Name="IsUploaderComment"
+                   x:Uid="Controls/CommentViewer/IsUploaderCommentTextBlock"
+                   HorizontalAlignment="Right"
+                   RelativePanel.AlignRightWithPanel="True"
+                   RelativePanel.AlignTopWith="Author"
+                   Style="{StaticResource CommentHeaderTextBlockStyle}"
+                   Text="Uploader Comment"
+                   Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
+        <local:HtmlTextBlock x:Name="Content"
+                             Margin="12,12,12,4"
+                             DetectLink="True"
+                             HtmlContent="{x:Bind Comment.Content, Mode=OneWay}"
+                             Pivot.SlideInAnimationGroup="GroupOne"
+                             RelativePanel.AlignLeftWithPanel="True"
+                             RelativePanel.AlignRightWithPanel="True"
+                             RelativePanel.Below="Header" />
+        <TextBlock x:Name="Edited"
+                   Margin="12,4"
+                   Pivot.SlideInAnimationGroup="GroupTwo"
+                   RelativePanel.AlignBottomWithPanel="True"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.AlignRightWithPanel="True"
+                   RelativePanel.Below="Content"
+                   Style="{StaticResource EditedTextBlockStyle}"
+                   Text="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Controls/CommentViewer/EditedFormatString'}"
+                   Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
+    </RelativePanel>
+</UserControl>

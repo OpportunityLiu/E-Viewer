@@ -143,7 +143,8 @@ namespace ExViewer.Views
                 {
                     (root.fm_inner.Content as IHasAppBar)?.CloseAll();
                     root.sv_root.IsPaneOpen = true;
-                    (root.tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? root.svt_Search).Focus(FocusState.Programmatic);
+                    var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked);
+                    (currentTab ?? root.svt_Search).Focus(FocusState.Programmatic);
                 }
                 else
                 {
