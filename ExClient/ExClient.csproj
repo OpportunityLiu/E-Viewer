@@ -128,7 +128,9 @@
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="GalleryList{T}.cs" />
     <Compile Include="Api\ApiRequest.cs" />
+    <Compile Include="HostType.cs" />
     <Compile Include="Internal\RangedCollection{T}.cs" />
+    <Compile Include="Internal\UriProvieder.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="Launch\LaunchResult.cs" />
     <Compile Include="Launch\UriHandler.cs" />

@@ -279,4 +279,13 @@
   <data name="ExcludedTagNamespaces" xml:space="preserve">
     <value>排除标签类型</value>
   </data>
+  <data name="BooleanEh" xml:space="preserve">
+    <value>E-hentai</value>
+  </data>
+  <data name="BooleanEx" xml:space="preserve">
+    <value>Exhentai（需要可以连入的账号）</value>
+  </data>
+  <data name="VisitEx" xml:space="preserve">
+    <value>访问站点</value>
+  </data>
 </root>

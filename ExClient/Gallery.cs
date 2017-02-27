@@ -153,7 +153,7 @@ namespace ExClient
         {
             this.Id = id;
             this.Token = token;
-            this.GalleryUri = new Uri(galleryBaseUri, $"{Id.ToString()}/{Token}/");
+            this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{Id.ToString()}/{Token}/");
         }
 
         internal Gallery(GalleryModel model)
@@ -428,7 +428,6 @@ namespace ExClient
             });
         }
 
-        private static readonly Uri galleryBaseUri = new Uri(Client.ExUri, "g/");
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
 
         private void updateFavoriteInfo(HtmlDocument html)

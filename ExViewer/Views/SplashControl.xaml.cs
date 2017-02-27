@@ -174,11 +174,7 @@ namespace ExViewer.Views
                 var initSearchTask = (Task)null;
                 if(!client.NeedLogOn)
                 {
-                    var settingCollection = SettingCollection.Current;
-                    var clientSettings = client.Settings;
-                    clientSettings.HahProxy.AddressAndPort = settingCollection.HahAddress;
-                    clientSettings.ExcludedTagNamespaces.Value = settingCollection.ExcludedTagNamespaces;
-                    clientSettings.ExcludedLanguages.AddRange(ExClient.Settings.ExcludedLanguagesSettingProvider.FromString(settingCollection.ExcludedLanguages));
+                    SettingCollection.Current.Apply();
                     initSearchTask = SearchVM.InitAsync().AsTask();
                 }
                 if(initSearchTask != null)

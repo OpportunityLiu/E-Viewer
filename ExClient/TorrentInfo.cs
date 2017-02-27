@@ -19,7 +19,7 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                var torrentUri = new Uri(Client.ExUri, $"gallerytorrents.php?gid={gallery.Id}&t={gallery.Token}");
+                var torrentUri = new Uri(Client.Current.Uris.RootUri, $"gallerytorrents.php?gid={gallery.Id}&t={gallery.Token}");
                 var torrentHtml = await gallery.Owner.HttpClient.GetStringAsync(torrentUri);
                 var doc = new HtmlDocument();
                 doc.LoadHtml(torrentHtml);

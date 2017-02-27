@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExClient.Internal;
+using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 
@@ -24,7 +25,7 @@ namespace ExClient.Launch
         {
             if(uri == null)
                 return false;
-            if(uri.Host != Client.ExUri.Host && uri.Host != Client.EhUri.Host)
+            if(uri.Host != UriProvieder.Eh.RootUri.Host && uri.Host != UriProvieder.Ex.RootUri.Host)
                 return false;
             var data = new UriHandlerData(uri);
             foreach(var item in handlers)

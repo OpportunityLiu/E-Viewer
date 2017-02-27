@@ -7,9 +7,7 @@ namespace ExClient
 {
     public class FavoritesSearchResult : SearchResultBase
     {
-        private static readonly Uri searchUri = new Uri(Client.ExUri, "favorites.php");
-
-        protected override Uri SearchUri => searchUri;
+        protected override Uri SearchUri => new Uri(Client.Current.Uris.RootUri, "favorites.php");
 
         internal static FavoritesSearchResult Search(Client client, string keyword, FavoriteCategory category)
         {

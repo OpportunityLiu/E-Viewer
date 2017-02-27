@@ -279,4 +279,13 @@
   <data name="ExcludedTagNamespaces" xml:space="preserve">
     <value>Excluded tag namespaces</value>
   </data>
+  <data name="BooleanEh" xml:space="preserve">
+    <value>E-hentai</value>
+  </data>
+  <data name="BooleanEx" xml:space="preserve">
+    <value>Exhentai (need permittion of account)</value>
+  </data>
+  <data name="VisitEx" xml:space="preserve">
+    <value>Site to visit</value>
+  </data>
 </root>

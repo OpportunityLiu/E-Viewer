@@ -6,7 +6,7 @@ namespace ExClient
 {
     public class SearchResult : SearchResultBase
     {
-        protected override Uri SearchUri => Client.ExUri;
+        protected override Uri SearchUri => Client.Current.Uris.RootUri;
 
         public static readonly Category DefaultFliter = Category.All;
         private static readonly IReadOnlyDictionary<Category, string> searchFliterNames = new Dictionary<Category, string>()
