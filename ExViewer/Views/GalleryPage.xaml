@@ -27,12 +27,7 @@
             <MenuFlyoutSeparator />
             <MenuFlyoutItem x:Uid="Views/GalleryPage/GoToDefinitionMenuFlyoutItem"
                             Click="mfi_EhWiki_Click"
-                            Text="Go to EHWiki for definition">
-                <!--
-                    Command="{x:Bind VM.GoToDefinition, Mode=OneWay}"
-                    CommandParameter="{Binding}">
-                -->
-            </MenuFlyoutItem>
+                            Text="Go to EHWiki for definition" />
             <MenuFlyoutItem x:Uid="Views/GalleryPage/SearchTagMenuFlyoutItem"
                             Command="{x:Bind VM.SearchTag, Mode=OneWay}"
                             CommandParameter="{Binding}"
@@ -96,14 +91,15 @@
                         Style="{StaticResource DownloadButtonStyle}"
                         ToolTipService.ToolTip="Download" />
                 <Grid x:Name="gd_TorrentDetail"
-                      Grid.Row="1"
                       x:DeferLoadStrategy="Lazy"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2"
                       Margin="20,0,4,8"
                       Visibility="Collapsed">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="16" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -255,8 +251,6 @@
                                     Orientation="Horizontal">
                             <controls:CategoryTag Margin="6,4"
                                                   Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
-                            <!--<TextBlock Text="{x:Bind VM.Gallery.FavoriteCategory.CollectionIndex, FallbackValue=Empty, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
-                            <TextBlock Text="{x:Bind VM.Gallery.FavoriteCategory.CollectionName, FallbackValue=AddTo, Mode=OneWay}" />-->
                             <TextBlock Margin="6,4"
                                        VerticalAlignment="Center"
                                        FontFamily="Segoe MDL2 Assets"

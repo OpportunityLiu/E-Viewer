@@ -160,7 +160,7 @@ namespace ExViewer.Controls
         {
             var n = language.ToString();
             n = n.Substring(0, n.Length - "Original".Length);
-            Name = LocalizedStrings.Settings.GetString(n);
+            Name = Strings.Settings[n];
             Language = language;
         }
 

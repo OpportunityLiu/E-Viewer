@@ -144,12 +144,12 @@ namespace ExViewer.Views
             if(currentState)
             {
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
-                abb_fullScreen.Label = LocalizedStrings.Resources.Views.ImagePage.BackToWindow;
+                abb_fullScreen.Label = Strings.Resources.Views.ImagePage.BackToWindow;
             }
             else
             {
                 abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
-                abb_fullScreen.Label = LocalizedStrings.Resources.Views.ImagePage.FullScreen;
+                abb_fullScreen.Label = Strings.Resources.Views.ImagePage.FullScreen;
             }
             isFullScreen = currentState;
         }
@@ -317,9 +317,9 @@ namespace ExViewer.Views
         {
             await new ContentDialog
             {
-                Title = LocalizedStrings.Resources.Views.ImagePage.ImageViewTipsTitle,
-                Content = LocalizedStrings.Resources.Views.ImagePage.ImageViewTipsContent,
-                PrimaryButtonText = LocalizedStrings.Resources.OK,
+                Title = Strings.Resources.Views.ImagePage.ImageViewTipsTitle,
+                Content = Strings.Resources.Views.ImagePage.ImageViewTipsContent,
+                PrimaryButtonText = Strings.Resources.OK,
                 RequestedTheme = SettingCollection.Current.Theme.ToElementTheme()
             }.ShowAsync();
             StatusCollection.Current.ImageViewTipShown = true;

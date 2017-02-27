@@ -52,7 +52,7 @@ namespace ExViewer.ViewModels
                 {
                     await file.CopyAsync(target, file.Name, NameCollisionOption.ReplaceExisting);
                 }
-                RootControl.RootController.SendToast(LocalizedStrings.Resources.GallerySavedTo, typeof(SavedPage));
+                RootControl.RootController.SendToast(Strings.Resources.GallerySavedTo, typeof(SavedPage));
             });
         }
 

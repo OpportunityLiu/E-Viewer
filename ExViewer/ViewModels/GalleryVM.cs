@@ -193,7 +193,7 @@ namespace ExViewer.ViewModels
             }, image => image != null);
             TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
             {
-                RootControl.RootController.SendToast(LocalizedStrings.Resources.Views.GalleryPage.TorrentDownloading, null);
+                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
                 try
                 {
                     var file = await torrent.LoadTorrentAsync();
@@ -204,10 +204,6 @@ namespace ExViewer.ViewModels
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
                 }
             }, torrent => torrent != null && torrent.TorrentUri != null);
-            GoToDefinition = new RelayCommand<Tag>(async tag =>
-            {
-                await Launcher.LaunchUriAsync(tag.TagDefinitionUri);
-            }, tag => tag != null);
             SearchTag = new RelayCommand<Tag>(tag =>
             {
                 var vm = SearchVM.GetVM(tag.Search());
@@ -258,11 +254,6 @@ namespace ExViewer.ViewModels
         }
 
         public RelayCommand<TorrentInfo> TorrentDownload
-        {
-            get;
-        }
-
-        public RelayCommand<Tag> GoToDefinition
         {
             get;
         }
@@ -335,12 +326,12 @@ namespace ExViewer.ViewModels
                 var current = GetCurrent();
                 if(current?.ImageFile == null)
                 {
-                    CurrentInfo = LocalizedStrings.Resources.Views.ImagePage.ImageFileInfoDefault;
+                    CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
                     return;
                 }
                 var prop = await current.ImageFile.GetBasicPropertiesAsync();
                 var imageProp = await current.ImageFile.Properties.GetImagePropertiesAsync();
-                CurrentInfo = string.Format(LocalizedStrings.Resources.Views.ImagePage.ImageFileInfo, current.ImageFile.Name,
+                CurrentInfo = string.Format(Strings.Resources.Views.ImagePage.ImageFileInfo, current.ImageFile.Name,
                     Converters.ByteSizeToStringConverter.ByteSizeToString(prop.Size, Converters.UnitPrefix.Binary),
                     imageProp.Width.ToString(), imageProp.Height.ToString());
             });

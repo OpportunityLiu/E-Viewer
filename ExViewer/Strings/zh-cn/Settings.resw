@@ -169,7 +169,7 @@
     <value>浏览</value>
   </data>
   <data name="KeepScreenOn" xml:space="preserve">
-    <value>在浏览画集时保持屏幕常亮</value>
+    <value>在浏览图片时保持屏幕常亮</value>
   </data>
   <data name="LoadLofiOnAllInternetConnection" xml:space="preserve">
     <value>始终加载压缩的图片</value>
@@ -196,7 +196,7 @@
     <value>应用主题</value>
   </data>
   <data name="UseJapaneseTitle" xml:space="preserve">
-    <value>默认显示的画集标题</value>
+    <value>默认显示的画廊标题</value>
   </data>
   <data name="ApplicationThemeDark" xml:space="preserve">
     <value>深色</value>

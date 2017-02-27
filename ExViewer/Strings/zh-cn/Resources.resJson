@@ -42,16 +42,16 @@
         "CachedPage" : {
             "DeleteAllAppBarButton/Label" : "删除全部",
             "DeleteMenuFlyout/Text" : "删除",
-            "EmptyTextBlock/Text" : "没有缓存的画集",
-            "LoadingMoreTextBlock/Text" : "正在加载更多画集…",
+            "EmptyTextBlock/Text" : "没有缓存的画廊",
+            "LoadingMoreTextBlock/Text" : "正在加载更多画廊…",
             "RefreshAppBarButton/Label" : "刷新"
         },
         "ClearCachedDialog" : {
-            "Content" : "所有缓存的画集将被删除！",
+            "Content" : "所有缓存的画廊将被删除！",
             "Title" : "警告"
         },
         "ClearSavedDialog" : {
-            "Content" : "所有保存的画集和缓存的画集将被删除！",
+            "Content" : "所有保存的画廊和缓存的画廊将被删除！",
             "Title" : "警告"
         },
         "EhWikiDialog" : {
@@ -61,7 +61,7 @@
         "FavoritesPage" : {
             "AutoSuggestBox/PlaceholderText" : "搜索…",
             "EmptyTextBlock/Text" : "没有结果",
-            "LoadingMoreTextBlock/Text" : "正在加载更多画集…"
+            "LoadingMoreTextBlock/Text" : "正在加载更多画廊…"
         },
         "GalleryPage" : {
             "CommentsEmptyTextBlock/Text" : "没有评论",
@@ -72,8 +72,8 @@
             "PivotHeaderImagesTextBlock/Text" : "图片",
             "PivotHeaderNumberFormatString" : "[{0}]",
             "PivotHeaderTorrentsTextBlock/Text" : "种子",
-            "SaveAppBarButton/Label" : "保存此画集",
-            "SearchTagMenuFlyoutItem/Text" : "搜索含有此标签的画集",
+            "SaveAppBarButton/Label" : "保存此画廊",
+            "SearchTagMenuFlyoutItem/Text" : "搜索含有此标签的画廊",
             "ShareAppBarButton/Label" : "共享",
             "TagNamespaceColumnDefinition/Width" : "68",
             "TorrentDownloadButton/ToolTipService/ToolTip" : "下载",
@@ -116,19 +116,19 @@
             "UserNameTextBox/PlaceholderText" : "用户名"
         },
         "RootControl" : {    
-            "CachedSplitViewTab/Content" : "缓存的画集",
+            "CachedSplitViewTab/Content" : "缓存的画廊",
             "ChangeUserButton/ToolTipService/ToolTip" : "更换用户",
             "DisableInfoTextBlock/Text" : "少女祈祷中…",
             "FavoritesSplitViewTab/Content" : "收藏",
-            "SavedSplitViewTab/Content" : "保存的画集",
+            "SavedSplitViewTab/Content" : "保存的画廊",
             "SearchSplitViewTab/Content" : "搜索",
             "SettingsSplitViewTab/Content" : "设置"
         },
         "SavedPage" : {    
             "DeleteAllAppBarButton/Label" : "删除全部",
             "DeleteMenuFlyout/Text" : "删除",
-            "EmptyTextBlock/Text" : "没有保存的画集",
-            "LoadingMoreTextBlock/Text" : "正在加载更多画集…",
+            "EmptyTextBlock/Text" : "没有保存的画廊",
+            "LoadingMoreTextBlock/Text" : "正在加载更多画廊…",
             "RefreshAppBarButton/Label" : "刷新",
             "SaveToMenuFlyout/Text" : "保存到…"
         },
@@ -136,16 +136,16 @@
             "AdvancedToggleButton/OffContent" : "显示高级选项",
             "AdvancedToggleButton/OnContent" : "隐藏高级选项",
             "AutoSuggestBox/PlaceholderText" : "搜索…",
-            "DescriptionCheckBox/Content" : "搜索画集描述",
+            "DescriptionCheckBox/Content" : "搜索画廊描述",
             "DownvotedTagsCheckBox/Content" : "搜索投过反对票的标签",
             "EmptyTextBlock/Text" : "没有结果",
-            "LoadingMoreTextBlock/Text" : "正在加载更多画集…",
+            "LoadingMoreTextBlock/Text" : "正在加载更多画廊…",
             "LowPowerTagsCheckBox/Content" : "搜索低权值的标签",
             "MinRatingCheckBox/Content" : "最低评分：",
-            "NamesCheckBox/Content" : "搜索画集名称",
-            "OnlyTorrentsCheckBox/Content" : "只显示有种子的画集",
-            "ShowExpungedCheckBox/Content" : "搜索已失效的画集",
-            "TagsCheckBox/Content" : "搜索画集标签",
+            "NamesCheckBox/Content" : "搜索画廊名称",
+            "OnlyTorrentsCheckBox/Content" : "只显示有种子的画廊",
+            "ShowExpungedCheckBox/Content" : "搜索已失效的画廊",
+            "TagsCheckBox/Content" : "搜索画廊标签",
             "TorrentNamesCheckBox/Content" : "搜索种子文件名"
         },
         "SettingsPage" : {    
@@ -170,8 +170,8 @@
     "Exit" : "退出",
     "OK" : "确定",
 
-    "GalleryDeleted" : "选定的画集已删除。",
-    "GallerySavedTo" : "选定的画集已保存至给定位置。",
+    "GalleryDeleted" : "选定的画廊已删除。",
+    "GallerySavedTo" : "选定的画廊已保存至给定位置。",
 
     "ParseByteException" : "无法将给定字符串解析为字节数。"
 }

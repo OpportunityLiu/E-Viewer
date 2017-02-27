@@ -124,6 +124,7 @@
     <Compile Include="FavoritesSearchResult.cs" />
     <Compile Include="GalleryImagePlaceHolder.cs" />
     <Compile Include="Helpers\AsyncWarpper.cs" />
+    <Compile Include="Helpers\EnumExtension.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="GalleryList{T}.cs" />
     <Compile Include="Api\ApiRequest.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Language.cs" />
     <Compile Include="Launch\LaunchResult.cs" />
     <Compile Include="Launch\UriHandler.cs" />
+    <Compile Include="Namespace.cs" />
     <Compile Include="SavedGallery.cs" />
     <Compile Include="Client-Forum.cs" />
     <Compile Include="Comment.cs" />

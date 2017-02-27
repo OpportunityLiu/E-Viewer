@@ -37,10 +37,10 @@ namespace ExViewer.Views
             VM = CachedVM.Instance;
             cdg_ConfirmClear = new ContentDialog()
             {
-                Title = LocalizedStrings.Resources.Views.ClearCachedDialog.Title,
-                Content = LocalizedStrings.Resources.Views.ClearCachedDialog.Content,
-                PrimaryButtonText = LocalizedStrings.Resources.OK,
-                SecondaryButtonText = LocalizedStrings.Resources.Cancel,
+                Title = Strings.Resources.Views.ClearCachedDialog.Title,
+                Content = Strings.Resources.Views.ClearCachedDialog.Content,
+                PrimaryButtonText = Strings.Resources.OK,
+                SecondaryButtonText = Strings.Resources.Cancel,
                 PrimaryButtonCommand = VM.Clear
             };
         }

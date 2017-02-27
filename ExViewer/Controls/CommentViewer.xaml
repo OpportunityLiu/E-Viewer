@@ -92,7 +92,7 @@
                    Style="{StaticResource CommentHeaderTextBlockStyle}"
                    Text="Uploader Comment"
                    Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
-        <local:HtmlTextBlock x:Name="Content"
+        <local:HtmlTextBlock x:Name="Text"
                              Margin="12,12,12,4"
                              DetectLink="True"
                              HtmlContent="{x:Bind Comment.Content, Mode=OneWay}"
@@ -106,7 +106,7 @@
                    RelativePanel.AlignBottomWithPanel="True"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.AlignRightWithPanel="True"
-                   RelativePanel.Below="Content"
+                   RelativePanel.Below="Text"
                    Style="{StaticResource EditedTextBlockStyle}"
                    Text="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Controls/CommentViewer/EditedFormatString'}"
                    Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
