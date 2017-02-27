@@ -17,6 +17,15 @@ namespace ExViewer.Settings
         private SettingCollection()
             : base("Settings") { }
 
+        public void Apply()
+        {
+            var clientSettings = Client.Current.Settings;
+            this.HahAddress = this.HahAddress;
+            this.ExcludedTagNamespaces = this.ExcludedTagNamespaces;
+            this.ExcludedLanguages = this.ExcludedLanguages;
+            this.VisitEx = this.VisitEx;
+        }
+
         [Setting("Searching", Index = 10)]
         public string DefaultSearchString
         {
@@ -116,6 +125,21 @@ namespace ExViewer.Settings
             set
             {
                 SetLocal(value);
+            }
+        }
+
+        [Setting("Global", Index = 15)]
+        [BooleanRepresent("BooleanEx", "BooleanEh")]
+        public bool VisitEx
+        {
+            get
+            {
+                return GetRoaming(false);
+            }
+            set
+            {
+                SetRoaming(value);
+                Client.Current.Host = value ? HostType.Exhentai : HostType.Ehentai;
             }
         }
 
@@ -302,7 +326,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("About",Index = int.MaxValue, SettingPresenterTemplate = "AboutContentTemplate")]
+        [Setting("About", Index = int.MaxValue, SettingPresenterTemplate = "AboutContentTemplate")]
         public object AboutContent
         {
             get; set;

@@ -79,6 +79,7 @@ namespace ExClient
             this.Owner = owner;
             this.PageId = pageId;
             this.imageKey = imageKey;
+            this.PageUri = new Uri(owner.Owner.Uris.RootUri, $"s/{imageKey}/{Owner.Id}-{PageId}");
             this.image = new ImageHandle(img =>
             {
                 return Run(async token =>
@@ -143,9 +144,11 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var loadPageUri = PageUri;
+                var loadPageUri = default(Uri);
                 if(failToken != null)
-                    loadPageUri = new Uri(pageBaseUri, $"{imageKey}/{Owner.Id.ToString()}-{PageId.ToString()}?nl={failToken}");
+                    loadPageUri = new Uri(PageUri, $"?nl={failToken}");
+                else
+                    loadPageUri = PageUri;
                 var loadPage = Owner.Owner.PostStrAsync(loadPageUri, null);
                 var pageResult = new HtmlDocument();
                 pageResult.LoadHtml(await loadPage);
@@ -206,7 +209,7 @@ namespace ExClient
             get;
         }
 
-        public Uri PageUri => new Uri(pageBaseUri, $"{imageKey}/{Owner.Id}-{PageId}");
+        public Uri PageUri { get; }
 
         private IAsyncAction loadImageAction;
 
@@ -389,8 +392,6 @@ namespace ExClient
                 return this.image.Image;
             }
         }
-
-        private static readonly Uri pageBaseUri = new Uri(Client.ExUri, "s/");
 
         private string imageKey;
 

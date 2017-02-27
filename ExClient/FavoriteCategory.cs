@@ -56,7 +56,7 @@ namespace ExClient
 
         private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(Client client, long gId, string gToken, string note)
         {
-            var requestUri = new Uri(Client.ExUri, $"gallerypopups.php?gid={gId}&t={gToken}&act=addfav");
+            var requestUri = new Uri(client.Uris.RootUri, $"gallerypopups.php?gid={gId}&t={gToken}&act=addfav");
             var requestContent = new HttpFormUrlEncodedContent(getInfo(note));
             return client.HttpClient.PostAsync(requestUri, requestContent);
         }

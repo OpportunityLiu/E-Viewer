@@ -159,6 +159,10 @@ namespace ExViewer.Views
                     var result = await new LogOnDialog().ShowAsync();
                     JYAnalytics.TrackEvent("LogOnRequested", $"Result: {result}");
                     UpdateUserInfo(result == ContentDialogResult.Primary);
+                    if(!Client.Current.NeedLogOn)
+                    {
+                        Settings.SettingCollection.Current.Apply();
+                    }
                     return result;
                 });
             }

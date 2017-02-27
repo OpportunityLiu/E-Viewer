@@ -112,6 +112,8 @@ namespace ExViewer.Views
             return $"rgba({color.Color.R},{color.Color.G},{color.Color.B},{color.Color.A / 256d})";
         }
 
+        private static readonly Uri eh = new Uri("https://e-henatai.org/");
+
         private async void wv_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             var uri = args.Uri;
@@ -120,7 +122,7 @@ namespace ExViewer.Views
                 args.Cancel = true;
                 if(uri.Host == "g.e-hentai.org")
                 {
-                    uri = new Uri(ExClient.Client.EhUri, uri.PathAndQuery + uri.Fragment);
+                    uri = new Uri(eh, uri.PathAndQuery + uri.Fragment);
                 }
                 await Launcher.LaunchUriAsync(uri);
             }

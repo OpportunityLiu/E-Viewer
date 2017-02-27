@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using ExClient.Internal;
 
 namespace ExClient
 {
@@ -20,16 +21,27 @@ namespace ExClient
             get;
         } = new Client();
 
-        public static Uri ExUri { get; } = new Uri("https://exhentai.org/");
-        public static Uri EhUri { get; } = new Uri("https://e-hentai.org/");
+        internal UriProvieder Uris => Host == HostType.Exhentai && HasPermittionForEx ? UriProvieder.Ex : UriProvieder.Eh;
 
-        private static readonly Uri apiUri = new Uri(ExUri, "api.php");
+        public HostType Host { get; set; } = HostType.Exhentai;
+
+        public bool HasPermittionForEx
+        {
+            get
+            {
+                var ck = CookieManager.GetCookies(UriProvieder.Ex.RootUri).FirstOrDefault(c => c.Name == "igneous");
+                if(ck == null)
+                    return false;
+                return ck.Value != "mystery";
+            }
+        }
 
         private Client()
         {
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
             CookieManager = httpFilter.CookieManager;
-            HttpClient = new Internal.MyHttpClient(new HttpClient(new Internal.RedirectFilter(httpFilter)));
+            CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
+            HttpClient = new MyHttpClient(new HttpClient(new RedirectFilter(httpFilter)));
             this.Settings = new SettingCollection(this);
             this.Favorites = new FavoriteCollection(this);
         }
@@ -44,7 +56,7 @@ namespace ExClient
             get;
         }
 
-        public bool NeedLogOn => CookieManager.GetCookies(ExUri).Count < 2 && CookieManager.GetCookies(EhUri).Count < 2;
+        public bool NeedLogOn => CookieManager.GetCookies(UriProvieder.Eh.RootUri).Count < 2 && CookieManager.GetCookies(UriProvieder.Ex.RootUri).Count < 2;
 
         public IAsyncOperation<Client> LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
         {
@@ -92,11 +104,7 @@ namespace ExClient
                         }
                         throw new InvalidOperationException(errorText);
                     }
-                    var init = await HttpClient.GetAsync(ExUri, HttpCompletionOption.ResponseHeadersRead);
-                    if(CookieManager.GetCookies(ExUri).FirstOrDefault(c => c.Name == "igneous")?.Value == "mystery")
-                    {
-                        throw new NotSupportedException(LocalizedStrings.Resources.AccountDenied);
-                    }
+                    var init = await HttpClient.GetAsync(UriProvieder.Ex.RootUri, HttpCompletionOption.ResponseHeadersRead);
                     return this;
                 }
                 catch(Exception)
@@ -113,16 +121,16 @@ namespace ExClient
 
         private List<HttpCookie> getLogOnInfo()
         {
-            return CookieManager.GetCookies(ExUri).Concat(CookieManager.GetCookies(EhUri)).ToList();
+            return CookieManager.GetCookies(UriProvieder.Eh.RootUri).Concat(CookieManager.GetCookies(UriProvieder.Ex.RootUri)).ToList();
         }
 
         public void ClearLogOnInfo()
         {
-            foreach(var item in CookieManager.GetCookies(ExUri))
+            foreach(var item in CookieManager.GetCookies(UriProvieder.Eh.RootUri))
             {
                 CookieManager.DeleteCookie(item);
             }
-            foreach(var item in CookieManager.GetCookies(EhUri))
+            foreach(var item in CookieManager.GetCookies(UriProvieder.Ex.RootUri))
             {
                 CookieManager.DeleteCookie(item);
             }
@@ -131,7 +139,7 @@ namespace ExClient
         internal IAsyncOperationWithProgress<string, HttpProgress> PostStrAsync(Uri uri, string content)
         {
             if(!uri.IsAbsoluteUri)
-                uri = new Uri(ExUri, uri);
+                uri = new Uri(Uris.RootUri, uri);
             if(content == null)
                 return HttpClient.GetStringAsync(uri);
             return Run<string, HttpProgress>(async (token, progress) =>
@@ -148,7 +156,7 @@ namespace ExClient
         {
             get
             {
-                var cookie = CookieManager.GetCookies(EhUri).FirstOrDefault(c => c.Name == "ipb_member_id");
+                var cookie = CookieManager.GetCookies(UriProvieder.Eh.RootUri).FirstOrDefault(c => c.Name == "ipb_member_id");
                 if(cookie == null)
                     return -1;
                 return int.Parse(cookie.Value);
@@ -157,7 +165,7 @@ namespace ExClient
 
         internal IAsyncOperationWithProgress<string, HttpProgress> PostApiAsync(ApiRequest request)
         {
-            return PostStrAsync(apiUri, JsonConvert.SerializeObject(request));
+            return PostStrAsync(Uris.ApiUri, JsonConvert.SerializeObject(request));
         }
 
         public SettingCollection Settings { get; }

@@ -48,7 +48,7 @@ namespace ExClient
                         .Element("body")
                         .Element("div")
                         .Descendants("p")
-                        .SingleOrDefault(node => node.GetAttributeValue("class", null) == "ip");
+                        .SingleOrDefault(node => node.ChildNodes.Count == 1 && node.FirstChild.NodeType == HtmlNodeType.Text);
                     if(rcNode == null)
                     {
                         RecordCount = 0;
@@ -57,6 +57,8 @@ namespace ExClient
                     var match = recordCountMatcher.Match(rcNode.InnerText);
                     if(match.Success)
                         RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
+                    else
+                        RecordCount = 0;
                     if(!IsEmpty)
                     {
                         var pcNodes = rcNode.NextSibling
