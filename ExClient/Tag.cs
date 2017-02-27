@@ -3,45 +3,6 @@ using System.Text;
 
 namespace ExClient
 {
-    [Flags]
-    public enum Namespace
-    {
-        Unknown = 0,
-
-        Reclass = 1,
-        Language = 2,
-        Parody = 4,
-        Character = 8,
-        Group = 16,
-        Artist = 32,
-        Male = 64,
-        Female = 128,
-        Misc = 256
-    }
-
-    public static class NamespaceExtention
-    {
-        public static string ToFriendlyNameString(this Namespace that)
-        {
-            if(Enum.IsDefined(typeof(Namespace), that))
-                return LocalizedStrings.Namespace.GetString(that.ToString());
-            else
-            {
-                var represent = new StringBuilder(that.ToString());
-                foreach(var item in Enum.GetNames(typeof(Namespace)))
-                {
-                    represent.Replace(item, LocalizedStrings.Namespace.GetString(item));
-                }
-                return represent.ToString();
-            }
-        }
-
-        public static bool IsValid(this Namespace that)
-        {
-            return that != Namespace.Unknown && Enum.IsDefined(typeof(Namespace), that);
-        }
-    }
-
     public sealed class Tag
     {
         // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };

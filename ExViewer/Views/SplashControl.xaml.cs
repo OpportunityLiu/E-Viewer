@@ -211,7 +211,7 @@ namespace ExViewer.Views
         {
             string info = null;
             var succeed = false;
-            var result = await UserConsentVerifier.RequestVerificationAsync(LocalizedStrings.Resources.Verify.Dialog.Content);
+            var result = await UserConsentVerifier.RequestVerificationAsync(Strings.Resources.Verify.Dialog.Content);
             switch(result)
             {
             case UserConsentVerificationResult.Verified:
@@ -219,22 +219,22 @@ namespace ExViewer.Views
                 break;
             case UserConsentVerificationResult.DeviceNotPresent:
             case UserConsentVerificationResult.NotConfiguredForUser:
-                info = LocalizedStrings.Resources.Verify.NotConfigured;
+                info = Strings.Resources.Verify.NotConfigured;
                 break;
             case UserConsentVerificationResult.DisabledByPolicy:
-                info = LocalizedStrings.Resources.Verify.Disabled;
+                info = Strings.Resources.Verify.Disabled;
                 break;
             case UserConsentVerificationResult.DeviceBusy:
-                info = LocalizedStrings.Resources.Verify.DeviceBusy;
+                info = Strings.Resources.Verify.DeviceBusy;
                 break;
             case UserConsentVerificationResult.RetriesExhausted:
-                info = LocalizedStrings.Resources.Verify.RetriesExhausted;
+                info = Strings.Resources.Verify.RetriesExhausted;
                 break;
             case UserConsentVerificationResult.Canceled:
-                info = LocalizedStrings.Resources.Verify.Canceled;
+                info = Strings.Resources.Verify.Canceled;
                 break;
             default:
-                info = LocalizedStrings.Resources.Verify.OtherFailure;
+                info = Strings.Resources.Verify.OtherFailure;
                 break;
             }
             if(!succeed)
@@ -243,9 +243,9 @@ namespace ExViewer.Views
                 {
                     var dialog = new ContentDialog
                     {
-                        Title = LocalizedStrings.Resources.Verify.FailedDialogTitle,
+                        Title = Strings.Resources.Verify.FailedDialogTitle,
                         Content = info,
-                        PrimaryButtonText = LocalizedStrings.Resources.Exit
+                        PrimaryButtonText = Strings.Resources.Exit
                     };
                     await dialog.ShowAsync();
                 }

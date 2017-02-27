@@ -39,13 +39,13 @@ namespace ExViewer.Views
             var password = pb_pass.Password;
             if(string.IsNullOrWhiteSpace(username))
             {
-                tb_info.Text = LocalizedStrings.Resources.Views.LogOnDialog.NoUserName;
+                tb_info.Text = Strings.Resources.Views.LogOnDialog.NoUserName;
                 tb_user.Focus(FocusState.Programmatic);
                 args.Cancel = true;
             }
             else if(string.IsNullOrEmpty(password))
             {
-                tb_info.Text = LocalizedStrings.Resources.Views.LogOnDialog.NoPassword;
+                tb_info.Text = Strings.Resources.Views.LogOnDialog.NoPassword;
                 pb_pass.Focus(FocusState.Programmatic);
                 args.Cancel = true;
             }
@@ -151,9 +151,9 @@ namespace ExViewer.Views
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
             if(Client.Current.NeedLogOn)
-                this.SecondaryButtonText = LocalizedStrings.Resources.Exit;
+                this.SecondaryButtonText = Strings.Resources.Exit;
             else
-                this.SecondaryButtonText = LocalizedStrings.Resources.Cancel;
+                this.SecondaryButtonText = Strings.Resources.Cancel;
         }
     }
 }

@@ -127,7 +127,7 @@
     <value>该连接已被销毁。</value>
   </data>
   <data name="DefaultTitle" xml:space="preserve">
-    <value>画集标题</value>
+    <value>画廊标题</value>
   </data>
   <data name="DefaultUploader" xml:space="preserve">
     <value>上传者</value>

@@ -44,7 +44,7 @@ namespace ExViewer.Views
                 if(style == null)
                     initStyle();
                 if(record?.DetialHtml == null)
-                    str = LocalizedStrings.Resources.Views.EhWikiDialog.TagNotFound;
+                    str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
                 else
                     str = record.DetialHtml;
             }

@@ -25,8 +25,6 @@ namespace ExViewer.Controls
             this.InitializeComponent();
         }
 
-
-
         public Comment Comment
         {
             get { return (Comment)GetValue(CommentProperty); }

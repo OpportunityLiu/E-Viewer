@@ -114,7 +114,7 @@ namespace ExViewer.Converters
                     return sizeNum * Math.Pow(powerBase, i);
                 }
             }
-            throw new FormatException(LocalizedStrings.Resources.ParseByteException);
+            throw new FormatException(Strings.Resources.ParseByteException);
         }
     }
 
