@@ -39,11 +39,8 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting(
-            "Searching",
-            Index = 20,
-            SettingPresenterTemplate = "CatagorySettingTemplate"
-        )]
+        [Setting("Searching", Index = 20)]
+        [CustomTemplate("CatagorySettingTemplate")]
         public Category DefaultSearchCategory
         {
             get
@@ -69,7 +66,8 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Searching", Index = 35, SettingPresenterTemplate = "ExcludedTagNamespacesTemplate")]
+        [Setting("Searching", Index = 35)]
+        [CustomTemplate("ExcludedTagNamespacesTemplate")]
         public Namespace ExcludedTagNamespaces
         {
             get
@@ -83,7 +81,8 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Searching", Index = 40, SettingPresenterTemplate = "ExcludedLanguagesTemplate")]
+        [Setting("Searching", Index = 40)]
+        [CustomTemplate("ExcludedLanguagesTemplate")]
         public string ExcludedLanguages
         {
             get
@@ -129,7 +128,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("Global", Index = 15)]
-        [BooleanRepresent("BooleanEx", "BooleanEh")]
+        [ToggleSwitchRepresent("BooleanEx", "BooleanEh")]
         public bool VisitEx
         {
             get
@@ -144,7 +143,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("Global", Index = 20)]
-        [BooleanRepresent("BooleanJT", "BooleanDT")]
+        [ToggleSwitchRepresent("BooleanJT", "BooleanDT")]
         public bool UseJapaneseTitle
         {
             get
@@ -158,7 +157,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("Global", Index = 40)]
-        [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseChineseTagTranslation
         {
             get
@@ -172,7 +171,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("Global", Index = 50)]
-        [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseJapaneseTagTranslation
         {
             get
@@ -214,7 +213,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("ImageViewing", Index = 30)]
-        [BooleanRepresent("BooleanEnabled", "BooleanDisabled")]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool MouseInertial
         {
             get
@@ -228,7 +227,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("ImageViewing", Index = 35)]
-        [BooleanRepresent("BooleanRightToLeft", "BooleanLeftToRight")]
+        [ToggleSwitchRepresent("BooleanRightToLeft", "BooleanLeftToRight")]
         public bool ReverseFlowDirection
         {
             get
@@ -269,7 +268,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("Connection", Index = 10)]
-        [BooleanRepresent("BooleanYes", "BooleanNo")]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool LoadLofiOnMeteredInternetConnection
         {
             get
@@ -278,7 +277,7 @@ namespace ExViewer.Settings
             }
             set
             {
-                if(LoadLofiOnAllInternetConnection)
+                if(this.LoadLofiOnAllInternetConnection)
                     ForceSetLocal(true);
                 else
                     ForceSetLocal(value);
@@ -286,7 +285,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("Connection", Index = 20)]
-        [BooleanRepresent("BooleanYes", "BooleanNo")]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool LoadLofiOnAllInternetConnection
         {
             get
@@ -297,7 +296,7 @@ namespace ExViewer.Settings
             {
                 SetLocal(value);
                 if(value)
-                    LoadLofiOnMeteredInternetConnection = true;
+                    this.LoadLofiOnMeteredInternetConnection = true;
             }
         }
 
@@ -326,7 +325,8 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("About", Index = int.MaxValue, SettingPresenterTemplate = "AboutContentTemplate")]
+        [Setting("About", Index = int.MaxValue)]
+        [CustomTemplate("AboutContentTemplate")]
         public object AboutContent
         {
             get; set;

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace ApplicationDataManager.Settings
 {
-    public enum SettingType
+    public enum ValueType
     {
         Unknown,
         Int32,
@@ -14,121 +14,80 @@ namespace ApplicationDataManager.Settings
         Double,
         String,
         Enum,
-        Boolean,
+        BooleanCheckBox,
+        BooleanToggleSwitch,
         Custom
     }
 
-    public class SettingInfo : ObservableObject
+    public sealed class SettingInfo : ObservableObject
     {
-        internal SettingInfo(PropertyInfo info, ApplicationSettingCollection settingCollection)
+        internal SettingInfo(PropertyInfo info, ApplicationSettingCollection settingCollection, SettingAttribute settingAttribute)
         {
-            PropertyInfo = info;
+            this.PropertyInfo = info;
+            this.Info = settingAttribute;
+            this.Name = info.Name;
+            this.FriendlyName = StringLoader.GetString(this.Name);
 
-            var setting = info.GetCustomAttribute<SettingAttribute>();
-            Name = info.Name;
-            FriendlyName = StringLoader.GetString(Name);
-            Category = setting.Category;
-            Index = setting.Index;
+            this.ValueRepresent = info.GetCustomAttribute<ValueRepresentAttribute>();
 
-            Range = info.GetCustomAttributes().Select(a => a as IValueRange).SingleOrDefault(a => a != null);
-            BooleanRepresent = info.GetCustomAttribute<BooleanRepresentAttribute>() ?? BooleanRepresentAttribute.Default;
-            EnumRepresent = info.GetCustomAttribute<EnumRepresentAttribute>() ?? EnumRepresentAttribute.Default;
-
-            var type = info.PropertyType;
-            if(setting.SettingPresenterTemplate != null)
+            var pType = info.PropertyType;
+            if(this.ValueRepresent == null)
             {
-                Type = SettingType.Custom;
-                SettingPresenterTemplate = setting.SettingPresenterTemplate;
+                if(pType == typeof(float))
+                    this.type = ValueType.Single;
+                else if(pType == typeof(double))
+                    this.type = ValueType.Double;
+                else if(pType == typeof(int))
+                    this.type = ValueType.Int32;
+                else if(pType == typeof(long))
+                    this.type = ValueType.Int64;
+                else if(pType == typeof(bool))
+                    this.ValueRepresent = ToggleSwitchRepresentAttribute.Default;
+                else if(pType == typeof(string))
+                    this.type = ValueType.String;
+                else if(pType.GetTypeInfo().IsEnum)
+                    this.ValueRepresent = EnumRepresentAttribute.Default;
+                else
+                    throw new InvalidOperationException($"Unsupported property type: {{{pType}}}");
             }
-            else if(type == typeof(float))
-                Type = SettingType.Single;
-            else if(type == typeof(double))
-                Type = SettingType.Double;
-            else if(type == typeof(int))
-                Type = SettingType.Int32;
-            else if(type == typeof(long))
-                Type = SettingType.Int64;
-            else if(type == typeof(bool))
-                Type = SettingType.Boolean;
-            else if(type == typeof(string))
-                Type = SettingType.String;
-            else if(type.GetTypeInfo().IsEnum)
-                Type = SettingType.Enum;
-            else
-                throw new InvalidOperationException($"Unsupported property type: {{{type}}}");
-            settingCollection.PropertyChanged += SettingsChanged;
+            settingCollection.PropertyChanged += this.settingsChanged;
             this.settingCollection = settingCollection;
         }
 
         private ApplicationSettingCollection settingCollection;
 
-        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void settingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == Name)
+            if(e.PropertyName == this.Name)
                 RaisePropertyChanged(nameof(Value));
         }
 
-        public PropertyInfo PropertyInfo
-        {
-            get;
-        }
+        internal PropertyInfo PropertyInfo { get; }
 
-        public string Category
-        {
-            get;
-        }
+        internal SettingAttribute Info { get; }
 
-        public string Name
-        {
-            get;
-        }
+        public string Category => this.Info.Category;
 
-        public string FriendlyName
-        {
-            get;
-        }
+        public string Name { get; }
 
-        public SettingType Type
-        {
-            get;
-        }
+        public string FriendlyName { get; }
 
-        public int Index
-        {
-            get;
-        }
+        private ValueType type;
 
-        public IValueRange Range
-        {
-            get;
-        }
+        public ValueType Type => this.ValueRepresent?.TargetType ?? this.type;
 
-        public BooleanRepresentAttribute BooleanRepresent
-        {
-            get;
-        }
+        public int Index => this.Info.Index;
 
-        public EnumRepresentAttribute EnumRepresent
-        {
-            get;
-        }
-
-        public string SettingPresenterTemplate
-        {
-            get;
-        }
+        public ValueRepresentAttribute ValueRepresent { get; }
 
         public object Value
         {
-            get
-            {
-                return PropertyInfo.GetValue(settingCollection);
-            }
+            get => this.PropertyInfo.GetValue(this.settingCollection);
             set
             {
                 if(value == null)
                     return;
-                PropertyInfo.SetValue(settingCollection, value);
+                this.PropertyInfo.SetValue(this.settingCollection, value);
             }
         }
     }

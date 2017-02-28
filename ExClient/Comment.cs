@@ -15,7 +15,7 @@ namespace ExClient
         {
             var commentNodes = document.GetElementbyId("cdiv").ChildNodes;
             var comments = new List<Comment>();
-            for(int i = 0; i < commentNodes.Count; i += 2)
+            for(var i = 0; i < commentNodes.Count; i += 2)
             {
                 var headerNode = commentNodes[i];
                 var commentNode = commentNodes[i + 1];
@@ -81,7 +81,7 @@ namespace ExClient
 
         public string Author { get; }
 
-        public bool IsUploaderComment => Id == 0;
+        public bool IsUploaderComment => this.Id == 0;
 
         public DateTimeOffset Posted { get; }
 

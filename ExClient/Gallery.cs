@@ -62,19 +62,19 @@ namespace ExClient
         {
             if(galleryInfo == null)
                 throw new ArgumentNullException(nameof(galleryInfo));
-            return Run(async token =>
+            return Run<IList<Gallery>>(async token =>
             {
                 var type = new
                 {
                     gmetadata = (IList<Gallery>)null
                 };
                 var result = new Gallery[galleryInfo.Count];
-                for(int i = 0; i < galleryInfo.Count; i += 25)
+                for(var i = 0; i < galleryInfo.Count; i += 25)
                 {
                     var pageCount = i + 25 < galleryInfo.Count ? 25 : galleryInfo.Count - i;
-                    var str = await Client.Current.PostApiAsync(new GalleryData(galleryInfo, i, pageCount));
+                    var str = await Client.Current.HttpClient.PostApiAsync(new GalleryData(galleryInfo, i, pageCount));
                     var re = JsonConvert.DeserializeAnonymousType(str, type).gmetadata;
-                    for(int j = 0; j < re.Count; j++)
+                    for(var j = 0; j < re.Count; j++)
                     {
                         var item = re[j];
                         item.Owner = Client.Current;
@@ -82,7 +82,7 @@ namespace ExClient
                         result[i + j] = item;
                     }
                 }
-                return (IList<Gallery>)result;
+                return result;
             });
         }
 
@@ -223,9 +223,9 @@ namespace ExClient
             }
             catch(Exception)
             {
-                Available = false;
+                this.Available = false;
             }
-            this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
+            this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
 
         private static readonly Regex toExUriRegex = new Regex(@"(?<domain>((gt\d|ul)\.ehgt\.org)|(ehgt\.org/t)|((\d{1,3}\.){3}\d{1,3}))(?<body>.+)(?<tail>_l\.)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
@@ -242,13 +242,13 @@ namespace ExClient
             return Run(async token =>
             {
                 await InitOverrideAsync();
-                if(thumbImage != null)
+                if(this.thumbImage != null)
                     return;
                 var buffer = await Client.Current.HttpClient.GetBufferAsync(ThumbUri);
                 using(var stream = buffer.AsRandomAccessStream())
                 {
                     var decoder = await BitmapDecoder.CreateAsync(stream);
-                    Thumb = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                    this.Thumb = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
                 }
             });
         }
@@ -317,11 +317,11 @@ namespace ExClient
         {
             get
             {
-                return thumbImage;
+                return this.thumbImage;
             }
             protected set
             {
-                Set(ref thumbImage, value?.GetReadOnlyView());
+                Set(ref this.thumbImage, value?.GetReadOnlyView());
             }
         }
 
@@ -371,11 +371,11 @@ namespace ExClient
         {
             get
             {
-                return favorite;
+                return this.favorite;
             }
             protected internal set
             {
-                Set(ref favorite, value);
+                Set(ref this.favorite, value);
             }
         }
 
@@ -385,11 +385,11 @@ namespace ExClient
         {
             get
             {
-                return favNote;
+                return this.favNote;
             }
             protected internal set
             {
-                Set(ref favNote, value);
+                Set(ref this.favNote, value);
             }
         }
 
@@ -444,7 +444,7 @@ namespace ExClient
                 await this.GetFolderAsync();
                 var needLoadComments = comments == null;
                 var uri = new Uri(this.GalleryUri, $"?inline_set=ts_l&p={pageIndex.ToString()}{(needLoadComments ? "hc=1" : "")}");
-                var request = this.Owner.PostStrAsync(uri, null);
+                var request = this.Owner.HttpClient.GetStringAsync(uri);
                 var res = await request;
                 ApiRequest.UpdateToken(res);
                 var html = new HtmlDocument();

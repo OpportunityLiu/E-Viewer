@@ -1,0 +1,11 @@
+﻿{
+    "NoExPermittion": "This account dose not have permittion for exhentai.",
+    "AllFavorites": "All favorites",
+    "ClientDisposed": "The client has been disposed.",
+    "DefaultTitle": "Gallery Title",
+    "DefaultUploader": "Uploader",
+    "ExpungedTorrent": "This torrent has beem expunged.",
+    "OnlyIpv4": "Only IPV4 address supported.",
+    "WrongAccountInfo": "User name or password incorrect.",
+    "WrongCaptcha": "The captcha was not entered correctly. Please try again."
+}

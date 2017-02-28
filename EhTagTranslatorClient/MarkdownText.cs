@@ -10,7 +10,7 @@ namespace EhTagTranslatorClient
     {
         internal MarkdownText(string rawString)
         {
-            RawString = rawString;
+            this.RawString = rawString;
         }
 
         public string RawString
@@ -33,19 +33,19 @@ namespace EhTagTranslatorClient
             var matches = analyzer.Matches(this.RawString);
             if(matches.Count == 0)
             {
-                yield return new MarkdownString(RawString);
+                yield return new MarkdownString(this.RawString);
                 yield break;
             }
             var currentPos = 0;
             foreach(Match match in matches)
             {
                 if(currentPos != match.Index)
-                    yield return new MarkdownString(RawString.Substring(currentPos, match.Index - currentPos));
+                    yield return new MarkdownString(this.RawString.Substring(currentPos, match.Index - currentPos));
                 yield return new MarkdownImage(match.Groups["alt"].Value, match.Groups["url"].Value);
                 currentPos = match.Index + match.Length;
             }
-            if(currentPos != RawString.Length)
-                yield return new MarkdownString(RawString.Substring(currentPos));
+            if(currentPos != this.RawString.Length)
+                yield return new MarkdownString(this.RawString.Substring(currentPos));
         }
     }
 
@@ -58,7 +58,7 @@ namespace EhTagTranslatorClient
     {
         internal MarkdownString(string str)
         {
-            String = str;
+            this.String = str;
         }
 
         public string String
@@ -68,7 +68,7 @@ namespace EhTagTranslatorClient
 
         public override string ToString()
         {
-            return String;
+            return this.String;
         }
     }
 
@@ -76,8 +76,8 @@ namespace EhTagTranslatorClient
     {
         internal MarkdownImage(string alternateText, string imageUri)
         {
-            AlternateText = alternateText;
-            ImageUri = new Uri(imageUri);
+            this.AlternateText = alternateText;
+            this.ImageUri = new Uri(imageUri);
         }
 
         public string AlternateText
@@ -92,7 +92,7 @@ namespace EhTagTranslatorClient
 
         public override string ToString()
         {
-            return AlternateText;
+            return this.AlternateText;
         }
     }
 }

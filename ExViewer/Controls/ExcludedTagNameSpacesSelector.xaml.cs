@@ -66,7 +66,7 @@ namespace ExViewer.Controls
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if(changing)
+            if(this.changing)
                 return;
             var v = (Namespace)((FrameworkElement)sender).DataContext;
             this.ExcludedTagNamespaces |= v;
@@ -74,7 +74,7 @@ namespace ExViewer.Controls
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            if(changing)
+            if(this.changing)
                 return;
             var v = (Namespace)((FrameworkElement)sender).DataContext;
             this.ExcludedTagNamespaces &= ~v;
@@ -83,7 +83,7 @@ namespace ExViewer.Controls
         private void CheckBox_Loaded(object sender, RoutedEventArgs e)
         {
             var cb = (CheckBox)sender;
-            cb.IsChecked = ExcludedTagNamespaces.HasFlag((Namespace)cb.DataContext);
+            cb.IsChecked = this.ExcludedTagNamespaces.HasFlag((Namespace)cb.DataContext);
         }
     }
 }

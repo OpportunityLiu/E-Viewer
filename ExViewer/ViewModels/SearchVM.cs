@@ -106,7 +106,7 @@ namespace ExViewer.ViewModels
         private SearchVM(SearchResult searchResult)
             : this()
         {
-            SearchResult = searchResult;
+            this.SearchResult = searchResult;
             SetQueryWithSearchResult();
         }
 
@@ -115,34 +115,34 @@ namespace ExViewer.ViewModels
         {
             if(string.IsNullOrEmpty(parameter))
             {
-                keyword = SettingCollection.Current.DefaultSearchString;
-                category = SettingCollection.Current.DefaultSearchCategory;
-                advancedSearch = new AdvancedSearchOptions();
+                this.keyword = SettingCollection.Current.DefaultSearchString;
+                this.category = SettingCollection.Current.DefaultSearchCategory;
+                this.advancedSearch = new AdvancedSearchOptions();
             }
             else
             {
                 var q = JsonConvert.DeserializeObject<SearchResultData>(parameter);
-                keyword = q.Keyword;
-                category = q.Category;
-                advancedSearch = q.AdvancedSearch;
+                this.keyword = q.Keyword;
+                this.category = q.Category;
+                this.advancedSearch = q.AdvancedSearch;
             }
-            SearchResult = Client.Current.Search(keyword, category, advancedSearch);
+            this.SearchResult = Client.Current.Search(this.keyword, this.category, this.advancedSearch);
         }
 
         private SearchVM()
         {
-            Search = new RelayCommand<string>(queryText =>
+            this.Search = new RelayCommand<string>(queryText =>
             {
                 if(SettingCollection.Current.SaveLastSearch)
                 {
-                    SettingCollection.Current.DefaultSearchCategory = category;
+                    SettingCollection.Current.DefaultSearchCategory = this.category;
                     SettingCollection.Current.DefaultSearchString = queryText;
                 }
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), GetSearchQuery(queryText, category, advancedSearch));
+                RootControl.RootController.Frame.Navigate(typeof(SearchPage), GetSearchQuery(queryText, this.category, this.advancedSearch));
             });
-            Open = new RelayCommand<Gallery>(g =>
+            this.Open = new RelayCommand<Gallery>(g =>
             {
-                SelectedGallery = g;
+                this.SelectedGallery = g;
                 GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
             }, g => g != null);
@@ -160,13 +160,13 @@ namespace ExViewer.ViewModels
 
         public void SetQueryWithSearchResult()
         {
-            Keyword = SearchResult.Keyword;
-            Category = SearchResult.Category;
-            var adv = SearchResult.AdvancedSearch;
+            this.Keyword = this.SearchResult.Keyword;
+            this.Category = this.SearchResult.Category;
+            var adv = this.SearchResult.AdvancedSearch;
             if(adv == null)
-                AdvancedSearch = new AdvancedSearchOptions();
+                this.AdvancedSearch = new AdvancedSearchOptions();
             else
-                AdvancedSearch = adv.Clone(false);
+                this.AdvancedSearch = adv.Clone(false);
         }
 
         private string keyword;
@@ -175,11 +175,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return keyword;
+                return this.keyword;
             }
             set
             {
-                Set(ref keyword, value);
+                Set(ref this.keyword, value);
             }
         }
 
@@ -189,11 +189,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return category;
+                return this.category;
             }
             set
             {
-                Set(ref category, value);
+                Set(ref this.category, value);
             }
         }
 
@@ -203,11 +203,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return advancedSearch;
+                return this.advancedSearch;
             }
             set
             {
-                Set(ref advancedSearch, value);
+                Set(ref this.advancedSearch, value);
             }
         }
 

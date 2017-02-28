@@ -13,8 +13,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
         public PullToRefreshIndicator()
         {
             this.DefaultStyleKey = typeof(PullToRefreshIndicator);
-            this.Loading += PullToRefreshIndicator_Loading;
-            this.Unloaded += PullToRefreshIndicator_Unloaded;
+            this.Loading += this.PullToRefreshIndicator_Loading;
+            this.Unloaded += this.PullToRefreshIndicator_Unloaded;
         }
 
         private void PullToRefreshIndicator_Loading(FrameworkElement sender, object args)
@@ -30,15 +30,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
         {
             get
             {
-                return p;
+                return this.p;
             }
             set
             {
-                if(p != null)
-                    p.PullProgressChanged -= Parent_PullProgressChanged;
-                p = value;
-                if(p != null)
-                    p.PullProgressChanged += Parent_PullProgressChanged;
+                if(this.p != null)
+                    this.p.PullProgressChanged -= this.Parent_PullProgressChanged;
+                this.p = value;
+                if(this.p != null)
+                    this.p.PullProgressChanged += this.Parent_PullProgressChanged;
                 this.ClearValue(PullProgressProperty);
             }
         }

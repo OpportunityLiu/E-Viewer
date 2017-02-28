@@ -24,14 +24,23 @@ namespace ExClient
 
     public static class NamespaceExtention
     {
-        public static string ToFriendlyNameString(this Namespace that)
+        private static HashSet<Namespace> definedNamespaces = new HashSet<Namespace>
         {
-            return that.ToFriendlyNameString(LocalizedStrings.Namespace);
-        }
+            Namespace.Reclass,
+            Namespace.Language,
+            Namespace.Parody,
+            Namespace.Character,
+            Namespace.Group,
+            Namespace.Artist,
+            Namespace.Male,
+            Namespace.Female,
+            Namespace.Misc
+        };
+
+        public static string ToFriendlyNameString(this Namespace that)
+            => EnumExtension.ToFriendlyNameString(that, LocalizedStrings.Namespace);
 
         public static bool IsValid(this Namespace that)
-        {
-            return that != Namespace.Unknown && Enum.IsDefined(typeof(Namespace), that);
-        }
+            => definedNamespaces.Contains(that);
     }
 }

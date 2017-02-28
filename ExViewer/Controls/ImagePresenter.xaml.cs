@@ -88,14 +88,14 @@ namespace ExViewer.Controls
             {
                 startTrackImage(this, this.Image);
             }
-            loaded = true;
+            this.loaded = true;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             if(this.Image != null)
                 stopTrackImage(this, this.Image);
-            loaded = false;
+            this.loaded = false;
         }
 
         private void Image_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -103,21 +103,21 @@ namespace ExViewer.Controls
             if(e.PropertyName == nameof(GalleryImage.ImageFile))
             {
                 this.cc_Image.ClearValue(ContentControl.ContentProperty);
-                this.cc_Image.Content = Image;
+                this.cc_Image.Content = this.Image;
             }
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            gd_ContentRoot.MaxWidth = availableSize.Width;
-            gd_ContentRoot.MaxHeight = availableSize.Height;
-            Task.Yield().GetAwaiter().OnCompleted(() => sv.ChangeView(null, null, 1, true));
+            this.gd_ContentRoot.MaxWidth = availableSize.Width;
+            this.gd_ContentRoot.MaxHeight = availableSize.Height;
+            Task.Yield().GetAwaiter().OnCompleted(() => this.sv.ChangeView(null, null, 1, true));
             return base.MeasureOverride(availableSize);
         }
 
         private void sv_Loading(FrameworkElement sender, object args)
         {
-            sv.MaxZoomFactor = SettingCollection.Current.MaxFactor;
+            this.sv.MaxZoomFactor = SettingCollection.Current.MaxFactor;
         }
 
         private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -126,7 +126,7 @@ namespace ExViewer.Controls
                 return;
             var dx = e.Delta.Translation.X;
             var dy = e.Delta.Translation.Y;
-            sv.ChangeView(sv.HorizontalOffset - dx, sv.VerticalOffset - dy, null, true);
+            this.sv.ChangeView(this.sv.HorizontalOffset - dx, this.sv.VerticalOffset - dy, null, true);
         }
 
         private void setSvManipulationMode(object sender, PointerRoutedEventArgs e)
@@ -134,14 +134,14 @@ namespace ExViewer.Controls
             switch(e.Pointer.PointerDeviceType)
             {
             case Windows.Devices.Input.PointerDeviceType.Touch:
-                sv.ManipulationMode = ManipulationModes.System;
+                this.sv.ManipulationMode = ManipulationModes.System;
                 break;
             case Windows.Devices.Input.PointerDeviceType.Pen:
             case Windows.Devices.Input.PointerDeviceType.Mouse:
                 var mode = ManipulationModes.System | ManipulationModes.TranslateX | ManipulationModes.TranslateY;
                 if(SettingCollection.Current.MouseInertial)
                     mode |= ManipulationModes.TranslateInertia;
-                sv.ManipulationMode = mode;
+                this.sv.ManipulationMode = mode;
                 break;
             default:
                 break;
@@ -165,22 +165,22 @@ namespace ExViewer.Controls
 
         public void ZoomTo(Point point, float factor)
         {
-            if(factor > sv.MaxZoomFactor)
-                factor = sv.MaxZoomFactor;
-            else if(factor < sv.MinZoomFactor)
-                factor = sv.MinZoomFactor;
+            if(factor > this.sv.MaxZoomFactor)
+                factor = this.sv.MaxZoomFactor;
+            else if(factor < this.sv.MinZoomFactor)
+                factor = this.sv.MinZoomFactor;
             var pi = point;
-            var psX = point.X * sv.ZoomFactor;
-            var psY = point.Y * sv.ZoomFactor;
-            if(sv.ScrollableWidth > 0)
-                psX -= sv.HorizontalOffset;
+            var psX = point.X * this.sv.ZoomFactor;
+            var psY = point.Y * this.sv.ZoomFactor;
+            if(this.sv.ScrollableWidth > 0)
+                psX -= this.sv.HorizontalOffset;
             else
-                psX += (sv.ActualWidth - sv.ExtentWidth) / 2;
-            if(sv.ScrollableHeight > 0)
-                psY -= sv.VerticalOffset;
+                psX += (this.sv.ActualWidth - this.sv.ExtentWidth) / 2;
+            if(this.sv.ScrollableHeight > 0)
+                psY -= this.sv.VerticalOffset;
             else
-                psY += (sv.ActualHeight - sv.ExtentHeight) / 2;
-            sv.ChangeView(pi.X * factor - psX, pi.Y * factor - psY, factor);
+                psY += (this.sv.ActualHeight - this.sv.ExtentHeight) / 2;
+            this.sv.ChangeView(pi.X * factor - psX, pi.Y * factor - psY, factor);
         }
 
         public void ZoomTo(Point point)
@@ -191,20 +191,20 @@ namespace ExViewer.Controls
         public void ZoomTo(float factor)
         {
             double w, h;
-            if(sv.ScrollableWidth > 0)
-                w = (sv.ActualWidth / 2 + sv.HorizontalOffset) / sv.ZoomFactor;
+            if(this.sv.ScrollableWidth > 0)
+                w = (this.sv.ActualWidth / 2 + this.sv.HorizontalOffset) / this.sv.ZoomFactor;
             else
-                w = gd_ContentRoot.ActualWidth / 2;
-            if(sv.ScrollableHeight > 0)
-                h = (sv.ActualHeight / 2 + sv.VerticalOffset) / sv.ZoomFactor;
+                w = this.gd_ContentRoot.ActualWidth / 2;
+            if(this.sv.ScrollableHeight > 0)
+                h = (this.sv.ActualHeight / 2 + this.sv.VerticalOffset) / this.sv.ZoomFactor;
             else
-                h = gd_ContentRoot.ActualHeight / 2;
+                h = this.gd_ContentRoot.ActualHeight / 2;
             this.ZoomTo(new Point(w, h), factor);
         }
 
         private void Zoom(Point p)
         {
-            if(sv.ZoomFactor > 1.001)
+            if(this.sv.ZoomFactor > 1.001)
                 ResetZoom();
             else
                 this.ZoomTo(p);
@@ -212,7 +212,7 @@ namespace ExViewer.Controls
 
         public void ResetZoom()
         {
-            sv.ChangeView(null, null, 1);
+            this.sv.ChangeView(null, null, 1);
         }
 
         protected override async void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
@@ -231,29 +231,29 @@ namespace ExViewer.Controls
             {
             case Windows.System.VirtualKey.GamepadY:
             case (Windows.System.VirtualKey)221:
-                ZoomTo(sv.ZoomFactor * 1.2f);
+                ZoomTo(this.sv.ZoomFactor * 1.2f);
                 break;
             case Windows.System.VirtualKey.GamepadX:
             case (Windows.System.VirtualKey)219:
-                ZoomTo(sv.ZoomFactor / 1.2f);
+                ZoomTo(this.sv.ZoomFactor / 1.2f);
                 break;
             case Windows.System.VirtualKey.Up:
             case Windows.System.VirtualKey.Down:
-                if(sv.ScrollableHeight < 1)
+                if(this.sv.ScrollableHeight < 1)
                     e.Handled = false;
                 break;
             case Windows.System.VirtualKey.Left:
             case Windows.System.VirtualKey.Right:
-                if(sv.ScrollableWidth < 1)
+                if(this.sv.ScrollableWidth < 1)
                     e.Handled = false;
                 break;
             case Windows.System.VirtualKey.Space:
-                if(spacePressed)
+                if(this.spacePressed)
                     e.Handled = false;
                 else
                 {
-                    Zoom(new Point(gd_ContentRoot.ActualWidth / 2, gd_ContentRoot.ActualHeight / 2));
-                    spacePressed = true;
+                    Zoom(new Point(this.gd_ContentRoot.ActualWidth / 2, this.gd_ContentRoot.ActualHeight / 2));
+                    this.spacePressed = true;
                     e.Handled = true;
                 }
                 break;
@@ -270,13 +270,13 @@ namespace ExViewer.Controls
             switch(e.Key)
             {
             case (Windows.System.VirtualKey)187:
-                ZoomTo(sv.MaxZoomFactor);
+                ZoomTo(this.sv.MaxZoomFactor);
                 break;
             case (Windows.System.VirtualKey)189:
                 ResetZoom();
                 break;
             case Windows.System.VirtualKey.Space:
-                spacePressed = false;
+                this.spacePressed = false;
                 e.Handled = false;
                 break;
             default:

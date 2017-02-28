@@ -34,14 +34,14 @@ namespace ExViewer.Views
         public CachedPage()
         {
             this.InitializeComponent();
-            VM = CachedVM.Instance;
-            cdg_ConfirmClear = new ContentDialog()
+            this.VM = CachedVM.Instance;
+            this.cdg_ConfirmClear = new ContentDialog()
             {
                 Title = Strings.Resources.Views.ClearCachedDialog.Title,
                 Content = Strings.Resources.Views.ClearCachedDialog.Content,
                 PrimaryButtonText = Strings.Resources.OK,
                 SecondaryButtonText = Strings.Resources.Cancel,
-                PrimaryButtonCommand = VM.Clear
+                PrimaryButtonCommand = this.VM.Clear
             };
         }
 
@@ -64,9 +64,9 @@ namespace ExViewer.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(e.NavigationMode != NavigationMode.Back || VM.Galleries == null)
+            if(e.NavigationMode != NavigationMode.Back || this.VM.Galleries == null)
             {
-                VM.Refresh.Execute(null);
+                this.VM.Refresh.Execute(null);
             }
         }
 
@@ -82,26 +82,26 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(VM.Open.CanExecute(e.ClickedItem))
-                VM.Open.Execute(e.ClickedItem);
+            if(this.VM.Open.CanExecute(e.ClickedItem))
+                this.VM.Open.Execute(e.ClickedItem);
         }
 
         private ContentDialog cdg_ConfirmClear;
 
         private async void abb_DeleteAll_Click(object sender, RoutedEventArgs e)
         {
-            cdg_ConfirmClear.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
-            await cdg_ConfirmClear.ShowAsync();
+            this.cdg_ConfirmClear.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
+            await this.cdg_ConfirmClear.ShowAsync();
         }
 
         private void lv_RefreshRequested(object sender, EventArgs args)
         {
-            VM.Refresh.Execute(null);
+            this.VM.Refresh.Execute(null);
         }
 
         public void CloseAll()
         {
-            cb_top.IsOpen = false;
+            this.cb_top.IsOpen = false;
         }
 
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
@@ -110,14 +110,14 @@ namespace ExViewer.Views
             if(lvi == null)
                 return;
             var dc = lvi.DataContext;
-            mfi_DeleteGallery.CommandParameter = dc;
-            mf_Gallery.ShowAt(lvi);
+            this.mfi_DeleteGallery.CommandParameter = dc;
+            this.mf_Gallery.ShowAt(lvi);
             args.Handled = true;
         }
 
         private void lv_ContextCanceled(UIElement sender, RoutedEventArgs args)
         {
-            mf_Gallery.Hide();
+            this.mf_Gallery.Hide();
         }
     }
 }

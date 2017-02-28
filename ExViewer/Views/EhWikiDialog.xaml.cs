@@ -31,17 +31,17 @@ namespace ExViewer.Views
 
         internal async void SetTag(Tag tag)
         {
-            loadRecord?.Cancel();
-            wv.Visibility = Visibility.Collapsed;
-            pb.Visibility = Visibility.Visible;
+            this.loadRecord?.Cancel();
+            this.wv.Visibility = Visibility.Collapsed;
+            this.pb.Visibility = Visibility.Visible;
             var str = (string)null;
-            Title = tag.Content;
+            this.Title = tag.Content;
             try
             {
-                loadRecord = tag.FetchEhWikiRecordAsync();
-                var record = await loadRecord;
-                loadRecord = null;
-                if(style == null)
+                this.loadRecord = tag.FetchEhWikiRecordAsync();
+                var record = await this.loadRecord;
+                this.loadRecord = null;
+                if(this.style == null)
                     initStyle();
                 if(record?.DetialHtml == null)
                     str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
@@ -52,9 +52,9 @@ namespace ExViewer.Views
             {
                 str = ex.GetMessage();
             }
-            wv.NavigateToString(style + str);
-            wv.Visibility = Visibility.Visible;
-            pb.Visibility = Visibility.Collapsed;
+            this.wv.NavigateToString(this.style + str);
+            this.wv.Visibility = Visibility.Visible;
+            this.pb.Visibility = Visibility.Collapsed;
         }
 
         private void initStyle()
@@ -62,7 +62,7 @@ namespace ExViewer.Views
             var background = ((SolidColorBrush)this.Background);
             var foreground = ((SolidColorBrush)this.Foreground);
             var link = ((SolidColorBrush)this.BorderBrush);
-            style = $@"
+            this.style = $@"
 <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
 <style type='text/css'>
     html {{

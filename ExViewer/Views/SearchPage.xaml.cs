@@ -42,22 +42,22 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            navId++;
+            this.navId++;
             if(Client.Current.NeedLogOn)
             {
                 await RootControl.RootController.RequestLogOn();
             }
-            VM = SearchVM.GetVM(e.Parameter?.ToString());
+            this.VM = SearchVM.GetVM(e.Parameter?.ToString());
             if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
             {
-                VM?.SearchResult.Reset();
+                this.VM?.SearchResult.Reset();
                 await Task.Delay(100);
-                btnPane.Focus(FocusState.Programmatic);
+                this.btnPane.Focus(FocusState.Programmatic);
             }
             if(e.NavigationMode == NavigationMode.Back)
             {
-                VM.SetQueryWithSearchResult();
-                var selectedGallery = VM.SelectedGallery;
+                this.VM.SetQueryWithSearchResult();
+                var selectedGallery = this.VM.SelectedGallery;
                 if(selectedGallery != null)
                 {
                     await Task.Delay(100);
@@ -74,8 +74,8 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(VM.Open.CanExecute(e.ClickedItem))
-                VM.Open.Execute(e.ClickedItem);
+            if(this.VM.Open.CanExecute(e.ClickedItem))
+                this.VM.Open.Execute(e.ClickedItem);
         }
 
         public SearchVM VM
@@ -101,17 +101,17 @@ namespace ExViewer.Views
 
         private void ab_Opening(object sender, object e)
         {
-            sv_AdvancedSearch.IsEnabled = true;
+            this.sv_AdvancedSearch.IsEnabled = true;
         }
 
         private void ab_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var newState = e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch;
-            if(newState == cs_Category.TouchAdaptive)
+            if(newState == this.cs_Category.TouchAdaptive)
                 return;
-            if(!abOpened)
+            if(!this.abOpened)
             {
-                cs_Category.TouchAdaptive = newState;
+                this.cs_Category.TouchAdaptive = newState;
             }
         }
 
@@ -119,26 +119,26 @@ namespace ExViewer.Views
 
         private void ab_Opened(object sender, object e)
         {
-            abOpened = true;
+            this.abOpened = true;
         }
 
         private void ab_Closed(object sender, object e)
         {
-            abOpened = false;
-            sv_AdvancedSearch.IsEnabled = false;
+            this.abOpened = false;
+            this.sv_AdvancedSearch.IsEnabled = false;
         }
 
         private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput
                 || args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen;
-            var currentId = navId;
+            var currentId = this.navId;
             if(needAutoComplete)
             {
-                var r = await VM.LoadSuggestion(sender.Text);
-                if(args.CheckCurrent() && currentId == navId)
+                var r = await this.VM.LoadSuggestion(sender.Text);
+                if(args.CheckCurrent() && currentId == this.navId)
                 {
-                    asb.ItemsSource = r;
+                    this.asb.ItemsSource = r;
                 }
             }
         }
@@ -150,20 +150,20 @@ namespace ExViewer.Views
 
         private void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            if(args.ChosenSuggestion == null || VM.AutoCompleteFinished(args.ChosenSuggestion))
+            if(args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
             {
                 CloseAll();
-                VM.Search.Execute(args.QueryText);
+                this.VM.Search.Execute(args.QueryText);
             }
             else
             {
-                asb.Focus(FocusState.Keyboard);
+                this.asb.Focus(FocusState.Keyboard);
             }
         }
 
         private void lv_RefreshRequested(object sender, EventArgs e)
         {
-            VM?.SearchResult.Reset();
+            this.VM?.SearchResult.Reset();
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -173,11 +173,11 @@ namespace ExViewer.Views
             switch(e.Key)
             {
             case Windows.System.VirtualKey.GamepadY:
-                asb.Focus(FocusState.Keyboard);
+                this.asb.Focus(FocusState.Keyboard);
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
-                ab.IsOpen = !ab.IsOpen;
+                this.ab.IsOpen = !this.ab.IsOpen;
                 break;
             default:
                 e.Handled = false;
@@ -187,8 +187,8 @@ namespace ExViewer.Views
 
         public void CloseAll()
         {
-            asb.IsSuggestionListOpen = false;
-            ab.IsOpen = false;
+            this.asb.IsSuggestionListOpen = false;
+            this.ab.IsOpen = false;
         }
     }
 }

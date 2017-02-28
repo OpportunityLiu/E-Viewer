@@ -34,8 +34,7 @@ namespace EhWikiClient
 
         public Record Get(string title)
         {
-            var r = (Record)null;
-            if(dic.TryGetValue(title, out r))
+            if(this.dic.TryGetValue(title, out var r))
                 return r;
             FetchAsync(title).Completed = (s, e) =>
             {
@@ -47,8 +46,7 @@ namespace EhWikiClient
 
         public IAsyncOperation<Record> GetAsync(string title)
         {
-            var r = (Record)null;
-            if(dic.TryGetValue(title, out r))
+            if(this.dic.TryGetValue(title, out var r))
                 return new Helpers.AsyncWarpper<Record>(r);
             return FetchAsync(title);
         }
@@ -61,12 +59,21 @@ namespace EhWikiClient
         {
             return Run(async token =>
             {
-                var post = http.PostAsync(apiUri, new HttpFormUrlEncodedContent(getRequestParameters(title)));
+                IEnumerable<KeyValuePair<string, string>> getRequestParameters()
+                {
+                    //https://ehwiki.org/api.php?action=parse&page={pageName}&prop=text&format=jsonfm&utf8=
+                    yield return new KeyValuePair<string, string>("action", "parse");
+                    yield return new KeyValuePair<string, string>("page", title);
+                    yield return new KeyValuePair<string, string>("prop", "text");
+                    yield return new KeyValuePair<string, string>("format", "json");
+                    yield return new KeyValuePair<string, string>("utf8", "");
+                }
+                var post = this.http.PostAsync(apiUri, new HttpFormUrlEncodedContent(getRequestParameters()));
                 token.Register(post.Cancel);
                 var res = await post;
                 var resStr = await res.Content.ReadAsStringAsync();
                 var record = Record.Load(resStr);
-                dic[title] = record;
+                this.dic[title] = record;
                 return record;
             });
         }
@@ -78,16 +85,6 @@ namespace EhWikiClient
                 var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("EhWiki.json", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(file, JsonConvert.SerializeObject(this.dic.Values.Where(r => r != null)));
             });
-        }
-
-        private IEnumerable<KeyValuePair<string, string>> getRequestParameters(string title)
-        {
-            //https://ehwiki.org/api.php?action=parse&page={pageName}&prop=text&format=jsonfm&utf8=
-            yield return new KeyValuePair<string, string>("action", "parse");
-            yield return new KeyValuePair<string, string>("page", title);
-            yield return new KeyValuePair<string, string>("prop", "text");
-            yield return new KeyValuePair<string, string>("format", "json");
-            yield return new KeyValuePair<string, string>("utf8", "");
         }
 
         #region IDisposable Support

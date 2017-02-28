@@ -84,7 +84,7 @@ namespace ExViewer.ViewModels
         {
             try
             {
-                return Gallery[currentIndex];
+                return this.Gallery[this.currentIndex];
             }
             catch(ArgumentOutOfRangeException)
             {
@@ -94,7 +94,7 @@ namespace ExViewer.ViewModels
 
         private GalleryVM()
         {
-            Share = new RelayCommand<GalleryImage>(async image =>
+            this.Share = new RelayCommand<GalleryImage>(async image =>
             {
                 if(Helpers.ShareHandler.IsShareSupported)
                 {
@@ -103,20 +103,20 @@ namespace ExViewer.ViewModels
                         var deferral = e.Request.GetDeferral();
                         try
                         {
-                            e.Request.Data.Properties.Title = gallery.GetDisplayTitle();
-                            e.Request.Data.Properties.Description = gallery.GetSecondaryTitle();
+                            e.Request.Data.Properties.Title = this.gallery.GetDisplayTitle();
+                            e.Request.Data.Properties.Description = this.gallery.GetSecondaryTitle();
                             if(image == null)
                             {
                                 var ms = new InMemoryRandomAccessStream();
                                 var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
-                                encoder.SetSoftwareBitmap(gallery.Thumb);
+                                encoder.SetSoftwareBitmap(this.gallery.Thumb);
                                 await encoder.FlushAsync();
                                 e.Request.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
-                                var firstImage = gallery.FirstOrDefault()?.ImageFile;
+                                var firstImage = this.gallery.FirstOrDefault()?.ImageFile;
                                 if(firstImage != null)
                                     e.Request.Data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
-                                e.Request.Data.Properties.ContentSourceWebLink = gallery.GalleryUri;
-                                e.Request.Data.SetWebLink(gallery.GalleryUri);
+                                e.Request.Data.Properties.ContentSourceWebLink = this.gallery.GalleryUri;
+                                e.Request.Data.SetWebLink(this.gallery.GalleryUri);
                             }
                             else
                             {
@@ -138,19 +138,19 @@ namespace ExViewer.ViewModels
                 else
                 {
                     if(image == null)
-                        await Launcher.LaunchUriAsync(gallery.GalleryUri);
+                        await Launcher.LaunchUriAsync(this.gallery.GalleryUri);
                     else
                         await Launcher.LaunchUriAsync(image.PageUri);
                 }
-            }, image => gallery != null);
-            OpenInExplorer = new RelayCommand(async () => await Launcher.LaunchFolderAsync(gallery.GalleryFolder), () => gallery != null);
-            Save = new RelayCommand(() =>
+            }, image => this.gallery != null);
+            this.OpenInExplorer = new RelayCommand(async () => await Launcher.LaunchFolderAsync(this.gallery.GalleryFolder), () => this.gallery != null);
+            this.Save = new RelayCommand(() =>
             {
-                var task = gallery.SaveGalleryAsync(SettingCollection.Current.GetStrategy());
-                SaveStatus = OperationState.Started;
+                var task = this.gallery.SaveGalleryAsync(SettingCollection.Current.GetStrategy());
+                this.SaveStatus = OperationState.Started;
                 task.Progress = (sender, e) =>
                 {
-                    SaveProgress = e.ImageLoaded / (double)e.ImageCount;
+                    this.SaveProgress = e.ImageLoaded / (double)e.ImageCount;
                 };
                 task.Completed = (sender, e) =>
                 {
@@ -158,40 +158,40 @@ namespace ExViewer.ViewModels
                     {
                     case AsyncStatus.Canceled:
                     case AsyncStatus.Error:
-                        SaveStatus = OperationState.Failed;
+                        this.SaveStatus = OperationState.Failed;
                         RootControl.RootController.SendToast(sender.ErrorCode, null);
                         break;
                     case AsyncStatus.Completed:
-                        SaveStatus = OperationState.Completed;
+                        this.SaveStatus = OperationState.Completed;
                         break;
                     case AsyncStatus.Started:
-                        SaveStatus = OperationState.Started;
+                        this.SaveStatus = OperationState.Started;
                         break;
                     }
-                    SaveProgress = 1;
+                    this.SaveProgress = 1;
                 };
-            }, () => SaveStatus != OperationState.Started && !(Gallery is SavedGallery));
-            OpenImage = new RelayCommand<GalleryImage>(image =>
+            }, () => this.SaveStatus != OperationState.Started && !(this.Gallery is SavedGallery));
+            this.OpenImage = new RelayCommand<GalleryImage>(image =>
             {
-                CurrentIndex = image.PageId - 1;
-                RootControl.RootController.Frame.Navigate(typeof(ImagePage), gallery.Id);
+                this.CurrentIndex = image.PageId - 1;
+                RootControl.RootController.Frame.Navigate(typeof(ImagePage), this.gallery.Id);
             });
-            LoadOriginal = new RelayCommand<GalleryImage>(async image =>
+            this.LoadOriginal = new RelayCommand<GalleryImage>(async image =>
             {
-                image.PropertyChanged += Image_PropertyChanged;
+                image.PropertyChanged += this.Image_PropertyChanged;
                 await image.LoadImageAsync(true, ConnectionStrategy.AllFull, false);
-                image.PropertyChanged -= Image_PropertyChanged;
+                image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null && !image.OriginalLoaded);
-            ReloadImage = new RelayCommand<GalleryImage>(async image =>
+            this.ReloadImage = new RelayCommand<GalleryImage>(async image =>
             {
-                image.PropertyChanged += Image_PropertyChanged;
+                image.PropertyChanged += this.Image_PropertyChanged;
                 if(image.OriginalLoaded)
                     await image.LoadImageAsync(true, ConnectionStrategy.AllFull, false);
                 else
                     await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
-                image.PropertyChanged -= Image_PropertyChanged;
+                image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null);
-            TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
+            this.TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
             {
                 RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
                 try
@@ -204,7 +204,7 @@ namespace ExViewer.ViewModels
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
                 }
             }, torrent => torrent != null && torrent.TorrentUri != null);
-            SearchTag = new RelayCommand<Tag>(tag =>
+            this.SearchTag = new RelayCommand<Tag>(tag =>
             {
                 var vm = SearchVM.GetVM(tag.Search());
                 RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
@@ -214,7 +214,7 @@ namespace ExViewer.ViewModels
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName == nameof(GalleryImage.OriginalLoaded))
-                LoadOriginal.RaiseCanExecuteChanged();
+                this.LoadOriginal.RaiseCanExecuteChanged();
         }
 
         private GalleryVM(Gallery gallery)
@@ -269,19 +269,19 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return gallery;
+                return this.gallery;
             }
             private set
             {
-                if(gallery != null)
-                    gallery.LoadMoreItemsException -= Gallery_LoadMoreItemsException;
-                Set(ref gallery, value);
-                if(gallery != null)
-                    gallery.LoadMoreItemsException += Gallery_LoadMoreItemsException;
-                Save.RaiseCanExecuteChanged();
-                Share.RaiseCanExecuteChanged();
-                OpenInExplorer.RaiseCanExecuteChanged();
-                Torrents = null;
+                if(this.gallery != null)
+                    this.gallery.LoadMoreItemsException -= this.Gallery_LoadMoreItemsException;
+                Set(ref this.gallery, value);
+                if(this.gallery != null)
+                    this.gallery.LoadMoreItemsException += this.Gallery_LoadMoreItemsException;
+                this.Save.RaiseCanExecuteChanged();
+                this.Share.RaiseCanExecuteChanged();
+                this.OpenInExplorer.RaiseCanExecuteChanged();
+                this.Torrents = null;
             }
         }
 
@@ -297,11 +297,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return currentIndex;
+                return this.currentIndex;
             }
             set
             {
-                Set(ref currentIndex, value);
+                Set(ref this.currentIndex, value);
             }
         }
 
@@ -311,11 +311,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return currentInfo;
+                return this.currentInfo;
             }
             private set
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref currentInfo, value));
+                DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref this.currentInfo, value));
             }
         }
 
@@ -326,12 +326,12 @@ namespace ExViewer.ViewModels
                 var current = GetCurrent();
                 if(current?.ImageFile == null)
                 {
-                    CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
+                    this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
                     return;
                 }
                 var prop = await current.ImageFile.GetBasicPropertiesAsync();
                 var imageProp = await current.ImageFile.Properties.GetImagePropertiesAsync();
-                CurrentInfo = string.Format(Strings.Resources.Views.ImagePage.ImageFileInfo, current.ImageFile.Name,
+                this.CurrentInfo = string.Format(Strings.Resources.Views.ImagePage.ImageFileInfo, current.ImageFile.Name,
                     Converters.ByteSizeToStringConverter.ByteSizeToString(prop.Size, Converters.UnitPrefix.Binary),
                     imageProp.Width.ToString(), imageProp.Height.ToString());
             });
@@ -343,14 +343,14 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return saveStatus;
+                return this.saveStatus;
             }
             set
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    Set(ref saveStatus, value);
-                    Save.RaiseCanExecuteChanged();
+                    Set(ref this.saveStatus, value);
+                    this.Save.RaiseCanExecuteChanged();
                 });
             }
         }
@@ -361,11 +361,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return saveProgress;
+                return this.saveProgress;
             }
             set
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref saveProgress, value));
+                DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref this.saveProgress, value));
             }
         }
 
@@ -377,7 +377,7 @@ namespace ExViewer.ViewModels
             {
                 try
                 {
-                    await gallery.LoadCommentsAsync();
+                    await this.gallery.LoadCommentsAsync();
                 }
                 catch(Exception ex)
                 {
@@ -396,7 +396,7 @@ namespace ExViewer.ViewModels
             {
                 try
                 {
-                    Torrents = await gallery.LoadTorrnetsAsync();
+                    this.Torrents = await this.gallery.LoadTorrnetsAsync();
                 }
                 catch(Exception ex)
                 {
@@ -411,11 +411,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return torrents;
+                return this.torrents;
             }
             private set
             {
-                torrents = value;
+                this.torrents = value;
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     RaisePropertyChanged(nameof(Torrents));
@@ -424,7 +424,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        public int? TorrentCount => torrents?.Count ?? (gallery is SavedGallery ? null : gallery?.TorrentCount);
+        public int? TorrentCount => this.torrents?.Count ?? (this.gallery is SavedGallery ? null : this.gallery?.TorrentCount);
 
         #endregion Torrents
     }

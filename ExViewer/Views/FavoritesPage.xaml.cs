@@ -47,22 +47,22 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            navId++;
+            this.navId++;
             if(Client.Current.NeedLogOn)
             {
                 await RootControl.RootController.RequestLogOn();
             }
-            VM = FavoritesVM.GetVM(e.Parameter?.ToString());
+            this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
             if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
             {
-                VM?.SearchResult.Reset();
+                this.VM?.SearchResult.Reset();
                 await Task.Delay(100);
-                btnPane.Focus(FocusState.Programmatic);
+                this.btnPane.Focus(FocusState.Programmatic);
             }
             if(e.NavigationMode == NavigationMode.Back)
             {
-                VM.SetQueryWithSearchResult();
-                var selectedGallery = VM.SelectedGallery;
+                this.VM.SetQueryWithSearchResult();
+                var selectedGallery = this.VM.SelectedGallery;
                 if(selectedGallery != null)
                 {
                     await Task.Delay(100);
@@ -79,8 +79,8 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(VM.Open.CanExecute(e.ClickedItem))
-                VM.Open.Execute(e.ClickedItem);
+            if(this.VM.Open.CanExecute(e.ClickedItem))
+                this.VM.Open.Execute(e.ClickedItem);
         }
 
         public FavoritesVM VM
@@ -108,13 +108,13 @@ namespace ExViewer.Views
         {
             var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput
                 || args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen;
-            var currentId = navId;
+            var currentId = this.navId;
             if(needAutoComplete)
             {
-                var r = await VM.LoadSuggestion(sender.Text);
-                if(args.CheckCurrent() && currentId == navId)
+                var r = await this.VM.LoadSuggestion(sender.Text);
+                if(args.CheckCurrent() && currentId == this.navId)
                 {
-                    asb.ItemsSource = r;
+                    this.asb.ItemsSource = r;
                 }
             }
         }
@@ -126,20 +126,20 @@ namespace ExViewer.Views
 
         private void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            if(args.ChosenSuggestion == null || VM.AutoCompleteFinished(args.ChosenSuggestion))
+            if(args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
             {
                 CloseAll();
-                VM.Search.Execute(args.QueryText);
+                this.VM.Search.Execute(args.QueryText);
             }
             else
             {
-                asb.Focus(FocusState.Keyboard);
+                this.asb.Focus(FocusState.Keyboard);
             }
         }
 
         private void lv_RefreshRequested(object sender, EventArgs e)
         {
-            VM?.SearchResult.Reset();
+            this.VM?.SearchResult.Reset();
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -149,11 +149,11 @@ namespace ExViewer.Views
             switch(e.Key)
             {
             case Windows.System.VirtualKey.GamepadY:
-                asb.Focus(FocusState.Keyboard);
+                this.asb.Focus(FocusState.Keyboard);
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
-                cbCategory.Focus(FocusState.Programmatic);
+                this.cbCategory.Focus(FocusState.Programmatic);
                 break;
             default:
                 e.Handled = false;
@@ -163,8 +163,8 @@ namespace ExViewer.Views
 
         public void CloseAll()
         {
-            asb.IsSuggestionListOpen = false;
-            cbCategory.IsDropDownOpen = false;
+            this.asb.IsSuggestionListOpen = false;
+            this.cbCategory.IsDropDownOpen = false;
         }
     }
 }

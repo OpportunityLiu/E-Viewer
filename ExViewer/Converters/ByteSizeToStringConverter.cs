@@ -46,7 +46,7 @@ namespace ExViewer.Converters
             }
             catch(ArgumentException)
             {
-                return OutOfRangeValue;
+                return this.OutOfRangeValue;
             }
         }
 

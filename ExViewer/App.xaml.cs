@@ -68,8 +68,8 @@ namespace ExViewer
                 sb.AppendLine($"page: {RootControl.RootController.CurrentPageName}");
                 return sb.ToString();
             });
-            this.Suspending += OnSuspending;
-            this.Resuming += OnResuming;
+            this.Suspending += this.OnSuspending;
+            this.Resuming += this.OnResuming;
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
         }
 

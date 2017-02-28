@@ -11,8 +11,7 @@ namespace ApplicationDataManager.Settings
 
         public static string GetString(string resourceKey)
         {
-            string value;
-            if(cache.TryGetValue(resourceKey, out value))
+            if(cache.TryGetValue(resourceKey, out var value))
                 return value;
             else
                 return cache[resourceKey] = loader.GetString(resourceKey);

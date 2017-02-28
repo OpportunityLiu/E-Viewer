@@ -15,33 +15,27 @@ namespace ApplicationDataManager.Settings.Xaml
 
         public SettingInfo SettingValue
         {
-            get
-            {
-                return (SettingInfo)GetValue(SettingValueProperty);
-            }
-            set
-            {
-                SetValue(SettingValueProperty, value);
-            }
+            get => (SettingInfo)GetValue(SettingValueProperty);
+            set => SetValue(SettingValueProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for SettingValue.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SettingValueProperty =
-            DependencyProperty.Register("SettingValue", typeof(SettingInfo), typeof(SettingSlider), new PropertyMetadata(null, SettingValueChangedCallback));
+            DependencyProperty.Register("SettingValue", typeof(SettingInfo), typeof(SettingSlider), new PropertyMetadata(null, settingValueChangedCallback));
 
-        private static void SettingValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void settingValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var s = (SettingSlider)d;
-            s.ValueChanged -= s.ValueChangedCallback;
+            s.ValueChanged -= s.valueChangedCallback;
             if(e.OldValue != null)
             {
-                ((SettingInfo)e.OldValue).PropertyChanged -= s.SettingInfoPropertyChanged;
+                ((SettingInfo)e.OldValue).PropertyChanged -= s.settingInfoPropertyChanged;
             }
-            var sv = e.NewValue as SettingInfo;
-            if(sv != null)
+            if(e.NewValue is SettingInfo sv)
             {
-                var min = Convert.ToDouble(sv.Range.Min);
-                var max = Convert.ToDouble(sv.Range.Max);
+                var range = (IValueRange)sv.ValueRepresent;
+                var min = Convert.ToDouble(range.Min);
+                var max = Convert.ToDouble(range.Max);
 
                 s.Minimum = min;
                 s.Maximum = max;
@@ -50,22 +44,22 @@ namespace ApplicationDataManager.Settings.Xaml
                 var small = (max - min) / 100;
                 var large = small * 10;
 
-                if(!double.IsNaN(sv.Range.Small))
-                    small = sv.Range.Small;
-                if(!double.IsNaN(sv.Range.Large))
-                    large = sv.Range.Large;
+                if(!double.IsNaN(range.Small))
+                    small = range.Small;
+                if(!double.IsNaN(range.Large))
+                    large = range.Large;
 
                 s.SmallChange = small;
                 s.LargeChange = large;
                 s.StepFrequency = small;
 
-                if(!double.IsNaN(sv.Range.Tick))
-                    s.TickFrequency = sv.Range.Tick;
+                if(!double.IsNaN(range.Tick))
+                    s.TickFrequency = range.Tick;
                 else
                     s.ClearValue(TickFrequencyProperty);
 
-                s.ValueChanged += s.ValueChangedCallback;
-                sv.PropertyChanged += s.SettingInfoPropertyChanged;
+                s.ValueChanged += s.valueChangedCallback;
+                sv.PropertyChanged += s.settingInfoPropertyChanged;
             }
             else
             {
@@ -80,7 +74,7 @@ namespace ApplicationDataManager.Settings.Xaml
             }
         }
 
-        private void SettingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void settingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName != nameof(Value))
                 return;
@@ -88,31 +82,26 @@ namespace ApplicationDataManager.Settings.Xaml
             this.Value = Convert.ToDouble(s.Value);
         }
 
-        private void ValueChangedCallback(object sender, RangeBaseValueChangedEventArgs e)
+        private void valueChangedCallback(object sender, RangeBaseValueChangedEventArgs e)
         {
             var s = (SettingSlider)sender;
             s.SettingValue.Value = ConvertToBack(e.NewValue, s.SettingValue.Type);
         }
 
-        public static object ConvertToBack(double value, SettingType parameter)
+        public static object ConvertToBack(double value, ValueType parameter)
         {
-            Type targetType = null;
             switch(parameter)
             {
-            case SettingType.Int32:
-                targetType = typeof(int);
-                break;
-            case SettingType.Int64:
-                targetType = typeof(long);
-                break;
-            case SettingType.Single:
-                targetType = typeof(float);
-                break;
-            case SettingType.Double:
-                targetType = typeof(double);
-                break;
+            case ValueType.Int32:
+                return Convert.ToInt32(value);
+            case ValueType.Int64:
+                return Convert.ToInt64(value);
+            case ValueType.Single:
+                return Convert.ToSingle(value);
+            case ValueType.Double:
+                return Convert.ToDouble(value);
             }
-            return Convert.ChangeType(value, targetType);
+            throw new InvalidCastException();
         }
     }
 }

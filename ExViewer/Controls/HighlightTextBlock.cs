@@ -16,7 +16,7 @@ namespace ExViewer.Controls
     {
         public HighlightTextBlock()
         {
-            DefaultStyleKey = typeof(HighlightTextBlock);
+            this.DefaultStyleKey = typeof(HighlightTextBlock);
         }
 
         private TextBlock Presenter;
@@ -76,10 +76,10 @@ namespace ExViewer.Controls
 
         private void reload()
         {
-            if(Presenter == null)
+            if(this.Presenter == null)
                 return;
-            Presenter.Text = "";
-            Presenter.Inlines.Clear();
+            this.Presenter.Text = "";
+            this.Presenter.Inlines.Clear();
             var text = this.Text;
             var highlightText = this.HighlightText;
             if(string.IsNullOrEmpty(highlightText))
@@ -91,12 +91,12 @@ namespace ExViewer.Controls
                 while((matchIndex = text.IndexOf(highlightText, currentIndex)) != -1)
                 {
                     if(matchIndex != currentIndex)
-                        Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex, matchIndex - currentIndex)));
-                    Presenter.Inlines.Add(CreateBold(highlightText));
+                        this.Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex, matchIndex - currentIndex)));
+                    this.Presenter.Inlines.Add(CreateBold(highlightText));
                     currentIndex = matchIndex + highlightText.Length;
                 }
                 if(currentIndex != text.Length)
-                    Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex)));
+                    this.Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex)));
             }
         }
     }

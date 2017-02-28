@@ -15,7 +15,7 @@ namespace ExViewer.Controls
     {
         public TagPresenter()
         {
-            DefaultStyleKey = typeof(TagPresenter);
+            this.DefaultStyleKey = typeof(TagPresenter);
         }
 
         private TextBlock presenter;
@@ -23,29 +23,29 @@ namespace ExViewer.Controls
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            presenter = GetTemplateChild("Presenter") as TextBlock;
-            applyTag(GalleryTag);
+            this.presenter = GetTemplateChild("Presenter") as TextBlock;
+            applyTag(this.GalleryTag);
         }
 
         private void applyTag(Tag value)
         {
-            if(presenter == null)
+            if(this.presenter == null)
                 return;
-            presenter.ClearValue(TextBlock.TextProperty);
+            this.presenter.ClearValue(TextBlock.TextProperty);
             if(value == null)
                 return;
             var dc = value.GetDisplayContentAsync();
             if(dc.Status != AsyncStatus.Completed)
-                presenter.Text = value.Content;
-            dc.Completed = loadDisplayContentCompleted;
+                this.presenter.Text = value.Content;
+            dc.Completed = this.loadDisplayContentCompleted;
         }
 
         private void loadDisplayContentCompleted(IAsyncOperation<string> sender, AsyncStatus e)
         {
-            if(e == AsyncStatus.Completed && presenter != null)
+            if(e == AsyncStatus.Completed && this.presenter != null)
             {
                 var t = sender.GetResults();
-                DispatcherHelper.CheckBeginInvokeOnUI(() => presenter.Text = t);
+                DispatcherHelper.CheckBeginInvokeOnUI(() => this.presenter.Text = t);
             }
         }
 

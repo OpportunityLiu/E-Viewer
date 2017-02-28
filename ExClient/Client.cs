@@ -29,7 +29,7 @@ namespace ExClient
         {
             get
             {
-                var ck = CookieManager.GetCookies(UriProvieder.Ex.RootUri).FirstOrDefault(c => c.Name == "igneous");
+                var ck = this.CookieManager.GetCookies(UriProvieder.Ex.RootUri).FirstOrDefault(c => c.Name == "igneous");
                 if(ck == null)
                     return false;
                 return ck.Value != "mystery";
@@ -39,9 +39,9 @@ namespace ExClient
         private Client()
         {
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
-            CookieManager = httpFilter.CookieManager;
-            CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
-            HttpClient = new MyHttpClient(new HttpClient(new RedirectFilter(httpFilter)));
+            this.CookieManager = httpFilter.CookieManager;
+            this.CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
+            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
             this.Settings = new SettingCollection(this);
             this.Favorites = new FavoriteCollection(this);
         }
@@ -56,7 +56,9 @@ namespace ExClient
             get;
         }
 
-        public bool NeedLogOn => CookieManager.GetCookies(UriProvieder.Eh.RootUri).Count < 2 && CookieManager.GetCookies(UriProvieder.Ex.RootUri).Count < 2;
+        public bool NeedLogOn
+            => this.CookieManager.GetCookies(UriProvieder.Eh.RootUri).Count < 2
+            && this.CookieManager.GetCookies(UriProvieder.Ex.RootUri).Count < 2;
 
         public IAsyncOperation<Client> LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
         {
@@ -70,20 +72,20 @@ namespace ExClient
                     throw new InvalidOperationException(LocalizedStrings.Resources.ClientDisposed);
                 var cookieBackUp = getLogOnInfo();
                 ClearLogOnInfo();
-                try
+                IEnumerable<KeyValuePair<string, string>> getParams()
                 {
-                    var clientParam = new Dictionary<string, string>()
-                    {
-                        ["CookieDate"] = "1",
-                        ["UserName"] = userName,
-                        ["PassWord"] = password
-                    };
+                    yield return new KeyValuePair<string, string>("CookieDate", "1");
+                    yield return new KeyValuePair<string, string>("UserName", userName);
+                    yield return new KeyValuePair<string, string>("PassWord", password);
                     if(reCaptcha?.Answer != null)
                     {
-                        clientParam.Add("recaptcha_challenge_field", reCaptcha.Answer);
-                        clientParam.Add("recaptcha_response_field", "manual_challenge");
+                        yield return new KeyValuePair<string, string>("recaptcha_challenge_field", reCaptcha.Answer);
+                        yield return new KeyValuePair<string, string>("recaptcha_response_field", "manual_challenge");
                     }
-                    var log = await HttpClient.PostAsync(logOnUri, new HttpFormUrlEncodedContent(clientParam));
+                }
+                try
+                {
+                    var log = await this.HttpClient.PostAsync(logOnUri, new HttpFormUrlEncodedContent(getParams()));
                     var html = new HtmlDocument();
                     using(var stream = await log.Content.ReadAsInputStreamAsync())
                     {
@@ -136,22 +138,6 @@ namespace ExClient
             }
         }
 
-        internal IAsyncOperationWithProgress<string, HttpProgress> PostStrAsync(Uri uri, string content)
-        {
-            if(!uri.IsAbsoluteUri)
-                uri = new Uri(Uris.RootUri, uri);
-            if(content == null)
-                return HttpClient.GetStringAsync(uri);
-            return Run<string, HttpProgress>(async (token, progress) =>
-            {
-                var op = HttpClient.PostAsync(uri, content == null ? null : new HttpStringContent(content));
-                token.Register(op.Cancel);
-                op.Progress = (sender, value) => progress.Report(value);
-                var res = await op;
-                return await res.Content.ReadAsStringAsync();
-            });
-        }
-
         public int UserID
         {
             get
@@ -161,11 +147,6 @@ namespace ExClient
                     return -1;
                 return int.Parse(cookie.Value);
             }
-        }
-
-        internal IAsyncOperationWithProgress<string, HttpProgress> PostApiAsync(ApiRequest request)
-        {
-            return PostStrAsync(Uris.ApiUri, JsonConvert.SerializeObject(request));
         }
 
         public SettingCollection Settings { get; }
