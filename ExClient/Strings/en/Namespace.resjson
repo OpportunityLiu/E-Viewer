@@ -1,0 +1,12 @@
+﻿{
+    "Artist": "Artist",
+    "Character": "Character",
+    "Female": "Female",
+    "Group": "Group",
+    "Language": "Language",
+    "Male": "Male",
+    "Misc": "Misc",
+    "Parody": "Parody",
+    "Reclass": "Reclass",
+    "Unknown": "Unknown"
+}

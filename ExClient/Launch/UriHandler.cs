@@ -13,13 +13,13 @@ namespace ExClient.Launch
     {
         public UriHandlerData(Uri uri)
         {
-            Uri = uri;
-            Paths = uri.AbsolutePath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            if(Paths.Count != 0)
-                Path0 = Paths[0].ToLowerInvariant();
+            this.Uri = uri;
+            this.Paths = uri.AbsolutePath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            if(this.Paths.Count != 0)
+                this.Path0 = this.Paths[0].ToLowerInvariant();
             else
-                Path0 = "";
-            queriesLoader = new Lazy<IReadOnlyDictionary<string, string>>(getQueries);
+                this.Path0 = "";
+            this.queriesLoader = new Lazy<IReadOnlyDictionary<string, string>>(getQueries);
         }
 
         public Uri Uri { get; }
@@ -27,7 +27,7 @@ namespace ExClient.Launch
         public string Path0 { get; }
 
         private Lazy<IReadOnlyDictionary<string, string>> queriesLoader;
-        public IReadOnlyDictionary<string, string> Queries => queriesLoader.Value;
+        public IReadOnlyDictionary<string, string> Queries => this.queriesLoader.Value;
 
         private static char[] split1 = "&".ToCharArray();
         private static char[] split2 = "=".ToCharArray();
@@ -35,7 +35,7 @@ namespace ExClient.Launch
 
         private IReadOnlyDictionary<string, string> getQueries()
         {
-            var query = Uri.Query;
+            var query = this.Uri.Query;
             if(string.IsNullOrWhiteSpace(query) || query.Length <= 1 || query[0] != '?')
                 return empty;
             query = query.Substring(1);
@@ -68,8 +68,7 @@ namespace ExClient.Launch
 
         protected static int QueryValueAsInt32(string value)
         {
-            var r = 0;
-            if(int.TryParse(value, out r))
+            if(int.TryParse(value, out var r))
                 return r;
             value = value.Trim();
             var i = 0;
@@ -93,7 +92,7 @@ namespace ExClient.Launch
         {
             return Run(async token =>
             {
-                var result = await Client.Current.PostApiAsync(new GalleryToken(pageList));
+                var result = await Client.Current.HttpClient.PostApiAsync(new GalleryToken(pageList));
                 var type = new
                 {
                     tokenlist = (IReadOnlyList<GalleryInfo>)null
@@ -106,10 +105,7 @@ namespace ExClient.Launch
         {
             if(data.Path0 == "g" && data.Paths.Count == 3)
             {
-                long gId;
-                if(!long.TryParse(data.Paths[1], out gId))
-                    return false;
-                return true;
+                return long.TryParse(data.Paths[1], out var gId);
             }
             return false;
         }
@@ -131,14 +127,9 @@ namespace ExClient.Launch
         {
             if(data.Path0 == "gallerytorrents.php" && data.Paths.Count == 1)
             {
-                long gId;
-                if(!data.Queries.ContainsKey("gid"))
-                    return false;
-                if(!data.Queries.ContainsKey("t"))
-                    return false;
-                if(!long.TryParse(data.Queries["gid"], out gId))
-                    return false;
-                return true;
+                return data.Queries.ContainsKey("gid") 
+                    && data.Queries.ContainsKey("t") 
+                    && long.TryParse(data.Queries["gid"], out var gId);
             }
             return false;
         }
@@ -161,15 +152,9 @@ namespace ExClient.Launch
             if(data.Path0 == "s" && data.Paths.Count == 3)
             {
                 var sp = data.Paths[2].Split('-');
-                if(sp.Length != 2)
-                    return false;
-                long gId;
-                int pId;
-                if(!long.TryParse(sp[0], out gId))
-                    return false;
-                if(!int.TryParse(sp[1], out pId))
-                    return false;
-                return true;
+                return (sp.Length == 2)
+                    && long.TryParse(sp[0], out var gId)
+                    && int.TryParse(sp[1], out var pId);
             }
             return false;
         }

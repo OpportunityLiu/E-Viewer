@@ -22,11 +22,11 @@ namespace ExViewer.Views
 
         private void ensureCacheSize(int needSize)
         {
-            var needItemCount = needSize - imageViewCache.Count;
+            var needItemCount = needSize - this.imageViewCache.Count;
             if(needItemCount <= 0)
                 return;
-            imageViewCache.Capacity = needSize;
-            imageViewCache.AddRange(from i in Enumerable.Range(imageViewCache.Count, needItemCount)
+            this.imageViewCache.Capacity = needSize;
+            this.imageViewCache.AddRange(from i in Enumerable.Range(imageViewCache.Count, needItemCount)
                                     select new ImagePageImageView(this, i));
         }
 
@@ -37,11 +37,11 @@ namespace ExViewer.Views
             case NotifyCollectionChangedAction.Add:
                 for(int i = 0; i < e.NewItems.Count; i++)
                 {
-                    imageViewCache[e.NewStartingIndex + i].Refresh();
+                    this.imageViewCache[e.NewStartingIndex + i].Refresh();
                 }
                 break;
             default:
-                foreach(var item in imageViewCache.GetRange(0, Count))
+                foreach(var item in this.imageViewCache.GetRange(0, this.Count))
                 {
                     item.Refresh();
                 }
@@ -55,17 +55,17 @@ namespace ExViewer.Views
         {
             get
             {
-                return collection;
+                return this.collection;
             }
             set
             {
-                if(collection != null)
-                    collection.CollectionChanged -= collection_CollectionChanged;
-                collection = value;
-                if(collection != null)
+                if(this.collection != null)
+                    this.collection.CollectionChanged -= this.collection_CollectionChanged;
+                this.collection = value;
+                if(this.collection != null)
                 {
-                    collection.CollectionChanged += collection_CollectionChanged;
-                    ensureCacheSize(collection.RecordCount);
+                    this.collection.CollectionChanged += this.collection_CollectionChanged;
+                    ensureCacheSize(this.collection.RecordCount);
                 }
             }
         }
@@ -87,10 +87,10 @@ namespace ExViewer.Views
             {
                 get
                 {
-                    if(parent == null || parent.collection == null)
+                    if(this.parent == null || this.parent.collection == null)
                         return defaultImage;
-                    if(index < parent.collection.Count)
-                        return parent.collection[index];
+                    if(this.index < this.parent.collection.Count)
+                        return this.parent.collection[this.index];
                     return defaultImage;
                 }
             }
@@ -102,7 +102,7 @@ namespace ExViewer.Views
 
             public void Dispose()
             {
-                parent = null;
+                this.parent = null;
                 Refresh();
             }
         }
@@ -111,17 +111,17 @@ namespace ExViewer.Views
         {
             get
             {
-                if((uint)index < (uint)Count)
-                    return imageViewCache[index];
+                if((uint)index < (uint)this.Count)
+                    return this.imageViewCache[index];
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
         }
 
-        public int Count => collection?.RecordCount ?? 0;
+        public int Count => this.collection?.RecordCount ?? 0;
 
         public IEnumerator<IImagePageImageView> GetEnumerator()
         {
-            for(int i = 0; i < Count; i++)
+            for(int i = 0; i < this.Count; i++)
             {
                 yield return this[i];
             }
@@ -137,20 +137,20 @@ namespace ExViewer.Views
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!disposedValue)
+            if(!this.disposedValue)
             {
                 if(disposing)
                 {
                 }
-                if(collection != null)
-                    collection.CollectionChanged -= collection_CollectionChanged;
-                collection = null;
-                foreach(var item in imageViewCache)
+                if(this.collection != null)
+                    this.collection.CollectionChanged -= this.collection_CollectionChanged;
+                this.collection = null;
+                foreach(var item in this.imageViewCache)
                 {
                     item.Dispose();
                 }
-                imageViewCache = null;
-                disposedValue = true;
+                this.imageViewCache = null;
+                this.disposedValue = true;
             }
         }
 

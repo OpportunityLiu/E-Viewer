@@ -16,17 +16,17 @@ namespace ExViewer.Converters
         public sealed override object Convert(object value, Type targetType, object parameter, string language)
         {
             var convertedByThis = ConvertImpl(value, targetType, parameter, language);
-            if(InnerConverter == null)
+            if(this.InnerConverter == null)
                 return convertedByThis;
             else
-                return InnerConverter.Convert(convertedByThis, targetType, parameter, language);
+                return this.InnerConverter.Convert(convertedByThis, targetType, parameter, language);
         }
 
         public sealed override object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             object convertedByInner;
-            if(InnerConverter != null)
-                convertedByInner = InnerConverter.ConvertBack(value, targetType, parameter, language);
+            if(this.InnerConverter != null)
+                convertedByInner = this.InnerConverter.ConvertBack(value, targetType, parameter, language);
             else
                 convertedByInner = value;
             return ConvertBackImpl(convertedByInner, targetType, parameter, language);

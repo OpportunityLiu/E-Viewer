@@ -124,15 +124,15 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return searchResult;
+                return this.searchResult;
             }
             protected set
             {
-                if(searchResult != null)
-                    searchResult.LoadMoreItemsException -= SearchResult_LoadMoreItemsException;
-                Set(ref searchResult, value);
-                if(searchResult != null)
-                    searchResult.LoadMoreItemsException += SearchResult_LoadMoreItemsException;
+                if(this.searchResult != null)
+                    this.searchResult.LoadMoreItemsException -= this.SearchResult_LoadMoreItemsException;
+                Set(ref this.searchResult, value);
+                if(this.searchResult != null)
+                    this.searchResult.LoadMoreItemsException += this.SearchResult_LoadMoreItemsException;
             }
         }
 
@@ -142,11 +142,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return selectedGallery;
+                return this.selectedGallery;
             }
             protected set
             {
-                Set(ref selectedGallery, value);
+                Set(ref this.selectedGallery, value);
             }
         }
 

@@ -26,7 +26,7 @@ namespace ExViewer.Helpers
             {
                 this.handler = handler;
                 var t = DataTransferManager.GetForCurrentView();
-                t.DataRequested += T_DataRequested;
+                t.DataRequested += this.T_DataRequested;
             }
 
             private TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler;
@@ -37,8 +37,8 @@ namespace ExViewer.Helpers
                 d.Properties.Title = Package.Current.DisplayName;
                 d.Properties.ApplicationName = Package.Current.DisplayName;
                 d.Properties.PackageFamilyName = Package.Current.Id.FamilyName;
-                handler?.Invoke(sender, args);
-                sender.DataRequested -= T_DataRequested;
+                this.handler?.Invoke(sender, args);
+                sender.DataRequested -= this.T_DataRequested;
             }
         }
     }

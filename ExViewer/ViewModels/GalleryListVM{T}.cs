@@ -15,13 +15,13 @@ namespace ExViewer.ViewModels
     {
         protected GalleryListVM()
         {
-            Delete = new RelayCommand<Gallery>(async g =>
+            this.Delete = new RelayCommand<Gallery>(async g =>
             {
                 await g.DeleteAsync();
                 this.Galleries?.Remove(g);
                 RootControl.RootController.SendToast(Strings.Resources.GalleryDeleted, typeof(SavedPage));
             });
-            Open = new RelayCommand<Gallery>(g =>
+            this.Open = new RelayCommand<Gallery>(g =>
             {
                 GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
@@ -34,11 +34,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return galleries;
+                return this.galleries;
             }
             protected set
             {
-                Set(ref galleries, value);
+                Set(ref this.galleries, value);
             }
         }
 

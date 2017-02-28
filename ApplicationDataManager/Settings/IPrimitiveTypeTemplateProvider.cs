@@ -4,24 +4,6 @@ namespace ApplicationDataManager.Settings
 {
     public interface IPrimitiveTypeTemplateProvider
     {
-        DataTemplate StringTemplate
-        {
-            get;
-        }
-
-        DataTemplate NumberTemplate
-        {
-            get;
-        }
-
-        DataTemplate EnumTemplate
-        {
-            get;
-        }
-
-        DataTemplate BooleanTemplate
-        {
-            get;
-        }
+        DataTemplate GetTemplateOf(ValueType type);
     }
 }

@@ -27,9 +27,9 @@ namespace ExViewer.Controls
     {
         public HtmlTextBlock()
         {
-            DefaultStyleKey = typeof(HtmlTextBlock);
-            this.Loaded += OnLoaded;
-            this.Unloaded += OnUnloaded;
+            this.DefaultStyleKey = typeof(HtmlTextBlock);
+            this.Loaded += this.OnLoaded;
+            this.Unloaded += this.OnUnloaded;
         }
 
         private RichTextBlock Presenter;
@@ -150,9 +150,9 @@ namespace ExViewer.Controls
             get { return (bool)GetValue(HasHyperlinksProperty); }
             private set
             {
-                canChangeHasHyperlinks = true;
+                this.canChangeHasHyperlinks = true;
                 SetValue(HasHyperlinksProperty, value);
-                canChangeHasHyperlinks = false;
+                this.canChangeHasHyperlinks = false;
             }
         }
 
@@ -252,7 +252,7 @@ namespace ExViewer.Controls
                     u.Inlines.Add(item);
                 return u;
             case "del"://[s]
-                var s = new Span() { Foreground = (Brush)Resources["SystemControlBackgroundChromeMediumBrush"] };
+                var s = new Span() { Foreground = (Brush)this.Resources["SystemControlBackgroundChromeMediumBrush"] };
                 foreach(var item in createChildNodes(node, hyperlinks, detectLink))
                     s.Inlines.Add(item);
                 return s;
@@ -352,12 +352,12 @@ namespace ExViewer.Controls
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            dpi.DpiChanged += Dpi_DpiChanged;
+            dpi.DpiChanged += this.Dpi_DpiChanged;
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            dpi.DpiChanged -= Dpi_DpiChanged;
+            dpi.DpiChanged -= this.Dpi_DpiChanged;
         }
 
         private void Dpi_DpiChanged(DisplayInformation sender, object args)

@@ -25,7 +25,7 @@ namespace ExViewer.Controls
         public CategorySelector()
         {
             this.InitializeComponent();
-            filter = new List<FilterRecord>()
+            this.filter = new List<FilterRecord>()
             {
                 new FilterRecord(Category.Doujinshi,true),
                 new FilterRecord(Category.Manga, true),
@@ -38,21 +38,21 @@ namespace ExViewer.Controls
                 new FilterRecord(Category.AsianPorn, true),
                 new FilterRecord(Category.Misc, true)
             };
-            foreach(var item in filter)
+            foreach(var item in this.filter)
             {
-                item.PropertyChanged += filterItem_PropertyChanged;
+                item.PropertyChanged += this.filterItem_PropertyChanged;
             }
         }
 
         private void filterItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var category = Category.Unspecified;
-            foreach(var item in filter)
+            foreach(var item in this.filter)
             {
                 if(item.IsChecked)
                     category |= item.Category;
             }
-            SelectedCategory = category;
+            this.SelectedCategory = category;
         }
 
         public Category SelectedCategory
@@ -116,16 +116,16 @@ namespace ExViewer.Controls
         {
             if(touch)
             {
-                for(int i = 0; i < filter.Count; i++)
+                for(int i = 0; i < this.filter.Count; i++)
                 {
-                    ((FrameworkElement)gv_AdvancedSearch.ContainerFromIndex(i)).Margin = touchThickness;
+                    ((FrameworkElement)this.gv_AdvancedSearch.ContainerFromIndex(i)).Margin = touchThickness;
                 }
             }
             else
             {
-                for(int i = 0; i < filter.Count; i++)
+                for(int i = 0; i < this.filter.Count; i++)
                 {
-                    ((FrameworkElement)gv_AdvancedSearch.ContainerFromIndex(i)).Margin = mouseThickness;
+                    ((FrameworkElement)this.gv_AdvancedSearch.ContainerFromIndex(i)).Margin = mouseThickness;
 
                 }
             }
@@ -137,8 +137,8 @@ namespace ExViewer.Controls
 
         private void gv_AdvancedSearch_Loaded(object sender, RoutedEventArgs e)
         {
-            setMargin(TouchAdaptive);
-            gvLoaded = true;
+            setMargin(this.TouchAdaptive);
+            this.gvLoaded = true;
         }
     }
 
@@ -146,8 +146,8 @@ namespace ExViewer.Controls
     {
         public FilterRecord(Category category, bool isChecked)
         {
-            Category = category;
-            IsChecked = isChecked;
+            this.Category = category;
+            this.IsChecked = isChecked;
         }
 
         public Category Category
@@ -161,11 +161,11 @@ namespace ExViewer.Controls
         {
             get
             {
-                return isChecked;
+                return this.isChecked;
             }
             set
             {
-                Set(ref isChecked, value);
+                Set(ref this.isChecked, value);
             }
         }
     }

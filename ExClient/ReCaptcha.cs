@@ -14,7 +14,7 @@ namespace ExClient
         static Uri recaptchaUri = new Uri("https://www.google.com/recaptcha/api/noscript?k=6LdtfgYAAAAAALjIPPiCgPJJah8MhAUpnHcKF8u_");
         static Uri imageBaseUri = new Uri("https://www.google.com/recaptcha/api/");
 
-        public static IAsyncOperation<ReCaptcha> Fetch()
+        public static IAsyncOperation<ReCaptcha> FetchAsync()
         {
             return Run(async token =>
             {
@@ -25,9 +25,9 @@ namespace ExClient
                     var h = await g;
                     var html = new HtmlDocument();
                     html.LoadHtml(h);
-                    var recaptcha_challenge_field = html.GetElementbyId("recaptcha_challenge_field").GetAttributeValue("value", "");
+                    var cf = html.GetElementbyId("recaptcha_challenge_field").GetAttributeValue("value", "");
                     var imgUri = html.DocumentNode.Descendants("img").Single().GetAttributeValue("src", "");
-                    return new ReCaptcha(recaptcha_challenge_field, imgUri);
+                    return new ReCaptcha(cf, imgUri);
                 }
             });
         }
@@ -35,7 +35,7 @@ namespace ExClient
         private ReCaptcha(string recaptchaChallengeField, string imageUri)
         {
             this.recaptchaChallengeField = recaptchaChallengeField;
-            ImageUri = new Uri(imageBaseUri, imageUri);
+            this.ImageUri = new Uri(imageBaseUri, imageUri);
         }
 
         //recaptcha_challenge_field
@@ -47,18 +47,18 @@ namespace ExClient
         }
 
         //recaptcha_response_field
-        public IAsyncAction Submit(string response)
+        public IAsyncAction Submit(string result)
         {
             return Run(async token =>
             {
                 using(var c = new HttpClient())
                 {
-                    var message = new Dictionary<string, string>()
+                    IEnumerable<KeyValuePair<string, string>> message()
                     {
-                        ["recaptcha_challenge_field"] = recaptchaChallengeField,
-                        ["recaptcha_response_field"] = response
-                    };
-                    var post = c.PostAsync(recaptchaUri, new HttpFormUrlEncodedContent(message));
+                        yield return new KeyValuePair<string, string>("recaptcha_challenge_field", this.recaptchaChallengeField);
+                        yield return new KeyValuePair<string, string>("recaptcha_response_field", result);
+                    }
+                    var post = c.PostAsync(recaptchaUri, new HttpFormUrlEncodedContent(message()));
                     token.Register(post.Cancel);
                     var res = await post;
                     var str = await res.Content.ReadAsStringAsync();
@@ -67,10 +67,12 @@ namespace ExClient
                     var ans = html.DocumentNode.Descendants("textarea").SingleOrDefault();
                     if(ans == null)
                         throw new ArgumentException(LocalizedStrings.Resources.WrongCaptcha);
-                    Answer = ans.InnerText;
+                    this.Answer = ans.InnerText;
                 }
             });
         }
+
+        public bool ReCaptchaCompleted => this.Answer != null;
 
         internal string Answer
         {

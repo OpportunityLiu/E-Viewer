@@ -106,11 +106,14 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-cn\Resources.resJson" />
+    <PRIResource Include="Strings\en\Resources.resJson" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\ApplicationSettingCollection.cs" />
     <Compile Include="Settings\Attributes.cs" />
+    <Compile Include="Settings\BooleanAttributes.cs" />
     <Compile Include="Settings\GroupedSettings.cs" />
     <Compile Include="Settings\SettingInfo.cs" />
     <Compile Include="Settings\StringLoader.cs" />
@@ -121,15 +124,27 @@
       <DependentUpon>DefaultTemplateProvider.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\SettingTemplateSelector.cs" />
+    <Compile Include="Strings\Strings.tt.cs">
+      <DependentUpon>Strings.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\ApplicationDataManager.rd.xml" />
+    <None Include="Strings\Strings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Strings.tt.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Settings\Xaml\DefaultTemplateProvider.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

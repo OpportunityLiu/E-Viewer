@@ -34,7 +34,7 @@ namespace ExViewer.Views
         public RootControl()
         {
             this.InitializeComponent();
-            tabs = new Dictionary<Controls.SplitViewTab, Type>()
+            this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
                 [this.svt_Saved] = typeof(SavedPage),
                 [this.svt_Cached] = typeof(CachedPage),
@@ -43,7 +43,7 @@ namespace ExViewer.Views
                 [this.svt_Settings] = typeof(SettingsPage)
             };
 
-            pages = new Dictionary<Type, Controls.SplitViewTab>()
+            this.pages = new Dictionary<Type, Controls.SplitViewTab>()
             {
                 [typeof(CachedPage)] = this.svt_Cached,
                 [typeof(SavedPage)] = this.svt_Saved,
@@ -51,9 +51,9 @@ namespace ExViewer.Views
                 [typeof(FavoritesPage)] = this.svt_Favorites,
                 [typeof(SettingsPage)] = this.svt_Settings
             };
-            sv_root.IsPaneOpen = false;
+            this.sv_root.IsPaneOpen = false;
 #if DEBUG
-            this.GotFocus += OnGotFocus;
+            this.GotFocus += this.OnGotFocus;
         }
 
         private void OnGotFocus(object sender, RoutedEventArgs e)
@@ -82,14 +82,8 @@ namespace ExViewer.Views
 
         public UserInfo UserInfo
         {
-            get
-            {
-                return (UserInfo)GetValue(UserInfoProperty);
-            }
-            set
-            {
-                SetValue(UserInfoProperty, value);
-            }
+            get => (UserInfo)GetValue(UserInfoProperty);
+            set => SetValue(UserInfoProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for UserInfo.  This enables animation, styling, binding, etc...
@@ -100,48 +94,48 @@ namespace ExViewer.Views
 
         private void btn_pane_Click(object sender, RoutedEventArgs e)
         {
-            sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
+            this.sv_root.IsPaneOpen = !this.sv_root.IsPaneOpen;
         }
 
         private async void Control_Loading(FrameworkElement sender, object args)
         {
             RootController.SetRoot(this);
-            manager = SystemNavigationManager.GetForCurrentView();
-            manager.BackRequested += Manager_BackRequested;
-            fm_inner.Navigate(HomePageType ?? typeof(SearchPage));
+            this.manager = SystemNavigationManager.GetForCurrentView();
+            this.manager.BackRequested += this.Manager_BackRequested;
+            this.fm_inner.Navigate(this.HomePageType ?? typeof(SearchPage));
             await Task.Yield();
             this.Focus(FocusState.Pointer);
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            UserInfo = await UserInfo.LoadFromCache();
+            this.UserInfo = await UserInfo.LoadFromCache();
             RootController.UpdateUserInfo(false);
             RootController.HandleUriLaunch();
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)
         {
-            manager.BackRequested -= Manager_BackRequested;
+            this.manager.BackRequested -= this.Manager_BackRequested;
         }
 
         private void Manager_BackRequested(object sender, BackRequestedEventArgs e)
         {
-            if(fm_inner.CanGoBack && !RootController.ViewDisabled)
+            if(this.fm_inner.CanGoBack && !RootController.ViewDisabled)
             {
-                fm_inner.GoBack();
+                this.fm_inner.GoBack();
                 e.Handled = true;
             }
         }
 
         private void fm_inner_Navigated(object sender, NavigationEventArgs e)
         {
-            if(fm_inner.CanGoBack)
-                manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            if(this.fm_inner.CanGoBack)
+                this.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             else
-                manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                this.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             Controls.SplitViewTab tab;
-            var pageType = fm_inner.Content.GetType();
+            var pageType = this.fm_inner.Content.GetType();
             JYAnalyticsUniversal.JYAnalytics.TrackPageStart(pageType.Name);
             if(this.pages.TryGetValue(pageType, out tab))
             {
@@ -151,7 +145,7 @@ namespace ExViewer.Views
 
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-            var content = fm_inner.Content;
+            var content = this.fm_inner.Content;
             if(content == null)
                 return;
             var pageType = content.GetType();
@@ -168,8 +162,8 @@ namespace ExViewer.Views
             var s = (Controls.SplitViewTab)sender;
             if(s.IsChecked)
                 return;
-            fm_inner.Navigate(tabs[s]);
-            sv_root.IsPaneOpen = !sv_root.IsPaneOpen;
+            this.fm_inner.Navigate(this.tabs[s]);
+            this.sv_root.IsPaneOpen = !this.sv_root.IsPaneOpen;
         }
 
         private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)

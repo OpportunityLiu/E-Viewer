@@ -30,7 +30,7 @@ namespace ExViewer.Controls
         {
             this.InitializeComponent();
             var version = Package.Current.Id.Version;
-            tb_AppVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
+            this.tb_AppVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
             this.tb_AppName.Text = Package.Current.DisplayName;
             this.tb_AppAuthor.Text = Package.Current.PublisherDisplayName;
             this.tb_AppDescription.Text = Strings.Resources.AppDescription;

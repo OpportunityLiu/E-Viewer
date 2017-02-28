@@ -30,7 +30,7 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
             BannerProvider.Provider.GetBannerAsync().Completed =
-                async (s, e) => await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => loadBanner(s.GetResults()));
+                async (s, e) => await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => loadBanner(s.GetResults()));
             this.loadApplication();
         }
 
@@ -38,7 +38,7 @@ namespace ExViewer.Views
         {
             using(var stream = await banner.OpenReadAsync())
             {
-                await ((BitmapImage)img_pic.Source).SetSourceAsync(stream);
+                await ((BitmapImage)this.img_pic.Source).SetSourceAsync(stream);
             }
         }
 
@@ -78,7 +78,7 @@ namespace ExViewer.Views
         {
             if(DeviceTrigger.IsMobile)
                 return;
-            var l = splashScreen.ImageLocation;
+            var l = this.splashScreen.ImageLocation;
             this.img_splash.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
             this.img_splash.Width = l.Width;
             this.img_splash.Height = l.Height;
@@ -94,33 +94,33 @@ namespace ExViewer.Views
         {
             if(SettingCollection.Current.NeedVerify)
                 await verify();
-            rootControl.PreviousState = previousExecutionState;
-            rootControl.HomePageType = homePageType;
+            this.rootControl.PreviousState = this.previousExecutionState;
+            this.rootControl.HomePageType = this.homePageType;
             Themes.ThemeExtention.SetTitleBar();
-            Window.Current.Content = rootControl;
-            rootControl = null;
+            Window.Current.Content = this.rootControl;
+            this.rootControl = null;
             JYAnalytics.TrackPageEnd(nameof(SplashControl));
         }
 
         private void setLoadingFinished()
         {
-            lock(goToContentSyncRoot)
+            lock(this.goToContentSyncRoot)
             {
-                if(goToContentEnabled)
+                if(this.goToContentEnabled)
                     goToContent();
                 else
-                    loadingFinished = true;
+                    this.loadingFinished = true;
             }
         }
 
         public void EnableGoToContent()
         {
-            lock(goToContentSyncRoot)
+            lock(this.goToContentSyncRoot)
             {
-                if(loadingFinished)
+                if(this.loadingFinished)
                     goToContent();
                 else
-                    goToContentEnabled = true;
+                    this.goToContentEnabled = true;
             }
         }
 
@@ -134,13 +134,13 @@ namespace ExViewer.Views
         {
             await Task.Delay(100);
             Window.Current.Activate();
-            ShowPic.Begin();
-            lock(loadingSyncRoot)
+            this.ShowPic.Begin();
+            lock(this.loadingSyncRoot)
             {
-                if(applicationLoaded)
+                if(this.applicationLoaded)
                     setLoadingFinished();
                 else
-                    effectLoaded = true;
+                    this.effectLoaded = true;
             }
         }
 
@@ -192,13 +192,13 @@ namespace ExViewer.Views
                 else
                     this.homePageType = typeof(SearchPage);
             });
-            rootControl = new RootControl();
-            lock(loadingSyncRoot)
+            this.rootControl = new RootControl();
+            lock(this.loadingSyncRoot)
             {
-                if(effectLoaded)
+                if(this.effectLoaded)
                     setLoadingFinished();
                 else
-                    applicationLoaded = true;
+                    this.applicationLoaded = true;
             }
             var ignore = Task.Delay(30000).ContinueWith(async t => await BannerProvider.Provider.FetchBanners());
         }

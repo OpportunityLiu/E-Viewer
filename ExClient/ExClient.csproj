@@ -105,12 +105,9 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
-    <PRIResource Include="Strings\zh-cn\Namespace.resw" />
-    <PRIResource Include="Strings\zh-cn\Category.resw">
-      <SubType>Designer</SubType>
-    </PRIResource>
-    <PRIResource Include="Strings\zh-cn\Resources.resw" />
-    <PRIResource Include="Strings\en\Resources.resw" />
+    <PRIResource Include="Strings\zh-cn\Resources.resjson" />
+    <PRIResource Include="Strings\zh-cn\Category.resjson" />
+    <PRIResource Include="Strings\zh-cn\Namespace.resjson" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
@@ -181,8 +178,9 @@
     <Compile Include="TorrentInfo.cs" />
     <Compile Include="Launch\UriLauncher.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
-    <PRIResource Include="Strings\en\Namespace.resw" />
-    <PRIResource Include="Strings\en\Category.resw" />
+    <PRIResource Include="Strings\en\Namespace.resjson" />
+    <PRIResource Include="Strings\en\Category.resjson" />
+    <PRIResource Include="Strings\en\Resources.resjson" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.tt.cs</LastGenOutput>
@@ -196,6 +194,7 @@
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

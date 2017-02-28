@@ -33,13 +33,13 @@ namespace ExViewer.Views
         public GalleryPage()
         {
             this.InitializeComponent();
-            gd_Info.RegisterPropertyChangedCallback(ActualHeightProperty, set_btn_Scroll_Rotation);
-            sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, set_btn_Scroll_Rotation);
+            this.gd_Info.RegisterPropertyChangedCallback(ActualHeightProperty, this.set_btn_Scroll_Rotation);
+            this.sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, this.set_btn_Scroll_Rotation);
         }
 
         private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)
         {
-            var infoHeight = gd_Info.ActualHeight;
+            var infoHeight = this.gd_Info.ActualHeight;
             if(infoHeight < 1)
                 this.ct_btn_Scroll.Rotation = 0;
             else
@@ -49,11 +49,11 @@ namespace ExViewer.Views
         private async void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
             await Task.Yield();
-            if(e.NextView.VerticalOffset < e.FinalView.VerticalOffset && sv_Content.VerticalOffset < 1)
+            if(e.NextView.VerticalOffset < e.FinalView.VerticalOffset && this.sv_Content.VerticalOffset < 1)
             {
                 changeViewTo(true, false);
             }
-            else if(e.IsInertial && e.NextView.VerticalOffset < 1 && sv_Content.VerticalOffset > gd_Info.ActualHeight - 1)
+            else if(e.IsInertial && e.NextView.VerticalOffset < 1 && this.sv_Content.VerticalOffset > this.gd_Info.ActualHeight - 1)
             {
                 changeViewTo(false, false);
             }
@@ -73,20 +73,20 @@ namespace ExViewer.Views
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            gd_Pivot.Height = availableSize.Height - 48;
+            this.gd_Pivot.Height = availableSize.Height - 48;
             return base.MeasureOverride(availableSize);
         }
 
         private void page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(needResetView)
+            if(this.needResetView)
             {
-                needResetView = false;
+                this.needResetView = false;
                 resetView();
             }
-            else if(needRestoreView)
+            else if(this.needRestoreView)
             {
-                needRestoreView = false;
+                this.needRestoreView = false;
                 restoreView();
             }
             else
@@ -98,19 +98,19 @@ namespace ExViewer.Views
         private void resetView()
         {
             changeViewTo(false, true);
-            gv.ScrollIntoView(VM.Gallery.FirstOrDefault());
-            lv_Comments.ScrollIntoView(lv_Comments.Items.FirstOrDefault());
-            lv_Torrents.ScrollIntoView(lv_Torrents.Items.FirstOrDefault());
-            lv_Tags.ScrollIntoView(lv_Tags.Items.FirstOrDefault());
+            this.gv.ScrollIntoView(this.VM.Gallery.FirstOrDefault());
+            this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
+            this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
+            this.lv_Tags.ScrollIntoView(this.lv_Tags.Items.FirstOrDefault());
         }
 
         private void restoreView()
         {
-            changeViewTo(isGd_InfoHideWhenLeave, true);
-            var current = VM.GetCurrent();
+            changeViewTo(this.isGd_InfoHideWhenLeave, true);
+            var current = this.VM.GetCurrent();
             if(current != null)
             {
-                gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
+                this.gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
             }
         }
 
@@ -120,23 +120,23 @@ namespace ExViewer.Views
         {
             get
             {
-                var fullOffset = gd_Info.ActualHeight;
-                return sv_Content.VerticalOffset > fullOffset * 0.95;
+                var fullOffset = this.gd_Info.ActualHeight;
+                return this.sv_Content.VerticalOffset > fullOffset * 0.95;
             }
         }
 
         private void changeView(bool keep)
         {
-            changeViewTo(!IsGd_InfoHide ^ keep, false);
+            changeViewTo(!this.IsGd_InfoHide ^ keep, false);
         }
 
         private void changeViewTo(bool view, bool disableAnimation)
         {
-            var fullOffset = gd_Info.ActualHeight;
+            var fullOffset = this.gd_Info.ActualHeight;
             if(view)
-                sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
+                this.sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
             else
-                sv_Content.ChangeView(null, 0, null, disableAnimation);
+                this.sv_Content.ChangeView(null, 0, null, disableAnimation);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -145,47 +145,47 @@ namespace ExViewer.Views
 
             if(e.NavigationMode == NavigationMode.New)
             {
-                pv.SelectedIndex = 0;
-                needResetView = true;
+                this.pv.SelectedIndex = 0;
+                this.needResetView = true;
             }
-            VM = await GalleryVM.GetVMAsync((long)e.Parameter);
+            this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             if(e.NavigationMode == NavigationMode.Back)
             {
-                entranceElement = (UIElement)gv.ContainerFromIndex(VM.CurrentIndex);
-                if(entranceElement != null)
+                this.entranceElement = (UIElement)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
+                if(this.entranceElement != null)
                 {
-                    EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, true);
+                    EntranceNavigationTransitionInfo.SetIsTargetElement(this.entranceElement, true);
                 }
             }
             await Task.Delay(20);
             switch(e.NavigationMode)
             {
             case NavigationMode.New:
-                pv.Focus(FocusState.Programmatic);
+                this.pv.Focus(FocusState.Programmatic);
                 break;
             case NavigationMode.Back:
-                needRestoreView = true;
-                ((Control)entranceElement)?.Focus(FocusState.Programmatic);
+                this.needRestoreView = true;
+                ((Control)this.entranceElement)?.Focus(FocusState.Programmatic);
                 break;
             }
-            if(needResetView)
-                sv_Content.ChangeView(null, 0, null);
+            if(this.needResetView)
+                this.sv_Content.ChangeView(null, 0, null);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            isGd_InfoHideWhenLeave = IsGd_InfoHide;
+            this.isGd_InfoHideWhenLeave = this.IsGd_InfoHide;
             base.OnNavigatingFrom(e);
-            if(entranceElement != null)
-                EntranceNavigationTransitionInfo.SetIsTargetElement(entranceElement, false);
+            if(this.entranceElement != null)
+                EntranceNavigationTransitionInfo.SetIsTargetElement(this.entranceElement, false);
         }
 
         UIElement entranceElement;
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(VM.OpenImage.CanExecute(e.ClickedItem))
-                VM.OpenImage.Execute(e.ClickedItem);
+            if(this.VM.OpenImage.CanExecute(e.ClickedItem))
+                this.VM.OpenImage.Execute(e.ClickedItem);
         }
 
         public GalleryVM VM
@@ -215,19 +215,19 @@ namespace ExViewer.Views
         {
             var s = (ListViewBase)sender;
             var container = (SelectorItem)s.ContainerFromItem(e.ClickedItem);
-            foreach(var item in mfo_Tag.Items)
+            foreach(var item in this.mfo_Tag.Items)
             {
                 item.DataContext = e.ClickedItem;
             }
 
-            ewd.RequestedTheme = SettingCollection.Current.Theme.ToElementTheme();
-            ewd.SetTag((Tag)e.ClickedItem);
-            mfo_Tag.ShowAt(container);
+            this.ewd.RequestedTheme = SettingCollection.Current.Theme.ToElementTheme();
+            this.ewd.SetTag((Tag)e.ClickedItem);
+            this.mfo_Tag.ShowAt(container);
         }
 
         private async void mfi_EhWiki_Click(object sender, RoutedEventArgs e)
         {
-            await ewd.ShowAsync();
+            await this.ewd.ShowAsync();
         }
 
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
@@ -238,20 +238,20 @@ namespace ExViewer.Views
 
         private async void pv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch(pv.SelectedIndex)
+            switch(this.pv.SelectedIndex)
             {
             case 1://Comments
-                if(VM.Gallery.Comments == null)
-                    await VM.LoadComments();
+                if(this.VM.Gallery.Comments == null)
+                    await this.VM.LoadComments();
                 break;
             case 2://Torrents
-                if(VM.Torrents == null)
-                    await VM.LoadTorrents();
+                if(this.VM.Torrents == null)
+                    await this.VM.LoadTorrents();
                 await Task.Delay(150);
-                if(lv_Torrents.Items.Count > 0)
+                if(this.lv_Torrents.Items.Count > 0)
                 {
-                    lv_Torrents.SelectedIndex = -1;
-                    lv_Torrents.SelectedIndex = 0;
+                    this.lv_Torrents.SelectedIndex = -1;
+                    this.lv_Torrents.SelectedIndex = 0;
                 }
                 break;
             }
@@ -259,14 +259,14 @@ namespace ExViewer.Views
 
         public void ChangePivotSelection(int index)
         {
-            pv.SelectedIndex = index;
+            this.pv.SelectedIndex = index;
         }
 
         private void lv_Torrents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             foreach(var item in e.RemovedItems)
             {
-                var con = (ListViewItem)lv_Torrents.ContainerFromItem(item);
+                var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(item);
                 if(con == null)
                     continue;
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
@@ -275,7 +275,7 @@ namespace ExViewer.Views
             var added = e.AddedItems.FirstOrDefault();
             if(added != null)
             {
-                var con = (ListViewItem)lv_Torrents.ContainerFromItem(added);
+                var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(added);
                 if(con == null)
                     return;
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
@@ -285,16 +285,16 @@ namespace ExViewer.Views
 
         private void pv_Loaded(object sender, RoutedEventArgs e)
         {
-            var sv_pv = pv.FirstDescendant("PivotItemPresenter");
-            var sv_pv2 = pv.FirstDescendant("HeaderClipper");
-            sv_pv.PointerWheelChanged += pv_Header_PointerWheelChanged;
-            sv_pv2.PointerWheelChanged += pv_Header_PointerWheelChanged;
-            pv.Loaded -= pv_Loaded;
+            var sv_pv = this.pv.FirstDescendant("PivotItemPresenter");
+            var sv_pv2 = this.pv.FirstDescendant("HeaderClipper");
+            sv_pv.PointerWheelChanged += this.pv_Header_PointerWheelChanged;
+            sv_pv2.PointerWheelChanged += this.pv_Header_PointerWheelChanged;
+            this.pv.Loaded -= this.pv_Loaded;
         }
 
         private void gd_Info_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            bd_GvFooter.Height = e.NewSize.Height;
+            this.bd_GvFooter.Height = e.NewSize.Height;
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -305,11 +305,11 @@ namespace ExViewer.Views
             {
             case VirtualKey.GamepadMenu:
             case VirtualKey.Application:
-                if(cb_top.IsOpen = !cb_top.IsOpen)
+                if(this.cb_top.IsOpen = !this.cb_top.IsOpen)
                 {
-                    if(btn_MoreButton == null)
-                        btn_MoreButton = cb_top.FirstDescendant<Button>("MoreButton");
-                    btn_MoreButton.Focus(FocusState.Programmatic);
+                    if(this.btn_MoreButton == null)
+                        this.btn_MoreButton = this.cb_top.FirstDescendant<Button>("MoreButton");
+                    this.btn_MoreButton.Focus(FocusState.Programmatic);
                 }
                 break;
             default:
@@ -325,13 +325,13 @@ namespace ExViewer.Views
             var fe_Content = (FrameworkElement)sender;
             var bd_Content = VisualTreeHelper.GetChild(fe_Content, 0);
             var sv_Content = (ScrollViewer)VisualTreeHelper.GetChild(bd_Content, 0);
-            sv_Content.ViewChanging += pv_Content_ViewChanging;
-            fe_Content.Loaded -= pv_Content_Loaded;
+            sv_Content.ViewChanging += this.pv_Content_ViewChanging;
+            fe_Content.Loaded -= this.pv_Content_Loaded;
         }
 
         public void CloseAll()
         {
-            cb_top.IsOpen = false;
+            this.cb_top.IsOpen = false;
         }
     }
 }

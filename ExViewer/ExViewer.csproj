@@ -21,7 +21,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>923586DE9DA4CC8E3B381F4D8609BC09E7F3E6AC</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>F120808E06E3C9DCDA03BA86AF3F99CE4729E527</PackageCertificateThumbprint>
     <HockeyAppResourceId>9c09ca3908114a38a09c81ca8b68ee39</HockeyAppResourceId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
@@ -98,7 +98,7 @@
     <None Include="App.config" />
     <None Include="ExViewer_StoreKey.pfx" />
     <None Include="project.json" />
-    <PRIResource Include="Strings\zh-cn\Settings.resw" />
+    <PRIResource Include="Strings\zh-cn\Settings.resJson" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\CommentViewer.xaml.cs">
@@ -272,7 +272,7 @@
     <Content Include="Assets\Wide.scale-400.png" />
     <PRIResource Include="Strings\zh-cn\Resources.resJson" />
     <PRIResource Include="Strings\en\Resources.resJson" />
-    <PRIResource Include="Strings\en\Settings.resw" />
+    <PRIResource Include="Strings\en\Settings.resJson" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.tt.cs</LastGenOutput>
@@ -480,6 +480,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

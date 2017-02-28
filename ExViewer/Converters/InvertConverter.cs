@@ -14,7 +14,7 @@ namespace ExViewer.Converters
         {
             try
             {
-                return InnerConverter.ConvertBack(value, targetType, parameter, language);
+                return this.InnerConverter.ConvertBack(value, targetType, parameter, language);
             }
             catch(Exception)
             {
@@ -24,7 +24,7 @@ namespace ExViewer.Converters
 
         public override object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            return InnerConverter.Convert(value, targetType, parameter, language);
+            return this.InnerConverter.Convert(value, targetType, parameter, language);
         }
 
         protected override void OnInnerConverterChanged(DependencyPropertyChangedEventArgs e)

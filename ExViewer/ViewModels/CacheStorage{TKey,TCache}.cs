@@ -55,9 +55,9 @@ namespace ExViewer.ViewModels
         public void Add(TKey key, TCache value)
         {
             EnsureCapacity();
-            if(!cacheDictionary.ContainsKey(key))
-                cacheQueue.Enqueue(key);
-            cacheDictionary[key] = value;
+            if(!this.cacheDictionary.ContainsKey(key))
+                this.cacheQueue.Enqueue(key);
+            this.cacheDictionary[key] = value;
         }
 
         public IAsyncOperation<TCache> GetAsync(TKey key)
@@ -65,15 +65,15 @@ namespace ExViewer.ViewModels
             return Run(async token =>
             {
                 EnsureCapacity();
-                if(cacheDictionary.ContainsKey(key))
-                    return cacheDictionary[key];
+                if(this.cacheDictionary.ContainsKey(key))
+                    return this.cacheDictionary[key];
                 else
                 {
-                    cacheQueue.Enqueue(key);
-                    if(asyncLoader != null)
-                        return cacheDictionary[key] = await asyncLoader(key);
+                    this.cacheQueue.Enqueue(key);
+                    if(this.asyncLoader != null)
+                        return this.cacheDictionary[key] = await this.asyncLoader(key);
                     else
-                        return cacheDictionary[key] = loader(key);
+                        return this.cacheDictionary[key] = this.loader(key);
                 }
             });
         }
@@ -81,37 +81,37 @@ namespace ExViewer.ViewModels
         public TCache Get(TKey key)
         {
             EnsureCapacity();
-            if(cacheDictionary.ContainsKey(key))
-                return cacheDictionary[key];
+            if(this.cacheDictionary.ContainsKey(key))
+                return this.cacheDictionary[key];
             else
             {
-                cacheQueue.Enqueue(key);
-                if(asyncLoader != null)
-                    return cacheDictionary[key] = asyncLoader(key).AsTask().Result;
+                this.cacheQueue.Enqueue(key);
+                if(this.asyncLoader != null)
+                    return this.cacheDictionary[key] = this.asyncLoader(key).AsTask().Result;
                 else
-                    return cacheDictionary[key] = loader(key);
+                    return this.cacheDictionary[key] = this.loader(key);
             }
         }
 
         public bool ContainsKey(TKey key)
         {
-            return cacheDictionary.ContainsKey(key);
+            return this.cacheDictionary.ContainsKey(key);
         }
 
         public bool ContainsValue(TCache value)
         {
-            return cacheDictionary.ContainsValue(value);
+            return this.cacheDictionary.ContainsValue(value);
         }
 
         public bool TryGet(TKey key, out TCache value)
         {
-            return cacheDictionary.TryGetValue(key, out value);
+            return this.cacheDictionary.TryGetValue(key, out value);
         }
 
         public void EnsureCapacity()
         {
-            while(cacheQueue.Count > MaxCount)
-                cacheDictionary.Remove(cacheQueue.Dequeue());
+            while(this.cacheQueue.Count > this.MaxCount)
+                this.cacheDictionary.Remove(this.cacheQueue.Dequeue());
         }
     }
 }

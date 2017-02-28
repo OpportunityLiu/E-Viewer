@@ -145,11 +145,11 @@ namespace ExClient
             return Run(async token =>
             {
                 var loadPageUri = default(Uri);
-                if(failToken != null)
+                if(this.failToken != null)
                     loadPageUri = new Uri(PageUri, $"?nl={failToken}");
                 else
-                    loadPageUri = PageUri;
-                var loadPage = Owner.Owner.PostStrAsync(loadPageUri, null);
+                    loadPageUri = this.PageUri;
+                var loadPage = this.Owner.Owner.HttpClient.GetStringAsync(loadPageUri);
                 var pageResult = new HtmlDocument();
                 pageResult.LoadHtml(await loadPage);
 

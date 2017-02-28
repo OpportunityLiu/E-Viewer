@@ -10,7 +10,7 @@ namespace System
 {
     internal static class EnumExtension
     {
-        public static string ToFriendlyNameString<T>(this T that, IResourceProvider nameProvider)
+        public static string ToFriendlyNameString<T>(T that, IResourceProvider nameProvider)
             where T : struct
         {
             if(Enum.IsDefined(typeof(T), that))

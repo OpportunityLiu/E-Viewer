@@ -1,0 +1,11 @@
+﻿{
+    "NoExPermittion": "此账户没有访问 Ex 绅士的权限。",
+    "AllFavorites": "全部收藏",
+    "ClientDisposed": "该连接已被销毁。",
+    "DefaultTitle": "画廊标题",
+    "DefaultUploader": "上传者",
+    "ExpungedTorrent": "此种子已经被删除。",
+    "OnlyIpv4": "仅支持 IPv4 地址。",
+    "WrongAccountInfo": "用户名或密码错误。",
+    "WrongCaptcha": "验证码输入错误，请重试。"
+}

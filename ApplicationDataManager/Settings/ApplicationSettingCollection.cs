@@ -17,14 +17,15 @@ namespace ApplicationDataManager.Settings
             var data = ApplicationData.Current;
             this.localStorage = data.LocalSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
             this.roamingStorage = data.RoamingSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
-            this.groupedSettings = new Lazy<ReadOnlyCollection<GroupedSettings>>(loadGroupedSettings, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+            this.groupedSettings = new Lazy<ReadOnlyCollection<GroupedSettings>>(this.loadGroupedSettings, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         private ReadOnlyCollection<GroupedSettings> loadGroupedSettings()
         {
             var properties = from property in this.GetType().GetRuntimeProperties()
-                             where property.GetCustomAttribute<SettingAttribute>() != null
-                             select new SettingInfo(property, this);
+                             let attr = property.GetCustomAttribute<SettingAttribute>()
+                             where attr != null
+                             select new SettingInfo(property, this, attr);
             return new ReadOnlyCollection<GroupedSettings>(
                 (from setting in properties
                  orderby setting.Index
@@ -34,17 +35,16 @@ namespace ApplicationDataManager.Settings
 
         private readonly Lazy<ReadOnlyCollection<GroupedSettings>> groupedSettings;
 
-        public IReadOnlyList<GroupedSettings> GroupedSettings => groupedSettings.Value;
+        public IReadOnlyList<GroupedSettings> GroupedSettings => this.groupedSettings.Value;
 
         private readonly IPropertySet localStorage;
         private readonly IPropertySet roamingStorage;
 
-        private T Get<T>(IPropertySet container, T @default, string key)
+        private T get<T>(IPropertySet container, T @default, string key)
         {
             try
             {
-                object v;
-                if(container.TryGetValue(key, out v))
+                if(container.TryGetValue(key, out var v))
                 {
                     if(@default is Enum)
                         return (T)Enum.Parse(typeof(T), v.ToString());
@@ -55,61 +55,42 @@ namespace ApplicationDataManager.Settings
             return @default;
         }
 
-        private bool HasValue(IPropertySet container, string key)
-        {
-            return container.ContainsKey(key);
-        }
+        private bool hasValue(IPropertySet container, string key) 
+            => container.ContainsKey(key);
 
-        private void Set<T>(IPropertySet container, T value, string key, bool forceRaiseEvent)
+        private void set<T>(IPropertySet container, T value, string key, bool forceRaiseEvent)
         {
-            if(!forceRaiseEvent && HasValue(container, key) && Equals(Get(container, value, key), value))
+            if(!forceRaiseEvent && hasValue(container, key) && Equals(get(container, value, key), value))
                 return;
-            var enu = value as Enum;
-            if(enu != null)
-                container[key] = enu.ToString();
+            if(value is Enum)
+                container[key] = value.ToString();
             else
                 container[key] = value;
             RaisePropertyChanged(key);
         }
 
-        protected T GetLocal<T>([CallerMemberName]string key = null)
-        {
-            return GetLocal(default(T), key);
-        }
+        protected T GetLocal<T>([CallerMemberName]string key = null) 
+            => GetLocal(default(T), key);
 
         protected T GetLocal<T>(T @default, [CallerMemberName]string key = null)
-        {
-            return Get(localStorage, @default, key);
-        }
+            => get(this.localStorage, @default, key);
 
         protected void SetLocal<T>(T value, [CallerMemberName]string key = null)
-        {
-            Set(localStorage, value, key, false);
-        }
+            => set(this.localStorage, value, key, false);
 
-        protected void ForceSetLocal<T>(T value, [CallerMemberName]string key = null)
-        {
-            Set(localStorage, value, key, true);
-        }
+        protected void ForceSetLocal<T>(T value, [CallerMemberName]string key = null) 
+            => set(this.localStorage, value, key, true);
 
-        protected T GetRoaming<T>(string key)
-        {
-            return GetRoaming(default(T), key);
-        }
+        protected T GetRoaming<T>(string key) 
+            => GetRoaming(default(T), key);
 
         protected T GetRoaming<T>(T @default, [CallerMemberName]string key = null)
-        {
-            return Get(roamingStorage, @default, key);
-        }
+            => get(this.roamingStorage, @default, key);
 
-        protected void SetRoaming<T>(T value, [CallerMemberName]string key = null)
-        {
-            Set(roamingStorage, value, key, false);
-        }
+        protected void SetRoaming<T>(T value, [CallerMemberName]string key = null) 
+            => set(this.roamingStorage, value, key, false);
 
-        protected void ForceSetRoaming<T>(T value, [CallerMemberName]string key = null)
-        {
-            Set(roamingStorage, value, key, true);
-        }
+        protected void ForceSetRoaming<T>(T value, [CallerMemberName]string key = null) 
+            => set(this.roamingStorage, value, key, true);
     }
 }

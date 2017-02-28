@@ -21,11 +21,6 @@ namespace ApplicationDataManager.Settings
         {
             get; set;
         }
-
-        public string SettingPresenterTemplate
-        {
-            get; set;
-        }
     }
 
     public interface IValueRange
@@ -57,15 +52,28 @@ namespace ApplicationDataManager.Settings
             get;
             set;
         }
-
-        Type ValueType
-        {
-            get;
-        }
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class Int32RangeAttribute : Attribute, IValueRange
+    public abstract class ValueRepresentAttribute : Attribute
+    {
+        public abstract ValueType TargetType { get; }
+    }
+
+    public sealed class CustomTemplateAttribute : ValueRepresentAttribute
+    {
+        public override ValueType TargetType => ValueType.Custom;
+
+        public CustomTemplateAttribute(string templateName)
+        {
+            this.TemplateName = templateName;
+        }
+
+        public string TemplateName { get; }
+    }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class Int32RangeAttribute : ValueRepresentAttribute, IValueRange
     {
         private readonly int min, max;
 
@@ -79,8 +87,6 @@ namespace ApplicationDataManager.Settings
 
         public object Max => max;
 
-        public Type ValueType => typeof(int);
-
         public double Tick
         {
             get; set;
@@ -95,10 +101,12 @@ namespace ApplicationDataManager.Settings
         {
             get; set;
         } = double.NaN;
+
+        public override ValueType TargetType => ValueType.Int32;
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class Int64RangeAttribute : Attribute, IValueRange
+    public sealed class Int64RangeAttribute : ValueRepresentAttribute, IValueRange
     {
         private readonly long min, max;
 
@@ -108,11 +116,9 @@ namespace ApplicationDataManager.Settings
             this.max = max;
         }
 
-        public object Min => min;
+        public object Min => this.min;
 
-        public object Max => max;
-
-        public Type ValueType => typeof(long);
+        public object Max => this.max;
 
         public double Tick
         {
@@ -128,10 +134,12 @@ namespace ApplicationDataManager.Settings
         {
             get; set;
         } = double.NaN;
+
+        public override ValueType TargetType => ValueType.Int64;
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class DoubleRangeAttribute : Attribute, IValueRange
+    public sealed class DoubleRangeAttribute : ValueRepresentAttribute, IValueRange
     {
         private readonly double min, max;
 
@@ -145,8 +153,6 @@ namespace ApplicationDataManager.Settings
 
         public object Max => max;
 
-        public Type ValueType => typeof(double);
-
         public double Tick
         {
             get; set;
@@ -161,10 +167,12 @@ namespace ApplicationDataManager.Settings
         {
             get; set;
         } = double.NaN;
+
+        public override ValueType TargetType => ValueType.Double;
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class SingleRangeAttribute : Attribute, IValueRange
+    public sealed class SingleRangeAttribute : ValueRepresentAttribute, IValueRange
     {
         private readonly float min, max;
 
@@ -178,8 +186,6 @@ namespace ApplicationDataManager.Settings
 
         public object Max => max;
 
-        public Type ValueType => typeof(float);
-
         public double Tick
         {
             get; set;
@@ -194,40 +200,18 @@ namespace ApplicationDataManager.Settings
         {
             get; set;
         } = double.NaN;
+
+        public override ValueType TargetType => ValueType.Single;
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class BooleanRepresentAttribute : Attribute
+    public sealed class EnumRepresentAttribute : ValueRepresentAttribute
     {
-        public static BooleanRepresentAttribute Default
+        public static EnumRepresentAttribute Default
         {
             get;
-        } = new BooleanRepresentAttribute("BooleanOn", "BooleanOff");
+        } = new EnumRepresentAttribute(null);
 
-        public BooleanRepresentAttribute(string trueStringKey, string falseStringKey)
-        {
-            TrueStringKey = trueStringKey;
-            FalseStringKey = falseStringKey;
-        }
-
-        public string TrueStringKey
-        {
-            get;
-        }
-
-        public string FalseStringKey
-        {
-            get;
-        }
-
-        public string TrueString => StringLoader.GetString(TrueStringKey);
-
-        public string FalseString => StringLoader.GetString(FalseStringKey);
-    }
-
-    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class EnumRepresentAttribute : Attribute
-    {
         public EnumRepresentAttribute(string resourcePrefix)
         {
             this.ResourcePrefix = resourcePrefix;
@@ -242,12 +226,9 @@ namespace ApplicationDataManager.Settings
         {
             if(ReferenceEquals(this, Default))
                 return name;
-            return StringLoader.GetString(ResourcePrefix + name);
+            return StringLoader.GetString($"{this.ResourcePrefix}/{name}");
         }
 
-        public static EnumRepresentAttribute Default
-        {
-            get;
-        } = new EnumRepresentAttribute(null);
+        public override ValueType TargetType => ValueType.Enum;
     }
 }

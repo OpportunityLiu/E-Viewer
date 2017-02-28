@@ -62,7 +62,7 @@ namespace ExViewer.Database
 
         public SearchHistory SetHighlight(string highlight)
         {
-            Highlight = highlight;
+            this.Highlight = highlight;
             return this;
         }
 
@@ -96,12 +96,12 @@ namespace ExViewer.Database
 
         public override int GetHashCode()
         {
-            return Content.GetHashCode();
+            return this.Content.GetHashCode();
         }
 
         public override string ToString()
         {
-            return Content;
+            return this.Content;
         }
     }
 }

@@ -3,9 +3,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:ApplicationDataManager.Settings.Xaml"
                     xmlns:settings="using:ApplicationDataManager.Settings">
+    <local:EmptyConverter x:Name="Conv" />
     <DataTemplate x:Name="String"
                   x:DataType="settings:SettingInfo">
-        <TextBox Text="{x:Bind Value, Converter={StaticResource EmptyConverter}, Mode=TwoWay}"
+        <TextBox Text="{x:Bind Value, Mode=TwoWay, Converter={StaticResource Conv}}"
                  MinHeight="50">
             <TextBox.Header>
                 <TextBlock Text="{x:Bind FriendlyName}"
@@ -38,16 +39,25 @@
             </local:SettingComboBox.Header>
         </local:SettingComboBox>
     </DataTemplate>
-    <DataTemplate x:Name="Boolean"
+    <DataTemplate x:Name="BooleanToggleSwitch"
                   x:DataType="settings:SettingInfo">
         <ToggleSwitch HorizontalAlignment="Stretch"
-                      IsOn="{x:Bind Value, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
-                      OnContent="{x:Bind BooleanRepresent.TrueString}"
-                      OffContent="{x:Bind BooleanRepresent.FalseString}">
+                      IsOn="{x:Bind Value, Mode=TwoWay, Converter={StaticResource Conv}}"
+                      OnContent="{x:Bind ((settings:ToggleSwitchRepresentAttribute)ValueRepresent).TrueString}"
+                      OffContent="{x:Bind ((settings:ToggleSwitchRepresentAttribute)ValueRepresent).FalseString}">
             <ToggleSwitch.Header>
                 <TextBlock Text="{x:Bind FriendlyName}"
                            TextWrapping="WrapWholeWords" />
             </ToggleSwitch.Header>
         </ToggleSwitch>
+    </DataTemplate>
+    <DataTemplate x:Name="BooleanCheckBox"
+                  x:DataType="settings:SettingInfo">
+        <CheckBox HorizontalAlignment="Stretch"
+                  IsChecked="{x:Bind Value, Mode=TwoWay, Converter={StaticResource Conv}}">
+
+            <TextBlock Text="{x:Bind FriendlyName}"
+                       TextWrapping="WrapWholeWords" />
+        </CheckBox>
     </DataTemplate>
 </ResourceDictionary>

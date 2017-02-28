@@ -2,7 +2,7 @@
 
 namespace ApplicationDataManager.Settings
 {
-    public class GroupedSettings : List<SettingInfo>
+    public sealed class GroupedSettings : List<SettingInfo>
     {
         public string GroupName
         {
@@ -12,7 +12,7 @@ namespace ApplicationDataManager.Settings
 
         internal GroupedSettings(string name, IEnumerable<SettingInfo> contents) : base(contents)
         {
-            GroupName = name;
+            this.GroupName = name;
         }
     }
 }

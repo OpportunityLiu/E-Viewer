@@ -61,14 +61,14 @@ namespace ExViewer.Controls
             if(item != null)
             {
                 var tName = item.GetType().FullName;
-                foreach(var template in Templates)
+                foreach(var template in this.Templates)
                 {
                     if(template.Key == tName)
                         return template.Value;
                 }
             }
-            if(DefaultTemplate != null)
-                return DefaultTemplate;
+            if(this.DefaultTemplate != null)
+                return this.DefaultTemplate;
             return base.SelectTemplateCore(item);
         }
     }

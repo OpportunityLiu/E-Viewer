@@ -85,25 +85,25 @@ namespace ExViewer.Converters
 
         protected override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
-            value = SystemConverter.ChangeType(value, valueType);
+            value = SystemConverter.ChangeType(value, this.valueType);
             var isTrue = Equals(value, this.ValueForTrue);
             var isFalse = Equals(value, this.ValueForFalse);
             if(isTrue && isFalse)
-                return Default;
+                return this.Default;
             if(isTrue)
                 return true;
-            if(Equals(value, ValueForFalse))
+            if(Equals(value, this.ValueForFalse))
                 return false;
-            return Others;
+            return this.Others;
         }
 
         protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             var v = (bool)value;
             if(v)
-                return ValueForTrue;
+                return this.ValueForTrue;
             else
-                return ValueForFalse;
+                return this.ValueForFalse;
         }
     }
 }

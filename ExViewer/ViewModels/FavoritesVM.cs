@@ -84,7 +84,7 @@ namespace ExViewer.ViewModels
         private FavoritesVM(FavoritesSearchResult searchResult)
             : this()
         {
-            SearchResult = searchResult;
+            this.SearchResult = searchResult;
             SetQueryWithSearchResult();
         }
 
@@ -93,30 +93,30 @@ namespace ExViewer.ViewModels
         {
             if(string.IsNullOrEmpty(parameter))
             {
-                keyword = "";
-                category = FavoriteCategory.All;
+                this.keyword = "";
+                this.category = FavoriteCategory.All;
             }
             else
             {
                 var q = JsonConvert.DeserializeObject<SearchResultData>(parameter);
-                keyword = q.Keyword;
+                this.keyword = q.Keyword;
                 if(q.CategoryIndex > 0)
-                    category = Client.Current.Favorites[q.CategoryIndex];
+                    this.category = Client.Current.Favorites[q.CategoryIndex];
                 else
-                    category = FavoriteCategory.All;
+                    this.category = FavoriteCategory.All;
             }
-            SearchResult = Client.Current.Favorites.Search(keyword, category);
+            this.SearchResult = Client.Current.Favorites.Search(this.keyword, this.category);
         }
 
         private FavoritesVM()
         {
-            Search = new RelayCommand<string>(queryText =>
+            this.Search = new RelayCommand<string>(queryText =>
             {
-                RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), GetSearchQuery(queryText, category));
+                RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), GetSearchQuery(queryText, this.category));
             });
-            Open = new RelayCommand<Gallery>(g =>
+            this.Open = new RelayCommand<Gallery>(g =>
             {
-                SelectedGallery = g;
+                this.SelectedGallery = g;
                 GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
             }, g => g != null);
@@ -134,8 +134,8 @@ namespace ExViewer.ViewModels
 
         public void SetQueryWithSearchResult()
         {
-            Keyword = SearchResult.Keyword;
-            Category = SearchResult.Category;
+            this.Keyword = this.SearchResult.Keyword;
+            this.Category = this.SearchResult.Category;
         }
 
         private string keyword;
@@ -144,11 +144,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return keyword;
+                return this.keyword;
             }
             set
             {
-                Set(ref keyword, value);
+                Set(ref this.keyword, value);
             }
         }
 
@@ -158,11 +158,11 @@ namespace ExViewer.ViewModels
         {
             get
             {
-                return category;
+                return this.category;
             }
             set
             {
-                Set(ref category, value);
+                Set(ref this.category, value);
             }
         }
 

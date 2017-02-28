@@ -21,7 +21,7 @@ namespace ExViewer.Controls
     {
         public SplitViewButton()
         {
-            DefaultStyleKey = typeof(SplitViewButton);
+            this.DefaultStyleKey = typeof(SplitViewButton);
         }
 
         public IconElement Icon

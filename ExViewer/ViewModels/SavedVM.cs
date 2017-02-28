@@ -24,22 +24,22 @@ namespace ExViewer.ViewModels
 
         private SavedVM()
         {
-            Clear = new RelayCommand(() =>
+            this.Clear = new RelayCommand(() =>
             {
                 RootControl.RootController.TrackAsyncAction(SavedGallery.ClearAllGalleriesAsync(), (s, e) =>
                 {
                     CachedVM.Instance.Refresh.Execute(null);
-                    Refresh.Execute(null);
+                    this.Refresh.Execute(null);
                 });
             });
-            Refresh = new RelayCommand(async () =>
+            this.Refresh = new RelayCommand(async () =>
             {
                 this.Galleries = null;
                 this.Refresh.RaiseCanExecuteChanged();
                 this.Galleries = await SavedGallery.LoadSavedGalleriesAsync();
                 this.Refresh.RaiseCanExecuteChanged();
             });
-            SaveTo = new RelayCommand<Gallery>(async g =>
+            this.SaveTo = new RelayCommand<Gallery>(async g =>
             {
                 var getTarget = savePicker.PickSingleFolderAsync();
                 var sourceFolder = await g.GetFolderAsync();

@@ -22,7 +22,7 @@ namespace ExViewer.Converters
 
         protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
-            if(value == Default)
+            if(value == this.Default)
                 return null;
             return value;
         }
@@ -30,7 +30,7 @@ namespace ExViewer.Converters
         protected override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             if(value == null)
-                return Default;
+                return this.Default;
             return value;
         }
     }

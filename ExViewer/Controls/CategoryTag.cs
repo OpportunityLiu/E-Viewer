@@ -34,9 +34,9 @@ namespace ExViewer.Controls
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            textPresenter = ((TextBlock)this.GetTemplateChild("TextPresenter"));
-            if(textPresenter != null)
-                textPresenter.Text = Category.ToFriendlyNameString().ToUpper();
+            this.textPresenter = ((TextBlock)this.GetTemplateChild("TextPresenter"));
+            if(this.textPresenter != null)
+                this.textPresenter.Text = this.Category.ToFriendlyNameString().ToUpper();
         }
 
         private TextBlock textPresenter;

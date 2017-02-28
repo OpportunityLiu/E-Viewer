@@ -24,9 +24,9 @@ namespace ExViewer.Controls
         public ExcludedLanguagesSelector()
         {
             this.InitializeComponent();
-            foreach(var item in filters)
+            foreach(var item in this.filters)
             {
-                item.PropertyChanged += Filter_PropertyChanged;
+                item.PropertyChanged += this.Filter_PropertyChanged;
             }
         }
         private List<ExcludedLanguageFilter> filters = new List<ExcludedLanguageFilter>()
@@ -136,12 +136,12 @@ namespace ExViewer.Controls
 
         private void Filter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(changing)
+            if(this.changing)
                 return;
             if(e.PropertyName == nameof(ExcludedLanguageFilter.All))
                 return;
             var r = new List<ExcludedLanguage>();
-            foreach(var item in filters)
+            foreach(var item in this.filters)
             {
                 if(item.Original)
                     r.Add(item.Language);
@@ -150,7 +150,7 @@ namespace ExViewer.Controls
                 if(item.Rewrite)
                     r.Add(item.Language + 2048);
             }
-            ExcludedLanguages = ExcludedLanguagesSettingProvider.ToString(r);
+            this.ExcludedLanguages = ExcludedLanguagesSettingProvider.ToString(r);
         }
     }
 
@@ -158,10 +158,10 @@ namespace ExViewer.Controls
     {
         public ExcludedLanguageFilter(ExcludedLanguage language)
         {
-            var n = language.ToString();
-            n = n.Substring(0, n.Length - "Original".Length);
-            Name = Strings.Settings[n];
-            Language = language;
+            var lan = language.ToString();
+            lan = lan.Substring(0, lan.Length - "Original".Length);
+            this.Name = Strings.Resources.Controls.ExcludedLanguagesSelector.ExcludedLanguage.GetString(lan);
+            this.Language = language;
         }
 
         public ExcludedLanguage Language
@@ -180,12 +180,12 @@ namespace ExViewer.Controls
         {
             get
             {
-                return original;
+                return this.original;
             }
             set
             {
-                var oldAll = All;
-                if(Set(ref original, value) && oldAll != All)
+                var oldAll = this.All;
+                if(Set(ref this.original, value) && oldAll != this.All)
                     RaisePropertyChanged(nameof(All));
             }
         }
@@ -196,12 +196,12 @@ namespace ExViewer.Controls
         {
             get
             {
-                return translated;
+                return this.translated;
             }
             set
             {
-                var oldAll = All;
-                if(Set(ref translated, value) && oldAll != All)
+                var oldAll = this.All;
+                if(Set(ref this.translated, value) && oldAll != this.All)
                     RaisePropertyChanged(nameof(All));
             }
         }
@@ -212,12 +212,12 @@ namespace ExViewer.Controls
         {
             get
             {
-                return rewrite;
+                return this.rewrite;
             }
             set
             {
-                var oldAll = All;
-                if(Set(ref rewrite, value) && oldAll != All)
+                var oldAll = this.All;
+                if(Set(ref this.rewrite, value) && oldAll != this.All)
                     RaisePropertyChanged(nameof(All));
             }
         }
@@ -226,24 +226,24 @@ namespace ExViewer.Controls
         {
             get
             {
-                if(OriginalEnabled)
-                    return original && translated && rewrite;
-                return translated && rewrite;
+                if(this.OriginalEnabled)
+                    return this.original && this.translated && this.rewrite;
+                return this.translated && this.rewrite;
             }
             set
             {
-                if(value == All)
+                if(value == this.All)
                     return;
-                if(OriginalEnabled)
+                if(this.OriginalEnabled)
                 {
-                    original = value;
+                    this.original = value;
                 }
-                translated = value;
-                rewrite = value;
+                this.translated = value;
+                this.rewrite = value;
                 RaisePropertyChanged(null);
             }
         }
 
-        public bool OriginalEnabled => Language != 0;
+        public bool OriginalEnabled => this.Language != 0;
     }
 }

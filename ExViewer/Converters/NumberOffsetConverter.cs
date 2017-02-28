@@ -29,13 +29,13 @@ namespace ExViewer.Converters
         protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
             var v = System.Convert.ToDouble(value);
-            return SystemConverter.ChangeType(v - Offset, targetType);
+            return SystemConverter.ChangeType(v - this.Offset, targetType);
         }
 
         protected override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
             var v = System.Convert.ToDouble(value);
-            return SystemConverter.ChangeType(v + Offset, targetType);
+            return SystemConverter.ChangeType(v + this.Offset, targetType);
         }
     }
 }

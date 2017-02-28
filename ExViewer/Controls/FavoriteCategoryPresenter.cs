@@ -25,15 +25,15 @@ namespace ExViewer.Controls
         public FavoriteCategoryPresenter()
         {
             this.DefaultStyleKey = typeof(FavoriteCategoryPresenter);
-            this.Loaded += FavoriteCategoryPresenter_Loaded;
-            this.Unloaded += FavoriteCategoryPresenter_Unloaded;
+            this.Loaded += this.FavoriteCategoryPresenter_Loaded;
+            this.Unloaded += this.FavoriteCategoryPresenter_Unloaded;
         }
 
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            Icon = null;
-            Label = null;
+            this.Icon = null;
+            this.Label = null;
             set();
         }
 
@@ -41,8 +41,8 @@ namespace ExViewer.Controls
 
         private void set()
         {
-            var cat = getCategory(Category);
-            var labelVisibility = IsLabelVisible;
+            var cat = getCategory(this.Category);
+            var labelVisibility = this.IsLabelVisible;
             setIcon(cat);
             setLabel(cat, labelVisibility);
         }
@@ -56,14 +56,14 @@ namespace ExViewer.Controls
 
         private void setIcon(FavoriteCategory category)
         {
-            var icon = Icon;
+            var icon = this.Icon;
             if(icon == null)
             {
                 icon = GetTemplateChild("Icon") as TextBlock;
                 if(icon == null)
                     return;
                 else
-                    Icon = icon;
+                    this.Icon = icon;
             }
             if(category.Index < 0)
                 icon.Visibility = Visibility.Collapsed;
@@ -78,29 +78,29 @@ namespace ExViewer.Controls
         {
             if(value)
             {
-                var label = Label;
+                var label = this.Label;
                 if(label == null)
                 {
                     label = GetTemplateChild("Label") as TextBlock;
                     if(label == null)
                         return;
                     else
-                        Label = label;
+                        this.Label = label;
                 }
                 label.Visibility = Visibility.Visible;
                 label.Text = category.Name ?? "";
             }
             else
             {
-                if(Label == null)
+                if(this.Label == null)
                     return;
-                Label.Visibility = Visibility.Collapsed;
+                this.Label.Visibility = Visibility.Collapsed;
             }
         }
 
         private void setLabel(FavoriteCategory category)
         {
-            if(!IsLabelVisible)
+            if(!this.IsLabelVisible)
                 return;
             setLabel(category, true);
         }
@@ -138,20 +138,20 @@ namespace ExViewer.Controls
 
         private void Category_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            setLabel(getCategory(Category));
+            setLabel(getCategory(this.Category));
         }
 
         private void FavoriteCategoryPresenter_Loaded(object sender, RoutedEventArgs e)
         {
-            loaded = true;
-            Category.PropertyChanged += Category_PropertyChanged;
+            this.loaded = true;
+            this.Category.PropertyChanged += this.Category_PropertyChanged;
             set();
         }
 
         private void FavoriteCategoryPresenter_Unloaded(object sender, RoutedEventArgs e)
         {
-            loaded = false;
-            Category.PropertyChanged -= Category_PropertyChanged;
+            this.loaded = false;
+            this.Category.PropertyChanged -= this.Category_PropertyChanged;
         }
 
         public bool IsLabelVisible
