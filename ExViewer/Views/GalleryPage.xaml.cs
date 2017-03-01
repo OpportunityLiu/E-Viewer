@@ -142,13 +142,13 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
 
             if(e.NavigationMode == NavigationMode.New)
             {
-                this.pv.SelectedIndex = 0;
+                resetView();
                 this.needResetView = true;
             }
-            this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             if(e.NavigationMode == NavigationMode.Back)
             {
                 this.entranceElement = (UIElement)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
@@ -162,14 +162,13 @@ namespace ExViewer.Views
             {
             case NavigationMode.New:
                 this.pv.Focus(FocusState.Programmatic);
+                this.pv.SelectedIndex = 0;
                 break;
             case NavigationMode.Back:
                 this.needRestoreView = true;
                 ((Control)this.entranceElement)?.Focus(FocusState.Programmatic);
                 break;
             }
-            if(this.needResetView)
-                this.sv_Content.ChangeView(null, 0, null);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

@@ -34,8 +34,8 @@ namespace ApplicationDataManager.Settings
         public ToggleSwitchRepresentAttribute(PredefinedToggleSwitchRepresent represent)
         {
             var provider = Strings.Resources.Boolean[represent.ToString()];
-            this.TrueString = provider.GetString("True");
-            this.FalseString = provider.GetString("False");
+            this.TrueString = provider.GetValue("True");
+            this.FalseString = provider.GetValue("False");
         }
 
         public string TrueString { get; }

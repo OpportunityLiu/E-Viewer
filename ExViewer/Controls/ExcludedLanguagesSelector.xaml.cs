@@ -160,7 +160,7 @@ namespace ExViewer.Controls
         {
             var lan = language.ToString();
             lan = lan.Substring(0, lan.Length - "Original".Length);
-            this.Name = Strings.Resources.Controls.ExcludedLanguagesSelector.ExcludedLanguage.GetString(lan);
+            this.Name = Strings.Resources.Controls.ExcludedLanguagesSelector.ExcludedLanguage.GetValue(lan);
             this.Language = language;
         }
 

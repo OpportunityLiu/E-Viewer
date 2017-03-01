@@ -27,9 +27,7 @@
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.AlignRightWithPanel="True"
                 Opening="ab_Opening"
-                Closed="ab_Closed"
-                Opened="ab_Opened"
-                Tapped="ab_Tapped">
+                Closed="ab_Closed">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

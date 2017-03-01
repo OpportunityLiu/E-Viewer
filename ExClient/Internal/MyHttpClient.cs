@@ -26,11 +26,6 @@ namespace ExClient.Internal
 
         public HttpRequestHeaderCollection DefaultRequestHeaders => inner.DefaultRequestHeaders;
 
-        public IHttpAsyncOperation DeleteAsync(Uri uri)
-        {
-            return this.inner.DeleteAsync(uri);
-        }
-
         public IHttpAsyncOperation GetAsync(Uri uri)
         {
             return this.GetAsync(uri, HttpCompletionOption.ResponseContentRead);
@@ -44,10 +39,11 @@ namespace ExClient.Internal
             return Run<HttpResponseMessage, HttpProgress>(async (token, progress) =>
             {
                 token.Register(request.Cancel);
+                request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
+                response.EnsureSuccessStatusCode();
                 var buffer = response.Content.BufferAllAsync();
-                var length = 0ul;
-                if(!response.Content.TryComputeLength(out length))
+                if(!response.Content.TryComputeLength(out var length))
                 {
                     var contentLength = response.Content.Headers.ContentLength;
                     if(contentLength.HasValue)
@@ -77,6 +73,7 @@ namespace ExClient.Internal
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
+                response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsBufferAsync();
             });
         }
@@ -89,6 +86,7 @@ namespace ExClient.Internal
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
+                response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsInputStreamAsync();
             });
         }
@@ -101,6 +99,7 @@ namespace ExClient.Internal
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
+                response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
             });
         }
@@ -114,14 +113,13 @@ namespace ExClient.Internal
         {
             if(!uri.IsAbsoluteUri)
                 uri = new Uri(owner.Uris.RootUri, uri);
-            if(content == null)
-                return GetStringAsync(uri);
             return Run<string, HttpProgress>(async (token, progress) =>
             {
                 var op = PostAsync(uri, content == null ? null : new HttpStringContent(content));
                 token.Register(op.Cancel);
                 op.Progress = (sender, value) => progress.Report(value);
                 var res = await op;
+                res.EnsureSuccessStatusCode();
                 return await res.Content.ReadAsStringAsync();
             });
         }

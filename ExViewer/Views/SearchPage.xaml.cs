@@ -104,34 +104,14 @@ namespace ExViewer.Views
             this.sv_AdvancedSearch.IsEnabled = true;
         }
 
-        private void ab_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            var newState = e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch;
-            if(newState == this.cs_Category.TouchAdaptive)
-                return;
-            if(!this.abOpened)
-            {
-                this.cs_Category.TouchAdaptive = newState;
-            }
-        }
-
-        bool abOpened;
-
-        private void ab_Opened(object sender, object e)
-        {
-            this.abOpened = true;
-        }
-
         private void ab_Closed(object sender, object e)
         {
-            this.abOpened = false;
             this.sv_AdvancedSearch.IsEnabled = false;
         }
 
         private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput
-                || args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen;
+            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput;
             var currentId = this.navId;
             if(needAutoComplete)
             {
@@ -145,11 +125,11 @@ namespace ExViewer.Views
 
         private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            sender.ItemsSource = null;
         }
 
         private void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
+            sender.ItemsSource = null;
             if(args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
             {
                 CloseAll();
