@@ -15,7 +15,7 @@ namespace ExViewer.Converters
             var format = (string)null;
             if(parameter == null)
                 return value.ToString();
-            if(string.IsNullOrEmpty(format = Strings.Resources.GetString(parameter.ToString())))
+            if(string.IsNullOrEmpty(format = Strings.Resources.GetValue(parameter.ToString())))
             {
                 System.Diagnostics.Debug.WriteLine($"Can't find resource: {parameter}", "Localization");
                 return value.ToString();

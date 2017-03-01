@@ -38,7 +38,6 @@ namespace ExViewer
         public App()
         {
             this.InitializeComponent();
-            this.RequiresPointerMode = ApplicationRequiresPointerMode.WhenRequested;
             HockeyClient.Current.Configure("9c09ca3908114a38a09c81ca8b68ee39", new TelemetryConfiguration
             {
                 Collectors =

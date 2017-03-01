@@ -69,9 +69,9 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for SelectedCategory.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedCategoryProperty =
-            DependencyProperty.Register("SelectedCategory", typeof(Category), typeof(CategorySelector), new PropertyMetadata(Category.All, SelectedCategoryPropertyChangedCallback));
+            DependencyProperty.Register("SelectedCategory", typeof(Category), typeof(CategorySelector), new PropertyMetadata(Category.All, selectedCategoryPropertyChangedCallback));
 
-        private static void SelectedCategoryPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void selectedCategoryPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var s = (CategorySelector)d;
             var oldValue = (Category)e.OldValue;
@@ -84,62 +84,7 @@ namespace ExViewer.Controls
             }
         }
 
-        public bool TouchAdaptive
-        {
-            get
-            {
-                return (bool)GetValue(TouchAdaptiveProperty);
-            }
-            set
-            {
-                SetValue(TouchAdaptiveProperty, value);
-            }
-        }
-
-        // Using a DependencyProperty as the backing store for TouchAdaptive.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TouchAdaptiveProperty =
-            DependencyProperty.Register("TouchAdaptive", typeof(bool), typeof(CategorySelector), new PropertyMetadata(true, TouchAdaptivePropertyChangedCallback));
-
-#pragma warning disable UWP001 // Platform-specific
-        private static Thickness mouseThickness = new Thickness(4), touchThickness = new Thickness(4, 12, 4, 12);
-#pragma warning restore UWP001 // Platform-specific
-
-        private static void TouchAdaptivePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var s = (CategorySelector)d;
-            var newValue = (bool)e.NewValue;
-            if(s.gvLoaded)
-                s.setMargin(newValue);
-        }
-
-        private void setMargin(bool touch)
-        {
-            if(touch)
-            {
-                for(int i = 0; i < this.filter.Count; i++)
-                {
-                    ((FrameworkElement)this.gv_AdvancedSearch.ContainerFromIndex(i)).Margin = touchThickness;
-                }
-            }
-            else
-            {
-                for(int i = 0; i < this.filter.Count; i++)
-                {
-                    ((FrameworkElement)this.gv_AdvancedSearch.ContainerFromIndex(i)).Margin = mouseThickness;
-
-                }
-            }
-        }
-
         private List<FilterRecord> filter;
-
-        private bool gvLoaded;
-
-        private void gv_AdvancedSearch_Loaded(object sender, RoutedEventArgs e)
-        {
-            setMargin(this.TouchAdaptive);
-            this.gvLoaded = true;
-        }
     }
 
     internal class FilterRecord : ObservableObject

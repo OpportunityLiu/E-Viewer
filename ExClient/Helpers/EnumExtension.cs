@@ -14,13 +14,13 @@ namespace System
             where T : struct
         {
             if(Enum.IsDefined(typeof(T), that))
-                return nameProvider[that.ToString()];
+                return nameProvider.GetValue(that.ToString());
             else
             {
                 var represent = new StringBuilder(that.ToString());
                 foreach(var item in Enum.GetNames(typeof(T)))
                 {
-                    represent.Replace(item, nameProvider[item]);
+                    represent.Replace(item, nameProvider.GetValue(item));
                 }
                 return represent.ToString();
             }

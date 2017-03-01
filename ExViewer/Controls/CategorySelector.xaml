@@ -9,7 +9,6 @@
              d:DesignWidth="400">
     <GridView x:Name="gv_AdvancedSearch"
               ItemsSource="{x:Bind filter}"
-              Loaded="gv_AdvancedSearch_Loaded"
               HorizontalAlignment="Center"
               Padding="0">
         <GridView.ItemContainerStyle>
@@ -33,6 +32,7 @@
         <GridView.ItemTemplate>
             <DataTemplate x:DataType="local:FilterRecord">
                 <local:CategoryToggleButton Category="{x:Bind Category}"
+                                            Margin="4,8"
                                             IsChecked="{x:Bind IsChecked, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
             </DataTemplate>
         </GridView.ItemTemplate>
