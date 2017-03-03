@@ -36,26 +36,36 @@
 
         <Style x:Key="TorrentNameTextBlockStyle"
                TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="Medium" />
-            <Setter Property="TextWrapping" Value="WrapWholeWords" />
+            <Setter Property="FontWeight"
+                    Value="Medium" />
+            <Setter Property="TextWrapping"
+                    Value="WrapWholeWords" />
         </Style>
         <Style x:Key="DownloadButtonStyle"
                BasedOn="{StaticResource NavigationBackButtonSmallStyle}"
                TargetType="Button">
-            <Setter Property="Content" Value="&#xE896;" />
-            <Setter Property="Height" Value="Auto" />
-            <Setter Property="MinHeight" Value="48" />
-            <Setter Property="Width" Value="48" />
+            <Setter Property="Content"
+                    Value="&#xE896;" />
+            <Setter Property="Height"
+                    Value="Auto" />
+            <Setter Property="MinHeight"
+                    Value="48" />
+            <Setter Property="Width"
+                    Value="48" />
         </Style>
         <Style x:Key="KeyTextBlockStyle"
                TargetType="TextBlock">
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="FontSize"
+                    Value="13" />
+            <Setter Property="FontWeight"
+                    Value="Normal" />
         </Style>
         <Style x:Key="ValueTextBlockStyle"
                TargetType="TextBlock">
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="FontWeight" Value="SemiLight" />
+            <Setter Property="FontSize"
+                    Value="13" />
+            <Setter Property="FontWeight"
+                    Value="SemiLight" />
         </Style>
         <DataTemplate xmlns:c="using:ExClient"
                       x:Key="TorrentTemplate"
@@ -162,30 +172,44 @@
 
         <Style x:Key="PivotHeaderGridStyle"
                TargetType="Grid">
-            <Setter Property="Padding" Value="0,8" />
+            <Setter Property="Padding"
+                    Value="0,8" />
         </Style>
         <Style x:Key="PivotHeaderIconStyle"
                TargetType="FrameworkElement">
-            <Setter Property="Grid.Column" Value="1" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="8,0" />
-            <Setter Property="MinHeight" Value="32" />
-            <Setter Property="MinWidth" Value="32" />
+            <Setter Property="Grid.Column"
+                    Value="1" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+            <Setter Property="Margin"
+                    Value="8,0" />
+            <Setter Property="MinHeight"
+                    Value="32" />
+            <Setter Property="MinWidth"
+                    Value="32" />
         </Style>
         <Style x:Key="PivotHeaderTextBlockStyle"
                TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Grid.ColumnSpan" Value="3" />
-            <Setter Property="Grid.Row" Value="1" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="Grid.ColumnSpan"
+                    Value="3" />
+            <Setter Property="Grid.Row"
+                    Value="1" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
         </Style>
         <Style x:Key="PivotHeaderSuperscriptTextBlockStyle"
                BasedOn="{StaticResource CaptionTextBlockStyle}"
                TargetType="TextBlock">
-            <Setter Property="Grid.Column" Value="2" />
-            <Setter Property="Grid.ColumnSpan" Value="2" />
-            <Setter Property="Margin" Value="0,-8,-8,0" />
-            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Grid.Column"
+                    Value="2" />
+            <Setter Property="Grid.ColumnSpan"
+                    Value="2" />
+            <Setter Property="Margin"
+                    Value="0,-8,-8,0" />
+            <Setter Property="VerticalAlignment"
+                    Value="Top" />
         </Style>
     </Page.Resources>
     <Grid x:Name="gd_Root">
@@ -206,8 +230,10 @@
                         <AdaptiveTrigger MinWindowWidth="0" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="img_Thumb.Visibility" Value="Collapsed" />
-                        <Setter Target="wsp_Info.HorizontalAlignment" Value="Center" />
+                        <Setter Target="img_Thumb.Visibility"
+                                Value="Collapsed" />
+                        <Setter Target="wsp_Info.HorizontalAlignment"
+                                Value="Center" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -224,9 +250,12 @@
                       MaxHeight="300"
                       SizeChanged="gd_Info_SizeChanged">
                     <Grid.Background>
-                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                            <GradientStop Offset="0" Color="{ThemeResource SystemAltHighColor}" />
-                            <GradientStop Offset="1" Color="{ThemeResource SystemChromeMediumColor}" />
+                        <LinearGradientBrush StartPoint="0.5,0"
+                                             EndPoint="0.5,1">
+                            <GradientStop Offset="0"
+                                          Color="{ThemeResource SystemAltHighColor}" />
+                            <GradientStop Offset="1"
+                                          Color="{ThemeResource SystemChromeMediumColor}" />
                         </LinearGradientBrush>
                     </Grid.Background>
                     <Grid.ColumnDefinitions>
@@ -285,8 +314,10 @@
                                                   SelectionMode="None">
                                             <GridView.ItemContainerStyle>
                                                 <Style TargetType="GridViewItem">
-                                                    <Setter Property="MinHeight" Value="0" />
-                                                    <Setter Property="MinWidth" Value="0" />
+                                                    <Setter Property="MinHeight"
+                                                            Value="0" />
+                                                    <Setter Property="MinWidth"
+                                                            Value="0" />
                                                 </Style>
                                             </GridView.ItemContainerStyle>
                                             <GridView.ItemTemplate>
@@ -358,7 +389,8 @@
                            SelectionChanged="pv_SelectionChanged">
                         <Pivot.ItemContainerStyle>
                             <Style TargetType="PivotItem">
-                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="Margin"
+                                        Value="0" />
                             </Style>
                         </Pivot.ItemContainerStyle>
                         <PivotItem>
@@ -506,9 +538,9 @@
                                 </Grid>
                             </PivotItem.Header>
                             <ListView x:Name="lv_Torrents"
-                                      ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}"
                                       ItemTemplate="{StaticResource TorrentTemplate}"
                                       ItemsSource="{x:Bind VM.Torrents, Mode=OneWay}"
+                                      ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}"
                                       Loaded="pv_Content_Loaded"
                                       SelectionChanged="lv_Torrents_SelectionChanged">
                                 <ListView.Header>

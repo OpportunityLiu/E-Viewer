@@ -21,6 +21,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="GridViewItem">
                             <ContentPresenter Control.IsTemplateFocusTarget="True"
+                                              Margin="4"
                                               Content="{TemplateBinding Content}" />
                         </ControlTemplate>
                     </Setter.Value>
@@ -32,7 +33,6 @@
         <GridView.ItemTemplate>
             <DataTemplate x:DataType="local:FilterRecord">
                 <local:CategoryToggleButton Category="{x:Bind Category}"
-                                            Margin="4,8"
                                             IsChecked="{x:Bind IsChecked, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
             </DataTemplate>
         </GridView.ItemTemplate>

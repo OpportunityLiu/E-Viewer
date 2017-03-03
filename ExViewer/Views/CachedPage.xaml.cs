@@ -109,7 +109,7 @@ namespace ExViewer.Views
             var lvi = (args.OriginalSource as DependencyObject)?.FirstAncestorOrSelf<ListViewItem>();
             if(lvi == null)
                 return;
-            var dc = lvi.DataContext;
+            var dc = lvi.Content;
             this.mfi_DeleteGallery.CommandParameter = dc;
             this.mf_Gallery.ShowAt(lvi);
             args.Handled = true;
