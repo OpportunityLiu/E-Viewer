@@ -59,6 +59,12 @@
     },
 
     "Views": {
+        "AddToFavoritesDialog": {
+            "FavoriteCategoryUnselected": "Please select one category.",
+            "AddTitle": "ADD TO FAVORITES",
+            "ModifyTitle": "MODIFY FAVORITES",
+            "NoteTextBox/Header": "Favorite note"
+        },
         "CachedPage": {
             "DeleteAllAppBarButton/Label": "Delete all",
             "DeleteMenuFlyout/Text": "Delete",
@@ -106,7 +112,8 @@
             "TorrentsEmptyTextBlock/Text": "No available torrents",
             "TorrentSizeTextBlock/Text": "Size",
             "TorrentsLoadingTextBlock/Text": "Loading torrents...",
-            "TorrentUploaderTextBlock/Text": "Uploader"
+            "TorrentUploaderTextBlock/Text": "Uploader",
+            "FavoritesAppBarButton/Text": "Add to favorite"
         },
         "ImagePage": {
             "BackToWindow": "Back to window",

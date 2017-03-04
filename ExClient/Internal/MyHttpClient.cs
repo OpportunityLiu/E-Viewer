@@ -21,6 +21,14 @@ namespace ExClient.Internal
             this.owner = owner;
         }
 
+        private void reformUri(ref Uri uri)
+        {
+            if(!uri.IsAbsoluteUri)
+            {
+                uri = new Uri(this.owner.Uris.RootUri, uri);
+            }
+        }
+
         private HttpClient inner;
         private Client owner;
 
@@ -33,6 +41,7 @@ namespace ExClient.Internal
 
         public IHttpAsyncOperation GetAsync(Uri uri, HttpCompletionOption completionOption)
         {
+            reformUri(ref uri);
             var request = this.inner.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             if(completionOption == HttpCompletionOption.ResponseHeadersRead)
                 return request;
@@ -67,6 +76,7 @@ namespace ExClient.Internal
 
         public IAsyncOperationWithProgress<IBuffer, HttpProgress> GetBufferAsync(Uri uri)
         {
+            reformUri(ref uri);
             return Run<IBuffer, HttpProgress>(async (token, progress) =>
             {
                 var request = GetAsync(uri);
@@ -80,6 +90,7 @@ namespace ExClient.Internal
 
         public IAsyncOperationWithProgress<IInputStream, HttpProgress> GetInputStreamAsync(Uri uri)
         {
+            reformUri(ref uri);
             return Run<IInputStream, HttpProgress>(async (token, progress) =>
             {
                 var request = GetAsync(uri);
@@ -93,6 +104,7 @@ namespace ExClient.Internal
 
         public IAsyncOperationWithProgress<string, HttpProgress> GetStringAsync(Uri uri)
         {
+            reformUri(ref uri);
             return Run<string, HttpProgress>(async (token, progress) =>
             {
                 var request = GetAsync(uri);
@@ -106,13 +118,13 @@ namespace ExClient.Internal
 
         public IHttpAsyncOperation PostAsync(Uri uri, IHttpContent content)
         {
+            reformUri(ref uri);
             return this.inner.PostAsync(uri, content);
         }
 
         public IAsyncOperationWithProgress<string, HttpProgress> PostStringAsync(Uri uri, string content)
         {
-            if(!uri.IsAbsoluteUri)
-                uri = new Uri(owner.Uris.RootUri, uri);
+            reformUri(ref uri);
             return Run<string, HttpProgress>(async (token, progress) =>
             {
                 var op = PostAsync(uri, content == null ? null : new HttpStringContent(content));
@@ -131,6 +143,7 @@ namespace ExClient.Internal
 
         public IHttpAsyncOperation PutAsync(Uri uri, IHttpContent content)
         {
+            reformUri(ref uri);
             return this.inner.PutAsync(uri, content);
         }
 

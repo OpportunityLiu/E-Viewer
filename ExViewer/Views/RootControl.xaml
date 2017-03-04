@@ -249,7 +249,8 @@
                    Navigating="fm_inner_Navigating"
                    Navigated="fm_inner_Navigated" />
         </SplitView>
-        <Button Style="{StaticResource SplitButtonStyle}"
+        <Button x:Name="btnPane"
+                Style="{StaticResource SplitButtonStyle}"
                 Click="btn_pane_Click"
                 IsTabStop="False"
                 VerticalAlignment="Top" />

@@ -1,32 +1,16 @@
 ﻿using ExClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace ExViewer.Controls
 {
     public class FavoriteCategoryPresenter : Control
     {
-        private static readonly ResourceDictionary favoritesBrushes = getResource();
-
-        private static ResourceDictionary getResource()
-        {
-            var r = new ResourceDictionary();
-            Application.LoadComponent(r, new Uri("ms-appx:///Themes/Favorites.xaml"));
-            return r;
-        }
-
         public FavoriteCategoryPresenter()
         {
             this.DefaultStyleKey = typeof(FavoriteCategoryPresenter);
-            this.Loaded += this.FavoriteCategoryPresenter_Loaded;
-            this.Unloaded += this.FavoriteCategoryPresenter_Unloaded;
+            this.Loaded += this.favoriteCategoryPresenter_Loaded;
+            this.Unloaded += this.favoriteCategoryPresenter_Unloaded;
         }
 
         protected override void OnApplyTemplate()
@@ -49,9 +33,7 @@ namespace ExViewer.Controls
 
         private static FavoriteCategory getCategory(FavoriteCategory category)
         {
-            if(category == null || category.Index < 0)
-                category = FavoriteCategory.All;
-            return category;
+            return category ?? FavoriteCategory.All;
         }
 
         private void setIcon(FavoriteCategory category)
@@ -70,7 +52,7 @@ namespace ExViewer.Controls
             else
             {
                 icon.Visibility = Visibility.Visible;
-                icon.Foreground = (Brush)favoritesBrushes[$"FavoriteCategory{category.Index}"];
+                icon.Foreground = category.GetThemeBrush();
             }
         }
 
@@ -113,45 +95,45 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for Category.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CategoryProperty =
-            DependencyProperty.Register("Category", typeof(FavoriteCategory), typeof(FavoriteCategoryPresenter), new PropertyMetadata(FavoriteCategory.All, CategoryPropertyChanged));
+            DependencyProperty.Register("Category", typeof(FavoriteCategory), typeof(FavoriteCategoryPresenter), new PropertyMetadata(FavoriteCategory.All, categoryPropertyChanged));
 
         private bool loaded;
 
-        private static void CategoryPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void categoryPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var dp = (FavoriteCategoryPresenter)sender;
             var o = (FavoriteCategory)e.OldValue;
             var n = (FavoriteCategory)e.NewValue;
             if(o != null)
-                o.PropertyChanged -= dp.Category_PropertyChanged;
+                o.PropertyChanged -= dp.category_PropertyChanged;
             if(dp.loaded && n != null)
-                n.PropertyChanged += dp.Category_PropertyChanged;
+                n.PropertyChanged += dp.category_PropertyChanged;
             var cat = getCategory(dp.Category);
             dp.setIcon(cat);
             dp.setLabel(cat);
-            if(n == null || n.Index < 0)
+            if(n == null)
             {
                 dp.ClearValue(CategoryProperty);
                 return;
             }
         }
 
-        private void Category_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void category_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             setLabel(getCategory(this.Category));
         }
 
-        private void FavoriteCategoryPresenter_Loaded(object sender, RoutedEventArgs e)
+        private void favoriteCategoryPresenter_Loaded(object sender, RoutedEventArgs e)
         {
             this.loaded = true;
-            this.Category.PropertyChanged += this.Category_PropertyChanged;
+            this.Category.PropertyChanged += this.category_PropertyChanged;
             set();
         }
 
-        private void FavoriteCategoryPresenter_Unloaded(object sender, RoutedEventArgs e)
+        private void favoriteCategoryPresenter_Unloaded(object sender, RoutedEventArgs e)
         {
             this.loaded = false;
-            this.Category.PropertyChanged -= this.Category_PropertyChanged;
+            this.Category.PropertyChanged -= this.category_PropertyChanged;
         }
 
         public bool IsLabelVisible
@@ -162,9 +144,9 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for IsLabelVisible.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsLabelVisibleProperty =
-            DependencyProperty.Register("IsLabelVisible", typeof(bool), typeof(FavoriteCategoryPresenter), new PropertyMetadata(false, IsLabelVisiblePropertyChanged));
+            DependencyProperty.Register("IsLabelVisible", typeof(bool), typeof(FavoriteCategoryPresenter), new PropertyMetadata(false, isLabelVisiblePropertyChanged));
 
-        private static void IsLabelVisiblePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void isLabelVisiblePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var dp = (FavoriteCategoryPresenter)sender;
             var cat = getCategory(dp.Category);

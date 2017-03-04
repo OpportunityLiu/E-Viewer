@@ -1,6 +1,7 @@
 ﻿{
     "NoExPermittion": "This account dose not have permittion for exhentai.",
     "AllFavorites": "All favorites",
+    "RemoveFromFavorites": "Remove from favorites",
     "ClientDisposed": "The client has been disposed.",
     "DefaultTitle": "Gallery Title",
     "DefaultUploader": "Uploader",

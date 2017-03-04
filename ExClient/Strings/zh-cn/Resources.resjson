@@ -1,6 +1,7 @@
 ﻿{
     "NoExPermittion": "此账户没有访问 Ex 绅士的权限。",
     "AllFavorites": "全部收藏",
+    "RemoveFromFavorites": "从收藏中移除",
     "ClientDisposed": "该连接已被销毁。",
     "DefaultTitle": "画廊标题",
     "DefaultUploader": "上传者",

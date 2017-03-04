@@ -377,7 +377,7 @@ namespace ExViewer.ViewModels
             {
                 try
                 {
-                    await this.gallery.LoadCommentsAsync();
+                    await this.gallery.FetchCommentsAsync();
                 }
                 catch(Exception ex)
                 {
@@ -396,7 +396,7 @@ namespace ExViewer.ViewModels
             {
                 try
                 {
-                    this.Torrents = await this.gallery.LoadTorrnetsAsync();
+                    this.Torrents = await this.gallery.FetchTorrnetsAsync();
                 }
                 catch(Exception ex)
                 {

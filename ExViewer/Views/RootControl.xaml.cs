@@ -99,7 +99,7 @@ namespace ExViewer.Views
             this.manager.BackRequested += this.Manager_BackRequested;
             this.fm_inner.Navigate(this.HomePageType ?? typeof(SearchPage));
             await Task.Yield();
-            this.Focus(FocusState.Pointer);
+            this.btnPane.Focus(FocusState.Pointer);
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)

@@ -112,6 +112,7 @@ namespace ExViewer
                 currentWindow.Activate();
             }
             await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("fcf0a9351ea5917ec80d8c1b58b56ff1");
+            ((Converters.ObjectToBooleanConverter)this.Resources["EmptyStringToCollapsedConverter"]).ValueForFalse = "";
         }
 
         protected override void OnActivated(IActivatedEventArgs args)

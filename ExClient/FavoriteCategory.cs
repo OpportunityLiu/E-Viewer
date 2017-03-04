@@ -11,7 +11,7 @@ namespace ExClient
 {
     public sealed class FavoriteCategory : ObservableObject
     {
-        public static FavoriteCategory Removed { get; } = new FavoriteCategory(-1);
+        public static FavoriteCategory Removed { get; } = new FavoriteCategory(-1) { Name = LocalizedStrings.Resources.RemoveFromFavorites };
 
         public static FavoriteCategory All { get; } = new FavoriteCategory(-1) { Name = LocalizedStrings.Resources.AllFavorites };
 
@@ -29,7 +29,12 @@ namespace ExClient
         {
             get
             {
-                return this.name ?? $"favorites {this.Index}";
+                if(this.name != null)
+                    return this.name;
+                else if(this.Index < 0)
+                    return null;
+                else
+                    return $"favorites {this.Index}";
             }
             internal set
             {
@@ -39,7 +44,7 @@ namespace ExClient
 
         private string name;
 
-        private static readonly Regex favNoteMatcher = new Regex(@"'Note: (.+?) ';", RegexOptions.Compiled);
+        private static readonly Regex favNoteMatcher = new Regex(@"fn.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
 
         private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(Client client, long gId, string gToken, string note)
         {
@@ -55,12 +60,12 @@ namespace ExClient
                 yield return new KeyValuePair<string, string>("favnote", note);
                 yield return new KeyValuePair<string, string>("update", "1");
             }
-            var requestUri = new Uri(client.Uris.RootUri, $"gallerypopups.php?gid={gId}&t={gToken}&act=addfav");
+            var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken}&act=addfav", UriKind.Relative);
             var requestContent = new HttpFormUrlEncodedContent(getInfo());
             return client.HttpClient.PostAsync(requestUri, requestContent);
         }
 
-        public IAsyncAction Add(Gallery gallery, string note)
+        public IAsyncAction AddAsync(Gallery gallery, string note)
         {
             return Run(async token =>
             {
@@ -75,7 +80,7 @@ namespace ExClient
             });
         }
 
-        public IAsyncAction Add(GalleryInfo gallery, string note)
+        public IAsyncAction AddAsync(GalleryInfo gallery, string note)
         {
             return Run(async token =>
             {
@@ -83,14 +88,14 @@ namespace ExClient
             });
         }
 
-        public IAsyncAction Remove(Gallery gallery, string note)
+        public IAsyncAction RemoveAsync(Gallery gallery, string note)
         {
-            return Removed.Add(gallery, note);
+            return Removed.AddAsync(gallery, note);
         }
 
-        public IAsyncAction Remove(GalleryInfo gallery, string note)
+        public IAsyncAction RemoveAsync(GalleryInfo gallery, string note)
         {
-            return Removed.Add(gallery, note);
+            return Removed.AddAsync(gallery, note);
         }
 
         public override string ToString()

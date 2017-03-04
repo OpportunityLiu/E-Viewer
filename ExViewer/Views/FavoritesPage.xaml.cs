@@ -36,8 +36,10 @@ namespace ExViewer.Views
         public FavoritesPage()
         {
             this.InitializeComponent();
-            var l = new List<FavoriteCategory>(11);
-            l.Add(FavoriteCategory.All);
+            var l = new List<FavoriteCategory>(11)
+            {
+                FavoriteCategory.All
+            };
             l.AddRange(Client.Current.Favorites);
             this.cbCategory.ItemsSource = l;
         }
@@ -53,9 +55,10 @@ namespace ExViewer.Views
                 await RootControl.RootController.RequestLogOn();
             }
             this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
-            if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
+            if(e.NavigationMode == NavigationMode.New)
             {
-                this.VM?.SearchResult.Reset();
+                if(e.Parameter != null)
+                    this.VM?.SearchResult.Reset();
                 await Task.Delay(100);
                 this.cbCategory.Focus(FocusState.Programmatic);
             }

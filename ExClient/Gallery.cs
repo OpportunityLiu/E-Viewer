@@ -17,19 +17,6 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {
-    public class SaveGalleryProgress
-    {
-        public int ImageLoaded
-        {
-            get; internal set;
-        }
-
-        public int ImageCount
-        {
-            get; internal set;
-        }
-    }
-
     [JsonObject]
     [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count} RecordCount = {RecordCount}\}")]
     public class Gallery : IncrementalLoadingCollection<GalleryImage>
@@ -434,7 +421,7 @@ namespace ExClient
         {
             var favNode = html.GetElementbyId("fav");
             var favContentNode = favNode.Element("div");
-            this.FavoriteCategory = Owner.Favorites.GetCategory(favContentNode);
+            this.FavoriteCategory = this.Owner.Favorites.GetCategory(favContentNode);
         }
 
         protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
@@ -510,7 +497,7 @@ namespace ExClient
             }).AsAsyncOperation();
         }
 
-        public IAsyncOperation<ReadOnlyCollection<TorrentInfo>> LoadTorrnetsAsync()
+        public IAsyncOperation<ReadOnlyCollection<TorrentInfo>> FetchTorrnetsAsync()
         {
             return TorrentInfo.LoadTorrentsAsync(this);
         }
@@ -529,12 +516,42 @@ namespace ExClient
             }
         }
 
-        public IAsyncOperation<ReadOnlyCollection<Comment>> LoadCommentsAsync()
+        public IAsyncOperation<ReadOnlyCollection<Comment>> FetchCommentsAsync()
         {
             return Run(async token =>
             {
                 Comments = await Comment.LoadCommentsAsync(this);
                 return comments;
+            });
+        }
+
+        public IAsyncOperation<string> FetchFavoriteNoteAsync()
+        {
+            return Run(async token =>
+            {
+                var r = await Client.Current.HttpClient.GetStringAsync(new Uri($"gallerypopups.php?gid={this.Id}&t={this.Token}&act=addfav", UriKind.Relative));
+                var doc = new HtmlDocument();
+                doc.LoadHtml(r);
+                var favdel = doc.GetElementbyId("favdel");
+                if(favdel!=null)
+                {
+                    this.FavoriteNote = HtmlEntity.DeEntitize(doc.DocumentNode.Descendants("textarea").First().InnerText);
+                    for(var i = 0; i < 10; i++)
+                    {
+                        var favNode = doc.GetElementbyId($"fav{i}");
+                        if(favNode.GetAttributeValue("checked",null)=="checked")
+                        {
+                            this.FavoriteCategory = this.Owner.Favorites[i];
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    this.FavoriteCategory = null;
+                    this.FavoriteNote = null;
+                }
+                return this.FavoriteNote;
             });
         }
 

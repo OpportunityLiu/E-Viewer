@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.Web.Http;
 
 namespace ExClient
 {
     public class SearchResult : SearchResultBase
     {
-        protected override Uri SearchUri => Client.Current.Uris.RootUri;
+        protected override Uri SearchUri { get; }
 
         public static readonly Category DefaultFliter = Category.All;
         private static readonly IReadOnlyDictionary<Category, string> searchFliterNames = new Dictionary<Category, string>()
@@ -37,24 +38,25 @@ namespace ExClient
             this.Keyword = keyword ?? "";
             this.Category = category;
             this.AdvancedSearch = advancedSearch;
+            this.SearchUri = new Uri(Client.Current.Uris.RootUri, $"?{new HttpFormUrlEncodedContent(getUriQuery())}");
         }
 
-        private IEnumerable<KeyValuePair<string, string>> getUeiQuery1()
+        private IEnumerable<KeyValuePair<string, string>> getUriQuery1()
         {
-            yield return new KeyValuePair<string, string>("f_search", Keyword);
+            yield return new KeyValuePair<string, string>("f_search", this.Keyword);
             foreach(var item in searchFliterNames)
             {
-                yield return new KeyValuePair<string, string>(item.Value, Category.HasFlag(item.Key) ? "1" : "0");
+                yield return new KeyValuePair<string, string>(item.Value, this.Category.HasFlag(item.Key) ? "1" : "0");
             }
             yield return new KeyValuePair<string, string>("f_apply", "Apply Filter");
         }
 
-        protected override IEnumerable<KeyValuePair<string, string>> GetUriQuery()
+        private IEnumerable<KeyValuePair<string, string>> getUriQuery()
         {
-            if(AdvancedSearch != null)
-                return getUeiQuery1().Concat(AdvancedSearch.AsEnumerable());
+            if(this.AdvancedSearch != null)
+                return getUriQuery1().Concat(this.AdvancedSearch.AsEnumerable());
             else
-                return getUeiQuery1();
+                return getUriQuery1();
         }
 
         public string Keyword
