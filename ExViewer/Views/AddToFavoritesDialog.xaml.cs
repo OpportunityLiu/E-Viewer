@@ -115,8 +115,8 @@ namespace ExViewer.Views
             try
             {
                 this.pbLoading.IsIndeterminate = true;
-                this.tbNote.Text = await this.Gallery.FetchFavoriteNoteAsync() ?? "";
-                this.cbCategory.SelectedIndex = this.Gallery.FavoriteCategory?.Index ?? 0;
+                this.tbNote.Text = await this.Gallery.FetchFavoriteNoteAsync();
+                this.cbCategory.SelectedIndex = this.Gallery.FavoriteCategory.Index;
                 success = true;
             }
             catch(Exception ex)

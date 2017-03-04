@@ -92,7 +92,7 @@ namespace ExViewer.Converters
                 return this.Default;
             if(isTrue)
                 return true;
-            if(Equals(value, this.ValueForFalse))
+            if(isFalse)
                 return false;
             return this.Others;
         }

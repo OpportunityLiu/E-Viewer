@@ -132,7 +132,7 @@ namespace ExViewer.Views
 
         private async void loadEffect()
         {
-            await Task.Delay(100);
+            await Task.Delay(200);
             Window.Current.Activate();
             this.ShowPic.Begin();
             lock(this.loadingSyncRoot)
