@@ -17,7 +17,7 @@ namespace ExClient
 
         internal FavoriteCategory(int index)
         {
-            Index = index;
+            this.Index = index;
         }
 
         public int Index
@@ -29,35 +29,34 @@ namespace ExClient
         {
             get
             {
-                return name;
+                return this.name ?? $"favorites {this.Index}";
             }
             internal set
             {
-                Set(ref name, value);
+                Set(ref this.name, value);
             }
         }
 
         private string name;
 
-        private IEnumerable<KeyValuePair<string, string>> getInfo(string favnote)
-        {
-            yield return new KeyValuePair<string, string>("apply", "Apply+Changes");
-            var cat = this.Index.ToString();
-            if(ReferenceEquals(this, All))
-                cat = "0";
-            if(ReferenceEquals(this, Removed))
-                cat = "favdel";
-            yield return new KeyValuePair<string, string>("favcat", cat);
-            yield return new KeyValuePair<string, string>("favnote", favnote);
-            yield return new KeyValuePair<string, string>("update", "1");
-        }
-
         private static readonly Regex favNoteMatcher = new Regex(@"'Note: (.+?) ';", RegexOptions.Compiled);
 
         private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(Client client, long gId, string gToken, string note)
         {
+            IEnumerable<KeyValuePair<string, string>> getInfo()
+            {
+                yield return new KeyValuePair<string, string>("apply", "Apply+Changes");
+                var cat = this.Index.ToString();
+                if(ReferenceEquals(this, All))
+                    cat = "0";
+                if(ReferenceEquals(this, Removed))
+                    cat = "favdel";
+                yield return new KeyValuePair<string, string>("favcat", cat);
+                yield return new KeyValuePair<string, string>("favnote", note);
+                yield return new KeyValuePair<string, string>("update", "1");
+            }
             var requestUri = new Uri(client.Uris.RootUri, $"gallerypopups.php?gid={gId}&t={gToken}&act=addfav");
-            var requestContent = new HttpFormUrlEncodedContent(getInfo(note));
+            var requestContent = new HttpFormUrlEncodedContent(getInfo());
             return client.HttpClient.PostAsync(requestUri, requestContent);
         }
 
@@ -96,7 +95,7 @@ namespace ExClient
 
         public override string ToString()
         {
-            return Name ?? "";
+            return this.Name;
         }
     }
 }

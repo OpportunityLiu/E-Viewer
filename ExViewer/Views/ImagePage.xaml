@@ -7,6 +7,8 @@
       xmlns:local="using:ExViewer.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       x:Name="page"
+      Loading="page_Loading"
+      Unloaded="page_Unloaded"
       NavigationCacheMode="Enabled"
       mc:Ignorable="d">
     <Page.Transitions>
@@ -64,14 +66,12 @@
                               x:DataType="local:IImagePageImageView">
                     <Grid DoubleTapped="fvi_DoubleTapped"
                           Tapped="fvi_Tapped">
-                        <Grid.Resources />
                         <Grid.RowDefinitions>
                             <RowDefinition Height="{Binding Visibility, ElementName=cb_top, Converter={StaticResource VisibleToAppbarHeightConverter}}" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <controls:ImagePresenter x:Name="ip"
                                                  Grid.RowSpan="2"
-                                                 FocusVisualPrimaryThickness="2,0,2,2"
                                                  Image="{x:Bind Image, Mode=OneWay}" />
                         <ProgressBar Grid.Row="1"
                                      VerticalAlignment="Top"
@@ -84,11 +84,13 @@
             </FlipView.ItemTemplate>
             <FlipView.ItemContainerStyle>
                 <Style TargetType="FlipViewItem">
-                    <Setter Property="IsTabStop" Value="False" />
+                    <Setter Property="IsTabStop"
+                            Value="False" />
                 </Style>
             </FlipView.ItemContainerStyle>
         </FlipView>
         <CommandBar x:Name="cb_top"
+                    XYFocusDown="{x:Bind fv}"
                     HorizontalContentAlignment="Stretch"
                     Closing="cb_top_Closing"
                     IsDynamicOverflowEnabled="False"
@@ -96,18 +98,15 @@
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True">
             <CommandBar.Content>
-                <Grid>
+                <Grid Height="48">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition x:Name="cdSplitViewPlaceholder"
+                                          Width="0" />
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="btn_pane"
-                            Click="btn_pane_Click"
-                            Style="{StaticResource SplitButtonStyle}"
-                            XYFocusDown="{x:Bind}" />
                     <TextBlock x:Name="tb_Title"
                                Grid.Column="1"
                                Style="{StaticResource GalleryTitleTextBlockStyle}"

@@ -75,11 +75,6 @@ namespace ExViewer.Views
             base.OnNavigatedFrom(e);
         }
 
-        private void btn_Pane_Click(object sender, RoutedEventArgs e)
-        {
-            RootControl.RootController.SwitchSplitView();
-        }
-
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             if(this.VM.Open.CanExecute(e.ClickedItem))

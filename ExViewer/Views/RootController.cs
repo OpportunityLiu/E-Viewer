@@ -24,10 +24,20 @@ namespace ExViewer.Views
         {
             static RootController()
             {
-                av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
+                av.VisibleBoundsChanged += av_VisibleBoundsChanged;
             }
 
             private static Uri launchUri;
+
+            internal static void SetSplitViewButtonPlaceholderVisibility(bool visible)
+            {
+                SplitViewButtonPlaceholderVisibility = visible;
+                SplitViewButtonPlaceholderVisibilityChanged?.Invoke(root, visible);
+            }
+
+            public static event TypedEventHandler<RootControl, bool> SplitViewButtonPlaceholderVisibilityChanged;
+
+            public static bool SplitViewButtonPlaceholderVisibility { get; private set; }
 
             /// <summary>
             /// 
@@ -52,7 +62,7 @@ namespace ExViewer.Views
 
             public static bool Available => root != null;
 
-            private static async void Av_VisibleBoundsChanged(ApplicationView sender, object args)
+            private static async void av_VisibleBoundsChanged(ApplicationView sender, object args)
             {
                 if(IsFullScreen)
                 {
@@ -81,7 +91,7 @@ namespace ExViewer.Views
 
             internal static void SetRoot(RootControl root)
             {
-                Av_VisibleBoundsChanged(av, null);
+                av_VisibleBoundsChanged(av, null);
 
                 RootController.root = root;
                 showPanel = (Storyboard)root.Resources["ShowDisablePanel"];
@@ -134,15 +144,19 @@ namespace ExViewer.Views
                 root.bd_Toast.Visibility = Visibility.Collapsed;
             }
 
-            public static void SwitchSplitView()
+            public static void SwitchSplitView(bool? open)
             {
                 if(root == null)
                     return;
-                var open = root.sv_root.IsPaneOpen;
-                if(!open)
+                var currentState = root.sv_root.IsPaneOpen;
+                if(open == currentState)
+                    return;
+                var targetState = open ?? !currentState;
+                if(targetState)
                 {
                     (root.fm_inner.Content as IHasAppBar)?.CloseAll();
                     root.sv_root.IsPaneOpen = true;
+                    root.OpenSplitViewPane.Begin();
                     var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked);
                     (currentTab ?? root.svt_Search).Focus(FocusState.Programmatic);
                 }
@@ -330,13 +344,7 @@ namespace ExViewer.Views
                 ViewEnabled = false;
             }
 
-            public static bool IsFullScreen
-            {
-                get
-                {
-                    return av.IsFullScreenMode;
-                }
-            }
+            public static bool IsFullScreen => av.IsFullScreenMode;
 
             private static ApplicationView av = ApplicationView.GetForCurrentView();
 

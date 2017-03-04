@@ -57,7 +57,7 @@ namespace ExViewer.Views
             {
                 this.VM?.SearchResult.Reset();
                 await Task.Delay(100);
-                this.btnPane.Focus(FocusState.Programmatic);
+                this.cbCategory.Focus(FocusState.Programmatic);
             }
             if(e.NavigationMode == NavigationMode.Back)
             {
@@ -98,11 +98,6 @@ namespace ExViewer.Views
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(FavoritesVM), typeof(FavoritesPage), new PropertyMetadata(null));
-
-        private void btnPane_Click(object sender, RoutedEventArgs e)
-        {
-            RootControl.RootController.SwitchSplitView();
-        }
 
         private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -165,6 +160,25 @@ namespace ExViewer.Views
         {
             this.asb.IsSuggestionListOpen = false;
             this.cbCategory.IsDropDownOpen = false;
+        }
+
+        public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
+        {
+            if(visible)
+                this.cdSplitViewPlaceholder.Width = new GridLength(48);
+            else
+                this.cdSplitViewPlaceholder.Width = new GridLength(0);
+        }
+
+        private void root_Loading(FrameworkElement sender, object args)
+        {
+            this.SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
+        }
+
+        private void root_Unloaded(object sender, RoutedEventArgs e)
+        {
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
         }
     }
 }

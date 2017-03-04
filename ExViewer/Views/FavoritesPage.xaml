@@ -9,6 +9,8 @@
       xmlns:vm="using:ExViewer.ViewModels"
       xmlns:db="using:ExViewer.Database"
       xmlns:cov="using:ExViewer.Converters"
+      Loading="root_Loading"
+      Unloaded="root_Unloaded"
       mc:Ignorable="d"
       xmlns:controls="using:ExViewer.Controls"
       xmlns:client="using:ExClient"
@@ -28,13 +30,11 @@
         </Grid.RowDefinitions>
         <Grid Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition x:Name="cdSplitViewPlaceholder"
+                                  Width="0" />
                 <ColumnDefinition MaxWidth="200" />
                 <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="btnPane"
-                    Style="{StaticResource SplitButtonStyle}"
-                    Click="btnPane_Click" />
             <ComboBox x:Name="cbCategory"
                       Grid.Column="1"
                       Margin="8,8,0,8"

@@ -92,11 +92,6 @@ namespace ExViewer.Views
 
         SystemNavigationManager manager;
 
-        private void btn_pane_Click(object sender, RoutedEventArgs e)
-        {
-            this.sv_root.IsPaneOpen = !this.sv_root.IsPaneOpen;
-        }
-
         private async void Control_Loading(FrameworkElement sender, object args)
         {
             RootController.SetRoot(this);
@@ -112,6 +107,7 @@ namespace ExViewer.Views
             this.UserInfo = await UserInfo.LoadFromCache();
             RootController.UpdateUserInfo(false);
             RootController.HandleUriLaunch();
+            vsg_CurrentStateChanging(null, null);
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)
@@ -163,12 +159,17 @@ namespace ExViewer.Views
             if(s.IsChecked)
                 return;
             this.fm_inner.Navigate(this.tabs[s]);
-            this.sv_root.IsPaneOpen = !this.sv_root.IsPaneOpen;
+            RootController.SwitchSplitView(false);
         }
 
         private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)
         {
             await RootController.RequestLogOn();
+        }
+
+        private void btn_pane_Click(object sender, RoutedEventArgs e)
+        {
+            RootController.SwitchSplitView(null);
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -177,12 +178,42 @@ namespace ExViewer.Views
             e.Handled = true;
             switch(e.OriginalKey)
             {
+            case Windows.System.VirtualKey.Control:
+            case Windows.System.VirtualKey.LeftControl:
+            case Windows.System.VirtualKey.RightControl:
             case Windows.System.VirtualKey.GamepadView:
-                RootController.SwitchSplitView();
+                RootController.SwitchSplitView(null);
                 break;
             default:
                 e.Handled = false;
                 break;
+            }
+        }
+
+        private void vsg_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
+        {
+            switch(this.sv_root.DisplayMode)
+            {
+            case SplitViewDisplayMode.Overlay:
+                RootController.SetSplitViewButtonPlaceholderVisibility(true);
+                break;
+            case SplitViewDisplayMode.CompactOverlay:
+                RootController.SetSplitViewButtonPlaceholderVisibility(false);
+                break;
+            }
+        }
+
+        private void page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(RootController.IsFullScreen || e.NewSize.Width < 720)
+            {
+                this.sv_root.DisplayMode = SplitViewDisplayMode.Overlay;
+                RootController.SetSplitViewButtonPlaceholderVisibility(true);
+            }
+            else
+            {
+                this.sv_root.DisplayMode = SplitViewDisplayMode.CompactOverlay;
+                RootController.SetSplitViewButtonPlaceholderVisibility(false);
             }
         }
     }

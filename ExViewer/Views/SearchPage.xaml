@@ -6,6 +6,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
       mc:Ignorable="d"
+      Loading="root_Loading"
+      Unloaded="root_Unloaded"
       xmlns:controls="using:ExViewer.Controls"
       NavigationCacheMode="Enabled">
     <Page.Transitions>
@@ -30,12 +32,10 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition x:Name="cdSplitViewPlaceholder"
+                                      Width="0" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnPane"
-                        Style="{StaticResource SplitButtonStyle}"
-                        Click="btnPane_Click" />
                 <AutoSuggestBox x:Uid="Views/SearchPage/AutoSuggestBox"
                                 x:Name="asb"
                                 Style="{StaticResource SearchAutoSuggestBoxStyle}"
@@ -67,7 +67,7 @@
                                       HorizontalAlignment="Center" />
                         <ListView x:Name="lv_AdvancedSearch"
                                   Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                                  Padding="0,0,0,8"
+                                  Padding="8,0,8,8"
                                   Style="{StaticResource StackPanelListViewStyle}">
                             <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
                                       XYFocusUp="{x:Bind ts_Advanced}"
@@ -101,7 +101,8 @@
                                           IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
                                 <ComboBox VerticalAlignment="Center"
                                           SelectedItem="{x:Bind VM.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
-                                          Margin="12,0">
+                                          Margin="12,0,0,0"
+                                          MinWidth="0">
                                     <x:Int32>2</x:Int32>
                                     <x:Int32>3</x:Int32>
                                     <x:Int32>4</x:Int32>
