@@ -27,6 +27,7 @@
             "OriginalTextBlock/Text": "原始",
             "RewriteTextBlock/Text": "重写",
             "TranslatedTextBlock/Text": "翻译",
+            "CellColumnDefination/MinWidth": "48",
             "ExcludedLanguage": {
                 "Chinese": "中文",
                 "Dutch": "荷兰语",
@@ -165,9 +166,6 @@
             "ShowExpungedCheckBox/Content": "搜索已失效的画廊",
             "TagsCheckBox/Content": "搜索画廊标签",
             "TorrentNamesCheckBox/Content": "搜索种子文件名"
-        },
-        "SettingsPage": {
-            "ExcludedLanguagesSelector/MinWidth": "280"
         }
     },
 

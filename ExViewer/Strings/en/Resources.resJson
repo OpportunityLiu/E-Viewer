@@ -28,6 +28,7 @@
             "OriginalTextBlock/Text": "Original",
             "RewriteTextBlock/Text": "Rewrite",
             "TranslatedTextBlock/Text": "Translated",
+            "CellColumnDefination/MinWidth": "80",
             "ExcludedLanguage": {
                 "Hungarian": "Hungarian",
                 "French": "French",
@@ -166,9 +167,6 @@
             "ShowExpungedCheckBox/Content": "Show expunged galleries",
             "TagsCheckBox/Content": "Search gallery tags",
             "TorrentNamesCheckBox/Content": "Search torrent filenames"
-        },
-        "SettingsPage": {
-            "ExcludedLanguagesSelector/MinWidth": "400"
         }
     },
 

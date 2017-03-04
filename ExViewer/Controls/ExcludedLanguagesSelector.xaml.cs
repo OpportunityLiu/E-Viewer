@@ -26,7 +26,7 @@ namespace ExViewer.Controls
             this.InitializeComponent();
             foreach(var item in this.filters)
             {
-                item.PropertyChanged += this.Filter_PropertyChanged;
+                item.PropertyChanged += this.filter_PropertyChanged;
             }
         }
         private List<ExcludedLanguageFilter> filters = new List<ExcludedLanguageFilter>()
@@ -64,11 +64,11 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for ExcludedLanguages.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ExcludedLanguagesProperty =
-            DependencyProperty.Register("ExcludedLanguages", typeof(string), typeof(ExcludedLanguagesSelector), new PropertyMetadata("", ExcludedLanguagesChanged));
+            DependencyProperty.Register("ExcludedLanguages", typeof(string), typeof(ExcludedLanguagesSelector), new PropertyMetadata("", excludedLanguagesChanged));
 
         private static char[] split = ", ".ToCharArray();
 
-        private static void ExcludedLanguagesChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void excludedLanguagesChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var oldS = e.OldValue.ToString();
             var newS = e.NewValue.ToString();
@@ -134,7 +134,7 @@ namespace ExViewer.Controls
 
         private bool changing;
 
-        private void Filter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void filter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(this.changing)
                 return;
@@ -151,6 +151,16 @@ namespace ExViewer.Controls
                     r.Add(item.Language + 2048);
             }
             this.ExcludedLanguages = ExcludedLanguagesSettingProvider.ToString(r);
+        }
+
+        private void userControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var contentWidth = this.cdColumn.MinWidth * 4;
+            var leftWidth = this.lvLeftHeader.ActualWidth;
+            contentWidth = Math.Max(contentWidth, this.ActualWidth - leftWidth);
+            this.bdTopLeftHeader.Width = leftWidth;
+            this.gdTopHeader.Width = contentWidth;
+            this.lvContent.Width = contentWidth;
         }
     }
 
