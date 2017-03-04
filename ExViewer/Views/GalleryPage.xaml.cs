@@ -303,7 +303,7 @@ namespace ExViewer.Views
                 {
                     if(this.btn_MoreButton == null)
                         this.btn_MoreButton = this.cb_top.FirstDescendant<Button>("MoreButton");
-                    this.btn_MoreButton.Focus(FocusState.Programmatic);
+                    this.btn_MoreButton?.Focus(FocusState.Programmatic);
                 }
                 break;
             default:
@@ -339,12 +339,37 @@ namespace ExViewer.Views
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
         }
 
+        private AddToFavoritesDialog addToFavorite = new AddToFavoritesDialog();
+
+        private async void abbFavorites_Click(object sender, RoutedEventArgs e)
+        {
+            this.addToFavorite.Gallery = this.VM.Gallery;
+            await this.addToFavorite.ShowAsync();
+        }
+
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if(visible)
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
             else
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
+        }
+    }
+
+    class FavoriteCategoryToNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var cat = (FavoriteCategory)value;
+            if(cat == null || cat.Index < 0)
+                return Strings.Resources.Views.GalleryPage.FavoritesAppBarButton.Text;
+            return cat.Name;
+            
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
         }
     }
 }

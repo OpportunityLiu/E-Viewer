@@ -58,6 +58,12 @@
     },
 
     "Views": {
+        "AddToFavoritesDialog": {
+            "FavoriteCategoryUnselected": "请选择一项。",
+            "AddTitle": "添加至收藏",
+            "ModifyTitle": "修改收藏信息",
+            "NoteTextBox/Header": "收藏注释"
+        },
         "CachedPage": {
             "DeleteAllAppBarButton/Label": "删除全部",
             "DeleteMenuFlyout/Text": "删除",
@@ -105,7 +111,8 @@
             "TorrentsEmptyTextBlock/Text": "没有可用的种子",
             "TorrentSizeTextBlock/Text": "大小",
             "TorrentsLoadingTextBlock/Text": "正在加载种子...",
-            "TorrentUploaderTextBlock/Text": "上传者"
+            "TorrentUploaderTextBlock/Text": "上传者",
+            "FavoritesAppBarButton/Text": "添加至收藏"
         },
         "ImagePage": {
             "BackToWindow": "退出全屏",

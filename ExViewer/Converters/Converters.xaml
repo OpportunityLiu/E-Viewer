@@ -32,6 +32,11 @@
                               Default="True"
                               Others="False"
                               InnerConverter="{uwp:StaticResource FalseToVisibleConverter}" />
+    <!--Code to initalize this converter is at App.xaml.cs-->
+    <ObjectToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
+                              Default="True"
+                              Others="False"
+                              InnerConverter="{uwp:StaticResource FalseToVisibleConverter}" />
     <LengthConverter x:Key="LengthConverter" />
     <EmptyConverter x:Key="EmptyConverter" />
     <SystemConverter x:Key="DefaultConverter" />
@@ -65,4 +70,6 @@
     <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />
     <local:OperationStateToBrushConverter x:Key="OperationStateToBrushConverter" />
     <local:NamespaceToFriendlyStringConverter x:Key="NamespaceToFriendlyStringConverter" />
+    <local:FavoriteCategoryToBrushConverter x:Key="FavoriteCategoryToBrushConverter" />
+    <local:FavoriteCategoryToNameConverter x:Key="FavoriteCategoryToNameConverter" />
 </uwp:ResourceDictionary>

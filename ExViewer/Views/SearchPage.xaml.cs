@@ -38,6 +38,7 @@ namespace ExViewer.Views
         }
 
         private int navId;
+        private Button btnExpandButton;
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -48,11 +49,14 @@ namespace ExViewer.Views
                 await RootControl.RootController.RequestLogOn();
             }
             this.VM = SearchVM.GetVM(e.Parameter?.ToString());
-            if(e.NavigationMode == NavigationMode.New && e.Parameter != null)
+            if(e.NavigationMode == NavigationMode.New)
             {
-                this.VM?.SearchResult.Reset();
+                if(e.Parameter != null)
+                    this.VM?.SearchResult.Reset();
                 await Task.Delay(100);
-                this.ab.Focus(FocusState.Programmatic);
+                if(this.btnExpandButton == null)
+                    this.btnExpandButton = this.ab.FirstDescendant<Button>("ExpandButton");
+                this.btnExpandButton?.Focus(FocusState.Programmatic);
             }
             if(e.NavigationMode == NavigationMode.Back)
             {

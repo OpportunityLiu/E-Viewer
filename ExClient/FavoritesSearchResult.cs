@@ -2,12 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.Web.Http;
 
 namespace ExClient
 {
     public class FavoritesSearchResult : SearchResultBase
     {
-        protected override Uri SearchUri => new Uri(Client.Current.Uris.RootUri, "favorites.php");
+        private static Uri searchBaseUri => new Uri(Client.Current.Uris.RootUri, "favorites.php");
+
+        protected override Uri SearchUri { get; }
 
         internal static FavoritesSearchResult Search(Client client, string keyword, FavoriteCategory category)
         {
@@ -22,18 +25,19 @@ namespace ExClient
         {
             this.Keyword = keyword ?? "";
             this.Category = category;
+            this.SearchUri = new Uri(searchBaseUri, $"?{new HttpFormUrlEncodedContent(getUriQuery())}");
         }
 
-        protected override IEnumerable<KeyValuePair<string, string>> GetUriQuery()
+        private IEnumerable<KeyValuePair<string, string>> getUriQuery()
         {
             //?favcat=all&f_search=&f_apply=Search+Favorites
             string cat;
-            if(Category == null || Category.Index < 0)
+            if(this.Category == null || this.Category.Index < 0)
                 cat = "all";
             else
-                cat = Category.Index.ToString();
+                cat = this.Category.Index.ToString();
             yield return new KeyValuePair<string, string>("favcat", cat);
-            yield return new KeyValuePair<string, string>("f_search", Keyword);
+            yield return new KeyValuePair<string, string>("f_search", this.Keyword);
             yield return new KeyValuePair<string, string>("f_apply", "Search Favorites");
         }
 

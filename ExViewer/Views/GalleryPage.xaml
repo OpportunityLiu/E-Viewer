@@ -22,6 +22,7 @@
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
+        <local:AddToFavoritesDialog x:Name="atfd" />
         <MenuFlyout x:Name="mfo_Tag">
             <MenuFlyoutItem IsHitTestVisible="False"
                             IsTabStop="False"
@@ -588,6 +589,13 @@
                     </TextBlock>
                 </Grid>
             </CommandBar.Content>
+            <CommandBar.PrimaryCommands>
+                <AppBarButton x:Name="abbFavorites"
+                              Icon="Favorite"
+                              Foreground="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToBrushConverter}, Mode=OneWay}"
+                              Label="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToNameConverter}, Mode=OneWay}"
+                              Click="abbFavorites_Click" />
+            </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_share"
                               x:Uid="Views/GalleryPage/ShareAppBarButton"

@@ -134,6 +134,7 @@
     <Compile Include="Converters\ValueConverterBase.cs" />
     <Compile Include="Helpers\ApiInfo.cs" />
     <Compile Include="Helpers\DocumentHelper.cs" />
+    <Compile Include="Helpers\FavoriteExtension.cs" />
     <Compile Include="Helpers\GalleryExtension.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -187,6 +188,9 @@
     <Compile Include="ViewModels\SearchVM.cs" />
     <Compile Include="Controls\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddToFavoritesDialog.xaml.cs">
+      <DependentUpon>AddToFavoritesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CachedPage.xaml.cs">
       <DependentUpon>CachedPage.xaml</DependentUpon>
@@ -368,6 +372,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\AboutControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddToFavoritesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
