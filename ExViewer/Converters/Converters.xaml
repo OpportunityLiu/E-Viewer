@@ -33,10 +33,12 @@
                               Others="False"
                               InnerConverter="{uwp:StaticResource FalseToVisibleConverter}" />
     <!--Code to initalize this converter is at App.xaml.cs-->
+    <!--Set ValueForFalse to string.Empty-->
     <ObjectToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
                               Default="True"
                               Others="False"
-                              InnerConverter="{uwp:StaticResource FalseToVisibleConverter}" />
+                              ValueForFalse=""
+                              InnerConverter="{uwp:StaticResource TrueToVisibleConverter}" />
     <LengthConverter x:Key="LengthConverter" />
     <EmptyConverter x:Key="EmptyConverter" />
     <SystemConverter x:Key="DefaultConverter" />

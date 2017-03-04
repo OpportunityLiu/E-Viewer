@@ -39,6 +39,7 @@ namespace ExClient
             yield return new KeyValuePair<string, string>("favcat", cat);
             yield return new KeyValuePair<string, string>("f_search", this.Keyword);
             yield return new KeyValuePair<string, string>("f_apply", "Search Favorites");
+            yield return new KeyValuePair<string, string>("inline_set", "fs_f");
         }
 
         protected override void HandleAdditionalInfo(HtmlNode trNode, Gallery gallery)

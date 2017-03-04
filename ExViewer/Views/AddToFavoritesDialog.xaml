@@ -49,6 +49,7 @@
                  TextWrapping="Wrap"
                  HorizontalAlignment="Stretch" />
         <Grid Margin="0,8,0,0"
+              MinHeight="4"
               Grid.Row="2">
             <TextBlock x:Name="tbInfo"
                        HorizontalAlignment="Stretch"

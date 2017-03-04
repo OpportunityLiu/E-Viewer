@@ -548,8 +548,8 @@ namespace ExClient
                 }
                 else
                 {
-                    this.FavoriteCategory = null;
-                    this.FavoriteNote = null;
+                    this.FavoriteCategory = FavoriteCategory.Removed;
+                    this.FavoriteNote = "";
                 }
                 return this.FavoriteNote;
             });
