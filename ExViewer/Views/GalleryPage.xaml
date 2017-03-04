@@ -9,6 +9,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:wp="using:Microsoft.Toolkit.Uwp.UI.Controls.WrapPanel"
       x:Name="page"
+      Loading="page_Loading"
+      Unloaded="page_Unloaded"
       NavigationCacheMode="Enabled"
       SizeChanged="page_SizeChanged"
       mc:Ignorable="d">
@@ -569,13 +571,12 @@
                     HorizontalContentAlignment="Stretch"
                     IsDynamicOverflowEnabled="False">
             <CommandBar.Content>
-                <Grid>
+                <Grid Height="48">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition x:Name="cdSplitViewPlaceholder"
+                                          Width="0" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Button Click="btn_pane_Click"
-                            Style="{StaticResource SplitButtonStyle}" />
                     <TextBlock Grid.Column="1"
                                ContinuumNavigationTransitionInfo.IsEntranceElement="True"
                                Style="{StaticResource GalleryTitleTextBlockStyle}"

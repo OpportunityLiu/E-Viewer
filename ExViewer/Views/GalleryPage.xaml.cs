@@ -203,11 +203,6 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(GalleryVM), typeof(GalleryPage), new PropertyMetadata(null));
 
-        private void btn_pane_Click(object sender, RoutedEventArgs e)
-        {
-            RootControl.RootController.SwitchSplitView();
-        }
-
         private EhWikiDialog ewd = new EhWikiDialog();
 
         private void gv_Tags_ItemClick(object sender, ItemClickEventArgs e)
@@ -331,6 +326,25 @@ namespace ExViewer.Views
         public void CloseAll()
         {
             this.cb_top.IsOpen = false;
+        }
+
+        private void page_Loading(FrameworkElement sender, object args)
+        {
+            this.SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
+        }
+
+        private void page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
+        }
+
+        public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
+        {
+            if(visible)
+                this.cdSplitViewPlaceholder.Width = new GridLength(48);
+            else
+                this.cdSplitViewPlaceholder.Width = new GridLength(0);
         }
     }
 }

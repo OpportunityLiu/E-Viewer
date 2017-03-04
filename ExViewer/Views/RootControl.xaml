@@ -7,6 +7,7 @@
       xmlns:controls="using:ExViewer.Controls"
       mc:Ignorable="d"
       x:Name="page"
+      SizeChanged="page_SizeChanged"
       IsTextScaleFactorEnabled="False"
       Loading="Control_Loading"
       Loaded="Control_Loaded"
@@ -50,16 +51,77 @@
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Name="OpenSplitViewPane">
+            <DoubleAnimation Duration="0:0:0.12"
+                             To="1"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                             Storyboard.TargetName="eps_Avatar"
+                             d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Duration="0:0:0.12"
+                             To="1"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
+                             Storyboard.TargetName="eps_Avatar"
+                             d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Duration="0:0:0.12"
+                             To="0"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                             Storyboard.TargetName="eps_Avatar"
+                             d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Duration="0:0:0.12"
+                             To="1"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="bdPaneHeader"
+                             d:IsOptimized="True" />
+        </Storyboard>
+        <Storyboard x:Name="CloseSplitViewPane">
+            <DoubleAnimation Duration="0:0:0.12"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="bdPaneHeader" />
+            <DoubleAnimation Duration="0:0:0.12"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                             Storyboard.TargetName="eps_Avatar">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Duration="0:0:0.12"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
+                             Storyboard.TargetName="eps_Avatar">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Duration="0:0:0.12"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                             Storyboard.TargetName="eps_Avatar">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
     </Page.Resources>
     <Grid>
         <SplitView x:Name="sv_root"
                    IsTabStop="False"
                    IsPaneOpen="True"
+                   PaneClosing="{x:Bind CloseSplitViewPane.Begin}"
                    LightDismissOverlayMode="On">
             <SplitView.Pane>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="48" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
@@ -70,20 +132,24 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Border Grid.ColumnSpan="999"
+                    <Border x:Name="bdPaneHeader"
+                            Opacity="0.2"
+                            Background="{ThemeResource UserBackgroundThemeBrush}"
                             Grid.RowSpan="3"
-                            Background="{ThemeResource UserBackgroundThemeBrush}" />
-                    <Button Style="{StaticResource SplitButtonStyle}"
-                            Grid.ColumnSpan="999"
-                            Click="btn_pane_Click"
-                            XYFocusDown="{x:Bind btn_ChangeUser}" />
+                            Grid.ColumnSpan="4" />
                     <Ellipse x:Name="eps_Avatar"
                              Grid.Row="1"
                              Grid.ColumnSpan="999"
                              Width="80"
                              Height="80"
                              HorizontalAlignment="Center"
-                             VerticalAlignment="Center">
+                             VerticalAlignment="Center"
+                             RenderTransformOrigin="0.5,0.5">
+                        <Ellipse.RenderTransform>
+                            <CompositeTransform ScaleX="0.5"
+                                                ScaleY="0.5"
+                                                TranslateX="-136" />
+                        </Ellipse.RenderTransform>
                         <Ellipse.Fill>
                             <ImageBrush Stretch="Uniform">
                                 <ImageBrush.ImageSource>
@@ -106,9 +172,11 @@
                             x:Name="btn_ChangeUser"
                             Content="&#xE895;"
                             Click="btn_ChangeUser_Click"
+                            IsEnabled="{x:Bind sv_root.IsPaneOpen, Mode=OneWay}"
                             ToolTipService.ToolTip="Change user"
                             Style="{StaticResource NavigationBackButtonSmallStyle}" />
                     <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  VerticalScrollMode="Auto"
                                   HorizontalScrollMode="Disabled"
                                   Grid.Row="3"
                                   Grid.ColumnSpan="4">
@@ -181,6 +249,10 @@
                    Navigating="fm_inner_Navigating"
                    Navigated="fm_inner_Navigated" />
         </SplitView>
+        <Button Style="{StaticResource SplitButtonStyle}"
+                Click="btn_pane_Click"
+                IsTabStop="False"
+                VerticalAlignment="Top" />
         <Border x:Name="bd_Toast"
                 x:DeferLoadStrategy="Lazy"
                 HorizontalAlignment="Stretch"

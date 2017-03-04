@@ -37,9 +37,25 @@ namespace ExViewer.Views
                 this.pv_root.SelectedIndex = 0;
         }
 
-        private void btn_Click(object sender, RoutedEventArgs e)
+        private void page_Loading(FrameworkElement sender, object args)
         {
-            RootControl.RootController.SwitchSplitView();
+            this.SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
+
+        }
+
+        private void page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
+
+        }
+
+        public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
+        {
+            if(visible)
+                this.bdSplitViewPlaceholder.Width = 48;
+            else
+                this.bdSplitViewPlaceholder.Width = 0;
         }
     }
 }

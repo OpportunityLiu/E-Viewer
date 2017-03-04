@@ -33,16 +33,6 @@
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True"
                     HorizontalContentAlignment="Stretch">
-            <CommandBar.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="48" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource SplitButtonStyle}"
-                            Click="btn_Pane_Click" />
-                </Grid>
-            </CommandBar.Content>
             <CommandBar.PrimaryCommands>
                 <AppBarButton x:Uid="Views/SavedPage/RefreshAppBarButton"
                               x:Name="abb_Refresh"

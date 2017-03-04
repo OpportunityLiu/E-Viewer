@@ -80,11 +80,6 @@ namespace ExViewer.Views
         private readonly DisplayRequest displayRequest = new DisplayRequest();
         private bool displayActived;
 
-        private void btn_pane_Click(object sender, RoutedEventArgs e)
-        {
-            RootControl.RootController.SwitchSplitView();
-        }
-
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             var backColor = ((SolidColorBrush)this.fv.Background).Color;
@@ -227,7 +222,6 @@ namespace ExViewer.Views
 
         private bool changeCbVisibility()
         {
-            ApplicationView.GetForCurrentView().ShowStandardSystemOverlays();
             switch(this.cb_top.Visibility)
             {
             case Visibility.Visible:
@@ -298,7 +292,7 @@ namespace ExViewer.Views
                 if(!changeCbVisibility())
                     this.fv.Focus(FocusState.Programmatic);
                 else
-                    this.btn_pane.Focus(FocusState.Programmatic);
+                    this.abb_fullScreen.Focus(FocusState.Programmatic);
                 break;
             default:
                 e.Handled = false;
@@ -333,6 +327,25 @@ namespace ExViewer.Views
         public void SetImageIndex(int value)
         {
             this.fv.SelectedIndex = value;
+        }
+
+        private void page_Loading(FrameworkElement sender, object args)
+        {
+            this.SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
+        }
+
+        private void page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
+        }
+
+        public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
+        {
+            if(visible)
+                this.cdSplitViewPlaceholder.Width = new GridLength(48);
+            else
+                this.cdSplitViewPlaceholder.Width = new GridLength(0);
         }
     }
 }

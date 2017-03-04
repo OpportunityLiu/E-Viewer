@@ -4,6 +4,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:ExClient="using:ExClient"
+      Loading="page_Loading"
+      Unloaded="page_Unloaded"
       x:Class="ExViewer.Views.SettingsPage"
       NavigationCacheMode="Enabled"
       mc:Ignorable="d"
@@ -25,8 +27,9 @@
     <Pivot x:Name="pv_root"
            BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
         <Pivot.LeftHeader>
-            <Button Style="{StaticResource SplitButtonStyle}"
-                    Click="btn_Click" />
+            <Border x:Name="bdSplitViewPlaceholder"
+                    Height="48"
+                    Width="0" />
         </Pivot.LeftHeader>
         <Pivot.HeaderTemplate>
             <DataTemplate x:DataType="settings:GroupedSettings">

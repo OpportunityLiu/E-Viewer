@@ -30,12 +30,11 @@ namespace ExClient
                 var info = profiles[2];
                 var avatar = profiles[1].Descendants("img").FirstOrDefault();
                 var groupAndJoin = profiles[4];
-                DateTimeOffset register;
                 if(!DateTimeOffset.TryParseExact(groupAndJoin.LastChild.InnerText,
-                    "'Joined:' d-MMMM yy",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AllowWhiteSpaces,
-                    out register))
+    "'Joined:' d-MMMM yy",
+    CultureInfo.InvariantCulture,
+    DateTimeStyles.AssumeUniversal | DateTimeStyles.AllowWhiteSpaces,
+    out var register))
                 {
                     if(groupAndJoin.LastChild.InnerText.Contains("Today"))
                         register = DateTimeOffset.UtcNow;
