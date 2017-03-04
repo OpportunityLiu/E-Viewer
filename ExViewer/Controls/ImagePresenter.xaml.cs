@@ -115,15 +115,8 @@ namespace ExViewer.Controls
             return base.MeasureOverride(availableSize);
         }
 
-        private void sv_Loading(FrameworkElement sender, object args)
-        {
-            this.sv.MaxZoomFactor = SettingCollection.Current.MaxFactor;
-        }
-
         private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if(!SettingCollection.Current.MouseInertial && e.IsInertial)
-                return;
             var dx = e.Delta.Translation.X;
             var dy = e.Delta.Translation.Y;
             this.sv.ChangeView(this.sv.HorizontalOffset - dx, this.sv.VerticalOffset - dy, null, true);
@@ -138,9 +131,7 @@ namespace ExViewer.Controls
                 break;
             case Windows.Devices.Input.PointerDeviceType.Pen:
             case Windows.Devices.Input.PointerDeviceType.Mouse:
-                var mode = ManipulationModes.System | ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-                if(SettingCollection.Current.MouseInertial)
-                    mode |= ManipulationModes.TranslateInertia;
+                var mode = ManipulationModes.System | ManipulationModes.TranslateX | ManipulationModes.TranslateY |ManipulationModes.TranslateInertia;
                 this.sv.ManipulationMode = mode;
                 break;
             default:
@@ -185,7 +176,7 @@ namespace ExViewer.Controls
 
         public void ZoomTo(Point point)
         {
-            this.ZoomTo(point, SettingCollection.Current.DefaultFactor);
+            this.ZoomTo(point, 2);
         }
 
         public void ZoomTo(float factor)

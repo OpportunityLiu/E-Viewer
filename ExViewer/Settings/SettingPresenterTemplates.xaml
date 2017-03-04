@@ -23,15 +23,7 @@
                   x:DataType="settings:SettingInfo">
         <StackPanel>
             <TextBlock Text="{Binding FriendlyName}" />
-            <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                          HorizontalScrollMode="Auto"
-                          IsHorizontalScrollChainingEnabled="True"
-                          IsVerticalScrollChainingEnabled="True"
-                          VerticalScrollBarVisibility="Disabled"
-                          VerticalScrollMode="Disabled">
-                <controls:ExcludedLanguagesSelector x:Uid="Views/SettingsPage/ExcludedLanguagesSelector"
-                                                    ExcludedLanguages="{Binding Value, Mode=TwoWay}" />
-            </ScrollViewer>
+            <controls:ExcludedLanguagesSelector ExcludedLanguages="{Binding Value, Mode=TwoWay}" />
         </StackPanel>
     </DataTemplate>
     <DataTemplate x:Name="AboutContentTemplate"

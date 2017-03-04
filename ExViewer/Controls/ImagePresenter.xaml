@@ -28,7 +28,7 @@
                   HorizontalScrollBarVisibility="Hidden"
                   VerticalScrollBarVisibility="Hidden"
                   MinZoomFactor="1"
-                  Loading="sv_Loading"
+                  MaxZoomFactor="8"
                   ManipulationDelta="sv_ManipulationDelta"
                   PointerEntered="sv_PointerEntered"
                   PointerMoved="sv_PointerMoved"

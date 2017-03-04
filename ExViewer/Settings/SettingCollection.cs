@@ -156,7 +156,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Global", Index = 40)]
+        [Setting("Viewing", Index = 20)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseChineseTagTranslation
         {
@@ -170,7 +170,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Global", Index = 50)]
+        [Setting("Viewing", Index = 30)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseJapaneseTagTranslation
         {
@@ -184,49 +184,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("ImageViewing", Index = 10)]
-        [SingleRange(1, 4, Small = 0.1)]
-        public float DefaultFactor
-        {
-            get
-            {
-                return GetLocal(2f);
-            }
-            set
-            {
-                SetLocal(value);
-            }
-        }
-
-        [Setting("ImageViewing", Index = 20)]
-        [SingleRange(4, 10, Small = 0.1)]
-        public float MaxFactor
-        {
-            get
-            {
-                return GetLocal(8f);
-            }
-            set
-            {
-                SetLocal(value);
-            }
-        }
-
-        [Setting("ImageViewing", Index = 30)]
-        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
-        public bool MouseInertial
-        {
-            get
-            {
-                return GetLocal(false);
-            }
-            set
-            {
-                SetLocal(value);
-            }
-        }
-
-        [Setting("ImageViewing", Index = 35)]
+        [Setting("Viewing", Index = 40)]
         [ToggleSwitchRepresent("BooleanRightToLeft", "BooleanLeftToRight")]
         public bool ReverseFlowDirection
         {
@@ -240,21 +198,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("ImageViewing", Index = 40)]
-        [Int32Range(0, 1000, Tick = 100, Small = 10, Large = 100)]
-        public int ChangeCommandBarDelay
-        {
-            get
-            {
-                return GetLocal(150);
-            }
-            set
-            {
-                SetLocal(value);
-            }
-        }
-
-        [Setting("ImageViewing", Index = 45)]
+        [Setting("Viewing", Index = 50)]
         public bool KeepScreenOn
         {
             get
@@ -267,7 +211,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Connection", Index = 10)]
+        [Setting("Connection", Index = 40)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool LoadLofiOnMeteredInternetConnection
         {
@@ -284,7 +228,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Connection", Index = 20)]
+        [Setting("Connection", Index = 50)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool LoadLofiOnAllInternetConnection
         {
@@ -300,7 +244,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Hah", Index = 10)]
+        [Setting("Connection", Index = 60)]
         public string HahAddress
         {
             get

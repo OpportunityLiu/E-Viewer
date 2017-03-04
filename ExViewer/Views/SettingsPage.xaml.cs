@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -30,11 +31,33 @@ namespace ExViewer.Views
             this.pv_root.ItemsSource = SettingCollection.Current.GroupedSettings;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private Stack<int> navigateStack = new Stack<int>();
+
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(e.NavigationMode == NavigationMode.New)
+            await Task.Delay(50);
+            switch(e.NavigationMode)
+            {
+            case NavigationMode.New:
                 this.pv_root.SelectedIndex = 0;
+                break;
+            case NavigationMode.Back:
+                this.pv_root.SelectedIndex = this.navigateStack.Pop();
+                break;
+            }
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            switch(e.NavigationMode)
+            {
+            case NavigationMode.New:
+            case NavigationMode.Forward:
+                this.navigateStack.Push(this.pv_root.SelectedIndex);
+                break;
+            }
         }
 
         private void page_Loading(FrameworkElement sender, object args)
