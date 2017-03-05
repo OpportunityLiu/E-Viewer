@@ -10,7 +10,7 @@ namespace ExClient.Settings
         internal SettingCollection(Client owner)
         {
             this.owner = owner;
-            foreach(var item in items)
+            foreach(var item in this.items)
             {
                 item.Value.Owner = this;
             }
@@ -27,7 +27,7 @@ namespace ExClient.Settings
 
         private SettingProvider getProvider([System.Runtime.CompilerServices.CallerMemberName]string key = null)
         {
-            return items[key];
+            return this.items[key];
         }
 
         public HahProxySettingProvider HahProxy => (HahProxySettingProvider)getProvider();
@@ -41,16 +41,20 @@ namespace ExClient.Settings
                 Expires = DateTimeOffset.Now.AddYears(1),
                 HttpOnly = false,
                 Secure = false,
-                Value = string.Join("-", items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray())
+                Value = string.Join("-", this.items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray())
             };
-            owner.CookieManager.SetCookie(cookie);
+            this.owner.CookieManager.SetCookie(cookie);
         }
 
         private class DefaultSettingProvider : SettingProvider
         {
             internal override string GetCookieContent()
             {
-                return "ts_l-tr_2-rc_0";
+                // Thumbnail Size - Large
+                // Thumbnail Rows - 2(means 4)
+                // search Result Count - 0(means 25) 
+                // Favorite Search - order by Favorite time
+                return "ts_l-tr_2-rc_0-fs_f";
             }
         }
 

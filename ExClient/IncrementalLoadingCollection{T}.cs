@@ -20,169 +20,17 @@ namespace ExClient
             this.loadedPageCount = loadedPageCount;
         }
 
-        protected void Set<TProp>(ref TProp field, TProp value, [CallerMemberName]string propertyName = null)
-        {
-            if(Equals(field, value))
-                return;
-            field = value;
-            OnPropertyChanged(propertyName);
-        }
-
-        /// <summary>
-        /// Add items into collection.
-        /// </summary>
-        /// <param name="items">Items to add.</param>
-        /// <returns>Count of added items.</returns>
-        public int AddRange(IEnumerable<T> items)
-        {
-            CheckReentrancy();
-            var count = 0;
-            foreach(var item in items)
-            {
-                this.Items.Add(item);
-                count++;
-            }
-            if(count == 0)
-                return 0;
-            var startingIndex = this.Count - count;
-            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new AddRangeInfo(this, startingIndex, count), startingIndex));
-            OnPropertyChanged(nameof(Count));
-            OnPropertyChanged("Item[]");
-            return count;
-        }
-
-        private class AddRangeInfo : IList
-        {
-            private int count;
-            private IncrementalLoadingCollection<T> parent;
-            private int startingIndex;
-
-            public AddRangeInfo(IncrementalLoadingCollection<T> parent, int startingIndex, int count)
-            {
-                this.parent = parent;
-                this.startingIndex = startingIndex;
-                this.count = count;
-            }
-
-            public object this[int index]
-            {
-                get
-                {
-                    if((uint)index > (uint)count)
-                        throw new ArgumentOutOfRangeException(nameof(index));
-                    return parent[startingIndex + index];
-                }
-                set
-                {
-                    throw new InvalidOperationException();
-                }
-            }
-
-            public int Count => count;
-
-            public bool IsFixedSize => true;
-
-            public bool IsReadOnly => true;
-
-            public bool IsSynchronized => false;
-
-            public object SyncRoot => null;
-
-            public int Add(object value)
-            {
-                throw new InvalidOperationException();
-            }
-
-            public void Clear()
-            {
-                throw new InvalidOperationException();
-            }
-
-            public bool Contains(object value)
-            {
-                foreach(var item in this)
-                {
-                    if(item == value)
-                        return true;
-                }
-                return false;
-            }
-
-            public void CopyTo(Array array, int index)
-            {
-                for(int i = 0; i < count; i++)
-                {
-                    array.SetValue(this[i], i);
-                }
-            }
-
-            public IEnumerator GetEnumerator()
-            {
-                for(int i = 0; i < count; i++)
-                {
-                    yield return this[i];
-                }
-            }
-
-            public int IndexOf(object value)
-            {
-                for(int i = 0; i < count; i++)
-                {
-                    if(this[i] == value)
-                        return i;
-                }
-                return -1;
-            }
-
-            public void Insert(int index, object value)
-            {
-                throw new InvalidOperationException();
-            }
-
-            public void Remove(object value)
-            {
-                throw new InvalidOperationException();
-            }
-
-            public void RemoveAt(int index)
-            {
-                throw new InvalidOperationException();
-            }
-        }
-
-        protected void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected sealed override void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                base.OnPropertyChanged(e);
-            });
-        }
-
-        protected sealed override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-        {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            {
-                base.OnCollectionChanged(e);
-            });
-        }
-
         private int rc, pc;
 
         public int RecordCount
         {
             get
             {
-                return rc;
+                return this.rc;
             }
             protected set
             {
-                Set(ref rc, value);
-                OnPropertyChanged(nameof(IsEmpty));
+                Set(ref this.rc, value, nameof(IsEmpty));
             }
         }
 
@@ -190,30 +38,29 @@ namespace ExClient
         {
             get
             {
-                return pc;
+                return this.pc;
             }
             protected set
             {
-                Set(ref pc, value);
-                OnPropertyChanged(nameof(HasMoreItems));
+                Set(ref this.pc, value, nameof(HasMoreItems), nameof(LoadedPageCount));
             }
         }
 
         protected abstract IAsyncOperation<IList<T>> LoadPageAsync(int pageIndex);
 
-        public bool IsEmpty => RecordCount == 0;
+        public bool IsEmpty => this.RecordCount == 0;
 
         private int loadedPageCount;
 
-        protected int LoadedPageCount => loadedPageCount;
+        protected int LoadedPageCount => this.loadedPageCount;
 
-        public bool HasMoreItems => loadedPageCount < PageCount;
+        public bool HasMoreItems => this.loadedPageCount < this.PageCount;
 
         protected void ResetAll()
         {
-            PageCount = 0;
-            RecordCount = 0;
-            loadedPageCount = 0;
+            this.PageCount = 0;
+            this.RecordCount = 0;
+            this.loadedPageCount = 0;
             Clear();
         }
 
@@ -221,9 +68,9 @@ namespace ExClient
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
-            if(loading?.Status == AsyncStatus.Started)
+            if(this.loading?.Status == AsyncStatus.Started)
             {
-                var temp = loading;
+                var temp = this.loading;
                 return Run(async token =>
                 {
                     token.Register(temp.Cancel);
@@ -243,19 +90,19 @@ namespace ExClient
                     }
                 });
             }
-            return loading = Run(async token =>
+            return this.loading = Run(async token =>
             {
-                if(!HasMoreItems)
+                if(!this.HasMoreItems)
                     return new LoadMoreItemsResult();
-                var lp = LoadPageAsync(loadedPageCount);
+                var lp = LoadPageAsync(this.loadedPageCount);
                 IList<T> re = null;
                 token.Register(lp.Cancel);
                 try
                 {
                     re = await lp;
                     this.AddRange(re);
-                    loadedPageCount++;
-                    OnPropertyChanged(nameof(HasMoreItems));
+                    this.loadedPageCount++;
+                    RaisePropertyChanged(nameof(HasMoreItems));
                 }
                 catch(Exception ex)
                 {
@@ -288,7 +135,7 @@ namespace ExClient
     {
         internal LoadMoreItemsExceptionEventArgs(Exception ex)
         {
-            Exception = ex;
+            this.Exception = ex;
         }
 
         public Exception Exception
@@ -296,7 +143,7 @@ namespace ExClient
             get;
         }
 
-        public string Message => Exception?.Message;
+        public string Message => this.Exception?.Message;
 
         public bool Handled
         {

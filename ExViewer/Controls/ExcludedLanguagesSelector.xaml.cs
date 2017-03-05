@@ -250,7 +250,7 @@ namespace ExViewer.Controls
                 }
                 this.translated = value;
                 this.rewrite = value;
-                RaisePropertyChanged(null);
+                RaisePropertyChanged(default(string));
             }
         }
 

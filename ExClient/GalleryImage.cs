@@ -353,18 +353,17 @@ namespace ExClient
         {
             get
             {
-                return imageFile;
+                return this.imageFile;
             }
             protected set
             {
-                Set(ref imageFile, value);
-                image.Reset();
-                RaisePropertyChanged(nameof(Image));
-                RaisePropertyChanged(nameof(ImageFileUri));
+                this.imageFile = value;
+                this.image.Reset();
+                RaisePropertyChanged(nameof(ImageFile), nameof(Image), nameof(ImageFileUri));
                 if(value != null)
                 {
-                    thumb.Reset();
-                    thumb.StartLoading();
+                    this.thumb.Reset();
+                    this.thumb.StartLoading();
                 }
             }
         }
@@ -375,7 +374,7 @@ namespace ExClient
         {
             get
             {
-                if(imageFile == null)
+                if(this.imageFile == null)
                     return null;
                 return new Uri(ImageCacheBaseUri, $"{Owner.Id}/{imageFile.Name}");
             }
@@ -387,7 +386,7 @@ namespace ExClient
         {
             get
             {
-                if(ImageFile == null)
+                if(this.ImageFile == null)
                     return null;
                 return this.image.Image;
             }
@@ -399,12 +398,11 @@ namespace ExClient
         {
             get
             {
-                return imageKey;
+                return this.imageKey;
             }
             protected set
             {
-                Set(ref imageKey, value);
-                RaisePropertyChanged(nameof(PageUri));
+                Set(ref this.imageKey, value, nameof(PageUri));
             }
         }
 
@@ -414,11 +412,11 @@ namespace ExClient
         {
             get
             {
-                return originalLoaded;
+                return this.originalLoaded;
             }
             private set
             {
-                Set(ref originalLoaded, value);
+                Set(ref this.originalLoaded, value);
             }
         }
 

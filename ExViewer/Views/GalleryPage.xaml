@@ -479,7 +479,7 @@
                                                Text="Comments" />
                                     <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
                                                Text="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/GalleryPage/PivotHeaderNumberFormatString'}"
-                                               Visibility="{x:Bind VM.Gallery.Comments, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
+                                               Visibility="{x:Bind VM.Gallery.Comments.IsLoaded, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
                                 </Grid>
                             </PivotItem.Header>
                             <ListView x:Name="lv_Comments"
@@ -506,13 +506,13 @@
                                                    HorizontalAlignment="Center"
                                                    Style="{StaticResource BaseTextBlockStyle}"
                                                    Text="No comments"
-                                                   Visibility="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}" />
+                                                   Visibility="{x:Bind VM.Gallery.Comments.IsEmpty, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
                                         <TextBlock x:Uid="Views/GalleryPage/CommentsLoadingTextBlock"
                                                    Margin="12"
                                                    HorizontalAlignment="Center"
                                                    Style="{StaticResource BaseTextBlockStyle}"
                                                    Text="Loading comments..."
-                                                   Visibility="{x:Bind VM.Gallery.Comments, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}" />
+                                                   Visibility="{x:Bind VM.Gallery.Comments.IsLoaded, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
                                     </Grid>
                                 </ListView.Header>
                             </ListView>

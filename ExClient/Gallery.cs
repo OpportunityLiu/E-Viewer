@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
@@ -141,6 +142,7 @@ namespace ExClient
             this.Id = id;
             this.Token = token;
             this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{Id.ToString()}/{Token}/");
+            this.Comments = new CommentCollection(this);
         }
 
         internal Gallery(GalleryModel model)
@@ -160,7 +162,7 @@ namespace ExClient
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
             this.Owner = Client.Current;
-            this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
+            this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
 
         [JsonConstructor]
@@ -185,17 +187,16 @@ namespace ExClient
         {
             if(error != null)
             {
-                Available = false;
+                this.Available = false;
                 return;
             }
-            Available = !expunged;
+            this.Available = !expunged;
             try
             {
                 this.ArchiverKey = archiver_key;
                 this.Title = HtmlEntity.DeEntitize(title);
                 this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
-                Category ca;
-                if(!categoriesForRestApi.TryGetValue(category, out ca))
+                if(!categoriesForRestApi.TryGetValue(category, out var ca))
                     ca = Category.Unspecified;
                 this.Category = ca;
                 this.Uploader = HtmlEntity.DeEntitize(uploader);
@@ -228,15 +229,21 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                await InitOverrideAsync();
-                if(this.thumbImage != null)
-                    return;
-                var buffer = await Client.Current.HttpClient.GetBufferAsync(ThumbUri);
-                using(var stream = buffer.AsRandomAccessStream())
+                try
                 {
-                    var decoder = await BitmapDecoder.CreateAsync(stream);
-                    this.Thumb = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                    var buffer = await Client.Current.HttpClient.GetBufferAsync(this.ThumbUri);
+                    using(var stream = buffer.AsRandomAccessStream())
+                    {
+                        var decoder = await BitmapDecoder.CreateAsync(stream);
+                        this.Thumb = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                    }
                 }
+                catch(Exception)
+                {
+                    this.thumbImage?.Dispose();
+                    this.Thumb = null;
+                }
+                await InitOverrideAsync();
             });
         }
 
@@ -397,11 +404,11 @@ namespace ExClient
         {
             get
             {
-                return galleryFolder;
+                return this.galleryFolder;
             }
             private set
             {
-                Set(ref galleryFolder, value);
+                Set(ref this.galleryFolder, value);
             }
         }
 
@@ -409,9 +416,9 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                if(galleryFolder == null)
-                    GalleryFolder = await StorageHelper.LocalCache.CreateFolderAsync(Id.ToString(), CreationCollisionOption.OpenIfExists);
-                return galleryFolder;
+                if(this.galleryFolder == null)
+                    this.GalleryFolder = await StorageHelper.LocalCache.CreateFolderAsync(this.Id.ToString(), CreationCollisionOption.OpenIfExists);
+                return this.galleryFolder;
             });
         }
 
@@ -429,7 +436,7 @@ namespace ExClient
             return Task.Run(async () =>
             {
                 await this.GetFolderAsync();
-                var needLoadComments = comments == null;
+                var needLoadComments = !this.Comments.IsLoaded;
                 var uri = new Uri(this.GalleryUri, $"?inline_set=ts_l&p={pageIndex.ToString()}{(needLoadComments ? "hc=1" : "")}");
                 var request = this.Owner.HttpClient.GetStringAsync(uri);
                 var res = await request;
@@ -438,13 +445,14 @@ namespace ExClient
                 html.LoadHtml(res);
                 updateFavoriteInfo(html);
                 if(needLoadComments)
-                    this.Comments = Comment.LoadComment(html);
+                {
+                    this.Comments.AnalyzeDocument(html);
+                }
                 var pcNodes = html.DocumentNode.Descendants("td")
                     .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
                     .Select(node =>
                     {
-                        int number;
-                        var succeed = int.TryParse(node.InnerText, out number);
+                        var succeed = int.TryParse(node.InnerText, out var number);
                         return new
                         {
                             succeed,
@@ -458,7 +466,7 @@ namespace ExClient
                         number = 1
                     })
                     .Max(select => select.number);
-                PageCount = pcNodes;
+                this.PageCount = pcNodes;
                 var pics = from node in html.GetElementbyId("gdt").Descendants("div")
                            where node.GetAttributeValue("class", null) == "gdtl"
                            let nodeA = node.Descendants("a").Single()
@@ -502,28 +510,7 @@ namespace ExClient
             return TorrentInfo.LoadTorrentsAsync(this);
         }
 
-        private ReadOnlyCollection<Comment> comments;
-
-        public ReadOnlyCollection<Comment> Comments
-        {
-            get
-            {
-                return comments;
-            }
-            protected set
-            {
-                Set(ref comments, value);
-            }
-        }
-
-        public IAsyncOperation<ReadOnlyCollection<Comment>> FetchCommentsAsync()
-        {
-            return Run(async token =>
-            {
-                Comments = await Comment.LoadCommentsAsync(this);
-                return comments;
-            });
-        }
+        public CommentCollection Comments { get; }
 
         public IAsyncOperation<string> FetchFavoriteNoteAsync()
         {
@@ -562,8 +549,8 @@ namespace ExClient
             {
                 var gid = this.Id;
                 await GetFolderAsync();
-                var temp = GalleryFolder;
-                GalleryFolder = null;
+                var temp = this.GalleryFolder;
+                this.GalleryFolder = null;
                 await temp.DeleteAsync();
                 using(var db = new GalleryDb())
                 {
@@ -573,7 +560,7 @@ namespace ExClient
                 var c = this.RecordCount;
                 ResetAll();
                 this.RecordCount = c;
-                this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
+                this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
             }).AsAsyncAction();
         }
     }
