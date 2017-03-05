@@ -281,7 +281,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.tt.cs</LastGenOutput>
     </None>
-    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Images\Light\UserBackground.scale-100.png" />
     <Content Include="Images\Light\UserBackground.scale-200.png" />
     <Content Include="Images\Light\UserBackground.scale-400.png" />
