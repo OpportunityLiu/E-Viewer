@@ -520,21 +520,23 @@ namespace ExClient
                 var doc = new HtmlDocument();
                 doc.LoadHtml(r);
                 var favdel = doc.GetElementbyId("favdel");
-                var favCatSet = favdel != null;
-                if(!favCatSet)
-                    this.FavoriteNote = HtmlEntity.DeEntitize(doc.DocumentNode.Descendants("textarea").First().InnerText);
-                for(var i = 0; i < 10; i++)
-                {
-                    var favNode = doc.GetElementbyId($"fav{i}");
-                    var favNameNode = favNode.ParentNode.ParentNode.Elements("div").Skip(2).First();
-                    this.Owner.Favorites[i].Name = HtmlEntity.DeEntitize(favNameNode.InnerText);
-                    if(favCatSet && favNode.GetAttributeValue("checked", null) == "checked")
-                    {
-                        this.FavoriteCategory = this.Owner.Favorites[i];
-                        favCatSet = true;
-                    }
-                }
                 if(favdel != null)
+                {
+                    var favSet = false;
+                    for(var i = 0; i < 10; i++)
+                    {
+                        var favNode = doc.GetElementbyId($"fav{i}");
+                        var favNameNode = favNode.ParentNode.ParentNode.Elements("div").Skip(2).First();
+                        this.Owner.Favorites[i].Name = HtmlEntity.DeEntitize(favNameNode.InnerText);
+                        if(!favSet && favNode.GetAttributeValue("checked", null) == "checked")
+                        {
+                            this.FavoriteCategory = this.Owner.Favorites[i];
+                            favSet = true;
+                        }
+                    }
+                    this.FavoriteNote = HtmlEntity.DeEntitize(doc.DocumentNode.Descendants("textarea").First().InnerText);
+                }
+                else
                 {
                     this.FavoriteCategory = FavoriteCategory.Removed;
                     this.FavoriteNote = "";

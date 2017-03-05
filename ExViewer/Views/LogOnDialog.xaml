@@ -142,7 +142,7 @@
                              HorizontalAlignment="Right"
                              Style="{StaticResource TextBlockButtonStyle}"
                              Padding="0"
-                             NavigateUri="http://forums.e-hentai.org/index.php?act=Reg&amp;CODE=00"
+                             NavigateUri="https://forums.e-hentai.org/index.php?act=Reg&amp;CODE=00"
                              FontSize="12" />
         </Grid>
     </ContentDialog.Title>
