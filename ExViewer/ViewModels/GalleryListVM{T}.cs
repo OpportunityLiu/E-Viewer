@@ -20,12 +20,12 @@ namespace ExViewer.ViewModels
                 await g.DeleteAsync();
                 this.Galleries?.Remove(g);
                 RootControl.RootController.SendToast(Strings.Resources.GalleryDeleted, typeof(SavedPage));
-            });
+            }, g => g != null);
             this.Open = new RelayCommand<Gallery>(g =>
             {
                 GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
-            });
+            }, g => g != null);
         }
 
         private GalleryList<T> galleries;

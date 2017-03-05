@@ -61,14 +61,21 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(CachedVM), typeof(CachedPage), new PropertyMetadata(null));
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if(e.NavigationMode != NavigationMode.Back || this.VM.Galleries == null)
             {
                 this.VM.Refresh.Execute(null);
             }
+            else if(e.NavigationMode == NavigationMode.Back)
+            {
+                await Task.Delay(50);
+                ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
+            }
         }
+
+        private Gallery opened;
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -78,7 +85,10 @@ namespace ExViewer.Views
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             if(this.VM.Open.CanExecute(e.ClickedItem))
+            {
                 this.VM.Open.Execute(e.ClickedItem);
+                this.opened = (Gallery)e.ClickedItem;
+            }
         }
 
         private ContentDialog cdg_ConfirmClear;
