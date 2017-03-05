@@ -44,7 +44,8 @@ namespace ExClient
 
         private string name;
 
-        private static readonly Regex favNoteMatcher = new Regex(@"fn.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
+        private static readonly Regex favNoteMatcher = new Regex(@"fn\.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
+        private static readonly Regex favNameMatcher = new Regex(@"fi\.title\s*=\s*'(.*?)';", RegexOptions.Compiled);
 
         private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(Client client, long gId, string gToken, string note)
         {
@@ -76,6 +77,12 @@ namespace ExClient
                     gallery.FavoriteNote = HtmlEntity.DeEntitize(match.Groups[1].Value);
                 else
                     gallery.FavoriteNote = null;
+                if(this.Index >= 0)
+                {
+                    var match2 = favNameMatcher.Match(responseContent, 1300);
+                    if(match2.Success)
+                        this.Name = HtmlEntity.DeEntitize(match2.Groups[1].Value);
+                }
                 gallery.FavoriteCategory = this;
             });
         }

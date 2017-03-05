@@ -533,20 +533,21 @@ namespace ExClient
                 var doc = new HtmlDocument();
                 doc.LoadHtml(r);
                 var favdel = doc.GetElementbyId("favdel");
-                if(favdel!=null)
-                {
+                var favCatSet = favdel != null;
+                if(!favCatSet)
                     this.FavoriteNote = HtmlEntity.DeEntitize(doc.DocumentNode.Descendants("textarea").First().InnerText);
-                    for(var i = 0; i < 10; i++)
+                for(var i = 0; i < 10; i++)
+                {
+                    var favNode = doc.GetElementbyId($"fav{i}");
+                    var favNameNode = favNode.ParentNode.ParentNode.Elements("div").Skip(2).First();
+                    this.Owner.Favorites[i].Name = HtmlEntity.DeEntitize(favNameNode.InnerText);
+                    if(favCatSet && favNode.GetAttributeValue("checked", null) == "checked")
                     {
-                        var favNode = doc.GetElementbyId($"fav{i}");
-                        if(favNode.GetAttributeValue("checked",null)=="checked")
-                        {
-                            this.FavoriteCategory = this.Owner.Favorites[i];
-                            break;
-                        }
+                        this.FavoriteCategory = this.Owner.Favorites[i];
+                        favCatSet = true;
                     }
                 }
-                else
+                if(favdel != null)
                 {
                     this.FavoriteCategory = FavoriteCategory.Removed;
                     this.FavoriteNote = "";

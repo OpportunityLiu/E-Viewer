@@ -23,7 +23,6 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ComboBox x:Name="cbCategory"
-                  Style="{StaticResource NoDropDownGlyphComboBoxStyle}"
                   ItemsSource="{x:Bind categories}"
                   SelectionChanged="cbCategory_SelectionChanged"
                   HorizontalAlignment="Stretch"
