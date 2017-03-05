@@ -204,7 +204,8 @@
                        TextWrapping="WrapWholeWords"
                        Visibility="{x:Bind tb_info.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
             <ProgressBar x:Name="pb_Loading"
-                         Visibility="{x:Bind pb_Loading.IsIndeterminate, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
+                         Visibility="{x:Bind pb_Loading.IsIndeterminate, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                         VerticalAlignment="Top" />
         </Grid>
     </StackPanel>
 </ContentDialog>

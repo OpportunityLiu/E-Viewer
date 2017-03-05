@@ -55,6 +55,7 @@
                        TextWrapping="WrapWholeWords" 
                        Visibility="{x:Bind tbInfo.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
             <ProgressBar x:Name="pbLoading"
+                         VerticalAlignment="Top"
                          Visibility="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
         </Grid>
     </Grid>
