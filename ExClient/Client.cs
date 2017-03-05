@@ -21,7 +21,7 @@ namespace ExClient
             get;
         } = new Client();
 
-        internal UriProvieder Uris => Host == HostType.Exhentai && HasPermittionForEx ? UriProvieder.Ex : UriProvieder.Eh;
+        internal UriProvieder Uris => this.Host == HostType.Exhentai && this.HasPermittionForEx ? UriProvieder.Ex : UriProvieder.Eh;
 
         public HostType Host { get; set; } = HostType.Exhentai;
 
@@ -34,6 +34,18 @@ namespace ExClient
                     return false;
                 return ck.Value != "mystery";
             }
+        }
+
+        public IAsyncAction ResetExCookie()
+        {
+            return Run(async token =>
+            {
+                foreach(var item in this.CookieManager.GetCookies(UriProvieder.Ex.RootUri))
+                {
+                    this.CookieManager.DeleteCookie(item);
+                }
+                await this.HttpClient.GetAsync(UriProvieder.Ex.RootUri, HttpCompletionOption.ResponseHeadersRead);
+            });
         }
 
         private Client()
@@ -51,7 +63,7 @@ namespace ExClient
             get;
         }
 
-        internal Internal.MyHttpClient HttpClient
+        internal MyHttpClient HttpClient
         {
             get;
         }
@@ -106,7 +118,7 @@ namespace ExClient
                         }
                         throw new InvalidOperationException(errorText);
                     }
-                    var init = await HttpClient.GetAsync(UriProvieder.Ex.RootUri, HttpCompletionOption.ResponseHeadersRead);
+                    var init = await this.HttpClient.GetAsync(UriProvieder.Ex.RootUri, HttpCompletionOption.ResponseHeadersRead);
                     return this;
                 }
                 catch(Exception)
@@ -114,7 +126,7 @@ namespace ExClient
                     ClearLogOnInfo();
                     foreach(var item in cookieBackUp)
                     {
-                        CookieManager.SetCookie(item);
+                        this.CookieManager.SetCookie(item);
                     }
                     throw;
                 }
@@ -128,13 +140,13 @@ namespace ExClient
 
         public void ClearLogOnInfo()
         {
-            foreach(var item in CookieManager.GetCookies(UriProvieder.Eh.RootUri))
+            foreach(var item in this.CookieManager.GetCookies(UriProvieder.Eh.RootUri))
             {
-                CookieManager.DeleteCookie(item);
+                this.CookieManager.DeleteCookie(item);
             }
-            foreach(var item in CookieManager.GetCookies(UriProvieder.Ex.RootUri))
+            foreach(var item in this.CookieManager.GetCookies(UriProvieder.Ex.RootUri))
             {
-                CookieManager.DeleteCookie(item);
+                this.CookieManager.DeleteCookie(item);
             }
         }
 
@@ -142,7 +154,7 @@ namespace ExClient
         {
             get
             {
-                var cookie = CookieManager.GetCookies(UriProvieder.Eh.RootUri).FirstOrDefault(c => c.Name == "ipb_member_id");
+                var cookie = this.CookieManager.GetCookies(UriProvieder.Eh.RootUri).FirstOrDefault(c => c.Name == "ipb_member_id");
                 if(cookie == null)
                     return -1;
                 return int.Parse(cookie.Value);

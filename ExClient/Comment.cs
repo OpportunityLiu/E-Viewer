@@ -9,12 +9,11 @@ using Windows.Foundation;
 
 namespace ExClient
 {
-    public sealed class Comment
+    public sealed class Comment : ObservableObject
     {
-        internal static ReadOnlyCollection<Comment> LoadComment(HtmlDocument document)
+        internal static IEnumerable<Comment> AnalyzeDocument(HtmlDocument document)
         {
             var commentNodes = document.GetElementbyId("cdiv").ChildNodes;
-            var comments = new List<Comment>();
             for(var i = 0; i < commentNodes.Count; i += 2)
             {
                 var headerNode = commentNodes[i];
@@ -22,23 +21,11 @@ namespace ExClient
                 if(headerNode.Name != "a" || commentNode.Name != "div")
                     break;
                 var id = int.Parse(headerNode.GetAttributeValue("name", "c0").Substring(1));
-                comments.Add(new Comment(id, commentNode));
+                yield return new Comment(id, commentNode);
             }
-            return comments.AsReadOnly();
         }
 
         private static Regex voteRegex = new Regex(@"^(.+?)\s+([+-]\d+)$", RegexOptions.Compiled | RegexOptions.Singleline);
-
-        internal static IAsyncOperation<ReadOnlyCollection<Comment>> LoadCommentsAsync(Gallery gallery)
-        {
-            return Task.Run(async () =>
-            {
-                var html = await gallery.Owner.HttpClient.GetStringAsync(new Uri(gallery.GalleryUri, "?hc=1"));
-                var document = new HtmlDocument();
-                document.LoadHtml(html);
-                return LoadComment(document);
-            }).AsAsyncOperation();
-        }
 
         private Comment(int id, HtmlNode commentNode)
         {
@@ -58,22 +45,26 @@ namespace ExClient
 
             if(!this.IsUploaderComment)
             {
-                this.Score = int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
-
-                var recordList = new List<KeyValuePair<string, int>>();
-                var recordsNode = document.GetElementbyId($"cvotes_{id}");
-                var voteBase = recordsNode.FirstChild.InnerText;
-                voteBase = voteBase.Substring(5, voteBase.Length - (voteBase.EndsWith(" ") ? 7 : 5));
-                recordList.Add(new KeyValuePair<string, int>(null, int.Parse(voteBase)));
-                foreach(var item in recordsNode.Descendants("span"))
+                this.score = int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
+                var actionNode = commentNode.Descendants("div").FirstOrDefault(node => node.GetAttributeValue("class", "") == "c4 nosel");
+                if(actionNode != null)
                 {
-                    var vote = item.InnerText.DeEntitize();
-                    var m = voteRegex.Match(vote);
-                    if(m.Success == false)
-                        throw new Exception();
-                    recordList.Add(new KeyValuePair<string, int>(m.Groups[1].Value, int.Parse(m.Groups[2].Value)));
+                    var vuNode = document.GetElementbyId($"comment_vote_up_{id}");
+                    var vdNode = document.GetElementbyId($"comment_vote_down_{id}");
+                    if(vuNode != null && vdNode != null)
+                    {
+                        if(vuNode.GetAttributeValue("style", "") == "color:blue")
+                            this.status = CommentStatus.VotedUp;
+                        else if(vdNode.GetAttributeValue("style", "") == "color:blue")
+                            this.status = CommentStatus.VotedDown;
+                        else
+                            this.status = CommentStatus.Votable;
+                    }
+                    else if(actionNode.InnerText == "[Edit]")
+                    {
+                        this.status = CommentStatus.Editable;
+                    }
                 }
-                this.VoteRecords = recordList.AsReadOnly();
             }
         }
 
@@ -89,8 +80,29 @@ namespace ExClient
 
         public HtmlNode Content { get; }
 
-        public int Score { get; }
+        private int score;
 
-        public ReadOnlyCollection<KeyValuePair<string, int>> VoteRecords { get; }
+        public int Score
+        {
+            get => score;
+            set => Set(ref this.score, value);
+        }
+
+        private CommentStatus status;
+
+        public CommentStatus Status
+        {
+            get => status;
+            set => Set(ref this.status, value);
+        }
+    }
+
+    public enum CommentStatus
+    {
+        None,
+        Votable,
+        VotedUp,
+        VotedDown,
+        Editable
     }
 }

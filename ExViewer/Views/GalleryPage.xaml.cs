@@ -235,7 +235,7 @@ namespace ExViewer.Views
             switch(this.pv.SelectedIndex)
             {
             case 1://Comments
-                if(this.VM.Gallery.Comments == null)
+                if(!this.VM.Gallery.Comments.IsLoaded)
                     await this.VM.LoadComments();
                 break;
             case 2://Torrents

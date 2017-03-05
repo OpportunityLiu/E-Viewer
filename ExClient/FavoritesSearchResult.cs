@@ -39,7 +39,6 @@ namespace ExClient
             yield return new KeyValuePair<string, string>("favcat", cat);
             yield return new KeyValuePair<string, string>("f_search", this.Keyword);
             yield return new KeyValuePair<string, string>("f_apply", "Search Favorites");
-            yield return new KeyValuePair<string, string>("inline_set", "fs_f");
         }
 
         protected override void HandleAdditionalInfo(HtmlNode trNode, Gallery gallery)
@@ -64,7 +63,7 @@ namespace ExClient
             fpNodes.Select(n =>
             {
                 var fav = n.Elements("div").First(nn => nn.GetAttributeValue("class", null) == "i");
-                return Owner.Favorites.GetCategory(fav);
+                return this.Owner.Favorites.GetCategory(fav);
             }).ToList();
         }
 

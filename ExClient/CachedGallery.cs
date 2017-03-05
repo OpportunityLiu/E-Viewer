@@ -168,15 +168,15 @@ namespace ExClient
 
             private void action_Completed(IAsyncAction sender, AsyncStatus e)
             {
-                foreach(var item in completed)
+                foreach(var item in this.completed)
                 {
                     item(this, e);
                 }
-                action = null;
-                completed = null;
+                this.action = null;
+                this.completed = null;
             }
 
-            public bool Disposed => action == null;
+            public bool Disposed => this.action == null;
 
             public AsyncActionCompletedHandler Completed
             {
@@ -264,8 +264,10 @@ namespace ExClient
         {
             return DispatcherHelper.RunAsync(async () =>
             {
-                await GetFolderAsync();
-                var file = (await GalleryFolder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).SingleOrDefault();
+                var f = await GetFolderAsync();
+                if(this.Thumb != null)
+                    return;
+                var file = (await f.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).SingleOrDefault();
                 if(file == null)
                     return;
                 try
@@ -273,7 +275,7 @@ namespace ExClient
                     using(var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                     {
                         var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
-                        Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
+                        this.Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
                     }
                 }
                 catch(Exception)

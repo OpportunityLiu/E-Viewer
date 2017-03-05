@@ -1,7 +1,6 @@
 ﻿using ExClient;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -45,7 +44,6 @@ namespace ExViewer.Views
             DependencyProperty.Register("Gallery", typeof(Gallery), typeof(AddToFavoritesDialog), new PropertyMetadata(null));
 
         private ObservableCollection<FavoriteCategory> categories = new ObservableCollection<FavoriteCategory>();
-
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {

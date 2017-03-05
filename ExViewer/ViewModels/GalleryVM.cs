@@ -59,9 +59,8 @@ namespace ExViewer.ViewModels
 
         public static GalleryVM GetVM(Gallery gallery)
         {
-            GalleryVM vm;
             var gi = new GalleryInfo(gallery.Id, gallery.Token);
-            if(Cache.TryGet(gi, out vm))
+            if(Cache.TryGet(gi, out var vm))
             {
                 vm.Gallery = gallery;
                 if(gallery.Count <= vm.currentIndex)
@@ -377,7 +376,7 @@ namespace ExViewer.ViewModels
             {
                 try
                 {
-                    await this.gallery.FetchCommentsAsync();
+                    await this.gallery.Comments.FetchAsync();
                 }
                 catch(Exception ex)
                 {
