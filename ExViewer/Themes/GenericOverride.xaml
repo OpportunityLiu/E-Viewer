@@ -221,6 +221,7 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Grid x:Name="HorizontalRoot"
+                              x:DeferLoadStrategy="Lazy"
                               IsHitTestVisible="False">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -228,21 +229,27 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Rectangle x:Name="HorizontalTrackRect"
+                                       x:DeferLoadStrategy="Lazy"
                                        Grid.ColumnSpan="3"
                                        Style="{StaticResource TrackRectStyle}" />
                             <RepeatButton x:Name="HorizontalLargeDecrease"
+                                          x:DeferLoadStrategy="Lazy"
                                           Style="{StaticResource RepeatButtonStyle}"
                                           Width="0" />
                             <Thumb x:Name="HorizontalThumb"
+                                   x:DeferLoadStrategy="Lazy"
                                    Grid.Column="1"
                                    Style="{StaticResource HorizontalThumbStyle}" />
                             <RepeatButton x:Name="HorizontalLargeIncrease"
+                                          x:DeferLoadStrategy="Lazy"
                                           Grid.Column="2"
                                           Style="{StaticResource RepeatButtonStyle}" />
                         </Grid>
                         <Grid x:Name="HorizontalPanningRoot"
+                              x:DeferLoadStrategy="Lazy"
                               MinWidth="24">
                             <Border x:Name="HorizontalPanningThumb"
+                                    x:DeferLoadStrategy="Lazy"
                                     VerticalAlignment="Bottom"
                                     HorizontalAlignment="Left"
                                     Background="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}"
@@ -252,6 +259,7 @@
                                     Margin="0,2,0,2" />
                         </Grid>
                         <Grid x:Name="VerticalRoot"
+                              x:DeferLoadStrategy="Lazy"
                               IsHitTestVisible="False">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -259,21 +267,27 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Rectangle x:Name="VerticalTrackRect"
+                                       x:DeferLoadStrategy="Lazy"
                                        Grid.RowSpan="3"
                                        Style="{StaticResource TrackRectStyle}" />
                             <RepeatButton x:Name="VerticalLargeDecrease"
+                                          x:DeferLoadStrategy="Lazy"
                                           Style="{StaticResource RepeatButtonStyle}"
                                           Height="0" />
                             <Thumb x:Name="VerticalThumb"
+                                   x:DeferLoadStrategy="Lazy"
                                    Grid.Row="1"
                                    Style="{StaticResource VerticalThumbStyle}" />
                             <RepeatButton x:Name="VerticalLargeIncrease"
+                                          x:DeferLoadStrategy="Lazy"
                                           Grid.Row="2"
                                           Style="{StaticResource RepeatButtonStyle}" />
                         </Grid>
                         <Grid x:Name="VerticalPanningRoot"
+                              x:DeferLoadStrategy="Lazy"
                               MinHeight="24">
                             <Border x:Name="VerticalPanningThumb"
+                                    x:DeferLoadStrategy="Lazy"
                                     VerticalAlignment="Top"
                                     HorizontalAlignment="Right"
                                     Background="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}"

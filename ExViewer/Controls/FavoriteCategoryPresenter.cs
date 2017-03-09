@@ -38,27 +38,31 @@ namespace ExViewer.Controls
 
         private void setIcon(FavoriteCategory category)
         {
-            var icon = this.Icon;
-            if(icon == null)
+            if(category.Index>=0)
             {
-                icon = GetTemplateChild("Icon") as TextBlock;
+                var icon = this.Icon;
                 if(icon == null)
-                    return;
-                else
-                    this.Icon = icon;
-            }
-            if(category.Index < 0)
-                icon.Visibility = Visibility.Collapsed;
-            else
-            {
+                {
+                    icon = GetTemplateChild("Icon") as TextBlock;
+                    if(icon == null)
+                        return;
+                    else
+                        this.Icon = icon;
+                }
                 icon.Visibility = Visibility.Visible;
                 icon.Foreground = category.GetThemeBrush();
             }
+            else
+            {
+                if(this.Icon == null)
+                    return;
+                this.Icon.Visibility = Visibility.Collapsed;
+            }
         }
 
-        private void setLabel(FavoriteCategory category, bool value)
+        private void setLabel(FavoriteCategory category, bool labelVisible)
         {
-            if(value)
+            if(labelVisible)
             {
                 var label = this.Label;
                 if(label == null)

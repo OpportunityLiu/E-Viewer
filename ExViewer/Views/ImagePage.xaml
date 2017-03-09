@@ -7,6 +7,7 @@
       xmlns:local="using:ExViewer.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       x:Name="page"
+      xmlns:c="using:ExClient"
       Loading="page_Loading"
       Unloaded="page_Unloaded"
       NavigationCacheMode="Enabled"
@@ -75,8 +76,7 @@
                   RelativePanel.AlignTopWithPanel="True"
                   SelectionChanged="fv_SelectionChanged">
             <FlipView.ItemTemplate>
-                <DataTemplate xmlns:c="using:ExClient"
-                              x:DataType="local:IImagePageImageView">
+                <DataTemplate x:DataType="local:IImagePageImageView">
                     <Grid DoubleTapped="fvi_DoubleTapped"
                           Tapped="fvi_Tapped">
                         <Grid.RowDefinitions>
@@ -88,7 +88,7 @@
                                                  Image="{x:Bind Image, Mode=OneWay}" />
                         <ProgressBar Grid.Row="1"
                                      VerticalAlignment="Top"
-                                     Foreground="{Binding Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
+                                     Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
                                      IsIndeterminate="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=True}"
                                      Visibility="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=Visible}"
                                      Value="{x:Bind Image.Progress, Mode=OneWay, FallbackValue=0}" />
@@ -160,17 +160,17 @@
                 <AppBarButton x:Name="abb_reload"
                               x:Uid="Views/ImagePage/ReloadAppBarButton"
                               Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
-                              CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}"
+                              CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
                               Label="Reload" />
                 <AppBarButton x:Name="abb_LoadOriginal"
                               x:Uid="Views/ImagePage/LoadOriginalAppBarButton"
                               Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
-                              CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}"
+                              CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
                               Label="Load original image" />
                 <AppBarButton x:Name="abb_Share"
                               x:Uid="Views/ImagePage/ShareAppBarButton"
                               Command="{x:Bind VM.Share, Mode=OneWay}"
-                              CommandParameter="{Binding SelectedItem.Image, ElementName=fv, Mode=OneWay}"
+                              CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
                               Label="Share" />
                 <AppBarSeparator />
                 <AppBarButton x:Name="abb_Info"
