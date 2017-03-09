@@ -261,7 +261,12 @@
                    Navigated="fm_inner_Navigated" />
         </SplitView>
         <Button x:Name="btnPane"
+                x:Uid="Views/RootControl/PaneButton"
                 Style="{StaticResource SplitButtonStyle}"
+                ToolTipService.ToolTip="Show/hide pane (Alt + P)"
+                AccessKey="P"
+                AccessKeyDisplayRequested="elementAccessKeyDisplayRequested"
+                AccessKeyDisplayDismissed="elementAccessKeyDisplayDismissed"
                 Click="btn_pane_Click"
                 IsTabStop="False"
                 VerticalAlignment="Top" />
