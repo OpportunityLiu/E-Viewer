@@ -266,10 +266,7 @@ namespace ExViewer.ViewModels
 
         public Gallery Gallery
         {
-            get
-            {
-                return this.gallery;
-            }
+            get => this.gallery;
             private set
             {
                 if(this.gallery != null)
@@ -294,28 +291,16 @@ namespace ExViewer.ViewModels
 
         public int CurrentIndex
         {
-            get
-            {
-                return this.currentIndex;
-            }
-            set
-            {
-                Set(ref this.currentIndex, value);
-            }
+            get => this.currentIndex;
+            set => Set(ref this.currentIndex, value);
         }
 
         private string currentInfo;
 
         public string CurrentInfo
         {
-            get
-            {
-                return this.currentInfo;
-            }
-            private set
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref this.currentInfo, value));
-            }
+            get => this.currentInfo;
+            private set => DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref this.currentInfo, value));
         }
 
         public IAsyncAction RefreshInfoAsync()
@@ -340,32 +325,20 @@ namespace ExViewer.ViewModels
 
         public OperationState SaveStatus
         {
-            get
-            {
-                return this.saveStatus;
-            }
-            set
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    Set(ref this.saveStatus, value);
-                    this.Save.RaiseCanExecuteChanged();
-                });
-            }
+            get => this.saveStatus;
+            set => DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                 {
+                     Set(ref this.saveStatus, value);
+                     this.Save.RaiseCanExecuteChanged();
+                 });
         }
 
         private double saveProgress;
 
         public double SaveProgress
         {
-            get
-            {
-                return this.saveProgress;
-            }
-            set
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref this.saveProgress, value));
-            }
+            get => this.saveProgress;
+            set => DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref this.saveProgress, value));
         }
 
         #region Comments
@@ -408,10 +381,7 @@ namespace ExViewer.ViewModels
 
         public ReadOnlyCollection<TorrentInfo> Torrents
         {
-            get
-            {
-                return this.torrents;
-            }
+            get => this.torrents;
             private set
             {
                 this.torrents = value;

@@ -26,14 +26,8 @@ namespace ExViewer.Views
 
         public string ActiveType
         {
-            get
-            {
-                return (string)GetValue(ActiveTypeProperty);
-            }
-            set
-            {
-                SetValue(ActiveTypeProperty, value);
-            }
+            get => (string)GetValue(ActiveTypeProperty);
+            set => SetValue(ActiveTypeProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for ActiveType.  This enables animation, styling, binding, etc...

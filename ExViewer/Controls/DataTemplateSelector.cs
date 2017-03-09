@@ -78,8 +78,7 @@ namespace ExViewer.Controls
     {
         public string Key
         {
-            get { return (string)GetValue(KeyProperty); }
-            set { SetValue(KeyProperty, value); }
+            get => (string)GetValue(KeyProperty); set => SetValue(KeyProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Key.  This enables animation, styling, binding, etc...
@@ -88,8 +87,7 @@ namespace ExViewer.Controls
 
         public DataTemplate Value
         {
-            get { return (DataTemplate)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get => (DataTemplate)GetValue(ValueProperty); set => SetValue(ValueProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...

@@ -569,6 +569,8 @@
             </StackPanel>
         </ScrollViewer>
         <CommandBar x:Name="cb_top"
+                    Opening="cb_top_Opening"
+                    Closed="cb_top_Closed"
                     HorizontalContentAlignment="Stretch"
                     IsDynamicOverflowEnabled="False">
             <CommandBar.Content>
@@ -578,8 +580,9 @@
                                           Width="0" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="1"
-                               ContinuumNavigationTransitionInfo.IsEntranceElement="True"
+                    <TextBlock x:Name="tbGalleryName"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="999"
                                Style="{StaticResource GalleryTitleTextBlockStyle}"
                                Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}">
                         <ToolTipService.ToolTip>

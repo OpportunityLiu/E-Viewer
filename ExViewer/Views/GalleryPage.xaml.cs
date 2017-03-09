@@ -189,14 +189,8 @@ namespace ExViewer.Views
 
         public GalleryVM VM
         {
-            get
-            {
-                return (GalleryVM)GetValue(VMProperty);
-            }
-            set
-            {
-                SetValue(VMProperty, value);
-            }
+            get => (GalleryVM)GetValue(VMProperty);
+            set => SetValue(VMProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
@@ -345,6 +339,16 @@ namespace ExViewer.Views
         {
             this.addToFavorite.Gallery = this.VM.Gallery;
             await this.addToFavorite.ShowAsync();
+        }
+
+        private void cb_top_Opening(object sender, object e)
+        {
+            Grid.SetColumn(this.tbGalleryName, 0);
+        }
+
+        private void cb_top_Closed(object sender, object e)
+        {
+            Grid.SetColumn(this.tbGalleryName, 1);
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)

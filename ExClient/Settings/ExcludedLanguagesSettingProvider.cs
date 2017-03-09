@@ -45,8 +45,7 @@ namespace ExClient.Settings
         {
             foreach(var item in (value ?? "").Split(", ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
-                ExcludedLanguage r;
-                if(Enum.TryParse(item, out r))
+                if(Enum.TryParse(item, out ExcludedLanguage r))
                     yield return r;
             }
         }

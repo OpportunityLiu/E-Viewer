@@ -35,8 +35,7 @@ namespace ExViewer.Views
 
         public Gallery Gallery
         {
-            get { return (Gallery)GetValue(GalleryProperty); }
-            set { SetValue(GalleryProperty, value); }
+            get => (Gallery)GetValue(GalleryProperty); set => SetValue(GalleryProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Gallery.  This enables animation, styling, binding, etc...

@@ -51,14 +51,8 @@ namespace ExViewer.Controls
 
         public Tag GalleryTag
         {
-            get
-            {
-                return (Tag)GetValue(GalleryTagProperty);
-            }
-            set
-            {
-                SetValue(GalleryTagProperty, value);
-            }
+            get => (Tag)GetValue(GalleryTagProperty);
+            set => SetValue(GalleryTagProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for GalleryTag.  This enables animation, styling, binding, etc...

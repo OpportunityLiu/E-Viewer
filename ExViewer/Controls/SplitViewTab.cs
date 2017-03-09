@@ -22,14 +22,8 @@ namespace ExViewer.Controls
 
         public bool IsChecked
         {
-            get
-            {
-                return (bool)GetValue(IsCheckedProperty);
-            }
-            set
-            {
-                SetValue(IsCheckedProperty, value);
-            }
+            get => (bool)GetValue(IsCheckedProperty);
+            set => SetValue(IsCheckedProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for IsChecked.  This enables animation, styling, binding, etc...

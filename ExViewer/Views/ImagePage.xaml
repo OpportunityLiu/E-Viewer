@@ -30,26 +30,39 @@
                 </converters:ObjectToBooleanConverter.ValueForFalse>
             </converters:ObjectToBooleanConverter>
         </converters:InvertConverter>
+        <SolidColorBrush x:Name="scbBack"
+                         Color="{ThemeResource SystemAltHighColor}" />
+        <SolidColorBrush x:Name="scbNeed"
+                         Color="{ThemeResource SystemChromeMediumColor}" />
         <Storyboard x:Name="cb_top_Open">
-            <ColorAnimation x:Name="cb_top_OpenAnimation"
-                            Storyboard.TargetName="cb_top"
-                            Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
-                            To="{ThemeResource SystemChromeMediumColor}"
-                            Duration="0:0:0.15">
-                <ColorAnimation.EasingFunction>
-                    <PowerEase EasingMode="EaseOut" />
-                </ColorAnimation.EasingFunction>
-            </ColorAnimation>
+            <ColorAnimationUsingKeyFrames x:Name="cb_top_OpenAnimation"
+                                          Storyboard.TargetName="cb_top"
+                                          Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                          Duration="0:0:0.15">
+                <LinearColorKeyFrame KeyTime="0:0:0" />
+                <LinearColorKeyFrame KeyTime="0:0:0.04" />
+                <LinearColorKeyFrame KeyTime="0:0:0.075" />
+                <LinearColorKeyFrame KeyTime="0:0:0.10" />
+                <LinearColorKeyFrame KeyTime="0:0:0.12" />
+                <LinearColorKeyFrame KeyTime="0:0:0.135" />
+                <LinearColorKeyFrame KeyTime="0:0:0.145" />
+                <LinearColorKeyFrame KeyTime="0:0:0.15" />
+            </ColorAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Name="cb_top_Close">
-            <ColorAnimation x:Name="cb_top_CloseAnimation"
-                            Storyboard.TargetName="cb_top"
-                            Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
-                            Duration="0:0:0.15">
-                <ColorAnimation.EasingFunction>
-                    <PowerEase EasingMode="EaseIn" />
-                </ColorAnimation.EasingFunction>
-            </ColorAnimation>
+            <ColorAnimationUsingKeyFrames x:Name="cb_top_CloseAnimation"
+                                          Storyboard.TargetName="cb_top"
+                                          Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                          Duration="0:0:0.15">
+                <LinearColorKeyFrame KeyTime="0:0:0" />
+                <LinearColorKeyFrame KeyTime="0:0:0.04" />
+                <LinearColorKeyFrame KeyTime="0:0:0.075" />
+                <LinearColorKeyFrame KeyTime="0:0:0.10" />
+                <LinearColorKeyFrame KeyTime="0:0:0.12" />
+                <LinearColorKeyFrame KeyTime="0:0:0.135" />
+                <LinearColorKeyFrame KeyTime="0:0:0.145" />
+                <LinearColorKeyFrame KeyTime="0:0:0.15" />
+            </ColorAnimationUsingKeyFrames>
         </Storyboard>
     </Page.Resources>
     <RelativePanel>
@@ -93,6 +106,7 @@
                     XYFocusDown="{x:Bind fv}"
                     HorizontalContentAlignment="Stretch"
                     Closing="cb_top_Closing"
+                    Closed="cb_top_Closed"
                     IsDynamicOverflowEnabled="False"
                     Opening="cb_top_Opening"
                     RelativePanel.AlignLeftWithPanel="True"

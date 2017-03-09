@@ -55,7 +55,7 @@
             <DoubleAnimation Duration="0:0:0.12"
                              To="1"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
-                             Storyboard.TargetName="eps_Avatar"
+                             Storyboard.TargetName="gd_Avatar"
                              d:IsOptimized="True">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
@@ -64,7 +64,7 @@
             <DoubleAnimation Duration="0:0:0.12"
                              To="1"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
-                             Storyboard.TargetName="eps_Avatar"
+                             Storyboard.TargetName="gd_Avatar"
                              d:IsOptimized="True">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
@@ -73,7 +73,7 @@
             <DoubleAnimation Duration="0:0:0.12"
                              To="0"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
-                             Storyboard.TargetName="eps_Avatar"
+                             Storyboard.TargetName="gd_Avatar"
                              d:IsOptimized="True">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
@@ -91,21 +91,21 @@
                              Storyboard.TargetName="bdPaneHeader" />
             <DoubleAnimation Duration="0:0:0.12"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
-                             Storyboard.TargetName="eps_Avatar">
+                             Storyboard.TargetName="gd_Avatar">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
             <DoubleAnimation Duration="0:0:0.12"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
-                             Storyboard.TargetName="eps_Avatar">
+                             Storyboard.TargetName="gd_Avatar">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
             <DoubleAnimation Duration="0:0:0.12"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
-                             Storyboard.TargetName="eps_Avatar">
+                             Storyboard.TargetName="gd_Avatar">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
                 </DoubleAnimation.EasingFunction>
@@ -137,27 +137,38 @@
                             Background="{ThemeResource UserBackgroundThemeBrush}"
                             Grid.RowSpan="3"
                             Grid.ColumnSpan="4" />
-                    <Ellipse x:Name="eps_Avatar"
-                             Grid.Row="1"
-                             Grid.ColumnSpan="999"
-                             Width="80"
-                             Height="80"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             RenderTransformOrigin="0.5,0.5">
-                        <Ellipse.RenderTransform>
+                    <Grid x:Name="gd_Avatar"
+                          Grid.Row="1"
+                          Grid.ColumnSpan="999"
+                          Width="80"
+                          Height="80"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
                             <CompositeTransform ScaleX="0.5"
                                                 ScaleY="0.5"
                                                 TranslateX="-136" />
-                        </Ellipse.RenderTransform>
-                        <Ellipse.Fill>
-                            <ImageBrush Stretch="Uniform">
-                                <ImageBrush.ImageSource>
-                                    <BitmapImage UriSource="{x:Bind UserInfo.Avatar, TargetNullValue=ms-appx:///Images/DefaultUser.png, Mode=OneWay, FallbackValue=ms-appx:///Images/DefaultUser.png}" />
-                                </ImageBrush.ImageSource>
-                            </ImageBrush>
-                        </Ellipse.Fill>
-                    </Ellipse>
+                        </Grid.RenderTransform>
+                        <Ellipse x:Name="eps_Default"
+                                 Stretch="UniformToFill">
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="Uniform"
+                                            ImageSource="ms-appx:///Images/DefaultUser.png" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Ellipse x:Name="eps_Avatar"
+                                 Stretch="UniformToFill"
+                                 Visibility="{x:Bind UserInfo, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}">
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="Uniform">
+                                    <ImageBrush.ImageSource>
+                                        <BitmapImage UriSource="{x:Bind UserInfo.Avatar, Mode=OneWay, TargetNullValue='ms-appx:///Images/DefaultUser.png'}" />
+                                    </ImageBrush.ImageSource>
+                                </ImageBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
                     <TextBlock Grid.Row="2"
                                Grid.Column="1"
                                Margin="8"

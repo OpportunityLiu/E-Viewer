@@ -142,28 +142,16 @@ namespace ExViewer.ViewModels
 
         public string Keyword
         {
-            get
-            {
-                return this.keyword;
-            }
-            set
-            {
-                Set(ref this.keyword, value);
-            }
+            get => this.keyword;
+            set => Set(ref this.keyword, value);
         }
 
         private FavoriteCategory category;
 
         public FavoriteCategory Category
         {
-            get
-            {
-                return this.category;
-            }
-            set
-            {
-                Set(ref this.category, value);
-            }
+            get => this.category;
+            set => Set(ref this.category, value);
         }
 
         public string SearchQuery => GetSearchQuery(this.keyword, this.category);

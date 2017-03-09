@@ -27,8 +27,7 @@ namespace ExViewer.Controls
 
         public Comment Comment
         {
-            get { return (Comment)GetValue(CommentProperty); }
-            set { SetValue(CommentProperty, value); }
+            get => (Comment)GetValue(CommentProperty); set => SetValue(CommentProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Comment.  This enables animation, styling, binding, etc...

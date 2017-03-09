@@ -122,10 +122,7 @@ namespace ExViewer.ViewModels
 
         public T SearchResult
         {
-            get
-            {
-                return this.searchResult;
-            }
+            get => this.searchResult;
             protected set
             {
                 if(this.searchResult != null)
@@ -140,14 +137,8 @@ namespace ExViewer.ViewModels
 
         public Gallery SelectedGallery
         {
-            get
-            {
-                return this.selectedGallery;
-            }
-            protected set
-            {
-                Set(ref this.selectedGallery, value);
-            }
+            get => this.selectedGallery;
+            protected set => Set(ref this.selectedGallery, value);
         }
 
         private void SearchResult_LoadMoreItemsException(IncrementalLoadingCollection<Gallery> sender, LoadMoreItemsExceptionEventArgs args)

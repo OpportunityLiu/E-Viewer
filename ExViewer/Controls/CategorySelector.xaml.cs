@@ -57,14 +57,8 @@ namespace ExViewer.Controls
 
         public Category SelectedCategory
         {
-            get
-            {
-                return (Category)GetValue(SelectedCategoryProperty);
-            }
-            set
-            {
-                SetValue(SelectedCategoryProperty, value);
-            }
+            get => (Category)GetValue(SelectedCategoryProperty);
+            set => SetValue(SelectedCategoryProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for SelectedCategory.  This enables animation, styling, binding, etc...
@@ -104,14 +98,8 @@ namespace ExViewer.Controls
 
         public bool IsChecked
         {
-            get
-            {
-                return this.isChecked;
-            }
-            set
-            {
-                Set(ref this.isChecked, value);
-            }
+            get => this.isChecked;
+            set => Set(ref this.isChecked, value);
         }
     }
 }

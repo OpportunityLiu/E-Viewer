@@ -17,8 +17,8 @@ namespace ExClient.Internal
 
         public void Reset()
         {
-            image = null;
-            Loaded = false;
+            this.image = null;
+            this.Loaded = false;
         }
 
         public void StartLoading()
@@ -32,18 +32,17 @@ namespace ExClient.Internal
 
         private BitmapImage getImage()
         {
-            BitmapImage image;
-            if(this.image != null && this.image.TryGetTarget(out image))
+            if(this.image != null && this.image.TryGetTarget(out var image))
                 return image;
             image = new BitmapImage();
             this.image = new WeakReference<BitmapImage>(image);
-            var loadImage = imageLoader(image);
+            var loadImage = this.imageLoader(image);
             loadImage.Completed = (sender, e) =>
             {
                 switch(e)
                 {
                 case AsyncStatus.Completed:
-                    Loaded = true;
+                    this.Loaded = true;
                     var temp = ImageLoaded;
                     if(temp != null)
                         DispatcherHelper.CheckBeginInvokeOnUI(() => temp.Invoke(this, EventArgs.Empty));

@@ -11,7 +11,7 @@ namespace ExClient.Internal
     {
         public RedirectFilter(IHttpFilter innerFilter)
         {
-            inner = innerFilter;
+            this.inner = innerFilter;
         }
 
         IHttpFilter inner;
@@ -24,21 +24,18 @@ namespace ExClient.Internal
 
             private IHttpAsyncOperation current
             {
-                get
-                {
-                    return _current;
-                }
+                get => this._current;
                 set
                 {
-                    _current = value;
-                    _current.Progress = current_Progress;
-                    _current.Completed = current_Completed;
+                    this._current = value;
+                    this._current.Progress = this.current_Progress;
+                    this._current.Completed = this.current_Completed;
                 }
             }
 
             private void current_Completed(IHttpAsyncOperation asyncInfo, AsyncStatus asyncStatus)
             {
-                if(asyncInfo != _current)
+                if(asyncInfo != this._current)
                     return;
                 if(asyncStatus == AsyncStatus.Completed)
                 {
@@ -47,7 +44,7 @@ namespace ExClient.Internal
                     {
                         asyncStatus = AsyncStatus.Started;
                         buildNewRequest(response);
-                        current = parent.inner.SendRequestAsync(request);
+                        this.current = this.parent.inner.SendRequestAsync(this.request);
                     }
                 }
                 this.Status = asyncStatus;
@@ -59,7 +56,7 @@ namespace ExClient.Internal
 
             private void current_Progress(IHttpAsyncOperation asyncInfo, HttpProgress progressInfo)
             {
-                if(asyncInfo != _current)
+                if(asyncInfo != this._current)
                     return;
                 this.Progress?.Invoke(this, progressInfo);
             }
@@ -73,21 +70,21 @@ namespace ExClient.Internal
 
             private void buildNewRequest(HttpResponseMessage response)
             {
-                var newRequest = new HttpRequestMessage();
-                newRequest.RequestUri = response.Headers.Location;
-                if((response.StatusCode == HttpStatusCode.Found || response.StatusCode == HttpStatusCode.SeeOther) && request.Method == HttpMethod.Post)
+                var newRequest = new HttpRequestMessage { RequestUri = response.Headers.Location };
+                var oldRequest = this.request;
+                if((response.StatusCode == HttpStatusCode.Found || response.StatusCode == HttpStatusCode.SeeOther) && oldRequest.Method == HttpMethod.Post)
                     newRequest.Method = HttpMethod.Get;
                 else
-                    newRequest.Method = request.Method;
-                foreach(var item in request.Headers.ToList())
+                    newRequest.Method = oldRequest.Method;
+                foreach(var item in oldRequest.Headers.ToList())
                 {
                     newRequest.Headers.Add(item);
                 }
-                foreach(var item in request.Properties.ToList())
+                foreach(var item in oldRequest.Properties.ToList())
                 {
                     newRequest.Properties.Add(item);
                 }
-                request = newRequest;
+                this.request = newRequest;
             }
 
             private static bool needRedirect(HttpResponseMessage response)
@@ -106,9 +103,9 @@ namespace ExClient.Internal
                 set;
             }
 
-            public Exception ErrorCode => current?.ErrorCode;
+            public Exception ErrorCode => this.current?.ErrorCode;
 
-            public uint Id => current.Id;
+            public uint Id => this.current.Id;
 
             public AsyncOperationProgressHandler<HttpResponseMessage, HttpProgress> Progress
             {
@@ -130,14 +127,14 @@ namespace ExClient.Internal
 
             public void Close()
             {
-                current?.Close();
+                this.current?.Close();
                 this.parent = null;
                 this.request = null;
             }
 
             public HttpResponseMessage GetResults()
             {
-                return current.GetResults();
+                return this.current.GetResults();
             }
         }
 
@@ -151,14 +148,14 @@ namespace ExClient.Internal
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!disposedValue)
+            if(!this.disposedValue)
             {
                 if(disposing)
                 {
-                    inner.Dispose();
+                    this.inner.Dispose();
                 }
-                inner = null;
-                disposedValue = true;
+                this.inner = null;
+                this.disposedValue = true;
             }
         }
 

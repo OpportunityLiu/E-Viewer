@@ -89,8 +89,7 @@ namespace ExViewer.Controls
 
         public FavoriteCategory Category
         {
-            get { return (FavoriteCategory)GetValue(CategoryProperty); }
-            set { SetValue(CategoryProperty, value); }
+            get => (FavoriteCategory)GetValue(CategoryProperty); set => SetValue(CategoryProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Category.  This enables animation, styling, binding, etc...
@@ -138,8 +137,7 @@ namespace ExViewer.Controls
 
         public bool IsLabelVisible
         {
-            get { return (bool)GetValue(IsLabelVisibleProperty); }
-            set { SetValue(IsLabelVisibleProperty, value); }
+            get => (bool)GetValue(IsLabelVisibleProperty); set => SetValue(IsLabelVisibleProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for IsLabelVisible.  This enables animation, styling, binding, etc...

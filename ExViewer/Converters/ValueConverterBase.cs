@@ -13,8 +13,7 @@ namespace ExViewer.Converters
     {
         public IValueConverter InnerConverter
         {
-            get { return (IValueConverter)GetValue(InnerConverterProperty); }
-            set { SetValue(InnerConverterProperty, value); }
+            get => (IValueConverter)GetValue(InnerConverterProperty); set => SetValue(InnerConverterProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for InnerConverter.  This enables animation, styling, binding, etc...

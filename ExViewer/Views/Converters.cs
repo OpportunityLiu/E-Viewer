@@ -22,13 +22,8 @@ namespace ExViewer.Views
     { 
         private static Brush accent;
 
-        public static Brush AccentBrush
-        {
-            get
-            {
-                return System.Threading.LazyInitializer.EnsureInitialized(ref accent, () => (Brush)Application.Current.Resources["SystemControlForegroundAccentBrush"]);
-            }
-        }
+        public static Brush AccentBrush =>
+            System.Threading.LazyInitializer.EnsureInitialized(ref accent, () => (Brush)Application.Current.Resources["SystemControlForegroundAccentBrush"]);
 
         public override object Convert(object value, Type targetType, object parameter, string language)
         {

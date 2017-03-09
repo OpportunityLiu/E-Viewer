@@ -12,8 +12,7 @@ namespace ExViewer.Converters
     {
         public double Offset
         {
-            get { return (double)GetValue(OffsetProperty); }
-            set { SetValue(OffsetProperty, value); }
+            get => (double)GetValue(OffsetProperty); set => SetValue(OffsetProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Offset.  This enables animation, styling, binding, etc...

@@ -24,26 +24,14 @@ namespace ExClient
 
         public int RecordCount
         {
-            get
-            {
-                return this.rc;
-            }
-            protected set
-            {
-                Set(ref this.rc, value, nameof(IsEmpty));
-            }
+            get => this.rc;
+            protected set => Set(ref this.rc, value, nameof(IsEmpty));
         }
 
         public int PageCount
         {
-            get
-            {
-                return this.pc;
-            }
-            protected set
-            {
-                Set(ref this.pc, value, nameof(HasMoreItems), nameof(LoadedPageCount));
-            }
+            get => this.pc;
+            protected set => Set(ref this.pc, value, nameof(HasMoreItems), nameof(LoadedPageCount));
         }
 
         protected abstract IAsyncOperation<IList<T>> LoadPageAsync(int pageIndex);

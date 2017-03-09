@@ -173,42 +173,24 @@ namespace ExViewer.ViewModels
 
         public string Keyword
         {
-            get
-            {
-                return this.keyword;
-            }
-            set
-            {
-                Set(ref this.keyword, value);
-            }
+            get => this.keyword;
+            set => Set(ref this.keyword, value);
         }
 
         private Category category;
 
         public Category Category
         {
-            get
-            {
-                return this.category;
-            }
-            set
-            {
-                Set(ref this.category, value);
-            }
+            get => this.category;
+            set => Set(ref this.category, value);
         }
 
         private AdvancedSearchOptions advancedSearch;
 
         public AdvancedSearchOptions AdvancedSearch
         {
-            get
-            {
-                return this.advancedSearch;
-            }
-            set
-            {
-                Set(ref this.advancedSearch, value);
-            }
+            get => this.advancedSearch;
+            set => Set(ref this.advancedSearch, value);
         }
 
         public string SearchQuery => GetSearchQuery(this.keyword, this.category, this.advancedSearch);

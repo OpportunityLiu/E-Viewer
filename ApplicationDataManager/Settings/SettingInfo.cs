@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -21,6 +22,15 @@ namespace ApplicationDataManager.Settings
 
     public sealed class SettingInfo : ObservableObject
     {
+        private static readonly Dictionary<Type, ValueType> typeDic = new Dictionary<Type, ValueType>
+        {
+            [typeof(float)] = ValueType.Single,
+            [typeof(double)] = ValueType.Double,
+            [typeof(int)] = ValueType.Int32,
+            [typeof(long)] = ValueType.Int64,
+            [typeof(string)] = ValueType.String
+        };
+
         internal SettingInfo(PropertyInfo info, ApplicationSettingCollection settingCollection, SettingAttribute settingAttribute)
         {
             this.PropertyInfo = info;
@@ -33,22 +43,15 @@ namespace ApplicationDataManager.Settings
             var pType = info.PropertyType;
             if(this.ValueRepresent == null)
             {
-                if(pType == typeof(float))
-                    this.type = ValueType.Single;
-                else if(pType == typeof(double))
-                    this.type = ValueType.Double;
-                else if(pType == typeof(int))
-                    this.type = ValueType.Int32;
-                else if(pType == typeof(long))
-                    this.type = ValueType.Int64;
-                else if(pType == typeof(bool))
-                    this.ValueRepresent = ToggleSwitchRepresentAttribute.Default;
-                else if(pType == typeof(string))
-                    this.type = ValueType.String;
-                else if(pType.GetTypeInfo().IsEnum)
-                    this.ValueRepresent = EnumRepresentAttribute.Default;
-                else
-                    throw new InvalidOperationException($"Unsupported property type: {{{pType}}}");
+                if(!typeDic.TryGetValue(pType, out this.type))
+                {
+                    if(pType == typeof(bool))
+                        this.ValueRepresent = ToggleSwitchRepresentAttribute.Default;
+                    else if(pType.GetTypeInfo().IsEnum)
+                        this.ValueRepresent = EnumRepresentAttribute.Default;
+                    else
+                        throw new InvalidOperationException($"Unsupported property type: {{{pType}}}");
+                }
             }
             settingCollection.PropertyChanged += this.settingsChanged;
             this.settingCollection = settingCollection;

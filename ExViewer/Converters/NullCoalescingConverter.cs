@@ -12,8 +12,7 @@ namespace ExViewer.Converters
     {
         public object Default
         {
-            get { return GetValue(DefaultProperty); }
-            set { SetValue(DefaultProperty, value); }
+            get => GetValue(DefaultProperty); set => SetValue(DefaultProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Default.  This enables animation, styling, binding, etc...

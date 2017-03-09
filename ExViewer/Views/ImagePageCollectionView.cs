@@ -35,7 +35,7 @@ namespace ExViewer.Views
             switch(e.Action)
             {
             case NotifyCollectionChangedAction.Add:
-                for(int i = 0; i < e.NewItems.Count; i++)
+                for(var i = 0; i < e.NewItems.Count; i++)
                 {
                     this.imageViewCache[e.NewStartingIndex + i].Refresh();
                 }
@@ -53,10 +53,7 @@ namespace ExViewer.Views
 
         public Gallery Collection
         {
-            get
-            {
-                return this.collection;
-            }
+            get => this.collection;
             set
             {
                 if(this.collection != null)
@@ -121,10 +118,7 @@ namespace ExViewer.Views
 
         public IEnumerator<IImagePageImageView> GetEnumerator()
         {
-            for(int i = 0; i < this.Count; i++)
-            {
-                yield return this[i];
-            }
+            return this.imageViewCache.Take(this.Count).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

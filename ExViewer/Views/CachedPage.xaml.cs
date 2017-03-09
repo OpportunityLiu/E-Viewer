@@ -47,14 +47,8 @@ namespace ExViewer.Views
 
         public CachedVM VM
         {
-            get
-            {
-                return (CachedVM)GetValue(VMProperty);
-            }
-            set
-            {
-                SetValue(VMProperty, value);
-            }
+            get => (CachedVM)GetValue(VMProperty);
+            set => SetValue(VMProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...

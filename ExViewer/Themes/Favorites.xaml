@@ -1,6 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:ExViewer.Themes">
+    <SolidColorBrush x:Key="FavoriteCategoryNone"
+                     Color="{ThemeResource SystemBaseHighColor}" />
     <SolidColorBrush x:Key="FavoriteCategory0"
                      Color="#FF7f7f7f" />
     <SolidColorBrush x:Key="FavoriteCategory1"

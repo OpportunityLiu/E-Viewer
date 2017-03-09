@@ -172,14 +172,8 @@ namespace ExClient
 
         public ImageLoadingState State
         {
-            get
-            {
-                return state;
-            }
-            protected set
-            {
-                Set(ref state, value);
-            }
+            get => state;
+            protected set => Set(ref state, value);
         }
 
         private readonly ImageHandle thumb;
@@ -334,14 +328,8 @@ namespace ExClient
 
         public int Progress
         {
-            get
-            {
-                return progress;
-            }
-            private set
-            {
-                Set(ref progress, value);
-            }
+            get => progress;
+            private set => Set(ref progress, value);
         }
 
         private Uri imageUri;
@@ -351,10 +339,7 @@ namespace ExClient
 
         public StorageFile ImageFile
         {
-            get
-            {
-                return this.imageFile;
-            }
+            get => this.imageFile;
             protected set
             {
                 this.imageFile = value;
@@ -396,28 +381,16 @@ namespace ExClient
 
         public string ImageKey
         {
-            get
-            {
-                return this.imageKey;
-            }
-            protected set
-            {
-                Set(ref this.imageKey, value, nameof(PageUri));
-            }
+            get => this.imageKey;
+            protected set => Set(ref this.imageKey, value, nameof(PageUri));
         }
 
         private string failToken;
 
         public bool OriginalLoaded
         {
-            get
-            {
-                return this.originalLoaded;
-            }
-            private set
-            {
-                Set(ref this.originalLoaded, value);
-            }
+            get => this.originalLoaded;
+            private set => Set(ref this.originalLoaded, value);
         }
 
         private bool originalLoaded;

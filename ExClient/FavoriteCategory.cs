@@ -36,10 +36,7 @@ namespace ExClient
                 else
                     return $"favorites {this.Index}";
             }
-            internal set
-            {
-                Set(ref this.name, value);
-            }
+            internal set => Set(ref this.name, value);
         }
 
         private string name;

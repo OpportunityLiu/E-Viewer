@@ -26,14 +26,8 @@ namespace ExViewer.Controls
 
         public IconElement Icon
         {
-            get
-            {
-                return (IconElement)GetValue(IconProperty);
-            }
-            set
-            {
-                SetValue(IconProperty, value);
-            }
+            get => (IconElement)GetValue(IconProperty);
+            set => SetValue(IconProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Icon.  This enables animation, styling, binding, etc...

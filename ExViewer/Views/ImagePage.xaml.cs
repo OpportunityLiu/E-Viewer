@@ -32,14 +32,8 @@ namespace ExViewer.Views
 
         public GalleryVM VM
         {
-            get
-            {
-                return (GalleryVM)GetValue(VMProperty);
-            }
-            set
-            {
-                SetValue(VMProperty, value);
-            }
+            get => (GalleryVM)GetValue(VMProperty);
+            set => SetValue(VMProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
@@ -82,15 +76,22 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            var backColor = ((SolidColorBrush)this.fv.Background).Color;
-            var needColor = this.cb_top_OpenAnimation.To.GetValueOrDefault();
-            var toColor = Color.FromArgb(85,
-                (byte)(backColor.R - 3 * (backColor.R - needColor.R)),
-                (byte)(backColor.G - 3 * (backColor.G - needColor.G)),
-                (byte)(backColor.B - 3 * (backColor.B - needColor.B)));
+            var backColor = this.scbBack.Color;
+            var needColor = this.scbNeed.Color;
+
+            var toColor = getCbColor(backColor, needColor, 85);
             this.cb_top.Background = new SolidColorBrush(toColor);
             this.fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
                 FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+
+            var kfc = this.cb_top_CloseAnimation.KeyFrames.Count;
+            var offset = (255d - 85d) / (kfc - 1);
+            for(var i = 0; i < kfc; i++)
+            {
+                var c = getCbColor(backColor, needColor, (byte)(85 + i * offset));
+                this.cb_top_OpenAnimation.KeyFrames[i].Value = c;
+                this.cb_top_CloseAnimation.KeyFrames[kfc - 1 - i].Value = c;
+            }
 
             base.OnNavigatedTo(e);
 
@@ -107,6 +108,16 @@ namespace ExViewer.Views
             }
             if(!StatusCollection.Current.ImageViewTipShown)
                 showTip();
+        }
+
+        private static Color getCbColor(Color backColor, Color needColor, byte alpha)
+        {
+            var ratio = alpha / 255d;
+            var ratio_1 = ratio - 1;
+            return Color.FromArgb(alpha,
+                (byte)((needColor.R + ratio_1 * backColor.R) / ratio),
+                (byte)((needColor.G + ratio_1 * backColor.G) / ratio),
+                (byte)((needColor.B + ratio_1 * backColor.B) / ratio));
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -151,11 +162,11 @@ namespace ExViewer.Views
 
         private void setScale()
         {
-            int lb = this.fv.SelectedIndex - 1;
-            int ub = this.fv.SelectedIndex + 2;
+            var lb = this.fv.SelectedIndex - 1;
+            var ub = this.fv.SelectedIndex + 2;
             lb = lb < 0 ? 0 : lb;
             ub = ub > this.VM.Gallery.Count ? this.VM.Gallery.Count : ub;
-            for(int i = lb; i < ub; i++)
+            for(var i = lb; i < ub; i++)
             {
                 if(i == this.fv.SelectedIndex)
                     continue;
@@ -184,7 +195,7 @@ namespace ExViewer.Views
             {
                 end = this.VM.Gallery.Count;
             }
-            for(int i = start; i < end; i++)
+            for(var i = start; i < end; i++)
             {
                 this.VM.Gallery[i].LoadImageAsync(false, SettingCollection.Current.GetStrategy(), true).Completed =
                     (task, state) =>
@@ -224,12 +235,12 @@ namespace ExViewer.Views
         {
             switch(this.cb_top.Visibility)
             {
-            case Visibility.Visible:
-                this.cb_top.Visibility = Visibility.Collapsed;
-                return false;
-            case Visibility.Collapsed:
-                this.cb_top.Visibility = Visibility.Visible;
-                return true;
+                case Visibility.Visible:
+                    this.cb_top.Visibility = Visibility.Collapsed;
+                    return false;
+                case Visibility.Collapsed:
+                    this.cb_top.Visibility = Visibility.Visible;
+                    return true;
             }
             return false;
         }
@@ -252,14 +263,23 @@ namespace ExViewer.Views
             await this.VM.RefreshInfoAsync();
         }
 
-        private void cb_top_Opening(object sender, object e)
+        private async void cb_top_Opening(object sender, object e)
         {
             this.cb_top_Open.Begin();
+            await Task.Delay(100);
+            Grid.SetColumn(this.tb_Title, 0);
+            Grid.SetColumnSpan(this.tb_Title, 2);
         }
 
         private void cb_top_Closing(object sender, object e)
         {
             this.cb_top_Close.Begin();
+        }
+
+        private void cb_top_Closed(object sender, object e)
+        {
+            Grid.SetColumn(this.tb_Title, 1);
+            Grid.SetColumnSpan(this.tb_Title, 1);
         }
 
         private void abb_fullScreen_Click(object sender, RoutedEventArgs e)
@@ -284,19 +304,19 @@ namespace ExViewer.Views
             e.Handled = true;
             switch(e.Key)
             {
-            case VirtualKey.Enter:
-                this.enterPressed = false;
-                break;
-            case VirtualKey.Application:
-            case VirtualKey.GamepadMenu:
-                if(!changeCbVisibility())
-                    this.fv.Focus(FocusState.Programmatic);
-                else
-                    this.abb_fullScreen.Focus(FocusState.Programmatic);
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case VirtualKey.Enter:
+                    this.enterPressed = false;
+                    break;
+                case VirtualKey.Application:
+                case VirtualKey.GamepadMenu:
+                    if(!changeCbVisibility())
+                        this.fv.Focus(FocusState.Programmatic);
+                    else
+                        this.abb_fullScreen.Focus(FocusState.Programmatic);
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 

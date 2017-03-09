@@ -22,26 +22,23 @@ namespace ExViewer.Converters
 
         private static object convert(object value, Type targetType)
         {
-            var v = value as double?;
-            if(v == null)
+            var result = 0d;
+            switch(value)
             {
-                if(value is GridLength)
-                {
-                    var v2 = (GridLength)value;
-                    if(v2.IsAbsolute)
-                        v = v2.Value;
-                    else
-                        v = double.NaN;
-                }
+            case double vd :
+                result = vd;
+                break;
+            case GridLength vgl:
+                result = vgl.IsAbsolute ? vgl.Value : double.NaN;
+                break;
+            default:
+                result = System.Convert.ToDouble(value);
+                break;
             }
-
-            if(v == null)
-                throw new InvalidOperationException();
-            var d = v.Value;
             if(targetType == typeof(double))
-                return d;
+                return result;
             if(targetType == typeof(GridLength))
-                return new GridLength(d);
+                return new GridLength(result);
             return DependencyProperty.UnsetValue;
         }
     }

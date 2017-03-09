@@ -22,10 +22,7 @@
 
         public Namespace Value
         {
-            get
-            {
-                return (Namespace)ns;
-            }
+            get => (Namespace)ns;
             set
             {
                 var v = unchecked((byte)value);
