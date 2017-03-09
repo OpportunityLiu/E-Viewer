@@ -174,7 +174,7 @@
                                Margin="8"
                                MaxWidth="200"
                                TextTrimming="CharacterEllipsis"
-                               Text="{Binding UserInfo.DisplayName, ElementName=page, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
+                               Text="{x:Bind UserInfo.DisplayName, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center" />
                     <Button x:Uid="Views/RootControl/ChangeUserButton"
