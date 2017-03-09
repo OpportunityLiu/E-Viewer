@@ -43,14 +43,8 @@ namespace ExViewer.Controls
 
         public Category Category
         {
-            get
-            {
-                return (Category)GetValue(CategoryProperty);
-            }
-            set
-            {
-                SetValue(CategoryProperty, value);
-            }
+            get => (Category)GetValue(CategoryProperty);
+            set => SetValue(CategoryProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Category.  This enables animation, styling, binding, etc...
@@ -61,8 +55,7 @@ namespace ExViewer.Controls
         {
             var sender = (CategoryTag)d;
             var newValue = (Category)e.NewValue;
-            object brush;
-            if(categoryBrushes.TryGetValue($"Category{newValue}BackgroundBrush", out brush))
+            if(categoryBrushes.TryGetValue($"Category{newValue}BackgroundBrush", out var brush))
             {
                 sender.Background = (Brush)brush;
             }

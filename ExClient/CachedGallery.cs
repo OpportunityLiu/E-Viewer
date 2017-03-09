@@ -39,7 +39,7 @@ namespace ExClient
 
             protected override void RemoveItem(int index)
             {
-                galleries.RemoveAt(index);
+                this.galleries.RemoveAt(index);
                 base.RemoveItem(index);
             }
 
@@ -52,12 +52,12 @@ namespace ExClient
             protected override IList<CachedGallery> LoadRange(ItemIndexRange visibleRange, GalleryDb db)
             {
                 var list = new CachedGallery[visibleRange.Length];
-                for(int i = 0; i < visibleRange.Length; i++)
+                for(var i = 0; i < visibleRange.Length; i++)
                 {
                     var index = visibleRange.FirstIndex + i;
                     if(this[index] != DefaultGallery)
                         continue;
-                    var c = new CachedGallery(galleries[index]);
+                    var c = new CachedGallery(this.galleries[index]);
                     var ignore = c.InitAsync();
                     this[index] = c;
                 }
@@ -84,7 +84,7 @@ namespace ExClient
                     var cacheDic = query.ToDictionary(dm => dm.First().OwnerId.ToString());
                     var saveDic = db.SavedSet.Select(sm => sm.GalleryId).ToDictionary(id => id.ToString());
                     double count = cacheDic.Count;
-                    int i = 0;
+                    var i = 0;
                     foreach(var item in cacheDic)
                     {
                         progress.Report(i / count);
@@ -113,18 +113,18 @@ namespace ExClient
 
         internal void LoadImageModels()
         {
-            if(ImageModels != null)
+            if(this.ImageModels != null)
                 return;
-            ImageModels = new ImageModel[RecordCount];
+            this.ImageModels = new ImageModel[this.RecordCount];
             using(var db = new GalleryDb())
             {
-                var gid = Id;
+                var gid = this.Id;
                 var models = from im in db.ImageSet
                              where im.OwnerId == gid
                              select im;
                 foreach(var item in models)
                 {
-                    ImageModels[item.PageId - 1] = item;
+                    this.ImageModels[item.PageId - 1] = item;
                 }
             }
         }
@@ -135,14 +135,14 @@ namespace ExClient
             {
                 await GetFolderAsync();
                 this.LoadImageModels();
-                var currentPageSize = MathHelper.GetSizeOfPage(RecordCount, PageSize, pageIndex);
+                var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
                 var loadList = new GalleryImage[currentPageSize];
-                for(int i = 0; i < currentPageSize; i++)
+                for(var i = 0; i < currentPageSize; i++)
                 {
-                    var model = ImageModels[Count + i];
+                    var model = this.ImageModels[this.Count + i];
                     if(model == null)
                     {
-                        loadList[i] = new GalleryImagePlaceHolder(this, Count + i + 1);
+                        loadList[i] = new GalleryImagePlaceHolder(this, this.Count + i + 1);
                     }
                     else
                     {
@@ -163,7 +163,7 @@ namespace ExClient
             public LoadPageAction(IAsyncAction action)
             {
                 this.action = action;
-                this.action.Completed = action_Completed;
+                this.action.Completed = this.action_Completed;
             }
 
             private void action_Completed(IAsyncAction sender, AsyncStatus e)
@@ -180,14 +180,8 @@ namespace ExClient
 
             public AsyncActionCompletedHandler Completed
             {
-                get
-                {
-                    return this.action.Completed;
-                }
-                set
-                {
-                    completed.Add(value);
-                }
+                get => this.action.Completed;
+                set => completed.Add(value);
             }
 
             private List<AsyncActionCompletedHandler> completed = new List<AsyncActionCompletedHandler>();
@@ -209,18 +203,18 @@ namespace ExClient
         {
             var pageIndex = MathHelper.GetPageIndexOfRecord(PageSize, image.PageId - 1);
             var lpAc = (LoadPageAction)null;
-            if(loadingPageDic.TryGetValue(pageIndex, out lpAc))
+            if(this.loadingPageDic.TryGetValue(pageIndex, out lpAc))
             {
                 if(!lpAc.Disposed)
                     return lpAc;
                 else
-                    loadingPageDic.Remove(pageIndex);
+                    this.loadingPageDic.Remove(pageIndex);
             }
             var action = Run(async token =>
             {
                 var images = await base.LoadPageAsync(pageIndex);
                 var offset = MathHelper.GetStartIndexOfPage(PageSize, pageIndex);
-                for(int i = 0; i < images.Count; i++)
+                for(var i = 0; i < images.Count; i++)
                 {
                     var ph = this[i + offset] as GalleryImagePlaceHolder;
                     if(ph == null)
@@ -229,13 +223,13 @@ namespace ExClient
                 }
             });
             lpAc = new LoadPageAction(action);
-            loadingPageDic[pageIndex] = lpAc;
+            this.loadingPageDic[pageIndex] = lpAc;
             return lpAc;
         }
 
         public override IAsyncAction DeleteAsync()
         {
-            ImageModels = null;
+            this.ImageModels = null;
             return base.DeleteAsync();
         }
 
@@ -244,10 +238,9 @@ namespace ExClient
             return Run<SaveGalleryProgress>(async (token, p) =>
             {
                 p.Report(new SaveGalleryProgress { ImageCount = this.RecordCount, ImageLoaded = -1 });
-                for(int i = 0; i < this.Count; i++)
+                for(var i = 0; i < this.Count; i++)
                 {
-                    var ph = this[i] as GalleryImagePlaceHolder;
-                    if(ph != null)
+                    if(this[i] is GalleryImagePlaceHolder ph)
                     {
                         token.ThrowIfCancellationRequested();
                         await ph.LoadImageAsync(false, strategy, true);

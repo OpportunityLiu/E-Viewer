@@ -7,7 +7,7 @@ namespace ApplicationDataManager.Settings
     {
         public SettingAttribute(string categoryNameKey)
         {
-            CategoryNameKey = categoryNameKey;
+            this.CategoryNameKey = categoryNameKey;
         }
 
         public string CategoryNameKey
@@ -15,7 +15,7 @@ namespace ApplicationDataManager.Settings
             get;
         }
 
-        public string Category => StringLoader.GetString(CategoryNameKey);
+        public string Category => StringLoader.GetString(this.CategoryNameKey);
 
         public int Index
         {
@@ -83,9 +83,9 @@ namespace ApplicationDataManager.Settings
             this.max = max;
         }
 
-        public object Min => min;
+        public object Min => this.min;
 
-        public object Max => max;
+        public object Max => this.max;
 
         public double Tick
         {
@@ -149,9 +149,9 @@ namespace ApplicationDataManager.Settings
             this.max = max;
         }
 
-        public object Min => min;
+        public object Min => this.min;
 
-        public object Max => max;
+        public object Max => this.max;
 
         public double Tick
         {
@@ -182,9 +182,9 @@ namespace ApplicationDataManager.Settings
             this.max = max;
         }
 
-        public object Min => min;
+        public object Min => this.min;
 
-        public object Max => max;
+        public object Max => this.max;
 
         public double Tick
         {

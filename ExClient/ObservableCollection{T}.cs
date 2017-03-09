@@ -127,10 +127,7 @@ namespace ExClient
                         throw new ArgumentOutOfRangeException(nameof(index));
                     return this.parent[this.startingIndex + index];
                 }
-                set
-                {
-                    throw new InvalidOperationException();
-                }
+                set => throw new InvalidOperationException();
             }
 
             public int Count => this.count;

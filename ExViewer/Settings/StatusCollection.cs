@@ -19,26 +19,14 @@ namespace ExViewer.Settings
 
         public bool ImageViewTipShown
         {
-            get
-            {
-                return GetLocal(false);
-            }
-            set
-            {
-                SetLocal(value);
-            }
+            get => GetLocal(false);
+            set => SetLocal(value);
         }
 
         public bool FullScreenInImagePage
         {
-            get
-            {
-                return GetLocal(false);
-            }
-            set
-            {
-                SetLocal(value);
-            }
+            get => GetLocal(false);
+            set => SetLocal(value);
         }
     }
 }

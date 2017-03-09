@@ -16,10 +16,7 @@ namespace ExClient.Settings
 
         public string IPAddress
         {
-            get
-            {
-                return ip;
-            }
+            get => ip;
             set
             {
                 if(string.IsNullOrWhiteSpace(value))
@@ -44,10 +41,7 @@ namespace ExClient.Settings
 
         public uint Port
         {
-            get
-            {
-                return port;
-            }
+            get => port;
             set
             {
                 port = value;

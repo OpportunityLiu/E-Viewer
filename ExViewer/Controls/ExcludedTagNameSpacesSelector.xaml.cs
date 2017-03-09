@@ -28,14 +28,8 @@ namespace ExViewer.Controls
 
         public Namespace ExcludedTagNamespaces
         {
-            get
-            {
-                return (Namespace)GetValue(ExcludedTagNamespacesProperty);
-            }
-            set
-            {
-                SetValue(ExcludedTagNamespacesProperty, value);
-            }
+            get => (Namespace)GetValue(ExcludedTagNamespacesProperty);
+            set => SetValue(ExcludedTagNamespacesProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for ExcludedTagNamespaces.  This enables animation, styling, binding, etc...

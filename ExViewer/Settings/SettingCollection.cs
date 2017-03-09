@@ -29,51 +29,30 @@ namespace ExViewer.Settings
         [Setting("Searching", Index = 10)]
         public string DefaultSearchString
         {
-            get
-            {
-                return GetRoaming("");
-            }
-            set
-            {
-                SetRoaming(value);
-            }
+            get => GetRoaming("");
+            set => SetRoaming(value);
         }
 
         [Setting("Searching", Index = 20)]
         [CustomTemplate("CatagorySettingTemplate")]
         public Category DefaultSearchCategory
         {
-            get
-            {
-                return GetRoaming(Category.All);
-            }
-            set
-            {
-                SetRoaming(value);
-            }
+            get => GetRoaming(Category.All);
+            set => SetRoaming(value);
         }
 
         [Setting("Searching", Index = 30)]
         public bool SaveLastSearch
         {
-            get
-            {
-                return GetRoaming(false);
-            }
-            set
-            {
-                SetRoaming(value);
-            }
+            get => GetRoaming(false);
+            set => SetRoaming(value);
         }
 
         [Setting("Searching", Index = 35)]
         [CustomTemplate("ExcludedTagNamespacesTemplate")]
         public Namespace ExcludedTagNamespaces
         {
-            get
-            {
-                return GetRoaming(Namespace.Unknown);
-            }
+            get => GetRoaming(Namespace.Unknown);
             set
             {
                 SetRoaming(value);
@@ -85,10 +64,7 @@ namespace ExViewer.Settings
         [CustomTemplate("ExcludedLanguagesTemplate")]
         public string ExcludedLanguages
         {
-            get
-            {
-                return GetRoaming("");
-            }
+            get => GetRoaming("");
             set
             {
                 SetRoaming(value);
@@ -102,10 +78,7 @@ namespace ExViewer.Settings
         [EnumRepresent("ApplicationTheme")]
         public ApplicationTheme Theme
         {
-            get
-            {
-                return GetLocal(ApplicationTheme.Dark);
-            }
+            get => GetLocal(ApplicationTheme.Dark);
             set
             {
                 SetLocal(value);
@@ -117,24 +90,15 @@ namespace ExViewer.Settings
         [Setting("Global", Index = 10)]
         public bool NeedVerify
         {
-            get
-            {
-                return GetLocal(false);
-            }
-            set
-            {
-                SetLocal(value);
-            }
+            get => GetLocal(false);
+            set => SetLocal(value);
         }
 
         [Setting("Global", Index = 15)]
         [ToggleSwitchRepresent("BooleanEx", "BooleanEh")]
         public bool VisitEx
         {
-            get
-            {
-                return GetRoaming(false);
-            }
+            get => GetRoaming(false);
             set
             {
                 SetRoaming(value);
@@ -146,79 +110,46 @@ namespace ExViewer.Settings
         [ToggleSwitchRepresent("BooleanJT", "BooleanDT")]
         public bool UseJapaneseTitle
         {
-            get
-            {
-                return GetRoaming(false);
-            }
-            set
-            {
-                SetRoaming(value);
-            }
+            get => GetRoaming(false);
+            set => SetRoaming(value);
         }
 
         [Setting("Viewing", Index = 20)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseChineseTagTranslation
         {
-            get
-            {
-                return GetRoaming(false);
-            }
-            set
-            {
-                SetRoaming(value);
-            }
+            get => GetRoaming(false);
+            set => SetRoaming(value);
         }
 
         [Setting("Viewing", Index = 30)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseJapaneseTagTranslation
         {
-            get
-            {
-                return GetRoaming(false);
-            }
-            set
-            {
-                SetRoaming(value);
-            }
+            get => GetRoaming(false);
+            set => SetRoaming(value);
         }
 
         [Setting("Viewing", Index = 40)]
         [ToggleSwitchRepresent("BooleanRightToLeft", "BooleanLeftToRight")]
         public bool ReverseFlowDirection
         {
-            get
-            {
-                return GetLocal(false);
-            }
-            set
-            {
-                SetLocal(value);
-            }
+            get => GetLocal(false);
+            set => SetLocal(value);
         }
 
         [Setting("Viewing", Index = 50)]
         public bool KeepScreenOn
         {
-            get
-            {
-                return GetLocal(false);
-            }
-            set
-            {
-                SetLocal(value);
-            }
+            get => GetLocal(false);
+            set => SetLocal(value);
         }
 
         [Setting("Connection", Index = 40)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool LoadLofiOnMeteredInternetConnection
         {
-            get
-            {
-                return GetLocal(true);
-            }
+            get => GetLocal(true);
             set
             {
                 if(this.LoadLofiOnAllInternetConnection)
@@ -232,10 +163,7 @@ namespace ExViewer.Settings
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool LoadLofiOnAllInternetConnection
         {
-            get
-            {
-                return GetLocal(false);
-            }
+            get => GetLocal(false);
             set
             {
                 SetLocal(value);
@@ -247,10 +175,7 @@ namespace ExViewer.Settings
         [Setting("Connection", Index = 60)]
         public string HahAddress
         {
-            get
-            {
-                return GetLocal("");
-            }
+            get => GetLocal("");
             set
             {
                 var old = GetLocal("");

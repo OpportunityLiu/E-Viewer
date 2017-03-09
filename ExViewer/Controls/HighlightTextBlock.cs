@@ -29,8 +29,7 @@ namespace ExViewer.Controls
 
         public string Text
         {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
+            get => (string)GetValue(TextProperty); set => SetValue(TextProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
@@ -46,8 +45,7 @@ namespace ExViewer.Controls
 
         public string HighlightText
         {
-            get { return (string)GetValue(HighlightTextProperty); }
-            set { SetValue(HighlightTextProperty, value); }
+            get => (string)GetValue(HighlightTextProperty); set => SetValue(HighlightTextProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for HighlightText.  This enables animation, styling, binding, etc...
@@ -61,8 +59,7 @@ namespace ExViewer.Controls
 
         public StringComparison Comparison
         {
-            get { return (StringComparison)GetValue(ComparisonProperty); }
-            set { SetValue(ComparisonProperty, value); }
+            get => (StringComparison)GetValue(ComparisonProperty); set => SetValue(ComparisonProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Comparison.  This enables animation, styling, binding, etc...

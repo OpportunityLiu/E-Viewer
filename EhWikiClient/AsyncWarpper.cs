@@ -17,10 +17,7 @@ namespace EhWikiClient.Helpers
 
         public AsyncOperationCompletedHandler<T> Completed
         {
-            get
-            {
-                return completed;
-            }
+            get => completed;
             set
             {
                 completed = value;
@@ -54,10 +51,7 @@ namespace EhWikiClient.Helpers
 
         public AsyncActionCompletedHandler Completed
         {
-            get
-            {
-                return completed;
-            }
+            get => completed;
             set
             {
                 completed = value;

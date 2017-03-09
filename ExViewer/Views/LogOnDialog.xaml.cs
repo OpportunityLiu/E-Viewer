@@ -34,8 +34,6 @@ namespace ExViewer.Views
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var username = this.tb_user.Text;
-            if(string.Equals("eviewer", username))
-                Settings.SettingCollection.Current.DefaultSearchCategory = Category.NonH;
             var password = this.pb_pass.Password;
             if(string.IsNullOrWhiteSpace(username))
             {
@@ -65,25 +63,15 @@ namespace ExViewer.Views
                     this.tb_info.Text = ex.GetMessage();
                     this.tb_ReCaptcha.Focus(FocusState.Programmatic);
                     args.Cancel = true;
+                    return;
                 }
                 try
                 {
-                    if(args.Cancel)
-                        return;
                     await Client.Current.LogOnAsync(username, password, this.recap);
                     AccountManager.CurrentCredential = AccountManager.CreateCredential(username, password);
                 }
                 catch(ArgumentException ex) when(ex.ParamName == "response")
                 {
-                }
-                catch(NotSupportedException ex)
-                {
-                    this.tb_user.Text = "";
-                    this.pb_pass.Password = "";
-                    await Task.Delay(50);
-                    this.tb_info.Text = ex.GetMessage();
-                    this.tb_user.Focus(FocusState.Programmatic);
-                    args.Cancel = true;
                 }
                 catch(InvalidOperationException ex)
                 {

@@ -309,14 +309,8 @@ namespace ExClient
 
         public SoftwareBitmap Thumb
         {
-            get
-            {
-                return this.thumbImage;
-            }
-            protected set
-            {
-                Set(ref this.thumbImage, value?.GetReadOnlyView());
-            }
+            get => this.thumbImage;
+            protected set => Set(ref this.thumbImage, value?.GetReadOnlyView());
         }
 
         public Uri ThumbUri
@@ -363,28 +357,16 @@ namespace ExClient
 
         public FavoriteCategory FavoriteCategory
         {
-            get
-            {
-                return this.favorite;
-            }
-            protected internal set
-            {
-                Set(ref this.favorite, value);
-            }
+            get => this.favorite;
+            protected internal set => Set(ref this.favorite, value);
         }
 
         private FavoriteCategory favorite;
 
         public string FavoriteNote
         {
-            get
-            {
-                return this.favNote;
-            }
-            protected internal set
-            {
-                Set(ref this.favNote, value);
-            }
+            get => this.favNote;
+            protected internal set => Set(ref this.favNote, value);
         }
 
         private string favNote;
@@ -402,14 +384,8 @@ namespace ExClient
 
         public StorageFolder GalleryFolder
         {
-            get
-            {
-                return this.galleryFolder;
-            }
-            private set
-            {
-                Set(ref this.galleryFolder, value);
-            }
+            get => this.galleryFolder;
+            private set => Set(ref this.galleryFolder, value);
         }
 
         public IAsyncOperation<StorageFolder> GetFolderAsync()

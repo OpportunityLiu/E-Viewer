@@ -30,14 +30,8 @@ namespace ExViewer.Controls
 
         public GalleryImage Image
         {
-            get
-            {
-                return (GalleryImage)GetValue(ImageProperty);
-            }
-            set
-            {
-                SetValue(ImageProperty, value);
-            }
+            get => (GalleryImage)GetValue(ImageProperty);
+            set => SetValue(ImageProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Image.  This enables animation, styling, binding, etc...

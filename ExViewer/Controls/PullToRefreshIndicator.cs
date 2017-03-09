@@ -28,10 +28,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
 
         private PullToRefreshListView parent
         {
-            get
-            {
-                return this.p;
-            }
+            get => this.p;
             set
             {
                 if(this.p != null)
@@ -60,14 +57,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
 
         public double PullProgress
         {
-            get
-            {
-                return (double)GetValue(PullProgressProperty);
-            }
-            set
-            {
-                SetValue(PullProgressProperty, value);
-            }
+            get => (double)GetValue(PullProgressProperty);
+            set => SetValue(PullProgressProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for PullProgress.  This enables animation, styling, binding, etc...

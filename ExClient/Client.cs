@@ -135,7 +135,7 @@ namespace ExClient
 
         private List<HttpCookie> getLogOnInfo()
         {
-            return CookieManager.GetCookies(UriProvieder.Eh.RootUri).Concat(CookieManager.GetCookies(UriProvieder.Ex.RootUri)).ToList();
+            return this.CookieManager.GetCookies(UriProvieder.Eh.RootUri).Concat(this.CookieManager.GetCookies(UriProvieder.Ex.RootUri)).ToList();
         }
 
         public void ClearLogOnInfo()
@@ -170,7 +170,7 @@ namespace ExClient
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!disposedValue)
+            if(!this.disposedValue)
             {
                 if(disposing)
                 {
@@ -179,9 +179,9 @@ namespace ExClient
 
                 // 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
                 // 将大型字段设置为 null。
-                HttpClient.Dispose();
+                this.HttpClient.Dispose();
 
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 

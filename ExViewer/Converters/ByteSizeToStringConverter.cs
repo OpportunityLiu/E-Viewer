@@ -15,8 +15,7 @@ namespace ExViewer.Converters
 
         public UnitPrefix UnitPrefix
         {
-            get { return (UnitPrefix)GetValue(UnitPrefixProperty); }
-            set { SetValue(UnitPrefixProperty, value); }
+            get => (UnitPrefix)GetValue(UnitPrefixProperty); set => SetValue(UnitPrefixProperty, value);
         }
 
         public static readonly DependencyProperty UnitPrefixProperty =
@@ -24,8 +23,7 @@ namespace ExViewer.Converters
 
         public string OutOfRangeValue
         {
-            get { return (string)GetValue(OutOfRangeValueProperty); }
-            set { SetValue(OutOfRangeValueProperty, value); }
+            get => (string)GetValue(OutOfRangeValueProperty); set => SetValue(OutOfRangeValueProperty, value);
         }
 
         public static readonly DependencyProperty OutOfRangeValueProperty =
@@ -83,9 +81,7 @@ namespace ExViewer.Converters
         {
             if(size < 0 || double.IsNaN(size))
                 throw new ArgumentOutOfRangeException(nameof(size));
-            string[] units;
-            double powerBase;
-            getUnits(out units, out powerBase, unitPrefix);
+            getUnits(out var units, out var powerBase, unitPrefix);
             foreach(var unit in units)
             {
                 if(size < 1000)
@@ -102,9 +98,7 @@ namespace ExViewer.Converters
             if(string.IsNullOrEmpty(sizeStr))
                 throw new ArgumentNullException(nameof(sizeStr));
             sizeStr = sizeStr.Trim();
-            string[] units;
-            double powerBase;
-            getUnits(out units, out powerBase, unitPrefix);
+            getUnits(out var units, out var powerBase, unitPrefix);
             for(int i = 0; i < units.Length; i++)
             {
                 if(sizeStr.EndsWith(units[i], StringComparison.OrdinalIgnoreCase))

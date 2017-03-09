@@ -25,7 +25,7 @@ namespace ExClient
         {
             var idx = cat?.Index ?? -1;
             if(idx < 0)
-                return (Brush)Application.Current.Resources["SystemControlForegroundBaseHighBrush"];
+                return (Brush)favoritesBrushes["FavoriteCategoryNone"];
             return (Brush)favoritesBrushes[$"FavoriteCategory{cat.Index}"];
         }
     }

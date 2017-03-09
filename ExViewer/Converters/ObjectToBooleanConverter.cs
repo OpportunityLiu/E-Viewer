@@ -13,8 +13,7 @@ namespace ExViewer.Converters
     {
         public object ValueForTrue
         {
-            get { return GetValue(ValueForTrueProperty); }
-            set { SetValue(ValueForTrueProperty, value); }
+            get => GetValue(ValueForTrueProperty); set => SetValue(ValueForTrueProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for ValueForTrue.  This enables animation, styling, binding, etc...
@@ -23,8 +22,7 @@ namespace ExViewer.Converters
 
         public object ValueForFalse
         {
-            get { return GetValue(ValueForFalseProperty); }
-            set { SetValue(ValueForFalseProperty, value); }
+            get => GetValue(ValueForFalseProperty); set => SetValue(ValueForFalseProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for ValueForFalse.  This enables animation, styling, binding, etc...
@@ -36,8 +34,7 @@ namespace ExViewer.Converters
         /// </summary>
         public bool Others
         {
-            get { return (bool)GetValue(OthersProperty); }
-            set { SetValue(OthersProperty, value); }
+            get => (bool)GetValue(OthersProperty); set => SetValue(OthersProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Others.  This enables animation, styling, binding, etc...
@@ -49,8 +46,7 @@ namespace ExViewer.Converters
         /// </summary>
         public bool Default
         {
-            get { return (bool)GetValue(DefaultProperty); }
-            set { SetValue(DefaultProperty, value); }
+            get => (bool)GetValue(DefaultProperty); set => SetValue(DefaultProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Default.  This enables animation, styling, binding, etc...

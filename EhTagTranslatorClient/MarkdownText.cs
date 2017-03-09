@@ -18,13 +18,7 @@ namespace EhTagTranslatorClient
             get;
         }
 
-        public string Text
-        {
-            get
-            {
-                return Analyze().Where(t => t is MarkdownString).Aggregate("", (old, t) => old + t.ToString());
-            }
-        }
+        public string Text => Analyze().Where(t => t is MarkdownString).Aggregate("", (old, t) => old + t.ToString());
 
         private static readonly Regex analyzer = new Regex(@"!\[(?<alt>.*?)\]\((?:(?<url>[^#].*?)|(?:#\s+""(?<url>.*?)""))\)", RegexOptions.Compiled);
 

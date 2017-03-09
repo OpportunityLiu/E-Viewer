@@ -14,10 +14,7 @@ namespace ExClient.Helpers
 
         public AsyncOperationCompletedHandler<T> Completed
         {
-            get
-            {
-                return completed;
-            }
+            get => completed;
             set
             {
                 completed = value;
@@ -66,10 +63,7 @@ namespace ExClient.Helpers
 
         public AsyncActionCompletedHandler Completed
         {
-            get
-            {
-                return completed;
-            }
+            get => completed;
             set
             {
                 completed = value;

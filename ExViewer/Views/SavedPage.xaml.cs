@@ -48,14 +48,8 @@ namespace ExViewer.Views
 
         public SavedVM VM
         {
-            get
-            {
-                return (SavedVM)GetValue(VMProperty);
-            }
-            set
-            {
-                SetValue(VMProperty, value);
-            }
+            get => (SavedVM)GetValue(VMProperty);
+            set => SetValue(VMProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...

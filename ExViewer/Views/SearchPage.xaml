@@ -40,6 +40,7 @@
                                 x:Name="asb"
                                 Style="{StaticResource SearchAutoSuggestBoxStyle}"
                                 Grid.Column="1"
+                                Grid.ColumnSpan="2"
                                 QueryIcon="Find"
                                 Margin="8"
                                 Text="{x:Bind VM.Keyword, Mode=TwoWay}"
@@ -49,7 +50,7 @@
                                 SuggestionChosen="asb_SuggestionChosen" />
                 <ScrollViewer x:Name="sv_AdvancedSearch"
                               Grid.Row="1"
-                              Grid.Column="1"
+                              Grid.ColumnSpan="2"
                               IsEnabled="False"
                               VerticalScrollBarVisibility="Hidden">
                     <StackPanel>

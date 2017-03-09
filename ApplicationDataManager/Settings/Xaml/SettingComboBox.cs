@@ -16,14 +16,8 @@ namespace ApplicationDataManager.Settings.Xaml
 
         public SettingInfo SettingValue
         {
-            get
-            {
-                return (SettingInfo)GetValue(SettingValueProperty);
-            }
-            set
-            {
-                SetValue(SettingValueProperty, value);
-            }
+            get => (SettingInfo)GetValue(SettingValueProperty);
+            set => SetValue(SettingValueProperty, value);
         }
 
         private Type settingType;

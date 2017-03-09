@@ -84,14 +84,8 @@ namespace ExViewer.Views
 
         public SearchVM VM
         {
-            get
-            {
-                return (SearchVM)GetValue(VMProperty);
-            }
-            set
-            {
-                SetValue(VMProperty, value);
-            }
+            get => (SearchVM)GetValue(VMProperty);
+            set => SetValue(VMProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
@@ -101,11 +95,13 @@ namespace ExViewer.Views
         private void ab_Opening(object sender, object e)
         {
             this.sv_AdvancedSearch.IsEnabled = true;
+            Grid.SetColumn(this.asb, 0);
         }
 
         private void ab_Closed(object sender, object e)
         {
             this.sv_AdvancedSearch.IsEnabled = false;
+            Grid.SetColumn(this.asb, 1);
         }
 
         private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)

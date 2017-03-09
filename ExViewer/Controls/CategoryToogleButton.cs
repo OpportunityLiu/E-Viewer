@@ -23,14 +23,8 @@ namespace ExViewer.Controls
         }
         public Category Category
         {
-            get
-            {
-                return (Category)GetValue(CategoryProperty);
-            }
-            set
-            {
-                SetValue(CategoryProperty, value);
-            }
+            get => (Category)GetValue(CategoryProperty);
+            set => SetValue(CategoryProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Category.  This enables animation, styling, binding, etc...

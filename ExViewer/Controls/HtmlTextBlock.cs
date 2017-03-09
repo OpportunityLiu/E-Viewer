@@ -42,14 +42,8 @@ namespace ExViewer.Controls
 
         public HtmlNode HtmlContent
         {
-            get
-            {
-                return (HtmlNode)GetValue(HtmlContentProperty);
-            }
-            set
-            {
-                SetValue(HtmlContentProperty, value);
-            }
+            get => (HtmlNode)GetValue(HtmlContentProperty);
+            set => SetValue(HtmlContentProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for HtmlContent.  This enables animation, styling, binding, etc...
@@ -64,14 +58,8 @@ namespace ExViewer.Controls
 
         public bool DetectLink
         {
-            get
-            {
-                return (bool)GetValue(DetectLinkProperty);
-            }
-            set
-            {
-                SetValue(DetectLinkProperty, value);
-            }
+            get => (bool)GetValue(DetectLinkProperty);
+            set => SetValue(DetectLinkProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for DetectLink.  This enables animation, styling, binding, etc...
@@ -147,8 +135,7 @@ namespace ExViewer.Controls
 
         public bool HasHyperlinks
         {
-            get { return (bool)GetValue(HasHyperlinksProperty); }
-            private set
+            get => (bool)GetValue(HasHyperlinksProperty); private set
             {
                 this.canChangeHasHyperlinks = true;
                 SetValue(HasHyperlinksProperty, value);

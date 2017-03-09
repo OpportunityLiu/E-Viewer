@@ -4,8 +4,7 @@
     {
         public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> @default)
         {
-            TValue va;
-            if(dictionary.TryGetValue(key, out va))
+            if(dictionary.TryGetValue(key, out var va))
                 return va;
             else
                 return @default();
@@ -13,8 +12,7 @@
 
         public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue @default)
         {
-            TValue va;
-            if(dictionary.TryGetValue(key, out va))
+            if(dictionary.TryGetValue(key, out var va))
                 return va;
             else
                 return @default;

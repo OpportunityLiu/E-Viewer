@@ -11,17 +11,17 @@ namespace ExClient
         {
             yield return new KeyValuePair<string, string>("advsearch", "1");
 
-            yield return new KeyValuePair<string, string>("f_sname", toString(SearchName));
-            yield return new KeyValuePair<string, string>("f_stags", toString(SearchTags));
-            yield return new KeyValuePair<string, string>("f_sdesc", toString(SearchDescription));
-            yield return new KeyValuePair<string, string>("f_storr", toString(SearchTorrentFilenames));
-            yield return new KeyValuePair<string, string>("f_sto", toString(GalleriesWithTorrentsOnly));
-            yield return new KeyValuePair<string, string>("f_sdt1", toString(SearchLowPowerTags));
-            yield return new KeyValuePair<string, string>("f_sdt2", toString(SearchDownvotedTags));
-            yield return new KeyValuePair<string, string>("f_sh", toString(ShowExpungedGalleries));
+            yield return new KeyValuePair<string, string>("f_sname", toString(this.SearchName));
+            yield return new KeyValuePair<string, string>("f_stags", toString(this.SearchTags));
+            yield return new KeyValuePair<string, string>("f_sdesc", toString(this.SearchDescription));
+            yield return new KeyValuePair<string, string>("f_storr", toString(this.SearchTorrentFilenames));
+            yield return new KeyValuePair<string, string>("f_sto", toString(this.GalleriesWithTorrentsOnly));
+            yield return new KeyValuePair<string, string>("f_sdt1", toString(this.SearchLowPowerTags));
+            yield return new KeyValuePair<string, string>("f_sdt2", toString(this.SearchDownvotedTags));
+            yield return new KeyValuePair<string, string>("f_sh", toString(this.ShowExpungedGalleries));
 
-            yield return new KeyValuePair<string, string>("f_sr", toString(SearchMinimumRating));
-            yield return new KeyValuePair<string, string>("f_srdd", MinimumRating.ToString());
+            yield return new KeyValuePair<string, string>("f_sr", toString(this.SearchMinimumRating));
+            yield return new KeyValuePair<string, string>("f_srdd", this.MinimumRating.ToString());
         }
 
         private static string toString(bool value)
@@ -55,7 +55,7 @@ namespace ExClient
         {
             unchecked
             {
-                return ((data >> (pos + offset)) & 1) == 1;
+                return ((this.data >> (pos + offset)) & 1) == 1;
             }
         }
 
@@ -67,18 +67,18 @@ namespace ExClient
                 pos += offset;
                 if(value)
                 {
-                    data |= (ushort)(1 << pos);
+                    this.data |= (ushort)(1 << pos);
                 }
                 else
                 {
-                    data &= (ushort)~(1 << pos);
+                    this.data &= (ushort)~(1 << pos);
                 }
             }
         }
 
         private void checkWritable()
         {
-            if(IsReadOnly)
+            if(this.IsReadOnly)
                 throw new InvalidOperationException("The instanse is read only.");
         }
 
@@ -87,127 +87,70 @@ namespace ExClient
         //f_sname=on
         public bool SearchName
         {
-            get
-            {
-                return !getData(0);
-            }
-            set
-            {
-                setData(0, !value);
-            }
+            get => !getData(0);
+            set => setData(0, !value);
         }
 
         //f_stags=on
         public bool SearchTags
         {
-            get
-            {
-                return !getData(1);
-            }
-            set
-            {
-                setData(1, !value);
-            }
+            get => !getData(1);
+            set => setData(1, !value);
         }
 
         //f_sdesc=on
         public bool SearchDescription
         {
-            get
-            {
-                return getData(2);
-            }
-            set
-            {
-                setData(2, value);
-            }
+            get => getData(2);
+            set => setData(2, value);
         }
 
         //f_storr=on
         public bool SearchTorrentFilenames
         {
-            get
-            {
-                return getData(3);
-            }
-            set
-            {
-                setData(3, value);
-            }
+            get => getData(3);
+            set => setData(3, value);
         }
 
         //f_sto=on
         public bool GalleriesWithTorrentsOnly
         {
-            get
-            {
-                return getData(4);
-            }
-            set
-            {
-                setData(4, value);
-            }
+            get => getData(4);
+            set => setData(4, value);
         }
 
         //f_sdt1
         public bool SearchLowPowerTags
         {
-            get
-            {
-                return getData(5);
-            }
-            set
-            {
-                setData(5, value);
-            }
+            get => getData(5);
+            set => setData(5, value);
         }
 
         //f_sdt2
         public bool SearchDownvotedTags
         {
-            get
-            {
-                return getData(6);
-            }
-            set
-            {
-                setData(6, value);
-            }
+            get => getData(6);
+            set => setData(6, value);
         }
 
         //f_sh
         public bool ShowExpungedGalleries
         {
-            get
-            {
-                return getData(7);
-            }
-            set
-            {
-                setData(7, value);
-            }
+            get => getData(7);
+            set => setData(7, value);
         }
 
         //f_sr
         public bool SearchMinimumRating
         {
-            get
-            {
-                return getData(8);
-            }
-            set
-            {
-                setData(8, value);
-            }
+            get => getData(8);
+            set => setData(8, value);
         }
 
         //f_srdd
         public int MinimumRating
         {
-            get
-            {
-                return (data & 3) + 2;
-            }
+            get => (this.data & 3) + 2;
             set
             {
                 checkWritable();
@@ -218,8 +161,8 @@ namespace ExClient
                 value -= 2;
                 unchecked
                 {
-                    data &= (ushort)~3;
-                    data |= (ushort)value;
+                    this.data &= (ushort)~3;
+                    this.data |= (ushort)value;
                 }
             }
         }
@@ -237,7 +180,7 @@ namespace ExClient
         // override object.GetHashCode
         public override int GetHashCode()
         {
-            return data.GetHashCode();
+            return this.data.GetHashCode();
         }
     }
 }

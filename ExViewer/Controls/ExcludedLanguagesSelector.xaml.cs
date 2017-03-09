@@ -52,14 +52,8 @@ namespace ExViewer.Controls
 
         public string ExcludedLanguages
         {
-            get
-            {
-                return (string)GetValue(ExcludedLanguagesProperty);
-            }
-            set
-            {
-                SetValue(ExcludedLanguagesProperty, value);
-            }
+            get => (string)GetValue(ExcludedLanguagesProperty);
+            set => SetValue(ExcludedLanguagesProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for ExcludedLanguages.  This enables animation, styling, binding, etc...
@@ -188,10 +182,7 @@ namespace ExViewer.Controls
 
         public bool Original
         {
-            get
-            {
-                return this.original;
-            }
+            get => this.original;
             set
             {
                 var oldAll = this.All;
@@ -204,10 +195,7 @@ namespace ExViewer.Controls
 
         public bool Translated
         {
-            get
-            {
-                return this.translated;
-            }
+            get => this.translated;
             set
             {
                 var oldAll = this.All;
@@ -220,10 +208,7 @@ namespace ExViewer.Controls
 
         public bool Rewrite
         {
-            get
-            {
-                return this.rewrite;
-            }
+            get => this.rewrite;
             set
             {
                 var oldAll = this.All;

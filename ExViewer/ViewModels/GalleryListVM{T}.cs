@@ -32,14 +32,8 @@ namespace ExViewer.ViewModels
 
         public GalleryList<T> Galleries
         {
-            get
-            {
-                return this.galleries;
-            }
-            protected set
-            {
-                Set(ref this.galleries, value);
-            }
+            get => this.galleries;
+            protected set => Set(ref this.galleries, value);
         }
 
         public RelayCommand Refresh
