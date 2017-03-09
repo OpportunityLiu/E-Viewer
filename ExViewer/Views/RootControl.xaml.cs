@@ -175,15 +175,12 @@ namespace ExViewer.Views
             e.Handled = true;
             switch(e.OriginalKey)
             {
-            case Windows.System.VirtualKey.Control:
-            case Windows.System.VirtualKey.LeftControl:
-            case Windows.System.VirtualKey.RightControl:
-            case Windows.System.VirtualKey.GamepadView:
-                RootController.SwitchSplitView(null);
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case Windows.System.VirtualKey.GamepadView:
+                    RootController.SwitchSplitView(null);
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 
@@ -191,12 +188,12 @@ namespace ExViewer.Views
         {
             switch(this.sv_root.DisplayMode)
             {
-            case SplitViewDisplayMode.Overlay:
-                RootController.SetSplitViewButtonPlaceholderVisibility(true);
-                break;
-            case SplitViewDisplayMode.CompactOverlay:
-                RootController.SetSplitViewButtonPlaceholderVisibility(false);
-                break;
+                case SplitViewDisplayMode.Overlay:
+                    RootController.SetSplitViewButtonPlaceholderVisibility(true);
+                    break;
+                case SplitViewDisplayMode.CompactOverlay:
+                    RootController.SetSplitViewButtonPlaceholderVisibility(false);
+                    break;
             }
         }
 
@@ -211,6 +208,25 @@ namespace ExViewer.Views
             {
                 this.sv_root.DisplayMode = SplitViewDisplayMode.CompactOverlay;
                 RootController.SetSplitViewButtonPlaceholderVisibility(false);
+            }
+        }
+
+        private void elementAccessKeyDisplayRequested(UIElement sender, AccessKeyDisplayRequestedEventArgs args)
+        {
+            var tooltip = ToolTipService.GetToolTip(sender);
+            if(!(tooltip is ToolTip tt))
+            {
+                tt = new ToolTip { Content = tooltip };
+                ToolTipService.SetToolTip(sender, tt);
+            }
+            tt.IsOpen = true;
+        }
+
+        private void elementAccessKeyDisplayDismissed(UIElement sender, AccessKeyDisplayDismissedEventArgs args)
+        {
+            if(ToolTipService.GetToolTip(sender) is ToolTip tt)
+            {
+                tt.IsOpen = false;
             }
         }
     }
