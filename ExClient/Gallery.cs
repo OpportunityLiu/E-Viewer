@@ -46,29 +46,33 @@ namespace ExClient
             }).AsAsyncOperation();
         }
 
-        public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
+        private class GalleryResult
         {
-            if(galleryInfo == null)
-                throw new ArgumentNullException(nameof(galleryInfo));
-            return Run<IList<Gallery>>(async token =>
+#pragma warning disable IDE1006 // 命名样式
+#pragma warning disable CS0649
+            public List<Gallery> gmetadata;
+#pragma warning restore CS0649
+#pragma warning restore IDE1006 // 命名样式
+        }
+
+        public static IAsyncOperation<IReadOnlyList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
+        {
+            return Run<IReadOnlyList<Gallery>>(async token =>
             {
-                var type = new
+                async void myinit(Gallery g)
                 {
-                    gmetadata = (IList<Gallery>)null
-                };
+                    await g.InitAsync();
+                }
                 var result = new Gallery[galleryInfo.Count];
-                for(var i = 0; i < galleryInfo.Count; i += 25)
+                var pageCount = MathHelper.GetPageCount(galleryInfo.Count, 25);
+                for(var i = 0; i < pageCount; i++)
                 {
-                    var pageCount = i + 25 < galleryInfo.Count ? 25 : galleryInfo.Count - i;
-                    var str = await Client.Current.HttpClient.PostApiAsync(new GalleryData(galleryInfo, i, pageCount));
-                    var re = JsonConvert.DeserializeAnonymousType(str, type).gmetadata;
-                    for(var j = 0; j < re.Count; j++)
-                    {
-                        var item = re[j];
-                        item.Owner = Client.Current;
-                        var ignore = item.InitAsync();
-                        result[i + j] = item;
-                    }
+                    var pageSize = MathHelper.GetSizeOfPage(galleryInfo.Count, 25, i);
+                    var startIndex = MathHelper.GetStartIndexOfPage(25, i);
+                    var str = await Client.Current.HttpClient.PostApiAsync(new GalleryData(galleryInfo, startIndex, pageSize));
+                    var re = JsonConvert.DeserializeObject<GalleryResult>(str).gmetadata;
+                    re.ForEach(myinit);
+                    re.CopyTo(result, startIndex);
                 }
                 return result;
             });
@@ -118,7 +122,7 @@ namespace ExClient
                 }));
                 await Task.WhenAll(loadTasks);
 
-                var thumb = (await this.Owner.HttpClient.GetBufferAsync(this.ThumbUri)).ToArray();
+                var thumb = (await Client.Current.HttpClient.GetBufferAsync(this.ThumbUri)).ToArray();
                 using(var db = new GalleryDb())
                 {
                     var gid = this.Id;
@@ -161,7 +165,6 @@ namespace ExClient
             this.Tags = new TagCollection(JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)));
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
-            this.Owner = Client.Current;
             this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
 
@@ -371,12 +374,9 @@ namespace ExClient
 
         private string favNote;
 
-        #endregion
+        public RevisionCollection Revisions { get; private set; }
 
-        protected internal Client Owner
-        {
-            get; protected set;
-        }
+        #endregion
 
         public Uri GalleryUri { get; }
 
@@ -404,17 +404,17 @@ namespace ExClient
         {
             var favNode = html.GetElementbyId("fav");
             var favContentNode = favNode.Element("div");
-            this.FavoriteCategory = this.Owner.Favorites.GetCategory(favContentNode);
+            this.FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
         }
 
-        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IReadOnlyList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
             return Task.Run(async () =>
             {
                 await this.GetFolderAsync();
                 var needLoadComments = !this.Comments.IsLoaded;
                 var uri = new Uri(this.GalleryUri, $"?inline_set=ts_l&p={pageIndex.ToString()}{(needLoadComments ? "hc=1" : "")}");
-                var request = this.Owner.HttpClient.GetStringAsync(uri);
+                var request = Client.Current.HttpClient.GetStringAsync(uri);
                 var res = await request;
                 ApiRequest.UpdateToken(res);
                 var html = new HtmlDocument();
@@ -424,6 +424,8 @@ namespace ExClient
                 {
                     this.Comments.AnalyzeDocument(html);
                 }
+                if(this.Revisions == null)
+                    this.Revisions = new RevisionCollection(this, html);
                 var pcNodes = html.DocumentNode.Descendants("td")
                     .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
                     .Select(node =>
@@ -477,7 +479,7 @@ namespace ExClient
                         toAdd.Add(new GalleryImage(this, page.pageId, page.imageKey, page.thumbUri));
                     }
                 }
-                return (IList<GalleryImage>)toAdd;
+                return (IReadOnlyList<GalleryImage>)toAdd;
             }).AsAsyncOperation();
         }
 
@@ -503,10 +505,10 @@ namespace ExClient
                     {
                         var favNode = doc.GetElementbyId($"fav{i}");
                         var favNameNode = favNode.ParentNode.ParentNode.Elements("div").Skip(2).First();
-                        this.Owner.Favorites[i].Name = HtmlEntity.DeEntitize(favNameNode.InnerText);
+                        Client.Current.Favorites[i].Name = HtmlEntity.DeEntitize(favNameNode.InnerText);
                         if(!favSet && favNode.GetAttributeValue("checked", null) == "checked")
                         {
-                            this.FavoriteCategory = this.Owner.Favorites[i];
+                            this.FavoriteCategory = Client.Current.Favorites[i];
                             favSet = true;
                         }
                     }

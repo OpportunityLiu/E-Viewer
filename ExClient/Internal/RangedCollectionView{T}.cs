@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace ExClient.Internal
 {
-    internal class RangedCollection<T> : IReadOnlyList<T>
+    internal class RangedCollectionView<T> : IReadOnlyList<T>
     {
-        public RangedCollection(IReadOnlyList<T> items, int startIndex, int count)
+        public RangedCollectionView(IReadOnlyList<T> items, int startIndex, int count)
         {
             if(items == null)
                 throw new ArgumentNullException(nameof(items));
@@ -25,9 +25,9 @@ namespace ExClient.Internal
         {
             get
             {
-                if(unchecked((uint)index >= (uint)Count))
+                if(unchecked((uint)index >= (uint)this.Count))
                     throw new IndexOutOfRangeException();
-                return items[StartIndex + index];
+                return this.items[this.StartIndex + index];
             }
         }
 
@@ -36,8 +36,8 @@ namespace ExClient.Internal
 
         public IEnumerator<T> GetEnumerator()
         {
-            for(int i = this.StartIndex; i < this.StartIndex + this.Count; i++)
-                yield return items[i];
+            for(var i = this.StartIndex; i < this.StartIndex + this.Count; i++)
+                yield return this.items[i];
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

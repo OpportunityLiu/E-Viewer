@@ -91,29 +91,29 @@ namespace ExClient
             }
         }
 
-        private RangedCollection<Tag> getValue(Namespace key)
+        private RangedCollectionView<Tag> getValue(Namespace key)
         {
             var i = getIndexOfKey(key);
             if(i < 0)
             {
                 if(Enum.IsDefined(typeof(Namespace), key))
-                    return new RangedCollection<Tag>(data, 0, 0);
+                    return new RangedCollectionView<Tag>(data, 0, 0);
                 else
                     throw new ArgumentOutOfRangeException(nameof(key));
             }
             return getValue(i);
         }
 
-        private RangedCollection<Tag> getValue(int index)
+        private RangedCollectionView<Tag> getValue(int index)
         {
-            return new RangedCollection<Tag>(data, offset[index], offset[index + 1] - offset[index]);
+            return new RangedCollectionView<Tag>(data, offset[index], offset[index + 1] - offset[index]);
         }
 
         public IEnumerator<NamespaceTagCollection> GetEnumerator()
         {
             for(int i = 0; i < keys.Length; i++)
             {
-                yield return new NamespaceTagCollection(keys[i], new RangedCollection<Tag>(data, offset[i], offset[i + 1] - offset[i]));
+                yield return new NamespaceTagCollection(keys[i], new RangedCollectionView<Tag>(data, offset[i], offset[i + 1] - offset[i]));
             }
         }
 
@@ -148,7 +148,7 @@ namespace ExClient
     [DebuggerDisplay(@"\{Namespace = {Namespace} Count = {Count}\}")]
     public sealed class NamespaceTagCollection : IReadOnlyList
     {
-        internal NamespaceTagCollection(Namespace @namespace, RangedCollection<Tag> data)
+        internal NamespaceTagCollection(Namespace @namespace, RangedCollectionView<Tag> data)
         {
             this.Namespace = @namespace;
             this.data = data;
@@ -160,7 +160,7 @@ namespace ExClient
 
         public Tag this[int index] => data[index];
 
-        private RangedCollection<Tag> data;
+        private RangedCollectionView<Tag> data;
 
         public IEnumerator<Tag> GetEnumerator() => data.GetEnumerator();
 

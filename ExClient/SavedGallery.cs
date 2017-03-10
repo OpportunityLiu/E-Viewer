@@ -41,7 +41,7 @@ namespace ExClient
                         savedModel.Gallery
                     }).ToList();
                 var list = new SavedGallery[query.Count];
-                for(int i = 0; i < visibleRange.Length; i++)
+                for(var i = 0; i < visibleRange.Length; i++)
                 {
                     var index = i + visibleRange.FirstIndex;
                     if(this[index] != DefaultGallery)
@@ -67,7 +67,7 @@ namespace ExClient
                 progress.Report(double.NaN);
                 var items = await StorageHelper.LocalCache.GetItemsAsync();
                 double c = items.Count;
-                for(int i = 0; i < items.Count; i++)
+                for(var i = 0; i < items.Count; i++)
                 {
                     progress.Report(i / c);
                     await items[i].DeleteAsync(StorageDeleteOption.PermanentDelete);
@@ -86,8 +86,7 @@ namespace ExClient
                 : base(model)
         {
             this.thumbFile = savedModel.ThumbData;
-            this.PageCount = MathHelper.GetPageCount(RecordCount, PageSize);
-            this.Owner = Client.Current;
+            this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
 
         protected override IAsyncAction InitOverrideAsync()
@@ -101,7 +100,7 @@ namespace ExClient
                 using(var stream = temp.AsRandomAccessStream())
                 {
                     var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
-                    Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
+                    this.Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
                 }
             });
         }

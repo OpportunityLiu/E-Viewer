@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+#pragma warning disable IDE1006 // 命名样式
 namespace ExClient.Api
 {
     internal sealed class GalleryToken : ApiRequest
@@ -13,7 +14,7 @@ namespace ExClient.Api
 
         public GalleryToken(IEnumerable<ImageInfo> pageList)
         {
-            pagelist = pageList;
+            this.pagelist = pageList;
         }
     }
 }

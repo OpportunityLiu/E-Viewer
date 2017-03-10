@@ -34,7 +34,7 @@ namespace ExClient
             protected set => Set(ref this.pc, value, nameof(HasMoreItems), nameof(LoadedPageCount));
         }
 
-        protected abstract IAsyncOperation<IList<T>> LoadPageAsync(int pageIndex);
+        protected abstract IAsyncOperation<IReadOnlyList<T>> LoadPageAsync(int pageIndex);
 
         public bool IsEmpty => this.RecordCount == 0;
 
@@ -83,7 +83,7 @@ namespace ExClient
                 if(!this.HasMoreItems)
                     return new LoadMoreItemsResult();
                 var lp = LoadPageAsync(this.loadedPageCount);
-                IList<T> re = null;
+                IReadOnlyList<T> re = null;
                 token.Register(lp.Cancel);
                 try
                 {

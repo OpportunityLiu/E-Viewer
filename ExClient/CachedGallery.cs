@@ -129,9 +129,9 @@ namespace ExClient
             }
         }
 
-        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IReadOnlyList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
-            return Task.Run<IList<GalleryImage>>(async () =>
+            return Task.Run<IReadOnlyList<GalleryImage>>(async () =>
             {
                 await GetFolderAsync();
                 this.LoadImageModels();

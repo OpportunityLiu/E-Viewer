@@ -41,7 +41,7 @@
     {
         internal SearchLaunchResult(SearchResult data)
         {
-            Data = data;
+            this.Data = data;
         }
 
         public SearchResult Data
@@ -54,7 +54,7 @@
     {
         internal FavoritesSearchLaunchResult(FavoritesSearchResult data)
         {
-            Data = data;
+            this.Data = data;
         }
 
         public FavoritesSearchResult Data

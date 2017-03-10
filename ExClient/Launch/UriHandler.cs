@@ -14,12 +14,12 @@ namespace ExClient.Launch
         public UriHandlerData(Uri uri)
         {
             this.Uri = uri;
-            this.Paths = uri.AbsolutePath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            this.Paths = uri.AbsolutePath.Split(split0, StringSplitOptions.RemoveEmptyEntries);
             if(this.Paths.Count != 0)
                 this.Path0 = this.Paths[0].ToLowerInvariant();
             else
                 this.Path0 = "";
-            this.queriesLoader = new Lazy<IReadOnlyDictionary<string, string>>(getQueries);
+            this.queriesLoader = new Lazy<IReadOnlyDictionary<string, string>>(this.getQueries);
         }
 
         public Uri Uri { get; }
@@ -29,8 +29,9 @@ namespace ExClient.Launch
         private Lazy<IReadOnlyDictionary<string, string>> queriesLoader;
         public IReadOnlyDictionary<string, string> Queries => this.queriesLoader.Value;
 
-        private static char[] split1 = "&".ToCharArray();
-        private static char[] split2 = "=".ToCharArray();
+        private static readonly char[] split0 = "/".ToCharArray();
+        private static readonly char[] split1 = "&".ToCharArray();
+        private static readonly char[] split2 = "=".ToCharArray();
         private static IReadOnlyDictionary<string, string> empty = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
 
         private IReadOnlyDictionary<string, string> getQueries()
@@ -42,31 +43,35 @@ namespace ExClient.Launch
             var divided = query.Split(split1, StringSplitOptions.RemoveEmptyEntries);
             return new ReadOnlyDictionary<string, string>((from item in divided
                                                            select item.Split(split2, 2, StringSplitOptions.None))
-                   .ToDictionary(i => i[0], i => Unescape(i[1])));
+                   .ToDictionary(i => i[0], i => i[1].Unescape()));
         }
+    }
 
-        public static string Unescape(string value)
+    internal static class UriHelper
+    {
+        public static string Unescape(this string value)
         {
             value = value.Replace('+', ' ');
             value = Uri.UnescapeDataString(value);
             return value;
         }
 
-        public static string Unescape2(string value)
+        /// <summary>
+        /// Unescape twice for special usage.
+        /// </summary>
+        /// <param name="value">string to unescape</param>
+        /// <returns>unescaped string</returns>
+        public static string Unescape2(this string value)
         {
             value = Uri.UnescapeDataString(value);
             return Unescape(value);
         }
-    }
-
-    internal abstract class UriHandler
-    {
-        protected static bool QueryValueAsBoolean(string value)
+        public static bool QueryValueAsBoolean(this string value)
         {
             return value != "0" && value != "";
         }
 
-        protected static int QueryValueAsInt32(string value)
+        public static int QueryValueAsInt32(this string value)
         {
             if(int.TryParse(value, out var r))
                 return r;
@@ -81,6 +86,10 @@ namespace ExClient.Launch
                 return r;
             return 0;
         }
+    }
+
+    internal abstract class UriHandler
+    {
 
         public abstract bool CanHandle(UriHandlerData data);
         public abstract IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data);
@@ -88,34 +97,18 @@ namespace ExClient.Launch
 
     internal class GalleryHandler : UriHandler
     {
-        protected static IAsyncOperation<IReadOnlyList<GalleryInfo>> GetGalleryInfoAsync(IEnumerable<ImageInfo> pageList)
-        {
-            return Run(async token =>
-            {
-                var result = await Client.Current.HttpClient.PostApiAsync(new GalleryToken(pageList));
-                var type = new
-                {
-                    tokenlist = (IReadOnlyList<GalleryInfo>)null
-                };
-                return JsonConvert.DeserializeAnonymousType(result, type).tokenlist;
-            });
-        }
 
         public override bool CanHandle(UriHandlerData data)
         {
-            if(data.Path0 == "g" && data.Paths.Count == 3)
-            {
-                return long.TryParse(data.Paths[1], out var gId);
-            }
-            return false;
+            return GalleryInfo.TryParseGallery(data, out var info);
         }
 
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
-            var gInfo = new GalleryInfo(long.Parse(data.Paths[1]), data.Paths[2]);
+            GalleryInfo.TryParseGallery(data, out var info);
             return Run(async token =>
             {
-                var g = (await Gallery.FetchGalleriesAsync(new[] { gInfo })).Single();
+                var g = await info.FetchGalleryAsync();
                 return (LaunchResult)new GalleryLaunchResult(g, -1, GalleryLaunchStatus.Default);
             });
         }
@@ -125,21 +118,15 @@ namespace ExClient.Launch
     {
         public override bool CanHandle(UriHandlerData data)
         {
-            if(data.Path0 == "gallerytorrents.php" && data.Paths.Count == 1)
-            {
-                return data.Queries.ContainsKey("gid") 
-                    && data.Queries.ContainsKey("t") 
-                    && long.TryParse(data.Queries["gid"], out var gId);
-            }
-            return false;
+            return GalleryInfo.TryParseGalleryTorrent(data, out var info);
         }
 
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
-            var gInfo = new GalleryInfo(long.Parse(data.Queries["gid"]), data.Queries["t"]);
+            GalleryInfo.TryParseGalleryTorrent(data, out var info);
             return Run(async token =>
             {
-                var g = (await Gallery.FetchGalleriesAsync(new[] { gInfo })).Single();
+                var g = await info.FetchGalleryAsync();
                 return (LaunchResult)new GalleryLaunchResult(g, -1, GalleryLaunchStatus.Torrent);
             });
         }
@@ -149,31 +136,19 @@ namespace ExClient.Launch
     {
         public override bool CanHandle(UriHandlerData data)
         {
-            if(data.Path0 == "s" && data.Paths.Count == 3)
-            {
-                var sp = data.Paths[2].Split('-');
-                return (sp.Length == 2)
-                    && long.TryParse(sp[0], out var gId)
-                    && int.TryParse(sp[1], out var pId);
-            }
-            return false;
+            return ImageInfo.TryParse(data, out var info);
         }
 
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
-            var imgKey = data.Paths[1];
-            var sp = data.Paths[2].Split('-');
-            var gId = long.Parse(sp[0]);
-            var pId = int.Parse(sp[1]);
-            var iInfo = new ImageInfo(gId, imgKey, pId);
+            ImageInfo.TryParse(data, out var info);
             return Run(async token =>
             {
-                var gInfo = await GetGalleryInfoAsync(new[] { iInfo });
-                var g = (await Gallery.FetchGalleriesAsync(gInfo)).Single();
-                return (LaunchResult)new GalleryLaunchResult(g, pId, GalleryLaunchStatus.Image);
+                var gInfo = await info.FetchGalleryInfoAsync();
+                var g = await gInfo.FetchGalleryAsync();
+                return (LaunchResult)new GalleryLaunchResult(g, info.PageId, GalleryLaunchStatus.Image);
             });
         }
-
     }
 
     internal class SearchHandler : UriHandler
@@ -197,73 +172,74 @@ namespace ExClient.Launch
             var av = false;
             foreach(var item in data.Queries)
             {
+                var b = item.Value.QueryValueAsBoolean();
                 switch(item.Key)
                 {
                 case "f_apply":
-                    ap = QueryValueAsBoolean(item.Value);
+                    ap = b;
                     break;
                 case "f_doujinshi":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.Doujinshi;
+                    if(b) category |= Category.Doujinshi;
                     break;
                 case "f_manga":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.Manga;
+                    if(b) category |= Category.Manga;
                     break;
                 case "f_artistcg":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.ArtistCG;
+                    if(b) category |= Category.ArtistCG;
                     break;
                 case "f_gamecg":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.GameCG;
+                    if(b) category |= Category.GameCG;
                     break;
                 case "f_western":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.Western;
+                    if(b) category |= Category.Western;
                     break;
                 case "f_non-h":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.NonH;
+                    if(b) category |= Category.NonH;
                     break;
                 case "f_imageset":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.ImageSet;
+                    if(b) category |= Category.ImageSet;
                     break;
                 case "f_cosplay":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.Cosplay;
+                    if(b) category |= Category.Cosplay;
                     break;
                 case "f_asianporn":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.AsianPorn;
+                    if(b) category |= Category.AsianPorn;
                     break;
                 case "f_misc":
-                    if(QueryValueAsBoolean(item.Value)) category |= Category.Misc;
+                    if(b) category |= Category.Misc;
                     break;
                 case "f_search":
                     keyword = UnescapeKeyword(item.Value);
                     break;
                 case "advsearch":
-                    av = QueryValueAsBoolean(item.Value);
+                    av = b;
                     break;
                 case "f_sname":
-                    advanced.SearchName = QueryValueAsBoolean(item.Value);
+                    advanced.SearchName = b;
                     break;
                 case "f_stags":
-                    advanced.SearchTags = QueryValueAsBoolean(item.Value);
+                    advanced.SearchTags = b;
                     break;
                 case "f_sdesc":
-                    advanced.SearchDescription = QueryValueAsBoolean(item.Value);
+                    advanced.SearchDescription = b;
                     break;
                 case "f_storr":
-                    advanced.SearchTorrentFilenames = QueryValueAsBoolean(item.Value);
+                    advanced.SearchTorrentFilenames = b;
                     break;
                 case "f_sto":
-                    advanced.GalleriesWithTorrentsOnly = QueryValueAsBoolean(item.Value);
+                    advanced.GalleriesWithTorrentsOnly = b;
                     break;
                 case "f_sdt1":
-                    advanced.SearchLowPowerTags = QueryValueAsBoolean(item.Value);
+                    advanced.SearchLowPowerTags = b;
                     break;
                 case "f_sdt2":
-                    advanced.SearchDownvotedTags = QueryValueAsBoolean(item.Value);
+                    advanced.SearchDownvotedTags = b;
                     break;
                 case "f_sh":
-                    advanced.ShowExpungedGalleries = QueryValueAsBoolean(item.Value);
+                    advanced.ShowExpungedGalleries = b;
                     break;
                 case "f_sr":
-                    advanced.SearchMinimumRating = QueryValueAsBoolean(item.Value);
+                    advanced.SearchMinimumRating = b;
                     break;
                 case "f_srdd":
                     advanced.MinimumRating = int.Parse(item.Value);
@@ -288,7 +264,7 @@ namespace ExClient.Launch
 
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
-            var v = UriHandlerData.Unescape2(data.Paths[1]);
+            var v = data.Paths[1].Unescape2();
             switch(data.Path0)
             {
             case "tag":
@@ -345,12 +321,12 @@ namespace ExClient.Launch
                 switch(item.Key)
                 {
                 case "f_apply":
-                    ap = QueryValueAsBoolean(item.Value);
+                    ap = item.Value.QueryValueAsBoolean();
                     break;
                 case "favcat":
                     if(item.Value != "all")
                     {
-                        var index = QueryValueAsInt32(item.Value);
+                        var index = item.Value.QueryValueAsInt32();
                         index = Math.Max(0, index);
                         index = Math.Min(9, index);
                         category = Client.Current.Favorites[index];

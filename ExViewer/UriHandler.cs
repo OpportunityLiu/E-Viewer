@@ -36,16 +36,15 @@ namespace ExViewer
                 });
                 return false;
             }
-            var h = UriLauncher.HandleAsync(uri);
-            RootControl.RootController.TrackAsyncAction(h, async (s, e) =>
+            RootControl.RootController.TrackAsyncAction(UriLauncher.HandleAsync(uri), async (s, e) =>
             {
                 switch(e)
                 {
                 case Windows.Foundation.AsyncStatus.Completed:
                     var r = s.GetResults();
-                    var g = r as GalleryLaunchResult;
-                    if(g != null)
+                    switch(r)
                     {
+                    case GalleryLaunchResult g:
                         GalleryVM.GetVM(g.Gallery);
                         RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Gallery.Id);
                         await Task.Delay(200);
@@ -63,10 +62,7 @@ namespace ExViewer
                             break;
                         }
                         return;
-                    }
-                    var sr = r as SearchLaunchResult;
-                    if(sr != null)
-                    {
+                    case SearchLaunchResult sr:
                         var vm = SearchVM.GetVM(sr.Data);
                         RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
                         return;

@@ -39,27 +39,27 @@ namespace ExClient
         {
             this.PageCount = 1;
             this.RecordCount = recordCount;
-            AddRange(Enumerable.Repeat(DefaultGallery, RecordCount));
+            AddRange(Enumerable.Repeat(DefaultGallery, this.RecordCount));
         }
 
         protected override void ClearItems()
         {
-            RecordCount = 0;
+            this.RecordCount = 0;
             base.ClearItems();
-            loadedCount = 0;
+            this.loadedCount = 0;
         }
 
         protected override void RemoveItem(int index)
         {
-            RecordCount--;
+            this.RecordCount--;
             if(this[index] != DefaultGallery)
-                loadedCount--;
+                this.loadedCount--;
             base.RemoveItem(index);
         }
 
         public void RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)
         {
-            if(loadedCount == RecordCount)
+            if(this.loadedCount == this.RecordCount)
             {
                 return;
             }
@@ -80,7 +80,7 @@ namespace ExClient
                 visibleRange = new ItemIndexRange(visibleRange.FirstIndex, (uint)(this.Count - visibleRange.FirstIndex));
 
             var needLoad = false;
-            for(int i = visibleRange.LastIndex; i >= visibleRange.FirstIndex; i--)
+            for(var i = visibleRange.LastIndex; i >= visibleRange.FirstIndex; i--)
             {
                 if(this[i] == DefaultGallery)
                 {
@@ -91,7 +91,7 @@ namespace ExClient
             if(!needLoad)
                 return;
             var list = LoadRange(visibleRange, db);
-            for(int i = 0; i < visibleRange.Length; i++)
+            for(var i = 0; i < visibleRange.Length; i++)
             {
                 var index = i + visibleRange.FirstIndex;
                 if(this[index] != DefaultGallery)
@@ -103,13 +103,9 @@ namespace ExClient
 
         protected abstract IList<T> LoadRange(ItemIndexRange visibleRange, GalleryDb db);
 
-        protected override IAsyncOperation<IList<Gallery>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IReadOnlyList<Gallery>> LoadPageAsync(int pageIndex)
         {
-            return Run<IList<Gallery>>(async token =>
-            {
-                await Task.Yield();
-                return Array.Empty<T>();
-            });
+            throw new NotImplementedException();
         }
 
         public void Dispose()
