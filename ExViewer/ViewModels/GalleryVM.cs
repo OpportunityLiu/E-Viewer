@@ -42,7 +42,7 @@ namespace ExViewer.ViewModels
         private static CacheStorage<GalleryInfo, GalleryVM> Cache
         {
             get;
-        } = new CacheStorage<GalleryInfo, GalleryVM>(gi => Run(async token => new GalleryVM((await Gallery.FetchGalleriesAsync(new[] { gi })).Single())), 25, new GalleryInfoComparer());
+        } = new CacheStorage<GalleryInfo, GalleryVM>(gi => Run(async token => new GalleryVM(await gi.FetchGalleryAsync())), 25, new GalleryInfoComparer());
 
         private class GalleryInfoComparer : IEqualityComparer<GalleryInfo>
         {
@@ -155,17 +155,17 @@ namespace ExViewer.ViewModels
                 {
                     switch(e)
                     {
-                    case AsyncStatus.Canceled:
-                    case AsyncStatus.Error:
-                        this.SaveStatus = OperationState.Failed;
-                        RootControl.RootController.SendToast(sender.ErrorCode, null);
-                        break;
-                    case AsyncStatus.Completed:
-                        this.SaveStatus = OperationState.Completed;
-                        break;
-                    case AsyncStatus.Started:
-                        this.SaveStatus = OperationState.Started;
-                        break;
+                        case AsyncStatus.Canceled:
+                        case AsyncStatus.Error:
+                            this.SaveStatus = OperationState.Failed;
+                            RootControl.RootController.SendToast(sender.ErrorCode, null);
+                            break;
+                        case AsyncStatus.Completed:
+                            this.SaveStatus = OperationState.Completed;
+                            break;
+                        case AsyncStatus.Started:
+                            this.SaveStatus = OperationState.Started;
+                            break;
                     }
                     this.SaveProgress = 1;
                 };

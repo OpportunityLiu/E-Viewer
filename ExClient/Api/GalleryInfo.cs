@@ -1,15 +1,96 @@
-﻿using Newtonsoft.Json;
+﻿using ExClient.Launch;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using Windows.Foundation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Api
 {
     [JsonConverter(typeof(GalleryInfoConverter))]
     public struct GalleryInfo : IEquatable<GalleryInfo>
     {
+        private class GalleryInfoResult
+        {
+#pragma warning disable IDE1006
+#pragma warning disable CS0649
+            public List<GalleryInfo> tokenlist;
+#pragma warning restore CS0649
+#pragma warning restore IDE1006 
+        }
+
+        public static IAsyncOperation<IReadOnlyList<GalleryInfo>> FetchGalleryInfoListAsync(IEnumerable<ImageInfo> pageList)
+        {
+            return Run<IReadOnlyList<GalleryInfo>>(async token =>
+            {
+                var result = await Client.Current.HttpClient.PostApiAsync(new GalleryToken(pageList));
+                return JsonConvert.DeserializeObject<GalleryInfoResult>(result).tokenlist;
+            });
+        }
+
+        internal static bool TryParseGallery(UriHandlerData data, out GalleryInfo info)
+        {
+            if(data.Path0 == "g" && data.Paths.Count == 3)
+            {
+                if(long.TryParse(data.Paths[1], out var gId))
+                {
+                    info = new GalleryInfo(gId, data.Paths[2]);
+                    return true;
+                }
+            }
+            info = default(GalleryInfo);
+            return false;
+        }
+
+        internal static bool TryParseGalleryTorrent(UriHandlerData data, out GalleryInfo info)
+        {
+            if(data.Path0 == "gallerytorrents.php" && data.Paths.Count == 1)
+            {
+                if(data.Queries.TryGetValue("gid", out var gidStr)
+                    && data.Queries.TryGetValue("t", out var gtoken)
+                    && long.TryParse(data.Queries["gid"], out var gId))
+                {
+                    info = new GalleryInfo(gId, gtoken);
+                    return true;
+                }
+            }
+            info = default(GalleryInfo);
+            return false;
+        }
+
+        public static bool TryParse(Uri uri, out GalleryInfo info)
+        {
+            var data = new UriHandlerData(uri);
+            if(TryParseGallery(data, out info))
+                return true;
+            if(TryParseGalleryTorrent(data, out info))
+                return true;
+
+            info = default(GalleryInfo);
+            return false;
+        }
+
+        public static GalleryInfo Parse(Uri uri)
+        {
+            if(TryParse(uri, out var r))
+                return r;
+            throw new FormatException();
+        }
+
         public GalleryInfo(long id, string token)
         {
-            Id = id;
-            Token = token;
+            this.Id = id;
+            this.Token = token;
+        }
+
+        public IAsyncOperation<Gallery> FetchGalleryAsync()
+        {
+            var galleryInfo = new[] { this };
+            return Run(async token =>
+            {
+                var d = await Gallery.FetchGalleriesAsync(galleryInfo);
+                return d[0];
+            });
         }
 
         public long Id
@@ -38,7 +119,7 @@ namespace ExClient.Api
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode() ^ (Token ?? "").GetHashCode();
+            return this.Id.GetHashCode() ^ (this.Token ?? "").GetHashCode();
         }
     }
 

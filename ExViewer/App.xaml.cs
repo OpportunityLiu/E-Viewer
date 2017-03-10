@@ -102,10 +102,10 @@ namespace ExViewer
                 currentContent = new SplashControl(e.SplashScreen, e.PreviousExecutionState);
                 currentWindow.Content = currentContent;
             }
-            if(currentContent is SplashControl)
+            if(currentContent is SplashControl sc)
             {
                 if(!prelaunchActivated)
-                    ((SplashControl)currentContent).EnableGoToContent();
+                    sc.EnableGoToContent();
             }
             else
             {

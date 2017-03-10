@@ -20,7 +20,7 @@ namespace ExClient
             return Task.Run(async () =>
             {
                 var torrentUri = new Uri(Client.Current.Uris.RootUri, $"gallerytorrents.php?gid={gallery.Id}&t={gallery.Token}");
-                var torrentHtml = await gallery.Owner.HttpClient.GetStringAsync(torrentUri);
+                var torrentHtml = await Client.Current.HttpClient.GetStringAsync(torrentUri);
                 var doc = new HtmlDocument();
                 doc.LoadHtml(torrentHtml);
                 var nodes = from n in doc.DocumentNode.Descendants("table")
@@ -118,12 +118,12 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                if(TorrentUri == null)
+                if(this.TorrentUri == null)
                     throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
                 using(var client = new HttpClient())
                 {
-                    var filename = StorageHelper.ToValidFolderName(Name + ".torrent");
-                    var result = await client.GetBufferAsync(TorrentUri);
+                    var filename = StorageHelper.ToValidFolderName(this.Name + ".torrent");
+                    var result = await client.GetBufferAsync(this.TorrentUri);
                     var file = await (await StorageHelper.CreateTempFolderAsync()).SaveFileAsync(filename, result);
                     return file;
                 }

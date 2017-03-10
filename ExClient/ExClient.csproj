@@ -127,13 +127,14 @@
     <Compile Include="GalleryList{T}.cs" />
     <Compile Include="Api\ApiRequest.cs" />
     <Compile Include="HostType.cs" />
-    <Compile Include="Internal\RangedCollection{T}.cs" />
+    <Compile Include="Internal\RangedCollectionView{T}.cs" />
     <Compile Include="Internal\UriProvieder.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="Launch\LaunchResult.cs" />
     <Compile Include="Launch\UriHandler.cs" />
     <Compile Include="Namespace.cs" />
     <Compile Include="ObservableCollection{T}.cs" />
+    <Compile Include="RevisionCollection.cs" />
     <Compile Include="SavedGallery.cs" />
     <Compile Include="Client-Forum.cs" />
     <Compile Include="Comment.cs" />

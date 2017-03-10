@@ -38,7 +38,7 @@ namespace ExClient
                     this.Clear();
                 }
                 this.IsLoaded = false;
-                var html = await this.Owner.Owner.HttpClient.GetStringAsync(new Uri(this.Owner.GalleryUri, "?hc=1"));
+                var html = await Client.Current.HttpClient.GetStringAsync(new Uri(this.Owner.GalleryUri, "?hc=1"));
                 var document = new HtmlDocument();
                 document.LoadHtml(html);
                 return AnalyzeDocument(document);
@@ -56,9 +56,9 @@ namespace ExClient
             return c;
         }
 
-        protected override IAsyncOperation<IList<Comment>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IReadOnlyList<Comment>> LoadPageAsync(int pageIndex)
         {
-            return null;
+            throw new NotImplementedException();
         }
     }
 }

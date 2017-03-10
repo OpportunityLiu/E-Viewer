@@ -44,7 +44,7 @@ namespace ExClient
         private static readonly Regex favNoteMatcher = new Regex(@"fn\.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
         private static readonly Regex favNameMatcher = new Regex(@"fi\.title\s*=\s*'(.*?)';", RegexOptions.Compiled);
 
-        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(Client client, long gId, string gToken, string note)
+        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(long gId, string gToken, string note)
         {
             IEnumerable<KeyValuePair<string, string>> getInfo()
             {
@@ -60,14 +60,14 @@ namespace ExClient
             }
             var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken}&act=addfav", UriKind.Relative);
             var requestContent = new HttpFormUrlEncodedContent(getInfo());
-            return client.HttpClient.PostAsync(requestUri, requestContent);
+            return Client.Current.HttpClient.PostAsync(requestUri, requestContent);
         }
 
         public IAsyncAction AddAsync(Gallery gallery, string note)
         {
             return Run(async token =>
             {
-                var response = await post(gallery.Owner, gallery.Id, gallery.Token, note);
+                var response = await post(gallery.Id, gallery.Token, note);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var match = favNoteMatcher.Match(responseContent, 1300);
                 if(match.Success)
@@ -88,7 +88,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var response = await post(Client.Current, gallery.Id, gallery.Token, note);
+                var response = await post(gallery.Id, gallery.Token, note);
             });
         }
 

@@ -1,6 +1,7 @@
 ﻿using ExClient.Internal;
 using System.Collections.Generic;
 
+#pragma warning disable IDE1006 // 命名样式
 namespace ExClient.Api
 {
     internal class GalleryData : ApiRequest
@@ -16,7 +17,7 @@ namespace ExClient.Api
 
         public GalleryData(IReadOnlyList<GalleryInfo> list, int startIndex, int count)
         {
-            gidlist = new RangedCollection<GalleryInfo>(list, startIndex, count);
+            this.gidlist = new RangedCollectionView<GalleryInfo>(list, startIndex, count);
         }
     }
 }

@@ -1,16 +1,63 @@
-﻿using Newtonsoft.Json;
+﻿using ExClient.Launch;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using Windows.Foundation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Api
 {
     [JsonConverter(typeof(ImageInfoConverter))]
-    internal struct ImageInfo : IEquatable<ImageInfo>
+    public struct ImageInfo : IEquatable<ImageInfo>
     {
+        internal static bool TryParse(UriHandlerData data, out ImageInfo info)
+        {
+            if(data.Path0 == "s" && data.Paths.Count == 3)
+            {
+                var sp = data.Paths[2].Split('-');
+                if((sp.Length == 2)
+                    && long.TryParse(sp[0], out var gId)
+                    && int.TryParse(sp[1], out var pId))
+                {
+                    info = new ImageInfo(gId, data.Paths[1], pId);
+                    return true;
+                }
+            }
+            info = default(ImageInfo);
+            return false;
+        }
+
+        public static bool TryParse(Uri uri, out ImageInfo info)
+        {
+            var data = new UriHandlerData(uri);
+            if(TryParse(data, out info))
+                return true;
+            info = default(ImageInfo);
+            return false;
+        }
+
+        public static ImageInfo Parse(Uri uri)
+        {
+            if(TryParse(uri, out var r))
+                return r;
+            throw new FormatException();
+        }
+
         public ImageInfo(long galleryId, string imageToken, int pageId)
         {
-            GalleryId = galleryId;
-            ImageToken = imageToken;
-            PageId = pageId;
+            this.GalleryId = galleryId;
+            this.ImageToken = imageToken;
+            this.PageId = pageId;
+        }
+
+        public IAsyncOperation<GalleryInfo> FetchGalleryInfoAsync()
+        {
+            var info =new[] { this };
+            return Run(async token =>
+            {
+                var result = await GalleryInfo.FetchGalleryInfoListAsync(info);
+                return result[0];
+            });
         }
 
         public long GalleryId { get; }
@@ -35,7 +82,7 @@ namespace ExClient.Api
 
         public override int GetHashCode()
         {
-            return GalleryId.GetHashCode() ^ (ImageToken ?? "").GetHashCode() ^ PageId.GetHashCode();
+            return this.GalleryId.GetHashCode() ^ (this.ImageToken ?? "").GetHashCode() ^ this.PageId.GetHashCode();
         }
     }
 

@@ -79,22 +79,22 @@ namespace ExClient
             this.Owner = owner;
             this.PageId = pageId;
             this.imageKey = imageKey;
-            this.PageUri = new Uri(owner.Owner.Uris.RootUri, $"s/{imageKey}/{Owner.Id}-{PageId}");
+            this.PageUri = new Uri(Client.Current.Uris.RootUri, $"s/{imageKey}/{Owner.Id}-{PageId}");
             this.image = new ImageHandle(img =>
             {
                 return Run(async token =>
                 {
                     try
                     {
-                        using(var stream = await ImageFile.OpenReadAsync())
+                        using(var stream = await this.ImageFile.OpenReadAsync())
                         {
                             await img.SetSourceAsync(stream);
                         }
                     }
                     catch(FileNotFoundException)
                     {
-                        ImageFile = null;
-                        State = ImageLoadingState.Waiting;
+                        this.ImageFile = null;
+                        this.State = ImageLoadingState.Waiting;
                     }
                     catch(Exception)
                     {
@@ -130,7 +130,7 @@ namespace ExClient
                     }
                 });
             });
-            this.thumb.ImageLoaded += Thumb_ImageLoaded;
+            this.thumb.ImageLoaded += this.Thumb_ImageLoaded;
         }
 
         private void Thumb_ImageLoaded(object sender, EventArgs e)
@@ -146,25 +146,25 @@ namespace ExClient
             {
                 var loadPageUri = default(Uri);
                 if(this.failToken != null)
-                    loadPageUri = new Uri(PageUri, $"?nl={failToken}");
+                    loadPageUri = new Uri(this.PageUri, $"?nl={failToken}");
                 else
                     loadPageUri = this.PageUri;
-                var loadPage = this.Owner.Owner.HttpClient.GetStringAsync(loadPageUri);
+                var loadPage = Client.Current.HttpClient.GetStringAsync(loadPageUri);
                 var pageResult = new HtmlDocument();
                 pageResult.LoadHtml(await loadPage);
 
-                imageUri = new Uri(HtmlUtilities.ConvertToText(pageResult.GetElementbyId("img").GetAttributeValue("src", "")));
+                this.imageUri = new Uri(HtmlUtilities.ConvertToText(pageResult.GetElementbyId("img").GetAttributeValue("src", "")));
                 var originalNode = pageResult.GetElementbyId("i7").Descendants("a").FirstOrDefault();
                 if(originalNode == null)
                 {
-                    originalImageUri = null;
+                    this.originalImageUri = null;
                 }
                 else
                 {
-                    originalImageUri = new Uri(HtmlUtilities.ConvertToText(originalNode.GetAttributeValue("href", "")));
+                    this.originalImageUri = new Uri(HtmlUtilities.ConvertToText(originalNode.GetAttributeValue("href", "")));
                 }
                 var loadFail = pageResult.GetElementbyId("loadfail").GetAttributeValue("onclick", "");
-                failToken = failTokenMatcher.Match(loadFail).Groups[1].Value;
+                this.failToken = failTokenMatcher.Match(loadFail).Groups[1].Value;
             });
         }
 
@@ -183,9 +183,9 @@ namespace ExClient
         {
             get
             {
-                if(thumb.Loaded)
-                    return thumb.Image;
-                thumb.StartLoading();
+                if(this.thumb.Loaded)
+                    return this.thumb.Image;
+                this.thumb.StartLoading();
                 return DefaultThumb;
             }
         }
@@ -209,7 +209,7 @@ namespace ExClient
 
         public virtual IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
-            var previousAction = loadImageAction;
+            var previousAction = this.loadImageAction;
             return this.loadImageAction = Run(async token =>
             {
                 IAsyncAction load;
@@ -257,7 +257,7 @@ namespace ExClient
                         uri = this.imageUri;
                         this.OriginalLoaded = (this.originalImageUri == null);
                     }
-                    imageLoad = this.Owner.Owner.HttpClient.GetAsync(uri);
+                    imageLoad = Client.Current.HttpClient.GetAsync(uri);
                     this.State = ImageLoadingState.Loading;
                     imageLoad.Progress = (sender, progress) =>
                     {
@@ -315,10 +315,10 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                if(ImageFile != null)
+                var file = this.ImageFile;
+                if(file != null)
                 {
-                    var file = ImageFile;
-                    ImageFile = null;
+                    this.ImageFile = null;
                     await file.DeleteAsync();
                 }
             });
