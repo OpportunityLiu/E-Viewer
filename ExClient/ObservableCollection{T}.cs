@@ -93,10 +93,18 @@ namespace ExClient
         {
             CheckReentrancy();
             var count = 0;
-            foreach(var item in items)
+            if(this.Items is List<T> list && items is ICollection<T> collection)
             {
-                this.Items.Add(item);
-                count++;
+                list.AddRange(collection);
+                count = collection.Count;
+            }
+            else
+            {
+                foreach(var item in items)
+                {
+                    this.Items.Add(item);
+                    count++;
+                }
             }
             if(count == 0)
                 return 0;
