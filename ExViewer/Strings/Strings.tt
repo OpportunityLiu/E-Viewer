@@ -50,7 +50,7 @@
 <#+
 
     public string ProductName => "Resource Generator";
-    public string ProductVersion => "2.0.0.0";
+    public string ProductVersion => "2.0.1.0";
 
 #>
 <#+
@@ -91,16 +91,18 @@
         {
             AnalyzeResJson(names, resJsonPath);
         }
-
-        WriteInterfaces(names);
-        WriteLine("");
-        WriteResources(names);
+        var tree = ResourceRootNode.GetTree(names);
+        WriteInterfaces(tree);
+        WriteLine();
+        WriteResources(tree);
     }
 
-    public PropertiesClass Properties = new PropertiesClass();
+    public PropertiesClass Properties => PropertiesClass.Current;
 
     public class PropertiesClass
     {
+        public static PropertiesClass Current { get; } = new PropertiesClass();
+
         private void setIdentity(ref string field, string value, string def, bool allowDots)
         {
             if(!string.IsNullOrWhiteSpace(value))
@@ -120,8 +122,12 @@
 
         public string CacheActivator
         {
-            get { return ca; }
-            set { if(!string.IsNullOrWhiteSpace(value)) ca = value; }
+            get => ca;
+            set
+            {
+                if(!string.IsNullOrWhiteSpace(value))
+                    this.ca = value;
+            }
         }
 
         private string rns;
@@ -131,26 +137,25 @@
         private string ca = "new global::System.Collections.Generic.Dictionary<string, string>()";
         public string LocalizedStringsNamespace
         {
-            get { return rns; }
-            set { setIdentity(ref rns, value, ProjectDefaultNamespace, true); }
+            get => this.rns;
+            set => setIdentity(ref this.rns, value, ProjectDefaultNamespace, true);
         }
         public string LocalizedStringsClassName
         {
-            get { return rc; }
-            set { setIdentity(ref rc, value, "LocalizedStrings", false); }
+            get => this.rc;
+            set => setIdentity(ref this.rc, value, "LocalizedStrings", false);
         }
         public string InterfacesNamespace
         {
-            get { return ins; }
-            set { setIdentity(ref ins, value, $"{ProjectDefaultNamespace}.{ProjectDefaultNamespace}_ResourceInfo", true); }
+            get => this.ins;
+            set => setIdentity(ref this.ins, value, $"{ProjectDefaultNamespace}.{ProjectDefaultNamespace}_ResourceInfo", true);
         }
         public string Modifier
         {
-            get { return mf; }
-            set
+            get => this.mf; set
             {
                 value = (value ?? "").Trim();
-                mf = string.IsNullOrEmpty(value) ? "internal " : value + " ";
+                this.mf = string.IsNullOrEmpty(value) ? "internal " : value + " ";
             }
         }
 
@@ -176,30 +181,165 @@
         }
 
         public string IRPName => "IResourceProvider";
-        public string IRRPName => "IRootResourceProvider";
         public string IGRPName => "IGeneratedResourceProvider";
         public string GRPName => "GeneratedResourceProvider";
 
         public string IRPFullName => InterfaceFullName(IRPName, null);
-        public string IRRPFullName => InterfaceFullName(IRRPName, null);
         public string IGRPFullName => InterfaceFullName(IGRPName, null);
         public string GRPFullName => InterfaceFullName(GRPName, null);
     }
 
-    private void Check(string resourceName, string propertyName)
+    public class ResourceRootNode : ResourceNode
     {
-        if(!Helper.Keywords.Contains(resourceName))
+        public static List<ResourceRootNode> GetTree(Dictionary<string, Dictionary<string, object>> raw)
         {
-            if(propertyName != resourceName)
+            var l = new List<ResourceRootNode>();
+            foreach(var item in raw)
             {
-                WriteLine($"#warning Resource has been renamed. ResourceName: \"{resourceName}\", PropertyName: \"{propertyName}\"");
+                l.Add(getRootNode(item));
             }
+            return l;
+        }
+
+        private static ResourceRootNode getRootNode(KeyValuePair<string, Dictionary<string, object>> item)
+        {
+            var node = new ResourceRootNode(item.Key);
+            foreach(var i in item.Value)
+            {
+                if(i.Value is string v)
+                {
+                    node.Childern.Add(GetNode(i.Key, v));
+                }
+                else if(i.Value is Dictionary<string, object> v2)
+                {
+                    node.Childern.Add(GetNode(i.Key, v2));
+                }
+            }
+            node.Refine();
+            return node;
+        }
+
+        public ResourceRootNode(string name)
+            : base(name)
+        {
+            this.Root = this;
+            this.Parent = null;
+        }
+
+        public override string RName
+        {
+            get
+            {
+                if(PropertiesClass.Current.IsDefaultProject)
+                    return $"ms-resource:///{Name}";
+                else
+                    return $"ms-resource:///{PropertiesClass.Current.ProjectAssemblyName}/{Name}";
+            }
+        }
+        public override string INs => PropertiesClass.Current.InterfacesNamespace;
+        public override string CFName => $"{PropertiesClass.Current.LocalizedStringsFullName}.{CName}";
+        public override string PFName => $"{PropertiesClass.Current.LocalizedStringsFullName}.{PName}";
+    }
+
+    public class ResourceNode
+    {
+        public static ResourceNode GetNode(string name, string value)
+        {
+            return new ResourceNode(name, value);
+        }
+
+        public static ResourceNode GetNode(string name, Dictionary<string, object> values)
+        {
+            var r = new ResourceNode(name);
+            foreach(var i in values)
+            {
+                if(i.Value is string v)
+                {
+                    r.Childern.Add(GetNode(i.Key, v));
+                }
+                else if(i.Value is Dictionary<string, object> v2)
+                {
+                    r.Childern.Add(GetNode(i.Key, v2));
+                }
+            }
+            return r;
+        }
+
+        public ResourceNode(string name, string value)
+        {
+            this.Name = name;
+            this.Value = value;
+            setNames();
+        }
+
+        public ResourceNode(string name)
+        {
+            this.Name = name;
+            this.Childern = new List<ResourceNode>();
+            setNames();
+        }
+
+        protected void Refine()
+        {
+            if(Childern == null)
+                return;
+            foreach(var item in Childern)
+            {
+                item.Parent = this;
+                item.Root = this.Root;
+                item.Refine();
+            }
+        }
+
+        private void setNames()
+        {
+            var r = Helper.Refine(Name);
+            if(r.StartsWith("@"))
+                this.IName = $"I{Name}";
+            else
+                this.IName = $"I{r}";
+            this.CName = Helper.Refine(Helper.GetRandomName(Name));
+            this.PName = r;
+        }
+
+        public IList<ResourceNode> Childern { get; }
+
+        public ResourceNode Parent { get; protected set; }
+
+        public ResourceRootNode Root { get; protected set; }
+
+        public bool IsLeaf => Value != null;
+
+        public string Name { get; }
+        public string Value { get; }
+
+        public virtual string RName => Helper.CombineResourcePath(Parent?.RName, Name);
+
+        public string IName { get; private set; }
+        public virtual string INs => $"{Parent.INs}.{Parent.PName}";
+
+        public string CName { get; private set; }
+
+        public string PName { get; private set; }
+
+        public string IFName => PropertiesClass.Current.InterfaceFullName(IName, INs);
+
+        public virtual string CFName => $"{Parent.CFName}.{CName}";
+
+        public virtual string PFName => $"{Parent.CFName}.{PName}";
+    }
+
+    private void Check(ResourceNode node)
+    {
+        if(!Helper.Keywords.Contains(node.Name) && node.Name != node.PName)
+        {
+            WriteLine($"#warning Resource has been renamed. ResourceName: \"{node.Name}\", PropertyName: \"{node.PName}\"");
         }
     }
 
     public void WriteLine(int indent, string value)
     {
-        for(int i = 0; i < indent; i++)
+        for(var i = 0; i < indent; i++)
             Write("    ");
         WriteLine(value);
     }
@@ -235,7 +375,7 @@
         WriteLine(indent, $@"/// </summary>");
     }
 
-    public void WriteInterfaces(Dictionary<string, Dictionary<string, object>> names)
+    public void WriteInterfaces(IList<ResourceRootNode> tree)
     {
         var indent = 1;
         WriteLine($"namespace {Properties.InterfacesNamespace}");
@@ -248,12 +388,6 @@
         WriteLine(indent, $"}}");
         WriteLine();
         WriteAttributsForInterface(indent);
-        WriteLine(indent, $"{Properties.Modifier}interface {Properties.IRRPName} : {Properties.IRPFullName}");
-        WriteLine(indent, $"{{");
-        WriteLine(indent, $"    void Reset();");
-        WriteLine(indent, $"}}");
-        WriteLine();
-        WriteAttributsForInterface(indent);
         WriteLine(indent, $"{Properties.Modifier}interface {Properties.IGRPName} : {Properties.IRPFullName}");
         WriteLine(indent, $"{{");
         WriteLine(indent, $"    string Value {{ get; }}");
@@ -263,16 +397,14 @@
         WriteLine(indent, $@"[System.Diagnostics.DebuggerDisplay(""\\{{{{Value}}\\}}"")]");
         WriteLine(indent, $"{Properties.Modifier}struct {Properties.GRPName} : {Properties.IGRPFullName}");
         WriteLine(indent, $"{{");
-        WriteLine(indent, $"    internal {Properties.GRPName}({Properties.IRPFullName} parent, string key)");
+        WriteLine(indent, $"    internal {Properties.GRPName}(string key)");
         WriteLine(indent, $"    {{");
         WriteLine(indent, $"        this.key = key;");
-        WriteLine(indent, $"        this.parent = parent;");
         WriteLine(indent, $"    }}");
         WriteLine();
         WriteLine(indent, $"    private readonly string key;");
-        WriteLine(indent, $"    private readonly {Properties.IRPFullName} parent;");
         WriteLine();
-        WriteLine(indent, $"    public string Value => this.parent.GetValue(key);");
+        WriteLine(indent, $"    public string Value => {Properties.LocalizedStringsFullName}.GetValue(key);");
         WriteLine();
         WriteLine(indent, $"    public {Properties.GRPName} this[string resourceKey]");
         WriteLine(indent, $"    {{");
@@ -280,7 +412,7 @@
         WriteLine(indent, $"        {{");
         WriteLine(indent, $"            if(resourceKey == null)");
         WriteLine(indent, $"                throw new global::System.ArgumentNullException();");
-        WriteLine(indent, $"            return new {Properties.GRPFullName}(this.parent, $\"{{key}}/{{resourceKey}}\");");
+        WriteLine(indent, $"            return new {Properties.GRPFullName}($\"{{key}}/{{resourceKey}}\");");
         WriteLine(indent, $"        }}");
         WriteLine(indent, $"    }}");
         WriteLine();
@@ -288,159 +420,145 @@
         WriteLine(indent, $"    {{");
         WriteLine(indent, $"        if(resourceKey == null)");
         WriteLine(indent, $"            return this.Value;");
-        WriteLine(indent, $"        return this.parent.GetValue($\"{{key}}/{{resourceKey}}\");");
+        WriteLine(indent, $"        return {Properties.LocalizedStringsFullName}.GetValue($\"{{key}}/{{resourceKey}}\");");
         WriteLine(indent, $"    }}");
         WriteLine(indent, $"}}");
         WriteLine($"}}");
 
-        foreach(var item in names)
+        foreach(var item in tree)
         {
-            WriteRootInterface(0, Properties.InterfacesNamespace, Helper.Refine(item.Key), item.Value);
+            WriteRootInterface(item);
         }
     }
 
-    public void WriteInterface(int indent, string iNs, string iStemName, string inhertFrom, Dictionary<string, object> names)
+    public void WriteInterface(int indent, string inhertFrom, ResourceNode node)
     {
         WriteLine();
-        WriteLine(indent, $"namespace {iNs}");
+        WriteLine(indent, $"namespace {node.INs}");
         WriteLine(indent, $"{{");
         WriteAttributsForInterface(indent + 1);
-        WriteLine(indent, $"    {Properties.Modifier}interface I{iStemName} : {inhertFrom}");
+        WriteLine(indent, $"    {Properties.Modifier}interface {node.IName} : {inhertFrom}");
         WriteLine(indent, $"    {{");
-        foreach(var item in names)
+        foreach(var item in node.Childern)
         {
-            if(item.Value is string v)
-                WriteInterfaceProperty(indent + 2, item.Key, v);
+            if(item.IsLeaf)
+                WriteInterfaceProperty(indent + 2, item);
             else
-                WriteInterfaceIProperty(indent + 2, item.Key, $"{iNs}.{iStemName}");
+                WriteInterfaceIProperty(indent + 2, item);
         }
         WriteLine(indent, $"    }}");
         WriteLine(indent, $"}}");
-        foreach(var item in names)
+        foreach(var item in node.Childern)
         {
-            if(item.Value is Dictionary<string, object> v)
-                WriteInnerInterface(indent, $"{iNs}.{iStemName}", Helper.Refine(item.Key), v);
+            if(!item.IsLeaf)
+                WriteInnerInterface(indent, item);
         }
     }
 
-    public void WriteRootInterface(int indent, string ns, string iStemName, Dictionary<string, object> names)
+    public void WriteRootInterface(ResourceRootNode node)
     {
-        WriteInterface(indent, ns, iStemName, Properties.IRRPFullName, names);
+        WriteInterface(0, Properties.IRPFullName, node);
     }
 
-    public void WriteInnerInterface(int indent, string ns, string iStemName, Dictionary<string, object> names)
+    public void WriteInnerInterface(int indent, ResourceNode node)
     {
-        WriteInterface(indent, ns, iStemName, Properties.IRPFullName, names);
+        WriteInterface(indent, Properties.IRPFullName, node);
     }
 
-    public void WriteInterfaceProperty(int indent, string key, string value)
+    public void WriteInterfaceProperty(int indent, ResourceNode node)
     {
-        WriteComment(indent, value);
-        var pName = Helper.Refine(key);
-        Check(key, pName);
-        this.WriteLine(indent, $@"{Helper.IPropModifier(pName)}string {pName} {{ get; }}");
+        WriteComment(indent, node.Value);
+        Check(node);
+        this.WriteLine(indent, $@"{Helper.IPropModifier(node.PName)}string {node.PName} {{ get; }}");
     }
 
-    public void WriteInterfaceIProperty(int indent, string key, string ins)
+    public void WriteInterfaceIProperty(int indent, ResourceNode node)
     {
-        var pName = Helper.Refine(key);
-        Check(key, pName);
-        WriteLine(indent, $@"{Helper.IPropModifier(pName)}{Properties.InterfaceFullName("I" + pName, ins)} {pName} {{ get; }}");
+        Check(node);
+        WriteLine(indent, $@"{Helper.IPropModifier(node.PName)}{node.IFName} {node.PName} {{ get; }}");
     }
 
-    public void WriteResources(Dictionary<string, Dictionary<string, object>> names)
+    public void WriteResources(IList<ResourceRootNode> tree)
     {
         var indent = 1;
+        var loaderName = Helper.GetRandomName("__loader__");
+        var cacheName = Helper.GetRandomName("__cache__");
         WriteLine($"namespace {Properties.LocalizedStringsNamespace}");
         WriteLine($"{{");
+        //private global::System.Collections.Generic.IDictionary<string, string> _cache__TWL1Vqwp;
+        //private global::Windows.ApplicationModel.Resources.ResourceLoader _loader__yXhiRB0J;
         WriteAttributsForClass(indent);
         WriteLine(indent, $"{Properties.Modifier}static class {Properties.LocalizedStringsClassName}");
         WriteLine(indent, $"{{");
-        foreach(var item in names)
+        WriteLine(indent, $"    private static global::System.Collections.Generic.IDictionary<string, string> {cacheName};");
+        WriteLine(indent, $"    private static global::Windows.ApplicationModel.Resources.ResourceLoader {loaderName};");
+        WriteLine();
+        WriteLine(indent, $"    static {Properties.LocalizedStringsClassName}()");
+        WriteLine(indent, $"    {{");
+        WriteLine(indent, $"        {Properties.LocalizedStringsFullName}.{cacheName} = {Properties.CacheActivator};");
+        WriteLine(indent, $"        {Properties.LocalizedStringsFullName}.{loaderName} = global::Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();");
+        WriteLine(indent, $"    }}");
+        WriteLine();
+        WriteLine(indent, $"    public static string GetValue(string resourceKey)");
+        WriteLine(indent, $"    {{");
+        WriteLine(indent, $"        string value;");
+        WriteLine(indent, $"        if({Properties.LocalizedStringsFullName}.{cacheName}.TryGetValue(resourceKey, out value))");
+        WriteLine(indent, $"            return value;");
+        WriteLine(indent, $"        return {Properties.LocalizedStringsFullName}.{cacheName}[resourceKey] = {Properties.LocalizedStringsFullName}.{loaderName}.GetString(resourceKey);");
+        WriteLine(indent, $"    }}");
+        WriteLine();
+        foreach(var item in tree)
         {
-            WriteRootResource(indent + 1, item.Key, item.Value);
+            WriteRootResource(indent + 1, item);
         }
         WriteLine(indent, $"}}");
         WriteLine($"}}");
     }
 
-    public void WriteRootResource(int indent, string rName, Dictionary<string, object> names)
+    public void WriteRootResource(int indent, ResourceRootNode node)
     {
-        var rPath = (Properties.IsDefaultProject ? "" : GetProjectAssemblyName()) + "/" + rName;
-        var cache = Helper.GetRandomName("_cache");
-        var loader = Helper.GetRandomName("_loader");
-
-        var pName = Helper.Refine(rName);
-        var fullPName = $"{Properties.LocalizedStringsFullName}.{pName}";
-        var cName = Helper.GetRandomName(pName);
-        var iName = "I" + pName;
-        var fullIName = Properties.InterfaceFullName(fullPName);
-        var fullCName = $"{Properties.LocalizedStringsFullName}.{cName}";
         WriteLine();
-        WriteLine(indent, $"{Properties.Modifier}static {fullIName} {pName} {{ get; }} = new {fullCName}();");
+        WriteLine(indent, $"{Properties.Modifier}static {node.IFName} {node.PName} {{ get; }} = new {node.CFName}();");
         WriteLine();
-        WriteLine(indent, $@"[System.Diagnostics.DebuggerDisplay(""\\{{{Helper.AsLiteral(rName)}\\}}"")]");
-        WriteLine(indent, $"private sealed class {cName} : {fullIName}");
+        WriteLine(indent, $@"[System.Diagnostics.DebuggerDisplay(""\\{{{Helper.AsLiteral(node.RName)}\\}}"")]");
+        WriteLine(indent, $"private sealed class {node.CName} : {node.IFName}");
         WriteLine(indent, $"{{");
-        WriteLine(indent, $"    private global::System.Collections.Generic.IDictionary<string, string> {cache};");
-        WriteLine(indent, $"    private global::Windows.ApplicationModel.Resources.ResourceLoader {loader};");
-        WriteLine();
         WriteLine(indent, $"    {Properties.GRPFullName} {Properties.IRPFullName}.this[string resourceKey]");
         WriteLine(indent, $"    {{");
         WriteLine(indent, $"        get");
         WriteLine(indent, $"        {{");
         WriteLine(indent, $"            if(resourceKey == null)");
         WriteLine(indent, $"                throw new global::System.ArgumentNullException();");
-        WriteLine(indent, $"            return new {Properties.GRPFullName}(this, resourceKey);");
+        WriteLine(indent, $"            return new {Properties.GRPFullName}(\"{Helper.AsLiteral(node.RName)}/\" + resourceKey);");
         WriteLine(indent, $"        }}");
         WriteLine(indent, $"    }}");
         WriteLine();
         WriteLine(indent, $"    string {Properties.IRPFullName}.GetValue(string resourceKey)");
         WriteLine(indent, $"    {{");
-        WriteLine(indent, $"        string value;");
-        WriteLine(indent, $"        if(this.{cache}.TryGetValue(resourceKey, out value))");
-        WriteLine(indent, $"            return value;");
-        WriteLine(indent, $"        return this.{cache}[resourceKey] = this.{loader}.GetString(resourceKey);");
+        WriteLine(indent, $"        return {Properties.LocalizedStringsFullName}.GetValue(\"{Helper.AsLiteral(node.RName)}/\" + resourceKey);");
         WriteLine(indent, $"    }}");
         WriteLine();
-        WriteLine(indent, $"    public {cName}()");
-        WriteLine(indent, $"    {{");
-        WriteLine(indent, $"        (({Properties.IRRPFullName})this).Reset();");
-        WriteLine(indent, $"    }}");
-        WriteLine();
-        WriteLine(indent, $"    void {Properties.IRRPFullName}.Reset()");
-        WriteLine(indent, $"    {{");
-        WriteLine(indent, $"        this.{cache} = {Properties.CacheActivator};");
-        WriteLine(indent, $"        this.{loader} = global::Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse(\"{Helper.AsLiteral(rPath)}\");");
-        WriteLine(indent, $"    }}");
-        foreach(var item in names)
+        foreach(var item in node.Childern)
         {
-            if(item.Value is Dictionary<string, object> v)
-                WriteInnerResource(indent + 1, fullPName, fullIName, "", fullPName, fullCName, item.Key, v);
+            if(!item.IsLeaf)
+                WriteInnerResource(indent + 1, item);
         }
         WriteLine();
-        foreach(var item in names)
+        foreach(var item in node.Childern)
         {
-            if(item.Value is string v)
-                WriteProperty(indent + 1, fullPName, fullIName, "", item.Key, v);
+            if(item.IsLeaf)
+                WriteProperty(indent + 1, item);
         }
         WriteLine(indent, $"}}");
     }
 
-    public void WriteInnerResource(int indent, string rootFullPName, string parentFullIName, string parentPath, string parentFullPName, string parentFullCName, string key, Dictionary<string, object> value)
+    public void WriteInnerResource(int indent, ResourceNode node)
     {
-        var pName = Helper.Refine(key);
-        var fullPName = $"{parentFullPName}.{pName}";
-        var cName = Helper.GetRandomName(pName);
-        var fullPath = Helper.CombineResourcePath(parentPath, key);
-        var fullCName = $"{parentFullCName}.{cName}";
-        var iName = "I" + pName;
-        var fullIName = Properties.InterfaceFullName(fullPName);
         WriteLine();
-        WriteLine(indent, $@"{fullIName} {parentFullIName}.{pName} {{ get; }} = new {fullCName}();");
+        WriteLine(indent, $@"public {node.IFName} {node.PName} {{ get; }} = new {node.CFName}();");
         WriteLine();
-        WriteLine(indent, $@"[System.Diagnostics.DebuggerDisplay(""\\{{{Helper.AsLiteral($"{fullPath}")}\\}}"")]");
-        WriteLine(indent, $@"private sealed class {cName} : {fullIName}");
+        WriteLine(indent, $@"[System.Diagnostics.DebuggerDisplay(""\\{{{Helper.AsLiteral($"{node.RName}")}\\}}"")]");
+        WriteLine(indent, $@"private sealed class {node.CName} : {node.IFName}");
         WriteLine(indent, $@"{{");
         WriteLine(indent, $@"    {Properties.GRPFullName} {Properties.IRPFullName}.this[string resourceKey]");
         WriteLine(indent, $@"    {{");
@@ -448,41 +566,39 @@
         WriteLine(indent, $@"        {{");
         WriteLine(indent, $@"            if(resourceKey == null)");
         WriteLine(indent, $@"                throw new global::System.ArgumentNullException();");
-        WriteLine(indent, $@"            return new {Properties.GRPFullName}(this, resourceKey);");
+        WriteLine(indent, $@"            return new {Properties.GRPFullName}(""{Helper.AsLiteral(node.RName)}/"" + resourceKey);");
         WriteLine(indent, $@"        }}");
         WriteLine(indent, $@"    }}");
         WriteLine();
         WriteLine(indent, $@"    string {Properties.IRPFullName}.GetValue(string resourceKey)");
         WriteLine(indent, $@"    {{");
         WriteLine(indent, $@"        if(resourceKey == null)");
-        WriteLine(indent, $@"            return {rootFullPName}.GetValue(""{Helper.AsLiteral(fullPath)}"");");
-        WriteLine(indent, $@"        return {rootFullPName}.GetValue(""{Helper.AsLiteral(fullPath)}/"" + resourceKey);");
+        WriteLine(indent, $@"            return {Properties.LocalizedStringsFullName}.GetValue(""{Helper.AsLiteral(node.RName)}"");");
+        WriteLine(indent, $@"        return {Properties.LocalizedStringsFullName}.GetValue(""{Helper.AsLiteral(node.RName)}/"" + resourceKey);");
         WriteLine(indent, $@"    }}");
-        foreach(var item in value)
+        foreach(var item in node.Childern)
         {
-            if(item.Value is Dictionary<string, object> v)
-                WriteInnerResource(indent + 1, rootFullPName, fullIName, fullPath, fullPName, fullCName, item.Key, v);
+            if(!item.IsLeaf)
+                WriteInnerResource(indent + 1, item);
         }
         WriteLine();
-        foreach(var item in value)
+        foreach(var item in node.Childern)
         {
-            if(item.Value is string v)
-                WriteProperty(indent + 1, rootFullPName, fullIName, fullPath, item.Key, v);
+            if(item.IsLeaf)
+                WriteProperty(indent + 1, item);
         }
         WriteLine(indent, $@"}}");
     }
 
-    public void WriteProperty(int indent, string rootFullPName, string parentFullIName, string parentPath, string key, string value)
+    public void WriteProperty(int indent, ResourceNode node)
     {
-        var fullPath = Helper.CombineResourcePath(parentPath, key);
-        WriteLine(indent, $@"string {parentFullIName}.{Helper.Refine(key)}");
-        WriteLine(indent + 1, $@"=> {rootFullPName}.GetValue(""{Helper.AsLiteral(fullPath)}"");");
+        WriteLine(indent, $@"string {node.Parent.IFName}.{node.PName}");
+        WriteLine(indent + 1, $@"=> {Properties.LocalizedStringsFullName}.GetValue(""{Helper.AsLiteral(node.RName)}"");");
     }
 
     public void SetValue(Dictionary<string, Dictionary<string, object>> output, string root, IList<string> path, string value)
     {
-        Dictionary<string, object> o;
-        output.TryGetValue(root, out o);
+        output.TryGetValue(root, out var o);
         if(o == null)
             output[root] = o = new Dictionary<string, object>();
         SetValueCore(o, path, 0, value);
@@ -494,8 +610,7 @@
             SetValueCore(output, path[index], value);
         else
         {
-            object o;
-            output.TryGetValue(path[index], out o);
+            output.TryGetValue(path[index], out var o);
             var dic = o as Dictionary<string, object>;
             if(dic == null)
                 output[path[index]] = dic = new Dictionary<string, object>();
