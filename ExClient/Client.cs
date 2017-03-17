@@ -51,7 +51,6 @@ namespace ExClient
         private Client()
         {
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
-            httpFilter.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
             this.CookieManager = httpFilter.CookieManager;
             this.CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
             this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
