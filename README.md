@@ -48,7 +48,8 @@ Please download `*.appxbundle` or `*.zip` file to install.
 
 ![Step19](https://github.com/OpportunityLiu/ExViewer/raw/master/docs/Step%20(10).png)
 
-If the package failed to install, please install the dependencies and try againg.
+If the package failed to install, please install the dependencies and try again.
+
 [x86](https://github.com/OpportunityLiu/ExViewer/raw/master/docs/Dependencies-x86.zip) |
 [x64](https://github.com/OpportunityLiu/ExViewer/raw/master/docs/Dependencies-x64.zip) |
 [ARM](https://github.com/OpportunityLiu/ExViewer/raw/master/docs/Dependencies-ARM.zip)
