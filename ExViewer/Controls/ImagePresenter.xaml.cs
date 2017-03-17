@@ -44,14 +44,11 @@ namespace ExViewer.Controls
         {
             var sender = (ImagePresenter)d;
 
-            if(!sender.loaded)
+            if(e.OldValue != null)
             {
-                if(e.OldValue != null)
-                {
-                    stopTrackImage(sender, (GalleryImage)e.OldValue);
-                }
+                stopTrackImage(sender, (GalleryImage)e.OldValue);
             }
-            else
+            if(sender.loaded)
             {
                 if(e.NewValue != null)
                 {
@@ -65,6 +62,7 @@ namespace ExViewer.Controls
         private static void startTrackImage(ImagePresenter sender, GalleryImage image)
         {
             image.PropertyChanged += sender.Image_PropertyChanged;
+            sender.Bindings.Update();
             if(image.State == ImageLoadingState.Waiting)
             {
                 var ignore = image.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
@@ -79,9 +77,7 @@ namespace ExViewer.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if(this.Image != null)
-            {
                 startTrackImage(this, this.Image);
-            }
             this.loaded = true;
         }
 
@@ -94,10 +90,24 @@ namespace ExViewer.Controls
 
         private void Image_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(GalleryImage.ImageFile))
+            var img = (GalleryImage)sender;
+            if(string.IsNullOrEmpty(e.PropertyName))
             {
                 this.cc_Image.ClearValue(ContentControl.ContentProperty);
-                this.cc_Image.Content = this.Image;
+                this.cc_Image.Content = img;
+                this.img_Thumb.Source = img.Thumb;
+            }
+            switch(e.PropertyName)
+            {
+            case nameof(GalleryImage.ImageFile):
+                this.cc_Image.ClearValue(ContentControl.ContentProperty);
+                this.cc_Image.Content = img;
+                break;
+            case nameof(GalleryImage.Thumb):
+                this.img_Thumb.Source = img.Thumb;
+                break;
+            default:
+                break;
             }
         }
 
@@ -125,7 +135,7 @@ namespace ExViewer.Controls
                 break;
             case Windows.Devices.Input.PointerDeviceType.Pen:
             case Windows.Devices.Input.PointerDeviceType.Mouse:
-                var mode = ManipulationModes.System | ManipulationModes.TranslateX | ManipulationModes.TranslateY |ManipulationModes.TranslateInertia;
+                var mode = ManipulationModes.System | ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
                 this.sv.ManipulationMode = mode;
                 break;
             default:

@@ -17,11 +17,11 @@
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>ExViewer_StoreKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>ExViewer_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>F120808E06E3C9DCDA03BA86AF3F99CE4729E527</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>2CD13F296924A76965F55FFF1CB28D1076A93040</PackageCertificateThumbprint>
     <HockeyAppResourceId>9c09ca3908114a38a09c81ca8b68ee39</HockeyAppResourceId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
@@ -95,7 +95,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="ExViewer_StoreKey.pfx" />
+    <None Include="ExViewer_TemporaryKey.pfx" />
     <None Include="project.json" />
     <PRIResource Include="Strings\zh-cn\Settings.resJson" />
   </ItemGroup>
@@ -283,6 +283,7 @@
     <Content Include="Images\Light\UserBackground.scale-100.png" />
     <Content Include="Images\Light\UserBackground.scale-200.png" />
     <Content Include="Images\Light\UserBackground.scale-400.png" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
   </ItemGroup>

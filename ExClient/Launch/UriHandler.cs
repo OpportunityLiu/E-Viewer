@@ -1,4 +1,5 @@
 ﻿using ExClient.Api;
+using ExClient.Helpers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -106,11 +107,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             GalleryInfo.TryParseGallery(data, out var info);
-            return Run(async token =>
-            {
-                var g = await info.FetchGalleryAsync();
-                return (LaunchResult)new GalleryLaunchResult(g, -1, GalleryLaunchStatus.Default);
-            });
+            return AsyncWarpper.Create((LaunchResult)new GalleryLaunchResult(info, -1, GalleryLaunchStatus.Default));
         }
     }
 
@@ -124,11 +121,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             GalleryInfo.TryParseGalleryTorrent(data, out var info);
-            return Run(async token =>
-            {
-                var g = await info.FetchGalleryAsync();
-                return (LaunchResult)new GalleryLaunchResult(g, -1, GalleryLaunchStatus.Torrent);
-            });
+            return AsyncWarpper.Create((LaunchResult)new GalleryLaunchResult(info, -1, GalleryLaunchStatus.Torrent));
         }
     }
 
@@ -145,8 +138,7 @@ namespace ExClient.Launch
             return Run(async token =>
             {
                 var gInfo = await info.FetchGalleryInfoAsync();
-                var g = await gInfo.FetchGalleryAsync();
-                return (LaunchResult)new GalleryLaunchResult(g, info.PageId, GalleryLaunchStatus.Image);
+                return (LaunchResult)new GalleryLaunchResult(gInfo, info.PageId, GalleryLaunchStatus.Image);
             });
         }
     }
@@ -247,11 +239,11 @@ namespace ExClient.Launch
                 }
             }
             if(!ap)
-                return Helpers.AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search("")));
+                return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search("")));
             else if(av)
-                return Helpers.AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
+                return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
             else
-                return Helpers.AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category)));
+                return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category)));
         }
     }
 
@@ -268,9 +260,9 @@ namespace ExClient.Launch
             switch(data.Path0)
             {
             case "tag":
-                return Helpers.AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(Tag.Parse(v).Search()));
+                return AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(Tag.Parse(v).Search()));
             case "uploader":
-                return Helpers.AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search($"uploader:\"{v}\"")));
+                return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search($"uploader:\"{v}\"")));
             }
             throw new NotSupportedException("Unsupported uri.");
         }
@@ -300,7 +292,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             var category = categoryDic[data.Path0];
-            return Helpers.AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(Client.Current.Search("", category)));
+            return AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(Client.Current.Search("", category)));
         }
     }
 
@@ -338,9 +330,9 @@ namespace ExClient.Launch
                 }
             }
             if(!ap)
-                return Helpers.AsyncWarpper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search("", category)));
+                return AsyncWarpper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search("", category)));
             else
-                return Helpers.AsyncWarpper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search(keyword, category)));
+                return AsyncWarpper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search(keyword, category)));
         }
     }
 }

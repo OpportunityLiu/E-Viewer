@@ -38,7 +38,7 @@
               VerticalAlignment="Center"
               x:Name="gd_ContentRoot">
             <Image x:Name="img_Thumb"
-                   Source="{x:Bind Image.Thumb, Mode=OneWay, FallbackValue={ThemeResource LoadingImageSource}}"/>
+                   Source="{x:Bind Image.Thumb, Mode=OneWay, FallbackValue={ThemeResource LoadingImageSource}}" />
             <ContentControl x:Name="cc_Image"
                             Content="{x:Bind Image, Mode=OneWay}"
                             HorizontalAlignment="Stretch"

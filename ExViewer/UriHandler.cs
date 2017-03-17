@@ -7,6 +7,8 @@ using ExClient.Launch;
 using ExViewer.Views;
 using ExViewer.ViewModels;
 using Windows.System;
+using Windows.Foundation;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace ExViewer
 {
@@ -36,25 +38,35 @@ namespace ExViewer
                 });
                 return false;
             }
-            RootControl.RootController.TrackAsyncAction(UriLauncher.HandleAsync(uri), async (s, e) =>
+            RootControl.RootController.TrackAsyncAction(handle(uri));
+            return true;
+        }
+
+        private static IAsyncAction handle(Uri uri)
+        {
+            return AsyncInfo.Run(async token =>
             {
-                switch(e)
+                try
                 {
-                case Windows.Foundation.AsyncStatus.Completed:
-                    var r = s.GetResults();
+                    var r = await UriLauncher.HandleAsync(uri);
                     switch(r)
                     {
                     case GalleryLaunchResult g:
-                        GalleryVM.GetVM(g.Gallery);
-                        RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Gallery.Id);
-                        await Task.Delay(200);
+                        var page = RootControl.RootController.Frame.Content;
+                        if(!(page is GalleryPage gPage && gPage.VM.Gallery.Id == g.GalleryInfo.Id))
+                        {
+                            await GalleryVM.GetVMAsync(g.GalleryInfo);
+                            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.GalleryInfo.Id);
+                            await Task.Delay(500);
+                        }
                         switch(g.Status)
                         {
                         case GalleryLaunchStatus.Default:
+                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
                             break;
                         case GalleryLaunchStatus.Image:
-                            RootControl.RootController.Frame.Navigate(typeof(ImagePage), g.Gallery.Id);
-                            await Task.Delay(200);
+                            RootControl.RootController.Frame.Navigate(typeof(ImagePage), g.GalleryInfo.Id);
+                            await Task.Delay(500);
                             (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
                             break;
                         case GalleryLaunchStatus.Torrent:
@@ -67,13 +79,12 @@ namespace ExViewer
                         RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
                         return;
                     }
-                    break;
-                case Windows.Foundation.AsyncStatus.Error:
-                    RootControl.RootController.SendToast(s.ErrorCode, null);
-                    break;
+                }
+                catch(Exception e)
+                {
+                    RootControl.RootController.SendToast(e, null);
                 }
             });
-            return true;
         }
     }
 }

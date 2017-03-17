@@ -79,6 +79,11 @@ namespace ExViewer.ViewModels
             return Cache.GetAsync(new GalleryInfo(parameter, null));
         }
 
+        public static IAsyncOperation<GalleryVM> GetVMAsync(GalleryInfo gInfo)
+        {
+            return Cache.GetAsync(gInfo);
+        }
+
         public GalleryImage GetCurrent()
         {
             try
