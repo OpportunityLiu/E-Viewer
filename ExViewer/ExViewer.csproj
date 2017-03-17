@@ -283,7 +283,6 @@
     <Content Include="Images\Light\UserBackground.scale-100.png" />
     <Content Include="Images\Light\UserBackground.scale-200.png" />
     <Content Include="Images\Light\UserBackground.scale-400.png" />
-    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
   </ItemGroup>
