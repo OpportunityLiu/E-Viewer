@@ -204,7 +204,8 @@ namespace ExViewer.Views
                 else
                     this.applicationLoaded = true;
             }
-            var ignore = Task.Delay(30000).ContinueWith(async t => await BannerProvider.Provider.FetchBanners());
+            if(DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
+                await Task.Delay(30000).ContinueWith(async t => await BannerProvider.Provider.FetchBanners());
         }
 
         private async Task verify()
