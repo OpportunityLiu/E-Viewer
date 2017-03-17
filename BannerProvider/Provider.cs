@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace BannerProvider
@@ -10,6 +11,18 @@ namespace BannerProvider
     public static class Provider
     {
         private static StorageFolder bannerFolder;
+        private const string LAST_UPDATE = "BannerProvider.LastUpdate";
+
+        public static DateTimeOffset LastUpdate
+        {
+            get
+            {
+                if(ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
+                    return (DateTimeOffset)r;
+                return DateTimeOffset.MinValue;
+            }
+            private set => ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;
+        }
 
         private static async Task init()
         {
@@ -40,15 +53,21 @@ namespace BannerProvider
             return Run(async token =>
             {
                 await init();
-                using(var client = new HttpClient())
+                using(var f = new HttpBaseProtocolFilter())
                 {
-                    for(int i = 1; i < 8; i++)
+                    f.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
+                    f.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
+                    using(var client = new HttpClient(f))
                     {
-                        var r = await client.GetBufferAsync(new Uri($"https://ehgt.org/c/botm{i}.jpg"));
-                        var f = await bannerFolder.CreateFileAsync($"{i}.jpg", CreationCollisionOption.ReplaceExisting);
-                        await FileIO.WriteBufferAsync(f, r);
+                        for(var i = 1; i < 8; i++)
+                        {
+                            var buf = await client.GetBufferAsync(new Uri($"https://ehgt.org/c/botm{i}.jpg"));
+                            var file = await bannerFolder.CreateFileAsync($"{i}.jpg", CreationCollisionOption.ReplaceExisting);
+                            await FileIO.WriteBufferAsync(file, buf);
+                        }
                     }
                 }
+                LastUpdate = DateTimeOffset.Now;
             });
         }
     }
