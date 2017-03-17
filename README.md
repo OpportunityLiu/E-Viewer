@@ -1,4 +1,3 @@
-
 # ExViewer
 A Client for e-hentai.org on Windows 10.
 
@@ -48,3 +47,8 @@ Please download `*.appxbundle` or `*.zip` file to install.
 ### Now you have prepared to install the app, double-click the file, and click `Install`.
 
 ![Step19](https://github.com/OpportunityLiu/ExViewer/raw/master/docs/Step%20(10).png)
+
+If the package failed to install, please install the dependencies and try againg.
+[x86](https://github.com/OpportunityLiu/ExViewer/raw/master/docs/Dependencies-x86.zip) |
+[x64](https://github.com/OpportunityLiu/ExViewer/raw/master/docs/Dependencies-x64.zip) |
+[ARM](https://github.com/OpportunityLiu/ExViewer/raw/master/docs/Dependencies-ARM.zip)
