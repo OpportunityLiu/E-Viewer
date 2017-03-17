@@ -162,18 +162,9 @@ namespace ExViewer.Views
 
         private void setScale()
         {
-            var lb = this.fv.SelectedIndex - 1;
-            var ub = this.fv.SelectedIndex + 2;
-            lb = lb < 0 ? 0 : lb;
-            ub = ub > this.VM.Gallery.Count ? this.VM.Gallery.Count : ub;
-            for(var i = lb; i < ub; i++)
+            foreach(var item in this.fv.Descendants<FlipViewItem>())
             {
-                if(i == this.fv.SelectedIndex)
-                    continue;
-                var selected = (FlipViewItem)this.fv.ContainerFromIndex(i);
-                if(selected == null)
-                    continue;
-                var inner = (Grid)selected.ContentTemplateRoot;
+                var inner = (Grid)item.ContentTemplateRoot;
                 if(inner == null)
                     continue;
                 var ip = (ImagePresenter)inner.FindName("ip");
@@ -181,37 +172,24 @@ namespace ExViewer.Views
             }
         }
 
-        IAsyncOperation<LoadMoreItemsResult> loadItems;
-
-        private void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(this.VM?.Gallery == null)
+            var g = this.VM?.Gallery;
+            if(g == null)
                 return;
-            var start = this.fv.SelectedIndex;
-            if(start < 0)
-                return;
-            var end = start + 5;
-            if(end > this.VM.Gallery.Count)
-            {
-                end = this.VM.Gallery.Count;
-            }
-            for(var i = start; i < end; i++)
-            {
-                this.VM.Gallery[i].LoadImageAsync(false, SettingCollection.Current.GetStrategy(), true).Completed =
-                    (task, state) =>
-                    {
-                        if(state == AsyncStatus.Error)
-                            RootControl.RootController.SendToast(task.ErrorCode, typeof(ImagePage));
-                    };
-            }
-            if(end + 10 > this.VM.Gallery.Count && this.VM.Gallery.HasMoreItems)
-            {
-                if(this.loadItems == null || this.loadItems.Status != AsyncStatus.Started)
-                {
-                    this.loadItems = this.VM.Gallery.LoadMoreItemsAsync(5);
-                }
-            }
             setScale();
+            var target = this.fv.SelectedIndex;
+            if(target < 0)
+                return;
+            target += 5;
+            if(target >= g.RecordCount)
+                target = g.RecordCount - 1;
+            if(g.Count > target)
+                return;
+            while(target >= g.Count && g.HasMoreItems)
+            {
+                await g.LoadMoreItemsAsync(5);
+            }
         }
 
         private System.Threading.CancellationTokenSource changingCbVisibility;

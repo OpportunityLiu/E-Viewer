@@ -14,10 +14,7 @@
 
     public sealed class GalleryLaunchResult : LaunchResult
     {
-        public Gallery Gallery
-        {
-            get;
-        }
+        public Api.GalleryInfo GalleryInfo { get; }
 
         public int CurrentIndex
         {
@@ -29,9 +26,9 @@
             get;
         }
 
-        internal GalleryLaunchResult(Gallery g, int index, GalleryLaunchStatus status)
+        internal GalleryLaunchResult(Api.GalleryInfo gInfo, int index, GalleryLaunchStatus status)
         {
-            this.Gallery = g;
+            this.GalleryInfo = gInfo;
             this.CurrentIndex = index;
             this.Status = status;
         }
