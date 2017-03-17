@@ -38,6 +38,7 @@ namespace ExViewer
         public App()
         {
             this.InitializeComponent();
+#if !DEBUG
             HockeyClient.Current.Configure("9c09ca3908114a38a09c81ca8b68ee39", new TelemetryConfiguration
             {
                 Collectors =
@@ -67,6 +68,7 @@ namespace ExViewer
                 sb.AppendLine($"page: {RootControl.RootController.CurrentPageName}");
                 return sb.ToString();
             });
+#endif
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
