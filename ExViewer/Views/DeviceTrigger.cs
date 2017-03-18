@@ -36,7 +36,7 @@ namespace ExViewer.Views
 
         public static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((DeviceTrigger)d).SetActive(e.NewValue.ToString() == DeviceType);
+            ((DeviceTrigger)d).SetActive(string.Equals(e.NewValue.ToString(), DeviceType, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

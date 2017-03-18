@@ -280,7 +280,7 @@ namespace ExViewer.Views
         {
             base.OnKeyUp(e);
             e.Handled = true;
-            switch(e.Key)
+            switch(e.OriginalKey)
             {
                 case VirtualKey.Enter:
                     this.enterPressed = false;
@@ -344,6 +344,17 @@ namespace ExViewer.Views
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
             else
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
+        }
+
+        private void cb_top_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if(this.cb_top.IsOpen)
+                return;
+            if(e.OriginalKey== VirtualKey.GamepadDPadDown||e.OriginalKey== VirtualKey.GamepadLeftThumbstickDown)
+            {
+                e.Handled = true;
+                this.fv.Focus(FocusState.Programmatic);
+            }
         }
     }
 }
