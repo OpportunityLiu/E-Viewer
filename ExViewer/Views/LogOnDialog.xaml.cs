@@ -49,42 +49,42 @@ namespace ExViewer.Views
             }
             else
             {
-                this.pb_Loading.IsIndeterminate = true;
                 var d = args.GetDeferral();
-                this.tb_info.Text = "";
                 try
                 {
-                    if(this.recap != null)
-                        await this.recap.Submit(this.tb_ReCaptcha.Text);
-                }
-                catch(Exception ex)
-                {
-                    await loadReCapcha();
-                    this.tb_info.Text = ex.GetMessage();
-                    this.tb_ReCaptcha.Focus(FocusState.Programmatic);
-                    args.Cancel = true;
-                    return;
-                }
-                try
-                {
-                    await Client.Current.LogOnAsync(username, password, this.recap);
-                    AccountManager.CurrentCredential = AccountManager.CreateCredential(username, password);
-                }
-                catch(ArgumentException ex) when(ex.ParamName == "response")
-                {
-                }
-                catch(InvalidOperationException ex)
-                {
-                    await loadReCapcha();
-                    this.tb_info.Text = ex.GetMessage();
-                    this.tb_user.Focus(FocusState.Programmatic);
-                    args.Cancel = true;
-                }
-                catch(Exception ex)
-                {
-                    this.tb_info.Text = ex.GetMessage();
-                    this.tb_user.Focus(FocusState.Programmatic);
-                    args.Cancel = true;
+                    this.pb_Loading.IsIndeterminate = true;
+                    this.tb_info.Text = "";
+                    try
+                    {
+                        if(this.recap != null)
+                            await this.recap.Submit(this.tb_ReCaptcha.Text);
+                    }
+                    catch(Exception ex)
+                    {
+                        await loadReCapcha();
+                        this.tb_info.Text = ex.GetMessage();
+                        this.tb_ReCaptcha.Focus(FocusState.Programmatic);
+                        args.Cancel = true;
+                        return;
+                    }
+                    try
+                    {
+                        await Client.Current.LogOnAsync(username, password, this.recap);
+                        AccountManager.CurrentCredential = AccountManager.CreateCredential(username, password);
+                    }
+                    catch(InvalidOperationException ex)
+                    {
+                        await loadReCapcha();
+                        this.tb_info.Text = ex.GetMessage();
+                        this.tb_user.Focus(FocusState.Programmatic);
+                        args.Cancel = true;
+                    }
+                    catch(Exception ex)
+                    {
+                        this.tb_info.Text = ex.GetMessage();
+                        this.tb_user.Focus(FocusState.Programmatic);
+                        args.Cancel = true;
+                    }
                 }
                 finally
                 {

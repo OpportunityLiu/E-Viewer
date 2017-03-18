@@ -39,14 +39,14 @@
                  x:Uid="Views/AddToFavoritesDialog/NoteTextBox"
                  TextChanged="tbNote_TextChanged"
                  Header="Favorite note"
-                 MinHeight="100"
                  Grid.Row="1"
                  Margin="0,8,0,0"
                  AcceptsReturn="True"
                  InputScope="Text"
                  Text=""
                  TextWrapping="Wrap"
-                 HorizontalAlignment="Stretch" />
+                 HorizontalAlignment="Stretch"
+                 MinHeight="92" />
         <Grid Margin="0,8,0,0"
               MinHeight="4"
               Grid.Row="2">

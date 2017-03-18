@@ -57,7 +57,7 @@ namespace ExViewer.Views
                 }
                 else
                 {
-                    throw new Exception(MyStrings.FavoriteCategoryUnselected);
+                    throw new Exception(strings.FavoriteCategoryUnselected);
                 }
             }
             catch(Exception ex)
@@ -80,13 +80,13 @@ namespace ExViewer.Views
             this.tbInfo.Text = "";
             this.tbNote.Text = this.Gallery.FavoriteNote ?? "";
             this.cbCategory.SelectedItem = this.cbCategory.Items.FirstOrDefault();
-            this.Title = galleryInFavorites == true ? MyStrings.ModifyTitle : MyStrings.AddTitle;
+            this.Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
             if(galleryInFavorites == null)
             {
                 if(!await loadNotesAsync())
                     return;
                 galleryInFavorites = this.Gallery.FavoriteCategory.Index >= 0;
-                this.Title = galleryInFavorites == true ? MyStrings.ModifyTitle : MyStrings.AddTitle;
+                this.Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
             }
             else
                 await Task.Delay(50);
@@ -127,7 +127,8 @@ namespace ExViewer.Views
             return success;
         }
 
-        private static ExViewer_ResourceInfo.Resources.Views.IAddToFavoritesDialog MyStrings { get; } = Strings.Resources.Views.AddToFavoritesDialog;
+        private static readonly ExViewer_ResourceInfo.Resources.Views.IAddToFavoritesDialog strings
+            = Strings.Resources.Views.AddToFavoritesDialog;
 
         private void tbNote_TextChanged(object sender, TextChangedEventArgs e)
         {

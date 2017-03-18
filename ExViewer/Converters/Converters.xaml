@@ -25,18 +25,17 @@
         </ObjectToBooleanConverter>
     </InvertConverter>
     <ObjectToBooleanConverter x:Key="NullToVisibleConverter"
-                              Default="True"
-                              Others="False"
+                              IfBoth="True"
+                              IfNeither="False"
                               InnerConverter="{uwp:StaticResource TrueToVisibleConverter}" />
     <ObjectToBooleanConverter x:Key="NullToCollapsedConverter"
-                              Default="True"
-                              Others="False"
+                              IfBoth="True"
+                              IfNeither="False"
                               InnerConverter="{uwp:StaticResource FalseToVisibleConverter}" />
     <!--Code to initalize this converter is at App.xaml.cs-->
     <!--Set ValueForFalse to string.Empty-->
     <ObjectToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
-                              Default="True"
-                              Others="False"
+                              IfNeither="True"
                               ValueForFalse=""
                               InnerConverter="{uwp:StaticResource TrueToVisibleConverter}" />
     <LengthConverter x:Key="LengthConverter" />
@@ -52,7 +51,7 @@
     </ObjectToBooleanConverter>
     <ObjectToBooleanConverter x:Key="OperationStateToVisibilityConverter"
                               xmlns:VM="using:ExViewer.ViewModels"
-                              Others="True"
+                              IfNeither="True"
                               InnerConverter="{uwp:StaticResource TrueToVisibleConverter}">
         <ObjectToBooleanConverter.ValueForFalse>
             <VM:OperationState>NotStarted</VM:OperationState>

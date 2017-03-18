@@ -32,26 +32,26 @@ namespace ExViewer.Converters
         /// <summary>
         /// Returns when <c>value != ValueForTrue && value != ValueForFalse</c>.
         /// </summary>
-        public bool Others
+        public bool IfNeither
         {
-            get => (bool)GetValue(OthersProperty); set => SetValue(OthersProperty, value);
+            get => (bool)GetValue(IfNeitherProperty);
+            set => SetValue(IfNeitherProperty, value);
         }
-
-        // Using a DependencyProperty as the backing store for Others.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty OthersProperty =
-            DependencyProperty.Register("Others", typeof(bool), typeof(ObjectToBooleanConverter), new PropertyMetadata(false));
+        
+        public static readonly DependencyProperty IfNeitherProperty =
+            DependencyProperty.Register("IfNeither", typeof(bool), typeof(ObjectToBooleanConverter), new PropertyMetadata(false));
 
         /// <summary>
         /// Returns when <c>value == ValueForTrue && value == ValueForFalse</c>.
         /// </summary>
-        public bool Default
+        public bool IfBoth
         {
-            get => (bool)GetValue(DefaultProperty); set => SetValue(DefaultProperty, value);
+            get => (bool)GetValue(IfBothProperty);
+            set => SetValue(IfBothProperty, value);
         }
-
-        // Using a DependencyProperty as the backing store for Default.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DefaultProperty =
-            DependencyProperty.Register("Default", typeof(bool), typeof(ObjectToBooleanConverter), new PropertyMetadata(false));
+        
+        public static readonly DependencyProperty IfBothProperty =
+            DependencyProperty.Register("IfBoth", typeof(bool), typeof(ObjectToBooleanConverter), new PropertyMetadata(false));
 
         private static void ValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -85,12 +85,12 @@ namespace ExViewer.Converters
             var isTrue = Equals(value, this.ValueForTrue);
             var isFalse = Equals(value, this.ValueForFalse);
             if(isTrue && isFalse)
-                return this.Default;
+                return this.IfBoth;
             if(isTrue)
                 return true;
             if(isFalse)
                 return false;
-            return this.Others;
+            return this.IfNeither;
         }
 
         protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
