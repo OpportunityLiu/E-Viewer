@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExViewer.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,6 +38,41 @@ namespace ExViewer.Controls
         private void UserControl_FocusEngaged(Control sender, FocusEngagedEventArgs args)
         {
             this.IsFocusEngaged = false;
+        }
+
+        private async void VoteUp_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await this.Comment.VoteAsync(ExClient.Api.VoteCommand.Up);
+            }
+            catch(Exception ex)
+            {
+                RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+            }
+        }
+
+        private async void VoteDown_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await this.Comment.VoteAsync(ExClient.Api.VoteCommand.Down);
+            }
+            catch(Exception ex)
+            {
+                RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+            }
+        }
+
+        private void Score_Click(object sender, RoutedEventArgs e)
+        {
+            FindName(nameof(this.VotePopup));
+            this.VotePopup.IsOpen = true;
+        }
+
+        private void VotePopUp_Opened(object sender, object e)
+        {
+            ((Popup)sender).Child.FirstDescendantOrSelf<Control>().Focus(FocusState.Programmatic);
         }
     }
 }

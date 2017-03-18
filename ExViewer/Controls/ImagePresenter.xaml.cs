@@ -57,6 +57,12 @@ namespace ExViewer.Controls
             }
         }
 
+        protected override void OnDisconnectVisualChildren()
+        {
+            ClearValue(ImageProperty);
+            base.OnDisconnectVisualChildren();
+        }
+
         private bool loaded;
 
         private static void startTrackImage(ImagePresenter sender, GalleryImage image)
