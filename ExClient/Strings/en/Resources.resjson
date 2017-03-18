@@ -1,12 +1,14 @@
 ﻿{
-    "NoExPermittion": "This account dose not have permittion for exhentai.",
-    "AllFavorites": "All favorites",
-    "RemoveFromFavorites": "Remove from favorites",
-    "ClientDisposed": "The client has been disposed.",
-    "DefaultTitle": "Gallery Title",
-    "DefaultUploader": "Uploader",
-    "ExpungedTorrent": "This torrent has beem expunged.",
-    "OnlyIpv4": "Only IPV4 address supported.",
-    "WrongAccountInfo": "User name or password incorrect.",
-    "WrongCaptcha": "The captcha was not entered correctly. Please try again."
+  "NoExPermittion": "This account dose not have permittion for exhentai.",
+  "AllFavorites": "All favorites",
+  "RemoveFromFavorites": "Remove from favorites",
+  "ClientDisposed": "The client has been disposed.",
+  "DefaultTitle": "Gallery Title",
+  "DefaultUploader": "Uploader",
+  "ExpungedTorrent": "This torrent has beem expunged.",
+  "OnlyIpv4": "Only IPV4 address supported.",
+  "WrongAccountInfo": "User name or password incorrect.",
+  "WrongCaptcha": "The captcha was not entered correctly. Please try again.",
+  "WrongVoteResponse": "The response of the server can't be analyzed.",
+  "WrongVoteState": "Can't vote when you had posted a comment."
 }

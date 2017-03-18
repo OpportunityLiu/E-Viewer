@@ -25,13 +25,13 @@ namespace ExClient
         public int RecordCount
         {
             get => this.rc;
-            protected set => Set(ref this.rc, value, nameof(IsEmpty));
+            protected set => Set(nameof(IsEmpty), ref this.rc, value);
         }
 
         public int PageCount
         {
             get => this.pc;
-            protected set => Set(ref this.pc, value, nameof(HasMoreItems), nameof(LoadedPageCount));
+            protected set => Set(nameof(HasMoreItems), nameof(LoadedPageCount), ref this.pc, value);
         }
 
         protected abstract IAsyncOperation<IReadOnlyList<T>> LoadPageAsync(int pageIndex);

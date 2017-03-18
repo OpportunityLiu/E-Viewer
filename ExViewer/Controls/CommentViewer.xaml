@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:con="using:ExViewer.Converters"
+             xmlns:ex="using:ExClient"
              d:DesignHeight="200"
              d:DesignWidth="400"
              HorizontalContentAlignment="Stretch"
@@ -38,6 +40,131 @@
             <Setter Property="FontWeight"
                     Value="Medium" />
         </Style>
+
+        <Style x:Key="VoteButtonStyle"
+               TargetType="ButtonBase">
+            <Setter Property="Foreground"
+                    Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="BorderBrush"
+                    Value="{ThemeResource SystemControlForegroundTransparentBrush}" />
+            <Setter Property="BorderThickness"
+                    Value="{ThemeResource ButtonBorderThemeThickness}" />
+            <Setter Property="Padding"
+                    Value="4" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="FontFamily"
+                    Value="Segoe MDL2 Assets" />
+            <Setter Property="FontWeight"
+                    Value="Normal" />
+            <Setter Property="FontSize"
+                    Value="{ThemeResource ControlContentThemeFontSize}" />
+            <Setter Property="IsTabStop"
+                    Value="True" />
+            <Setter Property="UseSystemFocusVisuals"
+                    Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="RootGrid"
+                              Background="{TemplateBinding Background}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                           Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource SystemControlHighlightTransparentBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                           Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+                                                                           Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource SystemControlDisabledTransparentBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter x:Name="ContentPresenter"
+                                              Control.IsTemplateFocusTarget="True"
+                                              BorderBrush="{TemplateBinding BorderBrush}"
+                                              BorderThickness="{TemplateBinding BorderThickness}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTransitions="{TemplateBinding ContentTransitions}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Padding="{TemplateBinding Padding}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              AutomationProperties.AccessibilityView="Raw" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="VotedButtonStyle"
+               TargetType="ButtonBase"
+               BasedOn="{StaticResource VoteButtonStyle}">
+            <Setter Property="Foreground"
+                    Value="{ThemeResource SystemControlForegroundAccentBrush}" />
+        </Style>
+        <con:ObjectToBooleanConverter x:Key="ConUp">
+            <con:ObjectToBooleanConverter.ValueForTrue>
+                <ex:CommentStatus>VotedUp</ex:CommentStatus>
+            </con:ObjectToBooleanConverter.ValueForTrue>
+            <con:InvertConverter>
+                <con:ObjectToBooleanConverter ValueForTrue="{StaticResource VotedButtonStyle}"
+                                              ValueForFalse="{StaticResource VoteButtonStyle}" />
+            </con:InvertConverter>
+        </con:ObjectToBooleanConverter>
+        <con:ObjectToBooleanConverter x:Key="ConDown">
+            <con:ObjectToBooleanConverter.ValueForTrue>
+                <ex:CommentStatus>VotedDown</ex:CommentStatus>
+            </con:ObjectToBooleanConverter.ValueForTrue>
+            <con:InvertConverter>
+                <con:ObjectToBooleanConverter ValueForTrue="{StaticResource VotedButtonStyle}"
+                                              ValueForFalse="{StaticResource VoteButtonStyle}" />
+            </con:InvertConverter>
+        </con:ObjectToBooleanConverter>
     </UserControl.Resources>
     <RelativePanel Padding="4,8,4,20">
         <VisualStateManager.VisualStateGroups>
@@ -77,13 +204,61 @@
         <TextBlock x:Name="Author"
                    Style="{StaticResource CommentHeaderTextBlockStyle}"
                    Text="{x:Bind Comment.Author, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/AuthorFormatString'}" />
-        <TextBlock x:Name="Score"
-                   HorizontalAlignment="Right"
-                   RelativePanel.AlignRightWithPanel="True"
-                   RelativePanel.AlignTopWith="Author"
-                   Style="{StaticResource CommentHeaderTextBlockStyle}"
-                   Text="{x:Bind Comment.Score, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/ScoreFormatString'}"
-                   Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}" />
+        <HyperlinkButton x:Name="Score"
+                         XYFocusDown="{x:Bind Text.FirstLink, Mode=OneWay}"
+                         XYFocusLeft="{x:Bind Text.FirstLink, Mode=OneWay}"
+                         Style="{ThemeResource NormalTextBlockButtonStyle}"
+                         Padding="0"
+                         IsEnabled="{x:Bind Comment.CanVote, Mode=OneWay, FallbackValue=False}"
+                         Click="Score_Click"
+                         HorizontalAlignment="Right"
+                         RelativePanel.AlignRightWithPanel="True"
+                         RelativePanel.AlignTopWith="Author"
+                         Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}">
+            <TextBlock Style="{StaticResource CommentHeaderTextBlockStyle}"
+                       Text="{x:Bind Comment.Score, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/ScoreFormatString'}" />
+        </HyperlinkButton>
+        <Popup x:Name="VotePopup"
+               x:DeferLoadStrategy="Lazy"
+               HorizontalOffset="-33"
+               VerticalOffset="-29"
+               IsLightDismissEnabled="True"
+               RelativePanel.Above=""
+               RelativePanel.AlignVerticalCenterWith="Score"
+               RelativePanel.AlignLeftWith="Score"
+               Opened="VotePopUp_Opened">
+            <Popup.ChildTransitions>
+                <TransitionCollection>
+                    <PopupThemeTransition />
+                </TransitionCollection>
+            </Popup.ChildTransitions>
+            <Grid BorderThickness="1"
+                  Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                  BorderBrush="{ThemeResource SystemControlForegroundChromeHighBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="28" />
+                    <RowDefinition Height="28" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.RowSpan="2"
+                           Grid.Column="1"
+                           Style="{StaticResource CommentHeaderTextBlockStyle}"
+                           Text="{x:Bind Comment.Score, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/ScoreFormatString'}"
+                           VerticalAlignment="Center" />
+                <Button x:Name="VoteUp"
+                        Click="VoteUp_Click"
+                        Content="&#xEB11;"
+                        Style="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConUp}}" />
+                <Button x:Name="VoteDown"
+                        Grid.Row="1"
+                        Click="VoteDown_Click"
+                        Content="&#xEB0F;"
+                        Style="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConDown}}" />
+            </Grid>
+        </Popup>
         <TextBlock x:Name="IsUploaderComment"
                    x:Uid="Controls/CommentViewer/IsUploaderCommentTextBlock"
                    HorizontalAlignment="Right"
@@ -91,10 +266,11 @@
                    RelativePanel.AlignTopWith="Author"
                    Style="{StaticResource CommentHeaderTextBlockStyle}"
                    Text="Uploader Comment"
-                   Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
+                   Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}, FallbackValue=Collapsed}" />
         <local:HtmlTextBlock x:Name="Text"
                              Margin="12,12,12,4"
                              DetectLink="True"
+                             XYFocusUp="{x:Bind Score}"
                              HtmlContent="{x:Bind Comment.Content, Mode=OneWay}"
                              Pivot.SlideInAnimationGroup="GroupOne"
                              RelativePanel.AlignLeftWithPanel="True"

@@ -30,6 +30,63 @@ namespace ExViewer.Controls
             this.DefaultStyleKey = typeof(HtmlTextBlock);
             this.Loaded += this.OnLoaded;
             this.Unloaded += this.OnUnloaded;
+            RegisterPropertyChangedCallback(XYFocusDownProperty, XYPropertyChanged);
+            RegisterPropertyChangedCallback(XYFocusUpProperty, XYPropertyChanged);
+            RegisterPropertyChangedCallback(XYFocusLeftProperty, XYPropertyChanged);
+            RegisterPropertyChangedCallback(XYFocusRightProperty, XYPropertyChanged);
+        }
+
+        private void XYPropertyChanged(DependencyObject sender, DependencyProperty e)
+        {
+            if(!this.HasHyperlinks)
+                return;
+            var u = this.XYFocusUp;
+            var d = this.XYFocusDown;
+            var l = this.XYFocusLeft;
+            var r = this.XYFocusRight;
+            var begin = this.FirstLink;
+            switch(begin)
+            {
+            case Hyperlink hl:
+                hl.XYFocusUp = this.XYFocusUp;
+                break;
+            case HyperlinkButton hlb:
+                hlb.XYFocusUp = this.XYFocusUp;
+                break;
+            default:
+                throw new InvalidOperationException();
+            }
+            var end = this.LastLink;
+            switch(end)
+            {
+            case Hyperlink hl:
+                hl.XYFocusDown = this.XYFocusDown;
+                break;
+            case HyperlinkButton hlb:
+                hlb.XYFocusDown = this.XYFocusDown;
+                break;
+            default:
+                throw new InvalidOperationException();
+            }
+            var o = begin;
+            while(o != null)
+            {
+                switch(o)
+                {
+                case Hyperlink hl:
+                    hl.XYFocusLeft = this.XYFocusLeft;
+                    hl.XYFocusRight = this.XYFocusRight;
+                    o = hl.XYFocusDown;
+                    break;
+                case HyperlinkButton hlb:
+                    hlb.XYFocusLeft = this.XYFocusLeft;
+                    hlb.XYFocusRight = this.XYFocusRight;
+                    o = hlb.XYFocusDown;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+                }
+            }
         }
 
         private RichTextBlock Presenter;
@@ -66,6 +123,24 @@ namespace ExViewer.Controls
         public static readonly DependencyProperty DetectLinkProperty =
             DependencyProperty.Register("DetectLink", typeof(bool), typeof(HtmlTextBlock), new PropertyMetadata(false, DetectLinkPropertyChanged));
 
+        public DependencyObject FirstLink
+        {
+            get => (DependencyObject)GetValue(FirstLinkProperty);
+            private set => SetValue(FirstLinkProperty, value);
+        }
+
+        public static readonly DependencyProperty FirstLinkProperty =
+            DependencyProperty.Register(nameof(FirstLink), typeof(DependencyObject), typeof(HtmlTextBlock), new PropertyMetadata(null));
+
+        public DependencyObject LastLink
+        {
+            get => (DependencyObject)GetValue(LastLinkProperty);
+            private set => SetValue(LastLinkProperty, value);
+        }
+
+        public static readonly DependencyProperty LastLinkProperty =
+            DependencyProperty.Register(nameof(LastLink), typeof(DependencyObject), typeof(HtmlTextBlock), new PropertyMetadata(null));
+
         public static void DetectLinkPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var s = (HtmlTextBlock)sender;
@@ -78,21 +153,64 @@ namespace ExViewer.Controls
             var htmlContent = this.HtmlContent;
             if(presenter == null)
                 return;
+            if(this.HasHyperlinks)
+            {
+                var l = this.FirstLink;
+                while(l != null)
+                {
+                    switch(l)
+                    {
+                    case Hyperlink hl:
+                        hl.XYFocusLeft = null;
+                        hl.XYFocusRight = null;
+                        hl.XYFocusUp = null;
+                        l = hl.XYFocusDown;
+                        hl.XYFocusDown = null;
+                        break;
+                    case HyperlinkButton hlb:
+                        hlb.XYFocusLeft = null;
+                        hlb.XYFocusRight = null;
+                        hlb.XYFocusUp = null;
+                        l = hlb.XYFocusDown;
+                        hlb.XYFocusDown = null;
+                        break;
+                    default:
+                        throw new InvalidOperationException();
+                    }
+                }
+            }
             presenter.Blocks.Clear();
             if(htmlContent == null)
+            {
+                this.HasHyperlinks = false;
+                this.FirstLink = null;
+                this.LastLink = null;
                 return;
+            }
             var para = new Paragraph();
             presenter.Blocks.Add(para);
             var links = await loadHtmlAsync(para, htmlContent, this.DetectLink);
             if(presenter == this.Presenter && htmlContent == this.HtmlContent)
             {
-                this.HasHyperlinks = links.Count != 0;
                 if(links.Count > 1)
                 {
-                    for(int i = 0; i < links.Count - 1; i++)
+                    for(var i = 0; i < links.Count - 1; i++)
                     {
                         link(links[i], links[i + 1]);
                     }
+                }
+                if(links.Count != 0)
+                {
+                    this.HasHyperlinks = true;
+                    this.FirstLink = links.First();
+                    this.LastLink = links.Last();
+                    XYPropertyChanged(this, null);
+                }
+                else
+                {
+                    this.HasHyperlinks = false;
+                    this.FirstLink = null;
+                    this.LastLink = null;
                 }
             }
         }
@@ -135,7 +253,8 @@ namespace ExViewer.Controls
 
         public bool HasHyperlinks
         {
-            get => (bool)GetValue(HasHyperlinksProperty); private set
+            get => (bool)GetValue(HasHyperlinksProperty);
+            private set
             {
                 this.canChangeHasHyperlinks = true;
                 SetValue(HasHyperlinksProperty, value);
@@ -153,7 +272,6 @@ namespace ExViewer.Controls
             if(!s.canChangeHasHyperlinks)
             {
                 s.HasHyperlinks = (bool)e.OldValue;
-                throw new InvalidOperationException();
             }
         }
 
@@ -333,6 +451,12 @@ namespace ExViewer.Controls
             var bitmap = (BitmapImage)image.Source;
             image.Width = bitmap.PixelWidth / scaleRate;
             image.Height = bitmap.PixelHeight / scaleRate;
+        }
+
+        protected override void OnDisconnectVisualChildren()
+        {
+            ClearValue(HtmlContentProperty);
+            base.OnDisconnectVisualChildren();
         }
 
         private static DisplayInformation dpi = DisplayInformation.GetForCurrentView();

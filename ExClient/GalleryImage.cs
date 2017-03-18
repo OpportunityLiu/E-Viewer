@@ -382,7 +382,7 @@ namespace ExClient
         public string ImageKey
         {
             get => this.imageKey;
-            protected set => Set(ref this.imageKey, value, nameof(PageUri));
+            protected set => Set(nameof(PageUri), ref this.imageKey, value);
         }
 
         private string failToken;

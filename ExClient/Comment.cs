@@ -1,8 +1,10 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -11,7 +13,7 @@ namespace ExClient
 {
     public sealed class Comment : ObservableObject
     {
-        internal static IEnumerable<Comment> AnalyzeDocument(HtmlDocument document)
+        internal static IEnumerable<Comment> AnalyzeDocument(CommentCollection owner, HtmlDocument document)
         {
             var commentNodes = document.GetElementbyId("cdiv").ChildNodes;
             for(var i = 0; i < commentNodes.Count; i += 2)
@@ -21,14 +23,15 @@ namespace ExClient
                 if(headerNode.Name != "a" || commentNode.Name != "div")
                     break;
                 var id = int.Parse(headerNode.GetAttributeValue("name", "c0").Substring(1));
-                yield return new Comment(id, commentNode);
+                yield return new Comment(owner, id, commentNode);
             }
         }
 
         private static Regex voteRegex = new Regex(@"^(.+?)\s+([+-]\d+)$", RegexOptions.Compiled | RegexOptions.Singleline);
 
-        private Comment(int id, HtmlNode commentNode)
+        private Comment(CommentCollection owner, int id, HtmlNode commentNode)
         {
+            this.Owner = owner;
             var culture = System.Globalization.CultureInfo.InvariantCulture;
             var document = commentNode.OwnerDocument;
             this.Id = id;
@@ -68,6 +71,8 @@ namespace ExClient
             }
         }
 
+        public CommentCollection Owner { get; }
+
         public int Id { get; }
 
         public string Author { get; }
@@ -88,12 +93,54 @@ namespace ExClient
             set => Set(ref this.score, value);
         }
 
+        public bool CanVote => this.status == CommentStatus.Votable
+            || this.status == CommentStatus.VotedUp
+            || this.status == CommentStatus.VotedDown;
+
+        public IAsyncAction VoteAsync(Api.VoteCommand command)
+        {
+            if(!this.CanVote)
+                throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteState);
+            var request = new Api.CommentVote(this, command);
+            return AsyncInfo.Run(async token =>
+            {
+                var res = await Client.Current.HttpClient.PostApiAsync(request);
+                var r = JsonConvert.DeserializeObject<CommentResult>(res);
+                if(this.Id != r.comment_id)
+                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
+                switch(r.comment_vote)
+                {
+                case Api.VoteCommand.Default:
+                    this.Status = CommentStatus.Votable;
+                    break;
+                case Api.VoteCommand.Up:
+                    this.Status = CommentStatus.VotedUp;
+                    break;
+                case Api.VoteCommand.Down:
+                    this.Status = CommentStatus.VotedDown;
+                    break;
+                }
+                this.Score = r.comment_score;
+            });
+        }
+
         private CommentStatus status;
 
         public CommentStatus Status
         {
             get => status;
-            set => Set(ref this.status, value);
+            set => Set(nameof(CanVote), ref this.status, value);
+        }
+
+        private class CommentResult
+        {
+#pragma warning disable IDE1006 // 命名样式
+#pragma warning disable CS0649
+            public int comment_id;
+            public int comment_score;
+            public Api.VoteCommand comment_vote;
+#pragma warning restore CS0649
+#pragma warning restore IDE1006 // 命名样式
         }
     }
 
