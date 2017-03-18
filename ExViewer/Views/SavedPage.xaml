@@ -29,6 +29,18 @@
     </Page.Transitions>
 
     <RelativePanel>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <local:DeviceTrigger ActiveType="Windows.Desktop" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="lv.CanDragItems" Value="True"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <CommandBar x:Name="cb_top"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True"
@@ -56,7 +68,6 @@
                                   RelativePanel.Below="cb_top"
                                   ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
                                   Style="{StaticResource GalleryListViewStyle}"
-                                  CanDragItems="True"
                                   DragItemsStarting="lv_DragItemsStarting"
                                   ItemClick="lv_ItemClick"
                                   ContextCanceled="lv_ContextCanceled"

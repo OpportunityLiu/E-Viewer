@@ -103,7 +103,7 @@
             </FlipView.ItemContainerStyle>
         </FlipView>
         <CommandBar x:Name="cb_top"
-                    XYFocusDown="{x:Bind fv}"
+                    KeyDown="cb_top_KeyDown"
                     HorizontalContentAlignment="Stretch"
                     Closing="cb_top_Closing"
                     Closed="cb_top_Closed"

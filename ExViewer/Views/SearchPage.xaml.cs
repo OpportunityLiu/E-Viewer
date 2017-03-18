@@ -60,7 +60,6 @@ namespace ExViewer.Views
             }
             if(e.NavigationMode == NavigationMode.Back)
             {
-                this.VM.SetQueryWithSearchResult();
                 var selectedGallery = this.VM.SelectedGallery;
                 if(selectedGallery != null)
                 {
@@ -69,6 +68,7 @@ namespace ExViewer.Views
                     ((Control)this.lv.ContainerFromItem(selectedGallery))?.Focus(FocusState.Programmatic);
                 }
             }
+            this.VM.SetQueryWithSearchResult();
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

@@ -102,7 +102,7 @@ namespace ExViewer.Views
                 e.Cancel = true;
                 return;
             }
-            FlyoutBase.GetAttachedFlyout((FrameworkElement)((ListViewItem)this.lv.ContainerFromItem(item)).ContentTemplateRoot).Hide();
+            this.mf_Gallery.Hide();
             e.Data.SetDataProvider(StandardDataFormats.StorageItems, async request =>
             {
                 var d = request.GetDeferral();
