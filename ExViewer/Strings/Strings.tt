@@ -192,11 +192,9 @@
         }
 
         public string IRPName => "IResourceProvider";
-        public string IGRPName => "IGeneratedResourceProvider";
         public string GRPName => "GeneratedResourceProvider";
 
         public string IRPFullName => InterfaceFullName(IRPName, null);
-        public string IGRPFullName => InterfaceFullName(IGRPName, null);
         public string GRPFullName => InterfaceFullName(GRPName, null);
     }
 
@@ -242,9 +240,9 @@
             get
             {
                 if(PropertiesClass.Current.IsDefaultProject)
-                    return $"ms-resource:///{Name}";
+                    return $"ms-resource:///{Encode(Name)}";
                 else
-                    return $"ms-resource:///{PropertiesClass.Current.ProjectAssemblyName}/{Name}";
+                    return $"ms-resource:///{Encode(PropertiesClass.Current.ProjectAssemblyName)}/{Encode(Name)}";
             }
         }
         public override string INs => PropertiesClass.Current.InterfacesNamespace;
@@ -254,6 +252,16 @@
 
     public class ResourceNode
     {
+        protected static string Encode(string name)
+        {
+            return name.Replace("%", "%25")
+                .Replace("?", "%3F")
+                .Replace("#", "%23")
+                .Replace("/", "%2F")
+                .Replace("*", "%2A")
+                .Replace("\"", "%22");
+        }
+
         public static ResourceNode GetNode(string name, string value)
         {
             return new ResourceNode(name, value);
@@ -324,7 +332,7 @@
         public string Name { get; }
         public string Value { get; }
 
-        public virtual string RName => Helper.CombineResourcePath(Parent?.RName, Name);
+        public virtual string RName => Helper.CombineResourcePath(Parent?.RName, Encode(Name));
 
         public string IName { get; private set; }
         public virtual string INs => $"{Parent.INs}.{Parent.PName}";
@@ -379,7 +387,7 @@
     public void WriteAttributsForClass(int indent)
     {
         if(!Properties.DebugGeneratedCode)
-            WriteLine(indent, $@"[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]");
+            WriteLine(indent, $@"[global::System.Diagnostics.DebuggerNonUserCodeAttribute]");
         WriteLine(indent, $@"[global::System.CodeDom.Compiler.GeneratedCodeAttribute(""{ProductName}"", ""{ProductVersion}"")]");
     }
 
@@ -409,21 +417,17 @@
         WriteLine(indent, $"    string GetValue(string resourceKey);");
         WriteLine(indent, $"}}");
         WriteLine();
-        WriteAttributsForInterface(indent);
-        WriteLine(indent, $"{Properties.Modifier} interface {Properties.IGRPName} : {Properties.IRPFullName}");
-        WriteLine(indent, $"{{");
-        WriteLine(indent, $"    string Value {{ get; }}");
-        WriteLine(indent, $"}}");
-        WriteLine();
         WriteAttributsForClass(indent);
-        WriteLine(indent, $@"[System.Diagnostics.DebuggerDisplay(""\\{{{{key,nq}}\\}}"")]");
-        WriteLine(indent, $"{Properties.Modifier} struct {Properties.GRPName} : {Properties.IGRPFullName}");
+        WriteLine(indent, $@"[global::System.Diagnostics.DebuggerDisplay(""[{{key,nq}}] = {{Value}}"")]");
+        WriteLine(indent, $"{Properties.Modifier} struct {Properties.GRPName} : {Properties.IRPFullName}");
         WriteLine(indent, $"{{");
         WriteLine(indent, $"    {Properties.Modifier} {Properties.GRPName}(string key)");
         WriteLine(indent, $"    {{");
         WriteLine(indent, $"        this.key = key;");
         WriteLine(indent, $"    }}");
         WriteLine();
+        if(!Properties.DebugGeneratedCode)
+            WriteLine(indent, @"    [global::System.Diagnostics.DebuggerBrowsable(global::System.Diagnostics.DebuggerBrowsableState.Never)]");
         WriteLine(indent, $"    private readonly string key;");
         WriteLine();
         WriteLine(indent, $"    public string Value => {Properties.LocalizedStringsFullName}.GetValue(key);");
@@ -537,7 +541,7 @@
         WriteLine(indent, $"{Properties.Modifier} static {node.IFName} {node.PName} {{ get; }} = new {node.CFName}();");
         WriteLine();
         WriteAttributsForClass(indent);
-        WriteLine(indent, $@"[System.Diagnostics.DebuggerDisplay(""\\{{{Helper.AsLiteral(node.RName)}\\}}"")]");
+        WriteLine(indent, $@"[global::System.Diagnostics.DebuggerDisplay(""[{Helper.AsLiteral(node.RName)}]"")]");
         WriteLine(indent, $"private sealed class {node.CName} : {node.IFName}");
         WriteLine(indent, $"{{");
         WriteLine(indent, $"    {Properties.GRPFullName} {Properties.IRPFullName}.this[string resourceKey]");
@@ -575,7 +579,7 @@
         WriteLine(indent, $@"{node.IFName} {node.Parent.IFName}.{node.PName} {{ get; }} = new {node.CFName}();");
         WriteLine();
         WriteAttributsForClass(indent);
-        WriteLine(indent, $@"[System.Diagnostics.DebuggerDisplay(""\\{{{Helper.AsLiteral($"{node.RName}")}\\}}"")]");
+        WriteLine(indent, $@"[global::System.Diagnostics.DebuggerDisplay(""[{Helper.AsLiteral($"{node.RName}")}]"", Name = ""{Helper.AsLiteral(node.PName)}"")]");
         WriteLine(indent, $@"private sealed class {node.CName} : {node.IFName}");
         WriteLine(indent, $@"{{");
         WriteLine(indent, $@"    {Properties.GRPFullName} {Properties.IRPFullName}.this[string resourceKey]");
@@ -610,7 +614,7 @@
 
     public void WriteProperty(int indent, ResourceNode node)
     {
-        WriteLine(indent, $@"string {node.Parent.IFName}.{node.PName}");
+        WriteLine(indent, $@"public {Helper.CPropModifier(node.PName)}string {node.PName}");
         WriteLine(indent + 1, $@"=> {Properties.LocalizedStringsFullName}.GetValue(""{Helper.AsLiteral(node.RName)}"");");
     }
 
@@ -724,7 +728,8 @@
     {
         public static HashSet<string> Keywords = new HashSet<string>() { "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char", "checked", "class", "const", "continue", "decimal", "default", "delegate", "do", "double", "else", "enum", "event", "explicit", "extern", "false", "finally", "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface", "internal", "is", "lock", "long", "namespace", "new", "null", "object", "operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct", "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using", "virtual", "void", "volatile", "while" };
 
-        private static HashSet<string> used = new HashSet<string>() { "GetValue" };
+        private static HashSet<string> usedInInterface = new HashSet<string>() { "GetValue" };
+        private static HashSet<string> usedInClass = new HashSet<string>() { "ReferenceEquals", "Equals", "GetHashCode", "GetType", "ToString", "MemberwiseClone" };
 
         public static string CombineResourcePath(string root, string reletive) => string.IsNullOrEmpty(root) ? reletive : $"{root}/{reletive}";
 
@@ -771,7 +776,14 @@
 
         public static string IPropModifier(string name)
         {
-            if(used.Contains(name))
+            if(usedInInterface.Contains(name))
+                return "new ";
+            return "";
+        }
+
+        public static string CPropModifier(string name)
+        {
+            if(usedInClass.Contains(name))
                 return "new ";
             return "";
         }
