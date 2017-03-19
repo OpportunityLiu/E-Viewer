@@ -114,12 +114,19 @@ namespace ExViewer.Views
             this.manager.BackRequested -= this.Manager_BackRequested;
         }
 
+        private Task goBackTask = Task.CompletedTask;
+
         private void Manager_BackRequested(object sender, BackRequestedEventArgs e)
         {
             if(this.fm_inner.CanGoBack && !RootController.ViewDisabled)
             {
-                this.fm_inner.GoBack();
                 e.Handled = true;
+                if(this.goBackTask.IsCompleted)
+                {
+                    this.fm_inner.GoBack();
+                    // prevent double click
+                    this.goBackTask = Task.Delay(180);
+                }
             }
         }
 
@@ -175,12 +182,12 @@ namespace ExViewer.Views
             e.Handled = true;
             switch(e.OriginalKey)
             {
-                case Windows.System.VirtualKey.GamepadView:
-                    RootController.SwitchSplitView(null);
-                    break;
-                default:
-                    e.Handled = false;
-                    break;
+            case Windows.System.VirtualKey.GamepadView:
+                RootController.SwitchSplitView(null);
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 
@@ -188,12 +195,12 @@ namespace ExViewer.Views
         {
             switch(this.sv_root.DisplayMode)
             {
-                case SplitViewDisplayMode.Overlay:
-                    RootController.SetSplitViewButtonPlaceholderVisibility(true);
-                    break;
-                case SplitViewDisplayMode.CompactOverlay:
-                    RootController.SetSplitViewButtonPlaceholderVisibility(false);
-                    break;
+            case SplitViewDisplayMode.Overlay:
+                RootController.SetSplitViewButtonPlaceholderVisibility(true);
+                break;
+            case SplitViewDisplayMode.CompactOverlay:
+                RootController.SetSplitViewButtonPlaceholderVisibility(false);
+                break;
             }
         }
 
