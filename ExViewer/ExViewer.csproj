@@ -194,6 +194,9 @@
     <Compile Include="Views\CachedPage.xaml.cs">
       <DependentUpon>CachedPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CommentDialog.xaml.cs">
+      <DependentUpon>CommentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EhWikiDialog.xaml.cs">
       <DependentUpon>EhWikiDialog.xaml</DependentUpon>
     </Compile>
@@ -378,6 +381,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CachedPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CommentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

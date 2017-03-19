@@ -26,6 +26,8 @@ namespace ExViewer.Controls
             this.InitializeComponent();
         }
 
+        private static EditCommentDialog editDialog = new EditCommentDialog();
+
         public Comment Comment
         {
             get => (Comment)GetValue(CommentProperty); set => SetValue(CommentProperty, value);
@@ -73,6 +75,12 @@ namespace ExViewer.Controls
         private void VotePopUp_Opened(object sender, object e)
         {
             ((Popup)sender).Child.FirstDescendantOrSelf<Control>().Focus(FocusState.Programmatic);
+        }
+
+        private async void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            editDialog.EditableComment = this.Comment;
+            await editDialog.ShowAsync();
         }
     }
 }

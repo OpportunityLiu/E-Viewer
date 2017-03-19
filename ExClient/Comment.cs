@@ -81,16 +81,26 @@ namespace ExClient
 
         public DateTimeOffset Posted { get; }
 
-        public DateTimeOffset? Edited { get; }
+        private DateTimeOffset? edited;
+        public DateTimeOffset? Edited
+        {
+            get => this.edited;
+            internal set => Set(ref this.edited, value);
+        }
 
-        public HtmlNode Content { get; }
+        private HtmlNode content;
+        public HtmlNode Content
+        {
+            get => this.content;
+            internal set => Set(ref this.content, value);
+        }
 
         private int score;
 
         public int Score
         {
             get => score;
-            set => Set(ref this.score, value);
+            internal set => Set(ref this.score, value);
         }
 
         public bool CanVote => this.status == CommentStatus.Votable
@@ -105,7 +115,8 @@ namespace ExClient
             return AsyncInfo.Run(async token =>
             {
                 var res = await Client.Current.HttpClient.PostApiAsync(request);
-                var r = JsonConvert.DeserializeObject<CommentResult>(res);
+                var r = JsonConvert.DeserializeObject<CommentVoteResponse>(res);
+                r.CheckResponse();
                 if(this.Id != r.comment_id)
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
                 switch(r.comment_vote)
@@ -124,24 +135,62 @@ namespace ExClient
             });
         }
 
+        public bool CanEdit => this.status == CommentStatus.Editable;
+
+        public IAsyncOperation<string> FetchEditableAsync()
+        {
+            if(!this.CanEdit)
+                throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
+            var request = new Api.CommentEdit(this);
+            return AsyncInfo.Run(async token =>
+            {
+                var res = await Client.Current.HttpClient.PostApiAsync(request);
+                var r = JsonConvert.DeserializeObject<CommentEditResponse>(res);
+                r.CheckResponse();
+                var doc = new HtmlDocument();
+                doc.LoadHtml(r.editable_comment);
+                var textArea = doc.DocumentNode.Descendants("textarea").FirstOrDefault();
+                if(textArea == null)
+                    return "";
+                return HtmlEntity.DeEntitize(textArea.InnerText);
+            });
+        }
+
+        public IAsyncAction EditAsync(string content)
+        {
+            if(!this.CanEdit)
+                throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
+            return this.Owner.PostFormAsync(content, this);
+        }
+
         private CommentStatus status;
 
         public CommentStatus Status
         {
             get => status;
-            set => Set(nameof(CanVote), ref this.status, value);
+            internal set => Set(nameof(CanVote), nameof(CanEdit), ref this.status, value);
         }
 
-        private class CommentResult
-        {
 #pragma warning disable IDE1006 // 命名样式
 #pragma warning disable CS0649
+        private class CommentResponse : Api.ApiResponse
+        {
             public int comment_id;
+
+        }
+
+        private class CommentVoteResponse : CommentResponse
+        {
             public int comment_score;
             public Api.VoteCommand comment_vote;
+        }
+
+        private class CommentEditResponse : CommentResponse
+        {
+            public string editable_comment;
+        }
 #pragma warning restore CS0649
 #pragma warning restore IDE1006 // 命名样式
-        }
     }
 
     public enum CommentStatus

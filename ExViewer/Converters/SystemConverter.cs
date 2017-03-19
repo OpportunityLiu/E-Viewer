@@ -34,5 +34,14 @@ namespace ExViewer.Converters
                 return DependencyProperty.UnsetValue;
             }
         }
+
+        public static T ChangeType<T>(object value)
+        {
+            if(value is T v)
+                return v;
+            if(value == null && default(T) == null)
+                return default(T);
+            return (T)System.Convert.ChangeType(value, typeof(T));
+        }
     }
 }

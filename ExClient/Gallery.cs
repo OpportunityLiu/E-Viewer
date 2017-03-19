@@ -46,7 +46,7 @@ namespace ExClient
             }).AsAsyncOperation();
         }
 
-        private class GalleryResult
+        private class GalleryResult : ApiResponse
         {
 #pragma warning disable IDE1006 // 命名样式
 #pragma warning disable CS0649
@@ -70,9 +70,11 @@ namespace ExClient
                     var pageSize = MathHelper.GetSizeOfPage(galleryInfo.Count, 25, i);
                     var startIndex = MathHelper.GetStartIndexOfPage(25, i);
                     var str = await Client.Current.HttpClient.PostApiAsync(new GalleryData(galleryInfo, startIndex, pageSize));
-                    var re = JsonConvert.DeserializeObject<GalleryResult>(str).gmetadata;
-                    re.ForEach(myinit);
-                    re.CopyTo(result, startIndex);
+                    var re = JsonConvert.DeserializeObject<GalleryResult>(str);
+                    re.CheckResponse();
+                    var data = re.gmetadata;
+                    data.ForEach(myinit);
+                    data.CopyTo(result, startIndex);
                 }
                 return result;
             });
@@ -422,7 +424,7 @@ namespace ExClient
                 updateFavoriteInfo(html);
                 if(needLoadComments)
                 {
-                    this.Comments.AnalyzeDocument(html);
+                    this.Comments.AnalyzeDocument(html, false);
                 }
                 if(this.Revisions == null)
                     this.Revisions = new RevisionCollection(this, html);

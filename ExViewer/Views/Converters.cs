@@ -61,7 +61,7 @@ namespace ExViewer.Views
     public class RateStringConverter : ValueConverter
     {
         const char halfL = '\xE7C6';
-        const char full = '\xE00A';
+        const char full = '\xE1CF';
 
         public override object Convert(object value, Type targetType, object parameter, string language)
         {

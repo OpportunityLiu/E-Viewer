@@ -95,7 +95,7 @@ namespace ExViewer.Converters
 
         protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
         {
-            var v = (bool)value;
+            var v = SystemConverter.ChangeType<bool>(value);
             if(v)
                 return this.ValueForTrue;
             else

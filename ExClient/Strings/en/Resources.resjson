@@ -10,5 +10,9 @@
   "WrongAccountInfo": "User name or password incorrect.",
   "WrongCaptcha": "The captcha was not entered correctly. Please try again.",
   "WrongVoteResponse": "The response of the server can't be analyzed.",
-  "WrongVoteState": "Can't vote when you had posted a comment."
+  "WrongVoteState": "Can't vote when you had posted a comment.",
+  "WrongEditState": "Can only edit own comment.",
+  "EmptyComment": "You did not enter a valid comment.",
+  "ShortComment": "Your comment is too short.",
+  "WrongGalleryState": "You can only add comments for active galleries."
 }
