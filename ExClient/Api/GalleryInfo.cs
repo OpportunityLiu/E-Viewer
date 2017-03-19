@@ -10,7 +10,7 @@ namespace ExClient.Api
     [JsonConverter(typeof(GalleryInfoConverter))]
     public struct GalleryInfo : IEquatable<GalleryInfo>
     {
-        private class GalleryInfoResult
+        private class GalleryInfoResult : ApiResponse
         {
 #pragma warning disable IDE1006
 #pragma warning disable CS0649
@@ -24,7 +24,9 @@ namespace ExClient.Api
             return Run<IReadOnlyList<GalleryInfo>>(async token =>
             {
                 var result = await Client.Current.HttpClient.PostApiAsync(new GalleryToken(pageList));
-                return JsonConvert.DeserializeObject<GalleryInfoResult>(result).tokenlist;
+                var res = JsonConvert.DeserializeObject<GalleryInfoResult>(result);
+                res.CheckResponse();
+                return res.tokenlist;
             });
         }
 

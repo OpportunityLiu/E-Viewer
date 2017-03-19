@@ -166,18 +166,19 @@ namespace ExViewer.Views
                 }
             }
 
-            public static IAsyncOperation<ContentDialogResult> RequestLogOn()
+            public static IAsyncOperation<bool> RequestLogOn()
             {
                 return Run(async token =>
                 {
-                    var result = await new LogOnDialog().ShowAsync();
-                    JYAnalytics.TrackEvent("LogOnRequested", $"Result: {result}");
-                    UpdateUserInfo(result == ContentDialogResult.Primary);
-                    if(!Client.Current.NeedLogOn)
+                    await new LogOnDialog().ShowAsync();
+                    var succeed = !Client.Current.NeedLogOn;
+                    JYAnalytics.TrackEvent("LogOnRequested", $"Result: {(succeed ? "Succeed" : "Failed")}");
+                    UpdateUserInfo(succeed);
+                    if(succeed)
                     {
                         Settings.SettingCollection.Current.Apply();
                     }
-                    return result;
+                    return succeed;
                 });
             }
 

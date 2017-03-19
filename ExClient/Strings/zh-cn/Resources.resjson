@@ -10,5 +10,9 @@
   "WrongAccountInfo": "用户名或密码错误。",
   "WrongCaptcha": "验证码输入错误，请重试。",
   "WrongVoteResponse": "服务器返回结果有误。",
-  "WrongVoteState": "发表评论后无法投票。"
+  "WrongVoteState": "发表评论后无法投票。",
+  "WrongEditState": "你只能编辑自己的评论。",
+  "EmptyComment": "输入不能为空。",
+  "ShortComment": "评论内容太短。",
+  "WrongGalleryState": "当前画廊处于非活动状态，无法添加评论。"
 }

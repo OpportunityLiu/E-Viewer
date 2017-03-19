@@ -4,34 +4,38 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Globalization.DateTimeFormatting;
 
 namespace ExViewer.Converters
 {
     [Windows.UI.Xaml.Markup.ContentProperty(Name = nameof(InnerConverter))]
     public class DateTimeToStringConverter : ChainConverter
     {
+        private static DateTimeFormatter formatter = new DateTimeFormatter("shortdate shorttime");
+
         protected override object ConvertImpl(object value, Type targetType, object parameter, string language)
         {
-            var r = (string)null;
             if(value == null)
             {
-                r = string.Empty;
+                return "";
             }
             else
             {
-                var currentType = value.GetType();
-                if(currentType == typeof(DateTimeOffset))
+                DateTimeOffset d;
+                if(value is DateTimeOffset dto)
                 {
-                    var date = (DateTimeOffset)value;
-                    r = date.LocalDateTime.ToString(CultureInfo.CurrentCulture);
+                    d = dto.ToLocalTime();
                 }
-                else if(currentType == typeof(DateTime))
+                else if(value is DateTime dt)
                 {
-                    var date = (DateTime)value;
-                    r = date.ToString(CultureInfo.CurrentCulture);
+                    d = new DateTimeOffset(dt).ToLocalTime();
                 }
+                else
+                {
+                    return "";
+                }
+                return formatter.Format(d);
             }
-            return r;
         }
 
         protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)

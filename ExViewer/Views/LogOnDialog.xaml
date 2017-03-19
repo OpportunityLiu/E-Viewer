@@ -9,9 +9,9 @@
                Loaded="ContentDialog_Loaded"
                PrimaryButtonText="OK"
                SecondaryButtonText="?"
+               Opened="ContentDialog_Opened"
                Closing="ContentDialog_Closing"
                PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-               SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
                IsPrimaryButtonEnabled="{x:Bind pb_Loading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
                IsSecondaryButtonEnabled="{x:Bind pb_Loading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
                MaxWidth="320">

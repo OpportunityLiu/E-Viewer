@@ -31,69 +31,6 @@ namespace ExViewer.Views
 
         ReCaptcha recap;
 
-        private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            var username = this.tb_user.Text;
-            var password = this.pb_pass.Password;
-            if(string.IsNullOrWhiteSpace(username))
-            {
-                this.tb_info.Text = Strings.Resources.Views.LogOnDialog.NoUserName;
-                this.tb_user.Focus(FocusState.Programmatic);
-                args.Cancel = true;
-            }
-            else if(string.IsNullOrEmpty(password))
-            {
-                this.tb_info.Text = Strings.Resources.Views.LogOnDialog.NoPassword;
-                this.pb_pass.Focus(FocusState.Programmatic);
-                args.Cancel = true;
-            }
-            else
-            {
-                var d = args.GetDeferral();
-                try
-                {
-                    this.pb_Loading.IsIndeterminate = true;
-                    this.tb_info.Text = "";
-                    try
-                    {
-                        if(this.recap != null)
-                            await this.recap.Submit(this.tb_ReCaptcha.Text);
-                    }
-                    catch(Exception ex)
-                    {
-                        await loadReCapcha();
-                        this.tb_info.Text = ex.GetMessage();
-                        this.tb_ReCaptcha.Focus(FocusState.Programmatic);
-                        args.Cancel = true;
-                        return;
-                    }
-                    try
-                    {
-                        await Client.Current.LogOnAsync(username, password, this.recap);
-                        AccountManager.CurrentCredential = AccountManager.CreateCredential(username, password);
-                    }
-                    catch(InvalidOperationException ex)
-                    {
-                        await loadReCapcha();
-                        this.tb_info.Text = ex.GetMessage();
-                        this.tb_user.Focus(FocusState.Programmatic);
-                        args.Cancel = true;
-                    }
-                    catch(Exception ex)
-                    {
-                        this.tb_info.Text = ex.GetMessage();
-                        this.tb_user.Focus(FocusState.Programmatic);
-                        args.Cancel = true;
-                    }
-                }
-                finally
-                {
-                    this.pb_Loading.IsIndeterminate = false;
-                    d.Complete();
-                }
-            }
-        }
-
         private async Task loadReCapcha()
         {
             this.sp_ReCaptcha.Visibility = Visibility.Visible;
@@ -110,19 +47,101 @@ namespace ExViewer.Views
             }
         }
 
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private async Task logOnAsync(ContentDialogClosingEventArgs args)
         {
-            if(Client.Current.NeedLogOn)
+            try
             {
-                Application.Current.Exit();
+                var username = this.tb_user.Text;
+                var password = this.pb_pass.Password;
+                if(string.IsNullOrWhiteSpace(username))
+                {
+                    this.tb_info.Text = Strings.Resources.Views.LogOnDialog.NoUserName;
+                    this.tb_user.Focus(FocusState.Programmatic);
+                    args.Cancel = true;
+                }
+                else if(string.IsNullOrEmpty(password))
+                {
+                    this.tb_info.Text = Strings.Resources.Views.LogOnDialog.NoPassword;
+                    this.pb_pass.Focus(FocusState.Programmatic);
+                    args.Cancel = true;
+                }
+                else
+                {
+                    var d = args.GetDeferral();
+                    try
+                    {
+                        this.tb_info.Text = "";
+                        try
+                        {
+                            if(this.recap != null)
+                                await this.recap.Submit(this.tb_ReCaptcha.Text);
+                        }
+                        catch(Exception ex)
+                        {
+                            await loadReCapcha();
+                            this.tb_info.Text = ex.GetMessage();
+                            this.tb_ReCaptcha.Focus(FocusState.Programmatic);
+                            args.Cancel = true;
+                            return;
+                        }
+                        try
+                        {
+                            await Client.Current.LogOnAsync(username, password, this.recap);
+                            AccountManager.CurrentCredential = AccountManager.CreateCredential(username, password);
+                        }
+                        catch(InvalidOperationException ex)
+                        {
+                            await loadReCapcha();
+                            this.tb_info.Text = ex.GetMessage();
+                            this.tb_user.Focus(FocusState.Programmatic);
+                            args.Cancel = true;
+                        }
+                        catch(Exception ex)
+                        {
+                            this.tb_info.Text = ex.GetMessage();
+                            this.tb_user.Focus(FocusState.Programmatic);
+                            args.Cancel = true;
+                        }
+                    }
+                    finally
+                    {
+                        d.Complete();
+                    }
+                }
+            }
+            finally
+            {
+                var ignore = Task.Delay(100)
+                    .ContinueWith(async t 
+                        => await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () 
+                            => this.pb_Loading.IsIndeterminate = false));
             }
         }
 
-        private void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
+        private async void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
         {
-            if(args.Result == ContentDialogResult.None && Client.Current.NeedLogOn)
+            switch(args.Result)
             {
-                args.Cancel = true;
+            case ContentDialogResult.None:
+            case ContentDialogResult.Primary:
+                if(this.pb_Loading.IsIndeterminate)
+                {
+                    await logOnAsync(args);
+                }
+                else
+                {
+                    if(args.Result == ContentDialogResult.None && Client.Current.NeedLogOn)
+                    {
+                        args.Cancel = true;
+                    }
+                }
+                break;
+            case ContentDialogResult.Secondary:
+                if(Client.Current.NeedLogOn)
+                {
+                    Application.Current.Exit();
+                }
+                break;
             }
         }
 
@@ -142,6 +161,42 @@ namespace ExViewer.Views
                 this.SecondaryButtonText = Strings.Resources.Exit;
             else
                 this.SecondaryButtonText = Strings.Resources.Cancel;
+        }
+
+        protected override void OnKeyDown(KeyRoutedEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if(e.OriginalKey == Windows.System.VirtualKey.Enter)
+            {
+                e.Handled = true;
+                if(string.IsNullOrWhiteSpace(this.tb_user.Text))
+                {
+                    this.tb_user.Focus(FocusState.Programmatic);
+                }
+                else if(string.IsNullOrEmpty(this.pb_pass.Password))
+                {
+                    this.pb_pass.Focus(FocusState.Programmatic);
+                }
+                else if(this.sp_ReCaptcha.Visibility == Visibility.Visible && string.IsNullOrEmpty(this.tb_ReCaptcha.Text))
+                {
+                    this.tb_ReCaptcha.Focus(FocusState.Programmatic);
+                }
+                else
+                {
+                    this.pb_Loading.IsIndeterminate = true;
+                    this.Hide();
+                }
+            }
+        }
+
+        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            this.pb_Loading.IsIndeterminate = true;
+        }
+
+        private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        {
+            this.pb_Loading.IsIndeterminate = false;
         }
     }
 }

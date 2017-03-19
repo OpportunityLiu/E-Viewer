@@ -275,7 +275,7 @@
            TargetType="TextBox"
            BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}">
         <Setter Property="InputScope"
-                Value="AlphanumericHalfWidth" />
+                Value="Search" />
     </Style>
 
     <Style x:Key="SearchAutoSuggestBoxItemContainerStyle"

@@ -19,6 +19,7 @@
     "CommentViewer": {
       "AuthorFormatString": "{0}",
       "EditedFormatString": "最后编辑于 {0}",
+      "EditButton/Content": "编辑",
       "IsUploaderCommentTextBlock/Text": "上传者评论",
       "PostedFormatString": "发布于 {0}",
       "ScoreFormatString": "评分 {0:+#0;-#0}"
@@ -80,6 +81,24 @@
       "Content": "所有保存的画廊和缓存的画廊将被删除！",
       "Title": "警告"
     },
+    "CommentDialog": {
+      "AddTitle": "发表评论",
+      "EditTitle": "编辑评论",
+      "ContentDialog": {
+        "PrimaryButtonText": "发布",
+        "SecondaryButtonText": "取消"
+      },
+      "AppBarButtonBold/Label": "粗体",
+      "AppBarButtonItalic/Label": "斜体",
+      "AppBarButtonUnderline/Label": "下划线",
+      "AppBarButtonStrike/Label": "删除线",
+      "AppBarButtonLink/Label": "链接",
+      "AppBarButtonBold/ToolTipService/ToolTip": "Ctrl + B",
+      "AppBarButtonItalic/ToolTipService/ToolTip": "Ctrl + T",
+      "AppBarButtonUnderline/ToolTipService/ToolTip": "Ctrl + U",
+      "AppBarButtonStrike/ToolTipService/ToolTip": "Ctrl + S",
+      "AppBarButtonLink/ToolTipService/ToolTip": "Ctrl + L"
+    },
     "EhWikiDialog": {
       "ContentDialog/PrimaryButtonText": "确定",
       "TagNotFound": "在 EhWiki 中未找到此标签。"
@@ -90,6 +109,7 @@
       "LoadingMoreTextBlock/Text": "正在加载更多画廊…"
     },
     "GalleryPage": {
+      "AppBarButtonAddComment/Label": "发表新评论",
       "CommentsEmptyTextBlock/Text": "没有评论",
       "CommentsLoadingTextBlock/Text": "正在加载评论...",
       "GoToDefinitionMenuFlyoutItem/Text": "前往 EHWiki 查看定义",

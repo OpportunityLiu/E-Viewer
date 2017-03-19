@@ -333,12 +333,21 @@ namespace ExViewer.Views
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
         }
 
-        private AddToFavoritesDialog addToFavorite = new AddToFavoritesDialog();
+        private AddToFavoritesDialog addToFavorites;
+        private AddCommentDialog addComment;
+
+        private async void abbComment_Click(object sender, RoutedEventArgs e)
+        {
+            var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref this.addComment);
+            addComment.Gallery = this.VM.Gallery;
+            await addComment.ShowAsync();
+        }
 
         private async void abbFavorites_Click(object sender, RoutedEventArgs e)
         {
-            this.addToFavorite.Gallery = this.VM.Gallery;
-            await this.addToFavorite.ShowAsync();
+            var addToFavorites = System.Threading.LazyInitializer.EnsureInitialized(ref this.addToFavorites);
+            addToFavorites.Gallery = this.VM.Gallery;
+            await addToFavorites.ShowAsync();
         }
 
         private void cb_top_Opening(object sender, object e)
@@ -368,7 +377,7 @@ namespace ExViewer.Views
             if(cat == null || cat.Index < 0)
                 return Strings.Resources.Views.GalleryPage.FavoritesAppBarButton.Text;
             return cat.Name;
-            
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

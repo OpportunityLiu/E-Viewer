@@ -13,6 +13,7 @@
       Unloaded="page_Unloaded"
       NavigationCacheMode="Enabled"
       SizeChanged="page_SizeChanged"
+      xmlns:con="using:ExViewer.Converters"
       mc:Ignorable="d">
     <Page.Transitions>
         <TransitionCollection>
@@ -22,7 +23,13 @@
         </TransitionCollection>
     </Page.Transitions>
     <Page.Resources>
-        <local:AddToFavoritesDialog x:Name="atfd" />
+        <con:ObjectToBooleanConverter x:Key="ConAddComment"
+                                      IfNeither="False"
+                                      InnerConverter="{StaticResource TrueToVisibleConverter}">
+            <con:ObjectToBooleanConverter.ValueForTrue>
+                <x:Int32>1</x:Int32>
+            </con:ObjectToBooleanConverter.ValueForTrue>
+        </con:ObjectToBooleanConverter>
         <MenuFlyout x:Name="mfo_Tag">
             <MenuFlyoutItem IsHitTestVisible="False"
                             IsTabStop="False"
@@ -598,6 +605,12 @@
                               Foreground="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToBrushConverter}, Mode=OneWay}"
                               Label="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToNameConverter}, Mode=OneWay}"
                               Click="abbFavorites_Click" />
+                <AppBarButton x:Name="abbComment"
+                              x:Uid="Views/GalleryPage/AppBarButtonAddComment"
+                              Icon="Add"
+                              Label="Post new comment"
+                              Visibility="{x:Bind pv.SelectedIndex, Mode=OneWay, Converter={StaticResource ConAddComment}}"
+                              Click="abbComment_Click" />
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_share"

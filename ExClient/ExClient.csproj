@@ -111,7 +111,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
-    <Compile Include="Api\CommentVote.cs" />
+    <Compile Include="Api\ApiResponse.cs" />
+    <Compile Include="Api\CommentRequest.cs" />
     <Compile Include="Api\GalleryData.cs" />
     <Compile Include="Api\GalleryInfo.cs" />
     <Compile Include="Api\GalleryToken.cs" />

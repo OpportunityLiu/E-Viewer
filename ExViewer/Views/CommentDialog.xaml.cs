@@ -1,0 +1,265 @@
+﻿using ExClient;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+
+// https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
+
+namespace ExViewer.Views
+{
+    public partial class CommentDialog : ContentDialog
+    {
+        public CommentDialog()
+        {
+            this.InitializeComponent();
+        }
+
+        private void tbContent_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            this.tbInfo.Text = "";
+        }
+
+        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+        }
+
+        private void abb_Click(object sender, RoutedEventArgs e)
+        {
+            var tag = ((FrameworkElement)sender).Tag.ToString();
+            handleTag(tag);
+        }
+
+        private void handleTag(string tag)
+        {
+            if(tag == "url")
+            {
+                handleUrl();
+                return;
+            }
+            var begin = $"[{tag}]";
+            var end = $"[/{tag}]";
+            var currentSelected = this.tbContent.SelectedText;
+            if(currentSelected.StartsWith(begin) && currentSelected.EndsWith(end))
+            {
+                this.tbContent.SelectedText = currentSelected.Substring(begin.Length, currentSelected.Length - begin.Length - end.Length);
+                return;
+            }
+            var replaced = string.Concat(begin, currentSelected, end);
+            this.tbContent.SelectedText = replaced;
+            var s = this.tbContent.SelectionStart;
+            if(currentSelected.Length == 0)
+                this.tbContent.Select(s + replaced.Length - end.Length, 0);
+        }
+
+        private static Regex urlRegex = new Regex(@"^\[url(?:=[^\]]*?)?\](.*)\[/url\]$", RegexOptions.Compiled);
+
+        private void handleUrl()
+        {
+            var currentSelected = this.tbContent.SelectedText;
+            var end = "[/url]";
+            var match = urlRegex.Match(currentSelected);
+            if(match.Success)
+            {
+                this.tbContent.SelectedText = match.Groups[1].Value;
+                return;
+            }
+            if(Uri.TryCreate(currentSelected, UriKind.Absolute, out var uri) &&
+                (uri.Host.EndsWith("e-hentai.org") || uri.Host.EndsWith("exhentai.org")))
+            {
+                var begin = $"[url={currentSelected}]";
+                var replaced = string.Concat(begin, currentSelected, end);
+                this.tbContent.SelectedText = replaced;
+                var s = this.tbContent.SelectionStart;
+                this.tbContent.Select(s + begin.Length, currentSelected.Length);
+            }
+            else
+            {
+                var begin = "[url]";
+                var replaced = string.Concat(begin, currentSelected, end);
+                this.tbContent.SelectedText = replaced;
+                var s = this.tbContent.SelectionStart;
+                if(currentSelected.Length == 0)
+                    this.tbContent.Select(s + replaced.Length - end.Length, 0);
+            }
+        }
+
+        private bool ctrlDown;
+
+        protected override void OnKeyDown(KeyRoutedEventArgs e)
+        {
+            if(e.OriginalKey == Windows.System.VirtualKey.Control ||
+                e.OriginalKey == Windows.System.VirtualKey.LeftControl ||
+                e.OriginalKey == Windows.System.VirtualKey.RightControl)
+            {
+                this.ctrlDown = true;
+            }
+            base.OnKeyDown(e);
+        }
+
+        protected override void OnKeyUp(KeyRoutedEventArgs e)
+        {
+            if(e.OriginalKey == Windows.System.VirtualKey.Control ||
+                e.OriginalKey == Windows.System.VirtualKey.LeftControl ||
+                e.OriginalKey == Windows.System.VirtualKey.RightControl)
+            {
+                this.ctrlDown = false;
+            }
+            base.OnKeyUp(e);
+            if(e.Handled || !this.ctrlDown)
+                return;
+            e.Handled = true;
+            switch(e.OriginalKey)
+            {
+            case Windows.System.VirtualKey.B:
+                handleTag("b");
+                break;
+            case Windows.System.VirtualKey.T:
+                handleTag("i");
+                break;
+            case Windows.System.VirtualKey.U:
+                handleTag("u");
+                break;
+            case Windows.System.VirtualKey.S:
+                handleTag("s");
+                break;
+            case Windows.System.VirtualKey.L:
+                handleTag("l");
+                break;
+            default:
+                e.Handled = false;
+                break;
+            }
+        }
+    }
+
+    public sealed class AddCommentDialog : CommentDialog
+    {
+        public AddCommentDialog()
+        {
+            this.Title = Strings.Resources.Views.CommentDialog.AddTitle;
+            this.PrimaryButtonClick += this.AddCommentDialog_PrimaryButtonClick;
+            this.Opened += this.AddCommentDialog_Opened;
+        }
+
+        public Gallery Gallery
+        {
+            get => (Gallery)GetValue(GalleryProperty);
+            set => SetValue(GalleryProperty, value);
+        }
+
+        public static readonly DependencyProperty GalleryProperty =
+            DependencyProperty.Register(nameof(Gallery), typeof(Gallery), typeof(AddCommentDialog), new PropertyMetadata(null));
+
+        private void AddCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        {
+            if(Gallery == null)
+                throw new InvalidOperationException();
+            this.tbContent.Text = "";
+            this.tbContent.Focus(FocusState.Programmatic);
+        }
+
+        private async void AddCommentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            this.pbLoading.IsIndeterminate = true;
+            var d = args.GetDeferral();
+            try
+            {
+                await Gallery.Comments.PostCommentAsync(this.tbContent.Text);
+            }
+            catch(Exception ex)
+            {
+                this.tbInfo.Text = ex.GetMessage();
+                args.Cancel = true;
+            }
+            finally
+            {
+                d.Complete();
+                this.pbLoading.IsIndeterminate = false;
+            }
+        }
+    }
+
+    public sealed class EditCommentDialog : CommentDialog
+    {
+        public EditCommentDialog()
+        {
+            this.Title = Strings.Resources.Views.CommentDialog.EditTitle;
+            this.Opened += this.EditCommentDialog_Opened;
+            this.PrimaryButtonClick += this.EditCommentDialog_PrimaryButtonClick;
+        }
+
+        public Comment EditableComment
+        {
+            get => (Comment)GetValue(EditableCommentProperty);
+            set => SetValue(EditableCommentProperty, value);
+        }
+
+        public static readonly DependencyProperty EditableCommentProperty =
+            DependencyProperty.Register(nameof(EditableComment), typeof(Comment), typeof(EditCommentDialog), new PropertyMetadata(null, EditableCommentPropertyChangedCallback));
+
+        private static void EditableCommentPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var sender = (EditCommentDialog)d;
+            var newValue = (Comment)e.NewValue;
+            if(newValue != null && !newValue.CanEdit)
+                throw new InvalidOperationException();
+        }
+
+        private async void EditCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        {
+            this.tbContent.Text = "";
+            if(EditableComment == null)
+                throw new InvalidOperationException();
+            try
+            {
+                this.pbLoading.IsIndeterminate = true;
+                var editable = await EditableComment.FetchEditableAsync() ?? "";
+                this.tbContent.Text = editable;
+                this.tbContent.Select(editable.Length, 0);
+            }
+            catch(Exception ex)
+            {
+                this.tbContent.Text = "";
+                this.tbInfo.Text = ex.GetMessage();
+            }
+            finally
+            {
+                this.pbLoading.IsIndeterminate = false;
+            }
+            this.tbContent.Focus(FocusState.Programmatic);
+        }
+
+        private async void EditCommentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            this.pbLoading.IsIndeterminate = true;
+            var d = args.GetDeferral();
+            try
+            {
+                await EditableComment.EditAsync(this.tbContent.Text);
+            }
+            catch(Exception ex)
+            {
+                this.tbInfo.Text = ex.GetMessage();
+                args.Cancel = true;
+            }
+            finally
+            {
+                d.Complete();
+                this.pbLoading.IsIndeterminate = false;
+            }
+        }
+    }
+}

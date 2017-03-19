@@ -47,6 +47,7 @@ namespace ExViewer.Views
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             this.pbLoading.IsIndeterminate = true;
+            FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
             this.tbInfo.Text = "";
             var def = args.GetDeferral();
             try

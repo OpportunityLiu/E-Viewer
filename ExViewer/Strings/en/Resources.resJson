@@ -20,6 +20,7 @@
       "AuthorFormatString": "By {0}",
       "EditedFormatString": "Last edited on {0}",
       "IsUploaderCommentTextBlock/Text": "Uploader Comment",
+      "EditButton/Content": "Edit",
       "PostedFormatString": "Posted on {0}",
       "ScoreFormatString": "Score {0:+#0;-#0}"
     },
@@ -80,6 +81,24 @@
       "Content": "All saved galleries and cached galleries will be deleted.",
       "Title": "ARE YOU SURE"
     },
+    "CommentDialog": {
+      "AddTitle": "POST COMMENT",
+      "EditTitle": "EDIT COMMENT",
+      "ContentDialog": {
+        "PrimaryButtonText": "Post",
+        "SecondaryButtonText": "Cancel"
+      },
+      "AppBarButtonBold/Label": "Bold",
+      "AppBarButtonItalic/Label": "Italic",
+      "AppBarButtonUnderline/Label": "Underline",
+      "AppBarButtonStrike/Label": "Strike",
+      "AppBarButtonLink/Label": "Link",
+      "AppBarButtonBold/ToolTipService/ToolTip": "Ctrl + B",
+      "AppBarButtonItalic/ToolTipService/ToolTip": "Ctrl + T",
+      "AppBarButtonUnderline/ToolTipService/ToolTip": "Ctrl + U",
+      "AppBarButtonStrike/ToolTipService/ToolTip": "Ctrl + S",
+      "AppBarButtonLink/ToolTipService/ToolTip": "Ctrl + L"
+    },
     "EhWikiDialog": {
       "ContentDialog/PrimaryButtonText": "OK",
       "TagNotFound": "Tag not found in wiki."
@@ -90,6 +109,7 @@
       "LoadingMoreTextBlock/Text": "Loading more galleries..."
     },
     "GalleryPage": {
+      "AppBarButtonAddComment/Label": "Post new comments",
       "CommentsEmptyTextBlock/Text": "No comments",
       "CommentsLoadingTextBlock/Text": "Loading comments...",
       "GoToDefinitionMenuFlyoutItem/Text": "Go to EHWiki for definition",

@@ -8,7 +8,7 @@
              xmlns:con="using:ExViewer.Converters"
              xmlns:ex="using:ExClient"
              d:DesignHeight="200"
-             d:DesignWidth="400"
+             d:DesignWidth="600"
              HorizontalContentAlignment="Stretch"
              VerticalContentAlignment="Stretch"
              UseSystemFocusVisuals="True"
@@ -165,6 +165,21 @@
                                               ValueForFalse="{StaticResource VoteButtonStyle}" />
             </con:InvertConverter>
         </con:ObjectToBooleanConverter>
+        <con:ObjectToBooleanConverter x:Key="ConEdit">
+            <con:ObjectToBooleanConverter.ValueForTrue>
+                <ex:CommentStatus>Editable</ex:CommentStatus>
+            </con:ObjectToBooleanConverter.ValueForTrue>
+            <con:InvertConverter>
+                <con:ObjectToBooleanConverter>
+                    <con:ObjectToBooleanConverter.ValueForTrue>
+                        <Visibility>Visible</Visibility>
+                    </con:ObjectToBooleanConverter.ValueForTrue>
+                    <con:ObjectToBooleanConverter.ValueForFalse>
+                        <Visibility>Collapsed</Visibility>
+                    </con:ObjectToBooleanConverter.ValueForFalse>
+                </con:ObjectToBooleanConverter>
+            </con:InvertConverter>
+        </con:ObjectToBooleanConverter>
     </UserControl.Resources>
     <RelativePanel Padding="4,8,4,20">
         <VisualStateManager.VisualStateGroups>
@@ -176,6 +191,10 @@
                     <VisualState.Setters>
                         <Setter Target="Author.(RelativePanel.Below)"
                                 Value="Posted" />
+                        <Setter Target="Edit.(RelativePanel.Below)"
+                                Value="Score" />
+                        <Setter Target="Edit.(RelativePanel.AlignRightWithPanel)"
+                                Value="True" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Normal">
@@ -185,6 +204,10 @@
                     <VisualState.Setters>
                         <Setter Target="Author.(RelativePanel.RightOf)"
                                 Value="Posted" />
+                        <Setter Target="Edit.(RelativePanel.LeftOf)"
+                                Value="Score" />
+                        <Setter Target="Edit.(RelativePanel.AlignTopWith)"
+                                Value="Score" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -213,11 +236,19 @@
                          Click="Score_Click"
                          HorizontalAlignment="Right"
                          RelativePanel.AlignRightWithPanel="True"
-                         RelativePanel.AlignTopWith="Author"
+                         RelativePanel.AlignVerticalCenterWith="Posted"
                          Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}">
             <TextBlock Style="{StaticResource CommentHeaderTextBlockStyle}"
                        Text="{x:Bind Comment.Score, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/ScoreFormatString'}" />
         </HyperlinkButton>
+        <Button x:Name="Edit"
+                x:Uid="Controls/CommentViewer/EditButton"
+                Style="{ThemeResource TextBlockButtonStyle}"
+                Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConEdit}}"
+                Padding="0"
+                Margin="8,0"
+                Content="Edit"
+                Click="Edit_Click" />
         <Popup x:Name="VotePopup"
                x:DeferLoadStrategy="Lazy"
                HorizontalOffset="-33"

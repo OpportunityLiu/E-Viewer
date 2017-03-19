@@ -123,9 +123,9 @@ namespace ExViewer.Views
                 e.Handled = true;
                 if(this.goBackTask.IsCompleted)
                 {
-                    this.fm_inner.GoBack();
                     // prevent double click
-                    this.goBackTask = Task.Delay(180);
+                    this.goBackTask = Task.Delay(200);
+                    this.fm_inner.GoBack();
                 }
             }
         }
