@@ -43,6 +43,20 @@ namespace ExViewer.Views
             handleTag(tag);
         }
 
+        private string safeSubstring(string str, int start, int length)
+        {
+            if(start < 0)
+            {
+                length += start;
+                start = 0;
+            }
+            if(length < 0)
+                return "";
+            if(start + length > str.Length)
+                return str.Substring(start);
+            return str.Substring(start, length);
+        }
+
         private void handleTag(string tag)
         {
             if(tag == "url")
@@ -52,8 +66,46 @@ namespace ExViewer.Views
             }
             var begin = $"[{tag}]";
             var end = $"[/{tag}]";
+            var text = this.tbContent.Text;
+            var sS = this.tbContent.SelectionStart;
             var currentSelected = this.tbContent.SelectedText;
-            if(currentSelected.StartsWith(begin) && currentSelected.EndsWith(end))
+            bool? startsWith = false;
+            bool? endsWith = false;
+            if(currentSelected.StartsWith(begin))
+            {
+                startsWith = true;
+            }
+            else if(safeSubstring(text, sS - begin.Length, begin.Length) == begin)
+            {
+                startsWith = null;
+                sS -= begin.Length;
+                this.tbContent.Select(sS, currentSelected.Length + begin.Length);
+                currentSelected = this.tbContent.SelectedText;
+            }
+            if(currentSelected.EndsWith(end))
+            {
+                endsWith = true;
+            }
+            else if(safeSubstring(text, sS + currentSelected.Length, end.Length) == end)
+            {
+                endsWith = null;
+                this.tbContent.Select(sS, currentSelected.Length + end.Length);
+                currentSelected = this.tbContent.SelectedText;
+            }
+            if(startsWith == null && endsWith == false)
+            {
+                startsWith = false;
+                sS += begin.Length;
+                this.tbContent.Select(sS, currentSelected.Length - begin.Length);
+                currentSelected = this.tbContent.SelectedText;
+            }
+            else if(startsWith == false && endsWith == null)
+            {
+                endsWith = false;
+                this.tbContent.Select(sS, currentSelected.Length - end.Length);
+                currentSelected = this.tbContent.SelectedText;
+            }
+            if(startsWith != false && endsWith != false)
             {
                 this.tbContent.SelectedText = currentSelected.Substring(begin.Length, currentSelected.Length - begin.Length - end.Length);
                 return;
