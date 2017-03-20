@@ -213,12 +213,12 @@ namespace ExViewer.Views
         {
             switch(this.cb_top.Visibility)
             {
-                case Visibility.Visible:
-                    this.cb_top.Visibility = Visibility.Collapsed;
-                    return false;
-                case Visibility.Collapsed:
-                    this.cb_top.Visibility = Visibility.Visible;
-                    return true;
+            case Visibility.Visible:
+                this.cb_top.Visibility = Visibility.Collapsed;
+                return false;
+            case Visibility.Collapsed:
+                this.cb_top.Visibility = Visibility.Visible;
+                return true;
             }
             return false;
         }
@@ -243,6 +243,7 @@ namespace ExViewer.Views
 
         private async void cb_top_Opening(object sender, object e)
         {
+            this.tb_Title.MaxLines = 0;
             this.cb_top_Open.Begin();
             await Task.Delay(100);
             Grid.SetColumn(this.tb_Title, 0);
@@ -256,6 +257,7 @@ namespace ExViewer.Views
 
         private void cb_top_Closed(object sender, object e)
         {
+            this.tb_Title.ClearValue(TextBlock.MaxLinesProperty);
             Grid.SetColumn(this.tb_Title, 1);
             Grid.SetColumnSpan(this.tb_Title, 1);
         }
@@ -282,19 +284,19 @@ namespace ExViewer.Views
             e.Handled = true;
             switch(e.OriginalKey)
             {
-                case VirtualKey.Enter:
-                    this.enterPressed = false;
-                    break;
-                case VirtualKey.Application:
-                case VirtualKey.GamepadMenu:
-                    if(!changeCbVisibility())
-                        this.fv.Focus(FocusState.Programmatic);
-                    else
-                        this.abb_fullScreen.Focus(FocusState.Programmatic);
-                    break;
-                default:
-                    e.Handled = false;
-                    break;
+            case VirtualKey.Enter:
+                this.enterPressed = false;
+                break;
+            case VirtualKey.Application:
+            case VirtualKey.GamepadMenu:
+                if(!changeCbVisibility())
+                    this.fv.Focus(FocusState.Programmatic);
+                else
+                    this.abb_fullScreen.Focus(FocusState.Programmatic);
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 
@@ -350,7 +352,7 @@ namespace ExViewer.Views
         {
             if(this.cb_top.IsOpen)
                 return;
-            if(e.OriginalKey== VirtualKey.GamepadDPadDown||e.OriginalKey== VirtualKey.GamepadLeftThumbstickDown)
+            if(e.OriginalKey == VirtualKey.GamepadDPadDown || e.OriginalKey == VirtualKey.GamepadLeftThumbstickDown)
             {
                 e.Handled = true;
                 this.fv.Focus(FocusState.Programmatic);

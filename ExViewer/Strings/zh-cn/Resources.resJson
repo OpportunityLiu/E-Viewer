@@ -93,11 +93,11 @@
       "AppBarButtonUnderline/Label": "下划线",
       "AppBarButtonStrike/Label": "删除线",
       "AppBarButtonLink/Label": "链接",
-      "AppBarButtonBold/ToolTipService/ToolTip": "Ctrl + B",
-      "AppBarButtonItalic/ToolTipService/ToolTip": "Ctrl + T",
-      "AppBarButtonUnderline/ToolTipService/ToolTip": "Ctrl + U",
-      "AppBarButtonStrike/ToolTipService/ToolTip": "Ctrl + S",
-      "AppBarButtonLink/ToolTipService/ToolTip": "Ctrl + L"
+      "AppBarButtonBold/ToolTipService/ToolTip": "粗体 (Ctrl + B)",
+      "AppBarButtonItalic/ToolTipService/ToolTip": "斜体 (Ctrl + T)",
+      "AppBarButtonUnderline/ToolTipService/ToolTip": "下划线 (Ctrl + U)",
+      "AppBarButtonStrike/ToolTipService/ToolTip": "删除线 (Ctrl + S)",
+      "AppBarButtonLink/ToolTipService/ToolTip": "链接 (Ctrl + L)"
     },
     "EhWikiDialog": {
       "ContentDialog/PrimaryButtonText": "确定",

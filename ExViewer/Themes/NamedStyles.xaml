@@ -104,7 +104,7 @@
         <Setter Property="TextTrimming"
                 Value="CharacterEllipsis" />
         <Setter Property="TextWrapping"
-                Value="NoWrap" />
+                Value="Wrap" />
     </Style>
 
     <Style x:Key="TextBlockToggleSwitchStyle"

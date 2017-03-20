@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExViewer.Controls;
 using ExViewer.ViewModels;
 using GalaSoft.MvvmLight.Ioc;
 using System;
@@ -36,7 +37,7 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
             this.VM = SavedVM.Instance;
-            this.cdg_ConfirmClear = new ContentDialog()
+            this.cdg_ConfirmClear = new MyContentDialog()
             {
                 Title = Strings.Resources.Views.ClearSavedDialog.Title,
                 Content = Strings.Resources.Views.ClearSavedDialog.Content,
@@ -86,11 +87,10 @@ namespace ExViewer.Views
             }
         }
 
-        private readonly ContentDialog cdg_ConfirmClear;
+        private readonly MyContentDialog cdg_ConfirmClear;
 
         private async void abb_DeleteAll_Click(object sender, RoutedEventArgs e)
         {
-            this.cdg_ConfirmClear.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
             await this.cdg_ConfirmClear.ShowAsync();
         }
 

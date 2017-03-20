@@ -111,6 +111,7 @@
       <DependentUpon>ExcludedLanguagesSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\InAppNavigator.cs" />
+    <Compile Include="Controls\MyContentDialog.cs" />
     <Compile Include="Controls\PullToRefreshIndicator.cs" />
     <Compile Include="Controls\TagPresenter.cs" />
     <Compile Include="Converters\EmptyConverter.cs" />

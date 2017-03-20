@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Collections.Generic;
 using JYAnalyticsUniversal;
 using Windows.Storage;
+using ExViewer.Controls;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -242,7 +243,7 @@ namespace ExViewer.Views
             {
                 if(info != null)
                 {
-                    var dialog = new ContentDialog
+                    var dialog = new MyContentDialog
                     {
                         Title = Strings.Resources.Verify.FailedDialogTitle,
                         Content = info,

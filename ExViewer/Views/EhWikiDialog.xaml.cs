@@ -1,5 +1,6 @@
 ﻿using EhWikiClient;
 using ExClient;
+using ExViewer.Controls;
 using System;
 using Windows.Foundation;
 using Windows.System;
@@ -11,7 +12,7 @@ using Windows.UI.Xaml.Media;
 
 namespace ExViewer.Views
 {
-    public sealed partial class EhWikiDialog : ContentDialog
+    public sealed partial class EhWikiDialog : MyContentDialog
     {
         public EhWikiDialog()
         {

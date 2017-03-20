@@ -16,12 +16,13 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using Windows.Security.Credentials;
+using ExViewer.Controls;
 
 // “内容对话框”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上进行了说明
 
 namespace ExViewer.Views
 {
-    public sealed partial class LogOnDialog : ContentDialog
+    public sealed partial class LogOnDialog : MyContentDialog
     {
         public LogOnDialog()
         {

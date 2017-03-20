@@ -207,8 +207,7 @@ namespace ExViewer.Views
             {
                 item.DataContext = e.ClickedItem;
             }
-
-            this.ewd.RequestedTheme = SettingCollection.Current.Theme.ToElementTheme();
+            
             this.ewd.SetTag((Tag)e.ClickedItem);
             this.mfo_Tag.ShowAt(container);
         }
@@ -352,11 +351,13 @@ namespace ExViewer.Views
 
         private void cb_top_Opening(object sender, object e)
         {
+            this.tbGalleryName.MaxLines = 0;
             Grid.SetColumn(this.tbGalleryName, 0);
         }
 
         private void cb_top_Closed(object sender, object e)
         {
+            this.tbGalleryName.ClearValue(TextBlock.MaxLinesProperty);
             Grid.SetColumn(this.tbGalleryName, 1);
         }
 

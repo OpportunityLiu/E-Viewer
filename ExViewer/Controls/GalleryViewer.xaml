@@ -10,6 +10,17 @@
              IsTabStop="False"
              UseSystemFocusVisuals="False"
              AutomationProperties.LabeledBy="{x:Bind tbTitle}">
+    <UserControl.Resources>
+        <Style x:Name="DetailTextBlockStyle"
+               TargetType="TextBlock">
+            <Setter Property="Foreground"
+                    Value="{ThemeResource ApplicationForegroundThemeBrush}" />
+            <Setter Property="MaxLines"
+                    Value="1" />
+            <Setter Property="TextTrimming"
+                    Value="CharacterEllipsis" />
+        </Style>
+    </UserControl.Resources>
     <Grid Background="{x:Bind Background, Mode=OneWay}"
           BorderBrush="{x:Bind BorderBrush, Mode=OneWay}"
           BorderThickness="{x:Bind BorderThickness, Mode=OneWay}"
@@ -59,33 +70,33 @@
                                Grid.Row="2"
                                HorizontalAlignment="Left" />
             <TextBlock Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/GalleryViewer/RecordCountFormatString'}"
+                       Style="{StaticResource DetailTextBlockStyle}"
                        Grid.Row="4" />
             <StackPanel Orientation="Horizontal"
                         Grid.Row="3">
                 <local:FavoriteCategoryPresenter Category="{x:Bind Gallery.FavoriteCategory, Mode=OneWay}" />
                 <TextBlock Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
+                           Style="{StaticResource DetailTextBlockStyle}"
+                           TextTrimming="None"
                            FontFamily="Segoe MDL2 Assets"
                            VerticalAlignment="Center" />
 
             </StackPanel>
             <TextBlock Text="{x:Bind Gallery.Uploader, Mode=OneWay}"
+                       Style="{StaticResource DetailTextBlockStyle}"
                        Grid.Row="4"
-                       MaxLines="1"
                        Grid.Column="1"
-                       TextTrimming="CharacterEllipsis"
                        HorizontalAlignment="Right" />
             <TextBlock Text="{x:Bind Gallery.Posted, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}}"
+                       Style="{StaticResource DetailTextBlockStyle}"
                        Grid.Row="3"
-                       MaxLines="1"
                        Grid.Column="1"
-                       HorizontalAlignment="Right"
-                       TextTrimming="CharacterEllipsis" />
+                       HorizontalAlignment="Right"/>
             <TextBlock Text="{x:Bind Gallery.Language, Mode=OneWay, Converter={StaticResource StringConverter}}"
+                       Style="{StaticResource DetailTextBlockStyle}"
                        Grid.Row="2"
-                       MaxLines="1"
                        Grid.Column="1"
-                       HorizontalAlignment="Right"
-                       TextTrimming="CharacterEllipsis" />
+                       HorizontalAlignment="Right"/>
         </Grid>
     </Grid>
 </UserControl>

@@ -581,7 +581,7 @@
                     HorizontalContentAlignment="Stretch"
                     IsDynamicOverflowEnabled="False">
             <CommandBar.Content>
-                <Grid Height="48">
+                <Grid Padding="0,14">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition x:Name="cdSplitViewPlaceholder"
                                           Width="0" />

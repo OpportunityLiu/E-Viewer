@@ -1,4 +1,4 @@
-﻿<ContentDialog x:Class="ExViewer.Views.AddToFavoritesDialog"
+﻿<controls:MyContentDialog x:Class="ExViewer.Views.AddToFavoritesDialog"
                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:local="using:ExViewer.Views"
@@ -58,4 +58,4 @@
                          Visibility="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
         </Grid>
     </Grid>
-</ContentDialog>
+</controls:MyContentDialog>
