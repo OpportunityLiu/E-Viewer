@@ -65,6 +65,18 @@
                 <LinearColorKeyFrame KeyTime="0:0:0.15" />
             </ColorAnimationUsingKeyFrames>
         </Storyboard>
+        <Style x:Key="PageIndicatorTextBlockStyle"
+               BasedOn="{StaticResource BodyTextBlockStyle}"
+               TargetType="TextBlock">
+            <Setter Property="VerticalAlignment"
+                    Value="Top" />
+            <Setter Property="MaxLines"
+                    Value="1" />
+            <Setter Property="TextTrimming"
+                    Value="None" />
+            <Setter Property="TextWrapping"
+                    Value="NoWrap" />
+        </Style>
     </Page.Resources>
     <RelativePanel>
         <FlipView x:Name="fv"
@@ -112,7 +124,7 @@
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True">
             <CommandBar.Content>
-                <Grid Height="48">
+                <Grid Padding="0,14">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition x:Name="cdSplitViewPlaceholder"
                                           Width="0" />
@@ -132,20 +144,17 @@
                     </TextBlock>
                     <TextBlock x:Name="tb_si"
                                Grid.Column="2"
-                               VerticalAlignment="Center"
-                               Style="{StaticResource BodyTextBlockStyle}"
+                               Style="{StaticResource PageIndicatorTextBlockStyle}"
                                Text="{x:Bind fv.SelectedIndex, Mode=OneWay, Converter={StaticResource IndexToStringConverter}}" />
                     <TextBlock x:Name="tb_sep"
                                x:Uid="Views/ImagePage/CounterSeparatorTextBlock"
                                Grid.Column="3"
-                               VerticalAlignment="Center"
-                               Style="{StaticResource BodyTextBlockStyle}"
+                               Style="{StaticResource PageIndicatorTextBlockStyle}"
                                Text="/" />
                     <TextBlock x:Name="tb_rc"
                                Grid.Column="4"
                                Margin="0,0,8,0"
-                               VerticalAlignment="Center"
-                               Style="{StaticResource BodyTextBlockStyle}"
+                               Style="{StaticResource PageIndicatorTextBlockStyle}"
                                Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay}" />
                 </Grid>
             </CommandBar.Content>
