@@ -95,7 +95,6 @@ namespace ExViewer.Views
 
             base.OnNavigatedTo(e);
 
-            this.cb_top.Visibility = Visibility.Visible;
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(this.av, null);
@@ -124,6 +123,9 @@ namespace ExViewer.Views
         {
             base.OnNavigatingFrom(e);
             this.VM = null;
+
+            if(!this.cbVisible)
+                changeCbVisibility();
 
             StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
             RootControl.RootController.SetFullScreen(false);
@@ -178,6 +180,17 @@ namespace ExViewer.Views
             if(g == null)
                 return;
             setScale();
+            if(this.fv.SelectedItem is IImagePageImageView gi && gi.Image != null)
+            {
+
+                gi.Image.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), true).Completed =
+                    (task, state) =>
+                    {
+                        if(state == AsyncStatus.Error)
+                            RootControl.RootController.SendToast(task.ErrorCode, typeof(ImagePage));
+                    };
+
+            }
             var target = this.fv.SelectedIndex;
             if(target < 0)
                 return;
@@ -209,18 +222,29 @@ namespace ExViewer.Views
             });
         }
 
+        private bool cbVisible = true;
+
         private bool changeCbVisibility()
         {
-            switch(this.cb_top.Visibility)
+            if(this.cbVisible)
             {
-            case Visibility.Visible:
-                this.cb_top.Visibility = Visibility.Collapsed;
-                return false;
-            case Visibility.Collapsed:
-                this.cb_top.Visibility = Visibility.Visible;
-                return true;
+                this.cb_top_Hide.Begin();
+                RootControl.RootController.SetSplitViewButtonOpacity(0.5);
+                return this.cbVisible = false;
             }
-            return false;
+            else
+            {
+                this.cb_top_Show.Begin();
+                this.cb_top.Visibility = Visibility.Visible;
+                RootControl.RootController.SetSplitViewButtonOpacity(1);
+                return this.cbVisible = true;
+            }
+        }
+
+        private void cb_top_Hide_Completed(object sender, object e)
+        {
+            if(!this.cbVisible)
+                this.cb_top.Visibility = Visibility.Collapsed;
         }
 
         private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
@@ -241,13 +265,13 @@ namespace ExViewer.Views
             await this.VM.RefreshInfoAsync();
         }
 
-        private async void cb_top_Opening(object sender, object e)
+        private void cb_top_Opening(object sender, object e)
         {
-            this.cb_top_Open.Begin();
-            await Task.Delay(100);
             this.tb_Title.MaxLines = 0;
+            RootControl.RootController.SetSplitViewButtonOpacity(0);
             Grid.SetColumn(this.tb_Title, 0);
             Grid.SetColumnSpan(this.tb_Title, 2);
+            this.cb_top_Open.Begin();
         }
 
         private void cb_top_Closing(object sender, object e)
@@ -260,6 +284,7 @@ namespace ExViewer.Views
             this.tb_Title.ClearValue(TextBlock.MaxLinesProperty);
             Grid.SetColumn(this.tb_Title, 1);
             Grid.SetColumnSpan(this.tb_Title, 1);
+            RootControl.RootController.SetSplitViewButtonOpacity(1);
         }
 
         private void abb_fullScreen_Click(object sender, RoutedEventArgs e)

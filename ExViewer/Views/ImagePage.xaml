@@ -2,12 +2,10 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:controls="using:ExViewer.Controls"
-      xmlns:converters="using:ExViewer.Converters"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:ExViewer.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       x:Name="page"
-      xmlns:c="using:ExClient"
       Loading="page_Loading"
       Unloaded="page_Unloaded"
       NavigationCacheMode="Enabled"
@@ -21,16 +19,25 @@
     </Page.Transitions>
     <Page.Resources>
         <local:LoadStateToVisualStateConverter x:Key="LoadStateToVisualStateConverter" />
-        <converters:InvertConverter x:Key="VisibleToAppbarHeightConverter">
-            <converters:ObjectToBooleanConverter InnerConverter="{StaticResource TrueToVisibleConverter}">
-                <converters:ObjectToBooleanConverter.ValueForTrue>
-                    <GridLength>48</GridLength>
-                </converters:ObjectToBooleanConverter.ValueForTrue>
-                <converters:ObjectToBooleanConverter.ValueForFalse>
-                    <GridLength>0</GridLength>
-                </converters:ObjectToBooleanConverter.ValueForFalse>
-            </converters:ObjectToBooleanConverter>
-        </converters:InvertConverter>
+        <DataTemplate x:Key="FlipViewItemTemplate"
+                      x:DataType="local:IImagePageImageView">
+            <Grid DoubleTapped="fvi_DoubleTapped"
+                  Tapped="fvi_Tapped">
+                <controls:ImagePresenter x:Name="ip"
+                                         Grid.RowSpan="2"
+                                         Image="{x:Bind Image, Mode=OneWay}" />
+                <ProgressBar Margin="0,48,0,0"
+                             VerticalAlignment="Top"
+                             Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
+                             IsIndeterminate="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=True}"
+                             Visibility="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=Visible}"
+                             Value="{x:Bind Image.Progress, Mode=OneWay, FallbackValue=0}">
+                    <ProgressBar.RenderTransform>
+                        <TranslateTransform Y="{Binding RenderTransform.Y, ElementName=cb_top, Mode=OneWay}" />
+                    </ProgressBar.RenderTransform>
+                </ProgressBar>
+            </Grid>
+        </DataTemplate>
         <SolidColorBrush x:Name="scbBack"
                          Color="{ThemeResource SystemAltHighColor}" />
         <SolidColorBrush x:Name="scbNeed"
@@ -65,6 +72,27 @@
                 <LinearColorKeyFrame KeyTime="0:0:0.15" />
             </ColorAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Name="cb_top_Show">
+            <DoubleAnimation Storyboard.TargetName="cb_top"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                             Duration="0:0:0.2"
+                             To="0">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase Amplitude="0.25"
+                              EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="cb_top_Hide" Completed="cb_top_Hide_Completed">
+            <DoubleAnimation Storyboard.TargetName="cb_top"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                             Duration="0:0:0.2"
+                             To="-48">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
         <Style x:Key="PageIndicatorTextBlockStyle"
                BasedOn="{StaticResource BodyTextBlockStyle}"
                TargetType="TextBlock">
@@ -86,27 +114,8 @@
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignRightWithPanel="True"
                   RelativePanel.AlignTopWithPanel="True"
-                  SelectionChanged="fv_SelectionChanged">
-            <FlipView.ItemTemplate>
-                <DataTemplate x:DataType="local:IImagePageImageView">
-                    <Grid DoubleTapped="fvi_DoubleTapped"
-                          Tapped="fvi_Tapped">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="{Binding Visibility, ElementName=cb_top, Converter={StaticResource VisibleToAppbarHeightConverter}}" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <controls:ImagePresenter x:Name="ip"
-                                                 Grid.RowSpan="2"
-                                                 Image="{x:Bind Image, Mode=OneWay}" />
-                        <ProgressBar Grid.Row="1"
-                                     VerticalAlignment="Top"
-                                     Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
-                                     IsIndeterminate="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=True}"
-                                     Visibility="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=Visible}"
-                                     Value="{x:Bind Image.Progress, Mode=OneWay, FallbackValue=0}" />
-                    </Grid>
-                </DataTemplate>
-            </FlipView.ItemTemplate>
+                  SelectionChanged="fv_SelectionChanged"
+                  ItemTemplate="{StaticResource FlipViewItemTemplate}">
             <FlipView.ItemContainerStyle>
                 <Style TargetType="FlipViewItem">
                     <Setter Property="IsTabStop"
@@ -123,6 +132,9 @@
                     Opening="cb_top_Opening"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True">
+            <CommandBar.RenderTransform>
+                <TranslateTransform />
+            </CommandBar.RenderTransform>
             <CommandBar.Content>
                 <Grid Padding="0,14">
                     <Grid.ColumnDefinitions>

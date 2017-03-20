@@ -54,6 +54,15 @@
         <Storyboard x:Name="OpenSplitViewPane">
             <DoubleAnimation Duration="0:0:0.12"
                              To="1"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="tbtPane"
+                             d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Duration="0:0:0.12"
+                             To="1"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                              Storyboard.TargetName="gd_Avatar"
                              d:IsOptimized="True">
@@ -87,6 +96,15 @@
         </Storyboard>
         <Storyboard x:Name="CloseSplitViewPane">
             <DoubleAnimation Duration="0:0:0.12"
+                             x:Name="CloseSplitViewPaneBtnPane"
+                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                             Storyboard.TargetName="tbtPane"
+                             d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Duration="0:0:0.12"
                              Storyboard.TargetProperty="(UIElement.Opacity)"
                              Storyboard.TargetName="bdPaneHeader" />
             <DoubleAnimation Duration="0:0:0.12"
@@ -115,7 +133,6 @@
     <Grid>
         <SplitView x:Name="sv_root"
                    IsTabStop="False"
-                   IsPaneOpen="True"
                    PaneClosing="{x:Bind CloseSplitViewPane.Begin}"
                    LightDismissOverlayMode="On">
             <SplitView.Pane>
@@ -260,16 +277,15 @@
                    Navigating="fm_inner_Navigating"
                    Navigated="fm_inner_Navigated" />
         </SplitView>
-        <Button x:Name="btnPane"
-                x:Uid="Views/RootControl/PaneButton"
-                Style="{StaticResource SplitButtonStyle}"
-                ToolTipService.ToolTip="Show/hide pane (Alt + P)"
-                AccessKey="P"
-                AccessKeyDisplayRequested="elementAccessKeyDisplayRequested"
-                AccessKeyDisplayDismissed="elementAccessKeyDisplayDismissed"
-                Click="btn_pane_Click"
-                IsTabStop="False"
-                VerticalAlignment="Top" />
+        <ToggleButton x:Name="tbtPane"
+                      x:Uid="Views/RootControl/PaneButton"
+                      Style="{StaticResource SplitViewToggleButtonStyle}"
+                      IsChecked="{x:Bind tbtPaneBind(sv_root.IsPaneOpen), BindBack=tbtPaneBindBack, Mode=TwoWay}"
+                      IsTabStop="False"
+                      ToolTipService.ToolTip="Show/hide pane (Alt + P)"
+                      AccessKey="P"
+                      AccessKeyDisplayRequested="elementAccessKeyDisplayRequested"
+                      AccessKeyDisplayDismissed="elementAccessKeyDisplayDismissed" />
         <Border x:Name="bd_Toast"
                 x:DeferLoadStrategy="Lazy"
                 HorizontalAlignment="Stretch"

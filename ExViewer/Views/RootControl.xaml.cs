@@ -98,7 +98,7 @@ namespace ExViewer.Views
             this.manager.BackRequested += this.Manager_BackRequested;
             this.fm_inner.Navigate(this.HomePageType ?? typeof(SearchPage));
             await Task.Yield();
-            this.btnPane.Focus(FocusState.Pointer);
+            this.tbtPane.Focus(FocusState.Pointer);
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)
@@ -171,9 +171,14 @@ namespace ExViewer.Views
             await RootController.RequestLogOn();
         }
 
-        private void btn_pane_Click(object sender, RoutedEventArgs e)
+        private void tbtPaneBindBack(bool? value)
         {
-            RootController.SwitchSplitView(null);
+            RootController.SwitchSplitView(value);
+        }
+
+        private bool? tbtPaneBind(bool value)
+        {
+            return value;
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
