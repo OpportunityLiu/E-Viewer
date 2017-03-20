@@ -31,13 +31,37 @@ namespace ExViewer.Views
 
             internal static void SetSplitViewButtonPlaceholderVisibility(bool visible)
             {
+                var old = SplitViewButtonPlaceholderVisibility;
+                if(old == visible)
+                    return;
                 SplitViewButtonPlaceholderVisibility = visible;
                 SplitViewButtonPlaceholderVisibilityChanged?.Invoke(root, visible);
+                SetSplitViewButtonOpacity(btnPaneOpacity);
             }
 
             public static event TypedEventHandler<RootControl, bool> SplitViewButtonPlaceholderVisibilityChanged;
 
-            public static bool SplitViewButtonPlaceholderVisibility { get; private set; }
+            public static bool SplitViewButtonPlaceholderVisibility { get; private set; } = true;
+
+            internal static void SetSplitViewButtonOpacity(double opacity)
+            {
+                btnPaneOpacity = opacity;
+                if(root != null)
+                {
+                    if(SplitViewButtonPlaceholderVisibility)
+                    {
+                        root.tbtPane.Opacity = opacity;
+                        root.CloseSplitViewPaneBtnPane.To = opacity;
+                    }
+                    else
+                    {
+                        root.tbtPane.Opacity = 1;
+                        root.CloseSplitViewPaneBtnPane.To = 1;
+                    }
+                }
+            }
+
+            private static double btnPaneOpacity = 1;
 
             /// <summary>
             /// 

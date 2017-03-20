@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.ComponentModel;
+using Windows.ApplicationModel;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -34,11 +35,7 @@ namespace ExViewer.Controls
             set => SetValue(ImageProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for Image.  This enables animation, styling, binding, etc...
-        public static DependencyProperty ImageProperty
-        {
-            get;
-        } = DependencyProperty.Register("Image", typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null, ImagePropertyChangedCallback));
+        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null, ImagePropertyChangedCallback));
 
         private static void ImagePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

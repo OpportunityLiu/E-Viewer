@@ -14,42 +14,12 @@ namespace ExViewer.Controls
     [ContentProperty(Name = nameof(Templates))]
     public class DataTemplateSelector : Windows.UI.Xaml.Controls.DataTemplateSelector
     {
-        private class DataTemplateCollection : Collection<DataTemplateKeyValuePair>
-        {
-            internal DataTemplateCollection(DataTemplateSelector parent)
-            {
-                this.parent = parent;
-            }
-
-            private readonly DataTemplateSelector parent;
-
-            protected override void SetItem(int index, DataTemplateKeyValuePair item)
-            {
-                base.SetItem(index, item);
-            }
-
-            protected override void InsertItem(int index, DataTemplateKeyValuePair item)
-            {
-                base.InsertItem(index, item);
-            }
-
-            protected override void ClearItems()
-            {
-                base.ClearItems();
-            }
-
-            protected override void RemoveItem(int index)
-            {
-                base.RemoveItem(index);
-            }
-        }
-
         public DataTemplateSelector()
         {
             this.Templates = new DataTemplateCollection(this);
         }
 
-        public ICollection<DataTemplateKeyValuePair> Templates
+        public DataTemplateCollection Templates
         {
             get;
         }
@@ -70,6 +40,36 @@ namespace ExViewer.Controls
             if(this.DefaultTemplate != null)
                 return this.DefaultTemplate;
             return base.SelectTemplateCore(item);
+        }
+    }
+
+    public class DataTemplateCollection : Collection<DataTemplateKeyValuePair>
+    {
+        internal DataTemplateCollection(DataTemplateSelector parent)
+        {
+            this.parent = parent;
+        }
+
+        private readonly DataTemplateSelector parent;
+
+        protected override void SetItem(int index, DataTemplateKeyValuePair item)
+        {
+            base.SetItem(index, item);
+        }
+
+        protected override void InsertItem(int index, DataTemplateKeyValuePair item)
+        {
+            base.InsertItem(index, item);
+        }
+
+        protected override void ClearItems()
+        {
+            base.ClearItems();
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            base.RemoveItem(index);
         }
     }
 
