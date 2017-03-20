@@ -243,9 +243,9 @@ namespace ExViewer.Views
 
         private async void cb_top_Opening(object sender, object e)
         {
-            this.tb_Title.MaxLines = 0;
             this.cb_top_Open.Begin();
             await Task.Delay(100);
+            this.tb_Title.MaxLines = 0;
             Grid.SetColumn(this.tb_Title, 0);
             Grid.SetColumnSpan(this.tb_Title, 2);
         }

@@ -94,7 +94,7 @@
            TargetType="TextBlock"
            BasedOn="{StaticResource BaseTextBlockStyle}">
         <Setter Property="Margin"
-                Value="8,0" />
+                Value="12,0,8,0" />
         <Setter Property="VerticalAlignment"
                 Value="Center" />
         <Setter Property="MaxLines"
