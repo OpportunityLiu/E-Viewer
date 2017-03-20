@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExViewer.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace ExViewer.Views
 {
-    public sealed partial class AddToFavoritesDialog : ContentDialog
+    public sealed partial class AddToFavoritesDialog : MyContentDialog
     {
         public AddToFavoritesDialog()
         {

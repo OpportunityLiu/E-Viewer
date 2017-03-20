@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExViewer.Controls;
 using ExViewer.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
             this.VM = CachedVM.Instance;
-            this.cdg_ConfirmClear = new ContentDialog()
+            this.cdg_ConfirmClear = new MyContentDialog()
             {
                 Title = Strings.Resources.Views.ClearCachedDialog.Title,
                 Content = Strings.Resources.Views.ClearCachedDialog.Content,
@@ -85,11 +86,10 @@ namespace ExViewer.Views
             }
         }
 
-        private ContentDialog cdg_ConfirmClear;
+        private MyContentDialog cdg_ConfirmClear;
 
         private async void abb_DeleteAll_Click(object sender, RoutedEventArgs e)
         {
-            this.cdg_ConfirmClear.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
             await this.cdg_ConfirmClear.ShowAsync();
         }
 

@@ -93,11 +93,11 @@
       "AppBarButtonUnderline/Label": "Underline",
       "AppBarButtonStrike/Label": "Strike",
       "AppBarButtonLink/Label": "Link",
-      "AppBarButtonBold/ToolTipService/ToolTip": "Ctrl + B",
-      "AppBarButtonItalic/ToolTipService/ToolTip": "Ctrl + T",
-      "AppBarButtonUnderline/ToolTipService/ToolTip": "Ctrl + U",
-      "AppBarButtonStrike/ToolTipService/ToolTip": "Ctrl + S",
-      "AppBarButtonLink/ToolTipService/ToolTip": "Ctrl + L"
+      "AppBarButtonBold/ToolTipService/ToolTip": "Bold (Ctrl + B)",
+      "AppBarButtonItalic/ToolTipService/ToolTip": "Italic (Ctrl + T)",
+      "AppBarButtonUnderline/ToolTipService/ToolTip": "Underline (Ctrl + U)",
+      "AppBarButtonStrike/ToolTipService/ToolTip": "Strike (Ctrl + S)",
+      "AppBarButtonLink/ToolTipService/ToolTip": "Link (Ctrl + L)"
     },
     "EhWikiDialog": {
       "ContentDialog/PrimaryButtonText": "OK",
@@ -109,7 +109,7 @@
       "LoadingMoreTextBlock/Text": "Loading more galleries..."
     },
     "GalleryPage": {
-      "AppBarButtonAddComment/Label": "Post new comments",
+      "AppBarButtonAddComment/Label": "Post new comment",
       "CommentsEmptyTextBlock/Text": "No comments",
       "CommentsLoadingTextBlock/Text": "Loading comments...",
       "GoToDefinitionMenuFlyoutItem/Text": "Go to EHWiki for definition",

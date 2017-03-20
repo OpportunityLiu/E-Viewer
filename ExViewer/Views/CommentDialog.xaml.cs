@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExViewer.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace ExViewer.Views
 {
-    public partial class CommentDialog : ContentDialog
+    public partial class CommentDialog : MyContentDialog
     {
         public CommentDialog()
         {
@@ -136,11 +137,25 @@ namespace ExViewer.Views
                 handleTag("s");
                 break;
             case Windows.System.VirtualKey.L:
-                handleTag("l");
+                handleTag("url");
                 break;
             default:
                 e.Handled = false;
                 break;
+            }
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(e.NewSize.Width > 320)
+            {
+                this.gdEditBar.HorizontalAlignment = HorizontalAlignment.Right;
+                this.gdEditBar.Width = 320;
+            }
+            else
+            {
+                this.gdEditBar.HorizontalAlignment = HorizontalAlignment.Stretch;
+                this.gdEditBar.Width = double.NaN;
             }
         }
     }
