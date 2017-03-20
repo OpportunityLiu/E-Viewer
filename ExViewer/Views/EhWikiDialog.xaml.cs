@@ -110,7 +110,7 @@ namespace ExViewer.Views
         {
             if(color.Color.A == 255)
                 return $"#{color.Color.R:X2}{color.Color.G:X2}{color.Color.B:X2}";
-            return $"rgba({color.Color.R},{color.Color.G},{color.Color.B},{color.Color.A / 256d})";
+            return $"rgba({color.Color.R},{color.Color.G},{color.Color.B},{color.Color.A / 255d})";
         }
 
         private static readonly Uri eh = new Uri("https://e-henatai.org/");
