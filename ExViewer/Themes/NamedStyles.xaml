@@ -81,17 +81,6 @@
                 Value="True" />
     </Style>
 
-    <Style x:Key="SplitButtonStyle"
-           TargetType="Button"
-           BasedOn="{StaticResource NavigationBackButtonSmallStyle}">
-        <Setter Property="Content"
-                Value="&#xE700;" />
-        <Setter Property="Height"
-                Value="48" />
-        <Setter Property="Width"
-                Value="48" />
-    </Style>
-
     <Style x:Key="GalleryTitleTextBlockStyle"
            TargetType="TextBlock"
            BasedOn="{StaticResource BaseTextBlockStyle}">
@@ -668,103 +657,104 @@
                           Background="{TemplateBinding Background}"
                           d:DesignWidth="48"
                           d:DesignHeight="48">
-                        <Grid.Resources>
-                            <Style x:Key="RectStyle"
-                                   TargetType="Rectangle">
-                                <Setter Property="Height"
-                                        Value="1.5" />
-                                <Setter Property="Width"
-                                        Value="20" />
-                                <Setter Property="StrokeThickness"
-                                        Value="0" />
-                                <Setter Property="HorizontalAlignment"
-                                        Value="Center" />
-                                <Setter Property="VerticalAlignment"
-                                        Value="Center" />
-                                <Setter Property="UseLayoutRounding"
-                                        Value="False" />
-                            </Style>
-                        </Grid.Resources>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
-                                <VisualStateGroup.Transitions>
-                                    <VisualTransition GeneratedDuration="0:0:0.1" />
-                                    <VisualTransition From="Normal"
-                                                      GeneratedDuration="0"
-                                                      To="Pressed" />
-                                    <VisualTransition From="Normal"
-                                                      GeneratedDuration="0"
-                                                      To="Disabled" />
-                                    <VisualTransition From="Normal"
-                                                      GeneratedDuration="0"
-                                                      To="PointerOver" />
-                                    <VisualTransition From="Pressed"
-                                                      GeneratedDuration="0"
-                                                      To="Normal" />
-                                    <VisualTransition From="Pressed"
-                                                      GeneratedDuration="0"
-                                                      To="Disabled" />
-                                    <VisualTransition From="Pressed"
-                                                      GeneratedDuration="0"
-                                                      To="PointerOver" />
-                                    <VisualTransition From="Disabled"
-                                                      GeneratedDuration="0"
-                                                      To="Normal" />
-                                    <VisualTransition From="Disabled"
-                                                      GeneratedDuration="0"
-                                                      To="Pressed" />
-                                    <VisualTransition From="Disabled"
-                                                      GeneratedDuration="0"
-                                                      To="PointerOver" />
-                                    <VisualTransition From="PointerOver"
-                                                      GeneratedDuration="0"
-                                                      To="Normal" />
-                                    <VisualTransition From="PointerOver"
-                                                      GeneratedDuration="0"
-                                                      To="Pressed" />
-                                    <VisualTransition From="PointerOver"
-                                                      GeneratedDuration="0"
-                                                      To="Disabled" />
-                                    <VisualTransition From="Checked"
-                                                      GeneratedDuration="0"
-                                                      To="CheckedPointerOver" />
-                                    <VisualTransition From="Checked"
-                                                      GeneratedDuration="0"
-                                                      To="CheckedPressed" />
-                                    <VisualTransition From="Checked"
-                                                      GeneratedDuration="0"
-                                                      To="CheckedDisabled" />
-                                    <VisualTransition From="CheckedPointerOver"
-                                                      GeneratedDuration="0"
-                                                      To="Checked" />
-                                    <VisualTransition From="CheckedPointerOver"
-                                                      GeneratedDuration="0"
-                                                      To="CheckedPressed" />
-                                    <VisualTransition From="CheckedPointerOver"
-                                                      GeneratedDuration="0"
-                                                      To="CheckedDisabled" />
-                                    <VisualTransition From="CheckedPressed"
-                                                      GeneratedDuration="0"
-                                                      To="Checked" />
-                                    <VisualTransition From="CheckedPressed"
-                                                      GeneratedDuration="0"
-                                                      To="CheckedPointerOver" />
-                                    <VisualTransition From="CheckedPressed"
-                                                      GeneratedDuration="0"
-                                                      To="CheckedDisabled" />
-                                    <VisualTransition From="CheckedDisabled"
-                                                      GeneratedDuration="0"
-                                                      To="Checked" />
-                                    <VisualTransition From="CheckedDisabled"
-                                                      GeneratedDuration="0"
-                                                      To="CheckedPointerOver" />
-                                    <VisualTransition From="CheckedDisabled"
-                                                      GeneratedDuration="0"
-                                                      To="CheckedPressed" />
-                                </VisualStateGroup.Transitions>
-                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle0"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle1"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                         Storyboard.TargetName="rectangle1"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle2"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                         Storyboard.TargetName="rectangle2"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </VisualState>
                                 <VisualState x:Name="PointerOver">
                                     <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle0"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle1"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                         Storyboard.TargetName="rectangle1"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle2"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                         Storyboard.TargetName="rectangle2"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
                                                                        Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0"
@@ -789,6 +779,51 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle0"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle1"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                         Storyboard.TargetName="rectangle1"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle2"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                         Storyboard.TargetName="rectangle2"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
                                                                        Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0"
@@ -813,6 +848,51 @@
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle0"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle1"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                         Storyboard.TargetName="rectangle1"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
+                                                         Storyboard.TargetName="rectangle2"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="1"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                                                         Storyboard.TargetName="rectangle2"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="rectangle0"
                                                                        Storyboard.TargetProperty="Fill">
                                             <DiscreteObjectKeyFrame KeyTime="0"
@@ -832,50 +912,100 @@
                                 </VisualState>
                                 <VisualState x:Name="Checked">
                                     <Storyboard>
-                                        <DoubleAnimation To="-180"
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-180"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle0"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="-135"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-135"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle1"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="0.65"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0.65"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                                                          Storyboard.TargetName="rectangle1"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="-225"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-225"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle2"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="0.65"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0.65"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                                                          Storyboard.TargetName="rectangle2"
-                                                         d:IsOptimized="True" />
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="CheckedPointerOver">
                                     <Storyboard>
-                                        <DoubleAnimation To="-180"
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-180"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle0"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="-135"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-135"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle1"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="0.65"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0.65"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                                                          Storyboard.TargetName="rectangle1"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="-225"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-225"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle2"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="0.65"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0.65"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                                                          Storyboard.TargetName="rectangle2"
-                                                         d:IsOptimized="True" />
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
                                                                        Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0"
@@ -900,26 +1030,51 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedPressed">
                                     <Storyboard>
-                                        <DoubleAnimation To="-180"
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-180"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle0"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="-135"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-135"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle1"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="0.65"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0.65"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                                                          Storyboard.TargetName="rectangle1"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="-225"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-225"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle2"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="0.65"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0.65"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                                                          Storyboard.TargetName="rectangle2"
-                                                         d:IsOptimized="True" />
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
                                                                        Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0"
@@ -944,26 +1099,51 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedDisabled">
                                     <Storyboard>
-                                        <DoubleAnimation To="-180"
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-180"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle0"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="-135"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-135"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle1"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="0.65"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0.65"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                                                          Storyboard.TargetName="rectangle1"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="-225"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="-225"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)"
                                                          Storyboard.TargetName="rectangle2"
-                                                         d:IsOptimized="True" />
-                                        <DoubleAnimation To="0.65"
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.15"
+                                                         To="0.65"
                                                          Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                                                          Storyboard.TargetName="rectangle2"
-                                                         d:IsOptimized="True" />
+                                                         d:IsOptimized="True">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="rectangle0"
                                                                        Storyboard.TargetProperty="Fill">
                                             <DiscreteObjectKeyFrame KeyTime="0"
@@ -983,10 +1163,26 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
+                        <Grid.Resources>
+                            <Style x:Key="RectStyle"
+                                   TargetType="Rectangle">
+                                <Setter Property="Height"
+                                        Value="1.5" />
+                                <Setter Property="Width"
+                                        Value="20" />
+                                <Setter Property="StrokeThickness"
+                                        Value="0" />
+                                <Setter Property="HorizontalAlignment"
+                                        Value="Center" />
+                                <Setter Property="VerticalAlignment"
+                                        Value="Center" />
+                                <Setter Property="UseLayoutRounding"
+                                        Value="False" />
+                            </Style>
+                        </Grid.Resources>
                         <Rectangle x:Name="rectangle1"
                                    Fill="{TemplateBinding Foreground}"
                                    Style="{StaticResource RectStyle}"
-                                   UseLayoutRounding="False"
                                    Margin="0,-10,0,0"
                                    RenderTransformOrigin="0.45,4.25">
                             <Rectangle.RenderTransform>
@@ -996,7 +1192,6 @@
                         <Rectangle x:Name="rectangle2"
                                    Fill="{TemplateBinding Foreground}"
                                    Style="{StaticResource RectStyle}"
-                                   UseLayoutRounding="False"
                                    Margin="0,0,0,-10"
                                    RenderTransformOrigin="0.45,-3.25">
                             <Rectangle.RenderTransform>
@@ -1005,7 +1200,6 @@
                         </Rectangle>
                         <Rectangle x:Name="rectangle0"
                                    Fill="{TemplateBinding Foreground}"
-                                   UseLayoutRounding="False"
                                    Style="{StaticResource RectStyle}"
                                    RenderTransformOrigin="0.5,0.5">
                             <Rectangle.RenderTransform>
