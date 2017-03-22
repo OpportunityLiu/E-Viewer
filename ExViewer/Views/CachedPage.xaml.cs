@@ -30,11 +30,12 @@ namespace ExViewer.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CachedPage : Page, IHasAppBar
+    public sealed partial class CachedPage : MyPage, IHasAppBar
     {
         public CachedPage()
         {
             this.InitializeComponent();
+            this.VisibleBoundHandledByDesign = true;
             this.VM = CachedVM.Instance;
             this.cdg_ConfirmClear = new MyContentDialog()
             {

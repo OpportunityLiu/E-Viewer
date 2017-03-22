@@ -95,9 +95,9 @@ namespace ExViewer.Views
         {
             if(SettingCollection.Current.NeedVerify)
                 await verify();
+            this.cpHided.Content = null;
             this.rootControl.PreviousState = this.previousExecutionState;
-            this.rootControl.HomePageType = this.homePageType;
-            Themes.ThemeExtention.SetTitleBar();
+            this.rootControl.HomePageType = this.homePageType ?? typeof(SearchPage);
             Window.Current.Content = this.rootControl;
             this.rootControl = null;
             JYAnalytics.TrackPageEnd(nameof(SplashControl));
@@ -147,7 +147,7 @@ namespace ExViewer.Views
 
         private async void loadApplication()
         {
-            await Task.Run(async () =>
+            var loadingTask = Task.Run(async () =>
             {
                 var initDbTask = Task.Run(async () =>
                 {
@@ -197,7 +197,11 @@ namespace ExViewer.Views
                 else
                     this.homePageType = typeof(SearchPage);
             });
+            await Task.Delay(500);
             this.rootControl = new RootControl();
+            FindName(nameof(this.cpHided));
+            this.cpHided.Content = this.rootControl;
+            await loadingTask;
             lock(this.loadingSyncRoot)
             {
                 if(this.effectLoaded)
@@ -253,6 +257,16 @@ namespace ExViewer.Views
                 }
                 Application.Current.Exit();
             }
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            return base.MeasureOverride(availableSize);
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            return base.ArrangeOverride(finalSize);
         }
     }
 }

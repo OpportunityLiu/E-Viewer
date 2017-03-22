@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Navigation;
 using ExViewer.ViewModels;
 using System.Threading.Tasks;
 using Windows.UI.ViewManagement;
+using ExViewer.Controls;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -30,11 +31,12 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SearchPage : Page, IHasAppBar
+    public sealed partial class SearchPage : MyPage, IHasAppBar
     {
         public SearchPage()
         {
             this.InitializeComponent();
+            this.VisibleBoundHandledByDesign = true;
         }
 
         private int navId;

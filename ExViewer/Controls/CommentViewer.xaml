@@ -260,7 +260,7 @@
                Opened="VotePopUp_Opened">
             <Popup.ChildTransitions>
                 <TransitionCollection>
-                    <PopupThemeTransition FromVerticalOffset="-24" />
+                    <EdgeUIThemeTransition />
                 </TransitionCollection>
             </Popup.ChildTransitions>
             <Grid BorderThickness="1"

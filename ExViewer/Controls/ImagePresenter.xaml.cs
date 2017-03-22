@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.ComponentModel;
 using Windows.ApplicationModel;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.Storage;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -37,89 +39,36 @@ namespace ExViewer.Controls
 
         public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null, ImagePropertyChangedCallback));
 
-        private static void ImagePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static async void ImagePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var sender = (ImagePresenter)d;
-
-            if(e.OldValue != null)
-            {
-                stopTrackImage(sender, (GalleryImage)e.OldValue);
-            }
-            if(sender.loaded)
-            {
-                if(e.NewValue != null)
-                {
-                    startTrackImage(sender, (GalleryImage)e.NewValue);
-                }
-            }
+            if(e.NewValue is GalleryImage image)
+                await image.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
         }
 
         protected override void OnDisconnectVisualChildren()
         {
             ClearValue(ImageProperty);
+            this.img_Content.ClearValue(Windows.UI.Xaml.Controls.Image.SourceProperty);
+            this.img_Thumb.ClearValue(Windows.UI.Xaml.Controls.Image.SourceProperty);
             base.OnDisconnectVisualChildren();
-        }
-
-        private bool loaded;
-
-        private static void startTrackImage(ImagePresenter sender, GalleryImage image)
-        {
-            image.PropertyChanged += sender.Image_PropertyChanged;
-            sender.Bindings.Update();
-            if(image.State == ImageLoadingState.Waiting)
-            {
-                var ignore = image.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
-            }
-        }
-
-        private static void stopTrackImage(ImagePresenter sender, GalleryImage image)
-        {
-            image.PropertyChanged -= sender.Image_PropertyChanged;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if(this.Image != null)
-                startTrackImage(this, this.Image);
-            this.loaded = true;
-        }
-
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if(this.Image != null)
-                stopTrackImage(this, this.Image);
-            this.loaded = false;
-        }
-
-        private void Image_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var img = (GalleryImage)sender;
-            if(string.IsNullOrEmpty(e.PropertyName))
-            {
-                this.cc_Image.ClearValue(ContentControl.ContentProperty);
-                this.cc_Image.Content = img;
-                this.img_Thumb.Source = img.Thumb;
-            }
-            switch(e.PropertyName)
-            {
-            case nameof(GalleryImage.ImageFile):
-                this.cc_Image.ClearValue(ContentControl.ContentProperty);
-                this.cc_Image.Content = img;
-                break;
-            case nameof(GalleryImage.Thumb):
-                this.img_Thumb.Source = img.Thumb;
-                break;
-            default:
-                break;
-            }
+            this.Descendants<ScrollContentPresenter>().First().Clip = null;
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
             this.gd_ContentRoot.MaxWidth = availableSize.Width;
             this.gd_ContentRoot.MaxHeight = availableSize.Height;
-            Task.Yield().GetAwaiter().OnCompleted(() => this.sv.ChangeView(null, null, 1, true));
             return base.MeasureOverride(availableSize);
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            this.rgChip.Rect = new Rect(new Point(), finalSize);
+            return base.ArrangeOverride(finalSize);
         }
 
         private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -284,5 +233,10 @@ namespace ExViewer.Controls
         }
 
         private bool spacePressed;
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ResetZoom();
+        }
     }
 }

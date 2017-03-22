@@ -23,11 +23,12 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary> 
-    public sealed partial class ImagePage : Page, IHasAppBar
+    public sealed partial class ImagePage : MyPage, IHasAppBar
     {
         public ImagePage()
         {
             this.InitializeComponent();
+            this.VisibleBoundHandledByDesign = true;
         }
 
         public GalleryVM VM

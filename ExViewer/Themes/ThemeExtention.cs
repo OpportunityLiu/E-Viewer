@@ -42,8 +42,7 @@ namespace ExViewer.Themes
             if(ApiInfo.StatusBarSupported)
             {
                 var sb = StatusBar.GetForCurrentView();
-                sb.BackgroundColor = SystmeChromeMediumColor;
-                sb.BackgroundOpacity = 1;
+                sb.BackgroundOpacity = 0;
                 sb.ForegroundColor = SystemBaseMediumHighColor;
             }
         }
@@ -63,7 +62,8 @@ namespace ExViewer.Themes
             if(ApiInfo.StatusBarSupported)
             {
                 var sb = StatusBar.GetForCurrentView();
-                var ignore = sb.HideAsync();
+                sb.BackgroundOpacity = 0;
+                sb.ForegroundColor = splashColor;
             }
         }
     }

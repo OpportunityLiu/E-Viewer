@@ -3,6 +3,8 @@ using ExClient;
 using ExClient.Settings;
 using System.Diagnostics;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
+using ExViewer.Helpers;
 
 namespace ExViewer.Settings
 {
@@ -82,7 +84,7 @@ namespace ExViewer.Settings
             set
             {
                 SetLocal(value);
-                ((FrameworkElement)Window.Current.Content).RequestedTheme = value.ToElementTheme();
+                Window.Current.Content.Parent<FrameworkElement>().RequestedTheme = value.ToElementTheme();
                 Themes.ThemeExtention.SetTitleBar();
             }
         }

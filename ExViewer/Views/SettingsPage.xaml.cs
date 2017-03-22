@@ -1,4 +1,5 @@
 ﻿using ApplicationDataManager.Settings;
+using ExViewer.Controls;
 using ExViewer.Settings;
 using System;
 using System.Collections.Generic;
@@ -23,11 +24,12 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : MyPage
     {
         public SettingsPage()
         {
             this.InitializeComponent();
+            this.VisibleBoundHandledByDesign = true;
             this.pv_root.ItemsSource = SettingCollection.Current.GroupedSettings;
         }
 

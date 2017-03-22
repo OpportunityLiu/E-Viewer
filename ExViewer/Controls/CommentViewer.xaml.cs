@@ -30,12 +30,19 @@ namespace ExViewer.Controls
 
         public Comment Comment
         {
-            get => (Comment)GetValue(CommentProperty); set => SetValue(CommentProperty, value);
+            get => (Comment)GetValue(CommentProperty);
+            set => SetValue(CommentProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Comment.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CommentProperty =
             DependencyProperty.Register("Comment", typeof(Comment), typeof(CommentViewer), new PropertyMetadata(null));
+
+        protected override void OnDisconnectVisualChildren()
+        {
+            this.ClearValue(CommentProperty);
+            base.OnDisconnectVisualChildren();
+        }
 
         private void UserControl_FocusEngaged(Control sender, FocusEngagedEventArgs args)
         {

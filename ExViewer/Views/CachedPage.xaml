@@ -1,31 +1,37 @@
-﻿<Page x:Class="ExViewer.Views.CachedPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:ExViewer.Views"
-      xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      NavigationCacheMode="Enabled"
-      x:Name="page"
-      mc:Ignorable="d">
-    <Page.Resources>
+﻿<controls:MyPage x:Class="ExViewer.Views.CachedPage"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:local="using:ExViewer.Views"
+                 xmlns:controls="using:ExViewer.Controls"
+                 xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 NavigationCacheMode="Enabled"
+                 x:Name="page"
+                 mc:Ignorable="d">
+    <controls:MyPage.Resources>
         <MenuFlyout x:Name="mf_Gallery">
             <MenuFlyoutItem x:Uid="Views/CachedPage/DeleteMenuFlyout"
                             x:Name="mfi_DeleteGallery"
                             Text="Delete"
                             Command="{x:Bind VM.Delete, Mode=OneWay}" />
         </MenuFlyout>
-    </Page.Resources>
-    <Page.Transitions>
+    </controls:MyPage.Resources>
+    <controls:MyPage.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
                 <DrillInNavigationTransitionInfo />
             </NavigationThemeTransition>
         </TransitionCollection>
-    </Page.Transitions>
+    </controls:MyPage.Transitions>
 
     <RelativePanel>
+        <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
+                Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,48,x1,x0'}"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignRightWithPanel="True" />
         <CommandBar x:Name="cb_top"
+                    Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True"
                     HorizontalContentAlignment="Stretch">
@@ -45,6 +51,8 @@
             </CommandBar.SecondaryCommands>
         </CommandBar>
         <tk:PullToRefreshListView x:Name="lv"
+                                  Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                                  Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
                                   RefreshRequested="lv_RefreshRequested"
                                   RelativePanel.AlignBottomWithPanel="True"
                                   RelativePanel.AlignLeftWithPanel="True"
@@ -63,7 +71,7 @@
                               xmlns:controls="using:ExViewer.Controls"
                               x:DataType="c:Gallery">
                     <controls:GalleryViewer x:Name="gv_Gallery"
-                                            Gallery="{x:Bind}"/>
+                                            Gallery="{x:Bind}" />
                 </DataTemplate>
             </tk:PullToRefreshListView.ItemTemplate>
             <tk:PullToRefreshListView.Footer>
@@ -84,4 +92,4 @@
             </tk:PullToRefreshListView.Header>
         </tk:PullToRefreshListView>
     </RelativePanel>
-</Page>
+</controls:MyPage>
