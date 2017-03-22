@@ -75,7 +75,7 @@ namespace ExViewer.Views
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            this.gd_Pivot.Height = availableSize.Height - 48;
+            this.gd_Pivot.Height = availableSize.Height - 48 - VisibleBoundsThickness.Top;
             return base.MeasureOverride(availableSize);
         }
 

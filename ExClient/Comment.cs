@@ -43,7 +43,7 @@ namespace ExClient
             if(editNode != null)
                 this.Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
             var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.GetAttributeValue("class", "") == "c3");
-            this.Author = postedAndAuthorNode.LastChild.InnerText.DeEntitize();
+            this.Author = postedAndAuthorNode.Element("a").InnerText.DeEntitize();
             this.Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
 
             if(!this.IsUploaderComment)
