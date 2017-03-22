@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Media
         public static IEnumerable<DependencyObject> Children(this DependencyObject reference)
         {
             var childrenCount = GetChildrenCount(reference);
-            for(int i = 0; i < childrenCount; i++)
+            for(var i = 0; i < childrenCount; i++)
                 yield return GetChild(reference, i);
         }
 
@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml.Media
         {
             var childrenCount = GetChildrenCount(reference);
             yield return reference;
-            for(int i = 0; i < childrenCount; i++)
+            for(var i = 0; i < childrenCount; i++)
                 yield return GetChild(reference, i);
         }
 

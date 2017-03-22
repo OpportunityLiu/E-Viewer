@@ -29,7 +29,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class RootControl : Page
+    public sealed partial class RootControl : UserControl
     {
         public RootControl()
         {
@@ -51,7 +51,6 @@ namespace ExViewer.Views
                 [typeof(FavoritesPage)] = this.svt_Favorites,
                 [typeof(SettingsPage)] = this.svt_Settings
             };
-            this.sv_root.IsPaneOpen = false;
 #if DEBUG
             this.GotFocus += this.OnGotFocus;
         }
@@ -89,24 +88,58 @@ namespace ExViewer.Views
         public static readonly DependencyProperty UserInfoProperty =
             DependencyProperty.Register("UserInfo", typeof(UserInfo), typeof(RootControl), new PropertyMetadata(null));
 
+        public Thickness VisibleBoundsThickness
+        {
+            get => (Thickness)GetValue(VisibleBoundsThicknessProperty);
+            set => SetValue(VisibleBoundsThicknessProperty, value);
+        }
+
+        public static readonly DependencyProperty VisibleBoundsThicknessProperty =
+            DependencyProperty.Register(nameof(VisibleBoundsThickness), typeof(Thickness), typeof(RootControl), new PropertyMetadata(new Thickness(0)));
+
+        public Thickness ContentVisibleBoundsThickness
+        {
+            get
+            {
+                if(this.sv_root.DisplayMode== SplitViewDisplayMode.Overlay)
+                {
+                    return VisibleBoundsThickness;
+                }
+                var v = VisibleBoundsThickness;
+                v.Left = 0;
+                return v;
+            }
+        }
+
         SystemNavigationManager manager;
 
-        private async void Control_Loading(FrameworkElement sender, object args)
+        private void Control_Loading(FrameworkElement sender, object args)
         {
-            RootController.SetRoot(this);
-            this.manager = SystemNavigationManager.GetForCurrentView();
+            if(this.HomePageType == null)
+            {
+                RootController.SetRoot(this);
+                this.manager = SystemNavigationManager.GetForCurrentView();
+            }
+            else
+            {
+                this.fm_inner.Navigate(this.HomePageType);
+                this.tbtPane.Focus(FocusState.Pointer);
+            }
             this.manager.BackRequested += this.Manager_BackRequested;
-            this.fm_inner.Navigate(this.HomePageType ?? typeof(SearchPage));
-            await Task.Yield();
-            this.tbtPane.Focus(FocusState.Pointer);
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            this.UserInfo = await UserInfo.LoadFromCache();
-            RootController.UpdateUserInfo(false);
-            RootController.HandleUriLaunch();
-            vsg_CurrentStateChanging(null, null);
+            if(this.HomePageType == null)
+            {
+                this.UserInfo = await UserInfo.LoadFromCache();
+                RootController.UpdateUserInfo(false);
+                RootController.HandleUriLaunch();
+            }
+            else
+            {
+                Themes.ThemeExtention.SetTitleBar();
+            }
         }
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)
@@ -195,32 +228,46 @@ namespace ExViewer.Views
                 break;
             }
         }
+#if DEBUG_BOUNDS
+        private const double NARROW_WIDE_WIDTH = 620;
+#else
+        private const double NARROW_WIDE_WIDTH = 720;
+#endif
 
-        private void vsg_CurrentStateChanging(object sender, VisualStateChangedEventArgs e)
+        protected override Size MeasureOverride(Size availableSize)
         {
-            switch(this.sv_root.DisplayMode)
+            if(RootController.IsFullScreen || availableSize.Width < NARROW_WIDE_WIDTH)
             {
-            case SplitViewDisplayMode.Overlay:
-                RootController.SetSplitViewButtonPlaceholderVisibility(true);
-                break;
-            case SplitViewDisplayMode.CompactOverlay:
-                RootController.SetSplitViewButtonPlaceholderVisibility(false);
-                break;
-            }
-        }
-
-        private void page_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if(RootController.IsFullScreen || e.NewSize.Width < 720)
-            {
-                this.sv_root.DisplayMode = SplitViewDisplayMode.Overlay;
-                RootController.SetSplitViewButtonPlaceholderVisibility(true);
+                if(this.sv_root.DisplayMode != SplitViewDisplayMode.Overlay)
+                {
+                    this.sv_root.DisplayMode = SplitViewDisplayMode.Overlay;
+                    RootController.SetSplitViewButtonPlaceholderVisibility(true);
+                }
             }
             else
             {
-                this.sv_root.DisplayMode = SplitViewDisplayMode.CompactOverlay;
-                RootController.SetSplitViewButtonPlaceholderVisibility(false);
+                if(this.sv_root.DisplayMode != SplitViewDisplayMode.CompactOverlay)
+                {
+                    this.sv_root.DisplayMode = SplitViewDisplayMode.CompactOverlay;
+                    RootController.SetSplitViewButtonPlaceholderVisibility(false);
+                }
             }
+            if(RootController.ApplicationView.DesiredBoundsMode == ApplicationViewBoundsMode.UseCoreWindow)
+            {
+                ClearValue(VisibleBoundsThicknessProperty);
+            }
+            else
+            {
+                var bounds = RootController.ApplicationView.VisibleBounds;
+                var winBounds = Window.Current.Bounds;
+                this.VisibleBoundsThickness = new Thickness(bounds.X - winBounds.X, bounds.Top - winBounds.Top, winBounds.Right - bounds.Right, winBounds.Bottom - bounds.Bottom);
+            }
+            return base.MeasureOverride(availableSize);
+        }
+
+        private double getCompactPaneWidth(Thickness visibleBounds)
+        {
+            return visibleBounds.Left + 48;
         }
 
         private void elementAccessKeyDisplayRequested(UIElement sender, AccessKeyDisplayRequestedEventArgs args)

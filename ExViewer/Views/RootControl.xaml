@@ -1,18 +1,17 @@
-﻿<Page x:Class="ExViewer.Views.RootControl"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:local="using:ExViewer"
-      xmlns:controls="using:ExViewer.Controls"
-      mc:Ignorable="d"
-      x:Name="page"
-      SizeChanged="page_SizeChanged"
-      IsTextScaleFactorEnabled="False"
-      Loading="Control_Loading"
-      Loaded="Control_Loaded"
-      Unloaded="Control_Unloaded">
-    <Page.Resources>
+﻿<UserControl x:Class="ExViewer.Views.RootControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="using:ExViewer"
+             xmlns:controls="using:ExViewer.Controls"
+             mc:Ignorable="d"
+             x:Name="page"
+             IsTextScaleFactorEnabled="False"
+             Loading="Control_Loading"
+             Loaded="Control_Loaded"
+             Unloaded="Control_Unloaded">
+    <UserControl.Resources>
         <Storyboard x:Key="ShowDisablePanel">
             <DoubleAnimation Duration="0:0:0.5"
                              From="0"
@@ -51,7 +50,7 @@
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
-        <Storyboard x:Name="OpenSplitViewPane">
+        <Storyboard x:Key="OpenSplitViewPane">
             <DoubleAnimation Duration="0:0:0.12"
                              To="1"
                              Storyboard.TargetProperty="(UIElement.Opacity)"
@@ -94,7 +93,7 @@
                              Storyboard.TargetName="bdPaneHeader"
                              d:IsOptimized="True" />
         </Storyboard>
-        <Storyboard x:Name="CloseSplitViewPane">
+        <Storyboard x:Key="CloseSplitViewPane">
             <DoubleAnimation Duration="0:0:0.12"
                              x:Name="CloseSplitViewPaneBtnPane"
                              Storyboard.TargetProperty="(UIElement.Opacity)"
@@ -129,14 +128,14 @@
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
-    </Page.Resources>
-    <Grid>
+    </UserControl.Resources>
+    <Grid x:Name="gdRoot" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <SplitView x:Name="sv_root"
                    IsTabStop="False"
-                   PaneClosing="{x:Bind CloseSplitViewPane.Begin}"
-                   LightDismissOverlayMode="On">
+                   LightDismissOverlayMode="On"
+                   CompactPaneLength="{x:Bind getCompactPaneWidth(VisibleBoundsThickness), Mode=OneWay}">
             <SplitView.Pane>
-                <Grid>
+                <Grid Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x0,x1'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="48" />
                         <RowDefinition Height="Auto" />
@@ -150,6 +149,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Border x:Name="bdPaneHeader"
+                            Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x-1,x0,x0'}"
                             Opacity="0.2"
                             Background="{ThemeResource UserBackgroundThemeBrush}"
                             Grid.RowSpan="3"
@@ -273,12 +273,12 @@
                 </Grid>
             </SplitView.Pane>
             <Frame x:Name="fm_inner"
-                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                    Navigating="fm_inner_Navigating"
                    Navigated="fm_inner_Navigated" />
         </SplitView>
         <ToggleButton x:Name="tbtPane"
                       x:Uid="Views/RootControl/PaneButton"
+                      Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay}"
                       Style="{StaticResource SplitViewToggleButtonStyle}"
                       IsChecked="{x:Bind tbtPaneBind(sv_root.IsPaneOpen), BindBack=tbtPaneBindBack, Mode=TwoWay}"
                       IsTabStop="False"
@@ -293,12 +293,13 @@
                 Opacity="0"
                 IsHitTestVisible="False"
                 Visibility="Collapsed"
-                Padding="16,8">
+                Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0,x1,x1'}">
             <Border.Background>
                 <SolidColorBrush Color="{ThemeResource SystemChromeMediumLowColor}"
                                  Opacity="0.75" />
             </Border.Background>
             <TextBlock x:Name="tb_Toast"
+                       Margin="16,8"
                        TextWrapping="WrapWholeWords"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center" />
@@ -306,6 +307,7 @@
         <RelativePanel x:Name="rp_Disable"
                        x:DeferLoadStrategy="Lazy"
                        Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}"
+                       Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay}"
                        Visibility="Collapsed">
             <TextBlock x:Name="tb_DisableInfo"
                        x:Uid="Views/RootControl/DisableInfoTextBlock"
@@ -321,4 +323,4 @@
                          LargeChange="0.01" />
         </RelativePanel>
     </Grid>
-</Page>
+</UserControl>

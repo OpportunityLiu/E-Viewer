@@ -20,6 +20,7 @@ using ExClient;
 using ExViewer.ViewModels;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using ExViewer.Controls;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -28,11 +29,12 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class GalleryPage : Page, IHasAppBar
+    public sealed partial class GalleryPage : MyPage, IHasAppBar
     {
         public GalleryPage()
         {
             this.InitializeComponent();
+            this.VisibleBoundHandledByDesign = true;
             this.gd_Info.RegisterPropertyChangedCallback(ActualHeightProperty, this.set_btn_Scroll_Rotation);
             this.sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, this.set_btn_Scroll_Rotation);
         }

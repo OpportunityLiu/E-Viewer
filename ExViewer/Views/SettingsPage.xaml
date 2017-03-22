@@ -1,30 +1,33 @@
-﻿<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:ExViewer.Views"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:ExClient="using:ExClient"
-      Loading="page_Loading"
-      Unloaded="page_Unloaded"
-      x:Class="ExViewer.Views.SettingsPage"
-      NavigationCacheMode="Enabled"
-      mc:Ignorable="d"
-      xmlns:settings="using:ApplicationDataManager.Settings">
-    <Page.Resources>
+﻿<controls:MyPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:local="using:ExViewer.Views"
+                 xmlns:controls="using:ExViewer.Controls"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:ExClient="using:ExClient"
+                 xmlns:settings="using:ApplicationDataManager.Settings"
+                 x:Class="ExViewer.Views.SettingsPage"
+                 x:Name="page"
+                 Loading="page_Loading"
+                 Unloaded="page_Unloaded"
+                 NavigationCacheMode="Enabled"
+                 mc:Ignorable="d">
+    <controls:MyPage.Resources>
         <settings:SettingTemplateSelector x:Key="SettingTemplateSelector">
             <settings:SettingTemplateSelector.CustomTemplateDictionary>
                 <ResourceDictionary Source="ms-appx:///Settings/SettingPresenterTemplates.xaml" />
             </settings:SettingTemplateSelector.CustomTemplateDictionary>
         </settings:SettingTemplateSelector>
-    </Page.Resources>
-    <Page.Transitions>
+    </controls:MyPage.Resources>
+    <controls:MyPage.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
                 <SlideNavigationTransitionInfo />
             </NavigationThemeTransition>
         </TransitionCollection>
-    </Page.Transitions>
+    </controls:MyPage.Transitions>
     <Pivot x:Name="pv_root"
+           BorderThickness="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
            BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
         <Pivot.LeftHeader>
             <Border x:Name="bdSplitViewPlaceholder"
@@ -40,7 +43,8 @@
             <DataTemplate x:DataType="settings:GroupedSettings">
                 <ListView ItemTemplateSelector="{StaticResource SettingTemplateSelector}"
                           ItemsSource="{x:Bind}"
-                          Margin="-12,0">
+                          Padding="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                          Margin="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Template">
@@ -58,13 +62,15 @@
                             <Setter Property="MinHeight"
                                     Value="0" />
                             <Setter Property="Margin"
-                                    Value="4" />
+                                    Value="0" />
                             <Setter Property="Padding"
-                                    Value="8" />
+                                    Value="12,8" />
                             <Setter Property="UseSystemFocusVisuals"
                                     Value="True" />
                             <Setter Property="IsFocusEngagementEnabled"
                                     Value="True" />
+                            <Setter Property="FocusVisualMargin"
+                                    Value="8,4" />
                         </Style>
                     </ListView.ItemContainerStyle>
                     <ListView.ItemContainerTransitions>
@@ -74,4 +80,4 @@
             </DataTemplate>
         </Pivot.ItemTemplate>
     </Pivot>
-</Page>
+</controls:MyPage>

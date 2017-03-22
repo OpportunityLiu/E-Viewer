@@ -6,17 +6,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             SizeChanged="UserControl_SizeChanged"
              Loaded="UserControl_Loaded"
-             Unloaded="UserControl_Unloaded"
              d:DesignHeight="300"
              d:DesignWidth="400">
-    <UserControl.Resources>
-        <DataTemplate x:Key="ImageTemplate" x:DataType="c:GalleryImage">
-            <Image Source="{x:Bind Image, FallbackValue=null, Mode=OneWay}"
-                   Stretch="Uniform" />
-        </DataTemplate>
-    </UserControl.Resources>
+    <UserControl.Clip>
+        <RectangleGeometry x:Name="rgChip" />
+    </UserControl.Clip>
     <ScrollViewer x:Name="sv"
+                  Margin="{x:Bind Padding, Mode=OneWay}"
                   IsTabStop="True"
                   FocusVisualMargin="{x:Bind FocusVisualMargin, Mode=OneWay}"
                   FocusVisualPrimaryBrush="{x:Bind FocusVisualPrimaryBrush, Mode=OneWay}"
@@ -25,8 +23,8 @@
                   FocusVisualSecondaryThickness="{x:Bind FocusVisualSecondaryThickness, Mode=OneWay}"
                   ZoomMode="Enabled"
                   Template="{StaticResource ScrollViewerScrollBarlessTemplate}"
-                  HorizontalScrollBarVisibility="Hidden"
-                  VerticalScrollBarVisibility="Hidden"
+                  HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto"
                   MinZoomFactor="1"
                   MaxZoomFactor="8"
                   ManipulationDelta="sv_ManipulationDelta"
@@ -39,15 +37,9 @@
               x:Name="gd_ContentRoot">
             <Image x:Name="img_Thumb"
                    Source="{x:Bind Image.Thumb, Mode=OneWay, FallbackValue={ThemeResource LoadingImageSource}}" />
-            <ContentControl x:Name="cc_Image"
-                            Content="{x:Bind Image, Mode=OneWay}"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            ContentTemplate="{StaticResource ImageTemplate}"
-                            Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
+            <Image x:Name="img_Content"
+                   Source="{x:Bind Image.Image, Mode=OneWay}"
+                   Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
         </Grid>
     </ScrollViewer>
 </UserControl>
