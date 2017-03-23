@@ -7,6 +7,7 @@
              xmlns:controls="using:ExViewer.Controls"
              mc:Ignorable="d"
              x:Name="page"
+             xmlns:themes="using:ExViewer.Themes"
              IsTextScaleFactorEnabled="False"
              Loading="Control_Loading"
              Loaded="Control_Loaded"
@@ -133,7 +134,8 @@
         <SplitView x:Name="sv_root"
                    IsTabStop="False"
                    LightDismissOverlayMode="On"
-                   CompactPaneLength="{x:Bind getCompactPaneWidth(VisibleBoundsThickness), Mode=OneWay}">
+                   OpenPaneLength="{x:Bind getPaneLength(VisibleBoundsThickness, 320), Mode=OneWay}"
+                   CompactPaneLength="{x:Bind getPaneLength(VisibleBoundsThickness, 48), Mode=OneWay}">
             <SplitView.Pane>
                 <Grid Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x0,x1'}">
                     <Grid.RowDefinitions>
