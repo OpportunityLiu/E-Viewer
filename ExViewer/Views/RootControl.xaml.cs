@@ -101,7 +101,7 @@ namespace ExViewer.Views
         {
             get
             {
-                if(this.sv_root.DisplayMode== SplitViewDisplayMode.Overlay)
+                if(this.sv_root.DisplayMode == SplitViewDisplayMode.Overlay)
                 {
                     return VisibleBoundsThickness;
                 }
@@ -265,9 +265,9 @@ namespace ExViewer.Views
             return base.MeasureOverride(availableSize);
         }
 
-        private double getCompactPaneWidth(Thickness visibleBounds)
+        private double getPaneLength(Thickness visibleBounds, double offset)
         {
-            return visibleBounds.Left + 48;
+            return visibleBounds.Left + offset;
         }
 
         private void elementAccessKeyDisplayRequested(UIElement sender, AccessKeyDisplayRequestedEventArgs args)
