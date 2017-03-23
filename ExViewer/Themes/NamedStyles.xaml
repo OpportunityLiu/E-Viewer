@@ -327,11 +327,40 @@
                   Data="M0,18.5 H14 V20 H0Z                                       M16,20 L20,16 L23.8258,7.0269 A2.1742,2.1742,0,1,0,19.8528,5.3215 L16,14.2945Z" />
         </Grid>
     </DataTemplate>
+    <DataTemplate x:Key="EhTagTemplate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <controls:HighlightTextBlock Text="{Binding Tag.Original, Mode=OneTime}"
+                                         HighlightText="{Binding Highlight, Mode=OneTime}"
+                                         Grid.Column="1" />
+            <controls:HighlightTextBlock Text="{Binding Tag.Translated.Text, Mode=OneTime}"
+                                         HighlightText="{Binding Highlight, Mode=OneTime}"
+                                         TextBlockStyle="{StaticResource SuggestionCaptionTextBlockStyle}"
+                                         Grid.Row="1"
+                                         Grid.Column="1" />
+            <Path Fill="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                  StrokeThickness="0"
+                  Stretch="Uniform"
+                  Grid.RowSpan="2"
+                  VerticalAlignment="Center"
+                  Margin="8,0"
+                  Data="M-12,-9 L-12,-3 L-6,-3 L-6,-4.5 L-10.5,-4.5 L-10.5,-9 Z                                       M-10.5,-5.809                                        A12,12,0,1,1,-11.55,3.255                                       L-10.106,2.848                                       A10.5,10.5,0,1,0,-9.487,-4.5                                       L-10.5,-4.5 Z                                       M-0.75,-6                                       L0.75,-6 L0.75,-0.311                                       L4.95,3.889 L3.889,4.95                                       L-0.75,0.311" />
+        </Grid>
+    </DataTemplate>
     <controls:DataTemplateSelector x:Key="SearchAutoSuggestBoxItemTemplateSelector">
         <controls:DataTemplateKeyValuePair Key="ExViewer.Database.SearchHistory"
                                            Value="{StaticResource SearchHistoryTemplate}" />
         <controls:DataTemplateKeyValuePair Key="ExViewer.ViewModels.AutoCompletion"
                                            Value="{StaticResource AutoCompletionTemplate}" />
+        <controls:DataTemplateKeyValuePair Key="ExViewer.ViewModels.TagRecord"
+                                           Value="{StaticResource EhTagTemplate}" />
     </controls:DataTemplateSelector>
     <Style x:Key="SearchAutoSuggestBoxStyle"
            TargetType="AutoSuggestBox">

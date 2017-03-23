@@ -38,7 +38,7 @@
             <Image x:Name="img_Thumb"
                    Source="{x:Bind Image.Thumb, Mode=OneWay, FallbackValue={ThemeResource LoadingImageSource}}" />
             <Image x:Name="img_Content"
-                   Source="{x:Bind Image.Image, Mode=OneWay}"
+                   local:ImagePresenter.ImageFile="{x:Bind Image.ImageFile, Mode=OneWay}"
                    Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
         </Grid>
     </ScrollViewer>

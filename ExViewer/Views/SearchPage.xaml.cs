@@ -124,7 +124,7 @@ namespace ExViewer.Views
         {
         }
 
-        private void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private async void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             sender.ItemsSource = null;
             if(args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
@@ -135,6 +135,8 @@ namespace ExViewer.Views
             else
             {
                 this.asb.Focus(FocusState.Keyboard);
+                // workaround for IME candidates, which will clean input.
+                await Dispatcher.RunIdleAsync(a => this.asb.Text = args.ChosenSuggestion.ToString());
             }
         }
 

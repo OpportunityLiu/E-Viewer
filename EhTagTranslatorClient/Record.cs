@@ -23,12 +23,18 @@ namespace EhTagTranslatorClient
 
         public static IEnumerable<Record> Analyze(IInputStream stream, Namespace @namespace)
         {
+            var skipcount = 0;
             var reader = new StreamReader(stream.AsStreamForRead());
             while(!reader.EndOfStream)
             {
                 var r = AnalyzeLine(reader.ReadLine(), @namespace);
                 if(r != null)
-                    yield return r;
+                {
+                    if(skipcount >= 2)
+                        yield return r;
+                    else
+                        skipcount++;
+                }
             }
         }
 
@@ -84,6 +90,14 @@ namespace EhTagTranslatorClient
         public Namespace Namespace
         {
             get;
+        }
+
+        public override string ToString()
+        {
+            if(Namespace != Namespace.Misc)
+                return $"{Namespace.ToString().ToLowerInvariant()}:\"{Original}$\"";
+            else
+                return $"\"{Original}$\"";
         }
     }
 }

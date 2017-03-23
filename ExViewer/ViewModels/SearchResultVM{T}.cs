@@ -115,6 +115,66 @@ namespace ExViewer.ViewModels
         }
     }
 
+    public class TagRecord
+    {
+        public static TagRecord GetRecord(string highlight, EhTagTranslatorClient.Record tag)
+        {
+            var score = 0;
+            if(tag.Original.Contains(highlight))
+            {
+                if(tag.Original.StartsWith(highlight))
+                {
+                    score += highlight.Length * 65536 * 16 / tag.Original.Length;
+                }
+                else
+                {
+                    score += highlight.Length * 65536 / tag.Original.Length;
+                }
+            }
+            else if(tag.Translated.Text.Contains(highlight))
+            {
+                if(tag.Translated.Text.StartsWith(highlight))
+                {
+                    score += highlight.Length * 65536 * 16 / tag.Translated.Text.Length;
+                }
+                else
+                {
+                    score += highlight.Length * 65536 / tag.Translated.Text.Length;
+                }
+            }
+            if(score == 0)
+                return null;
+            else
+                return new TagRecord(highlight, tag, score);
+        }
+
+        public TagRecord(string highlight, EhTagTranslatorClient.Record tag, int score)
+        {
+            this.Highlight = highlight;
+            this.Tag = tag;
+            this.Score = 100;
+        }
+
+        public EhTagTranslatorClient.Record Tag { get; }
+
+        public string Highlight { get; }
+
+        public int Score { get; }
+
+        public string Previous { get; set; }
+
+        public TagRecord SetPrevios(string p)
+        {
+            this.Previous = p;
+            return this;
+        }
+
+        public override string ToString()
+        {
+            return Previous + Tag.ToString();
+        }
+    }
+
     public abstract class SearchResultVM<T> : ViewModelBase
         where T : SearchResultBase
     {
@@ -182,7 +242,17 @@ namespace ExViewer.ViewModels
                                                                  .OrderByDescending(sh => sh.Time))
                                         .Distinct()
                                         .Select(sh => sh.SetHighlight(historyKeyword));
-                    return ((IEnumerable<object>)AutoCompletion.GetCompletions(input)).Concat(history).ToList().AsReadOnly();
+                    var lastword = historyKeyword.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                    var dictionary = Enumerable.Empty<TagRecord>();
+                    if(lastword != null)
+                    {
+                        var previous = historyKeyword.Substring(0, historyKeyword.Length - lastword.Length);
+                        dictionary = EhTagTranslatorClient.EhTagDatabase.Dictionary
+                            .SelectMany(dic
+                                => dic.Value.Select(kv => TagRecord.GetRecord(lastword, kv.Value)).Where(t => t != null)
+                            ).OrderByDescending(t => t.Score).Take(10).Select(tag => tag.SetPrevios(previous));
+                    }
+                    return ((IEnumerable<object>)AutoCompletion.GetCompletions(input)).Concat(dictionary).Concat(history).ToList().AsReadOnly();
                 }
             }).AsAsyncOperation();
         }

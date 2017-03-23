@@ -71,6 +71,15 @@ namespace ExViewer.Controls
             ((HighlightTextBlock)sender).reload();
         }
 
+        public Style TextBlockStyle
+        {
+            get => (Style)GetValue(TextBlockStyleProperty);
+            set => SetValue(TextBlockStyleProperty, value);
+        }
+
+        public static readonly DependencyProperty TextBlockStyleProperty =
+            DependencyProperty.Register(nameof(TextBlockStyle), typeof(Style), typeof(HighlightTextBlock), new PropertyMetadata(null));
+
         private void reload()
         {
             if(this.Presenter == null)
