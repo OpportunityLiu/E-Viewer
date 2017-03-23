@@ -51,6 +51,10 @@ namespace ExViewer.Views
                 if(Available)
                 {
                     root.tbtPane.Opacity = TbtPaneOpacity;
+                    if(TbtPaneOpacity < 0.6)
+                        Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
+                    else
+                        Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
                 }
             }
 
@@ -189,6 +193,10 @@ namespace ExViewer.Views
             {
                 CloseSplitViewPane.Begin();
                 root.CloseSplitViewPaneBtnPane.To = TbtPaneOpacity;
+                if(TbtPaneOpacity < 0.6)
+                    Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
+                else
+                    Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
                 if(Frame.CanGoBack)
                     root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                 else
@@ -247,6 +255,7 @@ namespace ExViewer.Views
                     (root.fm_inner.Content as IHasAppBar)?.CloseAll();
                     root.sv_root.IsPaneOpen = true;
                     OpenSplitViewPane.Begin();
+                    Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
                     root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked);
                     (currentTab ?? root.svt_Search).Focus(FocusState.Programmatic);
