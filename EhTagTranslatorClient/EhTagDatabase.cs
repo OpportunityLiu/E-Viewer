@@ -27,6 +27,8 @@ namespace EhTagTranslatorClient
             Namespace.Misc
         };
 
+        public static IReadOnlyDictionary<Namespace, IRecordDictionary> Dictionary { get; private set; }
+
         private static async Task<IRecordDictionary> loadDatabaseTableAsync(Namespace @namespace)
         {
             var dbUri = new Uri(wikiDbRootUri, $"{@namespace.ToString().ToLowerInvariant()}.md");
@@ -35,9 +37,9 @@ namespace EhTagTranslatorClient
                 return new ReadOnlyDictionary<string, Record>(Record.Analyze(stream, @namespace).ToDictionary(record => record.Original));
         }
 
-        public static IAsyncOperation<IReadOnlyDictionary<Namespace, IRecordDictionary>> LoadDatabaseAsync()
+        public static IAsyncAction LoadDatabaseAsync()
         {
-            return Task.Run<IReadOnlyDictionary<Namespace, IRecordDictionary>>(async () =>
+            return Task.Run(async () =>
             {
                 var l = new Dictionary<Namespace, IRecordDictionary>();
                 foreach(var item in tables)
@@ -45,8 +47,8 @@ namespace EhTagTranslatorClient
                     var r = await loadDatabaseTableAsync(item);
                     l.Add(item, r);
                 }
-                return new ReadOnlyDictionary<Namespace, IRecordDictionary>(l);
-            }).AsAsyncOperation();
+                Dictionary = new ReadOnlyDictionary<Namespace, IRecordDictionary>(l);
+            }).AsAsyncAction();
         }
     }
 }

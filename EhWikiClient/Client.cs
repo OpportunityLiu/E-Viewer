@@ -11,15 +11,18 @@ namespace EhWikiClient
 {
     public class Client : IDisposable
     {
-        public static IAsyncOperation<Client> CreateAsync()
+        public static Client Instance { get; private set; }
+
+        public static IAsyncAction CreateAsync()
         {
             return Run(async token =>
             {
                 var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("EhWiki.json", CreationCollisionOption.OpenIfExists);
                 var dic = JsonConvert.DeserializeObject<List<Record>>(await FileIO.ReadTextAsync(file));
                 if(dic != null)
-                    return new Client(dic.ToDictionary(rec => rec.Title, StringComparer.OrdinalIgnoreCase));
-                return new Client(null);
+                    Instance = new Client(dic.ToDictionary(rec => rec.Title, StringComparer.OrdinalIgnoreCase));
+                else
+                    Instance = new Client(null);
             });
         }
 

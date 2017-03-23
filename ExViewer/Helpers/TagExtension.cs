@@ -17,23 +17,14 @@ namespace ExClient
 {
     static class TagExtension
     {
-        private static IReadOnlyDictionary<Namespace, IReadOnlyDictionary<string, Record>> tagDb;
-        private static EhWikiClient.Client wikiClient;
-
         public static IAsyncAction Init()
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 var loadDb = EhTagDatabase.LoadDatabaseAsync();
-                loadDb.Completed = (sender, e) =>
-                {
-                    tagDb = sender.GetResults();
-                };
                 var loadWiki = EhWikiClient.Client.CreateAsync();
-                loadWiki.Completed = (sender, e) =>
-                {
-                    wikiClient = sender.GetResults();
-                };
+                await loadDb;
+                await loadWiki;
                 Application.Current.Suspending += App_Suspending;
             }).AsAsyncAction();
         }
@@ -43,7 +34,7 @@ namespace ExClient
             var d = e.SuspendingOperation.GetDeferral();
             try
             {
-                await wikiClient.SaveAsync();
+                await EhWikiClient.Client.Instance.SaveAsync();
             }
             finally
             {
@@ -60,7 +51,7 @@ namespace ExClient
                 if(r != null)
                     return new AsyncWarpper<string>(r.Translated.Text);
             }
-            if(settings.UseJapaneseTagTranslation && wikiClient != null)
+            if(settings.UseJapaneseTagTranslation && EhWikiClient.Client.Instance != null)
             {
                 return Run(async token =>
                 {
@@ -80,26 +71,26 @@ namespace ExClient
 
         public static Record GetEhTagTranslatorRecord(this Tag tag)
         {
-            if(tagDb == null)
+            if(EhTagDatabase.Dictionary == null)
                 return null;
             var record = (Record)null;
-            if(tagDb[tag.Namespace].TryGetValue(tag.Content, out record))
+            if(EhTagDatabase.Dictionary[tag.Namespace].TryGetValue(tag.Content, out record))
                 return record;
             return null;
         }
 
         public static IAsyncOperation<EhWikiClient.Record> GetEhWikiRecordAsync(this Tag tag)
         {
-            if(wikiClient == null)
+            if(EhWikiClient.Client.Instance == null)
                 return null;
-            return wikiClient.GetAsync(tag.Content);
+            return EhWikiClient.Client.Instance.GetAsync(tag.Content);
         }
 
         public static IAsyncOperation<EhWikiClient.Record> FetchEhWikiRecordAsync(this Tag tag)
         {
-            if(wikiClient == null)
+            if(EhWikiClient.Client.Instance == null)
                 return new AsyncWarpper<EhWikiClient.Record>();
-            return wikiClient.FetchAsync(tag.Content);
+            return EhWikiClient.Client.Instance.FetchAsync(tag.Content);
         }
     }
 }

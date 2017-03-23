@@ -80,28 +80,6 @@ namespace ExClient
             this.PageId = pageId;
             this.imageKey = imageKey;
             this.PageUri = new Uri(Client.Current.Uris.RootUri, $"s/{imageKey}/{Owner.Id}-{PageId}");
-            this.image = new ImageHandle(img =>
-            {
-                return Run(async token =>
-                {
-                    try
-                    {
-                        using(var stream = await this.ImageFile.OpenReadAsync())
-                        {
-                            await img.SetSourceAsync(stream);
-                        }
-                    }
-                    catch(FileNotFoundException)
-                    {
-                        this.ImageFile = null;
-                        this.State = ImageLoadingState.Waiting;
-                    }
-                    catch(Exception)
-                    {
-                        this.State = ImageLoadingState.Failed;
-                    }
-                });
-            });
             this.thumbUri = thumb;
             this.thumb = new ImageHandle(img =>
             {
@@ -342,38 +320,12 @@ namespace ExClient
             get => this.imageFile;
             protected set
             {
-                this.imageFile = value;
-                this.image.Reset();
-                RaisePropertyChanged(nameof(ImageFile), nameof(Image), nameof(ImageFileUri));
+                Set(ref this.imageFile, value);
                 if(value != null)
                 {
                     this.thumb.Reset();
                     this.thumb.StartLoading();
                 }
-            }
-        }
-
-        private static readonly Uri ImageCacheBaseUri = new Uri("ms-appdata:///localCache/");
-
-        public Uri ImageFileUri
-        {
-            get
-            {
-                if(this.imageFile == null)
-                    return null;
-                return new Uri(ImageCacheBaseUri, $"{Owner.Id}/{imageFile.Name}");
-            }
-        }
-
-        private readonly ImageHandle image;
-
-        public ImageSource Image
-        {
-            get
-            {
-                if(this.ImageFile == null)
-                    return null;
-                return this.image.Image;
             }
         }
 

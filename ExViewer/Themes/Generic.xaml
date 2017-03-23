@@ -371,7 +371,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:HighlightTextBlock">
                     <TextBlock x:Name="Presenter"
-                               Foreground="{TemplateBinding Foreground}"
+                               Style="{TemplateBinding TextBlockStyle}"
                                Padding="{TemplateBinding Padding}" />
                 </ControlTemplate>
             </Setter.Value>
