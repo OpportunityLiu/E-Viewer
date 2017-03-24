@@ -177,14 +177,14 @@ namespace ExViewer.Controls
         private void Zoom(Point p)
         {
             if(this.sv.ZoomFactor > 1.001)
-                ResetZoom();
+                ResetZoom(false);
             else
                 this.ZoomTo(p);
         }
 
-        public void ResetZoom()
+        public void ResetZoom(bool disableAnimation)
         {
-            this.sv.ChangeView(null, null, 1);
+            this.sv.ChangeView(this.Padding.Left, this.Padding.Top, 1, disableAnimation);
         }
 
         protected override async void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
@@ -245,7 +245,7 @@ namespace ExViewer.Controls
                 ZoomTo(this.sv.MaxZoomFactor);
                 break;
             case (Windows.System.VirtualKey)189:
-                ResetZoom();
+                ResetZoom(false);
                 break;
             case Windows.System.VirtualKey.Space:
                 this.spacePressed = false;
@@ -261,7 +261,7 @@ namespace ExViewer.Controls
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ResetZoom();
+            ResetZoom(true);
         }
     }
 }

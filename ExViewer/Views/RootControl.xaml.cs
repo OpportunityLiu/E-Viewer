@@ -133,12 +133,12 @@ namespace ExViewer.Views
             if(this.HomePageType == null)
             {
                 this.UserInfo = await UserInfo.LoadFromCache();
-                RootController.UpdateUserInfo(false);
-                RootController.HandleUriLaunch();
             }
             else
             {
                 Themes.ThemeExtention.SetTitleBar();
+                RootController.UpdateUserInfo(false);
+                RootController.HandleUriLaunch();
             }
         }
 

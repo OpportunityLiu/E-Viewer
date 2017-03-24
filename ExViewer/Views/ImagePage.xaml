@@ -27,7 +27,7 @@
                                          Grid.RowSpan="2"
                                          Image="{x:Bind Image, Mode=OneWay}"
                                          Padding="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay}" />
-                <ProgressBar Margin="0,48,0,0"
+                <ProgressBar Margin="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,48,x0,x0'}"
                              Padding="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                              VerticalAlignment="Top"
                              Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"

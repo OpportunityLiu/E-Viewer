@@ -91,13 +91,5 @@ namespace EhTagTranslatorClient
         {
             get;
         }
-
-        public override string ToString()
-        {
-            if(Namespace != Namespace.Misc)
-                return $"{Namespace.ToString().ToLowerInvariant()}:\"{Original}$\"";
-            else
-                return $"\"{Original}$\"";
-        }
     }
 }
