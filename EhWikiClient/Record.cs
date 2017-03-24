@@ -24,16 +24,18 @@ namespace EhWikiClient
 #pragma warning restore CS0649
 
         private static Regex reg = new Regex(@"^\s?Japanese\s?:\s?(?<Value>.+?)\s?$", RegexOptions.Multiline | RegexOptions.Compiled);
+        private static Regex regd = new Regex(@"^\s?Description\s?:\s?(?<Value>.+?)\s?$", RegexOptions.Multiline | RegexOptions.Compiled);
 
         [JsonConstructor]
-        internal Record(string t, string j)
+        internal Record(string t, string j, string d)
         {
             this.Title = t;
             this.Japanese = j;
+            this.Description = d;
         }
 
-        private Record(string title, string japanese, string html)
-            : this(title, japanese)
+        private Record(string title, string japanese, string description, string html)
+            : this(title, japanese, description)
         {
             this.DetialHtml = html;
         }
@@ -48,7 +50,11 @@ namespace EhWikiClient
             var j = (string)null;
             if(match.Success)
                 j = match.Groups["Value"].Value;
-            return new Record(res.parse.title, j, res.parse.text.str);
+            var matchd = regd.Match(str);
+            var d = (string)null;
+            if(matchd.Success)
+                d = matchd.Groups["Value"].Value;
+            return new Record(res.parse.title, j, d, res.parse.text.str);
         }
 
         [JsonProperty("t")]
@@ -59,6 +65,12 @@ namespace EhWikiClient
 
         [JsonProperty("j")]
         public string Japanese
+        {
+            get;
+        }
+
+        [JsonProperty("d")]
+        public string Description
         {
             get;
         }

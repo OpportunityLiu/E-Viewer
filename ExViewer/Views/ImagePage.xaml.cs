@@ -63,11 +63,11 @@ namespace ExViewer.Views
             }
             else
             {
+                var i = newVM.CurrentIndex;
                 that.collectionView.Collection = newVM.Gallery;
                 pageFlipView.ItemsSource = that.collectionView;
-                pageFlipView.SelectedIndex = newVM.CurrentIndex;
-                await Task.Delay(50);
-                pageFlipView.SelectedIndex = newVM.CurrentIndex;
+                pageFlipView.SelectedIndex = i;
+                await that.Dispatcher.RunIdleAsync(idle => pageFlipView.SelectedIndex = i);
             }
         }
 
@@ -108,6 +108,8 @@ namespace ExViewer.Views
             }
             if(!StatusCollection.Current.ImageViewTipShown)
                 showTip();
+            await Task.Delay(100);
+            setScale();
         }
 
         private static Color getCbColor(Color backColor, Color needColor, byte alpha)
@@ -171,7 +173,7 @@ namespace ExViewer.Views
                 if(inner == null)
                     continue;
                 var ip = (ImagePresenter)inner.FindName("ip");
-                ip.ResetZoom();
+                ip.ResetZoom(true);
             }
         }
 
@@ -269,7 +271,6 @@ namespace ExViewer.Views
         private void cb_top_Opening(object sender, object e)
         {
             this.tb_Title.MaxLines = 0;
-            RootControl.RootController.SetSplitViewButtonOpacity(0);
             Grid.SetColumn(this.tb_Title, 0);
             Grid.SetColumnSpan(this.tb_Title, 2);
             this.cb_top_Open.Begin();
@@ -285,7 +286,6 @@ namespace ExViewer.Views
             this.tb_Title.ClearValue(TextBlock.MaxLinesProperty);
             Grid.SetColumn(this.tb_Title, 1);
             Grid.SetColumnSpan(this.tb_Title, 1);
-            RootControl.RootController.SetSplitViewButtonOpacity(1);
         }
 
         private void abb_fullScreen_Click(object sender, RoutedEventArgs e)

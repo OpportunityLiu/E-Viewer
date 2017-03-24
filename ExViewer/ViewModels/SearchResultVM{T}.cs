@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Linq;
+using EhTagTranslatorClient;
 
 namespace ExViewer.ViewModels
 {
@@ -44,7 +45,7 @@ namespace ExViewer.ViewModels
             var ns = Enum.GetNames(typeof(Namespace)).ToList();
             ns.Remove(Namespace.Misc.ToString());
             ns.Remove(Namespace.Unknown.ToString());
-            for(int i = 0; i < ns.Count; i++)
+            for(var i = 0; i < ns.Count; i++)
             {
                 ns[i] = ns[i].ToLowerInvariant();
             }
@@ -115,9 +116,67 @@ namespace ExViewer.ViewModels
         }
     }
 
-    public class TagRecord
+    public interface ITagRecord
     {
-        public static TagRecord GetRecord(string highlight, EhTagTranslatorClient.Record tag)
+        string AdditionalInfo { get; }
+        string Caption { get; }
+        string Highlight { get; }
+        string Previous { get; set; }
+        int Score { get; }
+        string Title { get; }
+
+        ITagRecord SetPrevios(string p);
+        string ToString();
+    }
+
+    public abstract class TagRecord<T> : ITagRecord
+    {
+        public TagRecord(string highlight, T tag, int score)
+        {
+            this.Highlight = highlight;
+            this.Tag = tag;
+            this.Score = score;
+        }
+
+        public T Tag { get; }
+
+        public string Highlight { get; }
+
+        public int Score { get; }
+
+        public string Previous { get; set; }
+
+        public abstract string Title { get; }
+
+        public abstract string Caption { get; }
+
+        public abstract string AdditionalInfo { get; }
+
+        public TagRecord<T> SetPrevios(string p)
+        {
+            this.Previous = p;
+            return this;
+        }
+
+        protected virtual string TagToString()
+        {
+            return Tag.ToString();
+        }
+
+        public override string ToString()
+        {
+            return Previous + TagToString();
+        }
+
+        ITagRecord ITagRecord.SetPrevios(string p)
+        {
+            return this.SetPrevios(p);
+        }
+    }
+
+    public static class TagRecordFactory
+    {
+        public static TagRecord<Record> GetRecord(string highlight, Record tag)
         {
             var score = 0;
             if(tag.Original.Contains(highlight))
@@ -145,33 +204,79 @@ namespace ExViewer.ViewModels
             if(score == 0)
                 return null;
             else
-                return new TagRecord(highlight, tag, score);
+                return new EhTagRecord(highlight, tag, score);
         }
 
-        public TagRecord(string highlight, EhTagTranslatorClient.Record tag, int score)
+        private class EhTagRecord : TagRecord<Record>
         {
-            this.Highlight = highlight;
-            this.Tag = tag;
-            this.Score = 100;
+            public EhTagRecord(string highlight, Record tag, int score) : base(highlight, tag, score)
+            {
+            }
+
+            protected override string TagToString()
+            {
+                if(Tag.Namespace != Namespace.Misc)
+                    return $"{Tag.Namespace.ToString().ToLowerInvariant()}:\"{Tag.Original}$\"";
+                else
+                    return $"\"{Tag.Original}$\"";
+            }
+
+            public override string Title => Tag.Original;
+
+            public override string Caption => Tag.Translated.Text;
+
+            public override string AdditionalInfo => Tag.Namespace.ToFriendlyNameString();
         }
 
-        public EhTagTranslatorClient.Record Tag { get; }
-
-        public string Highlight { get; }
-
-        public int Score { get; }
-
-        public string Previous { get; set; }
-
-        public TagRecord SetPrevios(string p)
+        public static TagRecord<EhWikiClient.Record> GetRecord(string highlight, EhWikiClient.Record tag)
         {
-            this.Previous = p;
-            return this;
+            if(tag == null)
+                return null;
+            var score = 0;
+            if(tag.Title.Contains(highlight))
+            {
+                if(tag.Title.StartsWith(highlight))
+                {
+                    score += highlight.Length * 65536 * 16 / tag.Title.Length;
+                }
+                else
+                {
+                    score += highlight.Length * 65536 / tag.Title.Length;
+                }
+            }
+            else if(tag.Japanese != null && tag.Japanese.Contains(highlight))
+            {
+                if(tag.Japanese.StartsWith(highlight))
+                {
+                    score += highlight.Length * 65536 * 16 / tag.Japanese.Length;
+                }
+                else
+                {
+                    score += highlight.Length * 65536 / tag.Japanese.Length;
+                }
+            }
+            if(score == 0)
+                return null;
+            else
+                return new EhWikiTagRecord(highlight, tag, score);
         }
 
-        public override string ToString()
+        private class EhWikiTagRecord : TagRecord<EhWikiClient.Record>
         {
-            return Previous + Tag.ToString();
+            public EhWikiTagRecord(string highlight, EhWikiClient.Record tag, int score) : base(highlight, tag, score)
+            {
+            }
+
+            protected override string TagToString()
+            {
+                return $"\"{Tag.Title}$\"";
+            }
+
+            public override string Title => Tag.Title;
+
+            public override string Caption => Tag.Japanese;
+
+            public override string AdditionalInfo => Tag.Japanese == null ? Tag.Description : null;
         }
     }
 
@@ -230,6 +335,21 @@ namespace ExViewer.ViewModels
             }
         }, sh => sh != null);
 
+        private class TagRecordEqulityComparer : IEqualityComparer<ITagRecord>
+        {
+            public bool Equals(ITagRecord x, ITagRecord y)
+            {
+                return x.Title == y.Title;
+            }
+
+            public int GetHashCode(ITagRecord obj)
+            {
+                return (obj?.Title ?? "").GetHashCode();
+            }
+        }
+
+        private static readonly IEqualityComparer<ITagRecord> tagComparer = new TagRecordEqulityComparer();
+
         internal IAsyncOperation<IReadOnlyList<object>> LoadSuggestion(string input)
         {
             return Task.Run<IReadOnlyList<object>>(() =>
@@ -243,16 +363,29 @@ namespace ExViewer.ViewModels
                                         .Distinct()
                                         .Select(sh => sh.SetHighlight(historyKeyword));
                     var lastword = historyKeyword.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-                    var dictionary = Enumerable.Empty<TagRecord>();
+                    var dictionary = Enumerable.Empty<ITagRecord>();
                     if(lastword != null)
                     {
                         var previous = historyKeyword.Substring(0, historyKeyword.Length - lastword.Length);
-                        dictionary = EhTagTranslatorClient.EhTagDatabase.Dictionary
+                        dictionary = EhTagDatabase.Dictionary
                             .SelectMany(dic
-                                => dic.Value.Select(kv => TagRecord.GetRecord(lastword, kv.Value)).Where(t => t != null)
-                            ).OrderByDescending(t => t.Score).Take(10).Select(tag => tag.SetPrevios(previous));
+                                => dic.Value.Values
+                                    .Select<Record, ITagRecord>(va => TagRecordFactory.GetRecord(lastword, va))
+                                    .Where(t => t != null)
+                            )
+                            .Concat(EhWikiClient.Client.Instance.Dictionary.Values
+                            .Select(va => TagRecordFactory.GetRecord(lastword, va)).Where(t => t != null))
+                            .OrderByDescending(t => t.Score).Take(10).Distinct(tagComparer).Select(tag => tag.SetPrevios(previous));
                     }
-                    return ((IEnumerable<object>)AutoCompletion.GetCompletions(input)).Concat(dictionary).Concat(history).ToList().AsReadOnly();
+                    try
+                    {
+                        return ((IEnumerable<object>)AutoCompletion.GetCompletions(input)).Concat(dictionary).Concat(history).ToList().AsReadOnly();
+                    }
+                    catch(InvalidOperationException)
+                    {
+                        //Collection changed
+                        return null;
+                    }
                 }
             }).AsAsyncOperation();
         }

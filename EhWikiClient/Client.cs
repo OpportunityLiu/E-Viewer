@@ -35,6 +35,8 @@ namespace EhWikiClient
 
         private Dictionary<string, Record> dic;
 
+        public IReadOnlyDictionary<string, Record> Dictionary => this.dic;
+
         public Record Get(string title)
         {
             if(this.dic.TryGetValue(title, out var r))
@@ -95,13 +97,13 @@ namespace EhWikiClient
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!disposedValue)
+            if(!this.disposedValue)
             {
                 if(disposing)
                 {
-                    http.Dispose();
+                    this.http.Dispose();
                 }
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
         public void Dispose()

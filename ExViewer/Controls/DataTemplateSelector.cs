@@ -30,10 +30,11 @@ namespace ExViewer.Controls
         {
             if(item != null)
             {
-                var tName = item.GetType().FullName;
                 foreach(var template in this.Templates)
                 {
-                    if(template.Key == tName)
+                    if(template.KeyType == null)
+                        continue;
+                    if(template.KeyType.IsInstanceOfType(item))
                         return template.Value;
                 }
             }
@@ -81,9 +82,26 @@ namespace ExViewer.Controls
             get => (string)GetValue(KeyProperty); set => SetValue(KeyProperty, value);
         }
 
+        public Type KeyType
+        {
+            get; private set;
+        }
+
         // Using a DependencyProperty as the backing store for Key.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty KeyProperty =
-            DependencyProperty.Register("Key", typeof(string), typeof(DataTemplateKeyValuePair), new PropertyMetadata(""));
+            DependencyProperty.Register("Key", typeof(string), typeof(DataTemplateKeyValuePair), new PropertyMetadata("", KeyChangedCallback));
+
+        private static void KeyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var sender = (DataTemplateKeyValuePair)d;
+            var n = e.NewValue.ToString();
+            if(string.IsNullOrWhiteSpace(n))
+            {
+                sender.KeyType = null;
+                return;
+            }
+            sender.KeyType = Type.GetType(n, true);
+        }
 
         public DataTemplate Value
         {
