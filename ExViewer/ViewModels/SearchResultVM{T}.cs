@@ -125,7 +125,8 @@ namespace ExViewer.ViewModels
         int Score { get; }
         string Title { get; }
 
-        ITagRecord SetPrevios(string p);
+        string TagToString();
+        ITagRecord SetPrevious(string p);
         string ToString();
     }
 
@@ -152,13 +153,7 @@ namespace ExViewer.ViewModels
 
         public abstract string AdditionalInfo { get; }
 
-        public TagRecord<T> SetPrevios(string p)
-        {
-            this.Previous = p;
-            return this;
-        }
-
-        protected virtual string TagToString()
+        public virtual string TagToString()
         {
             return Tag.ToString();
         }
@@ -168,14 +163,29 @@ namespace ExViewer.ViewModels
             return Previous + TagToString();
         }
 
-        ITagRecord ITagRecord.SetPrevios(string p)
+        ITagRecord ITagRecord.SetPrevious(string p)
         {
-            return this.SetPrevios(p);
+            this.Previous = p;
+            return this;
         }
     }
 
     public static class TagRecordFactory
     {
+        private static Dictionary<Namespace, int> nsFactor = new Dictionary<Namespace, int>()
+        {
+            [Namespace.Unknown] = 1,
+            [Namespace.Reclass] = 4,
+            [Namespace.Language] = 16,
+            [Namespace.Parody] = 24,
+            [Namespace.Character] = 12,
+            [Namespace.Group] = 2,
+            [Namespace.Artist] = 2,
+            [Namespace.Male] = 16,
+            [Namespace.Female] = 16,
+            [Namespace.Misc] = 20
+        };
+
         public static TagRecord<Record> GetRecord(string highlight, Record tag)
         {
             var score = 0;
@@ -201,6 +211,7 @@ namespace ExViewer.ViewModels
                     score += highlight.Length * 65536 / tag.Translated.Text.Length;
                 }
             }
+            score *= nsFactor[tag.Namespace];
             if(score == 0)
                 return null;
             else
@@ -213,7 +224,7 @@ namespace ExViewer.ViewModels
             {
             }
 
-            protected override string TagToString()
+            public override string TagToString()
             {
                 if(Tag.Namespace != Namespace.Misc)
                     return $"{Tag.Namespace.ToString().ToLowerInvariant()}:\"{Tag.Original}$\"";
@@ -228,55 +239,52 @@ namespace ExViewer.ViewModels
             public override string AdditionalInfo => Tag.Namespace.ToFriendlyNameString();
         }
 
-        public static TagRecord<EhWikiClient.Record> GetRecord(string highlight, EhWikiClient.Record tag)
+        public static IEnumerable<TagRecord<Tag>> GetRecords(string highlight)
         {
-            if(tag == null)
-                return null;
-            var score = 0;
-            if(tag.Title.Contains(highlight))
+            TagRecord<Tag> getRecord(Tag tag)
             {
-                if(tag.Title.StartsWith(highlight))
+                var score = 0;
+                if(tag.Content.Contains(highlight))
                 {
-                    score += highlight.Length * 65536 * 16 / tag.Title.Length;
+                    if(tag.Content.StartsWith(highlight))
+                    {
+                        score += highlight.Length * 65536 * 16 / tag.Content.Length;
+                    }
+                    else
+                    {
+                        score += highlight.Length * 65536 / tag.Content.Length;
+                    }
                 }
+                score *= nsFactor[tag.Namespace];
+                if(score == 0)
+                    return null;
                 else
-                {
-                    score += highlight.Length * 65536 / tag.Title.Length;
-                }
+                    return new EhWikiTagRecord(highlight, tag, score);
             }
-            else if(tag.Japanese != null && tag.Japanese.Contains(highlight))
+
+            using(var db = EhTagClient.Client.CreateDatabase())
             {
-                if(tag.Japanese.StartsWith(highlight))
-                {
-                    score += highlight.Length * 65536 * 16 / tag.Japanese.Length;
-                }
-                else
-                {
-                    score += highlight.Length * 65536 / tag.Japanese.Length;
-                }
+                var r = db.Tags.Where(t => t.TagConetnt.Contains(highlight)).ToList();
+                return r.Select(t => getRecord(t.AsTag()));
             }
-            if(score == 0)
-                return null;
-            else
-                return new EhWikiTagRecord(highlight, tag, score);
         }
 
-        private class EhWikiTagRecord : TagRecord<EhWikiClient.Record>
+        private class EhWikiTagRecord : TagRecord<Tag>
         {
-            public EhWikiTagRecord(string highlight, EhWikiClient.Record tag, int score) : base(highlight, tag, score)
+            public EhWikiTagRecord(string highlight, Tag tag, int score) : base(highlight, tag, score)
             {
             }
 
-            protected override string TagToString()
+            public override string TagToString()
             {
-                return $"\"{Tag.Title}$\"";
+                return Tag.ToSearchTerm();
             }
 
-            public override string Title => Tag.Title;
+            public override string Title => Tag.Content;
 
-            public override string Caption => Tag.Japanese;
+            public override string Caption => EhWikiClient.Client.Instance.Get(Tag.Content)?.Japanese ?? "";
 
-            public override string AdditionalInfo => Tag.Japanese == null ? Tag.Description : null;
+            public override string AdditionalInfo => Tag.Namespace.ToFriendlyNameString();
         }
     }
 
@@ -339,12 +347,12 @@ namespace ExViewer.ViewModels
         {
             public bool Equals(ITagRecord x, ITagRecord y)
             {
-                return x.ToString() == y.ToString();
+                return x.TagToString() == y.TagToString();
             }
 
             public int GetHashCode(ITagRecord obj)
             {
-                return (obj?.ToString() ?? "").GetHashCode();
+                return (obj?.TagToString() ?? "").GetHashCode();
             }
         }
 
@@ -373,9 +381,8 @@ namespace ExViewer.ViewModels
                                     .Select<Record, ITagRecord>(va => TagRecordFactory.GetRecord(lastword, va))
                                     .Where(t => t != null)
                             )
-                            .Concat(EhWikiClient.Client.Instance.Dictionary.Values
-                            .Select(va => TagRecordFactory.GetRecord(lastword, va)).Where(t => t != null))
-                            .OrderByDescending(t => t.Score).Take(10).Distinct(tagComparer).Select(tag => tag.SetPrevios(previous));
+                            .Concat(TagRecordFactory.GetRecords(lastword)).Where(t => t != null)
+                            .OrderByDescending(t => t.Score).Take(10).Distinct(tagComparer).Select(tag => tag.SetPrevious(previous));
                     }
                     try
                     {

@@ -151,6 +151,7 @@
         <TextBox x:Uid="Views/LogOnDialog/UserNameTextBox"
                  x:Name="tb_user"
                  Margin="0,4"
+                 IsReadOnly="{x:Bind pb_Loading.IsIndeterminate, Mode=OneWay}"
                  PlaceholderText="User name"
                  InputScope="AlphanumericHalfWidth"
                  TextChanged="tb_TextChanged" />
@@ -180,6 +181,7 @@
             <TextBox x:Uid="Views/LogOnDialog/ReCaptchaTextBox"
                      x:Name="tb_ReCaptcha"
                      Margin="0,4"
+                     IsReadOnly="{x:Bind pb_Loading.IsIndeterminate, Mode=OneWay}"
                      Grid.Row="1"
                      PlaceholderText="ReCaptcha"
                      InputScope="AlphanumericHalfWidth"

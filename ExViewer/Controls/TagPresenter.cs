@@ -32,7 +32,7 @@ namespace ExViewer.Controls
             if(this.presenter == null)
                 return;
             this.presenter.ClearValue(TextBlock.TextProperty);
-            if(value == null)
+            if(value.Content == null)
                 return;
             var dc = value.GetDisplayContentAsync();
             if(dc.Status != AsyncStatus.Completed)

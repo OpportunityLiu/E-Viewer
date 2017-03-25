@@ -37,6 +37,7 @@
         <TextBox x:Name="tbNote"
                  x:Uid="Views/AddToFavoritesDialog/NoteTextBox"
                  TextChanged="tbNote_TextChanged"
+                 IsReadOnly="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}"
                  Header="Favorite note"
                  Grid.Row="1"
                  Margin="0,8,0,0"

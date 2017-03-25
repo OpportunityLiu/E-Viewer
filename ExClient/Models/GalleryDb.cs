@@ -6,8 +6,6 @@ namespace ExClient.Models
 {
     public class GalleryDb : DbContext
     {
-        private const string dbFilename = "Gallery.db";
-
         public static IAsyncAction MigrateAsync()
         {
             return Run(async token =>
@@ -25,7 +23,7 @@ namespace ExClient.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Filename={dbFilename}");
+            optionsBuilder.UseSqlite($"Data Source=Gallery.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

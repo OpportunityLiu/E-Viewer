@@ -3,7 +3,7 @@ using System.Text;
 
 namespace ExClient
 {
-    public sealed class Tag
+    public struct Tag
     {
         // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };
         private static readonly char[] split = new char[] { ':' };
@@ -40,7 +40,7 @@ namespace ExClient
 
         private Client getClient() => Client.Current;
 
-        private string getKeyword()
+        public string ToSearchTerm()
         {
             if(Namespace != Namespace.Misc)
                 return $"{Namespace.ToString().ToLowerInvariant()}:\"{Content}$\"";
@@ -50,17 +50,17 @@ namespace ExClient
 
         public SearchResult Search()
         {
-            return getClient().Search(getKeyword());
+            return getClient().Search(ToSearchTerm());
         }
 
         public SearchResult Search(Category filter)
         {
-            return getClient().Search(getKeyword(), filter);
+            return getClient().Search(ToSearchTerm(), filter);
         }
 
         public SearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
         {
-            return getClient().Search(getKeyword(), filter, advancedSearch);
+            return getClient().Search(ToSearchTerm(), filter, advancedSearch);
         }
 
         public static Uri WikiUri

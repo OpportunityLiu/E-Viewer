@@ -10,18 +10,28 @@ namespace ExClient
         internal IEnumerable<KeyValuePair<string, string>> AsEnumerable()
         {
             yield return new KeyValuePair<string, string>("advsearch", "1");
+            if(this.SearchName)
+                yield return new KeyValuePair<string, string>("f_sname", "1");
+            if(this.SearchTags)
+                yield return new KeyValuePair<string, string>("f_stags", "1");
+            if(this.SearchDescription)
+                yield return new KeyValuePair<string, string>("f_sdesc", "1");
+            if(this.SearchTorrentFilenames)
+                yield return new KeyValuePair<string, string>("f_storr", "1");
+            if(this.GalleriesWithTorrentsOnly)
+                yield return new KeyValuePair<string, string>("f_sto", "1");
+            if(this.SearchLowPowerTags)
+                yield return new KeyValuePair<string, string>("f_sdt1", "1");
+            if(this.SearchDownvotedTags)
+                yield return new KeyValuePair<string, string>("f_sdt2", "1");
+            if(this.ShowExpungedGalleries)
+                yield return new KeyValuePair<string, string>("f_sh", "1");
 
-            yield return new KeyValuePair<string, string>("f_sname", toString(this.SearchName));
-            yield return new KeyValuePair<string, string>("f_stags", toString(this.SearchTags));
-            yield return new KeyValuePair<string, string>("f_sdesc", toString(this.SearchDescription));
-            yield return new KeyValuePair<string, string>("f_storr", toString(this.SearchTorrentFilenames));
-            yield return new KeyValuePair<string, string>("f_sto", toString(this.GalleriesWithTorrentsOnly));
-            yield return new KeyValuePair<string, string>("f_sdt1", toString(this.SearchLowPowerTags));
-            yield return new KeyValuePair<string, string>("f_sdt2", toString(this.SearchDownvotedTags));
-            yield return new KeyValuePair<string, string>("f_sh", toString(this.ShowExpungedGalleries));
-
-            yield return new KeyValuePair<string, string>("f_sr", toString(this.SearchMinimumRating));
-            yield return new KeyValuePair<string, string>("f_srdd", this.MinimumRating.ToString());
+            if(this.SearchMinimumRating)
+            {
+                yield return new KeyValuePair<string, string>("f_sr", "1");
+                yield return new KeyValuePair<string, string>("f_srdd", this.MinimumRating.ToString());
+            }
         }
 
         private static string toString(bool value)

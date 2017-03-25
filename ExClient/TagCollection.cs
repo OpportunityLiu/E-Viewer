@@ -27,9 +27,9 @@ namespace ExClient
 
         private int getIndexOfKey(Namespace key)
         {
-            for(int i = 0; i < keys.Length; i++)
+            for(var i = 0; i < this.keys.Length; i++)
             {
-                if(keys[i] == key)
+                if(this.keys[i] == key)
                     return i;
             }
             return -1;
@@ -37,34 +37,59 @@ namespace ExClient
 
         public TagCollection(IEnumerable<Tag> items)
         {
-            data = items.OrderBy(t => t.Namespace).ToArray();
-            offset = new int[staticKeys.Length + 1];
-            keys = new Namespace[staticKeys.Length];
+            this.Data = items.OrderBy(t => t.Namespace).ToArray();
+            this.Offset = new int[staticKeys.Length + 1];
+            this.keys = new Namespace[staticKeys.Length];
             var currentIdx = 0;
             var currentNs = Unknown;
-            for(int i = 0; i < data.Length; i++)
+            for(var i = 0; i < this.Data.Length; i++)
             {
-                var current = data[i];
+                var current = this.Data[i];
                 if(currentNs == current.Namespace)
                     continue;
                 currentNs = current.Namespace;
-                keys[currentIdx] = currentNs;
-                offset[currentIdx] = i;
+                this.keys[currentIdx] = currentNs;
+                this.Offset[currentIdx] = i;
                 currentIdx++;
             }
-            offset[currentIdx] = data.Length;
-            Array.Resize(ref keys, currentIdx);
-            Array.Resize(ref offset, currentIdx + 1);
+            this.Offset[currentIdx] = this.Data.Length;
+            Array.Resize(ref this.keys, currentIdx);
+            Array.Resize(ref this.Offset, currentIdx + 1);
             Items = new ReadOnlyTagList(this);
         }
 
-        internal readonly Tag[] data;
-        internal readonly int[] offset;
+        internal readonly Tag[] Data;
+        internal readonly int[] Offset;
         private readonly Namespace[] keys;
 
-        public ReadOnlyTagList Items { get; }
+        public IReadOnlyList Items { get; }
 
-        public int Count => keys.Length;
+        private sealed class ReadOnlyTagList : IReadOnlyList
+        {
+            private readonly TagCollection owner;
+
+            internal ReadOnlyTagList(TagCollection owner)
+            {
+                this.owner = owner;
+            }
+
+            public Tag this[int index] => this.owner.Data[index];
+
+            public int Count => this.owner.Data.Length;
+
+            public IEnumerator<Tag> GetEnumerator()
+            {
+                var data = this.owner.Data;
+                for(var i = 0; i < data.Length; i++)
+                {
+                    yield return data[i];
+                }
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+
+        public int Count => this.keys.Length;
 
         public NamespaceTagCollection this[int index]
         {
@@ -72,7 +97,7 @@ namespace ExClient
             {
                 if(unchecked((uint)index >= (uint)Count))
                     throw new IndexOutOfRangeException();
-                return new NamespaceTagCollection(keys[index], this.getValue(index));
+                return new NamespaceTagCollection(this.keys[index], this.getValue(index));
             }
         }
 
@@ -97,7 +122,7 @@ namespace ExClient
             if(i < 0)
             {
                 if(Enum.IsDefined(typeof(Namespace), key))
-                    return new RangedCollectionView<Tag>(data, 0, 0);
+                    return new RangedCollectionView<Tag>(this.Data, 0, 0);
                 else
                     throw new ArgumentOutOfRangeException(nameof(key));
             }
@@ -106,39 +131,14 @@ namespace ExClient
 
         private RangedCollectionView<Tag> getValue(int index)
         {
-            return new RangedCollectionView<Tag>(data, offset[index], offset[index + 1] - offset[index]);
+            return new RangedCollectionView<Tag>(this.Data, this.Offset[index], this.Offset[index + 1] - this.Offset[index]);
         }
 
         public IEnumerator<NamespaceTagCollection> GetEnumerator()
         {
-            for(int i = 0; i < keys.Length; i++)
+            for(var i = 0; i < this.keys.Length; i++)
             {
-                yield return new NamespaceTagCollection(keys[i], new RangedCollectionView<Tag>(data, offset[i], offset[i + 1] - offset[i]));
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    }
-
-    public sealed class ReadOnlyTagList : IReadOnlyList
-    {
-        private readonly TagCollection owner;
-
-        internal ReadOnlyTagList(TagCollection owner)
-        {
-            this.owner = owner;
-        }
-
-        public Tag this[int index] => owner.data[index];
-
-        public int Count => owner.data.Length;
-
-        public IEnumerator<Tag> GetEnumerator()
-        {
-            var data = owner.data;
-            for(int i = 0; i < data.Length; i++)
-            {
-                yield return data[i];
+                yield return new NamespaceTagCollection(this.keys[i], new RangedCollectionView<Tag>(this.Data, this.Offset[i], this.Offset[i + 1] - this.Offset[i]));
             }
         }
 
@@ -156,13 +156,13 @@ namespace ExClient
 
         public Namespace Namespace { get; }
 
-        public int Count => data.Count;
+        public int Count => this.data.Count;
 
-        public Tag this[int index] => data[index];
+        public Tag this[int index] => this.data[index];
 
         private RangedCollectionView<Tag> data;
 
-        public IEnumerator<Tag> GetEnumerator() => data.GetEnumerator();
+        public IEnumerator<Tag> GetEnumerator() => this.data.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

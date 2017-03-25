@@ -210,7 +210,29 @@ namespace ExViewer.Views
                     this.applicationLoaded = true;
             }
             if(DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
-                await Task.Delay(30000).ContinueWith(async t => await BannerProvider.Provider.FetchBanners());
+                await Task.Delay(30000).ContinueWith(async t =>
+                {
+                    try
+                    {
+                        await BannerProvider.Provider.FetchBanners();
+                    }
+                    catch(Exception)
+                    {
+                        //Ignore exceptions here.
+                    }
+                });
+            if(DateTimeOffset.Now - EhTagClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
+                await Task.Delay(15000).ContinueWith(async t =>
+                {
+                    try
+                    {
+                        await EhTagClient.Client.UpdateAsync();
+                    }
+                    catch(Exception)
+                    {
+                        //Ignore exceptions here.
+                    }
+                });
         }
 
         private async Task verify()

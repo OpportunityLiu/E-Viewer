@@ -30,13 +30,6 @@ namespace ExViewer.ViewModels
         Completed
     }
 
-    public class TagList : List<Tag>
-    {
-        public TagList(IEnumerable<Tag> items) : base(items) { }
-
-        public Namespace Namespace => this.FirstOrDefault()?.Namespace ?? Namespace.Misc;
-    }
-
     public class GalleryVM : ViewModelBase
     {
         private static CacheStorage<GalleryInfo, GalleryVM> Cache
@@ -160,17 +153,17 @@ namespace ExViewer.ViewModels
                 {
                     switch(e)
                     {
-                        case AsyncStatus.Canceled:
-                        case AsyncStatus.Error:
-                            this.SaveStatus = OperationState.Failed;
-                            RootControl.RootController.SendToast(sender.ErrorCode, null);
-                            break;
-                        case AsyncStatus.Completed:
-                            this.SaveStatus = OperationState.Completed;
-                            break;
-                        case AsyncStatus.Started:
-                            this.SaveStatus = OperationState.Started;
-                            break;
+                    case AsyncStatus.Canceled:
+                    case AsyncStatus.Error:
+                        this.SaveStatus = OperationState.Failed;
+                        RootControl.RootController.SendToast(sender.ErrorCode, null);
+                        break;
+                    case AsyncStatus.Completed:
+                        this.SaveStatus = OperationState.Completed;
+                        break;
+                    case AsyncStatus.Started:
+                        this.SaveStatus = OperationState.Started;
+                        break;
                     }
                     this.SaveProgress = 1;
                 };
@@ -212,7 +205,7 @@ namespace ExViewer.ViewModels
             {
                 var vm = SearchVM.GetVM(tag.Search());
                 RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
-            }, tag => tag != null);
+            }, tag => tag.Content != null);
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
