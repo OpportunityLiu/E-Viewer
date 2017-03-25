@@ -22,24 +22,8 @@ namespace ExClient
             return Task.Run(async () =>
             {
                 var loadDb = EhTagDatabase.LoadDatabaseAsync();
-                var loadWiki = EhWikiClient.Client.CreateAsync();
                 await loadDb;
-                await loadWiki;
-                Application.Current.Suspending += App_Suspending;
             }).AsAsyncAction();
-        }
-
-        private static async void App_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
-        {
-            var d = e.SuspendingOperation.GetDeferral();
-            try
-            {
-                await EhWikiClient.Client.Instance.SaveAsync();
-            }
-            finally
-            {
-                d.Complete();
-            }
         }
 
         public static IAsyncOperation<string> GetDisplayContentAsync(this Tag tag)
@@ -51,7 +35,7 @@ namespace ExClient
                 if(r != null)
                     return new AsyncWarpper<string>(r.Translated.Text);
             }
-            if(settings.UseJapaneseTagTranslation && EhWikiClient.Client.Instance != null)
+            if(settings.UseJapaneseTagTranslation)
             {
                 return Run(async token =>
                 {
@@ -81,16 +65,12 @@ namespace ExClient
 
         public static IAsyncOperation<EhWikiClient.Record> GetEhWikiRecordAsync(this Tag tag)
         {
-            if(EhWikiClient.Client.Instance == null)
-                return null;
-            return EhWikiClient.Client.Instance.GetAsync(tag.Content);
+            return EhWikiClient.Client.GetAsync(tag.Content);
         }
 
         public static IAsyncOperation<EhWikiClient.Record> FetchEhWikiRecordAsync(this Tag tag)
         {
-            if(EhWikiClient.Client.Instance == null)
-                return new AsyncWarpper<EhWikiClient.Record>();
-            return EhWikiClient.Client.Instance.FetchAsync(tag.Content);
+            return EhWikiClient.Client.FetchAsync(tag.Content);
         }
     }
 }
