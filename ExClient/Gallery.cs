@@ -212,7 +212,7 @@ namespace ExClient
                 this.Rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
                 this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
                 this.Tags = new TagCollection(tags.Select(tag => Tag.Parse(tag)));
-                this.ThumbUri = toExUri(thumb);
+                this.ThumbUri = toEhCoverUri(thumb);
             }
             catch(Exception)
             {
@@ -221,13 +221,18 @@ namespace ExClient
             this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
 
-        private static readonly Regex toExUriRegex = new Regex(@"(?<domain>((gt\d|ul)\.ehgt\.org)|(ehgt\.org/t)|((\d{1,3}\.){3}\d{1,3}))(?<body>.+)(?<tail>_l\.)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex imageUriRegex = new Regex(@"^(?<scheme>[a-zA-Z][.a-zA-Z0-9+-]*)://(?<domain>((\w+\.)?ehgt\.org(/t)?)|(exhentai\.org/t)|((\d{1,3}\.){3}\d{1,3}))/(?<body>.+)(?<tail>_(l|250))\.(?<ext>\w+)$", RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
 
         // from gtX.eght.org//_l.jpg
         // to   exhentai.org/t//_250.jpg
-        private static Uri toExUri(string uri)
+        private static Uri toEhCoverUri(string uri)
         {
-            return new Uri(toExUriRegex.Replace(uri, @"exhentai.org/t${body}_250."));
+            return new Uri(imageUriRegex.Replace(uri, @"${scheme}://ehgt.org/${body}_250.${ext}"));
+        }
+
+        private static Uri toEhUri(string uri)
+        {
+            return new Uri(imageUriRegex.Replace(uri, @"${scheme}://ehgt.org/${body}_l.${ext}"));
         }
 
         protected IAsyncAction InitAsync()
@@ -459,7 +464,7 @@ namespace ExClient
                            {
                                pageId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer),
                                imageKey = match.Groups[1].Value,
-                               thumbUri = new Uri(thumb)
+                               thumbUri = toEhUri(thumb)
                            };
                 var toAdd = new List<GalleryImage>(PageSize);
                 using(var db = new GalleryDb())

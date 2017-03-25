@@ -339,12 +339,12 @@ namespace ExViewer.ViewModels
         {
             public bool Equals(ITagRecord x, ITagRecord y)
             {
-                return x.Title == y.Title;
+                return x.ToString() == y.ToString();
             }
 
             public int GetHashCode(ITagRecord obj)
             {
-                return (obj?.Title ?? "").GetHashCode();
+                return (obj?.ToString() ?? "").GetHashCode();
             }
         }
 

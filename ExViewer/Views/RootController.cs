@@ -17,6 +17,7 @@ using Microsoft.HockeyApp;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.UI.Core;
 using System.Runtime.CompilerServices;
+using Windows.ApplicationModel.Core;
 
 namespace ExViewer.Views
 {
@@ -88,6 +89,8 @@ namespace ExViewer.Views
             public static bool Available => root != null;
 
             public static StatusBar StatusBar { get; }
+
+            public static CoreApplicationViewTitleBar TitleBar { get; } = CoreApplication.GetCurrentView().TitleBar;
 
 
 #if !DEBUG_BOUNDS

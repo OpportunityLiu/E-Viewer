@@ -32,7 +32,7 @@ namespace ExClient.Internal
         private HttpClient inner;
         private Client owner;
 
-        public HttpRequestHeaderCollection DefaultRequestHeaders => inner.DefaultRequestHeaders;
+        public HttpRequestHeaderCollection DefaultRequestHeaders => this.inner.DefaultRequestHeaders;
 
         public IHttpAsyncOperation GetAsync(Uri uri)
         {

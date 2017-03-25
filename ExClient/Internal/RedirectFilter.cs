@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
@@ -9,33 +10,25 @@ namespace ExClient.Internal
 {
     internal class RedirectFilter : IHttpFilter
     {
-        public RedirectFilter(IHttpFilter innerFilter)
+        public RedirectFilter(IHttpFilter innerFilter, IHttpFilter innerFilter2, Regex filter2UriMatcher)
         {
             this.inner = innerFilter;
+            this.inner2 = innerFilter2;
+            this.filter2UriMatcher = filter2UriMatcher;
         }
 
-        IHttpFilter inner;
+        IHttpFilter inner, inner2;
+        readonly Regex filter2UriMatcher;
 
         private class HttpAsyncOperation : IHttpAsyncOperation
         {
             private RedirectFilter parent;
             private HttpRequestMessage request;
-            private IHttpAsyncOperation _current;
-
-            private IHttpAsyncOperation current
-            {
-                get => this._current;
-                set
-                {
-                    this._current = value;
-                    this._current.Progress = this.current_Progress;
-                    this._current.Completed = this.current_Completed;
-                }
-            }
+            private IHttpAsyncOperation current;
 
             private void current_Completed(IHttpAsyncOperation asyncInfo, AsyncStatus asyncStatus)
             {
-                if(asyncInfo != this._current)
+                if(asyncInfo != this.current)
                     return;
                 if(asyncStatus == AsyncStatus.Completed)
                 {
@@ -44,7 +37,7 @@ namespace ExClient.Internal
                     {
                         asyncStatus = AsyncStatus.Started;
                         buildNewRequest(response);
-                        this.current = this.parent.inner.SendRequestAsync(this.request);
+                        sendRequest();
                     }
                 }
                 this.Status = asyncStatus;
@@ -54,9 +47,19 @@ namespace ExClient.Internal
                 }
             }
 
+            private void sendRequest()
+            {
+                if(this.parent.filter2UriMatcher.IsMatch(this.request.RequestUri.ToString()))
+                    this.current = this.parent.inner2.SendRequestAsync(this.request);
+                else
+                    this.current = this.parent.inner.SendRequestAsync(this.request);
+                this.current.Progress = this.current_Progress;
+                this.current.Completed = this.current_Completed;
+            }
+
             private void current_Progress(IHttpAsyncOperation asyncInfo, HttpProgress progressInfo)
             {
-                if(asyncInfo != this._current)
+                if(asyncInfo != this.current)
                     return;
                 this.Progress?.Invoke(this, progressInfo);
             }
@@ -65,7 +68,7 @@ namespace ExClient.Internal
             {
                 this.parent = parent;
                 this.request = request;
-                this.current = parent.inner.SendRequestAsync(request);
+                sendRequest();
             }
 
             private void buildNewRequest(HttpResponseMessage response)
@@ -153,8 +156,10 @@ namespace ExClient.Internal
                 if(disposing)
                 {
                     this.inner.Dispose();
+                    this.inner2.Dispose();
                 }
                 this.inner = null;
+                this.inner2 = null;
                 this.disposedValue = true;
             }
         }

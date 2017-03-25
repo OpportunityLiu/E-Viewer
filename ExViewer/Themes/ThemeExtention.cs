@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -26,11 +27,11 @@ namespace ExViewer.Themes
             var tb = view.TitleBar;
             if(tb != null)
             {
-                tb.BackgroundColor = SystmeChromeMediumColor;
-                tb.InactiveBackgroundColor = SystmeChromeMediumColor;
-                tb.ButtonBackgroundColor = SystmeChromeMediumColor;
+                tb.BackgroundColor = Colors.Transparent;
+                tb.InactiveBackgroundColor = Colors.Transparent;
+                tb.ButtonBackgroundColor = Colors.Transparent;
                 tb.ButtonHoverBackgroundColor = SystemChromeMediumLowColor;
-                tb.ButtonInactiveBackgroundColor = SystmeChromeMediumColor;
+                tb.ButtonInactiveBackgroundColor = Colors.Transparent;
                 tb.ButtonPressedBackgroundColor = SystemChromeHighColor;
 
                 tb.ForegroundColor = SystemBaseMediumHighColor;
@@ -39,6 +40,8 @@ namespace ExViewer.Themes
                 tb.ButtonHoverForegroundColor = SystemBaseMediumHighColor;
                 tb.ButtonInactiveForegroundColor = SystemChromeDisabledLowColor;
                 tb.ButtonPressedForegroundColor = SystemBaseMediumHighColor;
+
+                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
             }
             if(ApiInfo.StatusBarSupported)
             {
