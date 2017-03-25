@@ -37,11 +37,17 @@ namespace ExClient
             }
             if(settings.UseJapaneseTagTranslation)
             {
+                var t = tag.GetEhWikiRecordAsync();
+                if(t.Status == AsyncStatus.Completed)
+                {
+                    var r = t.GetResults();
+                    return new AsyncWarpper<string>(r?.Japanese ?? tag.Content);
+                }
                 return Run(async token =>
                 {
                     try
                     {
-                        var r = await tag.GetEhWikiRecordAsync();
+                        var r = await t;
                         return r?.Japanese ?? tag.Content;
                     }
                     catch(Exception)

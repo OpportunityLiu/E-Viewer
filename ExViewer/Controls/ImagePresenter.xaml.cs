@@ -90,12 +90,6 @@ namespace ExViewer.Controls
             return base.MeasureOverride(availableSize);
         }
 
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            this.rgChip.Rect = new Rect(new Point(), finalSize);
-            return base.ArrangeOverride(finalSize);
-        }
-
         private void sv_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             var dx = e.Delta.Translation.X;

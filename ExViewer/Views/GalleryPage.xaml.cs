@@ -108,12 +108,12 @@ namespace ExViewer.Views
 
         private void restoreView()
         {
-            changeViewTo(this.isGd_InfoHideWhenLeave, true);
             var current = this.VM.GetCurrent();
             if(current != null)
             {
                 this.gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
             }
+            changeViewTo(this.isGd_InfoHideWhenLeave, true);
         }
 
         private bool isGd_InfoHideWhenLeave;

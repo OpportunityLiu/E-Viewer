@@ -3,7 +3,7 @@ using Windows.Foundation;
 
 namespace EhWikiClient.Helpers
 {
-    public class AsyncWarpper<T> : IAsyncOperation<T>
+    public sealed class AsyncWarpper<T> : IAsyncOperation<T>
     {
         public AsyncWarpper()
             : this(default(T)) { }
@@ -13,70 +13,68 @@ namespace EhWikiClient.Helpers
             this.result = result;
         }
 
-        private T result;
+        private readonly T result;
 
-        public AsyncOperationCompletedHandler<T> Completed
+        AsyncOperationCompletedHandler<T> IAsyncOperation<T>.Completed
         {
-            get => completed;
+            get => this.completed;
             set
             {
-                completed = value;
+                this.completed = value;
                 value?.Invoke(this, AsyncStatus.Completed);
             }
         }
 
-
         private AsyncOperationCompletedHandler<T> completed;
 
-        public Exception ErrorCode => null;
+        Exception IAsyncInfo.ErrorCode => null;
 
-        public uint Id => uint.MaxValue;
+        uint IAsyncInfo.Id => uint.MaxValue;
 
         public AsyncStatus Status => AsyncStatus.Completed;
 
-        public void Cancel()
-        {
-        }
+        void IAsyncInfo.Cancel() { }
 
-        public void Close()
-        {
-        }
+        void IAsyncInfo.Close() { }
 
-        public T GetResults() => result;
+        public T GetResults() => this.result;
     }
 
-    public class AsyncWarpper: IAsyncAction
+    public sealed class AsyncWarpper : IAsyncAction
     {
+        public static AsyncWarpper Create()
+            => new AsyncWarpper();
+
+        public static AsyncWarpper<T> Create<T>(T result)
+            => new AsyncWarpper<T>(result);
+
+        public static AsyncWarpper<T> Create<T>()
+            => new AsyncWarpper<T>();
+
         public AsyncWarpper() { }
 
-        public AsyncActionCompletedHandler Completed
+        AsyncActionCompletedHandler IAsyncAction.Completed
         {
-            get => completed;
+            get => this.completed;
             set
             {
-                completed = value;
+                this.completed = value;
                 value?.Invoke(this, AsyncStatus.Completed);
             }
         }
 
         private AsyncActionCompletedHandler completed;
 
-        public Exception ErrorCode => null;
+        Exception IAsyncInfo.ErrorCode => null;
 
-        public uint Id => uint.MaxValue;
+        uint IAsyncInfo.Id => uint.MaxValue;
 
-        public AsyncStatus Status => AsyncStatus.Completed;
+        AsyncStatus IAsyncInfo.Status => AsyncStatus.Completed;
 
-        public void Cancel()
-        {
-        }
+        void IAsyncInfo.Cancel() { }
 
-        public void Close()
-        {
-        }
+        void IAsyncInfo.Close() { }
 
-        public void GetResults()
-        {
-        }
+        void IAsyncAction.GetResults() { }
     }
 }

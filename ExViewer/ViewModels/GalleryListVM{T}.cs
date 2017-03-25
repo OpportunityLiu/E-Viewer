@@ -19,7 +19,7 @@ namespace ExViewer.ViewModels
             {
                 await g.DeleteAsync();
                 this.Galleries?.Remove(g);
-                RootControl.RootController.SendToast(Strings.Resources.GalleryDeleted, typeof(SavedPage));
+                RootControl.RootController.SendToast(Strings.Resources.GalleryDeleted, null);
             }, g => g != null);
             this.Open = new RelayCommand<Gallery>(g =>
             {
@@ -28,9 +28,9 @@ namespace ExViewer.ViewModels
             }, g => g != null);
         }
 
-        private GalleryList<T> galleries;
+        private IncrementalLoadingCollection<Gallery> galleries;
 
-        public GalleryList<T> Galleries
+        public IncrementalLoadingCollection<Gallery> Galleries
         {
             get => this.galleries;
             protected set => Set(ref this.galleries, value);

@@ -272,7 +272,7 @@ namespace ExClient
                         }
                         else
                         {
-                            db.ImageSet.Update(myModel.Update(this));
+                            myModel.Update(this);
                         }
                         db.SaveChanges();
                     }

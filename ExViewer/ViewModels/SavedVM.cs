@@ -84,7 +84,7 @@ namespace ExViewer.ViewModels
                 var name = StorageHelper.ToValidFolderName(gallery.GetDisplayTitle());
                 var target = await temp.CreateFolderAsync(name);
                 var files = await source.GetFilesAsync();
-                for(int i = 0; i < files.Count; i++)
+                for(var i = 0; i < files.Count; i++)
                 {
                     progress.Report((double)i / files.Count);
                     await files[i].CopyAsync(target);

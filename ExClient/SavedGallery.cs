@@ -1,5 +1,6 @@
 ﻿using ExClient.Models;
 using GalaSoft.MvvmLight.Threading;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,57 +8,45 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
-using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {
     public sealed class SavedGallery : CachedGallery
     {
-        private sealed class SavedGalleryList : GalleryList<SavedGallery>
+        private sealed class SavedGalleryList : GalleryList<SavedGallery, SavedGalleryModel>
         {
-            private static int getRecordCount()
+            public static IAsyncOperation<SavedGalleryList> LoadList()
             {
-                using(var db = new GalleryDb())
+                return Task.Run(() =>
                 {
-                    return db.SavedSet.Count();
-                }
-            }
-
-            public SavedGalleryList()
-                : base(getRecordCount())
-            {
-            }
-
-            protected override IList<SavedGallery> LoadRange(ItemIndexRange visibleRange, GalleryDb db)
-            {
-                var query = db.SavedSet
-                    .OrderByDescending(c => c.Saved)
-                    .Skip(visibleRange.FirstIndex)
-                    .Take((int)visibleRange.Length)
-                    .Select(savedModel => new
+                    using(var db = new GalleryDb())
                     {
-                        savedModel,
-                        savedModel.Gallery
-                    }).ToList();
-                var list = new SavedGallery[query.Count];
-                for(var i = 0; i < visibleRange.Length; i++)
-                {
-                    var index = i + visibleRange.FirstIndex;
-                    if(this[index] != DefaultGallery)
-                        continue;
-                    var model = query[i];
-                    var sg = new SavedGallery(model.Gallery, model.savedModel);
-                    var ignore = sg.InitAsync();
-                    list[i] = sg;
-                }
-                return list;
+                        db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+                        var query = db.SavedSet
+                            .Include(s => s.Gallery)
+                            .OrderByDescending(s => s.Saved);
+                        return new SavedGalleryList(query);
+                    }
+                }).AsAsyncOperation();
+            }
+
+            private SavedGalleryList(IEnumerable<SavedGalleryModel> galleries)
+                : base(galleries)
+            {
+            }
+
+            protected override SavedGallery Load(int index)
+            {
+                var sg = new SavedGallery(Models[index].Gallery, Models[index]);
+                var ignore = sg.InitAsync();
+                return sg;
             }
         }
 
-        public static IAsyncOperation<GalleryList<SavedGallery>> LoadSavedGalleriesAsync()
+        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadSavedGalleriesAsync()
         {
-            return Task.Run<GalleryList<SavedGallery>>(() => new SavedGalleryList()).AsAsyncOperation();
+            return Run<IncrementalLoadingCollection<Gallery>>(async token => await SavedGalleryList.LoadList());
         }
 
         public static IAsyncActionWithProgress<double> ClearAllGalleriesAsync()
