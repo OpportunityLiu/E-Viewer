@@ -2,9 +2,10 @@
   "dependencies": {
     "HtmlAgilityPack": "1.4.9.5",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.1.1",
+    "Microsoft.EntityFrameworkCore.Tools": "1.1.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.1",
     "MvvmLightLibs": "5.3.0",
-    "Newtonsoft.Json": "9.0.1",
+    "Newtonsoft.Json": "10.0.1",
     "System.Threading.Tasks.Extensions": "4.3.0",
     "System.ValueTuple": "4.3.0"
   },

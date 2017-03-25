@@ -441,6 +441,10 @@
       <Project>{2f461f3a-2f53-4c3a-805c-52ea6f297066}</Project>
       <Name>BannerProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EhTagClient\EhTagClient.csproj">
+      <Project>{7daa044a-5f8a-49cc-b98c-46dc0fa90e31}</Project>
+      <Name>EhTagClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EhTagTranslatorClient\EhTagTranslatorClient.csproj">
       <Project>{7a7c3d38-128a-406d-ad3c-eec617386f14}</Project>
       <Name>EhTagTranslatorClient</Name>

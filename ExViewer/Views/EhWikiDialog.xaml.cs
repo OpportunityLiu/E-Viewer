@@ -113,7 +113,7 @@ namespace ExViewer.Views
             return $"rgba({color.Color.R},{color.Color.G},{color.Color.B},{color.Color.A / 255d})";
         }
 
-        private static readonly Uri eh = new Uri("https://e-henatai.org/");
+        private static readonly Uri eh = new Uri("https://e-hentai.org/");
 
         private async void wv_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
