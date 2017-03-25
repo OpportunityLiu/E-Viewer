@@ -30,6 +30,7 @@ namespace ExClient
             {
                 using(var db = new GalleryDb())
                 {
+                    db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                     var cm = db.SavedSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
                     if(gm == null)
@@ -135,7 +136,7 @@ namespace ExClient
                     }
                     else
                     {
-                        db.SavedSet.Update(myModel.Update(this, thumb));
+                        myModel.Update(this, thumb);
                     }
                     await db.SaveChangesAsync();
                 }
@@ -271,7 +272,7 @@ namespace ExClient
                     }
                     else
                     {
-                        db.GallerySet.Update(myModel.Update(this));
+                        myModel.Update(this);
                     }
                     db.SaveChanges();
                 }
@@ -469,6 +470,7 @@ namespace ExClient
                 var toAdd = new List<GalleryImage>(PageSize);
                 using(var db = new GalleryDb())
                 {
+                    db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                     foreach(var page in pics)
                     {
                         var imageKey = page.imageKey;

@@ -46,11 +46,9 @@ namespace EhTagClient
                         await updateDbAsync(r, token);
                         LastUpdate = DateTimeOffset.Now;
                     }
-
                 }
                 catch
                 {
-
                     throw;
                 }
             });

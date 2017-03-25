@@ -361,9 +361,21 @@ namespace ExViewer.Views
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
         }
 
+        private void page_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.fv.Descendants<ScrollContentPresenter>().First().Clip = null;
+        }
+
         private void page_Unloaded(object sender, RoutedEventArgs e)
         {
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            var vb = VisibleBoundsThickness;
+            this.clipFv.Rect = new Rect(vb.Left, -vb.Top, finalSize.Width - vb.Left - vb.Right, finalSize.Height);
+            return base.ArrangeOverride(finalSize);
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)

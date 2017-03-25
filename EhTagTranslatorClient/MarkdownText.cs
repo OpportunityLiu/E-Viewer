@@ -21,7 +21,7 @@ namespace EhTagTranslatorClient
         private string text;
 
         public string Text => 
-            System.Threading.LazyInitializer.EnsureInitialized(ref text, () 
+            System.Threading.LazyInitializer.EnsureInitialized(ref this.text, () 
                 => Analyze()
                     .Where(t => t is MarkdownString)
                     .Aggregate("", (old, t) => old + t.ToString()));

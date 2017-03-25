@@ -12,7 +12,7 @@ namespace ExClient
 {
     public class CachedGallery : Gallery
     {
-        private sealed class CachedGalleryList : GalleryList<CachedGallery>
+        private sealed class CachedGalleryList : GalleryList<CachedGallery, GalleryModel>
         {
             public static IAsyncOperation<CachedGalleryList> LoadList()
             {
@@ -20,54 +20,32 @@ namespace ExClient
                 {
                     using(var db = new GalleryDb())
                     {
+                        db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                         var query = from gm in db.GallerySet
                                     where gm.Images.Count != 0
                                     where db.SavedSet.FirstOrDefault(sm => sm.GalleryId == gm.Id) == null
                                     select gm;
-                        return new CachedGalleryList(query.ToList());
+                        return new CachedGalleryList(query);
                     }
                 }).AsAsyncOperation();
             }
 
-            private CachedGalleryList(List<GalleryModel> galleries)
-                : base(galleries.Count)
+            private CachedGalleryList(IEnumerable<GalleryModel> galleries)
+                : base(galleries)
             {
-                this.galleries = galleries;
             }
 
-            private List<GalleryModel> galleries;
-
-            protected override void RemoveItem(int index)
+            protected override CachedGallery Load(int index)
             {
-                this.galleries.RemoveAt(index);
-                base.RemoveItem(index);
-            }
-
-            protected override void ClearItems()
-            {
-                this.galleries.Clear();
-                base.ClearItems();
-            }
-
-            protected override IList<CachedGallery> LoadRange(ItemIndexRange visibleRange, GalleryDb db)
-            {
-                var list = new CachedGallery[visibleRange.Length];
-                for(var i = 0; i < visibleRange.Length; i++)
-                {
-                    var index = visibleRange.FirstIndex + i;
-                    if(this[index] != DefaultGallery)
-                        continue;
-                    var c = new CachedGallery(this.galleries[index]);
-                    var ignore = c.InitAsync();
-                    this[index] = c;
-                }
-                return list;
+                var c = new CachedGallery(this.Models[index]);
+                var ignore = c.InitAsync();
+                return c;
             }
         }
 
-        public static IAsyncOperation<GalleryList<CachedGallery>> LoadCachedGalleriesAsync()
+        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
         {
-            return Run<GalleryList<CachedGallery>>(async token => await CachedGalleryList.LoadList());
+            return Run<IncrementalLoadingCollection<Gallery>>(async token => await CachedGalleryList.LoadList());
         }
 
         public static IAsyncActionWithProgress<double> ClearCachedGalleriesAsync()
@@ -118,6 +96,7 @@ namespace ExClient
             this.ImageModels = new ImageModel[this.RecordCount];
             using(var db = new GalleryDb())
             {
+                db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                 var gid = this.Id;
                 var models = from im in db.ImageSet
                              where im.OwnerId == gid

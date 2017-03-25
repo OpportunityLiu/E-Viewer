@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -72,24 +74,30 @@ namespace EhTagTranslatorClient
             this.Introduction = new MarkdownText(introduction);
         }
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Original
         {
             get;
+            internal set;
         }
 
         public MarkdownText Translated
         {
             get;
+            internal set;
         }
 
         public MarkdownText Introduction
         {
             get;
+            internal set;
         }
 
         public Namespace Namespace
         {
             get;
+            internal set;
         }
     }
 }

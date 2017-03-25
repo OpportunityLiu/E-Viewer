@@ -41,7 +41,7 @@ namespace EhWikiClient
             {
                 var record = db.Table.SingleOrDefault(r => r.Title == title);
                 if(record != null)
-                    return new Helpers.AsyncWarpper<Record>(record);
+                    return Helpers.AsyncWarpper.Create(record);
                 return FetchAsync(title);
             }
         }
@@ -68,6 +68,8 @@ namespace EhWikiClient
                 var res = await post;
                 var resStr = await res.Content.ReadAsStringAsync();
                 var record = Record.Load(resStr);
+                if(record == null)
+                    return null;
                 using(var db = new WikiDb())
                 {
                     var oldrecord = db.Table.SingleOrDefault(r => r.Title == record.Title);
@@ -77,7 +79,6 @@ namespace EhWikiClient
                     {
                         oldrecord.Japanese = record.Japanese;
                         oldrecord.Description = record.Description;
-                        db.Update(oldrecord);
                     }
                     await db.SaveChangesAsync();
                 }

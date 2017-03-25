@@ -1,16 +1,13 @@
-﻿using ExClient.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml.Data;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {
-    public abstract class GalleryList<T> : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
-         where T : Gallery
+    internal abstract class GalleryList<TGallery, TModel> : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
+         where TGallery : Gallery
     {
         protected static Gallery DefaultGallery
         {
@@ -34,16 +31,21 @@ namespace ExClient
 
         private int loadedCount;
 
-        internal GalleryList(int recordCount)
+        internal GalleryList(IEnumerable<TModel> models)
             : base(1)
         {
             this.PageCount = 1;
-            this.RecordCount = recordCount;
+            this.models = models.ToList();
+            this.RecordCount = this.models.Count;
             AddRange(Enumerable.Repeat(DefaultGallery, this.RecordCount));
         }
 
+        private List<TModel> models;
+        protected IReadOnlyList<TModel> Models => this.models;
+
         protected override void ClearItems()
         {
+            this.models.Clear();
             this.RecordCount = 0;
             base.ClearItems();
             this.loadedCount = 0;
@@ -51,6 +53,7 @@ namespace ExClient
 
         protected override void RemoveItem(int index)
         {
+            this.models.RemoveAt(index);
             this.RecordCount--;
             if(this[index] != DefaultGallery)
                 this.loadedCount--;
@@ -63,45 +66,30 @@ namespace ExClient
             {
                 return;
             }
-            using(var db = new GalleryDb())
+            foreach(var item in trackedItems.Concat(Enumerable.Repeat(visibleRange, 1)).Distinct(ItemIndexRangeEqualityComparer.Default))
             {
-                foreach(var item in trackedItems.Concat(Enumerable.Repeat(visibleRange, 1)).Distinct(ItemIndexRangeEqualityComparer.Default))
-                {
-                    loadRange(item, db);
-                }
+                loadRange(item);
             }
         }
 
-        private void loadRange(ItemIndexRange visibleRange, GalleryDb db)
+        private void loadRange(ItemIndexRange visibleRange)
         {
             if(visibleRange.FirstIndex < 0)
                 visibleRange = new ItemIndexRange(0, (uint)visibleRange.LastIndex + 1);
             if(visibleRange.LastIndex >= this.Count)
                 visibleRange = new ItemIndexRange(visibleRange.FirstIndex, (uint)(this.Count - visibleRange.FirstIndex));
 
-            var needLoad = false;
-            for(var i = visibleRange.LastIndex; i >= visibleRange.FirstIndex; i--)
-            {
-                if(this[i] == DefaultGallery)
-                {
-                    needLoad = true;
-                    break;
-                }
-            }
-            if(!needLoad)
-                return;
-            var list = LoadRange(visibleRange, db);
-            for(var i = 0; i < visibleRange.Length; i++)
+            for(var i = visibleRange.FirstIndex; i <= visibleRange.LastIndex; i++)
             {
                 var index = i + visibleRange.FirstIndex;
                 if(this[index] != DefaultGallery)
                     continue;
-                this[index] = list[i];
+                this[index] = Load(index);
                 this.loadedCount++;
             }
         }
 
-        protected abstract IList<T> LoadRange(ItemIndexRange visibleRange, GalleryDb db);
+        protected abstract TGallery Load(int index);
 
         protected override IAsyncOperation<IReadOnlyList<Gallery>> LoadPageAsync(int pageIndex)
         {

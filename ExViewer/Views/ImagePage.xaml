@@ -7,6 +7,7 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  x:Name="page"
                  Loading="page_Loading"
+                 Loaded="page_Loaded"
                  Unloaded="page_Unloaded"
                  NavigationCacheMode="Enabled"
                  mc:Ignorable="d">
@@ -23,12 +24,16 @@
                       x:DataType="local:IImagePageImageView">
             <Grid DoubleTapped="fvi_DoubleTapped"
                   Tapped="fvi_Tapped">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="48" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
                 <controls:ImagePresenter x:Name="ip"
                                          Grid.RowSpan="2"
-                                         Image="{x:Bind Image, Mode=OneWay}"
-                                         Padding="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay}" />
-                <ProgressBar Margin="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,48,x0,x0'}"
+                                         Image="{x:Bind Image, Mode=OneWay}" />
+                <ProgressBar Grid.Row="1"
                              Padding="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                             Margin="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x0'}"
                              VerticalAlignment="Top"
                              Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
                              IsIndeterminate="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=True}"
@@ -169,7 +174,11 @@
                   RelativePanel.AlignRightWithPanel="True"
                   RelativePanel.AlignTopWithPanel="True"
                   SelectionChanged="fv_SelectionChanged"
+                  Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay}"
                   ItemTemplate="{StaticResource FlipViewItemTemplate}">
+            <FlipView.Clip>
+                <RectangleGeometry x:Name="clipFv" />
+            </FlipView.Clip>
             <FlipView.ItemContainerStyle>
                 <Style TargetType="FlipViewItem">
                     <Setter Property="IsTabStop"
@@ -185,7 +194,7 @@
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.AlignRightWithPanel="True">
             <Border.RenderTransform>
-                <TranslateTransform  />
+                <TranslateTransform />
             </Border.RenderTransform>
         </Border>
         <Border x:Name="bdLeft"

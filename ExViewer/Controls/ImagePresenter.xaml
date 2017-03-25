@@ -10,11 +10,7 @@
              Loaded="UserControl_Loaded"
              d:DesignHeight="300"
              d:DesignWidth="400">
-    <UserControl.Clip>
-        <RectangleGeometry x:Name="rgChip" />
-    </UserControl.Clip>
     <ScrollViewer x:Name="sv"
-                  Margin="{x:Bind Padding, Mode=OneWay}"
                   IsTabStop="True"
                   FocusVisualMargin="{x:Bind FocusVisualMargin, Mode=OneWay}"
                   FocusVisualPrimaryBrush="{x:Bind FocusVisualPrimaryBrush, Mode=OneWay}"
