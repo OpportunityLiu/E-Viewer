@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using EhWikiClient.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,58 +10,47 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace EhWikiClient
 {
-    public class Client : IDisposable
+    public static class Client
     {
-        public static Client Instance { get; private set; }
-
-        public static IAsyncAction CreateAsync()
+        static Client()
         {
-            return Run(async token =>
+            WikiDb.Migrate();
+        }
+
+        private static HttpClient http = new HttpClient();
+
+        public static Record Get(string title)
+        {
+            using(var db = new WikiDb())
             {
-                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("EhWiki.json", CreationCollisionOption.OpenIfExists);
-                var dic = JsonConvert.DeserializeObject<List<Record>>(await FileIO.ReadTextAsync(file));
-                if(dic != null)
-                    Instance = new Client(dic.ToDictionary(rec => rec.Title, StringComparer.OrdinalIgnoreCase));
-                else
-                    Instance = new Client(null);
-            });
+                var record = db.Table.SingleOrDefault(r => r.Title == title);
+                if(record != null)
+                    return record;
+                FetchAsync(title).Completed = (s, e) =>
+                {
+                    if(e == AsyncStatus.Error)
+                        s.ErrorCode.ToString();
+                };
+                return null;
+            }
         }
 
-        private Client(Dictionary<string, Record> dic)
+        public static IAsyncOperation<Record> GetAsync(string title)
         {
-            this.dic = dic ?? new Dictionary<string, Record>(StringComparer.OrdinalIgnoreCase);
-        }
-
-        private HttpClient http = new HttpClient();
-
-        private Dictionary<string, Record> dic;
-
-        public IReadOnlyDictionary<string, Record> Dictionary => this.dic;
-
-        public Record Get(string title)
-        {
-            if(this.dic.TryGetValue(title, out var r))
-                return r;
-            FetchAsync(title).Completed = (s, e) =>
+            using(var db = new WikiDb())
             {
-                if(e == AsyncStatus.Error)
-                    s.ErrorCode.ToString();
-            };
-            return null;
-        }
-
-        public IAsyncOperation<Record> GetAsync(string title)
-        {
-            if(this.dic.TryGetValue(title, out var r))
-                return new Helpers.AsyncWarpper<Record>(r);
-            return FetchAsync(title);
+                var record = db.Table.SingleOrDefault(r => r.Title == title);
+                if(record != null)
+                    return new Helpers.AsyncWarpper<Record>(record);
+                return FetchAsync(title);
+            }
         }
 
         public static Uri WikiUri { get; } = new Uri("https://ehwiki.org/");
 
         private static readonly Uri apiUri = new Uri(WikiUri, "api.php");
 
-        public IAsyncOperation<Record> FetchAsync(string title)
+        public static IAsyncOperation<Record> FetchAsync(string title)
         {
             return Run(async token =>
             {
@@ -73,43 +63,26 @@ namespace EhWikiClient
                     yield return new KeyValuePair<string, string>("format", "json");
                     yield return new KeyValuePair<string, string>("utf8", "");
                 }
-                var post = this.http.PostAsync(apiUri, new HttpFormUrlEncodedContent(getRequestParameters()));
+                var post = http.PostAsync(apiUri, new HttpFormUrlEncodedContent(getRequestParameters()));
                 token.Register(post.Cancel);
                 var res = await post;
                 var resStr = await res.Content.ReadAsStringAsync();
                 var record = Record.Load(resStr);
-                this.dic[title] = record;
+                using(var db = new WikiDb())
+                {
+                    var oldrecord = db.Table.SingleOrDefault(r => r.Title == record.Title);
+                    if(oldrecord == null)
+                        db.Table.Add(record);
+                    else
+                    {
+                        oldrecord.Japanese = record.Japanese;
+                        oldrecord.Description = record.Description;
+                        db.Update(oldrecord);
+                    }
+                    await db.SaveChangesAsync();
+                }
                 return record;
             });
         }
-
-        public IAsyncAction SaveAsync()
-        {
-            return Run(async token =>
-            {
-                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("EhWiki.json", CreationCollisionOption.ReplaceExisting);
-                await FileIO.WriteTextAsync(file, JsonConvert.SerializeObject(this.dic.Values.Where(r => r != null)));
-            });
-        }
-
-        #region IDisposable Support
-        private bool disposedValue = false; // 要检测冗余调用
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if(!this.disposedValue)
-            {
-                if(disposing)
-                {
-                    this.http.Dispose();
-                }
-                this.disposedValue = true;
-            }
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-        #endregion
     }
 }

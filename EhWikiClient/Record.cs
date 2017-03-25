@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
 namespace EhWikiClient
@@ -6,7 +8,18 @@ namespace EhWikiClient
     [System.Diagnostics.DebuggerDisplay(@"\{{Title} -> {Japanese}\}")]
     public class Record
     {
+        internal Record() { }
+
+        private Record(string title, string japanese, string description, string html)
+        {
+            this.Title = title;
+            this.Japanese = japanese;
+            this.Description = description;
+            this.DetialHtml = html;
+        }
+
 #pragma warning disable CS0649
+#pragma warning disable IDE1006 // 命名样式
         private class Response
         {
             public Parse parse;
@@ -21,24 +34,11 @@ namespace EhWikiClient
                 }
             }
         }
+#pragma warning restore IDE1006 // 命名样式
 #pragma warning restore CS0649
 
         private static Regex reg = new Regex(@"^\s?Japanese\s?:\s?(?<Value>.+?)\s?$", RegexOptions.Multiline | RegexOptions.Compiled);
         private static Regex regd = new Regex(@"^\s?Description\s?:\s?(?<Value>.+?)\s?$", RegexOptions.Multiline | RegexOptions.Compiled);
-
-        [JsonConstructor]
-        internal Record(string t, string j, string d)
-        {
-            this.Title = t;
-            this.Japanese = j;
-            this.Description = d;
-        }
-
-        private Record(string title, string japanese, string description, string html)
-            : this(title, japanese, description)
-        {
-            this.DetialHtml = html;
-        }
 
         internal static Record Load(string json)
         {
@@ -56,26 +56,28 @@ namespace EhWikiClient
                 d = matchd.Groups["Value"].Value;
             return new Record(res.parse.title, j, d, res.parse.text.str);
         }
-
-        [JsonProperty("t")]
+        
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Title
         {
             get;
+            internal set;
         }
-
-        [JsonProperty("j")]
+        
         public string Japanese
         {
             get;
+            internal set;
         }
-
-        [JsonProperty("d")]
+        
         public string Description
         {
             get;
+            internal set;
         }
-
-        [JsonIgnore]
+        
+        [NotMapped]
         public string DetialHtml
         {
             get;

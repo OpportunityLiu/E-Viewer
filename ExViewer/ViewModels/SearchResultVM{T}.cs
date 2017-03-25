@@ -282,7 +282,7 @@ namespace ExViewer.ViewModels
 
             public override string Title => Tag.Content;
 
-            public override string Caption => EhWikiClient.Client.Instance.Get(Tag.Content)?.Japanese ?? "";
+            public override string Caption => EhWikiClient.Client.Get(Tag.Content)?.Japanese ?? "";
 
             public override string AdditionalInfo => Tag.Namespace.ToFriendlyNameString();
         }
