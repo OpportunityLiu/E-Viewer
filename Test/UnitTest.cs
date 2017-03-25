@@ -8,9 +8,8 @@ namespace Test
     public class UnitTest1
     {
         [TestMethod]
-        public async Task TestMethod1()
+        public void TestMethod1()
         {
-            var t = await EhTagTranslatorClient.EhTagDatabase.LoadDatabaseAsync();
         }
     }
 }

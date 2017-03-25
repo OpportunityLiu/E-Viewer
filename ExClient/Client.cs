@@ -53,7 +53,15 @@ namespace ExClient
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
             this.CookieManager = httpFilter.CookieManager;
             this.CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
-            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
+
+            var httpfilter2 = new HttpBaseProtocolFilter
+            {
+                AllowAutoRedirect = false,
+                CookieUsageBehavior = HttpCookieUsageBehavior.NoCookies
+            };
+            httpfilter2.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
+            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter, httpfilter2,new System.Text.RegularExpressions.Regex(@"://(\d{1,3}\.){3}\d{1,3}"))));
+
             this.Settings = new SettingCollection(this);
             this.Favorites = new FavoriteCollection(this);
         }

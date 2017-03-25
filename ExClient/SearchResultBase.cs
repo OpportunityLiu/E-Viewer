@@ -102,7 +102,7 @@ namespace ExClient
 
         protected sealed override IAsyncOperation<IReadOnlyList<Gallery>> LoadPageAsync(int pageIndex)
         {
-            return Run<IReadOnlyList<Gallery>>(async token =>
+            return Run(async token =>
             {
                 var uri = new Uri($"{this.SearchUri}&page={pageIndex}");
                 var getStream = this.Owner.HttpClient.GetInputStreamAsync(uri);

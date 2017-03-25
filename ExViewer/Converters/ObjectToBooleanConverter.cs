@@ -73,7 +73,7 @@ namespace ExViewer.Converters
                 s.valueType = tType;
                 return;
             }
-            //FIXME:tType和fType的共同基类
+            // UNDONE: tType和fType的共同基类
             s.valueType = typeof(object);
         }
 

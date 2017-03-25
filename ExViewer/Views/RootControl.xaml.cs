@@ -259,8 +259,9 @@ namespace ExViewer.Views
             else
             {
                 var bounds = RootController.ApplicationView.VisibleBounds;
+                var tbh = RootController.TitleBar?.Height ?? 0;
                 var winBounds = Window.Current.Bounds;
-                this.VisibleBoundsThickness = new Thickness(bounds.X - winBounds.X, bounds.Top - winBounds.Top, winBounds.Right - bounds.Right, winBounds.Bottom - bounds.Bottom);
+                this.VisibleBoundsThickness = new Thickness(bounds.X - winBounds.X, bounds.Top - winBounds.Top + tbh, winBounds.Right - bounds.Right, winBounds.Bottom - bounds.Bottom);
             }
             return base.MeasureOverride(availableSize);
         }
