@@ -34,8 +34,8 @@ namespace ExViewer.Views
         public RootControl()
         {
             this.InitializeComponent();
-            RootController.SetRoot(this);
             this.manager = SystemNavigationManager.GetForCurrentView();
+
             this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
                 [this.svt_Saved] = typeof(SavedPage),
@@ -119,6 +119,7 @@ namespace ExViewer.Views
         {
             if(this.HomePageType == null)
             {
+                RootController.SetRoot(this);
             }
             else
             {
@@ -260,9 +261,7 @@ namespace ExViewer.Views
             {
                 var vb = RootController.ApplicationView.VisibleBounds;
                 var wb = Window.Current.Bounds;
-                var tbh = 0d;
-                if(RootController.TitleBar != null)
-                    tbh = RootController.TitleBar.Height;
+                var tbh = RootController.TitleBarHeight;
                 this.VisibleBoundsThickness = new Thickness(vb.Left - wb.Left, vb.Top + tbh - wb.Top, wb.Right - vb.Right, wb.Bottom - vb.Bottom);
             }
             return base.MeasureOverride(availableSize);

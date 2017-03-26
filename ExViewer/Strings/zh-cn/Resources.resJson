@@ -211,6 +211,21 @@
     "RetriesExhausted": "超过允许的重试次数，请重新启动应用后再试一次。"
   },
 
+  "Database": {
+    "EhTagClient": {
+      "Update": {
+        "Success": "标签数据库已更新",
+        "Failed": "标签数据库更新失败，将在下次启动应用时重试"
+      }
+    },
+    "EhTagTranslatorClient": {
+      "Update": {
+        "Success": "标签中文翻译数据库已更新",
+        "Failed": "标签中文翻译数据库更新失败，将在下次启动应用时重试"
+      }
+    }
+  },
+
   "Cancel": "取消",
   "Exit": "退出",
   "OK": "确定",

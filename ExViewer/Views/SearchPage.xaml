@@ -52,7 +52,7 @@
                                 PlaceholderText="Search..."
                                 QuerySubmitted="asb_QuerySubmitted"
                                 TextChanged="asb_TextChanged"
-                                SuggestionChosen="asb_SuggestionChosen" />
+                                LostFocus="asb_LostFocus"/>
                 <ScrollViewer x:Name="sv_AdvancedSearch"
                               Grid.Row="1"
                               Grid.ColumnSpan="2"

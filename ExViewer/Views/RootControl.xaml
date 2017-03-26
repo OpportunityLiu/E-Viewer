@@ -130,7 +130,8 @@
             </DoubleAnimation>
         </Storyboard>
     </UserControl.Resources>
-    <Grid x:Name="gdRoot" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="gdRoot"
+          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <SplitView x:Name="sv_root"
                    IsTabStop="False"
                    LightDismissOverlayMode="On"

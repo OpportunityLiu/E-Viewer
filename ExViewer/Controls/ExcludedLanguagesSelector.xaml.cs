@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ExClient.Settings;
+using System.Runtime.CompilerServices;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -29,9 +30,10 @@ namespace ExViewer.Controls
                 item.PropertyChanged += this.filter_PropertyChanged;
             }
         }
+
         private List<ExcludedLanguageFilter> filters = new List<ExcludedLanguageFilter>()
         {
-            new ExcludedLanguageFilter(0),
+            new ExcludedLanguageFilter(ExcludedLanguage.JapaneseOriginal),
             new ExcludedLanguageFilter(ExcludedLanguage.EnglishOriginal),
             new ExcludedLanguageFilter(ExcludedLanguage.ChineseOriginal),
             new ExcludedLanguageFilter(ExcludedLanguage.DutchOriginal),
@@ -183,12 +185,7 @@ namespace ExViewer.Controls
         public bool Original
         {
             get => this.original;
-            set
-            {
-                var oldAll = this.All;
-                if(Set(ref this.original, value) && oldAll != this.All)
-                    RaisePropertyChanged(nameof(All));
-            }
+            set => setValue(value, ref this.original);
         }
 
         private bool translated;
@@ -196,12 +193,7 @@ namespace ExViewer.Controls
         public bool Translated
         {
             get => this.translated;
-            set
-            {
-                var oldAll = this.All;
-                if(Set(ref this.translated, value) && oldAll != this.All)
-                    RaisePropertyChanged(nameof(All));
-            }
+            set => setValue(value, ref this.translated);
         }
 
         private bool rewrite;
@@ -209,36 +201,28 @@ namespace ExViewer.Controls
         public bool Rewrite
         {
             get => this.rewrite;
-            set
-            {
-                var oldAll = this.All;
-                if(Set(ref this.rewrite, value) && oldAll != this.All)
-                    RaisePropertyChanged(nameof(All));
-            }
+            set => setValue(value, ref this.rewrite);
+        }
+
+        private void setValue(bool value, ref bool field, [CallerMemberName]string propName = null)
+        {
+            var oldAll = this.All;
+            if(Set(ref field, value, propName) && oldAll != this.All)
+                RaisePropertyChanged(nameof(All));
         }
 
         public bool All
         {
-            get
-            {
-                if(this.OriginalEnabled)
-                    return this.original && this.translated && this.rewrite;
-                return this.translated && this.rewrite;
-            }
+            get => this.original && this.translated && this.rewrite;
             set
             {
                 if(value == this.All)
                     return;
-                if(this.OriginalEnabled)
-                {
-                    this.original = value;
-                }
+                this.original = value;
                 this.translated = value;
                 this.rewrite = value;
                 RaisePropertyChanged(default(string));
             }
         }
-
-        public bool OriginalEnabled => this.Language != 0;
     }
 }

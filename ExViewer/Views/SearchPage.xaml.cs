@@ -108,8 +108,7 @@ namespace ExViewer.Views
 
         private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput
-                || args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen;
+            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput;
             var currentId = this.navId;
             if(needAutoComplete)
             {
@@ -119,11 +118,6 @@ namespace ExViewer.Views
                     this.asb.ItemsSource = r;
                 }
             }
-        }
-
-        private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-        {
-            sender.ItemsSource = null;
         }
 
         private async void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
@@ -140,6 +134,11 @@ namespace ExViewer.Views
                 // workaround for IME candidates, which will clean input.
                 await Dispatcher.RunIdleAsync(a => this.asb.Text = args.ChosenSuggestion.ToString());
             }
+        }
+
+        private void asb_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.asb.ItemsSource = null;
         }
 
         private void lv_RefreshRequested(object sender, EventArgs e)

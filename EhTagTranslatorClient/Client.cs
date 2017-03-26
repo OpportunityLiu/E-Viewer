@@ -1,5 +1,6 @@
 ﻿using EhTagTranslatorClient.Model;
 using ExClient;
+using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,47 @@ namespace EhTagTranslatorClient
             private set => ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;
         }
 
+        private const string LAST_COMMIT = "EhTagTranslatorClient.LastCommit";
+
+        public static DateTimeOffset LastCommit
+        {
+            get
+            {
+                if(ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_COMMIT, out var r))
+                    return (DateTimeOffset)r;
+                return DateTimeOffset.MinValue.AddDays(1);
+            }
+            private set => ApplicationData.Current.LocalSettings.Values[LAST_COMMIT] = value;
+        }
+
         private static readonly Uri wikiDbRootUri = new Uri("https://raw.github.com/wiki/Mapaler/EhTagTranslator/tags/");
+
+        private static readonly Uri stateUri = new Uri("https://github.com/Mapaler/EhTagTranslator/wiki/_history");
+
+        public static IAsyncOperation<bool> NeedUpdateAsync()
+        {
+            return AsyncInfo.Run(async token =>
+            {
+                try
+                {
+                    using(var client = new HttpClient())
+                    {
+                        var html = await client.GetStringAsync(stateUri);
+                        var doc = new HtmlDocument();
+                        doc.LoadHtml(html);
+                        var tr = doc.DocumentNode.Descendants("tr").First();
+                        var rtime = tr.Descendants("relative-time").First();
+                        var time = rtime.GetAttributeValue("datetime", "");
+                        var dt = DateTimeOffset.Parse(time);
+                        LastCommit = dt;
+                    }
+                }
+                catch
+                {
+                }
+                return LastCommit > LastUpdate;
+            });
+        }
 
         private static readonly Namespace[] tables = new[]
         {

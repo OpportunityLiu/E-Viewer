@@ -208,42 +208,38 @@ namespace ExViewer.Views
                 else
                     this.applicationLoaded = true;
             }
+            await Task.Delay(20000);
             if(DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
-                await Task.Delay(30000).ContinueWith(async t =>
+                try
                 {
-                    try
-                    {
-                        await BannerProvider.Provider.FetchBanners();
-                    }
-                    catch(Exception)
-                    {
-                        //Ignore exceptions here.
-                    }
-                });
+                    await BannerProvider.Provider.FetchBanners();
+                }
+                catch(Exception)
+                {
+                    //Ignore exceptions here.
+                }
             if(DateTimeOffset.Now - EhTagClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
-                await Task.Delay(20000).ContinueWith(async t =>
+                try
                 {
-                    try
-                    {
-                        await EhTagClient.Client.UpdateAsync();
-                    }
-                    catch(Exception)
-                    {
-                        //Ignore exceptions here.
-                    }
-                });
-            if(DateTimeOffset.Now - EhTagTranslatorClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
-                await Task.Delay(10000).ContinueWith(async t =>
+                    await EhTagClient.Client.UpdateAsync();
+                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Success, null);
+                }
+                catch(Exception)
                 {
-                    try
-                    {
-                        await EhTagTranslatorClient.Client.UpdateAsync();
-                    }
-                    catch(Exception)
-                    {
-                        //Ignore exceptions here.
-                    }
-                });
+                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Failed, null);
+                }
+            try
+            {
+                if(await EhTagTranslatorClient.Client.NeedUpdateAsync())
+                {
+                    await EhTagTranslatorClient.Client.UpdateAsync();
+                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Success, null);
+                }
+            }
+            catch(Exception)
+            {
+                RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Failed, null);
+            }
         }
 
         private async Task verify()

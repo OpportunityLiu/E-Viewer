@@ -211,6 +211,21 @@
     "RetriesExhausted": "You have exceeded the allowed number of verification. Plaese restart the app and try again."
   },
 
+  "Database": {
+    "EhTagClient": {
+      "Update": {
+        "Success": "Tag database has been updated successfully.",
+        "Failed": "Failed to update tag database, we'll try again the next time you open this app."
+      }
+    },
+    "EhTagTranslatorClient": {
+      "Update": {
+        "Success": "Tag Chinese translation database has been updated successfully.",
+        "Failed": "Failed to update tag Chinese translation database, we'll try again the next time you open this app."
+      }
+    }
+  },
+
   "Cancel": "Cancel",
   "Exit": "Exit",
   "OK": "OK",
