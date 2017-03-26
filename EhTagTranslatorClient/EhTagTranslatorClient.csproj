@@ -107,37 +107,18 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\EhTagTranslator.wiki\tags\artist.md">
-      <Link>Data\artist.md</Link>
-    </Content>
-    <Content Include="..\EhTagTranslator.wiki\tags\character.md">
-      <Link>Data\character.md</Link>
-    </Content>
-    <Content Include="..\EhTagTranslator.wiki\tags\female.md">
-      <Link>Data\female.md</Link>
-    </Content>
-    <Content Include="..\EhTagTranslator.wiki\tags\group.md">
-      <Link>Data\group.md</Link>
-    </Content>
-    <Content Include="..\EhTagTranslator.wiki\tags\language.md">
-      <Link>Data\language.md</Link>
-    </Content>
-    <Content Include="..\EhTagTranslator.wiki\tags\male.md">
-      <Link>Data\male.md</Link>
-    </Content>
-    <Content Include="..\EhTagTranslator.wiki\tags\misc.md">
-      <Link>Data\misc.md</Link>
-    </Content>
-    <Content Include="..\EhTagTranslator.wiki\tags\parody.md">
-      <Link>Data\parody.md</Link>
-    </Content>
-    <Content Include="..\EhTagTranslator.wiki\tags\reclass.md">
-      <Link>Data\reclass.md</Link>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="EhTagDatabase.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="DataBase.cs" />
     <Compile Include="MarkdownText.cs" />
+    <Compile Include="Migrations\20170326081343_Migration1.cs" />
+    <Compile Include="Migrations\20170326081343_Migration1.designer.cs">
+      <DependentUpon>20170326081343_Migration1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170326090536_Migration2.cs" />
+    <Compile Include="Migrations\20170326090536_Migration2.designer.cs">
+      <DependentUpon>20170326090536_Migration2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\TranslateDbModelSnapshot.cs" />
     <Compile Include="Model\TranslateDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Record.cs" />

@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="DataBase.cs" />
     <Compile Include="Migrations\20170325074042_FirstMigration.cs" />
     <Compile Include="Migrations\20170325074042_FirstMigration.designer.cs">
       <DependentUpon>20170325074042_FirstMigration.cs</DependentUpon>

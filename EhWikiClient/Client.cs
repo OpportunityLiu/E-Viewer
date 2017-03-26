@@ -1,4 +1,5 @@
 ﻿using EhWikiClient.Models;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,15 @@ namespace EhWikiClient
             WikiDb.Migrate();
         }
 
+        public static DataBase CreateDatabase() => new DataBase();
+
         private static HttpClient http = new HttpClient();
 
         public static Record Get(string title)
         {
             using(var db = new WikiDb())
             {
-                var record = db.Table.SingleOrDefault(r => r.Title == title);
+                var record = db.Table.AsNoTracking().SingleOrDefault(r => r.Title == title);
                 if(record != null)
                     return record;
                 FetchAsync(title).Completed = (s, e) =>
@@ -39,7 +42,7 @@ namespace EhWikiClient
         {
             using(var db = new WikiDb())
             {
-                var record = db.Table.SingleOrDefault(r => r.Title == title);
+                var record = db.Table.AsNoTracking().SingleOrDefault(r => r.Title == title);
                 if(record != null)
                     return Helpers.AsyncWarpper.Create(record);
                 return FetchAsync(title);

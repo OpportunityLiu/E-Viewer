@@ -153,7 +153,6 @@ namespace ExViewer.Views
                 {
                     await ExClient.Models.GalleryDb.MigrateAsync();
                     await Database.SearchHistoryDb.MigrateAsync();
-                    await TagExtension.Init();
                 });
                 var client = Client.Current;
                 var logOnInTheFunction = false;
@@ -222,11 +221,23 @@ namespace ExViewer.Views
                     }
                 });
             if(DateTimeOffset.Now - EhTagClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
-                await Task.Delay(15000).ContinueWith(async t =>
+                await Task.Delay(20000).ContinueWith(async t =>
                 {
                     try
                     {
                         await EhTagClient.Client.UpdateAsync();
+                    }
+                    catch(Exception)
+                    {
+                        //Ignore exceptions here.
+                    }
+                });
+            if(DateTimeOffset.Now - EhTagTranslatorClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
+                await Task.Delay(10000).ContinueWith(async t =>
+                {
+                    try
+                    {
+                        await EhTagTranslatorClient.Client.UpdateAsync();
                     }
                     catch(Exception)
                     {
