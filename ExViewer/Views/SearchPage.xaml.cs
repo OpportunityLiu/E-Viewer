@@ -58,7 +58,7 @@ namespace ExViewer.Views
                 await Task.Delay(100);
                 if(this.btnExpandButton == null)
                     this.btnExpandButton = this.ab.FirstDescendant<Button>("ExpandButton");
-                this.btnExpandButton?.Focus(FocusState.Programmatic);
+                this.btnExpandButton?.Focus(FocusState.Pointer);
             }
             if(e.NavigationMode == NavigationMode.Back)
             {
@@ -108,7 +108,8 @@ namespace ExViewer.Views
 
         private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput;
+            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput
+                || args.Reason == AutoSuggestionBoxTextChangeReason.SuggestionChosen;
             var currentId = this.navId;
             if(needAutoComplete)
             {
@@ -122,6 +123,7 @@ namespace ExViewer.Views
 
         private void asb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
+            sender.ItemsSource = null;
         }
 
         private async void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)

@@ -66,34 +66,45 @@ namespace EhTagTranslatorClient
             return value;
         }
 
+        internal Record() { }
+
         private Record(Namespace @namespace, string original, string translated, string introduction)
         {
             this.Namespace = @namespace;
             this.Original = original;
-            this.Translated = new MarkdownText(translated);
-            this.Introduction = new MarkdownText(introduction);
+            this.TranslatedRaw = translated;
+            this.IntroductionRaw = introduction;
+            this.TranslatedStr = this.Translated.Text;
         }
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        
         public string Original
         {
             get;
             internal set;
         }
 
-        public MarkdownText Translated
+        public string TranslatedRaw
         {
             get;
             internal set;
         }
 
-        public MarkdownText Introduction
+        public string TranslatedStr
         {
             get;
             internal set;
         }
 
+        public MarkdownText Translated => new MarkdownText(TranslatedRaw);
+
+        public string IntroductionRaw
+        {
+            get;
+            internal set;
+        }
+        
+        public MarkdownText Introduction => new MarkdownText(IntroductionRaw);
+        
         public Namespace Namespace
         {
             get;

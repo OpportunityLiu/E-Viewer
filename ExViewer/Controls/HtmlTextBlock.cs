@@ -298,7 +298,7 @@ namespace ExViewer.Controls
                 {
                     var t = new Span();
                     var currentPos = 0;
-                    foreach(Match match in matches)
+                    foreach(var match in matches.Cast<Match>())
                     {
                         t.Inlines.Add(CreateRun(text.Substring(currentPos, match.Index - currentPos)));
                         var uri = (Uri)null;

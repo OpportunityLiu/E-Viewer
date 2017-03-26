@@ -17,15 +17,6 @@ namespace ExClient
 {
     static class TagExtension
     {
-        public static IAsyncAction Init()
-        {
-            return Task.Run(async () =>
-            {
-                var loadDb = EhTagDatabase.LoadDatabaseAsync();
-                await loadDb;
-            }).AsAsyncAction();
-        }
-
         public static IAsyncOperation<string> GetDisplayContentAsync(this Tag tag)
         {
             var settings = SettingCollection.Current;
@@ -61,12 +52,7 @@ namespace ExClient
 
         public static Record GetEhTagTranslatorRecord(this Tag tag)
         {
-            if(EhTagDatabase.Dictionary == null)
-                return null;
-            var record = (Record)null;
-            if(EhTagDatabase.Dictionary[tag.Namespace].TryGetValue(tag.Content, out record))
-                return record;
-            return null;
+            return EhTagTranslatorClient.Client.Get(tag);
         }
 
         public static IAsyncOperation<EhWikiClient.Record> GetEhWikiRecordAsync(this Tag tag)

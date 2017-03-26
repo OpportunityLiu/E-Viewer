@@ -184,6 +184,7 @@
     <Compile Include="ViewModels\CacheStorage{TKey,TCache}.cs" />
     <Compile Include="ViewModels\FavoritesVM.cs" />
     <Compile Include="ViewModels\GalleryListVM{T}.cs" />
+    <Compile Include="ViewModels\ITagRecord.cs" />
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
     <Compile Include="ViewModels\SearchResultVM{T}.cs" />

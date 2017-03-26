@@ -34,6 +34,8 @@ namespace ExViewer.Views
         public RootControl()
         {
             this.InitializeComponent();
+            RootController.SetRoot(this);
+            this.manager = SystemNavigationManager.GetForCurrentView();
             this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
                 [this.svt_Saved] = typeof(SavedPage),
@@ -111,14 +113,12 @@ namespace ExViewer.Views
             }
         }
 
-        SystemNavigationManager manager;
+        private readonly SystemNavigationManager manager;
 
         private void Control_Loading(FrameworkElement sender, object args)
         {
             if(this.HomePageType == null)
             {
-                RootController.SetRoot(this);
-                this.manager = SystemNavigationManager.GetForCurrentView();
             }
             else
             {
@@ -258,10 +258,12 @@ namespace ExViewer.Views
             }
             else
             {
-                var bounds = RootController.ApplicationView.VisibleBounds;
-                var tbh = RootController.TitleBar?.Height ?? 0;
-                var winBounds = Window.Current.Bounds;
-                this.VisibleBoundsThickness = new Thickness(bounds.X - winBounds.X, bounds.Top - winBounds.Top + tbh, winBounds.Right - bounds.Right, winBounds.Bottom - bounds.Bottom);
+                var vb = RootController.ApplicationView.VisibleBounds;
+                var wb = Window.Current.Bounds;
+                var tbh = 0d;
+                if(RootController.TitleBar != null)
+                    tbh = RootController.TitleBar.Height;
+                this.VisibleBoundsThickness = new Thickness(vb.Left - wb.Left, vb.Top + tbh - wb.Top, wb.Right - vb.Right, wb.Bottom - vb.Bottom);
             }
             return base.MeasureOverride(availableSize);
         }

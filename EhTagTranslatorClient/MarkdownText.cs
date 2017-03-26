@@ -19,16 +19,17 @@ namespace EhTagTranslatorClient
         }
 
         private string text;
-
-        public string Text => 
-            System.Threading.LazyInitializer.EnsureInitialized(ref this.text, () 
-                => Analyze()
-                    .Where(t => t is MarkdownString)
-                    .Aggregate("", (old, t) => old + t.ToString()));
+        public string Text
+            => System.Threading.LazyInitializer.EnsureInitialized(ref this.text, ()
+                => string.Concat(this.Tokens.OfType<MarkdownString>()));
 
         private static readonly Regex analyzer = new Regex(@"!\[(?<alt>.*?)\]\((?:(?<url>[^#].*?)|(?:#\s+""(?<url>.*?)""))\)", RegexOptions.Compiled);
 
-        public IEnumerable<MarkdownToken> Analyze()
+        private IReadOnlyList<MarkdownToken> tokens;
+        public IReadOnlyList<MarkdownToken> Tokens 
+            => System.Threading.LazyInitializer.EnsureInitialized(ref this.tokens, () => this.analyze().ToList().AsReadOnly());
+
+        private IEnumerable<MarkdownToken> analyze()
         {
             var matches = analyzer.Matches(this.RawString);
             if(matches.Count == 0)
@@ -37,7 +38,7 @@ namespace EhTagTranslatorClient
                 yield break;
             }
             var currentPos = 0;
-            foreach(Match match in matches)
+            foreach(var match in matches.Cast<Match>())
             {
                 if(currentPos != match.Index)
                     yield return new MarkdownString(this.RawString.Substring(currentPos, match.Index - currentPos));

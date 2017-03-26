@@ -25,9 +25,19 @@ namespace ExViewer.Views
     {
         internal static class RootController
         {
-            static RootController()
+            internal static void SetRoot(RootControl root)
             {
+                RootController.root = root;
+
                 StatusBar = ApiInfo.StatusBarSupported ? StatusBar.GetForCurrentView() : null;
+                TitleBar = CoreApplication.GetCurrentView().TitleBar;
+
+                root.sv_root.PaneClosing += Sv_root_PaneClosing;
+
+                Frame.Navigated += Frame_Navigated;
+
+                av_VisibleBoundsChanged(av, null);
+                av.VisibleBoundsChanged += av_VisibleBoundsChanged;
             }
 
             private static Uri launchUri;
@@ -88,9 +98,9 @@ namespace ExViewer.Views
 
             public static bool Available => root != null;
 
-            public static StatusBar StatusBar { get; }
+            public static StatusBar StatusBar { get; private set; }
 
-            public static CoreApplicationViewTitleBar TitleBar { get; } = CoreApplication.GetCurrentView().TitleBar;
+            public static CoreApplicationViewTitleBar TitleBar { get; private set; }
 
 
 #if !DEBUG_BOUNDS
@@ -179,18 +189,6 @@ namespace ExViewer.Views
             private static Storyboard PlayToastPanel => sbInitializer(ref playToast, PlayToast_Completed);
             private static Storyboard CloseSplitViewPane => sbInitializer(ref openSplitViewPane, null);
             private static Storyboard OpenSplitViewPane => sbInitializer(ref closeSplitViewPane, null);
-
-            internal static void SetRoot(RootControl root)
-            {
-                RootController.root = root;
-
-                root.sv_root.PaneClosing += Sv_root_PaneClosing;
-
-                Frame.Navigated += Frame_Navigated;
-
-                av_VisibleBoundsChanged(av, null);
-                av.VisibleBoundsChanged += av_VisibleBoundsChanged;
-            }
 
             private static void Sv_root_PaneClosing(SplitView sender, SplitViewPaneClosingEventArgs args)
             {

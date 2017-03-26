@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace EhWikiClient
 {
@@ -46,17 +47,17 @@ namespace EhWikiClient
             if(res.parse == null)
                 return null;
             var str = Windows.Data.Html.HtmlUtilities.ConvertToText(res.parse.text.str);
-            var match = reg.Match(str);
+            var match = reg.Matches(str);
             var j = (string)null;
-            if(match.Success)
-                j = match.Groups["Value"].Value;
+            if(match.Count > 0)
+                j = string.Join(" | ", match.Cast<Match>().Select(m => m.Groups["Value"].Value));
             var matchd = regd.Match(str);
             var d = (string)null;
             if(matchd.Success)
                 d = matchd.Groups["Value"].Value;
             return new Record(res.parse.title, j, d, res.parse.text.str);
         }
-        
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Title
@@ -64,19 +65,19 @@ namespace EhWikiClient
             get;
             internal set;
         }
-        
+
         public string Japanese
         {
             get;
             internal set;
         }
-        
+
         public string Description
         {
             get;
             internal set;
         }
-        
+
         [NotMapped]
         public string DetialHtml
         {
