@@ -317,6 +317,7 @@
         <ScrollViewer.TopLeftHeader>
             <Border x:Name="bdTopLeftHeader"
                     Height="32"
+                    Width="64"
                     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
         </ScrollViewer.TopLeftHeader>
         <ScrollViewer.LeftHeader>
@@ -390,7 +391,6 @@
                                               MinWidth="80" />
                         </Grid.ColumnDefinitions>
                         <CheckBox IsChecked="{x:Bind Original, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
-                                  IsEnabled="{x:Bind OriginalEnabled}"
                                   Style="{StaticResource SelectorStyle}" />
                         <CheckBox IsChecked="{x:Bind Translated, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
                                   Style="{StaticResource SelectorStyle}"

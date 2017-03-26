@@ -7,10 +7,6 @@ namespace ExClient.Settings
 {
     public enum ExcludedLanguage : ushort
     {
-        /// <summary>
-        /// Do not use.
-        /// </summary>
-        [Obsolete("Do not use this enum, JapaneseOriginal can't be an excluded language.")]
         JapaneseOriginal=0,   JapaneseTranslated = 0 + 1024, JapaneseRewrite = 0 + 2048,
         EnglishOriginal = 1, EnglishTranslated = EnglishOriginal + 1024, EnglishRewrite = EnglishOriginal + 2048,
         ChineseOriginal = 10, ChineseTranslated = ChineseOriginal + 1024, ChineseRewrite = ChineseOriginal + 2048,
@@ -52,9 +48,9 @@ namespace ExClient.Settings
 
         internal override string GetCookieContent()
         {
-            if(items.Count == 0)
+            if(this.items.Count == 0)
                 return null;
-            return $"xl_{string.Join("x", items)}";
+            return $"xl_{string.Join("x", this.items)}";
         }
 
         public override string ToString()
@@ -79,23 +75,23 @@ namespace ExClient.Settings
         {
             if(!Enum.IsDefined(typeof(ExcludedLanguage), item))
                 throw new ArgumentOutOfRangeException(nameof(item));
-            if(items.Add((ushort)item))
+            if(this.items.Add((ushort)item))
                 ApplyChanges();
         }
 
         public void Clear()
         {
-            if(items.Count == 0)
+            if(this.items.Count == 0)
                 return;
-            items.Clear();
+            this.items.Clear();
             ApplyChanges();
         }
 
-        public bool Contains(ExcludedLanguage item) => items.Contains((ushort)item);
+        public bool Contains(ExcludedLanguage item) => this.items.Contains((ushort)item);
 
         public void CopyTo(ExcludedLanguage[] array, int arrayIndex)
         {
-            int i = arrayIndex;
+            var i = arrayIndex;
             foreach(var item in this)
             {
                 if(i >= array.Length)
@@ -107,17 +103,17 @@ namespace ExClient.Settings
 
         public bool Remove(ExcludedLanguage item)
         {
-            var r = items.Remove((ushort)item);
+            var r = this.items.Remove((ushort)item);
             if(r)
                 ApplyChanges();
             return r;
         }
 
-        public IEnumerator<ExcludedLanguage> GetEnumerator() => items.Cast<ExcludedLanguage>().GetEnumerator();
+        public IEnumerator<ExcludedLanguage> GetEnumerator() => this.items.Cast<ExcludedLanguage>().GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => items.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => this.items.GetEnumerator();
 
-        public int Count => items.Count;
+        public int Count => this.items.Count;
 
         public bool IsReadOnly => false;
     }

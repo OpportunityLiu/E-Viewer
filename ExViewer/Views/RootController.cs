@@ -30,14 +30,27 @@ namespace ExViewer.Views
                 RootController.root = root;
 
                 StatusBar = ApiInfo.StatusBarSupported ? StatusBar.GetForCurrentView() : null;
-                TitleBar = CoreApplication.GetCurrentView().TitleBar;
 
                 root.sv_root.PaneClosing += Sv_root_PaneClosing;
 
                 Frame.Navigated += Frame_Navigated;
 
-                av_VisibleBoundsChanged(av, null);
-                av.VisibleBoundsChanged += av_VisibleBoundsChanged;
+                var tb = CoreApplication.GetCurrentView().TitleBar;
+                tb.LayoutMetricsChanged += titleBar_LayoutMetricsChanged;
+                TitleBarHeight = tb.Height;
+
+                av_VisibleBoundsChanged(ApplicationView, null);
+                ApplicationView.VisibleBoundsChanged += av_VisibleBoundsChanged;
+            }
+
+            private static void titleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
+            {
+                var ov = TitleBarHeight;
+                var nv = sender.Height;
+                if(ov == nv)
+                    return;
+                TitleBarHeight = nv;
+                root.InvalidateMeasure();
             }
 
             private static Uri launchUri;
@@ -100,7 +113,7 @@ namespace ExViewer.Views
 
             public static StatusBar StatusBar { get; private set; }
 
-            public static CoreApplicationViewTitleBar TitleBar { get; private set; }
+            public static double TitleBarHeight { get; private set; }
 
 
 #if !DEBUG_BOUNDS
@@ -109,17 +122,13 @@ namespace ExViewer.Views
             private static void av_VisibleBoundsChanged(ApplicationView sender, object args)
             {
                 if(IsFullScreen)
-                {
-                    av.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
-                }
+                    sender.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
                 else
-                {
-                    av.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
-                }
+                    sender.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
 #if !DEBUG_BOUNDS
                 if(ApiInfo.StatusBarSupported)
                 {
-                    if(av.Orientation == ApplicationViewOrientation.Landscape)
+                    if(sender.Orientation == ApplicationViewOrientation.Landscape)
                     {
                         await StatusBar.HideAsync();
                     }
@@ -132,25 +141,23 @@ namespace ExViewer.Views
                 root.InvalidateMeasure();
             }
 
-            public static bool IsFullScreen => av.IsFullScreenMode;
+            public static bool IsFullScreen => ApplicationView.IsFullScreenMode;
 
-            private static ApplicationView av = ApplicationView.GetForCurrentView();
-
-            public static ApplicationView ApplicationView => av;
+            public static ApplicationView ApplicationView { get; } = ApplicationView.GetForCurrentView();
 
             public static void SetFullScreen(bool fullScreen)
             {
                 if(fullScreen)
                 {
-                    if(av.TryEnterFullScreenMode())
+                    if(ApplicationView.TryEnterFullScreenMode())
                     {
-                        av.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
+                        ApplicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
                     }
                 }
                 else
                 {
-                    av.ExitFullScreenMode();
-                    av.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
+                    ApplicationView.ExitFullScreenMode();
+                    ApplicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
                 }
             }
 

@@ -65,7 +65,7 @@
                             PlaceholderText="Search..."
                             QuerySubmitted="asb_QuerySubmitted"
                             TextChanged="asb_TextChanged"
-                            SuggestionChosen="asb_SuggestionChosen"
+                            LostFocus="asb_LostFocus"
                             VerticalAlignment="Stretch" />
         </Grid>
         <tk:PullToRefreshListView x:Name="lv"
