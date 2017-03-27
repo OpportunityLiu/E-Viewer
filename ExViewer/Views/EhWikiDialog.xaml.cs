@@ -24,39 +24,63 @@ namespace ExViewer.Views
         {
             var s = (EhWikiDialog)sender;
             s.style = null;
+            s.refresh(s.WikiTag);
         }
 
         private string style;
 
-        private IAsyncOperation<Record> loadRecord;
+        public Tag WikiTag
+        {
+            get => (Tag)GetValue(WikiTagProperty);
+            set => SetValue(WikiTagProperty, value);
+        }
 
-        internal async void SetTag(Tag tag)
+        public static readonly DependencyProperty WikiTagProperty =
+            DependencyProperty.Register(nameof(WikiTag), typeof(Tag), typeof(EhWikiDialog), new PropertyMetadata(default(Tag), WikiTagPropertyChangedCallback));
+
+        private static void WikiTagPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var sender = (EhWikiDialog)d;
+            sender.refresh((Tag)e.NewValue);
+        }
+
+        private async void refresh(Tag tag)
         {
             this.loadRecord?.Cancel();
             this.wv.Visibility = Visibility.Collapsed;
             this.pb.Visibility = Visibility.Visible;
-            var str = (string)null;
-            this.Title = tag.Content;
-            try
+            if(tag.Content == null)
             {
-                this.loadRecord = tag.FetchEhWikiRecordAsync();
-                var record = await this.loadRecord;
-                this.loadRecord = null;
-                if(this.style == null)
-                    initStyle();
-                if(record?.DetialHtml == null)
-                    str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
-                else
-                    str = record.DetialHtml;
+                this.Title = "";
+                this.wv.NavigateToString("");
             }
-            catch(Exception ex)
+            else
             {
-                str = ex.GetMessage();
+                var str = (string)null;
+                this.Title = tag.Content;
+                try
+                {
+                    this.loadRecord = tag.FetchEhWikiRecordAsync();
+                    var record = await this.loadRecord;
+                    this.loadRecord = null;
+                    if(this.style == null)
+                        this.initStyle();
+                    if(record?.DetialHtml == null)
+                        str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
+                    else
+                        str = record.DetialHtml;
+                }
+                catch(Exception ex)
+                {
+                    str = ex.GetMessage();
+                }
+                this.wv.NavigateToString(this.style + str);
             }
-            this.wv.NavigateToString(this.style + str);
             this.wv.Visibility = Visibility.Visible;
             this.pb.Visibility = Visibility.Collapsed;
         }
+
+        private IAsyncOperation<Record> loadRecord;
 
         private void initStyle()
         {

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System;
 
 namespace EhWikiClient
 {
@@ -12,11 +13,18 @@ namespace EhWikiClient
         internal Record() { }
 
         private Record(string title, string japanese, string description, string html)
+            : this(true)
         {
             this.Title = title;
             this.Japanese = japanese;
             this.Description = description;
             this.DetialHtml = html;
+        }
+
+        private Record(bool isValid)
+        {
+            this.IsValid = isValid;
+            this.LastUpdate = DateTimeOffset.UtcNow;
         }
 
 #pragma warning disable CS0649
@@ -45,7 +53,7 @@ namespace EhWikiClient
         {
             var res = JsonConvert.DeserializeObject<Response>(json);
             if(res.parse == null)
-                return null;
+                return new Record(false);
             var str = Windows.Data.Html.HtmlUtilities.ConvertToText(res.parse.text.str);
             var match = reg.Matches(str);
             var j = (string)null;
@@ -56,6 +64,14 @@ namespace EhWikiClient
             if(matchd.Success)
                 d = matchd.Groups["Value"].Value;
             return new Record(res.parse.title, j, d, res.parse.text.str);
+        }
+
+        internal void Update(Record record)
+        {
+            this.Japanese = record.Japanese;
+            this.Description = record.Description;
+            this.IsValid = record.IsValid;
+            this.LastUpdate = DateTimeOffset.UtcNow;
         }
 
         [Key]
@@ -77,6 +93,17 @@ namespace EhWikiClient
             get;
             internal set;
         }
+
+        private long lastUpdate;
+
+        [NotMapped]
+        public DateTimeOffset LastUpdate
+        {
+            get => DateTimeOffset.FromUnixTimeMilliseconds(lastUpdate);
+            set => this.lastUpdate = value.ToUnixTimeMilliseconds();
+        }
+
+        public bool IsValid { get; internal set; }
 
         [NotMapped]
         public string DetialHtml

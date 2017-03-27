@@ -24,18 +24,10 @@ namespace EhWikiClient
 
         public static Record Get(string title)
         {
-            using(var db = new WikiDb())
-            {
-                var record = db.Table.AsNoTracking().SingleOrDefault(r => r.Title == title);
-                if(record != null)
-                    return record;
-                FetchAsync(title).Completed = (s, e) =>
-                {
-                    if(e == AsyncStatus.Error)
-                        s.ErrorCode.ToString();
-                };
-                return null;
-            }
+            var task = GetAsync(title);
+            if(task.Status == AsyncStatus.Completed)
+                return task.GetResults();
+            return null;
         }
 
         public static IAsyncOperation<Record> GetAsync(string title)
@@ -43,9 +35,11 @@ namespace EhWikiClient
             using(var db = new WikiDb())
             {
                 var record = db.Table.AsNoTracking().SingleOrDefault(r => r.Title == title);
-                if(record != null)
+                if(record != null && record.IsValid)
                     return Helpers.AsyncWarpper.Create(record);
-                return FetchAsync(title);
+                if(record == null || record.LastUpdate.AddDays(7) < DateTimeOffset.Now)
+                    return FetchAsync(title);
+                return Helpers.AsyncWarpper.Create(default(Record));
             }
         }
 
@@ -71,17 +65,15 @@ namespace EhWikiClient
                 var res = await post;
                 var resStr = await res.Content.ReadAsStringAsync();
                 var record = Record.Load(resStr);
-                if(record == null)
-                    return null;
+                record.Title = title;
                 using(var db = new WikiDb())
                 {
-                    var oldrecord = db.Table.SingleOrDefault(r => r.Title == record.Title);
+                    var oldrecord = db.Table.SingleOrDefault(r => r.Title == title);
                     if(oldrecord == null)
                         db.Table.Add(record);
                     else
                     {
-                        oldrecord.Japanese = record.Japanese;
-                        oldrecord.Description = record.Description;
+                        oldrecord.Update(record);
                     }
                     await db.SaveChangesAsync();
                 }

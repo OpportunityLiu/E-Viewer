@@ -6,6 +6,6 @@
     <BitmapImage x:Key="LoadingImageSource"
                  UriSource="ms-appx:///Images/Dark/ImageLoading.png" />
     <SolidColorBrush x:Key="CategoryToggleButtonUncheckedForegroundThemeBrush"
-                     Color="White"
+                     Color="Black"
                      Opacity="0.5" />
 </ResourceDictionary>
