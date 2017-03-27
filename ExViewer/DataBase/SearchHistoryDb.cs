@@ -7,23 +7,20 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-
+using Microsoft.Data.Sqlite;
 
 namespace ExViewer.Database
 {
     class SearchHistoryDb : DbContext
     {
-        private const string dbFilename = "SearchHistory.db";
+        private const string dbFilename = "ExViewer.SearchHistory.db";
 
-        public static IAsyncAction MigrateAsync()
+        static SearchHistoryDb()
         {
-            return Run(async token =>
+            using(var db = new SearchHistoryDb())
             {
-                using(var db = new SearchHistoryDb())
-                {
-                    await db.Database.MigrateAsync(token);
-                }
-            });
+                db.Database.Migrate();
+            }
         }
 
         public SearchHistoryDb()
@@ -32,13 +29,17 @@ namespace ExViewer.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Filename={dbFilename}");
+            optionsBuilder.UseSqlite($"Data Source ={dbFilename}");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SearchHistory>().HasKey(sh => sh.Time);
+            modelBuilder.Entity<SearchHistory>().HasKey("time");
+            modelBuilder.Entity<SearchHistory>().Property<long>("time")
+                .ValueGeneratedNever();
+            modelBuilder.Entity<SearchHistory>().Property(s => s.Content);
             modelBuilder.Entity<SearchHistory>().Ignore(sh => sh.Highlight);
+            modelBuilder.Entity<SearchHistory>().Ignore(sh => sh.Time);
         }
 
         public DbSet<SearchHistory> SearchHistorySet
@@ -66,9 +67,12 @@ namespace ExViewer.Database
             return this;
         }
 
+        private long time;
+
         public DateTimeOffset Time
         {
-            get; set;
+            get => DateTimeOffset.FromUnixTimeMilliseconds(time);
+            set => this.time = value.ToUnixTimeMilliseconds();
         }
 
         public static SearchHistory Create(string content)

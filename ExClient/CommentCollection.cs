@@ -26,7 +26,7 @@ namespace ExClient
         public bool IsLoaded
         {
             get => isLoaded;
-            set => Set(nameof(IsEmpty), ref this.isLoaded, value);
+            private set => Set(nameof(IsEmpty), ref this.isLoaded, value);
         }
 
         public new bool IsEmpty => this.Count == 0 && this.IsLoaded;
@@ -35,30 +35,32 @@ namespace ExClient
 
         public IAsyncOperation<int> FetchAsync()
         {
+            return fetchAsync(true);
+        }
+
+        private IAsyncOperation<int> fetchAsync(bool reload)
+        {
             return AsyncInfo.Run(async token =>
             {
-                this.Clear();
-                this.IsLoaded = false;
+                if(reload)
+                {
+                    this.Clear();
+                    this.IsLoaded = false;
+                }
                 var get = Client.Current.HttpClient.GetStringAsync(new Uri(this.Owner.GalleryUri, "?hc=1"));
                 token.Register(get.Cancel);
                 var html = await get;
-                if(this.IsLoaded)
-                    return this.Count;
                 var document = new HtmlDocument();
                 document.LoadHtml(html);
                 Api.ApiRequest.UpdateToken(html);
-                return AnalyzeDocument(document, false);
+                return AnalyzeDocument(document);
             });
         }
 
-        internal int AnalyzeDocument(HtmlDocument doc, bool reload)
+        internal int AnalyzeDocument(HtmlDocument doc)
         {
-            if(this.IsLoaded && !reload)
-                return this.Count;
             lock(this.syncroot)
             {
-                if(this.IsLoaded && !reload)
-                    return this.Count;
                 var newValues = Comment.AnalyzeDocument(this, doc).ToList();
                 var count = 0;
                 if(this.Count == 0)
@@ -89,18 +91,17 @@ namespace ExClient
                             pairsN.Add(n);
                         }
                     }
-                    var removeIndex = new List<int>();
-                    for(var i = 0; i < this.Count; i++)
+                    for(var i = 0; i < this.Count;)
                     {
                         if(!pairsO.Contains(this[i]))
                         {
+                            this.RemoveAt(i);
                             count--;
-                            removeIndex.Add(i);
                         }
-                    }
-                    foreach(var item in removeIndex)
-                    {
-                        this.RemoveAt(item);
+                        else
+                        {
+                            i++;
+                        }
                     }
                     for(var i = 0; i < pairsN.Count; i++)
                     {
@@ -149,7 +150,7 @@ namespace ExClient
                     }
                 }
                 var request = new HttpFormUrlEncodedContent(getData());
-                var requestTask = Client.Current.HttpClient.PostAsync(new Uri(this.Owner.GalleryUri, "?hc=1"), request);
+                var requestTask = Client.Current.HttpClient.PostAsync(this.Owner.GalleryUri, request);
                 token.Register(requestTask.Cancel);
                 var response = await requestTask;
                 var responseStr = await response.Content.ReadAsStringAsync();
@@ -176,7 +177,7 @@ namespace ExClient
                     }
                     throw new InvalidOperationException(error);
                 }
-                AnalyzeDocument(doc, true);
+                await fetchAsync(false);
             });
         }
 

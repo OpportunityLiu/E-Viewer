@@ -8,7 +8,7 @@ namespace ExClient
 {
     public class FavoritesSearchResult : SearchResultBase
     {
-        private static Uri searchBaseUri => new Uri(Client.Current.Uris.RootUri, "favorites.php");
+        public static Uri SearchBaseUri => new Uri(Client.Current.Uris.RootUri, "favorites.php");
 
         protected override Uri SearchUri { get; }
 
@@ -25,7 +25,7 @@ namespace ExClient
         {
             this.Keyword = keyword ?? "";
             this.Category = category;
-            this.SearchUri = new Uri(searchBaseUri, $"?{new HttpFormUrlEncodedContent(getUriQuery())}");
+            this.SearchUri = new Uri(SearchBaseUri, $"?{new HttpFormUrlEncodedContent(getUriQuery())}");
         }
 
         private IEnumerable<KeyValuePair<string, string>> getUriQuery()

@@ -149,13 +149,7 @@ namespace ExViewer.Views
         {
             var loadingTask = Task.Run(async () =>
             {
-                var initDbTask = Task.Run(async () =>
-                {
-                    await ExClient.Models.GalleryDb.MigrateAsync();
-                    await Database.SearchHistoryDb.MigrateAsync();
-                });
                 var client = Client.Current;
-                var logOnInTheFunction = false;
                 if(client.NeedLogOn)
                 {
                     try
@@ -165,20 +159,17 @@ namespace ExViewer.Views
                         {
                             pass.RetrievePassword();
                             await client.LogOnAsync(pass.UserName, pass.Password, null);
-                            logOnInTheFunction = true;
                         }
                     }
                     catch(Exception)
                     {
                     }
                 }
-                await initDbTask;
                 var initSearchTask = (Task)null;
                 if(!client.NeedLogOn)
                 {
                     SettingCollection.Current.Apply();
-                    if(!client.HasPermittionForEx && !logOnInTheFunction)
-                        await client.ResetExCookie();
+                    client.ResetExCookie();
                     initSearchTask = SearchVM.InitAsync().AsTask();
                 }
                 if(initSearchTask != null)

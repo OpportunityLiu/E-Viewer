@@ -16,22 +16,6 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {
-    public enum ImageLoadingState
-    {
-        Waiting,
-        Preparing,
-        Loading,
-        Loaded,
-        Failed
-    }
-
-    public enum ConnectionStrategy
-    {
-        AllLofi,
-        LofiOnMetered,
-        AllFull
-    }
-
     [System.Diagnostics.DebuggerDisplay(@"\{PageId = {PageId} State = {State} File = {ImageFile?.Name}\}")]
     public class GalleryImage : ObservableObject
     {
@@ -74,12 +58,12 @@ namespace ExClient
             });
         }
 
-        internal GalleryImage(Gallery owner, int pageId, string imageKey, Uri thumb)
+        internal GalleryImage(Gallery owner, int pageId, ulong imageKey, Uri thumb)
         {
             this.Owner = owner;
             this.PageId = pageId;
             this.imageKey = imageKey;
-            this.PageUri = new Uri(Client.Current.Uris.RootUri, $"s/{imageKey}/{Owner.Id}-{PageId}");
+            this.PageUri = new Uri(Client.Current.Uris.RootUri, $"s/{imageKey.TokenToString()}/{Owner.Id}-{PageId}");
             this.thumbUri = thumb;
             this.thumb = new ImageHandle(img =>
             {
@@ -329,9 +313,9 @@ namespace ExClient
             }
         }
 
-        private string imageKey;
+        private ulong imageKey;
 
-        public string ImageKey
+        public ulong ImageKey
         {
             get => this.imageKey;
             protected set => Set(nameof(PageUri), ref this.imageKey, value);

@@ -2,7 +2,7 @@
 {
     class ImageModel
     {
-        public string ImageKey
+        public ulong ImageKey
         {
             get;
             set;

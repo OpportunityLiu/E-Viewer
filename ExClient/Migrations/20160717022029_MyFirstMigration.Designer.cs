@@ -14,13 +14,13 @@ namespace ExClient.Migrations
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rtm-21431");
+                .HasAnnotation("ProductVersion", "1.1.1");
 
             modelBuilder.Entity("ExClient.Models.SavedGalleryModel", b =>
                 {
                     b.Property<long>("GalleryId");
 
-                    b.Property<DateTimeOffset>("Saved");
+                    b.Property<long>("saved");
 
                     b.Property<byte[]>("ThumbData");
 
@@ -46,7 +46,7 @@ namespace ExClient.Migrations
 
                     b.Property<long>("FileSize");
 
-                    b.Property<DateTimeOffset>("Posted");
+                    b.Property<long>("posted");
 
                     b.Property<double>("Rating");
 
@@ -60,7 +60,7 @@ namespace ExClient.Migrations
 
                     b.Property<string>("TitleJpn");
 
-                    b.Property<string>("Token");
+                    b.Property<ulong>("Token");
 
                     b.Property<string>("Uploader");
 
@@ -77,7 +77,7 @@ namespace ExClient.Migrations
 
                     b.Property<string>("FileName");
 
-                    b.Property<string>("ImageKey");
+                    b.Property<ulong>("ImageKey");
 
                     b.Property<bool>("OriginalLoaded");
 

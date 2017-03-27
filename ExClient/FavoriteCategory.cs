@@ -1,4 +1,5 @@
 ﻿using ExClient.Api;
+using ExClient.Internal;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace ExClient
         private static readonly Regex favNoteMatcher = new Regex(@"fn\.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
         private static readonly Regex favNameMatcher = new Regex(@"fi\.title\s*=\s*'(.*?)';", RegexOptions.Compiled);
 
-        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(long gId, string gToken, string note)
+        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(long gId, ulong gToken, string note)
         {
             IEnumerable<KeyValuePair<string, string>> getInfo()
             {
@@ -58,7 +59,7 @@ namespace ExClient
                 yield return new KeyValuePair<string, string>("favnote", note);
                 yield return new KeyValuePair<string, string>("update", "1");
             }
-            var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken}&act=addfav", UriKind.Relative);
+            var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken.TokenToString()}&act=addfav", UriKind.Relative);
             var requestContent = new HttpFormUrlEncodedContent(getInfo());
             return Client.Current.HttpClient.PostAsync(requestUri, requestContent);
         }

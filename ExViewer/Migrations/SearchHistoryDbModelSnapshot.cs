@@ -13,15 +13,15 @@ namespace ExViewer.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rtm-21431");
+                .HasAnnotation("ProductVersion", "1.1.1");
 
             modelBuilder.Entity("ExViewer.Database.SearchHistory", b =>
                 {
-                    b.Property<DateTimeOffset>("Time");
+                    b.Property<long>("time");
 
                     b.Property<string>("Content");
 
-                    b.HasKey("Time");
+                    b.HasKey("time");
 
                     b.ToTable("SearchHistorySet");
                 });

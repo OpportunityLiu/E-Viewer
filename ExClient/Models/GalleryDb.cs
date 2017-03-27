@@ -6,24 +6,17 @@ namespace ExClient.Models
 {
     public class GalleryDb : DbContext
     {
-        public static IAsyncAction MigrateAsync()
+        static GalleryDb()
         {
-            return Run(async token =>
+            using(var db = new GalleryDb())
             {
-                using(var db = new GalleryDb())
-                {
-                    await db.Database.MigrateAsync(token);
-                }
-            });
-        }
-
-        internal GalleryDb()
-        {
+                db.Database.Migrate();
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Data Source=Gallery.db");
+            optionsBuilder.UseSqlite($"Data Source=ExClient.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,11 +36,19 @@ namespace ExClient.Models
                 .HasKey(g => g.Id);
             modelBuilder.Entity<GalleryModel>()
                 .Property(g => g.Id).ValueGeneratedNever();
+            modelBuilder.Entity<GalleryModel>()
+                .Ignore(g => g.Posted);
+            modelBuilder.Entity<GalleryModel>()
+                .Property<long>("posted");
 
             modelBuilder.Entity<SavedGalleryModel>()
                 .HasKey(c => c.GalleryId);
             modelBuilder.Entity<SavedGalleryModel>()
                 .Property(c => c.GalleryId).ValueGeneratedNever();
+            modelBuilder.Entity<SavedGalleryModel>()
+                .Ignore(c => c.Saved);
+            modelBuilder.Entity<SavedGalleryModel>()
+                .Property<long>("saved");
 
             modelBuilder.Entity<SavedGalleryModel>()
                 .HasOne(c => c.Gallery)

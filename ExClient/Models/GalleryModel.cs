@@ -37,7 +37,7 @@ namespace ExClient.Models
             get; set;
         }
 
-        public string Token
+        public ulong Token
         {
             get; set;
         }
@@ -67,9 +67,12 @@ namespace ExClient.Models
             get; set;
         }
 
+        private long posted;
+
         public DateTimeOffset Posted
         {
-            get; set;
+            get => DateTimeOffset.FromUnixTimeMilliseconds(posted);
+            set => this.posted = value.ToUnixTimeMilliseconds();
         }
 
         public long FileSize

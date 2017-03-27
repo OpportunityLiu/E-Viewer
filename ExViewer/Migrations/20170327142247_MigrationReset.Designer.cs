@@ -8,21 +8,21 @@ using ExViewer.Database;
 namespace ExViewer.Migrations
 {
     [DbContext(typeof(SearchHistoryDb))]
-    [Migration("20160717021413_MyFirstMigration")]
-    partial class MyFirstMigration
+    [Migration("20170327142247_MigrationReset")]
+    partial class MigrationReset
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rtm-21431");
+                .HasAnnotation("ProductVersion", "1.1.1");
 
             modelBuilder.Entity("ExViewer.Database.SearchHistory", b =>
                 {
-                    b.Property<DateTimeOffset>("Time");
+                    b.Property<long>("time");
 
                     b.Property<string>("Content");
 
-                    b.HasKey("Time");
+                    b.HasKey("time");
 
                     b.ToTable("SearchHistorySet");
                 });

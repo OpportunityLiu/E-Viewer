@@ -17,14 +17,14 @@ namespace ExClient.Migrations
                     Category = table.Column<uint>(nullable: false),
                     Expunged = table.Column<bool>(nullable: false),
                     FileSize = table.Column<long>(nullable: false),
-                    Posted = table.Column<DateTimeOffset>(nullable: false),
+                    posted = table.Column<long>(nullable: false),
                     Rating = table.Column<double>(nullable: false),
                     RecordCount = table.Column<int>(nullable: false),
                     Tags = table.Column<string>(nullable: true),
                     ThumbUri = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     TitleJpn = table.Column<string>(nullable: true),
-                    Token = table.Column<string>(nullable: true),
+                    Token = table.Column<ulong>(nullable: false),
                     Uploader = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -37,7 +37,7 @@ namespace ExClient.Migrations
                 columns: table => new
                 {
                     GalleryId = table.Column<long>(nullable: false),
-                    Saved = table.Column<DateTimeOffset>(nullable: false),
+                    saved = table.Column<long>(nullable: false),
                     ThumbData = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
@@ -58,7 +58,7 @@ namespace ExClient.Migrations
                     PageId = table.Column<int>(nullable: false),
                     OwnerId = table.Column<long>(nullable: false),
                     FileName = table.Column<string>(nullable: true),
-                    ImageKey = table.Column<string>(nullable: true),
+                    ImageKey = table.Column<ulong>(nullable: false),
                     OriginalLoaded = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>

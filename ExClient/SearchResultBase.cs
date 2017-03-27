@@ -1,4 +1,5 @@
 ﻿using ExClient.Api;
+using ExClient.Internal;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -87,7 +88,7 @@ namespace ExClient
                 var detailNode = infoNode.ChildNodes[2]; //class = it5
                 var match = gLinkMatcher.Match(detailNode.FirstChild.GetAttributeValue("href", ""));
                 trNodeList.Add(node);
-                gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value));
+                gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.StringToToken()));
             }
             var galleries = await Gallery.FetchGalleriesAsync(gInfoList);
             for(var i = 0; i < galleries.Count; i++)
