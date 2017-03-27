@@ -12,9 +12,12 @@ namespace ExClient.Models
             return this;
         }
 
+        private long saved;
+
         public DateTimeOffset Saved
         {
-            get; set;
+            get => DateTimeOffset.FromUnixTimeMilliseconds(saved);
+            set => this.saved = value.ToUnixTimeMilliseconds();
         }
 
         public GalleryModel Gallery

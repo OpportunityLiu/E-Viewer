@@ -59,6 +59,8 @@ namespace ExViewer.Views
 
         private void handleTag(string tag)
         {
+            if(this.tbContent.IsReadOnly)
+                return;
             if(tag == "url")
             {
                 handleUrl();

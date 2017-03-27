@@ -38,9 +38,11 @@ namespace ExClient.Settings
         {
             var cookie = new HttpCookie("uconfig", "exhentai.org", "/")
             {
-                Expires = DateTimeOffset.Now.AddYears(1),
-                HttpOnly = false,
-                Secure = false,
+                Value = string.Join("-", this.items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray())
+            };
+            this.owner.CookieManager.SetCookie(cookie);
+            cookie = new HttpCookie("uconfig", "e-hentai.org", "/")
+            {
                 Value = string.Join("-", this.items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray())
             };
             this.owner.CookieManager.SetCookie(cookie);

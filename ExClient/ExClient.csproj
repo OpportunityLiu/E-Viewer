@@ -119,6 +119,7 @@
     <Compile Include="Api\ImageInfo.cs" />
     <Compile Include="CachedGallery.cs" />
     <Compile Include="CommentCollection.cs" />
+    <Compile Include="ConnectionStrategy.cs" />
     <Compile Include="FavoriteCategory.cs" />
     <Compile Include="FavoriteCollection.cs" />
     <Compile Include="FavoritesSearchResult.cs" />
@@ -129,13 +130,16 @@
     <Compile Include="GalleryList{T}.cs" />
     <Compile Include="Api\ApiRequest.cs" />
     <Compile Include="HostType.cs" />
+    <Compile Include="ImageLoadingState.cs" />
     <Compile Include="Internal\RangedCollectionView{T}.cs" />
-    <Compile Include="Internal\UriProvieder.cs" />
+    <Compile Include="Internal\TokenExtension.cs" />
+    <Compile Include="Internal\UriProvider.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="Launch\LaunchResult.cs" />
     <Compile Include="Launch\UriHandler.cs" />
     <Compile Include="Namespace.cs" />
     <Compile Include="ObservableCollection{T}.cs" />
+    <Compile Include="PopularCollection.cs" />
     <Compile Include="RevisionCollection.cs" />
     <Compile Include="SavedGallery.cs" />
     <Compile Include="Client-Forum.cs" />

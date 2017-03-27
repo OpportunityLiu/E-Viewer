@@ -11,6 +11,7 @@ using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using ExClient.Internal;
+using System.Threading.Tasks;
 
 namespace ExClient
 {
@@ -21,31 +22,31 @@ namespace ExClient
             get;
         } = new Client();
 
-        internal UriProvieder Uris => this.Host == HostType.Exhentai && this.HasPermittionForEx ? UriProvieder.Ex : UriProvieder.Eh;
+        internal UriProvider Uris => this.Host == HostType.Exhentai ? UriProvider.Ex : UriProvider.Eh;
 
         public HostType Host { get; set; } = HostType.Exhentai;
 
-        public bool HasPermittionForEx
+        public void ResetExCookie()
         {
-            get
+            foreach(var item in this.CookieManager.GetCookies(UriProvider.Ex.RootUri))
             {
-                var ck = this.CookieManager.GetCookies(UriProvieder.Ex.RootUri).FirstOrDefault(c => c.Name == "igneous");
-                if(ck == null)
-                    return false;
-                return ck.Value != "mystery";
+                this.CookieManager.DeleteCookie(item);
             }
-        }
-
-        public IAsyncAction ResetExCookie()
-        {
-            return Run(async token =>
+            foreach(var item in this.getLogOnInfo())
             {
-                foreach(var item in this.CookieManager.GetCookies(UriProvieder.Ex.RootUri))
+                if(item.Name == "ipb_member_id"
+                    || item.Name == "ipb_pass_hash"
+                    || item.Name == "s")
                 {
-                    this.CookieManager.DeleteCookie(item);
+                    var cookie = new HttpCookie(item.Name, "exhentai.org", "/")
+                    {
+                        Expires = item.Expires,
+                        Value = item.Value
+                    };
+                    this.CookieManager.SetCookie(cookie);
                 }
-                await this.HttpClient.GetAsync(UriProvieder.Ex.RootUri, HttpCompletionOption.ResponseHeadersRead);
-            });
+            }
+            this.Settings.ApplyChanges();
         }
 
         private Client()
@@ -60,7 +61,7 @@ namespace ExClient
                 CookieUsageBehavior = HttpCookieUsageBehavior.NoCookies
             };
             httpfilter2.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter, httpfilter2,new System.Text.RegularExpressions.Regex(@"://(\d{1,3}\.){3}\d{1,3}"))));
+            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter, httpfilter2, new System.Text.RegularExpressions.Regex(@"://(\d{1,3}\.){3}\d{1,3}"))));
 
             this.Settings = new SettingCollection(this);
             this.Favorites = new FavoriteCollection(this);
@@ -77,8 +78,8 @@ namespace ExClient
         }
 
         public bool NeedLogOn
-            => this.CookieManager.GetCookies(UriProvieder.Eh.RootUri).Count < 2
-            && this.CookieManager.GetCookies(UriProvieder.Ex.RootUri).Count < 2;
+            => this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Count < 3
+            && this.CookieManager.GetCookies(UriProvider.Ex.RootUri).Count < 3;
 
         public IAsyncOperation<Client> LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
         {
@@ -126,7 +127,12 @@ namespace ExClient
                         }
                         throw new InvalidOperationException(errorText);
                     }
-                    var init = await this.HttpClient.GetAsync(UriProvieder.Ex.RootUri, HttpCompletionOption.ResponseHeadersRead);
+                    async Task initCookie()
+                    {
+                        await this.HttpClient.GetAsync(new Uri(UriProvider.Eh.RootUri, "favorites.php"), HttpCompletionOption.ResponseHeadersRead);
+                        ResetExCookie();
+                    }
+                    await initCookie();
                     return this;
                 }
                 catch(Exception)
@@ -143,16 +149,16 @@ namespace ExClient
 
         private List<HttpCookie> getLogOnInfo()
         {
-            return this.CookieManager.GetCookies(UriProvieder.Eh.RootUri).Concat(this.CookieManager.GetCookies(UriProvieder.Ex.RootUri)).ToList();
+            return this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Concat(this.CookieManager.GetCookies(UriProvider.Ex.RootUri)).ToList();
         }
 
         public void ClearLogOnInfo()
         {
-            foreach(var item in this.CookieManager.GetCookies(UriProvieder.Eh.RootUri))
+            foreach(var item in this.CookieManager.GetCookies(UriProvider.Eh.RootUri))
             {
                 this.CookieManager.DeleteCookie(item);
             }
-            foreach(var item in this.CookieManager.GetCookies(UriProvieder.Ex.RootUri))
+            foreach(var item in this.CookieManager.GetCookies(UriProvider.Ex.RootUri))
             {
                 this.CookieManager.DeleteCookie(item);
             }
@@ -162,7 +168,7 @@ namespace ExClient
         {
             get
             {
-                var cookie = this.CookieManager.GetCookies(UriProvieder.Eh.RootUri).FirstOrDefault(c => c.Name == "ipb_member_id");
+                var cookie = this.CookieManager.GetCookies(UriProvider.Eh.RootUri).FirstOrDefault(c => c.Name == "ipb_member_id");
                 if(cookie == null)
                     return -1;
                 return int.Parse(cookie.Value);

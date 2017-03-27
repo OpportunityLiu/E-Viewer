@@ -1,4 +1,5 @@
 ﻿using ExClient.Api;
+using ExClient.Internal;
 using ExClient.Models;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
@@ -143,12 +144,12 @@ namespace ExClient
             });
         }
 
-        private Gallery(long id, string token)
+        private Gallery(long id, ulong token)
             : base(0)
         {
             this.Id = id;
             this.Token = token;
-            this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{Id.ToString()}/{Token}/");
+            this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{Id.ToString()}/{Token.TokenToString()}/");
             this.Comments = new CommentCollection(this);
         }
 
@@ -189,7 +190,7 @@ namespace ExClient
             string rating = null,
             string torrentcount = null,
             string[] tags = null)
-            : this(gid, token)
+            : this(gid, token.StringToToken())
         {
             if(error != null)
             {
@@ -291,7 +292,7 @@ namespace ExClient
             get; protected set;
         }
 
-        public string Token
+        public ulong Token
         {
             get; protected set;
         }
@@ -421,7 +422,7 @@ namespace ExClient
             {
                 await this.GetFolderAsync();
                 var needLoadComments = !this.Comments.IsLoaded;
-                var uri = new Uri(this.GalleryUri, $"?inline_set=ts_l&p={pageIndex.ToString()}{(needLoadComments ? "hc=1" : "")}");
+                var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
                 var request = Client.Current.HttpClient.GetStringAsync(uri);
                 var res = await request;
                 ApiRequest.UpdateToken(res);
@@ -430,7 +431,7 @@ namespace ExClient
                 updateFavoriteInfo(html);
                 if(needLoadComments)
                 {
-                    this.Comments.AnalyzeDocument(html, false);
+                    this.Comments.AnalyzeDocument(html);
                 }
                 if(this.Revisions == null)
                     this.Revisions = new RevisionCollection(this, html);
@@ -464,7 +465,7 @@ namespace ExClient
                            select new
                            {
                                pageId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer),
-                               imageKey = match.Groups[1].Value,
+                               imageKey = match.Groups[1].Value.StringToToken(),
                                thumbUri = toEhUri(thumb)
                            };
                 var toAdd = new List<GalleryImage>(PageSize);
@@ -503,7 +504,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var r = await Client.Current.HttpClient.GetStringAsync(new Uri($"gallerypopups.php?gid={this.Id}&t={this.Token}&act=addfav", UriKind.Relative));
+                var r = await Client.Current.HttpClient.GetStringAsync(new Uri($"gallerypopups.php?gid={this.Id}&t={this.Token.TokenToString()}&act=addfav", UriKind.Relative));
                 var doc = new HtmlDocument();
                 doc.LoadHtml(r);
                 var favdel = doc.GetElementbyId("favdel");

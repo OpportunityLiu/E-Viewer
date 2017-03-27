@@ -162,9 +162,9 @@
     <Compile Include="Helpers\ShareHandler.cs" />
     <Compile Include="Helpers\TagExtension.cs" />
     <Compile Include="Helpers\ThemeExtension.cs" />
-    <Compile Include="Migrations\20160717021413_MyFirstMigration.cs" />
-    <Compile Include="Migrations\20160717021413_MyFirstMigration.designer.cs">
-      <DependentUpon>20160717021413_MyFirstMigration.cs</DependentUpon>
+    <Compile Include="Migrations\20170327142247_MigrationReset.cs" />
+    <Compile Include="Migrations\20170327142247_MigrationReset.designer.cs">
+      <DependentUpon>20170327142247_MigrationReset.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\SearchHistoryDbModelSnapshot.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
@@ -470,6 +470,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

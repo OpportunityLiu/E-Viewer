@@ -1,4 +1,5 @@
-﻿using ExClient.Launch;
+﻿using ExClient.Internal;
+using ExClient.Launch;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,29 @@ namespace ExClient.Api
     [JsonConverter(typeof(ImageInfoConverter))]
     public struct ImageInfo : IEquatable<ImageInfo>
     {
+        private class ImageInfoConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return typeof(ImageInfo) == objectType;
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                var v = (ImageInfo)value;
+                writer.WriteStartArray();
+                writer.WriteValue(v.GalleryId);
+                writer.WriteValue(v.ImageToken.TokenToString());
+                writer.WriteValue(v.PageId);
+                writer.WriteEndArray();
+            }
+        }
+
         internal static bool TryParse(UriHandlerData data, out ImageInfo info)
         {
             if(data.Path0 == "s" && data.Paths.Count == 3)
@@ -19,7 +43,7 @@ namespace ExClient.Api
                     && long.TryParse(sp[0], out var gId)
                     && int.TryParse(sp[1], out var pId))
                 {
-                    info = new ImageInfo(gId, data.Paths[1], pId);
+                    info = new ImageInfo(gId, data.Paths[1].StringToToken(), pId);
                     return true;
                 }
             }
@@ -43,7 +67,7 @@ namespace ExClient.Api
             throw new FormatException();
         }
 
-        public ImageInfo(long galleryId, string imageToken, int pageId)
+        public ImageInfo(long galleryId, ulong imageToken, int pageId)
         {
             this.GalleryId = galleryId;
             this.ImageToken = imageToken;
@@ -62,7 +86,7 @@ namespace ExClient.Api
 
         public long GalleryId { get; }
         public int PageId { get; }
-        public string ImageToken { get; }
+        public ulong ImageToken { get; }
 
         public bool Equals(ImageInfo other)
         {
@@ -82,30 +106,7 @@ namespace ExClient.Api
 
         public override int GetHashCode()
         {
-            return this.GalleryId.GetHashCode() ^ (this.ImageToken ?? "").GetHashCode() ^ this.PageId.GetHashCode();
-        }
-    }
-
-    internal class ImageInfoConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return typeof(ImageInfo) == objectType;
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var v = (ImageInfo)value;
-            writer.WriteStartArray();
-            writer.WriteValue(v.GalleryId);
-            writer.WriteValue(v.ImageToken);
-            writer.WriteValue(v.PageId);
-            writer.WriteEndArray();
+            return this.GalleryId.GetHashCode() ^ this.ImageToken.GetHashCode() ^ this.PageId.GetHashCode();
         }
     }
 }

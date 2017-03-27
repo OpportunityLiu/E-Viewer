@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ExClient.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace ExClient.Api
         {
             var gallery = comment.Owner.Owner;
             this.GalleryId = gallery.Id;
-            this.GalleryToken = gallery.Token;
+            this.GalleryToken = gallery.Token.TokenToString();
             this.Id = comment.Id;
         }
 

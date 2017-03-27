@@ -1,4 +1,5 @@
-﻿using ExClient.Launch;
+﻿using ExClient.Internal;
+using ExClient.Launch;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,49 @@ namespace ExClient.Api
     [JsonConverter(typeof(GalleryInfoConverter))]
     public struct GalleryInfo : IEquatable<GalleryInfo>
     {
+        private class GalleryInfoConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return typeof(GalleryInfo) == objectType;
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                if(reader.TokenType != JsonToken.StartObject)
+                    return null;
+                long gid = 0;
+                ulong token = 0;
+                reader.Read();
+                do
+                {
+                    switch(reader.Value.ToString())
+                    {
+                    case "gid":
+                        gid = reader.ReadAsInt32().GetValueOrDefault();
+                        break;
+                    case "token":
+                        token = reader.ReadAsString().StringToToken();
+                        break;
+                    default:
+                        break;
+                    }
+                    reader.Read();
+                } while(reader.TokenType != JsonToken.EndObject);
+
+                return new GalleryInfo(gid, token);
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                var v = (GalleryInfo)value;
+                writer.WriteStartArray();
+                writer.WriteValue(v.Id);
+                writer.WriteValue(v.Token.TokenToString());
+                writer.WriteEndArray();
+            }
+        }
+
         private class GalleryInfoResult : ApiResponse
         {
 #pragma warning disable IDE1006
@@ -36,7 +80,7 @@ namespace ExClient.Api
             {
                 if(long.TryParse(data.Paths[1], out var gId))
                 {
-                    info = new GalleryInfo(gId, data.Paths[2]);
+                    info = new GalleryInfo(gId, data.Paths[2].StringToToken());
                     return true;
                 }
             }
@@ -52,7 +96,7 @@ namespace ExClient.Api
                     && data.Queries.TryGetValue("t", out var gtoken)
                     && long.TryParse(data.Queries["gid"], out var gId))
                 {
-                    info = new GalleryInfo(gId, gtoken);
+                    info = new GalleryInfo(gId, gtoken.StringToToken());
                     return true;
                 }
             }
@@ -79,7 +123,7 @@ namespace ExClient.Api
             throw new FormatException();
         }
 
-        public GalleryInfo(long id, string token)
+        public GalleryInfo(long id, ulong token)
         {
             this.Id = id;
             this.Token = token;
@@ -100,7 +144,7 @@ namespace ExClient.Api
             get;
         }
 
-        public string Token
+        public ulong Token
         {
             get;
         }
@@ -121,50 +165,7 @@ namespace ExClient.Api
 
         public override int GetHashCode()
         {
-            return this.Id.GetHashCode() ^ (this.Token ?? "").GetHashCode();
-        }
-    }
-
-    internal class GalleryInfoConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return typeof(GalleryInfo) == objectType;
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            if(reader.TokenType != JsonToken.StartObject)
-                return null;
-            long gid = 0;
-            string token = null;
-            reader.Read();
-            do
-            {
-                switch(reader.Value.ToString())
-                {
-                case "gid":
-                    gid = reader.ReadAsInt32().GetValueOrDefault();
-                    break;
-                case "token":
-                    token = reader.ReadAsString();
-                    break;
-                default:
-                    break;
-                }
-                reader.Read();
-            } while(reader.TokenType != JsonToken.EndObject);
-
-            return new GalleryInfo(gid, token);
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var v = (GalleryInfo)value;
-            writer.WriteStartArray();
-            writer.WriteValue(v.Id);
-            writer.WriteValue(v.Token);
-            writer.WriteEndArray();
+            return this.Id.GetHashCode() ^ this.Token.GetHashCode();
         }
     }
 }

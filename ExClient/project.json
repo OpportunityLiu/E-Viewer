@@ -6,7 +6,6 @@
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.1",
     "MvvmLightLibs": "5.3.0",
     "Newtonsoft.Json": "10.0.1",
-    "System.Threading.Tasks.Extensions": "4.3.0",
     "System.ValueTuple": "4.3.0"
   },
   "frameworks": {

@@ -8,7 +8,7 @@ namespace ExClient
     public sealed class GalleryImagePlaceHolder : GalleryImage
     {
         public GalleryImagePlaceHolder(CachedGallery owner, int pageId)
-            : base(owner, pageId, null, null)
+            : base(owner, pageId, 0, null)
         {
         }
 

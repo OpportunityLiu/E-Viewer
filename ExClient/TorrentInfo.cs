@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using ExClient.Internal;
+using HtmlAgilityPack;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                var torrentUri = new Uri(Client.Current.Uris.RootUri, $"gallerytorrents.php?gid={gallery.Id}&t={gallery.Token}");
+                var torrentUri = new Uri(Client.Current.Uris.RootUri, $"gallerytorrents.php?gid={gallery.Id}&t={gallery.Token.TokenToString()}");
                 var torrentHtml = await Client.Current.HttpClient.GetStringAsync(torrentUri);
                 var doc = new HtmlDocument();
                 doc.LoadHtml(torrentHtml);
