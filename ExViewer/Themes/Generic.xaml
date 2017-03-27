@@ -249,6 +249,10 @@
                 Value="Stretch" />
         <Setter Property="Padding"
                 Value="0" />
+        <Setter Property="UseSystemFocusVisuals"
+                Value="True" />
+        <Setter Property="FocusVisualMargin"
+                Value="-2" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:CategoryToggleButton">
@@ -274,6 +278,8 @@
                                     <VisualState.Setters>
                                         <Setter Target="Mask.(Shape.Fill)"
                                                 Value="{ThemeResource ToggleButtonCheckedDisabledBackgroundThemeBrush}" />
+                                        <Setter Target="ContentPresenter.(Control.Foreground)"
+                                                Value="{ThemeResource CategoryToggleButtonUncheckedForegroundThemeBrush}" />
                                     </VisualState.Setters>
                                     <Storyboard>
                                         <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
@@ -286,6 +292,8 @@
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <VisualState.Setters>
+                                        <Setter Target="ContentPresenter.(Control.Foreground)"
+                                                Value="{ThemeResource CategoryToggleButtonUncheckedForegroundThemeBrush}" />
                                         <Setter Target="Mask.(Shape.Fill)"
                                                 Value="{ThemeResource ToggleButtonPointerOverBackgroundThemeBrush}" />
                                     </VisualState.Setters>
@@ -322,33 +330,16 @@
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
-                            <VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Unfocused" />
-                                <VisualState x:Name="PointerFocused" />
-                                <VisualState x:Name="Focused">
-                                    <VisualState.Setters>
-                                        <Setter Target="Focus.(UIElement.Visibility)"
-                                                Value="Visible" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <controls:CategoryTag x:Name="ContentPresenter"
                                               Category="{TemplateBinding Category}"
                                               Control.IsTemplateFocusTarget="True" />
                         <Rectangle x:Name="Mask"
                                    StrokeThickness="0" />
-                        <Rectangle x:Name="Focus"
-                                   Stroke="{ThemeResource SystemControlHighlightAltBaseHighBrush}"
-                                   StrokeThickness="2"
-                                   Visibility="Collapsed"
-                                   Margin="-2" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="UseSystemFocusVisuals"
-                Value="False" />
     </Style>
 
     <Style TargetType="controls:HtmlTextBlock">

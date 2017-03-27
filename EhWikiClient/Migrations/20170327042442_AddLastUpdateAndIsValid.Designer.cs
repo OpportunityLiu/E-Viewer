@@ -8,9 +8,10 @@ using EhWikiClient.Models;
 namespace EhWikiClient.Migrations
 {
     [DbContext(typeof(WikiDb))]
-    partial class WikiDbModelSnapshot : ModelSnapshot
+    [Migration("20170327042442_AddLastUpdateAndIsValid")]
+    partial class AddLastUpdateAndIsValid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1");

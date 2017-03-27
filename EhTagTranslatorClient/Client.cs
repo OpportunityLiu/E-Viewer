@@ -115,26 +115,29 @@ namespace EhTagTranslatorClient
         {
             return AsyncInfo.Run(async token =>
             {
-                var cache = new IList<Record>[tables.Length];
-                using(var client = new HttpClient())
+                await Task.Run(async () =>
                 {
-                    for(var i = 0; i < tables.Length; i++)
+                    var cache = new IList<Record>[tables.Length];
+                    using(var client = new HttpClient())
                     {
-                        cache[i] = await fetchDatabaseTableAsync(tables[i], client);
-                        token.ThrowIfCancellationRequested();
+                        for(var i = 0; i < tables.Length; i++)
+                        {
+                            cache[i] = await fetchDatabaseTableAsync(tables[i], client);
+                            token.ThrowIfCancellationRequested();
+                        }
                     }
-                }
-                using(var db = new TranslateDb())
-                {
-                    db.Table.RemoveRange(db.Table);
-                    await db.SaveChangesAsync();
-                    foreach(var item in cache)
+                    using(var db = new TranslateDb())
                     {
-                        db.Table.AddRange(item);
+                        db.Table.RemoveRange(db.Table);
+                        await db.SaveChangesAsync();
+                        foreach(var item in cache)
+                        {
+                            db.Table.AddRange(item);
+                        }
+                        await db.SaveChangesAsync();
                     }
-                    await db.SaveChangesAsync();
-                }
-                LastUpdate = DateTimeOffset.Now;
+                    LastUpdate = DateTimeOffset.Now;
+                });
             });
         }
     }

@@ -37,7 +37,7 @@ namespace ExViewer.Views
 
                 var tb = CoreApplication.GetCurrentView().TitleBar;
                 tb.LayoutMetricsChanged += titleBar_LayoutMetricsChanged;
-                TitleBarHeight = tb.Height;
+                titleBar_LayoutMetricsChanged(tb, null);
 
                 av_VisibleBoundsChanged(ApplicationView, null);
                 ApplicationView.VisibleBoundsChanged += av_VisibleBoundsChanged;
@@ -113,7 +113,7 @@ namespace ExViewer.Views
 
             public static StatusBar StatusBar { get; private set; }
 
-            public static double TitleBarHeight { get; private set; }
+            public static double TitleBarHeight { get; private set; } = -1;
 
 
 #if !DEBUG_BOUNDS

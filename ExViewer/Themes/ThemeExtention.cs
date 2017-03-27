@@ -40,8 +40,6 @@ namespace ExViewer.Themes
                 tb.ButtonHoverForegroundColor = SystemBaseMediumHighColor;
                 tb.ButtonInactiveForegroundColor = SystemChromeDisabledLowColor;
                 tb.ButtonPressedForegroundColor = SystemBaseMediumHighColor;
-
-                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
             }
             if(ApiInfo.StatusBarSupported)
             {

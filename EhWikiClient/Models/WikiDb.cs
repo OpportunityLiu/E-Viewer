@@ -23,5 +23,11 @@ namespace EhWikiClient.Models
         {
             optionsBuilder.UseSqlite("Data Source=EhWikiClient.db");
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Record>()
+                .Property<long>("lastUpdate");
+        }
     }
 }

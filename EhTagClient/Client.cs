@@ -38,19 +38,22 @@ namespace EhTagClient
         {
             return AsyncInfo.Run(async token =>
             {
-                try
+                await Task.Run(async () =>
                 {
-                    using(var client = new HttpClient())
+                    try
                     {
-                        var r = await client.GetStringAsync(new Uri("https://e-hentai.org/tools.php?act=taggroup"));
-                        await updateDbAsync(r, token);
+                        using(var client = new HttpClient())
+                        {
+                            var r = await client.GetStringAsync(new Uri("https://e-hentai.org/tools.php?act=taggroup"));
+                            await updateDbAsync(r, token);
+                        }
                         LastUpdate = DateTimeOffset.Now;
                     }
-                }
-                catch
-                {
-                    throw;
-                }
+                    catch
+                    {
+                        throw;
+                    }
+                });
             });
         }
 
@@ -80,7 +83,7 @@ namespace EhTagClient
                 token.ThrowIfCancellationRequested();
                 db.TagTable.RemoveRange(db.TagTable);
                 await db.SaveChangesAsync();
-                await db.TagTable.AddRangeAsync(toAdd);
+                db.TagTable.AddRange(toAdd);
                 await db.SaveChangesAsync();
             }
         }

@@ -114,6 +114,10 @@
     <Compile Include="Migrations\20170325091210_FirstMigration.designer.cs">
       <DependentUpon>20170325091210_FirstMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170327042442_AddLastUpdateAndIsValid.cs" />
+    <Compile Include="Migrations\20170327042442_AddLastUpdateAndIsValid.designer.cs">
+      <DependentUpon>20170327042442_AddLastUpdateAndIsValid.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\WikiDbModelSnapshot.cs" />
     <Compile Include="Models\WikiDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

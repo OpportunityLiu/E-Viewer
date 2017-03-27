@@ -209,8 +209,8 @@ namespace ExViewer.Views
             {
                 item.DataContext = e.ClickedItem;
             }
-            
-            this.ewd.SetTag((Tag)e.ClickedItem);
+
+            this.ewd.WikiTag = (Tag)e.ClickedItem;
             this.mfo_Tag.ShowAt(container);
         }
 

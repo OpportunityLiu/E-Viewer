@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ExViewer.Views;
 using Microsoft.HockeyApp;
+using Windows.ApplicationModel.Core;
 
 namespace ExViewer
 {
@@ -101,6 +102,7 @@ namespace ExViewer
             {
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
+                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
                 currentContent = new SplashControl(e.SplashScreen, e.PreviousExecutionState);
                 currentWindow.Content = currentContent;
             }
