@@ -13,13 +13,13 @@
             <Setter Property="Padding"
                     Value="0" />
             <Setter Property="Margin"
-                    Value="4" />
+                    Value="4,4,4,0" />
         </Style>
         <Style x:Key="AboutControlSubtitleTextBlockStyle"
                TargetType="TextBlock"
                BasedOn="{StaticResource SubtitleTextBlockStyle}">
             <Setter Property="Margin"
-                    Value="4,40,4,4" />
+                    Value="4,40,4,0" />
         </Style>
         <Style x:Key="AboutControlBodyTextBlockStyle"
                TargetType="TextBlock"
@@ -36,6 +36,12 @@
         <Style x:Key="AboutControlSubheaderTextBlockStyle"
                TargetType="TextBlock"
                BasedOn="{StaticResource BaseTextBlockStyle}">
+            <Setter Property="Margin"
+                    Value="4,8,4,0" />
+        </Style>
+        <Style x:Key="AboutControlCaptionTextBlockStyle"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource CaptionTextBlockStyle}">
             <Setter Property="Margin"
                     Value="4,4,4,0" />
         </Style>
@@ -160,6 +166,25 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
         <TextBlock x:Uid="Controls/AboutControl/DataProvidersTextBlock"
                    Text="Data providers"
                    Style="{StaticResource AboutControlSubtitleTextBlockStyle}" />
+        <TextBlock x:Uid="Controls/AboutControl/TagDatabaseTextBlock"
+                   Text="Tag database"
+                   Style="{StaticResource AboutControlSubheaderTextBlockStyle}" />
+        <HyperlinkButton NavigateUri="https://e-hentai.org/tools.php?act=taggroup"
+                         Style="{StaticResource AboutControlHyperLinkButtonStyle}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="ms-appx:///Images/EH.png"
+                       Width="20"
+                       Margin="0,0,8,0" />
+                <TextBlock x:Uid="Controls/AboutControl/EHTextBlock"
+                           Text="E-Hentai.org"
+                           Style="{StaticResource BodyTextBlockStyle}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+        </HyperlinkButton>
+        <TextBlock xmlns:et="using:EhTagClient"
+                   Text="{x:Bind et:Client.LastUpdate, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Controls/AboutControl/LastUpdate'}"
+                   Style="{StaticResource AboutControlCaptionTextBlockStyle}" />
         <TextBlock x:Uid="Controls/AboutControl/ChineseTagProviderTextBlock"
                    Text="Chinese translation of tags"
                    Style="{StaticResource AboutControlSubheaderTextBlockStyle}" />
@@ -167,17 +192,21 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
                          Content="Mapaler / EhTagTranslator @ Github.com"
                          NavigateUri="https://github.com/Mapaler/EhTagTranslator"
                          Style="{StaticResource AboutControlHyperLinkButtonStyle}" />
+        <TextBlock xmlns:eht="using:EhTagTranslatorClient"
+                   Text="{x:Bind eht:Client.LastUpdate, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Controls/AboutControl/LastUpdate'}" 
+                   Style="{StaticResource AboutControlCaptionTextBlockStyle}"/>
         <TextBlock x:Uid="Controls/AboutControl/JapaneseTagProviderTextBlock"
                    Text="Japanese translation of tags"
                    Style="{StaticResource AboutControlSubheaderTextBlockStyle}" />
         <HyperlinkButton NavigateUri="https://ehwiki.org/"
                          Style="{StaticResource AboutControlHyperLinkButtonStyle}">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Vertical">
                 <Image Source="ms-appx:///Images/EHWiki.png"
-                       Width="50"/>
+                       Width="50"
+                       Margin="0,0,0,4"/>
                 <TextBlock x:Uid="Controls/AboutControl/EHWikiTextBlock"
                            Text="EHWiki.org"
-                           Style="{StaticResource AboutControlBodyTextBlockStyle}"
+                           Style="{StaticResource BodyTextBlockStyle}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center" />
             </StackPanel>

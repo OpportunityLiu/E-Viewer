@@ -7,14 +7,17 @@
       "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ Github.com",
       "ChineseTagProviderTextBlock/Text": "Chinese translation of tags",
       "DataProvidersTextBlock/Text": "Data providers",
+      "EHTextBlock/Text": "E-Hentai.org",
       "EHWikiTextBlock/Text": "EHWiki.org",
       "ForumsHyperlinkButton/Content": "E-Hentai Forums",
       "HelpTranslateTagsHyperlinkButton/Content": "Help translate tags into Chinese",
       "JapaneseTagProviderTextBlock/Text": "Japanese translation of tags",
+      "LastUpdate": "Last update: {0}",
       "LicenceTextBlock/Text": "License",
       "OnlineContentsTextBlock/Text": "Online contents",
       "RateHyperlinkButton/Content": "Rate and review",
-      "SourceCodeHyperlinkButton/Content": "View source code at GitHub.com"
+      "SourceCodeHyperlinkButton/Content": "View source code at GitHub.com",
+      "TagDatabaseTextBlock/Text": "Tag database"
     },
     "CommentViewer": {
       "AuthorFormatString": "By {0}",
