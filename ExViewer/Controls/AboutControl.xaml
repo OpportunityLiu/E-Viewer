@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             Loading="UserControl_Loading"
              d:DesignHeight="1000"
              d:DesignWidth="500">
     <UserControl.Resources>
