@@ -249,6 +249,9 @@
     <Content Include="Images\EHWiki.scale-100.png" />
     <Content Include="Images\EHWiki.scale-200.png" />
     <Content Include="Images\EHWiki.scale-400.png" />
+    <Content Include="Images\EH.scale-100.png" />
+    <Content Include="Images\EH.scale-200.png" />
+    <Content Include="Images\EH.scale-400.png" />
     <Content Include="Images\Light\ImageLoading.scale-100.png" />
     <Content Include="Images\Light\ImageLoading.scale-200.png" />
     <Content Include="Images\Light\ImageLoading.scale-400.png" />
@@ -555,11 +558,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties Strings_4zh-cn_4Resources_1resJson__JSONSchema="" />
-    </VisualStudio>
-  </ProjectExtensions>
+  <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

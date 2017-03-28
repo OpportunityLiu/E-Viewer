@@ -82,8 +82,6 @@ namespace ExClient
             });
         }
 
-        internal const string ThumbFileName = "thumb.jpg";
-
         private static readonly IReadOnlyDictionary<string, Category> categoriesForRestApi = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
             ["Doujinshi"] = Category.Doujinshi,

@@ -7,14 +7,17 @@
       "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ Github.com",
       "ChineseTagProviderTextBlock/Text": "标签中文翻译",
       "DataProvidersTextBlock/Text": "数据提供方",
+      "EHTextBlock/Text": "E-Hentai.org",
       "EHWikiTextBlock/Text": "EHWiki.org",
       "ForumsHyperlinkButton/Content": "E - 绅士论坛",
       "HelpTranslateTagsHyperlinkButton/Content": "帮助提供标签翻译",
       "JapaneseTagProviderTextBlock/Text": "标签日文翻译",
+      "LastUpdate": "最后更新时间：{0}",
       "LicenceTextBlock/Text": "协议",
       "OnlineContentsTextBlock/Text": "在线内容",
       "RateHyperlinkButton/Content": "打分和评价",
-      "SourceCodeHyperlinkButton/Content": "在 GitHub 上查看源代码"
+      "SourceCodeHyperlinkButton/Content": "在 GitHub 上查看源代码",
+      "TagDatabaseTextBlock/Text": "标签数据库"
     },
     "CommentViewer": {
       "AuthorFormatString": "{0}",
