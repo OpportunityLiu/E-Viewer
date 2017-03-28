@@ -12,6 +12,7 @@
 <#@ import namespace="System.Runtime.Serialization.Json" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Web" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
 <#@ output extension=".tt.cs" #>
 <#
     Init();
@@ -50,7 +51,7 @@
 <#+
 
     public string ProductName => "Resource Generator";
-    public string ProductVersion => "2.0.2.0";
+    public string ProductVersion => "2.0.3.0";
 
 #>
 <#+
@@ -240,9 +241,9 @@
             get
             {
                 if(PropertiesClass.Current.IsDefaultProject)
-                    return $"ms-resource:///{Encode(Name)}";
+                    return $"ms-resource:///{Name}";
                 else
-                    return $"ms-resource:///{Encode(PropertiesClass.Current.ProjectAssemblyName)}/{Encode(Name)}";
+                    return $"ms-resource:///{PropertiesClass.Current.ProjectAssemblyName}/{Name}";
             }
         }
         public override string INs => PropertiesClass.Current.InterfacesNamespace;
@@ -252,16 +253,6 @@
 
     public class ResourceNode
     {
-        protected static string Encode(string name)
-        {
-            return name.Replace("%", "%25")
-                .Replace("?", "%3F")
-                .Replace("#", "%23")
-                .Replace("/", "%2F")
-                .Replace("*", "%2A")
-                .Replace("\"", "%22");
-        }
-
         public static ResourceNode GetNode(string name, string value)
         {
             return new ResourceNode(name, value);
@@ -332,7 +323,7 @@
         public string Name { get; }
         public string Value { get; }
 
-        public virtual string RName => Helper.CombineResourcePath(Parent?.RName, Encode(Name));
+        public virtual string RName => Helper.CombineResourcePath(Parent?.RName, Name);
 
         public string IName { get; private set; }
         public virtual string INs => $"{Parent.INs}.{Parent.PName}";
@@ -524,7 +515,12 @@
         WriteLine(indent, $"        string value;");
         WriteLine(indent, $"        if({Properties.LocalizedStringsFullName}.{cacheName}.TryGetValue(resourceKey, out value))");
         WriteLine(indent, $"            return value;");
-        WriteLine(indent, $"        return {Properties.LocalizedStringsFullName}.{cacheName}[resourceKey] = {Properties.LocalizedStringsFullName}.{loaderName}.GetString(resourceKey);");
+        WriteLine(indent, $"        string escaped = resourceKey.Replace(\"%\", \"%25\")" +
+            $".Replace(\"?\", \"%3F\")" +
+            $".Replace(\"#\", \"%23\")" +
+            $".Replace(\"*\", \"%2A\")" +
+            $".Replace(\"\\\"\", \"%22\");");
+        WriteLine(indent, $"        return {Properties.LocalizedStringsFullName}.{cacheName}[resourceKey] = {Properties.LocalizedStringsFullName}.{loaderName}.GetString(escaped);");
         WriteLine(indent, $"    }}");
         WriteLine();
         foreach(var item in tree)
@@ -614,7 +610,7 @@
 
     public void WriteProperty(int indent, ResourceNode node)
     {
-        WriteLine(indent, $@"public {Helper.CPropModifier(node.PName)}string {node.PName}");
+        WriteLine(indent, $@"string {node.Parent.IFName}.{node.PName}");
         WriteLine(indent + 1, $@"=> {Properties.LocalizedStringsFullName}.GetValue(""{Helper.AsLiteral(node.RName)}"");");
     }
 
@@ -662,6 +658,91 @@
         }
     }
 
+    private class CommentStateMachine
+    {
+        private enum State
+        {
+            Default,
+            String,
+            EscapeChar,
+            PreComment,
+            Comment
+        }
+
+        private readonly string Original;
+        private State Current;
+        private int CommentStartIndex = -1;
+        private int CurrentPosition;
+
+        private bool MoveNext()
+        {
+            var CurrentChar = this.Original[this.CurrentPosition];
+            switch(this.Current)
+            {
+            case State.Default:
+                switch(CurrentChar)
+                {
+                case '"':
+                    this.Current = State.String;
+                    break;
+                case '/':
+                    this.Current = State.PreComment;
+                    break;
+                }
+                break;
+            case State.String:
+                switch(CurrentChar)
+                {
+                case '\\':
+                    this.Current = State.EscapeChar;
+                    break;
+                case '"':
+                    this.Current = State.Default;
+                    break;
+                }
+                break;
+            case State.EscapeChar:
+                this.Current = State.String;
+                break;
+            case State.PreComment:
+                switch(CurrentChar)
+                {
+                case '/':
+                    this.Current = State.Comment;
+                    this.CommentStartIndex = this.CurrentPosition - 1;
+                    break;
+                default:
+                    this.Current = State.Default;
+                    break;
+                }
+                break;
+            case State.Comment:
+                break;
+            }
+            this.CurrentPosition++;
+            return !(this.CommentStartIndex >= 0 || this.Original.Length == this.CurrentPosition);
+        }
+
+        private CommentStateMachine(string original)
+        {
+            this.Original = original;
+        }
+
+        public static string RemoveComment(string original)
+        {
+            if(string.IsNullOrWhiteSpace(original))
+                return "";
+            var sm = new CommentStateMachine(original);
+            while(sm.MoveNext())
+            {
+
+            }
+            if(sm.CommentStartIndex == -1)
+                return original;
+            return original.Substring(0, sm.CommentStartIndex);
+        }
+    }
+
     public void AnalyzeResJson(Dictionary<string, Dictionary<string, object>> output, string path)
     {
         var resourceName = Path.GetFileNameWithoutExtension(path);
@@ -672,6 +753,9 @@
             var line = default(string);
             while((line = reader.ReadLine()) != null)
             {
+                line = CommentStateMachine.RemoveComment(line);
+                if(string.IsNullOrWhiteSpace(line))
+                    continue;
                 writer.WriteLine(line);
             }
             writer.Flush();

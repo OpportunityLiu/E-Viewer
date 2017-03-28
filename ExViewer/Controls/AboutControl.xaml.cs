@@ -35,5 +35,10 @@ namespace ExViewer.Controls
             this.tb_AppAuthor.Text = Package.Current.PublisherDisplayName;
             this.tb_AppDescription.Text = Strings.Resources.AppDescription;
         }
+
+        private void UserControl_Loading(FrameworkElement sender, object args)
+        {
+            this.Bindings.Update();
+        }
     }
 }
