@@ -18,7 +18,6 @@ namespace ExViewer.Themes
         public static void SetTitleBar()
         {
             helper.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
-            var SystmeChromeMediumColor = helper.SystemChromeMediumColor;
             var SystemChromeMediumLowColor = helper.SystemChromeMediumLowColor;
             var SystemChromeHighColor = helper.SystemChromeHighColor;
             var SystemBaseMediumHighColor = helper.SystemBaseMediumHighColor;
@@ -47,25 +46,6 @@ namespace ExViewer.Themes
                 sb.ProgressIndicator.ProgressValue = 0;
                 sb.ProgressIndicator.Text = " ";
                 sb.ForegroundColor = SystemBaseMediumHighColor;
-            }
-        }
-
-        public static void SetSplashTitleBar()
-        {
-            var splashColor = (Color)Application.Current.Resources["SplashColor"];
-            var view = ApplicationView.GetForCurrentView();
-            var tb = view.TitleBar;
-            if(tb != null)
-            {
-                tb.BackgroundColor = splashColor;
-                tb.InactiveBackgroundColor = splashColor;
-                tb.ButtonBackgroundColor = splashColor;
-                tb.ButtonInactiveBackgroundColor = splashColor;
-            }
-            if(ApiInfo.StatusBarSupported)
-            {
-                sb.BackgroundOpacity = 0;
-                sb.ForegroundColor = splashColor;
             }
         }
 

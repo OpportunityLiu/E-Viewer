@@ -34,6 +34,7 @@ namespace ExViewer.Views
         public RootControl()
         {
             this.InitializeComponent();
+
             this.manager = SystemNavigationManager.GetForCurrentView();
 
             this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
@@ -42,6 +43,7 @@ namespace ExViewer.Views
                 [this.svt_Cached] = typeof(CachedPage),
                 [this.svt_Search] = typeof(SearchPage),
                 [this.svt_Favorites] = typeof(FavoritesPage),
+                [this.svt_Popular] = typeof(PopularPage),
                 [this.svt_Settings] = typeof(SettingsPage)
             };
 
@@ -51,6 +53,7 @@ namespace ExViewer.Views
                 [typeof(SavedPage)] = this.svt_Saved,
                 [typeof(SearchPage)] = this.svt_Search,
                 [typeof(FavoritesPage)] = this.svt_Favorites,
+                [typeof(PopularPage)] = this.svt_Popular,
                 [typeof(SettingsPage)] = this.svt_Settings
             };
 #if DEBUG
@@ -124,7 +127,6 @@ namespace ExViewer.Views
             else
             {
                 this.fm_inner.Navigate(this.HomePageType);
-                this.tbtPane.Focus(FocusState.Pointer);
             }
             this.manager.BackRequested += this.Manager_BackRequested;
         }
@@ -137,9 +139,9 @@ namespace ExViewer.Views
             }
             else
             {
-                Themes.ThemeExtention.SetTitleBar();
                 RootController.UpdateUserInfo(false);
                 RootController.HandleUriLaunch();
+                this.tbtPane.Focus(FocusState.Pointer);
             }
         }
 
