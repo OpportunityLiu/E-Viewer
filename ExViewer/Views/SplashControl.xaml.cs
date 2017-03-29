@@ -45,7 +45,7 @@ namespace ExViewer.Views
 
         private void splash_Loading(FrameworkElement sender, object args)
         {
-            Themes.ThemeExtention.SetSplashTitleBar();
+            Themes.ThemeExtention.SetTitleBar();
             JYAnalytics.TrackPageStart(nameof(SplashControl));
         }
 

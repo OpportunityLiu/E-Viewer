@@ -61,7 +61,7 @@ namespace ExClient
                 CookieUsageBehavior = HttpCookieUsageBehavior.NoCookies
             };
             httpfilter2.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter, httpfilter2, new System.Text.RegularExpressions.Regex(@"://(\d{1,3}\.){3}\d{1,3}"))));
+            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter, httpfilter2, new System.Text.RegularExpressions.Regex(@"://((\d{1,3}\.){3}\d{1,3}|forums.e-hentai.org)"))));
 
             this.Settings = new SettingCollection(this);
             this.Favorites = new FavoriteCollection(this);

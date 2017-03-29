@@ -185,6 +185,7 @@
     <Compile Include="ViewModels\FavoritesVM.cs" />
     <Compile Include="ViewModels\GalleryListVM{T}.cs" />
     <Compile Include="ViewModels\ITagRecord.cs" />
+    <Compile Include="ViewModels\PopularVM.cs" />
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
     <Compile Include="ViewModels\SearchResultVM{T}.cs" />
@@ -205,6 +206,9 @@
       <DependentUpon>EhWikiDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\IHasAppBar.cs" />
+    <Compile Include="Views\PopularPage.xaml.cs">
+      <DependentUpon>PopularPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SavedPage.xaml.cs">
       <DependentUpon>SavedPage.xaml</DependentUpon>
     </Compile>
@@ -396,6 +400,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EhWikiDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PopularPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

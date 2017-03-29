@@ -278,10 +278,10 @@ namespace ExViewer.Views
             {
                 return Run(async token =>
                 {
-                    await new LogOnDialog().ShowAsync();
+                    var result = await new LogOnDialog().ShowAsync();
                     var succeed = !Client.Current.NeedLogOn;
                     JYAnalytics.TrackEvent("LogOnRequested", $"Result: {(succeed ? "Succeed" : "Failed")}");
-                    UpdateUserInfo(succeed);
+                    UpdateUserInfo(result == ContentDialogResult.Primary);
                     if(succeed)
                     {
                         Settings.SettingCollection.Current.Apply();
