@@ -292,20 +292,25 @@ namespace ExViewer.Views
 
             public static async void UpdateUserInfo(bool setNull)
             {
-                if(setNull)
+                if(Available && setNull)
                 {
                     root.UserInfo = null;
                 }
                 if(Client.Current.UserID == -1)
                     return;
+                var info = default(UserInfo);
                 try
                 {
-                    root.UserInfo = await Client.Current.LoadUserInfo(Client.Current.UserID);
-                    await root.UserInfo.SaveToCache();
+                    info = await Client.Current.LoadUserInfo(Client.Current.UserID);
+                    await info.SaveToCache();
                 }
                 catch(Exception)
                 {
-                    root.UserInfo = await UserInfo.LoadFromCache();
+                    info = await UserInfo.LoadFromCache();
+                }
+                if(Available)
+                {
+                    root.UserInfo = info;
                 }
             }
 
