@@ -192,6 +192,10 @@ namespace ExViewer.Views
             FindName(nameof(this.cpHided));
             this.cpHided.Content = this.rootControl;
             await loadingTask;
+            if(Client.Current.NeedLogOn)
+            {
+                await RootControl.RootController.RequestLogOn();
+            }
             lock(this.loadingSyncRoot)
             {
                 if(this.effectLoaded)
@@ -199,6 +203,11 @@ namespace ExViewer.Views
                 else
                     this.applicationLoaded = true;
             }
+            afterActions();
+        }
+
+        private async void afterActions()
+        {
             await Task.Delay(20000);
             if(DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
                 try
@@ -277,16 +286,6 @@ namespace ExViewer.Views
                 }
                 Application.Current.Exit();
             }
-        }
-
-        protected override Size MeasureOverride(Size availableSize)
-        {
-            return base.MeasureOverride(availableSize);
-        }
-
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            return base.ArrangeOverride(finalSize);
         }
     }
 }

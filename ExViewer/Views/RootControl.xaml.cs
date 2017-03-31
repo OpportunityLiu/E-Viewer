@@ -118,7 +118,7 @@ namespace ExViewer.Views
 
         private readonly SystemNavigationManager manager;
 
-        private async void Control_Loading(FrameworkElement sender, object args)
+        private void Control_Loading(FrameworkElement sender, object args)
         {
             if(this.HomePageType == null)
             {
@@ -126,10 +126,6 @@ namespace ExViewer.Views
             }
             else
             {
-                if(Client.Current.NeedLogOn)
-                {
-                    await RootController.RequestLogOn();
-                }
                 this.fm_inner.Navigate(this.HomePageType);
             }
             this.manager.BackRequested += this.Manager_BackRequested;
