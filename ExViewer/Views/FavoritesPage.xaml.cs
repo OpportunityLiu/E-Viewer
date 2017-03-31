@@ -52,10 +52,6 @@ namespace ExViewer.Views
         {
             base.OnNavigatedTo(e);
             this.navId++;
-            if(Client.Current.NeedLogOn)
-            {
-                await RootControl.RootController.RequestLogOn();
-            }
             this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
             if(e.NavigationMode == NavigationMode.New)
             {

@@ -32,6 +32,7 @@ namespace ExClient
             {
                 this.CookieManager.DeleteCookie(item);
             }
+            this.CookieManager.SetCookie(new HttpCookie("nw", "exhentai.org", "/") { Value = "1" });
             foreach(var item in this.getLogOnInfo())
             {
                 if(item.Name == "ipb_member_id"
@@ -53,7 +54,6 @@ namespace ExClient
         {
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
             this.CookieManager = httpFilter.CookieManager;
-            this.CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
 
             var httpfilter2 = new HttpBaseProtocolFilter
             {
@@ -61,7 +61,7 @@ namespace ExClient
                 CookieUsageBehavior = HttpCookieUsageBehavior.NoCookies
             };
             httpfilter2.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter, httpfilter2, new System.Text.RegularExpressions.Regex(@"://((\d{1,3}\.){3}\d{1,3}|forums.e-hentai.org)"))));
+            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter, httpfilter2, new System.Text.RegularExpressions.Regex(@"://((\d{1,3}\.){3}\d{1,3}|forums\.e-hentai\.org/index\.php\?showuser=)"))));
 
             this.Settings = new SettingCollection(this);
             this.Favorites = new FavoriteCollection(this);
@@ -162,6 +162,8 @@ namespace ExClient
             {
                 this.CookieManager.DeleteCookie(item);
             }
+            this.CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
+            this.CookieManager.SetCookie(new HttpCookie("nw", "exhentai.org", "/") { Value = "1" });
         }
 
         public int UserID
