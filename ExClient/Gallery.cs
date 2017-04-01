@@ -472,8 +472,9 @@ namespace ExClient
                     db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                     foreach(var page in pics)
                     {
-                        var imageKey = page.imageKey;
-                        var imageModel = db.ImageSet.FirstOrDefault(im => im.ImageKey == imageKey);
+                        var gid = this.Id;
+                        var pid = page.pageId;
+                        var imageModel = db.ImageSet.FirstOrDefault(im => im.OwnerId == gid && im.PageId == pid);
                         if(imageModel != null)
                         {
                             // Load cache

@@ -72,7 +72,14 @@ namespace ExViewer
 #endif
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
+            this.UnhandledException += this.App_UnhandledException;
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
+        }
+
+        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            RootControl.RootController.SendToast(e.Exception, null);
+            e.Handled = true;
         }
 
         /// <summary>
@@ -116,7 +123,7 @@ namespace ExViewer
                 currentWindow.Activate();
             }
             await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("fcf0a9351ea5917ec80d8c1b58b56ff1");
-            ((Converters.ObjectToBooleanConverter)this.Resources["EmptyStringToCollapsedConverter"]).ValueForFalse = "";
+            ((Opportunity.Converters.ObjectToBooleanConverter)this.Resources["EmptyStringToCollapsedConverter"]).ValueForFalse = "";
         }
 
         protected override void OnActivated(IActivatedEventArgs args)
