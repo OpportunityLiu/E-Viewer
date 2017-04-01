@@ -13,10 +13,7 @@ namespace EhTagTranslatorClient
             this.RawString = rawString;
         }
 
-        public string RawString
-        {
-            get;
-        }
+        public string RawString { get; }
 
         private string text;
         public string Text
@@ -27,7 +24,8 @@ namespace EhTagTranslatorClient
 
         private IReadOnlyList<MarkdownToken> tokens;
         public IReadOnlyList<MarkdownToken> Tokens 
-            => System.Threading.LazyInitializer.EnsureInitialized(ref this.tokens, () => this.analyze().ToList().AsReadOnly());
+            => System.Threading.LazyInitializer.EnsureInitialized(ref this.tokens, () 
+                => this.analyze().ToList().AsReadOnly());
 
         private IEnumerable<MarkdownToken> analyze()
         {
@@ -62,10 +60,7 @@ namespace EhTagTranslatorClient
             this.String = str;
         }
 
-        public string String
-        {
-            get;
-        }
+        public string String { get; }
 
         public override string ToString()
         {
@@ -81,15 +76,9 @@ namespace EhTagTranslatorClient
             this.ImageUri = new Uri(imageUri);
         }
 
-        public string AlternateText
-        {
-            get;
-        }
+        public string AlternateText { get; }
 
-        public Uri ImageUri
-        {
-            get;
-        }
+        public Uri ImageUri { get; }
 
         public override string ToString()
         {

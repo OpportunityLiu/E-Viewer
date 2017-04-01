@@ -64,23 +64,23 @@ namespace EhTagClient
             token.ThrowIfCancellationRequested();
             var html = new HtmlDocument();
             html.LoadHtml(s);
-            var tab = html.DocumentNode.Element("html").Element("body").Element("table");
-            var toAdd = new List<TagRecord>(15000);
+            var table = html.DocumentNode.Element("html").Element("body").Element("table");
+            var toAdd = new List<TagRecord>(table.ChildNodes.Count);
+            foreach(var item in table.Elements("tr"))
+            {
+                var link = item.Element("td")?.Element("a");
+                if(link == null)
+                    continue;
+                var uri = link.GetAttributeValue("href", "");
+                var tagid = int.Parse(uri.Split('=').Last());
+                var tagstr = HtmlEntity.DeEntitize(link.InnerText);
+                var tag = Tag.Parse(tagstr);
+                var tagrecord = new TagRecord { TagConetnt = tag.Content, TagNamespace = tag.Namespace, TagId = tagid };
+                toAdd.Add(tagrecord);
+            }
+            token.ThrowIfCancellationRequested();
             using(var db = new TagDb())
             {
-                foreach(var item in tab.Elements("tr"))
-                {
-                    var link = item.Element("td")?.Element("a");
-                    if(link == null)
-                        continue;
-                    var uri = link.GetAttributeValue("href", "");
-                    var tagid = int.Parse(uri.Split('=').Last());
-                    var tagstr = HtmlEntity.DeEntitize(link.InnerText);
-                    var tag = Tag.Parse(tagstr);
-                    var tagrecord = new TagRecord { TagConetnt = tag.Content, TagNamespace = tag.Namespace, TagId = tagid };
-                    toAdd.Add(tagrecord);
-                }
-                token.ThrowIfCancellationRequested();
                 db.TagTable.RemoveRange(db.TagTable);
                 await db.SaveChangesAsync();
                 db.TagTable.AddRange(toAdd);
