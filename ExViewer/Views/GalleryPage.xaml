@@ -13,7 +13,7 @@
       Unloaded="page_Unloaded"
       NavigationCacheMode="Enabled"
       SizeChanged="page_SizeChanged"
-      xmlns:con="using:ExViewer.Converters"
+      xmlns:con="using:Opportunity.Converters"
       mc:Ignorable="d">
     <controls:MyPage.Transitions>
         <TransitionCollection>

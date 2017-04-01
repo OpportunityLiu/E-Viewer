@@ -225,19 +225,23 @@ namespace ExViewer.Views
             public static void SendToast(Exception ex, Type source)
             {
                 var sourceString = source?.ToString() ?? "null";
-                JYAnalytics.TrackError($"Exception {ex.HResult:X8}: {ex.GetType().ToString()} at {sourceString}");
 #if DEBUG
                 Debug.WriteLine(ex, "Exception");
+#else
+                JYAnalytics.TrackError($"Exception {ex.HResult:X8}: {ex.GetType().ToString()} at {sourceString}");
+                HockeyClient.Current.TrackException(ex);
 #endif
                 SendToast(ex.GetMessage(), source);
             }
 
             public static void SendToast(string content, Type source)
             {
-                if(source != root.fm_inner.Content?.GetType() && source != null)
+                if(!Available)
                     return;
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
+                    if(source != null && source != root.fm_inner.Content?.GetType())
+                        return;
                     root.FindName(nameof(root.bd_Toast));
                     root.tb_Toast.Text = content;
                     root.bd_Toast.Visibility = Visibility.Visible;
@@ -252,7 +256,7 @@ namespace ExViewer.Views
 
             public static void SwitchSplitView(bool? open)
             {
-                if(root == null)
+                if(!Available)
                     return;
                 var currentState = root.sv_root.IsPaneOpen;
                 if(open == currentState)

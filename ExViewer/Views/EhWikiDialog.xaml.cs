@@ -63,8 +63,6 @@ namespace ExViewer.Views
                     this.loadRecord = tag.FetchEhWikiRecordAsync();
                     var record = await this.loadRecord;
                     this.loadRecord = null;
-                    if(this.style == null)
-                        this.initStyle();
                     if(record?.DetialHtml == null)
                         str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
                     else
@@ -74,6 +72,8 @@ namespace ExViewer.Views
                 {
                     str = ex.GetMessage();
                 }
+                if(this.style == null)
+                    this.initStyle();
                 this.wv.NavigateToString(this.style + str);
             }
             this.wv.Visibility = Visibility.Visible;
