@@ -1,18 +1,13 @@
-﻿<con:MyContentDialog
-    x:Class="ExViewer.Views.UpdateDialog"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ExViewer.Views"
-    xmlns:con="using:ExViewer.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Title="TITLE"
-    PrimaryButtonText="Button1"
-    SecondaryButtonText="Button2"
-    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
-
-    <Grid>
-    </Grid>
-</con:MyContentDialog>
+﻿<con:MyContentDialog x:Class="ExViewer.Views.UpdateDialog"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:local="using:ExViewer.Views"
+                     xmlns:con="using:ExViewer.Controls"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     mc:Ignorable="d"
+                     x:Uid="Views/UpdateDialog/ContentDialog"
+                     Title="NEW VERSION"
+                     PrimaryButtonText="Update now"
+                     SecondaryButtonText="Remind me next time"
+                     PrimaryButtonClick="ContentDialog_PrimaryButtonClick" />
