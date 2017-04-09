@@ -40,8 +40,12 @@ namespace ExViewer
                         };
                         if(newVersion.Major > currentVersion.Major)
                             return newVersion;
+                        else if(newVersion.Major < currentVersion.Major)
+                            return null;
                         if(newVersion.Minor > currentVersion.Minor)
                             return newVersion;
+                        else if(newVersion.Minor < currentVersion.Minor)
+                            return null;
                         if(newVersion.Build > currentVersion.Build)
                             return newVersion;
                         return null;

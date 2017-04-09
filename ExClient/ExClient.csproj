@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ExClient</RootNamespace>
     <AssemblyName>ExClient</AssemblyName>
-    <DefaultLanguage>zh-CN</DefaultLanguage>
+    <DefaultLanguage>en</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
@@ -105,9 +105,9 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
-    <PRIResource Include="Strings\zh-cn\Resources.resjson" />
-    <PRIResource Include="Strings\zh-cn\Category.resjson" />
-    <PRIResource Include="Strings\zh-cn\Namespace.resjson" />
+    <PRIResource Include="Strings\zh-hans\Resources.resjson" />
+    <PRIResource Include="Strings\zh-hans\Category.resjson" />
+    <PRIResource Include="Strings\zh-hans\Namespace.resjson" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvancedSearchOptions.cs" />
