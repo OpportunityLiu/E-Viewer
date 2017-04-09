@@ -203,6 +203,14 @@
       "ShowExpungedCheckBox/Content": "搜索已失效的画廊",
       "TagsCheckBox/Content": "搜索画廊标签",
       "TorrentNamesCheckBox/Content": "搜索种子文件名"
+    },
+    "UpdateDialog": {
+      "ContentDialog": {
+        "Title": "新版本",
+        "PrimaryButtonText": "现在升级",
+        "SecondaryButtonText": "下次提醒"
+      },
+      "ContentTemplate": "版本 {0}.{1}.{2}.{3} 已发布。"
     }
   },
 

@@ -208,7 +208,21 @@ namespace ExViewer.Views
 
         private async void afterActions()
         {
-            await Task.Delay(20000);
+            await Task.Delay(5000);
+            try
+            {
+                var ver = await VersionChecker.CheckAsync();
+                if(ver is Windows.ApplicationModel.PackageVersion v)
+                {
+                    var dialog = new UpdateDialog { Version = v };
+                    await dialog.ShowAsync();
+                }
+            }
+            catch(Exception)
+            {
+                //Ignore exceptions here.
+            }
+            await Task.Delay(15000);
             if(DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
                 try
                 {

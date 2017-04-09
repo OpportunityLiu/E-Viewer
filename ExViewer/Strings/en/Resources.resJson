@@ -203,6 +203,14 @@
       "ShowExpungedCheckBox/Content": "Show expunged galleries",
       "TagsCheckBox/Content": "Search gallery tags",
       "TorrentNamesCheckBox/Content": "Search torrent filenames"
+    },
+    "UpdateDialog": {
+      "ContentDialog": {
+        "Title": "NEW VERSION",
+        "PrimaryButtonText": "Update now",
+        "SecondaryButtonText": "Remind me next time"
+      },
+      "ContentTemplate": "Version {0}.{1}.{2}.{3} has released."
     }
   },
 
