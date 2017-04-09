@@ -13,6 +13,8 @@ namespace BannerProvider
         private static StorageFolder bannerFolder;
         private const string LAST_UPDATE = "BannerProvider.LastUpdate";
 
+        public static Uri DefaultBanner { get; } = new Uri($"ms-appx:///BannerProvider/Images/DefaultBanner.png");
+
         public static DateTimeOffset LastUpdate
         {
             get
@@ -38,14 +40,9 @@ namespace BannerProvider
                 await init();
                 var files = await bannerFolder.GetItemsAsync();
                 if(files.Count == 0)
-                    return await GetDefaultBanner();
+                    return null;
                 return (StorageFile)files[new Random().Next(0, files.Count)];
             });
-        }
-
-        public static IAsyncOperation<StorageFile> GetDefaultBanner()
-        {
-            return StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///BannerProvider/Images/DefaultBanner.png"));
         }
 
         public static IAsyncAction FetchBanners()

@@ -37,6 +37,11 @@ namespace ExViewer.Views
 
         private async void loadBanner(StorageFile banner)
         {
+            if(banner == null)
+            {
+                ((BitmapImage)this.img_pic.Source).UriSource = BannerProvider.Provider.DefaultBanner;
+                return;
+            }
             using(var stream = await banner.OpenReadAsync())
             {
                 await ((BitmapImage)this.img_pic.Source).SetSourceAsync(stream);
@@ -64,9 +69,9 @@ namespace ExViewer.Views
             FindName(nameof(pr));
         }
 
-        private async void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            loadBanner(await BannerProvider.Provider.GetDefaultBanner());
+            loadBanner(null);
             // After the default image loaded, img_pic_ImageOpened() will be called.
         }
 
