@@ -107,7 +107,22 @@ namespace EhTagTranslatorClient
             var dbUri = new Uri(wikiDbRootUri, $"{@namespace.ToString().ToLowerInvariant()}.md");
             using(var stream = await client.GetInputStreamAsync(dbUri))
             {
-                return Record.Analyze(stream, @namespace).ToList();
+                return Record.Analyze(stream, @namespace).Distinct(KeyComparer.Default).ToList();
+            }
+        }
+
+        private class KeyComparer : IEqualityComparer<Record>
+        {
+            public static KeyComparer Default { get; } = new KeyComparer();
+
+            public bool Equals(Record x, Record y)
+            {
+                return x?.Original == y?.Original;
+            }
+
+            public int GetHashCode(Record obj)
+            {
+                return obj.Original.GetHashCode();
             }
         }
 
