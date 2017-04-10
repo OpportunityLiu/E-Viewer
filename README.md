@@ -12,7 +12,7 @@ Install dependencies first.
 [x64](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x64.zip) |
 [ARM](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/ARM.zip)
 
-Please download `*.appxbundle` or `*.zip` file to install.
+Please download `*.appxbundle` or `*.appx` file to install.
 
 `*.appxsym` files are symbol files for debugging.
 
