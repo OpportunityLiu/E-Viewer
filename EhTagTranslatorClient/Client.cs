@@ -107,22 +107,7 @@ namespace EhTagTranslatorClient
             var dbUri = new Uri(wikiDbRootUri, $"{@namespace.ToString().ToLowerInvariant()}.md");
             using(var stream = await client.GetInputStreamAsync(dbUri))
             {
-                return Record.Analyze(stream, @namespace).Distinct(KeyComparer.Default).ToList();
-            }
-        }
-
-        private class KeyComparer : IEqualityComparer<Record>
-        {
-            public static KeyComparer Default { get; } = new KeyComparer();
-
-            public bool Equals(Record x, Record y)
-            {
-                return x?.Original == y?.Original;
-            }
-
-            public int GetHashCode(Record obj)
-            {
-                return obj.Original.GetHashCode();
+                return Record.Analyze(stream, @namespace).ToList();
             }
         }
 
@@ -141,13 +126,31 @@ namespace EhTagTranslatorClient
                             token.ThrowIfCancellationRequested();
                         }
                     }
+                    var mergedCache = new IDictionary<string, Record>[tables.Length];
+                    for(var i = 0; i < tables.Length; i++)
+                    {
+                        var dic = new Dictionary<string, Record>();
+                        foreach(var item in cache[i])
+                        {
+                            if(dic.TryGetValue(item.Original, out var existed))
+                            {
+                                existed = Record.Combine(existed, item);
+                            }
+                            else
+                            {
+                                existed = item;
+                            }
+                            dic[item.Original] = existed;
+                        }
+                        mergedCache[i] = dic;
+                    }
                     using(var db = new TranslateDb())
                     {
                         db.Table.RemoveRange(db.Table);
                         await db.SaveChangesAsync();
-                        foreach(var item in cache)
+                        foreach(var item in mergedCache)
                         {
-                            db.Table.AddRange(item);
+                            db.Table.AddRange(item.Values);
                         }
                         await db.SaveChangesAsync();
                     }
