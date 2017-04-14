@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -22,6 +23,8 @@ namespace EhTagClient
         }
 
         private const string LAST_UPDATE = "EhTagClient.LastUpdate";
+
+        private static Regex reg = new Regex(@"<a href=""https://e-hentai\.org/tools\.php\?act=taggroup&amp;taggroup=(\d+)"" style=""color:black"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
 
         public static DateTimeOffset LastUpdate
         {
@@ -62,18 +65,12 @@ namespace EhTagClient
         private static async Task updateDbAsync(string s, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            var html = new HtmlDocument();
-            html.LoadHtml(s);
-            var table = html.DocumentNode.Element("html").Element("body").Element("table");
-            var toAdd = new List<TagRecord>(table.ChildNodes.Count);
-            foreach(var item in table.Elements("tr"))
+            var matches = reg.Matches(s);
+            var toAdd = new List<TagRecord>(matches.Count);
+            foreach(var item in matches.Cast<Match>())
             {
-                var link = item.Element("td")?.Element("a");
-                if(link == null)
-                    continue;
-                var uri = link.GetAttributeValue("href", "");
-                var tagid = int.Parse(uri.Split('=').Last());
-                var tagstr = HtmlEntity.DeEntitize(link.InnerText);
+                var tagid = int.Parse(item.Groups[1].Value);
+                var tagstr = item.Groups[2].Value;
                 var tag = Tag.Parse(tagstr);
                 var tagrecord = new TagRecord { TagConetnt = tag.Content, TagNamespace = tag.Namespace, TagId = tagid };
                 toAdd.Add(tagrecord);

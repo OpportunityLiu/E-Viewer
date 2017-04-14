@@ -10,6 +10,7 @@ using ExClient;
 
 namespace EhTagClient
 {
+    [System.Diagnostics.DebuggerDisplay(@"[{TagNamespace}:{TagConetnt,nq}]")]
     public class TagRecord
     {
         [Key]
