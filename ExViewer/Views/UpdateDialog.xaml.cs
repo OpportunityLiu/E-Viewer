@@ -32,8 +32,6 @@ namespace ExViewer.Views
             await Launcher.LaunchUriAsync(VersionChecker.ReleaseUri);
         }
 
-
-
         public PackageVersion Version
         {
             get => (PackageVersion)GetValue(VersionProperty);

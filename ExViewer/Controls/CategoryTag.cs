@@ -54,7 +54,10 @@ namespace ExViewer.Controls
         private static void CategoryPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (CategoryTag)d;
+            var oldValue = (Category)e.OldValue;
             var newValue = (Category)e.NewValue;
+            if(oldValue == newValue)
+                return;
             if(categoryBrushes.TryGetValue($"Category{newValue}BackgroundBrush", out var brush))
             {
                 sender.Background = (Brush)brush;

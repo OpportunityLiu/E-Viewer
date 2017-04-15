@@ -41,7 +41,11 @@ namespace ExViewer.Views
         private static void WikiTagPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (EhWikiDialog)d;
-            sender.refresh((Tag)e.NewValue);
+            var o = (Tag)e.OldValue;
+            var n = (Tag)e.NewValue;
+            if(n.Equals(o))
+                return;
+            sender.refresh(n);
         }
 
         private async void refresh(Tag tag)
@@ -67,6 +71,10 @@ namespace ExViewer.Views
                         str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
                     else
                         str = record.DetialHtml;
+                }
+                catch(System.Threading.Tasks.TaskCanceledException)
+                {
+                    return;
                 }
                 catch(Exception ex)
                 {
