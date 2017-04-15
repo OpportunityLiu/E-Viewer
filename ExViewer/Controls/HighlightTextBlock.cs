@@ -38,8 +38,12 @@ namespace ExViewer.Controls
 
         private static void TextPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            if(e.NewValue == null)
+            var o = (string)e.OldValue;
+            var n = (string)e.NewValue;
+            if(n == null)
                 throw new ArgumentNullException(nameof(Text));
+            if(o == n)
+                return;
             ((HighlightTextBlock)sender).reload();
         }
 
@@ -54,6 +58,10 @@ namespace ExViewer.Controls
 
         private static void HighlightTextPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
+            var o = (string)e.OldValue;
+            var n = (string)e.NewValue;
+            if(o == n)
+                return;
             ((HighlightTextBlock)sender).reload();
         }
 
@@ -68,6 +76,10 @@ namespace ExViewer.Controls
 
         private static void ComparisonPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
+            var o = (StringComparison)e.OldValue;
+            var n = (StringComparison)e.NewValue;
+            if(o == n)
+                return;
             ((HighlightTextBlock)sender).reload();
         }
 
@@ -94,7 +106,7 @@ namespace ExViewer.Controls
             {
                 var matchIndex = -1;
                 var currentIndex = 0;
-                while((matchIndex = text.IndexOf(highlightText, currentIndex)) != -1)
+                while((matchIndex = text.IndexOf(highlightText, currentIndex, Comparison)) != -1)
                 {
                     if(matchIndex != currentIndex)
                         this.Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex, matchIndex - currentIndex)));

@@ -4,7 +4,7 @@ using System.Text;
 namespace ExClient
 {
     [System.Diagnostics.DebuggerDisplay(@"[{Namespace}:{Content}]")]
-    public struct Tag
+    public struct Tag : IEquatable<Tag>
     {
         // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };
         private static readonly char[] split = new char[] { ':' };
@@ -39,8 +39,6 @@ namespace ExClient
             get;
         }
 
-        private Client getClient() => Client.Current;
-
         public string ToSearchTerm()
         {
             if(Namespace != Namespace.Misc)
@@ -51,17 +49,17 @@ namespace ExClient
 
         public SearchResult Search()
         {
-            return getClient().Search(ToSearchTerm());
+            return Client.Current.Search(ToSearchTerm());
         }
 
         public SearchResult Search(Category filter)
         {
-            return getClient().Search(ToSearchTerm(), filter);
+            return Client.Current.Search(ToSearchTerm(), filter);
         }
 
         public SearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
         {
-            return getClient().Search(ToSearchTerm(), filter, advancedSearch);
+            return Client.Current.Search(ToSearchTerm(), filter, advancedSearch);
         }
 
         public static Uri WikiUri
@@ -76,6 +74,26 @@ namespace ExClient
             if(Namespace == Namespace.Misc)
                 return Content;
             return $"{Namespace}:{Content}";
+        }
+
+        public bool Equals(Tag other)
+        {
+            return this.Namespace == other.Namespace && string.Equals(this.Content, other.Content, StringComparison.OrdinalIgnoreCase);
+            throw new NotImplementedException();
+        }
+
+        // override object.Equals
+        public override bool Equals(object obj)
+        {
+            if(obj is Tag o)
+                return this.Equals(o);
+            return false;
+        }
+
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            return unchecked((int)Namespace * StringComparer.OrdinalIgnoreCase.GetHashCode(Content));
         }
     }
 }

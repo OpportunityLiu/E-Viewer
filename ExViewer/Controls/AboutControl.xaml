@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              Loading="UserControl_Loading"
+             Unloaded="UserControl_Unloaded"
              d:DesignHeight="1000"
              d:DesignWidth="500">
     <UserControl.Resources>

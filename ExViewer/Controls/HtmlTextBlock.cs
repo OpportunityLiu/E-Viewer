@@ -144,6 +144,10 @@ namespace ExViewer.Controls
         public static void DetectLinkPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var s = (HtmlTextBlock)sender;
+            var o = (bool)e.OldValue;
+            var n = (bool)e.NewValue;
+            if(o == n)
+                return;
             s.reload();
         }
 
@@ -249,31 +253,15 @@ namespace ExViewer.Controls
             }
         }
 
-        private bool canChangeHasHyperlinks;
-
         public bool HasHyperlinks
         {
             get => (bool)GetValue(HasHyperlinksProperty);
-            private set
-            {
-                this.canChangeHasHyperlinks = true;
-                SetValue(HasHyperlinksProperty, value);
-                this.canChangeHasHyperlinks = false;
-            }
+            private set => SetValue(HasHyperlinksProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for HasHyperlinks.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HasHyperlinksProperty =
-            DependencyProperty.Register("HasHyperlinks", typeof(bool), typeof(HtmlTextBlock), new PropertyMetadata(false, HasHyperlinksPropertyChangedCallback));
-
-        private static void HasHyperlinksPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var s = (HtmlTextBlock)sender;
-            if(!s.canChangeHasHyperlinks)
-            {
-                s.HasHyperlinks = (bool)e.OldValue;
-            }
-        }
+            DependencyProperty.Register("HasHyperlinks", typeof(bool), typeof(HtmlTextBlock), new PropertyMetadata(false));
 
         private async Task<List<DependencyObject>> loadHtmlAsync(Paragraph target, HtmlNode content, bool detectLink)
         {
