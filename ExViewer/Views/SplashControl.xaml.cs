@@ -1,23 +1,16 @@
 ﻿using ExClient;
+using ExViewer.Controls;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
-using GalaSoft.MvvmLight.Ioc;
+using JYAnalyticsUniversal;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Security.Credentials;
 using Windows.Security.Credentials.UI;
-using Windows.UI.ViewManagement;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
-using System.Collections.Generic;
-using JYAnalyticsUniversal;
-using Windows.Storage;
-using ExViewer.Controls;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -106,6 +99,7 @@ namespace ExViewer.Views
             Window.Current.Content = this.rootControl;
             this.rootControl = null;
             JYAnalytics.TrackPageEnd(nameof(SplashControl));
+            afterActions();
         }
 
         private void setLoadingFinished()
@@ -208,12 +202,10 @@ namespace ExViewer.Views
                 else
                     this.applicationLoaded = true;
             }
-            afterActions();
         }
 
         private async void afterActions()
         {
-            await Task.Delay(5000);
             try
             {
                 var ver = await VersionChecker.CheckAsync();
@@ -227,7 +219,6 @@ namespace ExViewer.Views
             {
                 //Ignore exceptions here.
             }
-            await Task.Delay(15000);
             if(DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
                 try
                 {

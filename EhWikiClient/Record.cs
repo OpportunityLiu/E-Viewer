@@ -7,7 +7,7 @@ using System;
 
 namespace EhWikiClient
 {
-    [System.Diagnostics.DebuggerDisplay(@"\{{Title} -> {Japanese}\}")]
+    [System.Diagnostics.DebuggerDisplay(@"\{{Title} => {Japanese}\}")]
     public class Record
     {
         internal Record() { }
