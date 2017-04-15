@@ -11,7 +11,7 @@ using Namespace = ExClient.Namespace;
 
 namespace EhTagTranslatorClient
 {
-    [DebuggerDisplay(@"\{{Original} -> {Translated.RawString}\}")]
+    [DebuggerDisplay(@"\{{Original} => {Translated.RawString}\}")]
     public class Record
     {
         private static Regex lineRegex = new Regex(

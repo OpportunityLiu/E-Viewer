@@ -24,7 +24,9 @@ namespace EhTagClient
 
         private const string LAST_UPDATE = "EhTagClient.LastUpdate";
 
-        private static Regex reg = new Regex(@"<a href=""https://e-hentai\.org/tools\.php\?act=taggroup&amp;taggroup=(\d+)"" style=""color:black"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
+        private static readonly Regex reg = new Regex(@"<a href=""https://e-hentai\.org/tools\.php\?act=taggroup&amp;taggroup=(\d+)"" style=""color:black"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
+
+        private static readonly Uri DbUri = new Uri("https://e-hentai.org/tools.php?act=taggroup");
 
         public static DateTimeOffset LastUpdate
         {
@@ -47,7 +49,7 @@ namespace EhTagClient
                     {
                         using(var client = new HttpClient())
                         {
-                            var r = await client.GetStringAsync(new Uri("https://e-hentai.org/tools.php?act=taggroup"));
+                            var r = await client.GetStringAsync(DbUri);
                             await updateDbAsync(r, token);
                         }
                         LastUpdate = DateTimeOffset.Now;

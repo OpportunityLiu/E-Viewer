@@ -3,6 +3,7 @@ using System.Text;
 
 namespace ExClient
 {
+    [System.Diagnostics.DebuggerDisplay(@"[{Namespace}:{Content}]")]
     public struct Tag
     {
         // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };
