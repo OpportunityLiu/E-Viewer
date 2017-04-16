@@ -19,6 +19,7 @@ using Windows.Storage.Streams;
 using Windows.Storage;
 using Windows.Graphics.Imaging;
 using ExClient.Api;
+using ExClient.Collections;
 
 namespace ExViewer.ViewModels
 {

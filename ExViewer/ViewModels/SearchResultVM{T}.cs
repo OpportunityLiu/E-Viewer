@@ -12,6 +12,7 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Linq;
 using EhTagTranslatorClient;
+using ExClient.Collections;
 
 namespace ExViewer.ViewModels
 {

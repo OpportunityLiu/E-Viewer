@@ -11,7 +11,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
-namespace ExClient
+namespace ExClient.Collections
 {
     public abstract class IncrementalLoadingCollection<T> : ObservableCollection<T>, ISupportIncrementalLoading
     {

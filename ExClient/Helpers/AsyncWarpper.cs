@@ -14,10 +14,10 @@ namespace ExClient.Helpers
 
         public AsyncOperationCompletedHandler<T> Completed
         {
-            get => completed;
+            get => this.completed;
             set
             {
-                completed = value;
+                this.completed = value;
                 value?.Invoke(this, AsyncStatus.Completed);
             }
         }
@@ -39,7 +39,7 @@ namespace ExClient.Helpers
         {
         }
 
-        public T GetResults() => result;
+        public T GetResults() => this.result;
     }
 
     internal class AsyncWarpper: IAsyncAction
@@ -66,7 +66,7 @@ namespace ExClient.Helpers
             get => completed;
             set
             {
-                completed = value;
+                this.completed = value;
                 value?.Invoke(this, AsyncStatus.Completed);
             }
         }

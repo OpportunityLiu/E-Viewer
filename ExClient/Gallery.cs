@@ -1,4 +1,5 @@
 ﻿using ExClient.Api;
+using ExClient.Collections;
 using ExClient.Internal;
 using ExClient.Models;
 using HtmlAgilityPack;
