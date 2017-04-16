@@ -1,4 +1,5 @@
-﻿using ExClient.Internal;
+﻿using ExClient.Collections;
+using ExClient.Internal;
 using System.Collections.Generic;
 
 #pragma warning disable IDE1006 // 命名样式

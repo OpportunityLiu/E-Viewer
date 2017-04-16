@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExClient.Collections;
 using ExViewer.Views;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
