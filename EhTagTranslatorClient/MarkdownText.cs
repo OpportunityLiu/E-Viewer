@@ -23,8 +23,8 @@ namespace EhTagTranslatorClient
         private static readonly Regex analyzer = new Regex(@"!\[(?<alt>.*?)\]\((?:(?<url>[^#].*?)|(?:#\s+""(?<url>.*?)""))\)", RegexOptions.Compiled);
 
         private IReadOnlyList<MarkdownToken> tokens;
-        public IReadOnlyList<MarkdownToken> Tokens 
-            => System.Threading.LazyInitializer.EnsureInitialized(ref this.tokens, () 
+        public IReadOnlyList<MarkdownToken> Tokens
+            => System.Threading.LazyInitializer.EnsureInitialized(ref this.tokens, ()
                 => this.analyze().ToList().AsReadOnly());
 
         private IEnumerable<MarkdownToken> analyze()
@@ -49,7 +49,7 @@ namespace EhTagTranslatorClient
     }
 
     [System.Diagnostics.DebuggerDisplay(@"{GetType()}{ToString()}")]
-    public class MarkdownToken
+    public class MarkdownToken : Windows.Foundation.IStringable
     {
     }
 

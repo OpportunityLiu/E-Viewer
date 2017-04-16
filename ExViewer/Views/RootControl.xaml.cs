@@ -273,24 +273,5 @@ namespace ExViewer.Views
         {
             return visibleBounds.Left + offset;
         }
-
-        private void elementAccessKeyDisplayRequested(UIElement sender, AccessKeyDisplayRequestedEventArgs args)
-        {
-            var tooltip = ToolTipService.GetToolTip(sender);
-            if(!(tooltip is ToolTip tt))
-            {
-                tt = new ToolTip { Content = tooltip };
-                ToolTipService.SetToolTip(sender, tt);
-            }
-            tt.IsOpen = true;
-        }
-
-        private void elementAccessKeyDisplayDismissed(UIElement sender, AccessKeyDisplayDismissedEventArgs args)
-        {
-            if(ToolTipService.GetToolTip(sender) is ToolTip tt)
-            {
-                tt.IsOpen = false;
-            }
-        }
     }
 }

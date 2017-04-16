@@ -105,6 +105,7 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-hans\Language.resjson" />
     <PRIResource Include="Strings\zh-hans\Resources.resjson" />
     <PRIResource Include="Strings\zh-hans\Category.resjson" />
     <PRIResource Include="Strings\zh-hans\Namespace.resjson" />
@@ -135,8 +136,17 @@
     <Compile Include="Internal\TokenExtension.cs" />
     <Compile Include="Internal\UriProvider.cs" />
     <Compile Include="Language.cs" />
+    <Compile Include="Launch\FavoritesSearchHandler.cs" />
+    <Compile Include="Launch\GalleryHandler.cs" />
+    <Compile Include="Launch\GalleryImageHandler.cs" />
+    <Compile Include="Launch\GalleryTorrentHandler.cs" />
     <Compile Include="Launch\LaunchResult.cs" />
+    <Compile Include="Launch\SearchCategoryHandler.cs" />
+    <Compile Include="Launch\SearchHandler.cs" />
+    <Compile Include="Launch\SearchUploaderAndTagHandler.cs" />
     <Compile Include="Launch\UriHandler.cs" />
+    <Compile Include="Launch\UriHandlerData.cs" />
+    <Compile Include="Launch\UriHelper.cs" />
     <Compile Include="Namespace.cs" />
     <Compile Include="ObservableCollection{T}.cs" />
     <Compile Include="PopularCollection.cs" />
@@ -191,6 +201,7 @@
     <PRIResource Include="Strings\en\Namespace.resjson" />
     <PRIResource Include="Strings\en\Category.resjson" />
     <PRIResource Include="Strings\en\Resources.resjson" />
+    <PRIResource Include="Strings\en\Language.resjson" />
     <None Include="Strings\Strings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Strings.tt.cs</LastGenOutput>

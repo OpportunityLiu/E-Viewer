@@ -134,6 +134,10 @@ namespace EhTagTranslatorClient
                         {
                             if(dic.TryGetValue(item.Original, out var existed))
                             {
+#if DEBUG
+                                if(System.Diagnostics.Debugger.IsAttached)
+                                    System.Diagnostics.Debugger.Break();
+#endif
                                 existed = Record.Combine(existed, item);
                             }
                             else

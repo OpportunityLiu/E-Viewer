@@ -201,6 +201,7 @@
                             Grid.Row="2"
                             Grid.Column="2"
                             x:Name="btn_ChangeUser"
+                            AccessKey="U"
                             Content="&#xE895;"
                             Click="btn_ChangeUser_Click"
                             IsEnabled="{x:Bind sv_root.IsPaneOpen, Mode=OneWay}"
@@ -220,6 +221,7 @@
                                                    x:Name="svt_Search"
                                                    Content="Search"
                                                    Click="svt_Click"
+                                                   AccessKey="S"
                                                    XYFocusUp="{x:Bind btn_ChangeUser}">
                                 <controls:SplitViewTab.Icon>
                                     <FontIcon Glyph="&#xE7C5;"
@@ -229,7 +231,8 @@
                             <controls:SplitViewTab x:Uid="Views/RootControl/FavoritesSplitViewTab"
                                                    x:Name="svt_Favorites"
                                                    Content="Favorites"
-                                                   Click="svt_Click">
+                                                   Click="svt_Click"
+                                                   AccessKey="F">
                                 <controls:SplitViewTab.Icon>
                                     <FontIcon Glyph="&#xE728;"
                                               FontSize="16" />
@@ -238,7 +241,8 @@
                             <controls:SplitViewTab x:Uid="Views/RootControl/PopularSplitViewTab"
                                                    x:Name="svt_Popular"
                                                    Content="Popular"
-                                                   Click="svt_Click">
+                                                   Click="svt_Click"
+                                                   AccessKey="H">
                                 <controls:SplitViewTab.Icon>
                                     <PathIcon Data="M9,10 L9,19 L11,19 L11,21.2891 L13.28906,19 L23,19 L23,10 z M8,9 L24,9 L24,20 L13.71094,20 L10,23.7109 L10,20 L8,20 z M13,14 h2 l1,-2.2 l1,2.2 h2 l-1.5,1.4 l0.4,2.2 l-1.9,-1 l-1.9,1 l0.4,-2.2z"
                                               Width="32"
@@ -248,7 +252,8 @@
                             <controls:SplitViewTab x:Uid="Views/RootControl/SavedSplitViewTab"
                                                    x:Name="svt_Saved"
                                                    Content="Saved galleries"
-                                                   Click="svt_Click">
+                                                   Click="svt_Click"
+                                                   AccessKey="G">
                                 <controls:SplitViewTab.Icon>
                                     <FontIcon Glyph="&#xE8B7;"
                                               FontSize="16" />
@@ -257,7 +262,8 @@
                             <controls:SplitViewTab x:Uid="Views/RootControl/CachedSplitViewTab"
                                                    x:Name="svt_Cached"
                                                    Content="Cached galleries"
-                                                   Click="svt_Click">
+                                                   Click="svt_Click"
+                                                   AccessKey="C">
                                 <controls:SplitViewTab.Icon>
                                     <PathIcon Data="F1M10,8 l12,0 v1 h-1 v3 a5,5,0,0,1,-10,0 v-3h1v3a4,4,0,0,0,8,0v-3h-10z
               m2,3h8v1h-8z
@@ -274,7 +280,8 @@
                                 <controls:SplitViewTab x:Uid="Views/RootControl/SettingsSplitViewTab"
                                                        x:Name="svt_Settings"
                                                        Content="Settings"
-                                                       Click="svt_Click">
+                                                       Click="svt_Click"
+                                                       AccessKey="E">
                                     <controls:SplitViewTab.Icon>
                                         <FontIcon Glyph="&#xE713;"
                                                   FontSize="16" />
@@ -295,10 +302,7 @@
                       Style="{StaticResource SplitViewToggleButtonStyle}"
                       IsChecked="{x:Bind tbtPaneBind(sv_root.IsPaneOpen), BindBack=tbtPaneBindBack, Mode=TwoWay}"
                       IsTabStop="False"
-                      ToolTipService.ToolTip="Show/hide pane (Alt + P)"
-                      AccessKey="P"
-                      AccessKeyDisplayRequested="elementAccessKeyDisplayRequested"
-                      AccessKeyDisplayDismissed="elementAccessKeyDisplayDismissed" />
+                      AccessKey="P" />
         <Border x:Name="bd_Toast"
                 x:DeferLoadStrategy="Lazy"
                 HorizontalAlignment="Stretch"

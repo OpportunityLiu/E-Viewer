@@ -13,15 +13,34 @@ namespace ExClient
         {
             var splited = content.Split(split, 2);
             if(splited.Length == 2)
-                return new Tag((Namespace)Enum.Parse(typeof(Namespace), splited[0], true), splited[1]);
+                return new Tag(NamespaceExtention.Parse(splited[0]), splited[1]);
             else
                 return new Tag(Namespace.Misc, content);
+        }
 
+        public static bool TryParse(string content, out Tag result)
+        {
+            result = default(Tag);
+            var splited = content.Split(split, 2);
+            if(splited.Length == 2)
+            {
+                if(NamespaceExtention.TryParse(splited[0], out var ns))
+                {
+                    result = new Tag(ns, splited[1]);
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                result = new Tag(Namespace.Misc, content);
+                return true;
+            }
         }
 
         public Tag(Namespace @namespace, string content)
         {
-            if(!@namespace.IsValid())
+            if(!@namespace.IsDefined())
                 throw new ArgumentOutOfRangeException(nameof(@namespace));
             if(string.IsNullOrWhiteSpace(content))
                 throw new ArgumentNullException(nameof(content));
