@@ -121,7 +121,7 @@ namespace ExClient
             var i = getIndexOfKey(key);
             if(i < 0)
             {
-                if(Enum.IsDefined(typeof(Namespace), key))
+                if(key.IsDefined())
                     return new RangedCollectionView<Tag>(this.Data, 0, 0);
                 else
                     throw new ArgumentOutOfRangeException(nameof(key));

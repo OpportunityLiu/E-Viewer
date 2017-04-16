@@ -280,6 +280,8 @@
            BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}">
         <Setter Property="InputScope"
                 Value="Search" />
+        <Setter Property="PreventKeyboardDisplayOnProgrammaticFocus"
+                Value="True" />
     </Style>
 
     <Style x:Key="SearchAutoSuggestBoxItemContainerStyle"

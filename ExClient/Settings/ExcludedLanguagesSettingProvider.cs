@@ -62,7 +62,7 @@ namespace ExClient.Settings
         {
             foreach(var item in items)
             {
-                if(!Enum.IsDefined(typeof(ExcludedLanguage), item))
+                if(!item.IsDefined())
                     throw new ArgumentOutOfRangeException(nameof(item));
                 this.items.Add((ushort)item);
             }
@@ -73,7 +73,7 @@ namespace ExClient.Settings
 
         public void Add(ExcludedLanguage item)
         {
-            if(!Enum.IsDefined(typeof(ExcludedLanguage), item))
+            if(!item.IsDefined())
                 throw new ArgumentOutOfRangeException(nameof(item));
             if(this.items.Add((ushort)item))
                 ApplyChanges();

@@ -24,7 +24,7 @@ namespace ExClient
     {
         public static string ToFriendlyNameString(this Category that)
         {
-            return EnumExtension.ToFriendlyNameString(that, LocalizedStrings.Category);
+            return that.ToFriendlyNameString(LocalizedStrings.Category.GetValue);
         }
     }
 }

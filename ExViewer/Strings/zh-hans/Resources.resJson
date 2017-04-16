@@ -170,7 +170,6 @@
       "RefreshAppBarButton/Label": "刷新"
     },
     "RootControl": {
-      "PaneButton/ToolTipService/ToolTip": "显示/隐藏菜单 (Alt + P)",
       "CachedSplitViewTab/Content": "缓存的画廊",
       "ChangeUserButton/ToolTipService/ToolTip": "更换用户",
       "DisableInfoTextBlock/Text": "少女祈祷中…",

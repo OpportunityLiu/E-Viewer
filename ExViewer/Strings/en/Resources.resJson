@@ -170,7 +170,6 @@
       "RefreshAppBarButton/Label": "Refresh"
     },
     "RootControl": {
-      "PaneButton/ToolTipService/ToolTip": "Show/hide pane (Alt + P)",
       "CachedSplitViewTab/Content": "Cached galleries",
       "ChangeUserButton/ToolTipService/ToolTip": "Change user",
       "DisableInfoTextBlock/Text": "Operation in progress, plaese wait...",
@@ -199,7 +198,7 @@
       "LowPowerTagsCheckBox/Content": "Search low-power tags",
       "MinRatingCheckBox/Content": "Minimum rating:",
       "NamesCheckBox/Content": "Search gallery name",
-      "OnlyTorrentsCheckBox/Content": "Only show galleries with torrents",
+      "OnlyTorrentsCheckBox/Content": "Only show galleries with torrents hahah more text to make tj",
       "ShowExpungedCheckBox/Content": "Show expunged galleries",
       "TagsCheckBox/Content": "Search gallery tags",
       "TorrentNamesCheckBox/Content": "Search torrent filenames"
