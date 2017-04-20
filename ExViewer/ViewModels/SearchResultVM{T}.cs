@@ -16,107 +16,6 @@ using ExClient.Collections;
 
 namespace ExViewer.ViewModels
 {
-    public class AutoCompletion
-    {
-        private AutoCompletion(string content)
-        {
-            this.Content = content;
-        }
-
-        public override string ToString()
-        {
-            return this.Content;
-        }
-
-        public string Content { get; private set; }
-
-        internal static IEnumerable<AutoCompletion> GetCompletions(string input)
-        {
-            if(string.IsNullOrWhiteSpace(input))
-                return getCompletionsWithEmptyInput();
-            var quoteCount = input.Count(c => c == '\"');
-            if(quoteCount % 2 == 0)
-                return getCompletionsWithQuoteFinished(input);
-            else
-                return getCompletionsWithQuoteUnfinished(input);
-        }
-
-        static AutoCompletion()
-        {
-            var ns = Enum.GetNames(typeof(Namespace)).ToList();
-            ns.Remove(Namespace.Misc.ToString());
-            ns.Remove(Namespace.Unknown.ToString());
-            for(var i = 0; i < ns.Count; i++)
-            {
-                ns[i] = ns[i].ToLowerInvariant();
-            }
-            ns.Add("uploader");
-            namedNamespaces = ns.AsReadOnly();
-        }
-
-        private static readonly IReadOnlyList<string> namedNamespaces;
-
-        private static IEnumerable<AutoCompletion> getCompletionsWithEmptyInput()
-        {
-            yield break;
-        }
-
-        private static IEnumerable<AutoCompletion> getCompletionsWithQuoteUnfinished(string input)
-        {
-            var lastChar = input[input.Length - 1];
-            switch(lastChar)
-            {
-            case ' ':
-            case ':':
-            case '"':
-                yield break;
-            case '$':
-                yield return new AutoCompletion($"{input}\"");
-                yield break;
-            case '-':
-            default:
-                yield return new AutoCompletion($"{input}\"");
-                yield return new AutoCompletion($"{input}$\"");
-                yield break;
-            }
-        }
-
-        private static IEnumerable<AutoCompletion> getCompletionsWithQuoteFinished(string input)
-        {
-            var lastChar = input[input.Length - 1];
-            switch(lastChar)
-            {
-            case ' ':
-            case '-':
-                // Too many results
-                //foreach(var item in namedNamespaces)
-                //{
-                //    yield return new AutoCompletion($"{input}{item}:");
-                //}
-                yield break;
-            case ':':
-                yield return new AutoCompletion($"{input}\"");
-                yield break;
-            case '"':
-            case '$':
-                yield break;
-            default:
-                var index = input.LastIndexOf(' ') + 1;
-                var lastTerm = input.Substring(index);
-                if(lastTerm.Length > 0 && lastTerm.All(c => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')))
-                {
-                    var beforeLastTerm = input.Substring(0, input.Length - lastTerm.Length);
-                    foreach(var item in namedNamespaces)
-                    {
-                        if(item.StartsWith(lastTerm, StringComparison.OrdinalIgnoreCase))
-                            yield return new AutoCompletion($"{beforeLastTerm}{item}:");
-                    }
-                }
-                yield break;
-            }
-        }
-    }
-
     public abstract class SearchResultVM<T> : ViewModelBase
         where T : SearchResultBase
     {
@@ -191,19 +90,60 @@ namespace ExViewer.ViewModels
         {
             return Task.Run<IReadOnlyList<object>>(() =>
             {
-                var historyKeyword = input?.Trim() ?? "";
+                input = input?.Trim() ?? "";
                 using(var db = new SearchHistoryDb())
                 {
                     var history = ((IEnumerable<SearchHistory>)db.SearchHistorySet
-                                                                 .Where(sh => sh.Content.Contains(historyKeyword))
+                                                                 .Where(sh => sh.Content.Contains(input))
                                                                  .OrderByDescending(sh => sh.Time))
                                         .Distinct()
-                                        .Select(sh => sh.SetHighlight(historyKeyword));
-                    var lastword = historyKeyword.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                                        .Select(sh => sh.SetHighlight(input));
+                    var quoteCount = input.Count(c => c == '"');
+                    var lastword = default(string);
+                    var previous = input;
+                    if(quoteCount == 0)
+                    {
+                        lastword = input.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                        previous = input.Substring(0, input.Length - lastword.Length);
+                    }
+                    else if(quoteCount % 2 == 0)
+                    {
+                        if(input[input.Length - 1] != '"')
+                        {
+                            var qp = input.LastIndexOf('"');
+                            var sp = input.LastIndexOf(' ', input.Length - 1, input.Length - qp);
+                            if(sp != -1)
+                            {
+                                lastword = input.Substring(sp + 1);
+                                previous = input.Substring(0, input.Length - lastword.Length);
+                            }
+                            else
+                            {
+                                lastword = input.Substring(qp + 1);
+                                previous = input.Substring(0, input.Length - lastword.Length) + " ";
+                            }
+                        }
+                        else
+                        {
+                            lastword = null;
+                        }
+                    }
+                    else
+                    {
+                        var qp = input.LastIndexOf('"');
+                        lastword = input.Substring(qp + 1).Trim();
+                        if(qp == 0)
+                            previous = "";
+                        else
+                        {
+                            previous = input.Substring(0, qp);
+                            if(!char.IsWhiteSpace(input[qp - 1]))
+                                previous = previous + " ";
+                        }
+                    }
                     var dictionary = Enumerable.Empty<ITagRecord>();
                     if(lastword != null)
                     {
-                        var previous = historyKeyword.Substring(0, historyKeyword.Length - lastword.Length);
                         dictionary = TagRecordFactory.GetTranslatedRecords(lastword)
                             .Concat<ITagRecord>(TagRecordFactory.GetRecords(lastword))
                             .Where(t => t != null)
