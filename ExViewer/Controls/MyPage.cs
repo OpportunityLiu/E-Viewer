@@ -12,33 +12,28 @@ namespace ExViewer.Controls
 {
     public class MyPage : Page
     {
-        private static List<WeakReference<MyPage>> instances = new List<WeakReference<MyPage>>();
-
-        static MyPage()
+        private void VisibleBoundsThicknessPropertyChangedCallback(DependencyObject d, DependencyProperty p)
         {
-            RootControl.RootController.Parent.RegisterPropertyChangedCallback(RootControl.VisibleBoundsThicknessProperty, VisibleBoundsThicknessPropertyChangedCallback);
+            this.SetValue(VisibleBoundsThicknessProperty, RootControl.RootController.Parent.ContentVisibleBoundsThickness);
         }
 
-        private static void VisibleBoundsThicknessPropertyChangedCallback(DependencyObject d, DependencyProperty p)
-        {
-            for(var i = 0; i < instances.Count;)
-            {
-                if(instances[i].TryGetTarget(out var item))
-                {
-                    item.SetValue(VisibleBoundsThicknessProperty, RootControl.RootController.Parent.ContentVisibleBoundsThickness);
-                    i++;
-                }
-                else
-                {
-                    instances.RemoveAt(i);
-                }
-            }
-        }
+        private long rootControlVisibleBoundsCallbackId;
 
         public MyPage()
         {
+            this.Loading += this.MyPage_Loading;
+            this.Unloaded += this.MyPage_Unloaded;
+        }
+
+        private void MyPage_Loading(FrameworkElement sender, object args)
+        {
             this.SetValue(VisibleBoundsThicknessProperty, RootControl.RootController.Parent.ContentVisibleBoundsThickness);
-            instances.Add(new WeakReference<MyPage>(this));
+            this.rootControlVisibleBoundsCallbackId = RootControl.RootController.Parent.RegisterPropertyChangedCallback(RootControl.VisibleBoundsThicknessProperty, VisibleBoundsThicknessPropertyChangedCallback);
+        }
+
+        private void MyPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            RootControl.RootController.Parent.UnregisterPropertyChangedCallback(RootControl.VisibleBoundsThicknessProperty, this.rootControlVisibleBoundsCallbackId);
         }
 
         public Thickness VisibleBoundsThickness

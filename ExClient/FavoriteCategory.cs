@@ -35,9 +35,14 @@ namespace ExClient
                 else if(this.Index < 0)
                     return null;
                 else
-                    return $"favorites {this.Index}";
+                    return FavoriteCollectionNames.Current.GetName(this.Index);
             }
-            internal set => Set(ref this.name, value);
+            internal set
+            {
+                Set(ref this.name, value);
+                if(this.Index >= 0)
+                    FavoriteCollectionNames.Current.SetName(this.Index, value);
+            }
         }
 
         private string name;

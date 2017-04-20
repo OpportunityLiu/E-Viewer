@@ -1,12 +1,14 @@
 ﻿using HtmlAgilityPack;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ExClient
 {
-    public sealed class FavoriteCollection : IReadOnlyList<FavoriteCategory>
+    public sealed partial class FavoriteCollection : IReadOnlyList<FavoriteCategory>
     {
+
         private static readonly Regex favStyleMatcher = new Regex(@"background-position:\s*0\s*px\s+-(\d+)\s*px", RegexOptions.Compiled);
 
         internal FavoriteCategory GetCategory(HtmlNode favoriteIconNode)
@@ -30,9 +32,9 @@ namespace ExClient
         internal FavoriteCollection(Client owner)
         {
             this.data = new FavoriteCategory[10];
-            for(int i = 0; i < data.Length; i++)
+            for(var i = 0; i < this.data.Length; i++)
             {
-                data[i] = new FavoriteCategory(i);
+                this.data[i] = new FavoriteCategory(i);
             }
             this.Owner = owner;
         }
@@ -54,15 +56,12 @@ namespace ExClient
 
         private FavoriteCategory[] data;
 
-        public int Count => data.Length;
+        public int Count => this.data.Length;
 
-        public FavoriteCategory this[int index] => data[index];
+        public FavoriteCategory this[int index] => this.data[index];
 
         public IEnumerator<FavoriteCategory> GetEnumerator()
-        {
-            for(int i = 0; i < data.Length; i++)
-                yield return data[i];
-        }
+            => this.data.Cast<FavoriteCategory>().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

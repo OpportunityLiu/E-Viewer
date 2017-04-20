@@ -46,7 +46,7 @@
                 <AppBarButton x:Uid="Views/CachedPage/DeleteAllAppBarButton"
                               x:Name="abb_DeleteAll"
                               Click="abb_DeleteAll_Click"
-                              Icon="Clear"
+                              Icon="Delete"
                               Label="Delete all" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
