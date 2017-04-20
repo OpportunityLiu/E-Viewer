@@ -123,6 +123,7 @@
     <Compile Include="ConnectionStrategy.cs" />
     <Compile Include="FavoriteCategory.cs" />
     <Compile Include="FavoriteCollection.cs" />
+    <Compile Include="Internal\FavoriteCollectionNames.cs" />
     <Compile Include="FavoritesSearchResult.cs" />
     <Compile Include="GalleryImagePlaceHolder.cs" />
     <Compile Include="Helpers\AsyncWarpper.cs" />
@@ -210,7 +211,12 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationDataManager\ApplicationDataManager.csproj">
+      <Project>{33ccbcb8-8709-4c6c-ad59-e156f1e04fd0}</Project>
+      <Name>ApplicationDataManager</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

@@ -172,6 +172,7 @@
     <Compile Include="ViewModels\PopularVM.cs" />
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
+    <Compile Include="ViewModels\SearchingParser\Parser.cs" />
     <Compile Include="ViewModels\SearchResultVM{T}.cs" />
     <Compile Include="ViewModels\SearchVM.cs" />
     <Compile Include="Controls\AboutControl.xaml.cs">

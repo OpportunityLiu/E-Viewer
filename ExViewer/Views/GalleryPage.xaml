@@ -248,57 +248,6 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
-                Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,48,x1,x0'}"/>
-        <CommandBar x:Name="cb_top"
-                    Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
-                    Opening="cb_top_Opening"
-                    Closed="cb_top_Closed"
-                    HorizontalContentAlignment="Stretch"
-                    IsDynamicOverflowEnabled="False">
-            <CommandBar.Content>
-                <Grid Padding="0,14">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition x:Name="cdSplitViewPlaceholder"
-                                          Width="0" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="tbGalleryName"
-                               Grid.Column="1"
-                               Grid.ColumnSpan="999"
-                               Style="{StaticResource GalleryTitleTextBlockStyle}"
-                               Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}">
-                        <ToolTipService.ToolTip>
-                            <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
-                                       TextWrapping="WrapWholeWords" />
-                        </ToolTipService.ToolTip>
-                    </TextBlock>
-                </Grid>
-            </CommandBar.Content>
-            <CommandBar.PrimaryCommands>
-                <AppBarButton x:Name="abbFavorites"
-                              Icon="Favorite"
-                              Foreground="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToBrushConverter}, Mode=OneWay}"
-                              Label="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToNameConverter}, Mode=OneWay}"
-                              Click="abbFavorites_Click" />
-                <AppBarButton x:Name="abbComment"
-                              x:Uid="Views/GalleryPage/AppBarButtonAddComment"
-                              Icon="Add"
-                              Label="Post new comment"
-                              Visibility="{x:Bind pv.SelectedIndex, Mode=OneWay, Converter={StaticResource ConAddComment}}"
-                              Click="abbComment_Click" />
-            </CommandBar.PrimaryCommands>
-            <CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="abb_share"
-                              x:Uid="Views/GalleryPage/ShareAppBarButton"
-                              Command="{x:Bind VM.Share, Mode=OneWay}"
-                              Label="Share" />
-                <AppBarButton x:Name="abb_save"
-                              x:Uid="Views/GalleryPage/SaveAppBarButton"
-                              Command="{x:Bind VM.Save, Mode=OneWay}"
-                              Label="Save this gallery" />
-            </CommandBar.SecondaryCommands>
-        </CommandBar>
         <ScrollViewer x:Name="sv_Content"
                       Grid.Row="1"
                       VerticalScrollBarVisibility="Hidden"
@@ -628,6 +577,62 @@
                 </Grid>
             </StackPanel>
         </ScrollViewer>
+        <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
+                Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,48,x1,x0'}" />
+        <CommandBar x:Name="cb_top"
+                    Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
+                    Opening="cb_top_Opening"
+                    Closed="cb_top_Closed"
+                    HorizontalContentAlignment="Stretch"
+                    IsDynamicOverflowEnabled="False">
+            <CommandBar.Content>
+                <Grid Padding="0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="cdSplitViewPlaceholder"
+                                          Width="0" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="tbGalleryName"
+                               Grid.Column="1"
+                               Grid.ColumnSpan="999"
+                               Style="{StaticResource GalleryTitleTextBlockStyle}"
+                               Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}">
+                        <ToolTipService.ToolTip>
+                            <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                                       TextWrapping="WrapWholeWords" />
+                        </ToolTipService.ToolTip>
+                    </TextBlock>
+                </Grid>
+            </CommandBar.Content>
+            <CommandBar.PrimaryCommands>
+                <AppBarButton x:Name="abbFavorites"
+                              Icon="Favorite"
+                              Foreground="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToBrushConverter}, Mode=OneWay}"
+                              Label="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToNameConverter}, Mode=OneWay}"
+                              Click="abbFavorites_Click" />
+                <AppBarButton x:Name="abbComment"
+                              x:Uid="Views/GalleryPage/AppBarButtonAddComment"
+                              Icon="Add"
+                              Label="Post new comment"
+                              Visibility="{x:Bind pv.SelectedIndex, Mode=OneWay, Converter={StaticResource ConAddComment}}"
+                              Click="abbComment_Click" />
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="abb_share"
+                              x:Uid="Views/GalleryPage/ShareAppBarButton"
+                              Command="{x:Bind VM.Share, Mode=OneWay}"
+                              Label="Share">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE72D;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton x:Name="abb_save"
+                              x:Uid="Views/GalleryPage/SaveAppBarButton"
+                              Command="{x:Bind VM.Save, Mode=OneWay}"
+                              Icon="Download"
+                              Label="Save this gallery" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
         <ProgressBar x:Name="pb_save"
                      Grid.Row="1"
                      Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"

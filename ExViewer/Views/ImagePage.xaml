@@ -281,21 +281,33 @@
                               x:Uid="Views/ImagePage/ReloadAppBarButton"
                               Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
                               CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
+                              Icon="Refresh"
                               Label="Reload" />
                 <AppBarButton x:Name="abb_LoadOriginal"
                               x:Uid="Views/ImagePage/LoadOriginalAppBarButton"
                               Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
                               CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
-                              Label="Load original image" />
+                              Label="Load original image">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE744;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
                 <AppBarButton x:Name="abb_Share"
                               x:Uid="Views/ImagePage/ShareAppBarButton"
                               Command="{x:Bind VM.Share, Mode=OneWay}"
                               CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
-                              Label="Share" />
-                <AppBarSeparator />
+                              Label="Share">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE72D;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarSeparator /> 
                 <AppBarButton x:Name="abb_Info"
                               x:Uid="Views/ImagePage/ImageInfoAppBarButton"
                               Label="Image infomation">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE946;" />
+                    </AppBarButton.Icon>
                     <AppBarButton.Flyout>
                         <Flyout Opening="Flyout_Opening"
                                 Placement="Bottom"
@@ -339,7 +351,8 @@
                 <AppBarButton x:Name="abb_Help"
                               x:Uid="Views/ImagePage/HelpAppBarButton"
                               Click="abb_Help_Click"
-                              Label="Tips for keyboard users" />
+                              Label="Tips for keyboard users" 
+                              Icon="Help"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </RelativePanel>
