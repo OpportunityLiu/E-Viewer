@@ -29,12 +29,12 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                using(var db = new GalleryDb())
+                using (var db = new GalleryDb())
                 {
                     db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                     var cm = db.SavedSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
-                    if(gm == null)
+                    if (gm == null)
                         return null;
                     else
                     {
@@ -67,7 +67,7 @@ namespace ExClient
                 }
                 var result = new Gallery[galleryInfo.Count];
                 var pageCount = MathHelper.GetPageCount(galleryInfo.Count, 25);
-                for(var i = 0; i < pageCount; i++)
+                for (var i = 0; i < pageCount; i++)
                 {
                     var pageSize = MathHelper.GetSizeOfPage(galleryInfo.Count, 25, i);
                     var startIndex = MathHelper.GetStartIndexOfPage(25, i);
@@ -106,7 +106,7 @@ namespace ExClient
                     ImageLoaded = -1
                 };
                 progress.Report(toReport);
-                while(this.HasMoreItems)
+                while (this.HasMoreItems)
                 {
                     await this.LoadMoreItemsAsync((uint)PageSize);
                 }
@@ -116,7 +116,7 @@ namespace ExClient
                 var loadTasks = this.Select(image => Task.Run(async () =>
                 {
                     await image.LoadImageAsync(false, strategy, true);
-                    lock(toReport)
+                    lock (toReport)
                     {
                         toReport.ImageLoaded++;
                         progress.Report(toReport);
@@ -125,11 +125,11 @@ namespace ExClient
                 await Task.WhenAll(loadTasks);
 
                 var thumb = (await Client.Current.HttpClient.GetBufferAsync(this.ThumbUri)).ToArray();
-                using(var db = new GalleryDb())
+                using (var db = new GalleryDb())
                 {
                     var gid = this.Id;
                     var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == gid);
-                    if(myModel == null)
+                    if (myModel == null)
                     {
                         db.SavedSet.Add(new SavedGalleryModel().Update(this, thumb));
                     }
@@ -190,34 +190,26 @@ namespace ExClient
             string[] tags = null)
             : this(gid, token.StringToToken())
         {
-            if(error != null)
+            if (error != null)
             {
-                this.Available = false;
-                return;
+                throw new Exception(error);
             }
             this.Available = !expunged;
-            try
-            {
-                this.ArchiverKey = archiver_key;
-                this.Title = HtmlEntity.DeEntitize(title);
-                this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
-                if(!categoriesForRestApi.TryGetValue(category, out var ca))
-                    ca = Category.Unspecified;
-                this.Category = ca;
-                this.Uploader = HtmlEntity.DeEntitize(uploader);
-                this.Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture));
-                this.RecordCount = int.Parse(filecount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
-                this.FileSize = filesize;
-                this.Expunged = expunged;
-                this.Rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
-                this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
-                this.Tags = new TagCollection(tags.Select(tag => Tag.Parse(tag)));
-                this.ThumbUri = toEhCoverUri(thumb);
-            }
-            catch(Exception)
-            {
-                this.Available = false;
-            }
+            this.ArchiverKey = archiver_key;
+            this.Title = HtmlEntity.DeEntitize(title);
+            this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
+            if (!categoriesForRestApi.TryGetValue(category, out var ca))
+                ca = Category.Unspecified;
+            this.Category = ca;
+            this.Uploader = HtmlEntity.DeEntitize(uploader);
+            this.Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture));
+            this.RecordCount = int.Parse(filecount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
+            this.FileSize = filesize;
+            this.Expunged = expunged;
+            this.Rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
+            this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
+            this.Tags = new TagCollection(tags.Select(tag => Tag.Parse(tag)));
+            this.ThumbUri = toEhCoverUri(thumb);
             this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
 
@@ -242,13 +234,13 @@ namespace ExClient
                 try
                 {
                     var buffer = await Client.Current.HttpClient.GetBufferAsync(this.ThumbUri);
-                    using(var stream = buffer.AsRandomAccessStream())
+                    using (var stream = buffer.AsRandomAccessStream())
                     {
                         var decoder = await BitmapDecoder.CreateAsync(stream);
                         this.Thumb = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
                     }
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     this.thumbImage?.Dispose();
                     this.Thumb = null;
@@ -261,11 +253,11 @@ namespace ExClient
         {
             return Task.Run(() =>
             {
-                using(var db = new GalleryDb())
+                using (var db = new GalleryDb())
                 {
                     var gid = this.Id;
                     var myModel = db.GallerySet.SingleOrDefault(model => model.Id == gid);
-                    if(myModel == null)
+                    if (myModel == null)
                     {
                         db.GallerySet.Add(new GalleryModel().Update(this));
                     }
@@ -399,7 +391,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                if(this.galleryFolder == null)
+                if (this.galleryFolder == null)
                     this.GalleryFolder = await StorageHelper.LocalCache.CreateFolderAsync(this.Id.ToString(), CreationCollisionOption.OpenIfExists);
                 return this.galleryFolder;
             });
@@ -427,11 +419,11 @@ namespace ExClient
                 var html = new HtmlDocument();
                 html.LoadHtml(res);
                 updateFavoriteInfo(html);
-                if(needLoadComments)
+                if (needLoadComments)
                 {
                     this.Comments.AnalyzeDocument(html);
                 }
-                if(this.Revisions == null)
+                if (this.Revisions == null)
                     this.Revisions = new RevisionCollection(this, html);
                 var pcNodes = html.DocumentNode.Descendants("td")
                     .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
@@ -467,19 +459,19 @@ namespace ExClient
                                thumbUri = toEhUri(thumb)
                            };
                 var toAdd = new List<GalleryImage>(PageSize);
-                using(var db = new GalleryDb())
+                using (var db = new GalleryDb())
                 {
                     db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
-                    foreach(var page in pics)
+                    foreach (var page in pics)
                     {
                         var gid = this.Id;
                         var pid = page.pageId;
                         var imageModel = db.ImageSet.FirstOrDefault(im => im.OwnerId == gid && im.PageId == pid);
-                        if(imageModel != null)
+                        if (imageModel != null)
                         {
                             // Load cache
                             var galleryImage = await GalleryImage.LoadCachedImageAsync(this, imageModel);
-                            if(galleryImage != null)
+                            if (galleryImage != null)
                             {
                                 toAdd.Add(galleryImage);
                                 continue;
@@ -507,15 +499,15 @@ namespace ExClient
                 var doc = new HtmlDocument();
                 doc.LoadHtml(r);
                 var favdel = doc.GetElementbyId("favdel");
-                if(favdel != null)
+                if (favdel != null)
                 {
                     var favSet = false;
-                    for(var i = 0; i < 10; i++)
+                    for (var i = 0; i < 10; i++)
                     {
                         var favNode = doc.GetElementbyId($"fav{i}");
                         var favNameNode = favNode.ParentNode.ParentNode.Elements("div").Skip(2).First();
                         Client.Current.Favorites[i].Name = HtmlEntity.DeEntitize(favNameNode.InnerText);
-                        if(!favSet && favNode.GetAttributeValue("checked", null) == "checked")
+                        if (!favSet && favNode.GetAttributeValue("checked", null) == "checked")
                         {
                             this.FavoriteCategory = Client.Current.Favorites[i];
                             favSet = true;
@@ -541,7 +533,7 @@ namespace ExClient
                 var temp = this.GalleryFolder;
                 this.GalleryFolder = null;
                 await temp.DeleteAsync();
-                using(var db = new GalleryDb())
+                using (var db = new GalleryDb())
                 {
                     db.ImageSet.RemoveRange(db.ImageSet.Where(i => i.OwnerId == gid));
                     await db.SaveChangesAsync();

@@ -6,6 +6,8 @@ namespace ExClient.Collections
 {
     public struct RangedCollectionView<T> : IReadOnlyList<T>
     {
+        public static RangedCollectionView<T> Empty => new RangedCollectionView<T>();
+
         public RangedCollectionView(IReadOnlyList<T> items, int startIndex, int count)
         {
             if(items == null)

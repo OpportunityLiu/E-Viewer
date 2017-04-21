@@ -28,9 +28,9 @@ namespace ExClient
 
         private int getIndexOfKey(Namespace key)
         {
-            for(var i = 0; i < this.keys.Length; i++)
+            for (var i = 0; i < this.keys.Length; i++)
             {
-                if(this.keys[i] == key)
+                if (this.keys[i] == key)
                     return i;
             }
             return -1;
@@ -43,10 +43,10 @@ namespace ExClient
             this.keys = new Namespace[staticKeys.Length];
             var currentIdx = 0;
             var currentNs = Unknown;
-            for(var i = 0; i < this.data.Length; i++)
+            for (var i = 0; i < this.data.Length; i++)
             {
                 var current = this.data[i];
-                if(currentNs == current.Namespace)
+                if (currentNs == current.Namespace)
                     continue;
                 currentNs = current.Namespace;
                 this.keys[currentIdx] = currentNs;
@@ -56,14 +56,13 @@ namespace ExClient
             this.offset[currentIdx] = this.data.Length;
             Array.Resize(ref this.keys, currentIdx);
             Array.Resize(ref this.offset, currentIdx + 1);
-            Items = new RangedCollectionView<Tag>(this.data, 0, this.data.Length);
         }
 
         private readonly Tag[] data;
         private readonly int[] offset;
         private readonly Namespace[] keys;
 
-        public RangedCollectionView<Tag> Items { get; }
+        public IReadOnlyList<Tag> Items => this.data;
 
         public int Count => this.keys.Length;
 
@@ -71,7 +70,7 @@ namespace ExClient
         {
             get
             {
-                if(unchecked((uint)index >= (uint)Count))
+                if (unchecked((uint)index >= (uint)Count))
                     throw new IndexOutOfRangeException();
                 return new NamespaceTagCollection(this.keys[index], this.getValue(index));
             }
@@ -85,7 +84,7 @@ namespace ExClient
                 {
                     return getValue(key);
                 }
-                catch(ArgumentOutOfRangeException ex)
+                catch (ArgumentOutOfRangeException ex)
                 {
                     throw new KeyNotFoundException("Key not found.", ex);
                 }
@@ -95,10 +94,10 @@ namespace ExClient
         private RangedCollectionView<Tag> getValue(Namespace key)
         {
             var i = getIndexOfKey(key);
-            if(i < 0)
+            if (i < 0)
             {
-                if(key.IsDefined())
-                    return new RangedCollectionView<Tag>(this.data, 0, 0);
+                if (key.IsDefined())
+                    return RangedCollectionView<Tag>.Empty;
                 else
                     throw new ArgumentOutOfRangeException(nameof(key));
             }
@@ -110,13 +109,42 @@ namespace ExClient
             return new RangedCollectionView<Tag>(this.data, this.offset[index], this.offset[index + 1] - this.offset[index]);
         }
 
-        public IEnumerator<NamespaceTagCollection> GetEnumerator()
+        public struct TagCollectionEnumerator : IEnumerator<NamespaceTagCollection>
         {
-            for(var i = 0; i < this.keys.Length; i++)
+            private readonly TagCollection parent;
+            private int i;
+
+            internal TagCollectionEnumerator(TagCollection parent)
             {
-                yield return new NamespaceTagCollection(this.keys[i], new RangedCollectionView<Tag>(this.data, this.offset[i], this.offset[i + 1] - this.offset[i]));
+                this.parent = parent;
+                this.i = -1;
+            }
+
+            public NamespaceTagCollection Current
+                => new NamespaceTagCollection(this.parent.keys[this.i], new RangedCollectionView<Tag>(this.parent.data, this.parent.offset[this.i], this.parent.offset[this.i + 1] - this.parent.offset[this.i]));
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose()
+            {
+            }
+
+            public bool MoveNext()
+            {
+                this.i++;
+                return this.i < this.parent.keys.Length;
+            }
+
+            public void Reset()
+            {
+                this.i = -1;
             }
         }
+
+        public TagCollectionEnumerator GetEnumerator()
+            => new TagCollectionEnumerator(this);
+
+        IEnumerator<NamespaceTagCollection> IEnumerable<NamespaceTagCollection>.GetEnumerator() => GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
@@ -140,8 +168,8 @@ namespace ExClient
 
         public RangedCollectionView<Tag>.RangedCollectionViewEnumerator GetEnumerator() => this.data.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
         IEnumerator<Tag> IEnumerable<Tag>.GetEnumerator() => GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

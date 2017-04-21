@@ -26,10 +26,10 @@ namespace ExViewer.ViewModels
             get => this.searchResult;
             protected set
             {
-                if(this.searchResult != null)
+                if (this.searchResult != null)
                     this.searchResult.LoadMoreItemsException -= this.SearchResult_LoadMoreItemsException;
                 Set(ref this.searchResult, value);
-                if(this.searchResult != null)
+                if (this.searchResult != null)
                     this.searchResult.LoadMoreItemsException += this.SearchResult_LoadMoreItemsException;
             }
         }
@@ -44,7 +44,7 @@ namespace ExViewer.ViewModels
 
         private void SearchResult_LoadMoreItemsException(IncrementalLoadingCollection<Gallery> sender, LoadMoreItemsExceptionEventArgs args)
         {
-            if(!RootControl.RootController.Available)
+            if (!RootControl.RootController.Available)
                 return;
             RootControl.RootController.SendToast(args.Exception, typeof(SearchPage));
             args.Handled = true;
@@ -52,7 +52,7 @@ namespace ExViewer.ViewModels
 
         internal static void AddHistory(string content)
         {
-            using(var db = new SearchHistoryDb())
+            using (var db = new SearchHistoryDb())
             {
                 db.SearchHistorySet.Add(SearchHistory.Create(content));
                 db.SaveChanges();
@@ -64,7 +64,7 @@ namespace ExViewer.ViewModels
             get;
         } = new RelayCommand<SearchHistory>(sh =>
         {
-            using(var db = new SearchHistoryDb())
+            using (var db = new SearchHistoryDb())
             {
                 db.SearchHistorySet.Remove(sh);
                 db.SaveChanges();
@@ -91,7 +91,7 @@ namespace ExViewer.ViewModels
             return Task.Run<IReadOnlyList<object>>(() =>
             {
                 input = input?.Trim() ?? "";
-                using(var db = new SearchHistoryDb())
+                using (var db = new SearchHistoryDb())
                 {
                     var history = ((IEnumerable<SearchHistory>)db.SearchHistorySet
                                                                  .Where(sh => sh.Content.Contains(input))
@@ -101,18 +101,21 @@ namespace ExViewer.ViewModels
                     var quoteCount = input.Count(c => c == '"');
                     var lastword = default(string);
                     var previous = input;
-                    if(quoteCount == 0)
+                    if (quoteCount == 0)
                     {
                         lastword = input.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-                        previous = input.Substring(0, input.Length - lastword.Length);
+                        if (lastword == null)
+                            previous = input;
+                        else
+                            previous = input.Substring(0, input.Length - lastword.Length);
                     }
-                    else if(quoteCount % 2 == 0)
+                    else if (quoteCount % 2 == 0)
                     {
-                        if(input[input.Length - 1] != '"')
+                        if (input[input.Length - 1] != '"')
                         {
                             var qp = input.LastIndexOf('"');
                             var sp = input.LastIndexOf(' ', input.Length - 1, input.Length - qp);
-                            if(sp != -1)
+                            if (sp != -1)
                             {
                                 lastword = input.Substring(sp + 1);
                                 previous = input.Substring(0, input.Length - lastword.Length);
@@ -132,17 +135,17 @@ namespace ExViewer.ViewModels
                     {
                         var qp = input.LastIndexOf('"');
                         lastword = input.Substring(qp + 1).Trim();
-                        if(qp == 0)
+                        if (qp == 0)
                             previous = "";
                         else
                         {
                             previous = input.Substring(0, qp);
-                            if(!char.IsWhiteSpace(input[qp - 1]))
+                            if (!char.IsWhiteSpace(input[qp - 1]))
                                 previous = previous + " ";
                         }
                     }
                     var dictionary = Enumerable.Empty<ITagRecord>();
-                    if(lastword != null)
+                    if (!string.IsNullOrEmpty(lastword))
                     {
                         dictionary = TagRecordFactory.GetTranslatedRecords(lastword)
                             .Concat<ITagRecord>(TagRecordFactory.GetRecords(lastword))
@@ -156,7 +159,7 @@ namespace ExViewer.ViewModels
                     {
                         return ((IEnumerable<object>)AutoCompletion.GetCompletions(input)).Concat(dictionary).Concat(history).ToList().AsReadOnly();
                     }
-                    catch(InvalidOperationException)
+                    catch (InvalidOperationException)
                     {
                         //Collection changed
                         return null;
@@ -167,7 +170,7 @@ namespace ExViewer.ViewModels
 
         internal bool AutoCompleteFinished(object selectedSuggestion)
         {
-            if(selectedSuggestion is SearchHistory)
+            if (selectedSuggestion is SearchHistory)
                 return true;
             return false;
         }
@@ -176,7 +179,7 @@ namespace ExViewer.ViewModels
         {
             return Run(async token =>
             {
-                using(var db = new SearchHistoryDb())
+                using (var db = new SearchHistoryDb())
                 {
                     db.SearchHistorySet.RemoveRange(db.SearchHistorySet);
                     await db.SaveChangesAsync();
