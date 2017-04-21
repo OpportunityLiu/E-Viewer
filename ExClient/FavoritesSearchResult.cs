@@ -10,7 +10,7 @@ namespace ExClient
     {
         public static Uri SearchBaseUri => new Uri(Client.Current.Uris.RootUri, "favorites.php");
 
-        protected override Uri SearchUri { get; }
+        public override Uri SearchUri { get; }
 
         internal static FavoritesSearchResult Search(Client client, string keyword, FavoriteCategory category)
         {

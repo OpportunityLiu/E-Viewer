@@ -7,7 +7,7 @@ namespace ExClient
 {
     public class SearchResult : SearchResultBase
     {
-        protected override Uri SearchUri { get; }
+        public override Uri SearchUri { get; }
 
         public static readonly Category DefaultFliter = Category.All;
         private static readonly IReadOnlyDictionary<Category, string> searchFliterNames = new Dictionary<Category, string>()
