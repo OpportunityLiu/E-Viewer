@@ -158,6 +158,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.tt</DependentUpon>
     </Compile>
+    <Compile Include="Telemetry.cs" />
     <Compile Include="Themes\ThemeExtention.cs" />
     <Compile Include="Themes\ThemeHelperControl.xaml.cs">
       <DependentUpon>ThemeHelperControl.xaml</DependentUpon>

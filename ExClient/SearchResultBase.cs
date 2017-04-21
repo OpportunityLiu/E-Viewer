@@ -16,7 +16,7 @@ namespace ExClient
 {
     public abstract class SearchResultBase : IncrementalLoadingCollection<Gallery>
     {
-        protected abstract Uri SearchUri { get; }
+        public abstract Uri SearchUri { get; }
 
         internal SearchResultBase(Client owner)
             : base(0)
