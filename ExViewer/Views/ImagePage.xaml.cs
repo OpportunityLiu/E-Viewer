@@ -49,15 +49,15 @@ namespace ExViewer.Views
             var pageFlipView = that.fv;
             var oldVM = (GalleryVM)e.OldValue;
             var newVM = (GalleryVM)e.NewValue;
-            if(oldVM != null)
+            if (oldVM != null)
             {
-                if(pageFlipView.SelectedIndex < oldVM.Gallery.Count)
+                if (pageFlipView.SelectedIndex < oldVM.Gallery.Count)
                     oldVM.CurrentIndex = pageFlipView.SelectedIndex;
                 else
                     oldVM.CurrentIndex = oldVM.Gallery.Count - 1;
             }
             pageFlipView.ItemsSource = null;
-            if(newVM == null)
+            if (newVM == null)
             {
                 that.collectionView.Collection = null;
             }
@@ -87,7 +87,7 @@ namespace ExViewer.Views
 
             var kfc = this.cb_top_CloseAnimation.KeyFrames.Count;
             var offset = (255d - 85d) / (kfc - 1);
-            for(var i = 0; i < kfc; i++)
+            for (var i = 0; i < kfc; i++)
             {
                 var c = getCbColor(backColor, needColor, (byte)(85 + i * offset));
                 this.cb_top_OpenAnimation.KeyFrames[i].Value = c;
@@ -99,16 +99,17 @@ namespace ExViewer.Views
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
             Av_VisibleBoundsChanged(this.av, null);
-            this.fv.Focus(FocusState.Pointer);
             RootControl.RootController.SetFullScreen(StatusCollection.Current.FullScreenInImagePage);
-            if(SettingCollection.Current.KeepScreenOn)
+            if (SettingCollection.Current.KeepScreenOn)
             {
                 this.displayRequest.RequestActive();
                 this.displayActived = true;
             }
-            if(!StatusCollection.Current.ImageViewTipShown)
-                showTip();
-            await Task.Delay(100);
+            if (!StatusCollection.Current.ImageViewTipShown)
+                await showTip();
+            else
+                await Task.Delay(50);
+            this.fv.Focus(FocusState.Programmatic);
             setScale();
         }
 
@@ -127,12 +128,12 @@ namespace ExViewer.Views
             base.OnNavigatingFrom(e);
             this.VM = null;
 
-            if(!this.cbVisible)
+            if (!this.cbVisible)
                 changeCbVisibility();
 
             StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
             RootControl.RootController.SetFullScreen(false);
-            if(this.displayActived)
+            if (this.displayActived)
             {
                 this.displayRequest.RequestRelease();
                 this.displayActived = false;
@@ -150,9 +151,9 @@ namespace ExViewer.Views
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
         {
             var currentState = RootControl.RootController.IsFullScreen;
-            if(currentState == this.isFullScreen)
+            if (currentState == this.isFullScreen)
                 return;
-            if(currentState)
+            if (currentState)
             {
                 this.abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
                 this.abb_fullScreen.Label = Strings.Resources.Views.ImagePage.BackToWindow;
@@ -167,10 +168,10 @@ namespace ExViewer.Views
 
         private void setScale()
         {
-            foreach(var item in this.fv.Descendants<FlipViewItem>())
+            foreach (var item in this.fv.Descendants<FlipViewItem>())
             {
                 var inner = (Grid)item.ContentTemplateRoot;
-                if(inner == null)
+                if (inner == null)
                     continue;
                 var ip = (ImagePresenter)inner.FindName("ip");
                 ip.ResetZoom(true);
@@ -180,29 +181,29 @@ namespace ExViewer.Views
         private async void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var g = this.VM?.Gallery;
-            if(g == null)
+            if (g == null)
                 return;
             setScale();
-            if(this.fv.SelectedItem is IImagePageImageView gi && gi.Image != null)
+            if (this.fv.SelectedItem is IImagePageImageView gi && gi.Image != null)
             {
 
                 gi.Image.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), true).Completed =
                     (task, state) =>
                     {
-                        if(state == AsyncStatus.Error)
+                        if (state == AsyncStatus.Error)
                             RootControl.RootController.SendToast(task.ErrorCode, typeof(ImagePage));
                     };
 
             }
             var target = this.fv.SelectedIndex;
-            if(target < 0)
+            if (target < 0)
                 return;
             target += 5;
-            if(target >= g.RecordCount)
+            if (target >= g.RecordCount)
                 target = g.RecordCount - 1;
-            if(g.Count > target)
+            if (g.Count > target)
                 return;
-            while(target >= g.Count && g.HasMoreItems)
+            while (target >= g.Count && g.HasMoreItems)
             {
                 await g.LoadMoreItemsAsync(5);
             }
@@ -215,7 +216,7 @@ namespace ExViewer.Views
             this.changingCbVisibility = new System.Threading.CancellationTokenSource();
             await Task.Delay(200, this.changingCbVisibility.Token).ContinueWith(async t =>
             {
-                if(t.IsCanceled)
+                if (t.IsCanceled)
                     return;
                 await this.cb_top.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
@@ -229,7 +230,7 @@ namespace ExViewer.Views
 
         private bool changeCbVisibility()
         {
-            if(this.cbVisible)
+            if (this.cbVisible)
             {
                 this.cb_top_Hide.Begin();
                 RootControl.RootController.SetSplitViewButtonOpacity(0.5);
@@ -246,15 +247,15 @@ namespace ExViewer.Views
 
         private void cb_top_Hide_Completed(object sender, object e)
         {
-            if(!this.cbVisible)
+            if (!this.cbVisible)
                 this.cb_top.Visibility = Visibility.Collapsed;
         }
 
         private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            if(this.changingCbVisibility != null)
+            if (this.changingCbVisibility != null)
             {
-                if(this.changingCbVisibility.IsCancellationRequested)
+                if (this.changingCbVisibility.IsCancellationRequested)
                     changeCbVisibility();
                 else
                     this.changingCbVisibility.Cancel();
@@ -296,7 +297,7 @@ namespace ExViewer.Views
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
             base.OnKeyDown(e);
-            if(!this.enterPressed && e.Key == VirtualKey.Enter)
+            if (!this.enterPressed && e.Key == VirtualKey.Enter)
             {
                 RootControl.RootController.ChangeFullScreen();
                 this.enterPressed = true;
@@ -308,14 +309,14 @@ namespace ExViewer.Views
         {
             base.OnKeyUp(e);
             e.Handled = true;
-            switch(e.OriginalKey)
+            switch (e.OriginalKey)
             {
             case VirtualKey.Enter:
                 this.enterPressed = false;
                 break;
             case VirtualKey.Application:
             case VirtualKey.GamepadMenu:
-                if(!changeCbVisibility())
+                if (!changeCbVisibility())
                     this.fv.Focus(FocusState.Programmatic);
                 else
                     this.abb_fullScreen.Focus(FocusState.Programmatic);
@@ -333,7 +334,7 @@ namespace ExViewer.Views
             showTip();
         }
 
-        private async void showTip()
+        private async Task showTip()
         {
             await new ContentDialog
             {
@@ -380,7 +381,7 @@ namespace ExViewer.Views
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
-            if(visible)
+            if (visible)
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
             else
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
@@ -388,9 +389,9 @@ namespace ExViewer.Views
 
         private void cb_top_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if(this.cb_top.IsOpen)
+            if (this.cb_top.IsOpen)
                 return;
-            if(e.OriginalKey == VirtualKey.GamepadDPadDown || e.OriginalKey == VirtualKey.GamepadLeftThumbstickDown)
+            if (e.OriginalKey == VirtualKey.GamepadDPadDown || e.OriginalKey == VirtualKey.GamepadLeftThumbstickDown)
             {
                 e.Handled = true;
                 this.fv.Focus(FocusState.Programmatic);

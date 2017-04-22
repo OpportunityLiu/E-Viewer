@@ -195,11 +195,11 @@ namespace ExViewer.Controls
             e.Handled = true;
             switch(e.Key)
             {
-            case Windows.System.VirtualKey.GamepadY:
+            case Windows.System.VirtualKey.GamepadRightThumbstickUp:
             case (Windows.System.VirtualKey)221:
                 ZoomTo(this.sv.ZoomFactor * 1.2f);
                 break;
-            case Windows.System.VirtualKey.GamepadX:
+            case Windows.System.VirtualKey.GamepadRightThumbstickDown:
             case (Windows.System.VirtualKey)219:
                 ZoomTo(this.sv.ZoomFactor / 1.2f);
                 break;

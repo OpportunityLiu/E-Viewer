@@ -181,7 +181,11 @@
             </con:InvertConverter>
         </con:ObjectToBooleanConverter>
     </UserControl.Resources>
-    <RelativePanel Padding="4,8,4,20">
+    <RelativePanel x:Name="LayoutRoot"
+                   Background="{x:Bind Background, Mode=OneWay}"
+                   BorderBrush="{x:Bind BorderBrush, Mode=OneWay}"
+                   BorderThickness="{x:Bind BorderThickness, Mode=OneWay}"
+                   Padding="4,8,4,20">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="Narrow">
@@ -212,6 +216,17 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
+        <Rectangle x:Name="EngagementIndicator"
+                   x:DeferLoadStrategy="Lazy"
+                   Visibility="{x:Bind IsFocusEngaged, Mode=OneWay}"
+                   StrokeThickness="1"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.AlignRightWithPanel="True"
+                   RelativePanel.AlignTopWithPanel="True"
+                   RelativePanel.AlignBottomWithPanel="True"
+                   Margin="-4,-8,-4,-20"
+                   Stroke="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                   Fill="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />
         <Rectangle x:Name="Header"
                    Margin="0,-4"
                    RelativePanel.AlignBottomWith="Author"

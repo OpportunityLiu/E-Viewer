@@ -292,6 +292,11 @@ namespace ExViewer.Views
             e.Handled = true;
             switch(e.Key)
             {
+            
+            case VirtualKey.GamepadY:
+                this.changeViewTo(false, false);
+                this.lv_Tags.Focus(FocusState.Keyboard);
+                break;
             case VirtualKey.GamepadMenu:
             case VirtualKey.Application:
                 if(this.cb_top.IsOpen = !this.cb_top.IsOpen)

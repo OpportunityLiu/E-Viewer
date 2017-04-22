@@ -79,6 +79,25 @@ namespace ExViewer.Views
             base.OnNavigatedFrom(e);
         }
 
+        protected override void OnKeyUp(KeyRoutedEventArgs e)
+        {
+            base.OnKeyUp(e);
+            e.Handled = true;
+            switch (e.Key)
+            {
+            case Windows.System.VirtualKey.GamepadY:
+                this.cb_top.Focus(FocusState.Keyboard);
+                break;
+            case Windows.System.VirtualKey.GamepadMenu:
+            case Windows.System.VirtualKey.Application:
+                e.Handled = false;
+                break;
+            default:
+                e.Handled = false;
+                break;
+            }
+        }
+
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             if(this.VM.Open.CanExecute(e.ClickedItem))
