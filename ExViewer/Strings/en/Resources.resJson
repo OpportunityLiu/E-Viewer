@@ -107,9 +107,12 @@
       "TagNotFound": "Tag not found in wiki."
     },
     "FavoritesPage": {
+      "ApplyAppBarButton/Label": "Apply",
       "AutoSuggestBox/PlaceholderText": "Search...",
+      "ClearSelectionAppBarButton/Label": "Cancel all",
       "EmptyTextBlock/Text": "No hits found",
-      "LoadingMoreTextBlock/Text": "Loading more galleries..."
+      "LoadingMoreTextBlock/Text": "Loading more galleries...",
+      "SelectAllAppBarButton/Label": "Select all"
     },
     "GalleryPage": {
       "AppBarButtonAddComment/Label": "Post new comment",

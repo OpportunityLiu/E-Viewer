@@ -107,9 +107,12 @@
       "TagNotFound": "在 EhWiki 中未找到此标签。"
     },
     "FavoritesPage": {
+      "ApplyAppBarButton/Label": "应用",
       "AutoSuggestBox/PlaceholderText": "搜索…",
+      "ClearSelectionAppBarButton/Label": "全部取消",
       "EmptyTextBlock/Text": "没有结果",
-      "LoadingMoreTextBlock/Text": "正在加载更多画廊…"
+      "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
+      "SelectAllAppBarButton/Label": "全部选择"
     },
     "GalleryPage": {
       "AppBarButtonAddComment/Label": "发表新评论",
