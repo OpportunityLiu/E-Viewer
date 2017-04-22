@@ -144,11 +144,14 @@ namespace ExViewer.Views
             switch (e.Key)
             {
             case Windows.System.VirtualKey.GamepadY:
-                this.cbCategory.Focus(FocusState.Keyboard);
+                if (this.lv.SelectionMode == ListViewSelectionMode.None)
+                    this.cbCategory.Focus(FocusState.Keyboard);
+                else
+                    this.cbCategory2.Focus(FocusState.Keyboard);
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
-                startSelectMode();
+                e.Handled = false;
                 break;
             default:
                 e.Handled = false;
@@ -201,6 +204,8 @@ namespace ExViewer.Views
             }
             this.cbCategory2.SelectedIndex = this.cbCategory.SelectedIndex;
             this.cbActions.Visibility = Visibility.Visible;
+            this.cbCategory.Visibility = Visibility.Collapsed;
+            this.asb.Visibility = Visibility.Collapsed;
             this.abbApply.IsEnabled = true;
             return true;
         }
@@ -212,6 +217,8 @@ namespace ExViewer.Views
             this.lv.SelectionMode = ListViewSelectionMode.None;
             this.lv.IsItemClickEnabled = true;
             this.cbActions.Visibility = Visibility.Collapsed;
+            this.cbCategory.Visibility = Visibility.Visible;
+            this.asb.Visibility = Visibility.Visible;
             return true;
         }
 

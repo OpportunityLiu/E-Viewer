@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -46,7 +47,7 @@ namespace ExViewer.Controls
 
         private void UserControl_FocusEngaged(Control sender, FocusEngagedEventArgs args)
         {
-            this.IsFocusEngaged = false;
+            FindName(nameof(this.EngagementIndicator));
         }
 
         private async void VoteUp_Click(object sender, RoutedEventArgs e)
