@@ -106,27 +106,41 @@
                         x:DeferLoadStrategy="Lazy"
                         Visibility="Collapsed"
                         Grid.ColumnSpan="3"
+                        Opening="cbActions_Opening"
+                        Closed="cbActions_Closed"
                         HorizontalContentAlignment="Stretch"
                         IsDynamicOverflowEnabled="False"
                         ClosedDisplayMode="Compact">
                 <CommandBar.Content>
+                    <Grid x:Name="gdCbContent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Name="cdSplitViewPlaceholder2"
+                                              Width="{x:Bind cdSplitViewPlaceholder.Width, Mode=OneWay}" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
                     <ComboBox x:Name="cbCategory2"
                               Margin="8"
+                              Grid.Column="1"
+                              Grid.ColumnSpan="1000"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
                               ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
+                    </Grid>
                 </CommandBar.Content>
                 <CommandBar.PrimaryCommands>
                     <AppBarButton x:Name="abbApply"
+                                  x:Uid="Views/FavoritesPage/ApplyAppBarButton"
                                   Icon="Send"
                                   Label="Apply"
                                   Click="abbApply_Click" />
                 </CommandBar.PrimaryCommands>
                 <CommandBar.SecondaryCommands>
-                    <AppBarButton Icon="SelectAll"
+                    <AppBarButton x:Uid="Views/FavoritesPage/SelectAllAppBarButton"
+                                  Icon="SelectAll"
                                   Label="Select all"
                                   Click="abbAll_Click" />
-                    <AppBarButton Icon="ClearSelection"
+                    <AppBarButton x:Uid="Views/FavoritesPage/ClearSelectionAppBarButton"
+                                  Icon="ClearSelection"
                                   Label="Clear selection"
                                   Click="abbClear_Click" />
                 </CommandBar.SecondaryCommands>

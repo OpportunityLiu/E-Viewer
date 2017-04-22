@@ -223,11 +223,10 @@ namespace ExViewer.Views
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
             args.Handled = startSelectMode();
-            if (!args.Handled)
-                return;
             var item = ((DependencyObject)args.OriginalSource).FirstAncestorOrSelf<ListViewItem>();
             if (item != null)
             {
+                args.Handled = true;
                 var i = this.lv.ItemFromContainer(item);
                 this.lv.SelectedItem = i;
             }
@@ -264,6 +263,16 @@ namespace ExViewer.Views
             {
                 this.abbApply.IsEnabled = true;
             }
+        }
+
+        private void cbActions_Opening(object sender, object e)
+        {
+            Grid.SetColumn(this.cbCategory2, 0);
+        }
+
+        private void cbActions_Closed(object sender, object e)
+        {
+            Grid.SetColumn(this.cbCategory2, 1);
         }
     }
 }
