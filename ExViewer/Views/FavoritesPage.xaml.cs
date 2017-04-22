@@ -51,19 +51,20 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            NavigationManager.GetForCurrentView().BackRequested += this.FavoritesPage_BackRequested;
             this.navId++;
             this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
-            if(e.NavigationMode == NavigationMode.New)
+            if (e.NavigationMode == NavigationMode.New)
             {
-                if(e.Parameter != null)
+                if (e.Parameter != null)
                     this.VM?.SearchResult.Reset();
                 await Task.Delay(100);
                 this.cbCategory.Focus(FocusState.Programmatic);
             }
-            if(e.NavigationMode == NavigationMode.Back)
+            if (e.NavigationMode == NavigationMode.Back)
             {
                 var selectedGallery = this.VM.SelectedGallery;
-                if(selectedGallery != null)
+                if (selectedGallery != null)
                 {
                     await Task.Delay(100);
                     this.lv.ScrollIntoView(selectedGallery);
@@ -76,11 +77,13 @@ namespace ExViewer.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+            CloseAll();
+            NavigationManager.GetForCurrentView().BackRequested -= this.FavoritesPage_BackRequested;
         }
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(this.VM.Open.CanExecute(e.ClickedItem))
+            if (this.VM.Open.CanExecute(e.ClickedItem))
                 this.VM.Open.Execute(e.ClickedItem);
         }
 
@@ -98,10 +101,10 @@ namespace ExViewer.Views
         {
             var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput;
             var currentId = this.navId;
-            if(needAutoComplete)
+            if (needAutoComplete)
             {
                 var r = await this.VM.LoadSuggestion(sender.Text);
-                if(args.CheckCurrent() && currentId == this.navId)
+                if (args.CheckCurrent() && currentId == this.navId)
                 {
                     this.asb.ItemsSource = r;
                 }
@@ -111,7 +114,7 @@ namespace ExViewer.Views
         private async void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             sender.ItemsSource = null;
-            if(args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
+            if (args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
             {
                 CloseAll();
                 this.VM.Search.Execute(args.QueryText);
@@ -138,14 +141,14 @@ namespace ExViewer.Views
         {
             base.OnKeyUp(e);
             e.Handled = true;
-            switch(e.Key)
+            switch (e.Key)
             {
             case Windows.System.VirtualKey.GamepadY:
-                this.asb.Focus(FocusState.Keyboard);
+                this.cbCategory.Focus(FocusState.Keyboard);
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
-                this.cbCategory.Focus(FocusState.Programmatic);
+                startSelectMode();
                 break;
             default:
                 e.Handled = false;
@@ -155,13 +158,15 @@ namespace ExViewer.Views
 
         public void CloseAll()
         {
+            exitSelectMode();
             this.asb.IsSuggestionListOpen = false;
             this.cbCategory.IsDropDownOpen = false;
+            InputPane.GetForCurrentView().TryHide();
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
-            if(visible)
+            if (visible)
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
             else
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
@@ -176,6 +181,89 @@ namespace ExViewer.Views
         private void root_Unloaded(object sender, RoutedEventArgs e)
         {
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
+        }
+
+        private bool startSelectMode()
+        {
+            if (this.lv.SelectionMode == ListViewSelectionMode.Multiple)
+                return false;
+            this.lv.SelectionMode = ListViewSelectionMode.Multiple;
+            this.lv.IsItemClickEnabled = false;
+            if (this.cbActions == null)
+            {
+                this.FindName(nameof(this.cbActions));
+                var l = new List<FavoriteCategory>(11)
+                {
+                    FavoriteCategory.Removed
+                };
+                l.AddRange(Client.Current.Favorites);
+                this.cbCategory2.ItemsSource = l;
+            }
+            this.cbCategory2.SelectedIndex = this.cbCategory.SelectedIndex;
+            this.cbActions.Visibility = Visibility.Visible;
+            this.abbApply.IsEnabled = true;
+            return true;
+        }
+
+        private bool exitSelectMode()
+        {
+            if (this.lv.SelectionMode == ListViewSelectionMode.None)
+                return false;
+            this.lv.SelectionMode = ListViewSelectionMode.None;
+            this.lv.IsItemClickEnabled = true;
+            this.cbActions.Visibility = Visibility.Collapsed;
+            return true;
+        }
+
+        private void FavoritesPage_BackRequested(object sender, Windows.UI.Core.BackRequestedEventArgs e)
+        {
+            e.Handled = exitSelectMode();
+        }
+
+        private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
+        {
+            args.Handled = startSelectMode();
+            if (!args.Handled)
+                return;
+            var item = ((DependencyObject)args.OriginalSource).FirstAncestorOrSelf<ListViewItem>();
+            if (item != null)
+            {
+                var i = this.lv.ItemFromContainer(item);
+                this.lv.SelectedItem = i;
+            }
+        }
+
+        private void lv_ContextCanceled(UIElement sender, RoutedEventArgs args)
+        {
+        }
+
+        private void abbAll_Click(object sender, RoutedEventArgs e)
+        {
+            this.lv.SelectRange(new ItemIndexRange(0, uint.MaxValue));
+        }
+
+        private void abbClear_Click(object sender, RoutedEventArgs e)
+        {
+            this.lv.DeselectRange(new ItemIndexRange(0, uint.MaxValue));
+        }
+
+        private async void abbApply_Click(object sender, RoutedEventArgs e)
+        {
+            this.abbApply.IsEnabled = false;
+            var cat = (FavoriteCategory)this.cbCategory2.SelectedItem ?? FavoriteCategory.Removed;
+            try
+            {
+                await this.VM.SearchResult.AddToCategoryAsync(this.lv.SelectedRanges, cat);
+                exitSelectMode();
+            }
+            catch (Exception ex)
+            {
+                RootControl.RootController.SendToast(ex, this.GetType());
+            }
+            finally
+            {
+                this.abbApply.IsEnabled = true;
+            }
         }
     }
 }

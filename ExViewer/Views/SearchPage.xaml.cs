@@ -160,6 +160,7 @@ namespace ExViewer.Views
         {
             this.asb.IsSuggestionListOpen = false;
             this.ab.IsOpen = false;
+            InputPane.GetForCurrentView().TryHide();
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
