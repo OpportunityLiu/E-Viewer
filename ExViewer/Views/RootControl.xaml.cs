@@ -35,7 +35,7 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
 
-            this.manager = SystemNavigationManager.GetForCurrentView();
+            this.manager = NavigationManager.GetForCurrentView();
 
             this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
@@ -116,7 +116,7 @@ namespace ExViewer.Views
             }
         }
 
-        private readonly SystemNavigationManager manager;
+        private readonly NavigationManager manager;
 
         private void Control_Loading(FrameworkElement sender, object args)
         {

@@ -225,9 +225,9 @@
                     KeyDown="cb_top_KeyDown"
                     Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
                     HorizontalContentAlignment="Stretch"
+                    IsDynamicOverflowEnabled="False"
                     Closing="cb_top_Closing"
                     Closed="cb_top_Closed"
-                    IsDynamicOverflowEnabled="False"
                     Opening="cb_top_Opening"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True">

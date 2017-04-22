@@ -150,6 +150,7 @@
       <DependentUpon>20170327142247_MigrationReset.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\SearchHistoryDbModelSnapshot.cs" />
+    <Compile Include="NavigationManager.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Settings\StatusCollection.cs" />
