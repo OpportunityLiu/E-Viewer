@@ -174,13 +174,19 @@
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "Cached galleries",
+      "CachedSplitViewTab/ToolTipService/ToolTip": "Cached galleries",
       "ChangeUserButton/ToolTipService/ToolTip": "Change user",
       "DisableInfoTextBlock/Text": "Operation in progress, plaese wait...",
       "FavoritesSplitViewTab/Content": "Favorites",
+      "FavoritesSplitViewTab/ToolTipService/ToolTip": "Favorites",
       "PopularSplitViewTab/Content": "Popular galleries",
+      "PopularSplitViewTab/ToolTipService/ToolTip": "Popular galleries",
       "SavedSplitViewTab/Content": "Saved galleries",
+      "SavedSplitViewTab/ToolTipService/ToolTip": "Saved galleries",
       "SearchSplitViewTab/Content": "Search",
-      "SettingsSplitViewTab/Content": "Settings"
+      "SearchSplitViewTab/ToolTipService/ToolTip": "Search",
+      "SettingsSplitViewTab/Content": "Settings",
+      "SettingsSplitViewTab/ToolTipService/ToolTip": "Settings"
     },
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "Delete all",
@@ -249,7 +255,5 @@
   "OK": "OK",
 
   "GalleryDeleted": "Selected gallery has been deleted.",
-  "GallerySavedTo": "Selected gallery has been saved to provided location.",
-
-  "ParseByteException": "Can't parse the given string to a byte size."
+  "GallerySavedTo": "Selected gallery has been saved to provided location."
 }

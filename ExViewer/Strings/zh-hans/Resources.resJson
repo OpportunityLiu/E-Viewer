@@ -174,13 +174,19 @@
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "缓存的画廊",
+      "CachedSplitViewTab/ToolTipService/ToolTip": "缓存的画廊",
       "ChangeUserButton/ToolTipService/ToolTip": "更换用户",
       "DisableInfoTextBlock/Text": "少女祈祷中…",
-      "PopularSplitViewTab/Content": "热门",
       "FavoritesSplitViewTab/Content": "收藏",
+      "FavoritesSplitViewTab/ToolTipService/ToolTip": "收藏",
+      "PopularSplitViewTab/Content": "热门",
+      "PopularSplitViewTab/ToolTipService/ToolTip": "热门",
       "SavedSplitViewTab/Content": "保存的画廊",
+      "SavedSplitViewTab/ToolTipService/ToolTip": "保存的画廊",
       "SearchSplitViewTab/Content": "搜索",
-      "SettingsSplitViewTab/Content": "设置"
+      "SearchSplitViewTab/ToolTipService/ToolTip": "搜索",
+      "SettingsSplitViewTab/Content": "设置",
+      "SettingsSplitViewTab/ToolTipService/ToolTip": "设置"
     },
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "删除全部",
@@ -249,7 +255,5 @@
   "OK": "确定",
 
   "GalleryDeleted": "选定的画廊已删除。",
-  "GallerySavedTo": "选定的画廊已保存至给定位置。",
-
-  "ParseByteException": "无法将给定字符串解析为字节数。"
+  "GallerySavedTo": "选定的画廊已保存至给定位置。"
 }
