@@ -303,7 +303,7 @@
             <controls:HighlightTextBlock Text="{Binding Content, Mode=OneTime}"
                                          HighlightText="{Binding Highlight, Mode=OneTime}"
                                          Grid.Column="1" />
-            <TextBlock Text="{Binding Time, Converter={StaticResource DateTimeToStringConverter}, Mode=OneTime}"
+            <TextBlock Text="{Binding Time, Converter={StaticResource DateTimeOffsetToStringConverter}, Mode=OneTime}"
                        Style="{StaticResource SuggestionCaptionTextBlockStyle}"
                        Grid.Row="1"
                        Grid.Column="1" />

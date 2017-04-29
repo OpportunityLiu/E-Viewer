@@ -153,7 +153,7 @@
             </con:ObjectToBooleanConverter.ValueForTrue>
             <con:InvertConverter>
                 <con:ObjectToBooleanConverter ValueForTrue="{StaticResource VotedButtonStyle}"
-                                              ValueForFalse="{StaticResource VoteButtonStyle}" />
+                                              ValueForFalse="{StaticResource VoteButtonStyle}"/>
             </con:InvertConverter>
         </con:ObjectToBooleanConverter>
         <con:ObjectToBooleanConverter x:Key="ConDown">
@@ -165,20 +165,11 @@
                                               ValueForFalse="{StaticResource VoteButtonStyle}" />
             </con:InvertConverter>
         </con:ObjectToBooleanConverter>
-        <con:ObjectToBooleanConverter x:Key="ConEdit">
+        <con:ObjectToBooleanConverter x:Key="ConEdit"
+                                      NextConverter="{StaticResource TrueToVisibleConverter}">
             <con:ObjectToBooleanConverter.ValueForTrue>
                 <ex:CommentStatus>Editable</ex:CommentStatus>
             </con:ObjectToBooleanConverter.ValueForTrue>
-            <con:InvertConverter>
-                <con:ObjectToBooleanConverter>
-                    <con:ObjectToBooleanConverter.ValueForTrue>
-                        <Visibility>Visible</Visibility>
-                    </con:ObjectToBooleanConverter.ValueForTrue>
-                    <con:ObjectToBooleanConverter.ValueForFalse>
-                        <Visibility>Collapsed</Visibility>
-                    </con:ObjectToBooleanConverter.ValueForFalse>
-                </con:ObjectToBooleanConverter>
-            </con:InvertConverter>
         </con:ObjectToBooleanConverter>
     </UserControl.Resources>
     <RelativePanel x:Name="LayoutRoot"
@@ -238,7 +229,7 @@
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.AlignTopWithPanel="True"
                    Style="{StaticResource CommentHeaderTextBlockStyle}"
-                   Text="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Controls/CommentViewer/PostedFormatString'}" />
+                   Text="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/CommentViewer/PostedFormatString'}" />
         <TextBlock x:Name="Author"
                    Style="{StaticResource CommentHeaderTextBlockStyle}"
                    Text="{x:Bind Comment.Author, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/AuthorFormatString'}" />
@@ -330,7 +321,7 @@
                    RelativePanel.AlignRightWithPanel="True"
                    RelativePanel.Below="Text"
                    Style="{StaticResource EditedTextBlockStyle}"
-                   Text="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Controls/CommentViewer/EditedFormatString'}"
+                   Text="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/CommentViewer/EditedFormatString'}"
                    Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
     </RelativePanel>
 </UserControl>

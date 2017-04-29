@@ -6,47 +6,29 @@
     <c:SoftwareBitmapToImageSourceConverter x:Key="SoftwareBitmapToImageSourceConverter" />
     <c:ThicknessConverter x:Key="ThicknessConverter" />
     <FormatStringConverter x:Key="StringConverter" />
-    <c:InvertConverter x:Key="TrueToVisibleConverter">
-        <c:ObjectToBooleanConverter>
-            <c:ObjectToBooleanConverter.ValueForTrue>
-                <uwp:Visibility>Visible</uwp:Visibility>
-            </c:ObjectToBooleanConverter.ValueForTrue>
-            <c:ObjectToBooleanConverter.ValueForFalse>
-                <uwp:Visibility>Collapsed</uwp:Visibility>
-            </c:ObjectToBooleanConverter.ValueForFalse>
-        </c:ObjectToBooleanConverter>
-    </c:InvertConverter>
-    <c:InvertConverter x:Key="FalseToVisibleConverter">
-        <c:ObjectToBooleanConverter>
-            <c:ObjectToBooleanConverter.ValueForTrue>
-                <uwp:Visibility>Collapsed</uwp:Visibility>
-            </c:ObjectToBooleanConverter.ValueForTrue>
-            <c:ObjectToBooleanConverter.ValueForFalse>
-                <uwp:Visibility>Visible</uwp:Visibility>
-            </c:ObjectToBooleanConverter.ValueForFalse>
-        </c:ObjectToBooleanConverter>
-    </c:InvertConverter>
+    <c:VisibilityConverter x:Key="TrueToVisibleConverter"
+                           TrueForVisible="True" />
+    <c:VisibilityConverter x:Key="FalseToVisibleConverter"
+                           TrueForVisible="False" />
     <c:ObjectToBooleanConverter x:Key="NullToVisibleConverter"
                                 IfBoth="True"
                                 IfNeither="False"
-                                InnerConverter="{uwp:StaticResource TrueToVisibleConverter}" />
+                                NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
     <c:ObjectToBooleanConverter x:Key="NullToCollapsedConverter"
                                 IfBoth="True"
                                 IfNeither="False"
-                                InnerConverter="{uwp:StaticResource FalseToVisibleConverter}" />
+                                NextConverter="{uwp:StaticResource FalseToVisibleConverter}" />
     <!--Code to initalize this converter is at App.xaml.cs-->
     <!--Set ValueForFalse to string.Empty-->
     <c:ObjectToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
                                 IfNeither="True"
                                 ValueForFalse=""
-                                InnerConverter="{uwp:StaticResource TrueToVisibleConverter}" />
+                                NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
     <c:LengthConverter x:Key="LengthConverter" />
     <c:EmptyConverter x:Key="EmptyConverter" />
     <c:SystemConverter x:Key="DefaultConverter" />
-    <c:NullableConverter x:Key="NullableConverter" />
-    <c:EnumToStringConverter x:Key="EnumToStringConverter" />
     <c:ObjectToBooleanConverter x:Key="ZeroToVisibleConverter"
-                                InnerConverter="{uwp:StaticResource TrueToVisibleConverter}">
+                                NextConverter="{uwp:StaticResource TrueToVisibleConverter}">
         <c:ObjectToBooleanConverter.ValueForTrue>
             <x:Int32>0</x:Int32>
         </c:ObjectToBooleanConverter.ValueForTrue>
@@ -54,7 +36,7 @@
     <c:ObjectToBooleanConverter x:Key="OperationStateToVisibilityConverter"
                                 xmlns:VM="using:ExViewer.ViewModels"
                                 IfNeither="True"
-                                InnerConverter="{uwp:StaticResource TrueToVisibleConverter}">
+                                NextConverter="{uwp:StaticResource TrueToVisibleConverter}">
         <c:ObjectToBooleanConverter.ValueForFalse>
             <VM:OperationState>NotStarted</VM:OperationState>
         </c:ObjectToBooleanConverter.ValueForFalse>
@@ -62,13 +44,15 @@
             <VM:OperationState>Started</VM:OperationState>
         </c:ObjectToBooleanConverter.ValueForTrue>
     </c:ObjectToBooleanConverter>
-    <c:NumberOffsetConverter x:Key="IndexToStringConverter"
-                             Offset="1" />
-    <c:DateTimeToStringConverter x:Key="DateTimeToStringConverter"
-                                 InnerConverter="{uwp:StaticResource StringConverter}" />
+    <c:Int32OffsetConverter x:Key="IndexToStringConverter"
+                            Offset="1"
+                            NextConverter="{uwp:StaticResource DefaultConverter}"/>
+    <c:DateTimeOffsetToStringConverter x:Key="DateTimeOffsetToStringConverter"
+                                       NextConverter="{uwp:StaticResource StringConverter}" />
     <c:ByteSizeToStringConverter x:Key="SizeConverter"
                                  UnitPrefix="Binary" />
     <c:LogicalNotConverter x:Key="LogicalNotConverter" />
+
     <local:RateStringConverter x:Key="RateStringConverter" />
     <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />
     <local:OperationStateToBrushConverter x:Key="OperationStateToBrushConverter" />
