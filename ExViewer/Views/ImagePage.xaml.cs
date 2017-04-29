@@ -329,9 +329,9 @@ namespace ExViewer.Views
 
         private bool enterPressed;
 
-        private void abb_Help_Click(object sender, RoutedEventArgs e)
+        private async void abb_Help_Click(object sender, RoutedEventArgs e)
         {
-            showTip();
+            await showTip();
         }
 
         private async Task showTip()
