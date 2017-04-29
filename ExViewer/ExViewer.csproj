@@ -20,7 +20,7 @@
     <PackageCertificateKeyFile>ExViewer_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Never</AppxBundle>
-    <AppxBundlePlatforms>x86</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <PackageCertificateThumbprint>2CD13F296924A76965F55FFF1CB28D1076A93040</PackageCertificateThumbprint>
     <HockeyAppResourceId>9c09ca3908114a38a09c81ca8b68ee39</HockeyAppResourceId>
   </PropertyGroup>
