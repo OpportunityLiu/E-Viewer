@@ -402,6 +402,8 @@ namespace ExClient
         private void updateFavoriteInfo(HtmlDocument html)
         {
             var favNode = html.GetElementbyId("fav");
+            if (favNode == null)
+                return;
             var favContentNode = favNode.Element("div");
             this.FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
         }
