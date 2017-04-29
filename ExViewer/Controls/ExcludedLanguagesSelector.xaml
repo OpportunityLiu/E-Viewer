@@ -390,15 +390,15 @@
                             <ColumnDefinition x:Uid="Controls/ExcludedLanguagesSelector/CellColumnDefination"
                                               MinWidth="80" />
                         </Grid.ColumnDefinitions>
-                        <CheckBox IsChecked="{x:Bind Original, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
+                        <CheckBox IsChecked="{x:Bind Original, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
                                   Style="{StaticResource SelectorStyle}" />
-                        <CheckBox IsChecked="{x:Bind Translated, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
+                        <CheckBox IsChecked="{x:Bind Translated, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
                                   Style="{StaticResource SelectorStyle}"
                                   Grid.Column="1" />
-                        <CheckBox IsChecked="{x:Bind Rewrite, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
+                        <CheckBox IsChecked="{x:Bind Rewrite, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
                                   Style="{StaticResource SelectorStyle}"
                                   Grid.Column="2" />
-                        <CheckBox IsChecked="{x:Bind All, Mode=TwoWay, Converter={StaticResource NullableConverter}}"
+                        <CheckBox IsChecked="{x:Bind All, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
                                   Style="{StaticResource SelectorStyle}"
                                   Grid.Column="3" />
                     </Grid>

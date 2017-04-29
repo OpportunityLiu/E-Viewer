@@ -48,34 +48,9 @@ namespace ExViewer.Controls
         protected override void OnDisconnectVisualChildren()
         {
             ClearValue(ImageProperty);
-            this.img_Content.ClearValue(ImageFileProperty);
+            this.img_Content.ClearValue(Windows.UI.Xaml.Controls.Image.SourceProperty);
             this.img_Thumb.ClearValue(Windows.UI.Xaml.Controls.Image.SourceProperty);
             base.OnDisconnectVisualChildren();
-        }
-
-        public static IStorageFile GetImageFile(DependencyObject obj)
-            => (IStorageFile)obj.GetValue(ImageFileProperty);
-
-        public static void SetImageFile(DependencyObject obj, IStorageFile value)
-            => obj.SetValue(ImageFileProperty, value);
-
-        public static readonly DependencyProperty ImageFileProperty =
-            DependencyProperty.RegisterAttached("ImageFile", typeof(IStorageFile), typeof(Image), new PropertyMetadata(null, ImageFilePropertyChangedCallback));
-
-        private static async void ImageFilePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var sender = (Image)d;
-            if(e.OldValue != null)
-                sender.ClearValue(Windows.UI.Xaml.Controls.Image.SourceProperty);
-            if(e.NewValue is IStorageFile f)
-            {
-                var bp = new BitmapImage();
-                sender.Source = bp;
-                using(var s = await f.OpenAsync(FileAccessMode.Read))
-                {
-                    await bp.SetSourceAsync(s);
-                }
-            }
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

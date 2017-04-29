@@ -25,7 +25,7 @@
     <controls:MyPage.Resources>
         <con:ObjectToBooleanConverter x:Key="ConAddComment"
                                       IfNeither="False"
-                                      InnerConverter="{StaticResource TrueToVisibleConverter}">
+                                      NextConverter="{StaticResource TrueToVisibleConverter}">
             <con:ObjectToBooleanConverter.ValueForTrue>
                 <x:Int32>1</x:Int32>
             </con:ObjectToBooleanConverter.ValueForTrue>
@@ -159,7 +159,7 @@
                     <TextBlock Grid.Row="1"
                                Grid.Column="2"
                                Style="{StaticResource ValueTextBlockStyle}"
-                               Text="{x:Bind Posted, Converter={StaticResource DateTimeToStringConverter}}" />
+                               Text="{x:Bind Posted, Converter={StaticResource DateTimeOffsetToStringConverter}}" />
                     <TextBlock Grid.Row="2"
                                Grid.Column="2"
                                Style="{StaticResource ValueTextBlockStyle}"

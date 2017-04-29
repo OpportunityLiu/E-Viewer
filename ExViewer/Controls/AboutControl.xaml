@@ -185,7 +185,7 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
             </StackPanel>
         </HyperlinkButton>
         <TextBlock xmlns:et="using:EhTagClient"
-                   Text="{x:Bind et:Client.LastUpdate, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Controls/AboutControl/LastUpdate'}"
+                   Text="{x:Bind et:Client.LastUpdate, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/AboutControl/LastUpdate'}"
                    Style="{StaticResource AboutControlCaptionTextBlockStyle}" />
         <TextBlock x:Uid="Controls/AboutControl/ChineseTagProviderTextBlock"
                    Text="Chinese translation of tags"
@@ -195,7 +195,7 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
                          NavigateUri="https://github.com/Mapaler/EhTagTranslator"
                          Style="{StaticResource AboutControlHyperLinkButtonStyle}" />
         <TextBlock xmlns:eht="using:EhTagTranslatorClient"
-                   Text="{x:Bind eht:Client.LastUpdate, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter='Controls/AboutControl/LastUpdate'}" 
+                   Text="{x:Bind eht:Client.LastUpdate, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/AboutControl/LastUpdate'}" 
                    Style="{StaticResource AboutControlCaptionTextBlockStyle}"/>
         <TextBlock x:Uid="Controls/AboutControl/JapaneseTagProviderTextBlock"
                    Text="Japanese translation of tags"

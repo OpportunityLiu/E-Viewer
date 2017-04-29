@@ -6,10 +6,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:cov="using:Opportunity.Converters"
              SizeChanged="UserControl_SizeChanged"
              Loaded="UserControl_Loaded"
              d:DesignHeight="300"
              d:DesignWidth="400">
+    <UserControl.Resources>
+        <cov:IRandomAccessStreamReferenceToImageSourceConverter x:Key="FileConverter" />
+    </UserControl.Resources>
     <ScrollViewer x:Name="sv"
                   IsTabStop="True"
                   FocusVisualMargin="{x:Bind FocusVisualMargin, Mode=OneWay}"
@@ -34,7 +38,7 @@
             <Image x:Name="img_Thumb"
                    Source="{x:Bind Image.Thumb, Mode=OneWay, FallbackValue={ThemeResource LoadingImageSource}}" />
             <Image x:Name="img_Content"
-                   local:ImagePresenter.ImageFile="{x:Bind Image.ImageFile, Mode=OneWay}"
+                   Source="{x:Bind Image.ImageFile, Mode=OneWay, Converter={StaticResource FileConverter}}"
                    Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
         </Grid>
     </ScrollViewer>

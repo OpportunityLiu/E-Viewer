@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace ExViewer.Converters
 {
-    [Windows.UI.Xaml.Markup.ContentProperty(Name = nameof(InnerConverter))]
+    [Windows.UI.Xaml.Markup.ContentProperty(Name = nameof(NextConverter))]
     public class FormatStringConverter : ChainConverter
     {
-        protected override object ConvertImpl(object value, Type targetType, object parameter, string language)
+        protected override object ConvertImpl(object value, object parameter, string language)
         {
             var format = (string)null;
-            if(parameter == null)
+            if (parameter == null)
                 return value.ToString();
-            if(string.IsNullOrEmpty(format = Strings.Resources.GetValue(parameter.ToString())))
+            if (string.IsNullOrEmpty(format = Strings.Resources.GetValue(parameter.ToString())))
             {
                 System.Diagnostics.Debug.WriteLine($"Can't find resource: {parameter}", "Localization");
                 return value.ToString();
@@ -25,7 +25,7 @@ namespace ExViewer.Converters
             return string.Format(CultureInfo.CurrentCulture, format, value);
         }
 
-        protected override object ConvertBackImpl(object value, Type targetType, object parameter, string language)
+        protected override object ConvertBackImpl(object value, object parameter, string language)
         {
             return value;
         }

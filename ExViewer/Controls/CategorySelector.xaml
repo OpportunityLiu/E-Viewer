@@ -33,7 +33,7 @@
         <GridView.ItemTemplate>
             <DataTemplate x:DataType="local:FilterRecord">
                 <local:CategoryToggleButton Category="{x:Bind Category}"
-                                            IsChecked="{x:Bind IsChecked, Mode=TwoWay, Converter={StaticResource NullableConverter}}" />
+                                            IsChecked="{x:Bind IsChecked, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
             </DataTemplate>
         </GridView.ItemTemplate>
         <GridView.Template>
