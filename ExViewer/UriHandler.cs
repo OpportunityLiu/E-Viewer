@@ -78,6 +78,10 @@ namespace ExViewer
                         var vm = SearchVM.GetVM(sr.Data);
                         RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
                         return;
+                    case FavoritesSearchLaunchResult fr:
+                        var fvm = FavoritesVM.GetVM(fr.Data);
+                        RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), fvm.SearchQuery);
+                        return;
                     }
                 }
                 catch(Exception e)
