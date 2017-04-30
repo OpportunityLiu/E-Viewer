@@ -40,9 +40,9 @@ namespace ExViewer.Controls
         {
             var o = (string)e.OldValue;
             var n = (string)e.NewValue;
-            if(n == null)
+            if (n == null)
                 throw new ArgumentNullException(nameof(Text));
-            if(o == n)
+            if (o == n)
                 return;
             ((HighlightTextBlock)sender).reload();
         }
@@ -60,7 +60,7 @@ namespace ExViewer.Controls
         {
             var o = (string)e.OldValue;
             var n = (string)e.NewValue;
-            if(o == n)
+            if (o == n)
                 return;
             ((HighlightTextBlock)sender).reload();
         }
@@ -78,7 +78,7 @@ namespace ExViewer.Controls
         {
             var o = (StringComparison)e.OldValue;
             var n = (StringComparison)e.NewValue;
-            if(o == n)
+            if (o == n)
                 return;
             ((HighlightTextBlock)sender).reload();
         }
@@ -94,26 +94,26 @@ namespace ExViewer.Controls
 
         private void reload()
         {
-            if(this.Presenter == null)
+            if (this.Presenter == null)
                 return;
             this.Presenter.Text = "";
             this.Presenter.Inlines.Clear();
             var text = this.Text;
             var highlightText = this.HighlightText;
-            if(string.IsNullOrEmpty(highlightText))
+            if (string.IsNullOrEmpty(highlightText))
                 this.Presenter.Text = text;
             else
             {
                 var matchIndex = -1;
                 var currentIndex = 0;
-                while((matchIndex = text.IndexOf(highlightText, currentIndex, Comparison)) != -1)
+                while ((matchIndex = text.IndexOf(highlightText, currentIndex, Comparison)) != -1)
                 {
-                    if(matchIndex != currentIndex)
+                    if (matchIndex != currentIndex)
                         this.Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex, matchIndex - currentIndex)));
-                    this.Presenter.Inlines.Add(CreateBold(highlightText));
+                    this.Presenter.Inlines.Add(CreateBold(text.Substring(matchIndex, highlightText.Length)));
                     currentIndex = matchIndex + highlightText.Length;
                 }
-                if(currentIndex != text.Length)
+                if (currentIndex != text.Length)
                     this.Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex)));
             }
         }

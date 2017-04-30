@@ -1,10 +1,11 @@
 ﻿using ExClient;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using WikiRecod = EhWikiClient.Record;
-using WikiClient = EhWikiClient.Client;
 using TransClient = EhTagTranslatorClient.Client;
 using TransRecord = EhTagTranslatorClient.Record;
+using WikiClient = EhWikiClient.Client;
 
 namespace ExViewer.ViewModels
 {
@@ -52,7 +53,7 @@ namespace ExViewer.ViewModels
 
         public override string ToString()
         {
-            return Previous + TagToString();
+            return Previous + TagToString() + " ";
         }
 
         ITagRecord ITagRecord.SetPrevious(string p)
@@ -68,55 +69,71 @@ namespace ExViewer.ViewModels
         {
             [Namespace.Unknown] = 1,
             [Namespace.Reclass] = 4,
-            [Namespace.Language] = 16,
-            [Namespace.Parody] = 24,
-            [Namespace.Character] = 12,
-            [Namespace.Group] = 2,
-            [Namespace.Artist] = 2,
-            [Namespace.Male] = 16,
-            [Namespace.Female] = 16,
+            [Namespace.Language] = 25,
+            [Namespace.Parody] = 15,
+            [Namespace.Character] = 8,
+            [Namespace.Group] = 4,
+            [Namespace.Artist] = 4,
+            [Namespace.Male] = 20,
+            [Namespace.Female] = 20,
             [Namespace.Misc] = 20
         };
 
+        private static TagRecord<TransRecord> getRecord(TransRecord tag, string highlight)
+        {
+            var score = 0;
+            var io = tag.Original.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
+            if (io != -1)
+            {
+                if (io == 0)
+                    score = highlight.Length * 65536 * 16 / tag.Original.Length;
+                else
+                    score = highlight.Length * 65536 / tag.Original.Length;
+            }
+            var to = tag.Original.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
+            if (to != -1)
+            {
+                if (to == 0)
+                    score = Math.Max(score, highlight.Length * 65536 * 16 / tag.TranslatedStr.Length);
+                else
+                    score = Math.Max(score, highlight.Length * 65536 / tag.TranslatedStr.Length);
+            }
+            score *= nsFactor[tag.Namespace];
+            return new TransTagRecord(highlight, tag, score);
+        }
+
+        private static TagRecord<Tag> getRecord(Tag tag, string highlight)
+        {
+            var score = 0;
+            var io = tag.Content.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
+            if (io != -1)
+            {
+                if (io == 0)
+                    score = highlight.Length * 65536 * 16 / tag.Content.Length;
+                else
+                    score = highlight.Length * 65536 / tag.Content.Length;
+            }
+            score *= nsFactor[tag.Namespace];
+            return new EhTagRecord(highlight, tag, score);
+        }
+
         public static IEnumerable<TagRecord<TransRecord>> GetTranslatedRecords(string highlight, Namespace ns)
         {
-            TagRecord<TransRecord> getRecord(TransRecord tag)
-            {
-                var score = 0;
-                if (tag.Original.Contains(highlight))
-                {
-                    if (tag.Original.StartsWith(highlight))
-                    {
-                        score += highlight.Length * 65536 * 16 / tag.Original.Length;
-                    }
-                    else
-                    {
-                        score += highlight.Length * 65536 / tag.Original.Length;
-                    }
-                }
-                else if (tag.TranslatedStr.Contains(highlight))
-                {
-                    if (tag.TranslatedStr.StartsWith(highlight))
-                    {
-                        score += highlight.Length * 65536 * 16 / tag.Translated.Text.Length;
-                    }
-                    else
-                    {
-                        score += highlight.Length * 65536 / tag.Translated.Text.Length;
-                    }
-                }
-                score *= nsFactor[tag.Namespace];
-                return new TransTagRecord(highlight, tag, score);
-            }
             using (var db = TransClient.CreateDatabase())
             {
                 var r = default(List<TransRecord>);
                 if (ns == Namespace.Unknown || ns == Namespace.Misc)
-                    r = db.Tags.Where(t => t.Original.Contains(highlight) || t.TranslatedStr.Contains(highlight)).ToList();
+                    r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
+                                          WHERE Original LIKE {0} COLLATE nocase 
+                                            Or TranslatedStr LIKE {0} COLLATE nocase", $"%{highlight}%")
+                        .ToList();
                 else
-                    r = db.Tags.Where(t => t.Namespace == ns)
-                        .Where(t => t.Original.Contains(highlight) || t.TranslatedStr.Contains(highlight)).ToList();
-                return r.Select(t => getRecord(t));
+                    r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
+                                          WHERE Original LIKE {0} COLLATE nocase 
+                                            Or TranslatedStr LIKE {0} COLLATE nocase", $"%{highlight}%")
+                        .Where(t => t.Namespace == ns)
+                        .ToList();
+                return r.Select(t => getRecord(t, highlight));
             }
         }
 
@@ -143,36 +160,19 @@ namespace ExViewer.ViewModels
 
         public static IEnumerable<TagRecord<Tag>> GetRecords(string highlight, Namespace ns)
         {
-            TagRecord<Tag> getRecord(Tag tag)
-            {
-                var score = 0;
-                if (tag.Content.Contains(highlight))
-                {
-                    if (tag.Content.StartsWith(highlight))
-                    {
-                        score += highlight.Length * 65536 * 16 / tag.Content.Length;
-                    }
-                    else
-                    {
-                        score += highlight.Length * 65536 / tag.Content.Length;
-                    }
-                }
-                score *= nsFactor[tag.Namespace];
-                if (score == 0)
-                    return null;
-                else
-                    return new EhTagRecord(highlight, tag, score);
-            }
-
             using (var db = EhTagClient.Client.CreateDatabase())
             {
                 var r = default(List<EhTagClient.TagRecord>);
                 if (ns == Namespace.Unknown || ns == Namespace.Misc)
-                    r = db.Tags.Where(t => t.TagConetnt.Contains(highlight)).ToList();
+                    r = db.Tags.FromSql(@"SELECT * FROM 'TagTable' 
+                                          WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")
+                               .ToList();
                 else
-                    r = db.Tags.Where(t => t.TagNamespace == ns)
-                        .Where(t => t.TagConetnt.Contains(highlight)).ToList();
-                return r.Select(t => getRecord(t.AsTag()));
+                    r = db.Tags.FromSql(@"SELECT * FROM 'TagTable' 
+                                          WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")
+                               .Where(t => t.TagNamespace == ns)
+                               .ToList();
+                return r.Select(t => getRecord(t.AsTag(), highlight));
             }
         }
 

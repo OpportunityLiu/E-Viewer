@@ -106,7 +106,7 @@ namespace ExViewer.ViewModels
                             .Concat<ITagRecord>(TagRecordFactory.GetRecords(lastword, lastwordNs))
                             .Where(t => t != null)
                             .OrderByDescending(t => t.Score)
-                            .Take(10)
+                            .Take(25)
                             .Distinct(tagComparer)
                             .Select(tag => tag.SetPrevious(previous));
                     }
