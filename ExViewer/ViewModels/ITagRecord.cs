@@ -78,14 +78,14 @@ namespace ExViewer.ViewModels
             [Namespace.Misc] = 20
         };
 
-        public static IEnumerable<TagRecord<TransRecord>> GetTranslatedRecords(string highlight)
+        public static IEnumerable<TagRecord<TransRecord>> GetTranslatedRecords(string highlight, Namespace ns)
         {
             TagRecord<TransRecord> getRecord(TransRecord tag)
             {
                 var score = 0;
-                if(tag.Original.Contains(highlight))
+                if (tag.Original.Contains(highlight))
                 {
-                    if(tag.Original.StartsWith(highlight))
+                    if (tag.Original.StartsWith(highlight))
                     {
                         score += highlight.Length * 65536 * 16 / tag.Original.Length;
                     }
@@ -94,9 +94,9 @@ namespace ExViewer.ViewModels
                         score += highlight.Length * 65536 / tag.Original.Length;
                     }
                 }
-                else if(tag.TranslatedStr.Contains(highlight))
+                else if (tag.TranslatedStr.Contains(highlight))
                 {
-                    if(tag.TranslatedStr.StartsWith(highlight))
+                    if (tag.TranslatedStr.StartsWith(highlight))
                     {
                         score += highlight.Length * 65536 * 16 / tag.Translated.Text.Length;
                     }
@@ -108,10 +108,14 @@ namespace ExViewer.ViewModels
                 score *= nsFactor[tag.Namespace];
                 return new TransTagRecord(highlight, tag, score);
             }
-
-            using(var db = TransClient.CreateDatabase())
+            using (var db = TransClient.CreateDatabase())
             {
-                var r = db.Tags.Where(t => t.Original.Contains(highlight) || t.TranslatedStr.Contains(highlight)).ToList();
+                var r = default(List<TransRecord>);
+                if (ns == Namespace.Unknown || ns == Namespace.Misc)
+                    r = db.Tags.Where(t => t.Original.Contains(highlight) || t.TranslatedStr.Contains(highlight)).ToList();
+                else
+                    r = db.Tags.Where(t => t.Namespace == ns)
+                        .Where(t => t.Original.Contains(highlight) || t.TranslatedStr.Contains(highlight)).ToList();
                 return r.Select(t => getRecord(t));
             }
         }
@@ -124,27 +128,27 @@ namespace ExViewer.ViewModels
 
             public override string TagToString()
             {
-                if(Tag.Namespace != Namespace.Misc)
-                    return $"{Tag.Namespace.ToString().ToLowerInvariant()}:\"{Tag.Original}$\"";
-                else
-                    return $"\"{Tag.Original}$\"";
+                return Tag.AsTag().ToSearchTerm();
             }
 
             public override string Title => Tag.Original;
 
-            public override string Caption => Tag.Translated.Text;
+            public override string Caption =>
+                Settings.SettingCollection.Current.UseChineseTagTranslation
+                    ? Tag.Translated.Text
+                    : WikiClient.Get(Tag.Original)?.Japanese ?? "";
 
             public override string AdditionalInfo => Tag.Namespace.ToFriendlyNameString();
         }
 
-        public static IEnumerable<TagRecord<Tag>> GetRecords(string highlight)
+        public static IEnumerable<TagRecord<Tag>> GetRecords(string highlight, Namespace ns)
         {
             TagRecord<Tag> getRecord(Tag tag)
             {
                 var score = 0;
-                if(tag.Content.Contains(highlight))
+                if (tag.Content.Contains(highlight))
                 {
-                    if(tag.Content.StartsWith(highlight))
+                    if (tag.Content.StartsWith(highlight))
                     {
                         score += highlight.Length * 65536 * 16 / tag.Content.Length;
                     }
@@ -154,15 +158,20 @@ namespace ExViewer.ViewModels
                     }
                 }
                 score *= nsFactor[tag.Namespace];
-                if(score == 0)
+                if (score == 0)
                     return null;
                 else
                     return new EhTagRecord(highlight, tag, score);
             }
 
-            using(var db = EhTagClient.Client.CreateDatabase())
+            using (var db = EhTagClient.Client.CreateDatabase())
             {
-                var r = db.Tags.Where(t => t.TagConetnt.Contains(highlight)).ToList();
+                var r = default(List<EhTagClient.TagRecord>);
+                if (ns == Namespace.Unknown || ns == Namespace.Misc)
+                    r = db.Tags.Where(t => t.TagConetnt.Contains(highlight)).ToList();
+                else
+                    r = db.Tags.Where(t => t.TagNamespace == ns)
+                        .Where(t => t.TagConetnt.Contains(highlight)).ToList();
                 return r.Select(t => getRecord(t.AsTag()));
             }
         }

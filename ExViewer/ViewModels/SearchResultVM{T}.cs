@@ -98,62 +98,21 @@ namespace ExViewer.ViewModels
                                                                  .OrderByDescending(sh => sh.Time))
                                         .Distinct()
                                         .Select(sh => sh.SetHighlight(input));
-                    var quoteCount = input.Count(c => c == '"');
-                    var lastword = default(string);
-                    var previous = input;
-                    if (quoteCount == 0)
-                    {
-                        lastword = input.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-                        if (lastword == null)
-                            previous = input;
-                        else
-                            previous = input.Substring(0, input.Length - lastword.Length);
-                    }
-                    else if (quoteCount % 2 == 0)
-                    {
-                        if (input[input.Length - 1] != '"')
-                        {
-                            var qp = input.LastIndexOf('"');
-                            var sp = input.LastIndexOf(' ', input.Length - 1, input.Length - qp);
-                            if (sp != -1)
-                            {
-                                lastword = input.Substring(sp + 1);
-                                previous = input.Substring(0, input.Length - lastword.Length);
-                            }
-                            else
-                            {
-                                lastword = input.Substring(qp + 1);
-                                previous = input.Substring(0, input.Length - lastword.Length) + " ";
-                            }
-                        }
-                        else
-                        {
-                            lastword = null;
-                        }
-                    }
-                    else
-                    {
-                        var qp = input.LastIndexOf('"');
-                        lastword = input.Substring(qp + 1).Trim();
-                        if (qp == 0)
-                            previous = "";
-                        else
-                        {
-                            previous = input.Substring(0, qp);
-                            if (!char.IsWhiteSpace(input[qp - 1]))
-                                previous = previous + " ";
-                        }
-                    }
-                    var dictionary = Enumerable.Empty<ITagRecord>();
+                    AutoCompletion.SplitKeyword(input, out var lastwordNs, out var lastword, out var previous);
+                    var dictionary = default(IEnumerable<ITagRecord>);
                     if (!string.IsNullOrEmpty(lastword))
                     {
-                        dictionary = TagRecordFactory.GetTranslatedRecords(lastword)
-                            .Concat<ITagRecord>(TagRecordFactory.GetRecords(lastword))
+                        dictionary = TagRecordFactory.GetTranslatedRecords(lastword, lastwordNs)
+                            .Concat<ITagRecord>(TagRecordFactory.GetRecords(lastword, lastwordNs))
                             .Where(t => t != null)
                             .OrderByDescending(t => t.Score)
                             .Take(10)
                             .Distinct(tagComparer)
                             .Select(tag => tag.SetPrevious(previous));
+                    }
+                    else
+                    {
+                        dictionary = Enumerable.Empty<ITagRecord>();
                     }
                     try
                     {
