@@ -12,7 +12,7 @@ namespace ExClient
         public static Tag Parse(string content)
         {
             var splited = content.Split(split, 2);
-            if(splited.Length == 2)
+            if (splited.Length == 2)
                 return new Tag(NamespaceExtention.Parse(splited[0]), splited[1]);
             else
                 return new Tag(Namespace.Misc, content);
@@ -22,13 +22,21 @@ namespace ExClient
         {
             result = default(Tag);
             var splited = content.Split(split, 2);
-            if(splited.Length == 2)
+            Namespace ns;
+            if (splited.Length == 2)
             {
-                if(NamespaceExtention.TryParse(splited[0], out var ns))
+                content = splited[1];
+                if (!NamespaceExtention.TryParse(splited[0], out ns))
                 {
-                    result = new Tag(ns, splited[1]);
-                    return true;
+                    return false;
                 }
+            }
+            else
+            {
+                ns = Namespace.Misc;
+            }
+            if (string.IsNullOrWhiteSpace(content))
+            {
                 return false;
             }
             else
@@ -40,9 +48,9 @@ namespace ExClient
 
         public Tag(Namespace @namespace, string content)
         {
-            if(!@namespace.IsDefined())
+            if (!@namespace.IsDefined())
                 throw new ArgumentOutOfRangeException(nameof(@namespace));
-            if(string.IsNullOrWhiteSpace(content))
+            if (string.IsNullOrWhiteSpace(content))
                 throw new ArgumentNullException(nameof(content));
             this.Namespace = @namespace;
             this.Content = content.Trim();
@@ -60,10 +68,21 @@ namespace ExClient
 
         public string ToSearchTerm()
         {
-            if(Namespace != Namespace.Misc)
-                return $"{Namespace.ToString().ToLowerInvariant()}:\"{Content}$\"";
+            if (Namespace != Namespace.Misc)
+            {
+                if (Content.IndexOf(' ') == -1)
+                    return $"{Namespace.ToSearchString()}:{Content}$";
+                else
+                    return $"{Namespace.ToSearchString()}:\"{Content}$\"";
+            }
             else
-                return $"\"{Content}$\"";
+            {
+                if (Content.IndexOf(' ') == -1)
+                    return $"{Content}$";
+                else
+                    return $"\"{Content}$\"";
+
+            }
         }
 
         public SearchResult Search()
@@ -90,7 +109,7 @@ namespace ExClient
 
         public override string ToString()
         {
-            if(Namespace == Namespace.Misc)
+            if (Namespace == Namespace.Misc)
                 return Content;
             return $"{Namespace}:{Content}";
         }
@@ -104,7 +123,7 @@ namespace ExClient
         // override object.Equals
         public override bool Equals(object obj)
         {
-            if(obj is Tag o)
+            if (obj is Tag o)
                 return this.Equals(o);
             return false;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -134,6 +135,11 @@ namespace EhTagTranslatorClient
         {
             get;
             internal set;
+        }
+
+        public Tag AsTag()
+        {
+            return new Tag(this.Namespace, this.Original);
         }
     }
 }

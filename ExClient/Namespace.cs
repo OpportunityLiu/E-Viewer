@@ -48,33 +48,53 @@ namespace ExClient
                 ["Female"] = Namespace.Female
             };
 
+        private static readonly Dictionary<Namespace, string> searchDic
+            = new Dictionary<Namespace, string>()
+            {
+                [Namespace.Reclass] = "reclass",
+                [Namespace.Language] = "language",
+                [Namespace.Parody] = "parody",
+                [Namespace.Character] = "character",
+                [Namespace.Group] = "group",
+                [Namespace.Artist] = "artist",
+                [Namespace.Male] = "male",
+                [Namespace.Female] = "female"
+            };
+
         public static string ToFriendlyNameString(this Namespace that)
             => that.ToFriendlyNameString(LocalizedStrings.Namespace.GetValue);
+
+        public static string ToSearchString(this Namespace that)
+        {
+            if (searchDic.TryGetValue(that, out var r))
+                return r;
+            return null;
+        }
 
         public static bool IsDefined(this Namespace that)
             => that.IsDefined<Namespace>() && that != Namespace.Unknown;
 
         public static Namespace Parse(string str)
         {
-            if(TryParse(str, out var r))
+            if (TryParse(str, out var r))
                 return r;
             throw new FormatException("Wrong namespace.");
         }
 
         public static bool TryParse(string str, out Namespace result)
         {
-            if(string.IsNullOrWhiteSpace(str))
+            if (string.IsNullOrWhiteSpace(str))
             {
                 result = Namespace.Misc;
                 return true;
             }
             str = str.Trim();
-            if(parsingDic.TryGetValue(str, out result))
+            if (parsingDic.TryGetValue(str, out result))
                 return true;
             var f = str.FirstOrDefault(char.IsLetter);
-            if(f == default(char))
+            if (f == default(char))
                 return false;
-            if(parsingDic.TryGetValue(f.ToString(), out result))
+            if (parsingDic.TryGetValue(f.ToString(), out result))
                 return true;
             return false;
         }

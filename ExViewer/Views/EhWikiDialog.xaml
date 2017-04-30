@@ -11,6 +11,12 @@
                           PrimaryButtonText="Ok"
                           RequiresPointer="WhenFocused"
                           mc:Ignorable="d">
+    <controls:MyContentDialog.TitleTemplate>
+        <DataTemplate x:DataType="x:String">
+            <TextBlock Text="{x:Bind}"
+                       IsTextSelectionEnabled="True" />
+        </DataTemplate>
+    </controls:MyContentDialog.TitleTemplate>
     <Grid>
         <Border Width="500" />
         <WebView x:Name="wv"

@@ -6,6 +6,8 @@ namespace ExClient.Launch
 {
     internal sealed class SearchUploaderAndTagHandler : UriHandler
     {
+        private static readonly char[] trim = new[] { '$' };
+
         public override bool CanHandle(UriHandlerData data)
         {
             if(data.Paths.Count != 2)
@@ -13,7 +15,7 @@ namespace ExClient.Launch
             switch(data.Path0)
             {
             case "tag":
-                return Tag.TryParse(data.Paths[1].Unescape2(), out var ignore);
+                return Tag.TryParse(data.Paths[1].Unescape2().TrimEnd(trim), out var ignore);
             case "uploader":
                 return true;
             default:
@@ -27,7 +29,7 @@ namespace ExClient.Launch
             switch(data.Path0)
             {
             case "tag":
-                return AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(Tag.Parse(v).Search()));
+                return AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search()));
             case "uploader":
                 return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search($"uploader:\"{v}\"")));
             }
