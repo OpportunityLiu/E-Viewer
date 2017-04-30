@@ -25,6 +25,7 @@ namespace ExClient
                         var query = from gm in db.GallerySet
                                     where gm.Images.Count != 0
                                     where db.SavedSet.FirstOrDefault(sm => sm.GalleryId == gm.Id) == null
+                                    orderby gm.Id descending
                                     select gm;
                         return new CachedGalleryList(query);
                     }
@@ -36,9 +37,9 @@ namespace ExClient
             {
             }
 
-            protected override CachedGallery Load(int index)
+            protected override CachedGallery Load(GalleryModel model)
             {
-                var c = new CachedGallery(this.Models[index]);
+                var c = new CachedGallery(model);
                 var ignore = c.InitAsync();
                 return c;
             }
