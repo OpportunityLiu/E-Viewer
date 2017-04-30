@@ -151,7 +151,6 @@
       "ImageFileInfoDefault": "图片未加载完成。",
       "ImageInfoAppBarButton/Label": "文件信息",
       "LoadOriginalAppBarButton/Label": "加载原图",
-      "OpenInExplorerButton/Content": "在文件资源管理器中打开",
       "ReloadAppBarButton/Label": "重新加载",
       "ShareAppBarButton/Label": "共享",
       "ImageViewTipsContent": "缩放\t\t\t空格\n放大至最大\t\t=\n缩小至最小\t\t-\n放大\t\t\t]\n缩小\t\t\t[\n平移/切换图片\t\t方向键\n全屏\t\t\t回车",

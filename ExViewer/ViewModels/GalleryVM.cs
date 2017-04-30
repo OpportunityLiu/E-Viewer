@@ -54,10 +54,10 @@ namespace ExViewer.ViewModels
         public static GalleryVM GetVM(Gallery gallery)
         {
             var gi = new GalleryInfo(gallery.Id, gallery.Token);
-            if(Cache.TryGet(gi, out var vm))
+            if (Cache.TryGet(gi, out var vm))
             {
                 vm.Gallery = gallery;
-                if(gallery.Count <= vm.currentIndex)
+                if (gallery.Count <= vm.currentIndex)
                     vm.currentIndex = -1;
             }
             else
@@ -84,7 +84,7 @@ namespace ExViewer.ViewModels
             {
                 return this.Gallery[this.currentIndex];
             }
-            catch(ArgumentOutOfRangeException)
+            catch (ArgumentOutOfRangeException)
             {
                 return null;
             }
@@ -94,7 +94,7 @@ namespace ExViewer.ViewModels
         {
             this.Share = new RelayCommand<GalleryImage>(async image =>
             {
-                if(Helpers.ShareHandler.IsShareSupported)
+                if (Helpers.ShareHandler.IsShareSupported)
                 {
                     Helpers.ShareHandler.Share(async (s, e) =>
                     {
@@ -103,7 +103,7 @@ namespace ExViewer.ViewModels
                         {
                             e.Request.Data.Properties.Title = this.gallery.GetDisplayTitle();
                             e.Request.Data.Properties.Description = this.gallery.GetSecondaryTitle();
-                            if(image == null)
+                            if (image == null)
                             {
                                 var ms = new InMemoryRandomAccessStream();
                                 var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
@@ -111,14 +111,14 @@ namespace ExViewer.ViewModels
                                 await encoder.FlushAsync();
                                 e.Request.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
                                 var firstImage = this.gallery.FirstOrDefault()?.ImageFile;
-                                if(firstImage != null)
+                                if (firstImage != null)
                                     e.Request.Data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
                                 e.Request.Data.Properties.ContentSourceWebLink = this.gallery.GalleryUri;
                                 e.Request.Data.SetWebLink(this.gallery.GalleryUri);
                             }
                             else
                             {
-                                if(image.ImageFile != null)
+                                if (image.ImageFile != null)
                                 {
                                     e.Request.Data.SetBitmap(RandomAccessStreamReference.CreateFromFile(image.ImageFile));
                                     e.Request.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(await image.ImageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem));
@@ -135,13 +135,12 @@ namespace ExViewer.ViewModels
                 }
                 else
                 {
-                    if(image == null)
+                    if (image == null)
                         await Launcher.LaunchUriAsync(this.gallery.GalleryUri);
                     else
                         await Launcher.LaunchUriAsync(image.PageUri);
                 }
             }, image => this.gallery != null);
-            this.OpenInExplorer = new RelayCommand(async () => await Launcher.LaunchFolderAsync(this.gallery.GalleryFolder), () => this.gallery != null);
             this.Save = new RelayCommand(() =>
             {
                 var task = this.gallery.SaveGalleryAsync(SettingCollection.Current.GetStrategy());
@@ -152,7 +151,7 @@ namespace ExViewer.ViewModels
                 };
                 task.Completed = (sender, e) =>
                 {
-                    switch(e)
+                    switch (e)
                     {
                     case AsyncStatus.Canceled:
                     case AsyncStatus.Error:
@@ -183,7 +182,7 @@ namespace ExViewer.ViewModels
             this.ReloadImage = new RelayCommand<GalleryImage>(async image =>
             {
                 image.PropertyChanged += this.Image_PropertyChanged;
-                if(image.OriginalLoaded)
+                if (image.OriginalLoaded)
                     await image.LoadImageAsync(true, ConnectionStrategy.AllFull, false);
                 else
                     await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
@@ -197,7 +196,7 @@ namespace ExViewer.ViewModels
                     var file = await torrent.LoadTorrentAsync();
                     await Launcher.LaunchFileAsync(file);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
                 }
@@ -211,7 +210,7 @@ namespace ExViewer.ViewModels
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(GalleryImage.OriginalLoaded))
+            if (e.PropertyName == nameof(GalleryImage.OriginalLoaded))
                 this.LoadOriginal.RaiseCanExecuteChanged();
         }
 
@@ -222,11 +221,6 @@ namespace ExViewer.ViewModels
         }
 
         public RelayCommand<GalleryImage> Share
-        {
-            get;
-        }
-
-        public RelayCommand OpenInExplorer
         {
             get;
         }
@@ -268,14 +262,13 @@ namespace ExViewer.ViewModels
             get => this.gallery;
             private set
             {
-                if(this.gallery != null)
+                if (this.gallery != null)
                     this.gallery.LoadMoreItemsException -= this.Gallery_LoadMoreItemsException;
                 Set(ref this.gallery, value);
-                if(this.gallery != null)
+                if (this.gallery != null)
                     this.gallery.LoadMoreItemsException += this.Gallery_LoadMoreItemsException;
                 this.Save.RaiseCanExecuteChanged();
                 this.Share.RaiseCanExecuteChanged();
-                this.OpenInExplorer.RaiseCanExecuteChanged();
                 this.Torrents = null;
             }
         }
@@ -307,7 +300,7 @@ namespace ExViewer.ViewModels
             return Run(async token =>
             {
                 var current = GetCurrent();
-                if(current?.ImageFile == null)
+                if (current?.ImageFile == null)
                 {
                     this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
                     return;
@@ -350,7 +343,7 @@ namespace ExViewer.ViewModels
                 {
                     await this.gallery.Comments.FetchAsync();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
                 }
@@ -369,7 +362,7 @@ namespace ExViewer.ViewModels
                 {
                     this.Torrents = await this.gallery.FetchTorrnetsAsync();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
                 }

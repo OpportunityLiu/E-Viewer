@@ -151,7 +151,6 @@
       "ImageFileInfoDefault": "The image hasn't finished loading.",
       "ImageInfoAppBarButton/Label": "Image infomation",
       "LoadOriginalAppBarButton/Label": "Load original image",
-      "OpenInExplorerButton/Content": "Open in File Explorer",
       "ReloadAppBarButton/Label": "Reload",
       "ShareAppBarButton/Label": "Share",
       "ImageViewTipsContent": "Zoom in/out\t\t\tSPACE\nZoom to maximum\t\t=\nZoom to minimun\t\t\t-\nZoom in\t\t\t\t]\nZoom out\t\t\t[\nPan / Next/Previous Image\t\tARROW KEYS\nFull screen\t\t\tENTER",
