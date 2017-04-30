@@ -14,6 +14,9 @@ namespace ExViewer.Controls
             var version = Package.Current.Id.Version;
             this.tb_AppVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
             this.tb_AppName.Text = Package.Current.DisplayName;
+#if !RELEASE
+            FindName(nameof(this.tb_DebugTag));
+#endif
             this.tb_AppAuthor.Text = Package.Current.PublisherDisplayName;
             this.tb_AppDescription.Text = Package.Current.Description;
             this.refreshTimer.Tick += this.RefreshTimer_Tick;
