@@ -15,21 +15,6 @@ namespace ExClient
             get;
         } = new Gallery(-1, null, "", "", LocalizedStrings.Resources.DefaultTitle, "", "", "ms-appx:///", LocalizedStrings.Resources.DefaultUploader, "0", "0", 0, false, "2.5", "0", new string[0]);
 
-        private class ItemIndexRangeEqualityComparer : EqualityComparer<ItemIndexRange>
-        {
-            public static new ItemIndexRangeEqualityComparer Default { get; } = new ItemIndexRangeEqualityComparer();
-
-            public override bool Equals(ItemIndexRange x, ItemIndexRange y)
-            {
-                return x.FirstIndex == y.FirstIndex && x.Length == y.Length;
-            }
-
-            public override int GetHashCode(ItemIndexRange obj)
-            {
-                return obj.FirstIndex ^ ((int)obj.Length << 16);
-            }
-        }
-
         private int loadedCount;
 
         internal GalleryList(IEnumerable<TModel> models)
@@ -42,7 +27,6 @@ namespace ExClient
         }
 
         private List<TModel> models;
-        protected IReadOnlyList<TModel> Models => this.models;
 
         protected override void ClearItems()
         {
@@ -56,41 +40,35 @@ namespace ExClient
         {
             this.models.RemoveAt(index);
             this.RecordCount--;
-            if(this[index] != DefaultGallery)
+            if (this[index] != DefaultGallery)
                 this.loadedCount--;
             base.RemoveItem(index);
         }
 
-        public void RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)
+        void IItemsRangeInfo.RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)
         {
-            if(this.loadedCount == this.RecordCount)
+            if (this.loadedCount == this.RecordCount)
             {
                 return;
             }
-            foreach(var item in trackedItems.Concat(Enumerable.Repeat(visibleRange, 1)).Distinct(ItemIndexRangeEqualityComparer.Default))
+            var ranges = trackedItems.Concat(Enumerable.Repeat(visibleRange, 1)).ToList();
+            var start = ranges.Min(r => r.FirstIndex);
+            var end = ranges.Max(r => r.LastIndex) + 1;
+            if (start < 0)
+                start = 0;
+            if (end > this.Count)
+                end = this.Count;
+            for (var i = start; i < end; i++)
             {
-                loadRange(item);
-            }
-        }
-
-        private void loadRange(ItemIndexRange visibleRange)
-        {
-            if(visibleRange.FirstIndex < 0)
-                visibleRange = new ItemIndexRange(0, (uint)visibleRange.LastIndex + 1);
-            if(visibleRange.LastIndex >= this.Count)
-                visibleRange = new ItemIndexRange(visibleRange.FirstIndex, (uint)(this.Count - visibleRange.FirstIndex));
-
-            for(var i = visibleRange.FirstIndex; i <= visibleRange.LastIndex; i++)
-            {
-                var index = i + visibleRange.FirstIndex;
-                if(this[index] != DefaultGallery)
+                if (this[i] != DefaultGallery)
                     continue;
-                this[index] = Load(index);
+                this[i] = Load(this.models[i]);
+                this.models[i] = default(TModel);
                 this.loadedCount++;
             }
         }
 
-        protected abstract TGallery Load(int index);
+        protected abstract TGallery Load(TModel model);
 
         protected override IAsyncOperation<IReadOnlyList<Gallery>> LoadPageAsync(int pageIndex)
         {

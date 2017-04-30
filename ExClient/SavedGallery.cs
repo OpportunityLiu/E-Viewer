@@ -37,9 +37,9 @@ namespace ExClient
             {
             }
 
-            protected override SavedGallery Load(int index)
+            protected override SavedGallery Load(SavedGalleryModel model)
             {
-                var sg = new SavedGallery(Models[index].Gallery, Models[index]);
+                var sg = new SavedGallery(model.Gallery, model);
                 var ignore = sg.InitAsync();
                 return sg;
             }
