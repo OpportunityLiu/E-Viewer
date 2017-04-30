@@ -58,7 +58,6 @@ namespace ExViewer.Views
             {
                 if (e.Parameter != null)
                     this.VM?.SearchResult.Reset();
-                await Task.Delay(100);
                 this.cbCategory.Focus(FocusState.Programmatic);
             }
             if (e.NavigationMode == NavigationMode.Back)
@@ -164,7 +163,6 @@ namespace ExViewer.Views
             exitSelectMode();
             this.asb.IsSuggestionListOpen = false;
             this.cbCategory.IsDropDownOpen = false;
-            InputPane.GetForCurrentView().TryHide();
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
