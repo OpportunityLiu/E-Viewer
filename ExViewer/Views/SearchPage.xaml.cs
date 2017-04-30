@@ -40,21 +40,25 @@ namespace ExViewer.Views
         }
 
         private int navId;
+        private Button btnExpandButton;
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             this.navId++;
             this.VM = SearchVM.GetVM(e.Parameter?.ToString());
-            if(e.NavigationMode == NavigationMode.New)
+            if (e.NavigationMode == NavigationMode.New)
             {
-                if(e.Parameter != null)
+                if (e.Parameter != null)
                     this.VM?.SearchResult.Reset();
+                if (this.btnExpandButton == null)
+                    this.btnExpandButton = this.ab.FirstDescendant<Button>("ExpandButton");
+                this.btnExpandButton?.Focus(FocusState.Programmatic);
             }
-            if(e.NavigationMode == NavigationMode.Back)
+            if (e.NavigationMode == NavigationMode.Back)
             {
                 var selectedGallery = this.VM.SelectedGallery;
-                if(selectedGallery != null)
+                if (selectedGallery != null)
                 {
                     await Task.Delay(100);
                     this.lv.ScrollIntoView(selectedGallery);
@@ -71,7 +75,7 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(this.VM.Open.CanExecute(e.ClickedItem))
+            if (this.VM.Open.CanExecute(e.ClickedItem))
                 this.VM.Open.Execute(e.ClickedItem);
         }
 
@@ -101,10 +105,10 @@ namespace ExViewer.Views
         {
             var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput;
             var currentId = this.navId;
-            if(needAutoComplete)
+            if (needAutoComplete)
             {
                 var r = await this.VM.LoadSuggestion(sender.Text);
-                if(args.CheckCurrent() && currentId == this.navId)
+                if (args.CheckCurrent() && currentId == this.navId)
                 {
                     this.asb.ItemsSource = r;
                 }
@@ -114,7 +118,7 @@ namespace ExViewer.Views
         private async void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             sender.ItemsSource = null;
-            if(args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
+            if (args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
             {
                 CloseAll();
                 this.VM.Search.Execute(args.QueryText);
@@ -141,7 +145,7 @@ namespace ExViewer.Views
         {
             base.OnKeyUp(e);
             e.Handled = true;
-            switch(e.Key)
+            switch (e.Key)
             {
             case Windows.System.VirtualKey.GamepadY:
                 this.asb.Focus(FocusState.Keyboard);
@@ -160,12 +164,11 @@ namespace ExViewer.Views
         {
             this.asb.IsSuggestionListOpen = false;
             this.ab.IsOpen = false;
-            InputPane.GetForCurrentView().TryHide();
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
-            if(visible)
+            if (visible)
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
             else
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
