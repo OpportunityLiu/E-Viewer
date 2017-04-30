@@ -316,15 +316,6 @@
                                 <TextBlock x:Name="tb_Info"
                                            Style="{StaticResource BodyTextBlockStyle}"
                                            Text="{x:Bind VM.CurrentInfo, Mode=OneWay}" />
-                                <Button x:Name="btn_OpenInExplorer"
-                                        x:Uid="Views/ImagePage/OpenInExplorerButton"
-                                        Margin="0,4,0,0"
-                                        Padding="0"
-                                        BorderThickness="0"
-                                        Command="{x:Bind VM.OpenInExplorer, Mode=OneWay}"
-                                        Content="Open in explorer"
-                                        Style="{StaticResource TextBlockButtonStyle}"
-                                        Visibility="{x:Bind VM.CurrentInfo, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
                             </StackPanel>
                             <Flyout.FlyoutPresenterStyle>
                                 <Style TargetType="FlyoutPresenter">
