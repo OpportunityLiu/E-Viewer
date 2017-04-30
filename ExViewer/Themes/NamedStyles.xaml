@@ -346,6 +346,7 @@
             </Grid.RowDefinitions>
             <controls:HighlightTextBlock Text="{Binding Title, Mode=OneTime}"
                                          HighlightText="{Binding Highlight, Mode=OneTime}"
+                                         Comparison="OrdinalIgnoreCase"
                                          Grid.Column="1" 
                                          Grid.ColumnSpan="2"/>
             <TextBlock Text="{Binding AdditionalInfo, Mode=OneTime}"
@@ -356,6 +357,7 @@
                        Grid.Column="1" />
             <controls:HighlightTextBlock Text="{Binding Caption, Mode=OneTime}"
                                          HighlightText="{Binding Highlight, Mode=OneTime}"
+                                         Comparison="OrdinalIgnoreCase"
                                          TextBlockStyle="{StaticResource SuggestionCaptionTextBlockStyle}"
                                          Grid.Row="1"
                                          Grid.Column="2" />
