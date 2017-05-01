@@ -131,6 +131,7 @@
       "TagCopied": "Tag has been copied to clipboard",
       "TorrentDownloadButton/ToolTipService/ToolTip": "Download",
       "TorrentDownloading": "Start downloading...",
+      "TorrentDownloaded": "Download finished, torrent file saved to {0}",
       "TorrentDownloadsTextBlock/Text": "Downloads",
       "TorrentExpungedTextBlock/Text": "Expunged",
       "TorrentPeersTextBlock/Text": "Peers",
