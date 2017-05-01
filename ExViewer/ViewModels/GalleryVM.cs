@@ -195,7 +195,11 @@ namespace ExViewer.ViewModels
                 try
                 {
                     var file = await torrent.LoadTorrentAsync();
-                    await Launcher.LaunchFileAsync(file);
+                    var dfile = await DownloadsFolder.CreateFileAsync(file.Name, CreationCollisionOption.GenerateUniqueName);
+                    var data = await FileIO.ReadBufferAsync(file);
+                    await FileIO.WriteBufferAsync(dfile, data);
+                    await Launcher.LaunchFileAsync(dfile);
+                    RootControl.RootController.SendToast(string.Format(Strings.Resources.Views.GalleryPage.TorrentDownloaded, dfile.Path), null);
                 }
                 catch (Exception ex)
                 {
@@ -249,7 +253,7 @@ namespace ExViewer.ViewModels
                 var data = new DataPackage();
                 data.SetText(tag.Content);
                 Clipboard.SetContent(data);
-                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TagCopied,typeof(GalleryPage));
+                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TagCopied, typeof(GalleryPage));
             }, tag => tag.Content != null);
 
         private Gallery gallery;

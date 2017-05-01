@@ -131,6 +131,7 @@
       "TagCopied": "已将标签复制到剪贴板",
       "TorrentDownloadButton/ToolTipService/ToolTip": "下载",
       "TorrentDownloading": "开始下载种子…",
+      "TorrentDownloaded": "种子下载完成，已保存至 {0}",
       "TorrentDownloadsTextBlock/Text": "完成",
       "TorrentExpungedTextBlock/Text": "已失效",
       "TorrentPeersTextBlock/Text": "下载",
