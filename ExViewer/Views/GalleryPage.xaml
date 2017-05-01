@@ -211,6 +211,7 @@
         
         <MenuFlyout x:Name="mfo_Tag">
             <MenuFlyoutItem Text="{Binding Content}"
+                            ToolTipService.ToolTip="{Binding Content}"
                             Command="{x:Bind VM.CopyTag, Mode=OneWay}"
                             CommandParameter="{Binding}" />
             <MenuFlyoutSeparator />

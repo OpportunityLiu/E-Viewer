@@ -13,8 +13,13 @@
                           mc:Ignorable="d">
     <controls:MyContentDialog.TitleTemplate>
         <DataTemplate x:DataType="x:String">
-            <TextBlock Text="{x:Bind}"
-                       IsTextSelectionEnabled="True" />
+            <ScrollViewer VerticalScrollBarVisibility="Hidden"
+                          VerticalScrollMode="Disabled"
+                          HorizontalScrollBarVisibility="Hidden"
+                          HorizontalScrollMode="Auto">
+                <TextBlock Text="{x:Bind}"
+                           IsTextSelectionEnabled="True" />
+            </ScrollViewer>
         </DataTemplate>
     </controls:MyContentDialog.TitleTemplate>
     <Grid>
