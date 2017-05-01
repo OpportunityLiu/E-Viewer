@@ -128,6 +128,7 @@
       "SearchTagMenuFlyoutItem/Text": "搜索含有此标签的画廊",
       "ShareAppBarButton/Label": "共享",
       "TagNamespaceColumnDefinition/Width": "68",
+      "TagCopied": "已将标签复制到剪贴板",
       "TorrentDownloadButton/ToolTipService/ToolTip": "下载",
       "TorrentDownloading": "开始下载种子…",
       "TorrentDownloadsTextBlock/Text": "完成",

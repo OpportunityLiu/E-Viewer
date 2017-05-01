@@ -128,6 +128,7 @@
       "SearchTagMenuFlyoutItem/Text": "Show galleries with this tag",
       "ShareAppBarButton/Label": "Share",
       "TagNamespaceColumnDefinition/Width": "72",
+      "TagCopied": "Tag has been copied to clipboard",
       "TorrentDownloadButton/ToolTipService/ToolTip": "Download",
       "TorrentDownloading": "Start downloading...",
       "TorrentDownloadsTextBlock/Text": "Downloads",
