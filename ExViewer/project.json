@@ -8,7 +8,7 @@
     "Microsoft.Toolkit.Uwp.UI.Controls": "1.4.1",
     "MvvmLight": "5.3.0",
     "MvvmLightLibs": "5.3.0",
-    "Opportunity.Converters": "1.0.8"
+    "Opportunity.Converters": "1.0.9"
   },
   "frameworks": {
     "uap10.0": {}

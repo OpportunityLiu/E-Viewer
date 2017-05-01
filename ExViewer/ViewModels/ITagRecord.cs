@@ -90,7 +90,7 @@ namespace ExViewer.ViewModels
                 else
                     score = highlight.Length * 65536 / tag.Original.Length;
             }
-            var to = tag.Original.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
+            var to = tag.TranslatedStr.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
             if (to != -1)
             {
                 if (to == 0)
