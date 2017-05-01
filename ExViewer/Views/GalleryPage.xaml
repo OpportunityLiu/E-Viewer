@@ -30,19 +30,6 @@
                 <x:Int32>1</x:Int32>
             </con:ObjectToBooleanConverter.ValueForTrue>
         </con:ObjectToBooleanConverter>
-        <MenuFlyout x:Name="mfo_Tag">
-            <MenuFlyoutItem IsHitTestVisible="False"
-                            IsTabStop="False"
-                            Text="{Binding Content}" />
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem x:Uid="Views/GalleryPage/GoToDefinitionMenuFlyoutItem"
-                            Click="mfi_EhWiki_Click"
-                            Text="Go to EHWiki for definition" />
-            <MenuFlyoutItem x:Uid="Views/GalleryPage/SearchTagMenuFlyoutItem"
-                            Command="{x:Bind VM.SearchTag, Mode=OneWay}"
-                            CommandParameter="{Binding}"
-                            Text="Show galleries with this tag" />
-        </MenuFlyout>
 
         <Style x:Key="TorrentNameTextBlockStyle"
                TargetType="TextBlock">
@@ -221,6 +208,75 @@
             <Setter Property="VerticalAlignment"
                     Value="Top" />
         </Style>
+        
+        <MenuFlyout x:Name="mfo_Tag">
+            <MenuFlyoutItem Text="{Binding Content}"
+                            Command="{x:Bind VM.CopyTag, Mode=OneWay}"
+                            CommandParameter="{Binding}" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem x:Uid="Views/GalleryPage/GoToDefinitionMenuFlyoutItem"
+                            Command="{x:Bind VM.ShowTagDefination, Mode=OneWay}"
+                            CommandParameter="{Binding}"
+                            Text="Go to EHWiki for definition" />
+            <MenuFlyoutItem x:Uid="Views/GalleryPage/SearchTagMenuFlyoutItem"
+                            Command="{x:Bind VM.SearchTag, Mode=OneWay}"
+                            CommandParameter="{Binding}"
+                            Text="Show galleries with this tag" />
+        </MenuFlyout>
+        <DataTemplate  x:Key="TagTemplate"
+                       x:DataType="client:Tag">
+            <controls:TagPresenter Padding="4,0"
+                                   GalleryTag="{x:Bind}" />
+        </DataTemplate>
+        <DataTemplate x:Key="TagGroupTemplate" x:DataType="client:NamespaceTagCollection">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Uid="Views/GalleryPage/TagNamespaceColumnDefinition"
+                                      Width="200" />
+                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Padding="2,0"
+                           HorizontalAlignment="Right"
+                           Text="{x:Bind Namespace, Converter={StaticResource NamespaceToFriendlyStringConverter}}" />
+                <GridView Grid.Column="2"
+                          Padding="0,0,0,4"
+                          IsItemClickEnabled="True"
+                          ItemClick="gv_Tags_ItemClick"
+                          ItemsSource="{x:Bind}"
+                          ItemTemplate="{StaticResource TagTemplate}"
+                          SelectionMode="None">
+                    <GridView.ItemContainerStyle>
+                        <Style TargetType="GridViewItem">
+                            <Setter Property="MinHeight"
+                                    Value="0" />
+                            <Setter Property="MinWidth"
+                                    Value="0" />
+                        </Style>
+                    </GridView.ItemContainerStyle>
+                    <GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <wp:WrapPanel />
+                        </ItemsPanelTemplate>
+                    </GridView.ItemsPanel>
+                    <GridView.ItemContainerTransitions>
+                        <TransitionCollection />
+                    </GridView.ItemContainerTransitions>
+                    <GridView.Template>
+                        <ControlTemplate TargetType="GridView">
+                            <ItemsPresenter Padding="{TemplateBinding Padding}"
+                                            Footer="{TemplateBinding Footer}"
+                                            FooterTemplate="{TemplateBinding FooterTemplate}"
+                                            FooterTransitions="{TemplateBinding FooterTransitions}"
+                                            Header="{TemplateBinding Header}"
+                                            HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                                            HeaderTransitions="{TemplateBinding HeaderTransitions}" />
+                        </ControlTemplate>
+                    </GridView.Template>
+                </GridView>
+            </Grid>
+        </DataTemplate>
     </controls:MyPage.Resources>
     <Grid x:Name="gd_Root">
         <Grid.RowDefinitions>
@@ -303,63 +359,8 @@
                                   ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
                                   ItemsSource="{x:Bind VM.Gallery.Tags, Mode=OneWay}"
                                   ScrollViewer.IsVerticalScrollChainingEnabled="True"
-                                  SelectionMode="None">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="client:NamespaceTagCollection">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition x:Uid="Views/GalleryPage/TagNamespaceColumnDefinition"
-                                                              Width="200" />
-                                            <ColumnDefinition Width="8" />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0"
-                                                   Padding="2,0"
-                                                   HorizontalAlignment="Right"
-                                                   Text="{x:Bind Namespace, Converter={StaticResource NamespaceToFriendlyStringConverter}}" />
-                                        <GridView Grid.Column="2"
-                                                  Padding="0,0,0,4"
-                                                  IsItemClickEnabled="True"
-                                                  ItemClick="gv_Tags_ItemClick"
-                                                  ItemsSource="{x:Bind}"
-                                                  SelectionMode="None">
-                                            <GridView.ItemContainerStyle>
-                                                <Style TargetType="GridViewItem">
-                                                    <Setter Property="MinHeight"
-                                                            Value="0" />
-                                                    <Setter Property="MinWidth"
-                                                            Value="0" />
-                                                </Style>
-                                            </GridView.ItemContainerStyle>
-                                            <GridView.ItemTemplate>
-                                                <DataTemplate x:DataType="client:Tag">
-                                                    <controls:TagPresenter Padding="4,0"
-                                                                           GalleryTag="{x:Bind}" />
-                                                </DataTemplate>
-                                            </GridView.ItemTemplate>
-                                            <GridView.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <wp:WrapPanel />
-                                                </ItemsPanelTemplate>
-                                            </GridView.ItemsPanel>
-                                            <GridView.ItemContainerTransitions>
-                                                <TransitionCollection />
-                                            </GridView.ItemContainerTransitions>
-                                            <GridView.Template>
-                                                <ControlTemplate TargetType="GridView">
-                                                    <ItemsPresenter Padding="{TemplateBinding Padding}"
-                                                                    Footer="{TemplateBinding Footer}"
-                                                                    FooterTemplate="{TemplateBinding FooterTemplate}"
-                                                                    FooterTransitions="{TemplateBinding FooterTransitions}"
-                                                                    Header="{TemplateBinding Header}"
-                                                                    HeaderTemplate="{TemplateBinding HeaderTemplate}"
-                                                                    HeaderTransitions="{TemplateBinding HeaderTransitions}" />
-                                                </ControlTemplate>
-                                            </GridView.Template>
-                                        </GridView>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                                  SelectionMode="None"
+                                  ItemTemplate="{StaticResource TagGroupTemplate}">
                             <ListView.ItemContainerTransitions>
                                 <TransitionCollection />
                             </ListView.ItemContainerTransitions>

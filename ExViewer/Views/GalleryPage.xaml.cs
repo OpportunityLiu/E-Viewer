@@ -199,8 +199,6 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(GalleryVM), typeof(GalleryPage), new PropertyMetadata(null));
 
-        private EhWikiDialog ewd = new EhWikiDialog();
-
         private void gv_Tags_ItemClick(object sender, ItemClickEventArgs e)
         {
             var s = (ListViewBase)sender;
@@ -209,14 +207,7 @@ namespace ExViewer.Views
             {
                 item.DataContext = e.ClickedItem;
             }
-
-            this.ewd.WikiTag = (Tag)e.ClickedItem;
             this.mfo_Tag.ShowAt(container);
-        }
-
-        private async void mfi_EhWiki_Click(object sender, RoutedEventArgs e)
-        {
-            await this.ewd.ShowAsync();
         }
 
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)

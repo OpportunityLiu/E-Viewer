@@ -378,6 +378,9 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:TagPresenter">
                     <TextBlock x:Name="Presenter"
+                               TextTrimming="None"
+                               TextWrapping="NoWrap"
+                               MaxLines="1"
                                Foreground="{TemplateBinding Foreground}"
                                Padding="{TemplateBinding Padding}" />
                 </ControlTemplate>

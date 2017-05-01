@@ -20,6 +20,7 @@ using Windows.Storage;
 using Windows.Graphics.Imaging;
 using ExClient.Api;
 using ExClient.Collections;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace ExViewer.ViewModels
 {
@@ -220,40 +221,36 @@ namespace ExViewer.ViewModels
             this.Gallery = gallery;
         }
 
-        public RelayCommand<GalleryImage> Share
-        {
-            get;
-        }
+        public RelayCommand<GalleryImage> Share { get; }
 
-        public RelayCommand Save
-        {
-            get;
-        }
+        public RelayCommand Save { get; }
 
-        public RelayCommand<GalleryImage> OpenImage
-        {
-            get;
-        }
+        public RelayCommand<GalleryImage> OpenImage { get; }
 
-        public RelayCommand<GalleryImage> LoadOriginal
-        {
-            get;
-        }
+        public RelayCommand<GalleryImage> LoadOriginal { get; }
 
-        public RelayCommand<GalleryImage> ReloadImage
-        {
-            get;
-        }
+        public RelayCommand<GalleryImage> ReloadImage { get; }
 
-        public RelayCommand<TorrentInfo> TorrentDownload
-        {
-            get;
-        }
+        public RelayCommand<TorrentInfo> TorrentDownload { get; }
 
-        public RelayCommand<Tag> SearchTag
-        {
-            get;
-        }
+        public RelayCommand<Tag> SearchTag { get; }
+
+        private static readonly EhWikiDialog ewd = new EhWikiDialog();
+        public RelayCommand<Tag> ShowTagDefination { get; }
+            = new RelayCommand<Tag>(async tag =>
+            {
+                ewd.WikiTag = tag;
+                await ewd.ShowAsync();
+            }, tag => tag.Content != null);
+
+        public RelayCommand<Tag> CopyTag { get; }
+            = new RelayCommand<Tag>(tag =>
+            {
+                var data = new DataPackage();
+                data.SetText(tag.Content);
+                Clipboard.SetContent(data);
+                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TagCopied,typeof(GalleryPage));
+            }, tag => tag.Content != null);
 
         private Gallery gallery;
 
