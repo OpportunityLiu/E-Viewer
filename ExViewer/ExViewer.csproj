@@ -521,7 +521,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugBounds|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\DebugBounds\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION;CODE_ANALYSIS;DEBUG_BOUNDS</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION;CODE_ANALYSIS;DEBUG_BOUNDS;CODE_ANALYSIS</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>

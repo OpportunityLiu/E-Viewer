@@ -55,6 +55,7 @@
                    Text="AppName" />
         <TextBlock x:Name="tb_DebugTag"
                    x:DeferLoadStrategy="Lazy"
+                   Visibility="Collapsed"
                    Style="{StaticResource AboutControlBaseTextBlockStyle}"
                    Text="DEBUG" />
         <TextBlock x:Name="tb_AppAuthor"
