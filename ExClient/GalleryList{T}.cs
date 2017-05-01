@@ -1,4 +1,4 @@
-﻿using ExClient.Collections;
+﻿using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +18,8 @@ namespace ExClient
         private int loadedCount;
 
         internal GalleryList(IEnumerable<TModel> models)
-            : base(1)
         {
-            this.PageCount = 1;
+            this.PageCount = 0;
             this.models = models.ToList();
             this.RecordCount = this.models.Count;
             AddRange(Enumerable.Repeat(DefaultGallery, this.RecordCount));

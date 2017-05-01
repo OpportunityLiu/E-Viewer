@@ -1,9 +1,9 @@
 ﻿using ExClient.Api;
-using ExClient.Collections;
 using ExClient.Internal;
 using ExClient.Models;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -143,7 +143,6 @@ namespace ExClient
         }
 
         private Gallery(long id, ulong token)
-            : base(0)
         {
             this.Id = id;
             this.Token = token;

@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Threading;
+﻿using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -23,7 +24,7 @@ namespace ExClient.Internal
 
         public void StartLoading()
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() => getImage());
+            DispatcherHelper.BeginInvokeOnUIThread(() => getImage());
         }
 
         private WeakReference<BitmapImage> image;
@@ -45,17 +46,17 @@ namespace ExClient.Internal
                     this.Loaded = true;
                     var temp = ImageLoaded;
                     if(temp != null)
-                        DispatcherHelper.CheckBeginInvokeOnUI(() => temp.Invoke(this, EventArgs.Empty));
+                        DispatcherHelper.BeginInvokeOnUIThread(() => temp.Invoke(this, EventArgs.Empty));
                     break;
                 case AsyncStatus.Canceled:
                     var temp2 = ImageFailed;
                     if(temp2 != null)
-                        DispatcherHelper.CheckBeginInvokeOnUI(() => temp2.Invoke(this, new TaskCanceledException()));
+                        DispatcherHelper.BeginInvokeOnUIThread(() => temp2.Invoke(this, new TaskCanceledException()));
                     break;
                 case AsyncStatus.Error:
                     var temp3 = ImageFailed;
                     if(temp3 != null)
-                        DispatcherHelper.CheckBeginInvokeOnUI(() => temp3.Invoke(this, sender.ErrorCode));
+                        DispatcherHelper.BeginInvokeOnUIThread(() => temp3.Invoke(this, sender.ErrorCode));
                     break;
                 }
             };

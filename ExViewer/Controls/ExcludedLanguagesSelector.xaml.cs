@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ExClient.Settings;
 using System.Runtime.CompilerServices;
+using Opportunity.MvvmUniverse;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 

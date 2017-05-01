@@ -75,8 +75,7 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (this.VM.Open.CanExecute(e.ClickedItem))
-                this.VM.Open.Execute(e.ClickedItem);
+            this.VM.Open.Execute((Gallery)e.ClickedItem);
         }
 
         public SearchVM VM

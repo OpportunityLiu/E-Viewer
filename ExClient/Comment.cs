@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Opportunity.MvvmUniverse;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

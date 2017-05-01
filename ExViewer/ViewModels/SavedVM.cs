@@ -1,7 +1,6 @@
 ﻿using ExClient;
 using ExViewer.Views;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using Opportunity.MvvmUniverse.Commands;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,22 +23,22 @@ namespace ExViewer.ViewModels
 
         private SavedVM()
         {
-            this.Clear = new RelayCommand(() =>
+            this.Clear = new Command(() =>
             {
                 RootControl.RootController.TrackAsyncAction(SavedGallery.ClearAllGalleriesAsync(), (s, e) =>
                 {
-                    CachedVM.Instance.Refresh.Execute(null);
-                    this.Refresh.Execute(null);
+                    CachedVM.Instance.Refresh.Execute();
+                    this.Refresh.Execute();
                 });
             });
-            this.Refresh = new RelayCommand(async () =>
+            this.Refresh = new Command(async () =>
             {
                 this.Galleries = null;
                 this.Refresh.RaiseCanExecuteChanged();
                 this.Galleries = await SavedGallery.LoadSavedGalleriesAsync();
                 this.Refresh.RaiseCanExecuteChanged();
             });
-            this.SaveTo = new RelayCommand<Gallery>(async g =>
+            this.SaveTo = new Command<Gallery>(async g =>
             {
                 var getTarget = savePicker.PickSingleFolderAsync();
                 var sourceFolder = await g.GetFolderAsync();
@@ -69,7 +68,7 @@ namespace ExViewer.ViewModels
             return p;
         }
 
-        public RelayCommand<Gallery> SaveTo
+        public Command<Gallery> SaveTo
         {
             get;
         }

@@ -44,7 +44,7 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(e.NavigationMode == NavigationMode.Back)
+            if (e.NavigationMode == NavigationMode.Back)
             {
                 await Task.Delay(50);
                 ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
@@ -79,16 +79,11 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(this.VM.Open.CanExecute(e.ClickedItem))
+            var item = (Gallery)e.ClickedItem;
+            if (this.VM.Open.Execute(item))
             {
-                this.VM.Open.Execute(e.ClickedItem);
-                this.opened = (Gallery)e.ClickedItem;
+                this.opened = item;
             }
-        }
-
-        private void lv_RefreshRequested(object sender, EventArgs args)
-        {
-            this.VM.Refresh.Execute(null);
         }
 
         public void CloseAll()

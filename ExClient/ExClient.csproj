@@ -126,14 +126,12 @@
     <Compile Include="Internal\FavoriteCollectionNames.cs" />
     <Compile Include="FavoritesSearchResult.cs" />
     <Compile Include="GalleryImagePlaceHolder.cs" />
-    <Compile Include="Helpers\AsyncWarpper.cs" />
     <Compile Include="Helpers\EnumExtension.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="GalleryList{T}.cs" />
     <Compile Include="Api\ApiRequest.cs" />
     <Compile Include="HostType.cs" />
     <Compile Include="ImageLoadingState.cs" />
-    <Compile Include="Collections\RangedCollectionView{T}.cs" />
     <Compile Include="Internal\TokenExtension.cs" />
     <Compile Include="Internal\UriProvider.cs" />
     <Compile Include="Language.cs" />
@@ -149,7 +147,6 @@
     <Compile Include="Launch\UriHandlerData.cs" />
     <Compile Include="Launch\UriHelper.cs" />
     <Compile Include="Namespace.cs" />
-    <Compile Include="ObservableCollection{T}.cs" />
     <Compile Include="PopularCollection.cs" />
     <Compile Include="RevisionCollection.cs" />
     <Compile Include="SavedGallery.cs" />
@@ -175,9 +172,7 @@
     <Compile Include="SearchResultBase.cs" />
     <Compile Include="Settings\ExcludedLanguagesSettingProvider.cs" />
     <Compile Include="Settings\HahProxySettingProvider.cs" />
-    <Compile Include="Collections\IncrementalLoadingCollection{T}.cs" />
     <Compile Include="Helpers\IOHelper.cs" />
-    <Compile Include="ObservableObject.cs" />
     <Compile Include="Models\GalleryDb.cs" />
     <Compile Include="Models\GalleryModel.cs" />
     <Compile Include="Models\ImageModel.cs" />

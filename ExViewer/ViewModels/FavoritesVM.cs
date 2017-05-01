@@ -2,8 +2,6 @@
 using ExViewer.Database;
 using ExViewer.Settings;
 using ExViewer.Views;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,6 +9,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Linq;
+using Opportunity.MvvmUniverse.Commands;
 
 namespace ExViewer.ViewModels
 {
@@ -110,11 +109,11 @@ namespace ExViewer.ViewModels
 
         private FavoritesVM()
         {
-            this.Search = new RelayCommand<string>(queryText =>
+            this.Search = new Command<string>(queryText =>
             {
                 RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), GetSearchQuery(queryText, this.category));
             });
-            this.Open = new RelayCommand<Gallery>(g =>
+            this.Open = new Command<Gallery>(g =>
             {
                 this.SelectedGallery = g;
                 GalleryVM.GetVM(g);
@@ -122,12 +121,12 @@ namespace ExViewer.ViewModels
             }, g => g != null);
         }
 
-        public RelayCommand<string> Search
+        public Command<string> Search
         {
             get;
         }
 
-        public RelayCommand<Gallery> Open
+        public Command<Gallery> Open
         {
             get;
         }

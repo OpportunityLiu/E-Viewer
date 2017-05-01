@@ -1,5 +1,5 @@
-﻿using ExClient.Helpers;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
+using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

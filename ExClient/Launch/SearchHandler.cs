@@ -1,4 +1,4 @@
-﻿using ExClient.Helpers;
+﻿using Opportunity.MvvmUniverse.Helpers;
 using Windows.Foundation;
 
 namespace ExClient.Launch

@@ -1,5 +1,5 @@
-﻿using ExClient.Collections;
-using ExClient.Internal;
+﻿using ExClient.Internal;
+using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;

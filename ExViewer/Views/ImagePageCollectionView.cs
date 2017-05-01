@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ExClient;
+using Opportunity.MvvmUniverse;
 
 namespace ExViewer.Views
 {

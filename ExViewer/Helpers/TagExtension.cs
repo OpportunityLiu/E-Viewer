@@ -8,10 +8,7 @@ using EhTagTranslatorClient;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.UI.Xaml;
-using ExViewer;
-using GalaSoft.MvvmLight.Threading;
-using ExViewer.Helpers;
-using EhWikiClient.Helpers;
+using Opportunity.MvvmUniverse.Helpers;
 
 namespace ExClient
 {
