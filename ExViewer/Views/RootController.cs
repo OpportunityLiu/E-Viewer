@@ -206,10 +206,7 @@ namespace ExViewer.Views
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
                 else
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                //if(Frame.CanGoBack)
-                //    root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                //else
-                //    root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                root.manager.AppViewBackButtonVisibilityOverride = null;
             }
 
             internal static void HandleUriLaunch()
@@ -269,7 +266,7 @@ namespace ExViewer.Views
                     root.sv_root.IsPaneOpen = true;
                     OpenSplitViewPane.Begin();
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                    //root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    root.manager.AppViewBackButtonVisibilityOverride = AppViewBackButtonVisibility.Collapsed;
                     var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked);
                     (currentTab ?? root.svt_Search).Focus(FocusState.Programmatic);
                 }
