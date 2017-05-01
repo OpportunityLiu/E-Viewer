@@ -1,4 +1,4 @@
-﻿using ExClient.Helpers;
+﻿using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
@@ -29,7 +29,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             var category = categoryDic[data.Path0];
-            return AsyncWarpper.Create((LaunchResult)new SearchLaunchResult(Client.Current.Search("", category)));
+            return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search("", category)));
         }
     }
 }

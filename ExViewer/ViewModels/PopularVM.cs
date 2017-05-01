@@ -1,7 +1,7 @@
 ﻿using ExClient;
 using ExViewer.Views;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +15,8 @@ namespace ExViewer.ViewModels
     {
         public PopularVM()
         {
-            this.Refresh = new RelayCommand(() => this.Galleries.Reset());
-            this.Open = new RelayCommand<Gallery>(g =>
+            this.Refresh = new Command(() => this.Galleries.Reset());
+            this.Open = new Command<Gallery>(g =>
             {
                 GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
@@ -25,8 +25,8 @@ namespace ExViewer.ViewModels
 
         public PopularCollection Galleries { get; } = PopularCollection.Instance;
 
-        public ICommand Refresh { get; }
+        public Command Refresh { get; }
 
-        public ICommand Open { get; }
+        public Command<Gallery> Open { get; }
     }
 }

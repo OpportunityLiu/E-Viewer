@@ -1,9 +1,6 @@
 ﻿using ExClient;
 using ExViewer.Settings;
 using ExViewer.Views;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Threading;
 using Newtonsoft.Json;
 using System;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
@@ -19,8 +16,11 @@ using Windows.Storage.Streams;
 using Windows.Storage;
 using Windows.Graphics.Imaging;
 using ExClient.Api;
-using ExClient.Collections;
 using Windows.ApplicationModel.DataTransfer;
+using Opportunity.MvvmUniverse.Collections;
+using Opportunity.MvvmUniverse.Commands;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Helpers;
 
 namespace ExViewer.ViewModels
 {
@@ -93,7 +93,7 @@ namespace ExViewer.ViewModels
 
         private GalleryVM()
         {
-            this.Share = new RelayCommand<GalleryImage>(async image =>
+            this.Share = new Command<GalleryImage>(async image =>
             {
                 if (Helpers.ShareHandler.IsShareSupported)
                 {
@@ -142,7 +142,7 @@ namespace ExViewer.ViewModels
                         await Launcher.LaunchUriAsync(image.PageUri);
                 }
             }, image => this.gallery != null);
-            this.Save = new RelayCommand(() =>
+            this.Save = new Command(() =>
             {
                 var task = this.gallery.SaveGalleryAsync(SettingCollection.Current.GetStrategy());
                 this.SaveStatus = OperationState.Started;
@@ -169,18 +169,18 @@ namespace ExViewer.ViewModels
                     this.SaveProgress = 1;
                 };
             }, () => this.SaveStatus != OperationState.Started && !(this.Gallery is SavedGallery));
-            this.OpenImage = new RelayCommand<GalleryImage>(image =>
+            this.OpenImage = new Command<GalleryImage>(image =>
             {
                 this.CurrentIndex = image.PageId - 1;
                 RootControl.RootController.Frame.Navigate(typeof(ImagePage), this.gallery.Id);
             });
-            this.LoadOriginal = new RelayCommand<GalleryImage>(async image =>
+            this.LoadOriginal = new Command<GalleryImage>(async image =>
             {
                 image.PropertyChanged += this.Image_PropertyChanged;
                 await image.LoadImageAsync(true, ConnectionStrategy.AllFull, false);
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null && !image.OriginalLoaded);
-            this.ReloadImage = new RelayCommand<GalleryImage>(async image =>
+            this.ReloadImage = new Command<GalleryImage>(async image =>
             {
                 image.PropertyChanged += this.Image_PropertyChanged;
                 if (image.OriginalLoaded)
@@ -189,7 +189,7 @@ namespace ExViewer.ViewModels
                     await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null);
-            this.TorrentDownload = new RelayCommand<TorrentInfo>(async torrent =>
+            this.TorrentDownload = new Command<TorrentInfo>(async torrent =>
             {
                 RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
                 try
@@ -206,7 +206,7 @@ namespace ExViewer.ViewModels
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
                 }
             }, torrent => torrent != null && torrent.TorrentUri != null);
-            this.SearchTag = new RelayCommand<Tag>(tag =>
+            this.SearchTag = new Command<Tag>(tag =>
             {
                 var vm = SearchVM.GetVM(tag.Search());
                 RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
@@ -225,30 +225,30 @@ namespace ExViewer.ViewModels
             this.Gallery = gallery;
         }
 
-        public RelayCommand<GalleryImage> Share { get; }
+        public Command<GalleryImage> Share { get; }
 
-        public RelayCommand Save { get; }
+        public Command Save { get; }
 
-        public RelayCommand<GalleryImage> OpenImage { get; }
+        public Command<GalleryImage> OpenImage { get; }
 
-        public RelayCommand<GalleryImage> LoadOriginal { get; }
+        public Command<GalleryImage> LoadOriginal { get; }
 
-        public RelayCommand<GalleryImage> ReloadImage { get; }
+        public Command<GalleryImage> ReloadImage { get; }
 
-        public RelayCommand<TorrentInfo> TorrentDownload { get; }
+        public Command<TorrentInfo> TorrentDownload { get; }
 
-        public RelayCommand<Tag> SearchTag { get; }
+        public Command<Tag> SearchTag { get; }
 
         private static readonly EhWikiDialog ewd = new EhWikiDialog();
-        public RelayCommand<Tag> ShowTagDefination { get; }
-            = new RelayCommand<Tag>(async tag =>
+        public Command<Tag> ShowTagDefination { get; }
+            = new Command<Tag>(async tag =>
             {
                 ewd.WikiTag = tag;
                 await ewd.ShowAsync();
             }, tag => tag.Content != null);
 
-        public RelayCommand<Tag> CopyTag { get; }
-            = new RelayCommand<Tag>(tag =>
+        public Command<Tag> CopyTag { get; }
+            = new Command<Tag>(tag =>
             {
                 var data = new DataPackage();
                 data.SetText(tag.Content);
@@ -293,7 +293,7 @@ namespace ExViewer.ViewModels
         public string CurrentInfo
         {
             get => this.currentInfo;
-            private set => DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref this.currentInfo, value));
+            private set => DispatcherHelper.BeginInvokeOnUIThread(() => Set(ref this.currentInfo, value));
         }
 
         public IAsyncAction RefreshInfoAsync()
@@ -319,7 +319,7 @@ namespace ExViewer.ViewModels
         public OperationState SaveStatus
         {
             get => this.saveStatus;
-            set => DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            set => DispatcherHelper.BeginInvokeOnUIThread(() =>
                  {
                      Set(ref this.saveStatus, value);
                      this.Save.RaiseCanExecuteChanged();
@@ -331,7 +331,7 @@ namespace ExViewer.ViewModels
         public double SaveProgress
         {
             get => this.saveProgress;
-            set => DispatcherHelper.CheckBeginInvokeOnUI(() => Set(ref this.saveProgress, value));
+            set => DispatcherHelper.BeginInvokeOnUIThread(() => Set(ref this.saveProgress, value));
         }
 
         #region Comments
@@ -378,7 +378,7 @@ namespace ExViewer.ViewModels
             private set
             {
                 this.torrents = value;
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                DispatcherHelper.BeginInvokeOnUIThread(() =>
                 {
                     RaisePropertyChanged(nameof(Torrents));
                     RaisePropertyChanged(nameof(TorrentCount));

@@ -1,6 +1,7 @@
-﻿using ExClient.Collections;
-using ExClient.Models;
-using GalaSoft.MvvmLight.Threading;
+﻿using ExClient.Models;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Collections;
+using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -236,7 +237,7 @@ namespace ExClient
 
         protected override IAsyncAction InitOverrideAsync()
         {
-            return DispatcherHelper.RunAsync(async () =>
+            return DispatcherHelper.RunAsyncOnUIThread(async () =>
             {
                 var f = await GetFolderAsync();
                 if(this.Thumb != null)

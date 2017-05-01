@@ -21,6 +21,7 @@ using Windows.UI.ViewManagement;
 using ExViewer.ViewModels;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Opportunity.MvvmUniverse.Views;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -29,13 +30,13 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class RootControl : UserControl
+    public sealed partial class RootControl : UserControl, INavigationHandler
     {
         public RootControl()
         {
             this.InitializeComponent();
 
-            this.manager = NavigationManager.GetForCurrentView();
+            this.manager = Navigator.CreateOrGetForCurrentView();
 
             this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
@@ -62,7 +63,7 @@ namespace ExViewer.Views
 
         private void OnGotFocus(object sender, RoutedEventArgs e)
         {
-            if(FocusManager.GetFocusedElement() is FrameworkElement focus)
+            if (FocusManager.GetFocusedElement() is FrameworkElement focus)
             {
                 var c = focus as Control;
                 Debug.WriteLine($"{focus.Name}({focus.GetType()}) {c?.FocusState}", "Focus state");
@@ -106,7 +107,7 @@ namespace ExViewer.Views
         {
             get
             {
-                if(this.sv_root.DisplayMode == SplitViewDisplayMode.Overlay)
+                if (this.sv_root.DisplayMode == SplitViewDisplayMode.Overlay)
                 {
                     return VisibleBoundsThickness;
                 }
@@ -116,11 +117,13 @@ namespace ExViewer.Views
             }
         }
 
-        private readonly NavigationManager manager;
+        Navigator INavigationHandler.Parent { get; set; }
+
+        private readonly Navigator manager;
 
         private void Control_Loading(FrameworkElement sender, object args)
         {
-            if(this.HomePageType == null)
+            if (this.HomePageType == null)
             {
                 RootController.SetRoot(this);
             }
@@ -128,12 +131,12 @@ namespace ExViewer.Views
             {
                 this.fm_inner.Navigate(this.HomePageType);
             }
-            this.manager.BackRequested += this.Manager_BackRequested;
+            this.manager.Handlers.Add(this);
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            if(this.HomePageType == null)
+            if (this.HomePageType == null)
             {
                 this.UserInfo = await UserInfo.LoadFromCache();
             }
@@ -147,47 +150,28 @@ namespace ExViewer.Views
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.manager.BackRequested -= this.Manager_BackRequested;
-        }
-
-        private Task goBackTask = Task.CompletedTask;
-
-        private void Manager_BackRequested(object sender, BackRequestedEventArgs e)
-        {
-            if(this.fm_inner.CanGoBack && !RootController.ViewDisabled)
-            {
-                e.Handled = true;
-                if(this.goBackTask.IsCompleted)
-                {
-                    // prevent double click
-                    this.goBackTask = Task.Delay(200);
-                    this.fm_inner.GoBack();
-                }
-            }
+            this.manager.Handlers.Remove(this);
         }
 
         private void fm_inner_Navigated(object sender, NavigationEventArgs e)
         {
-            if(this.fm_inner.CanGoBack)
-                this.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            else
-                this.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             var pageType = this.fm_inner.Content.GetType();
             JYAnalyticsUniversal.JYAnalytics.TrackPageStart(pageType.Name);
-            if(this.pages.TryGetValue(pageType, out var tab))
+            if (this.pages.TryGetValue(pageType, out var tab))
             {
                 tab.IsChecked = true;
             }
+            ((INavigationHandler)this).RaiseCanGoBackChanged();
         }
 
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             var content = this.fm_inner.Content;
-            if(content == null)
+            if (content == null)
                 return;
             var pageType = content.GetType();
             JYAnalyticsUniversal.JYAnalytics.TrackPageEnd(pageType.Name);
-            if(this.pages.TryGetValue(pageType, out var tab))
+            if (this.pages.TryGetValue(pageType, out var tab))
             {
                 tab.IsChecked = false;
             }
@@ -196,7 +180,7 @@ namespace ExViewer.Views
         private void svt_Click(object sender, RoutedEventArgs e)
         {
             var s = (Controls.SplitViewTab)sender;
-            if(s.IsChecked)
+            if (s.IsChecked)
                 return;
             this.fm_inner.Navigate(this.tabs[s]);
             RootController.SwitchSplitView(false);
@@ -221,7 +205,7 @@ namespace ExViewer.Views
         {
             base.OnKeyUp(e);
             e.Handled = true;
-            switch(e.OriginalKey)
+            switch (e.OriginalKey)
             {
             case Windows.System.VirtualKey.GamepadView:
                 RootController.SwitchSplitView(null);
@@ -239,9 +223,9 @@ namespace ExViewer.Views
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if(RootController.IsFullScreen || availableSize.Width < NARROW_WIDE_WIDTH)
+            if (RootController.IsFullScreen || availableSize.Width < NARROW_WIDE_WIDTH)
             {
-                if(this.sv_root.DisplayMode != SplitViewDisplayMode.Overlay)
+                if (this.sv_root.DisplayMode != SplitViewDisplayMode.Overlay)
                 {
                     this.sv_root.DisplayMode = SplitViewDisplayMode.Overlay;
                     RootController.SetSplitViewButtonPlaceholderVisibility(true);
@@ -249,13 +233,13 @@ namespace ExViewer.Views
             }
             else
             {
-                if(this.sv_root.DisplayMode != SplitViewDisplayMode.CompactOverlay)
+                if (this.sv_root.DisplayMode != SplitViewDisplayMode.CompactOverlay)
                 {
                     this.sv_root.DisplayMode = SplitViewDisplayMode.CompactOverlay;
                     RootController.SetSplitViewButtonPlaceholderVisibility(false);
                 }
             }
-            if(RootController.ApplicationView.DesiredBoundsMode == ApplicationViewBoundsMode.UseCoreWindow)
+            if (RootController.ApplicationView.DesiredBoundsMode == ApplicationViewBoundsMode.UseCoreWindow)
             {
                 ClearValue(VisibleBoundsThicknessProperty);
             }
@@ -272,6 +256,17 @@ namespace ExViewer.Views
         private double getPaneLength(Thickness visibleBounds, double offset)
         {
             return visibleBounds.Left + offset;
+        }
+
+        public bool CanGoBack()
+        {
+            return this.fm_inner.CanGoBack;
+        }
+
+        public void GoBack()
+        {
+            this.fm_inner.GoBack();
+            ((INavigationHandler)this).RaiseCanGoBackChanged();
         }
     }
 }

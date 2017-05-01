@@ -107,7 +107,6 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncWarpper.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="DataBase.cs" />
     <Compile Include="Migrations\20170325091210_FirstMigration.cs" />

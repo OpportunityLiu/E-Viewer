@@ -1,7 +1,8 @@
-﻿using ExClient.Collections;
-using ExClient.Models;
-using GalaSoft.MvvmLight.Threading;
+﻿using ExClient.Models;
 using Microsoft.EntityFrameworkCore;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Collections;
+using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -85,7 +86,7 @@ namespace ExClient
             this.thumbFile = null;
             if(temp == null)
                 return base.InitOverrideAsync();
-            return DispatcherHelper.RunAsync(async () =>
+            return DispatcherHelper.RunAsyncOnUIThread(async () =>
             {
                 using(var stream = temp.AsRandomAccessStream())
                 {

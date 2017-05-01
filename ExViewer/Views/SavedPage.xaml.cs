@@ -1,25 +1,15 @@
 ﻿using ExClient;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
-using GalaSoft.MvvmLight.Ioc;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -61,11 +51,11 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(e.NavigationMode != NavigationMode.Back || this.VM.Galleries == null)
+            if (e.NavigationMode != NavigationMode.Back || this.VM.Galleries == null)
             {
-                this.VM.Refresh.Execute(null);
+                this.VM.Refresh.Execute();
             }
-            else if(e.NavigationMode == NavigationMode.Back)
+            else if (e.NavigationMode == NavigationMode.Back)
             {
                 await Task.Delay(50);
                 ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
@@ -100,10 +90,10 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(this.VM.Open.CanExecute(e.ClickedItem))
+            var item = (Gallery)e.ClickedItem;
+            if (this.VM.Open.Execute(item))
             {
-                this.VM.Open.Execute(e.ClickedItem);
-                this.opened = (Gallery)e.ClickedItem;
+                this.opened = item;
             }
         }
 
@@ -117,7 +107,7 @@ namespace ExViewer.Views
         private void lv_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {
             var item = e.Items.FirstOrDefault() as Gallery;
-            if(item == null)
+            if (item == null)
             {
                 e.Cancel = true;
                 return;
@@ -141,11 +131,6 @@ namespace ExViewer.Views
             e.Data.RequestedOperation = DataPackageOperation.Move;
         }
 
-        private void lv_RefreshRequested(object sender, EventArgs args)
-        {
-            this.VM.Refresh.Execute(null);
-        }
-
         public void CloseAll()
         {
             this.cb_top.IsOpen = false;
@@ -154,7 +139,7 @@ namespace ExViewer.Views
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
             var lvi = (args.OriginalSource as DependencyObject)?.FirstAncestorOrSelf<ListViewItem>();
-            if(lvi == null)
+            if (lvi == null)
                 return;
             var dc = lvi.Content;
             this.mfi_DeleteGallery.CommandParameter = dc;

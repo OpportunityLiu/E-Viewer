@@ -1,6 +1,6 @@
 ﻿using ExClient.Api;
-using ExClient.Helpers;
 using HtmlAgilityPack;
+using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

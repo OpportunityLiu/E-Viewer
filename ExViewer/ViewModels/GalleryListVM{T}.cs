@@ -1,8 +1,8 @@
 ﻿using ExClient;
-using ExClient.Collections;
 using ExViewer.Views;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Collections;
+using Opportunity.MvvmUniverse.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +16,13 @@ namespace ExViewer.ViewModels
     {
         protected GalleryListVM()
         {
-            this.Delete = new RelayCommand<Gallery>(async g =>
+            this.Delete = new Command<Gallery>(async g =>
             {
                 await g.DeleteAsync();
                 this.Galleries?.Remove(g);
                 RootControl.RootController.SendToast(Strings.Resources.GalleryDeleted, null);
             }, g => g != null);
-            this.Open = new RelayCommand<Gallery>(g =>
+            this.Open = new Command<Gallery>(g =>
             {
                 GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
@@ -37,24 +37,24 @@ namespace ExViewer.ViewModels
             protected set => Set(ref this.galleries, value);
         }
 
-        public RelayCommand Refresh
+        public Command Refresh
         {
             get;
             protected set;
         }
 
-        public RelayCommand Clear
+        public Command Clear
         {
             get;
             protected set;
         }
 
-        public RelayCommand<Gallery> Delete
+        public Command<Gallery> Delete
         {
             get;
         }
 
-        public RelayCommand<Gallery> Open
+        public Command<Gallery> Open
         {
             get;
         }

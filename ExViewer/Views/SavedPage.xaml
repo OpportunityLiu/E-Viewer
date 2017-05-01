@@ -43,7 +43,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <tk:PullToRefreshListView x:Name="lv"
-                                  RefreshRequested="lv_RefreshRequested"
+                                  RefreshCommand="{x:Bind VM.Refresh}"
                                   RelativePanel.AlignBottomWithPanel="True"
                                   RelativePanel.AlignLeftWithPanel="True"
                                   RelativePanel.AlignRightWithPanel="True"

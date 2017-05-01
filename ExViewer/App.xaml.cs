@@ -1,25 +1,9 @@
-﻿using ExClient;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel;
+﻿using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Security.Credentials;
-using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using ExViewer.Views;
-using Microsoft.HockeyApp;
 using Windows.ApplicationModel.Core;
 
 namespace ExViewer
@@ -80,7 +64,8 @@ namespace ExViewer
 
         private async void lanunchCore(IActivatedEventArgs e, bool prelaunchActivated)
         {
-            GalaSoft.MvvmLight.Threading.DispatcherHelper.Initialize();
+            Opportunity.MvvmUniverse.Helpers.DispatcherHelper.Init();
+            Opportunity.MvvmUniverse.Helpers.DispatcherHelper.UseForNotification = true;
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
             if(currentContent == null)

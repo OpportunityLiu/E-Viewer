@@ -185,8 +185,7 @@ namespace ExViewer.Views
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if(this.VM.OpenImage.CanExecute(e.ClickedItem))
-                this.VM.OpenImage.Execute(e.ClickedItem);
+            this.VM.OpenImage.Execute((GalleryImage)e.ClickedItem);
         }
 
         public GalleryVM VM

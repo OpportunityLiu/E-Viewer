@@ -1,7 +1,7 @@
 ﻿using ExClient.Api;
-using ExClient.Collections;
 using ExClient.Internal;
 using HtmlAgilityPack;
+using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +19,6 @@ namespace ExClient
         public abstract Uri SearchUri { get; }
 
         internal SearchResultBase(Client owner)
-            : base(0)
         {
             this.Owner = owner;
             Reset();

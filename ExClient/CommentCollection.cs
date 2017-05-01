@@ -1,12 +1,10 @@
-﻿using ExClient.Collections;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
+using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
 
@@ -15,7 +13,6 @@ namespace ExClient
     public sealed class CommentCollection : IncrementalLoadingCollection<Comment>
     {
         public CommentCollection(Gallery owner)
-            : base(0)
         {
             this.Owner = owner;
         }

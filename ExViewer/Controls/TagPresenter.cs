@@ -1,5 +1,5 @@
 ﻿using ExClient;
-using GalaSoft.MvvmLight.Threading;
+using Microsoft.Toolkit.Uwp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Opportunity.MvvmUniverse;
 
 namespace ExViewer.Controls
 {
@@ -45,7 +46,7 @@ namespace ExViewer.Controls
             if (e == AsyncStatus.Completed && this.presenter != null)
             {
                 var t = sender.GetResults();
-                DispatcherHelper.CheckBeginInvokeOnUI(() => this.presenter.Text = t);
+                Opportunity.MvvmUniverse.Helpers.DispatcherHelper.BeginInvokeOnUIThread(() => this.presenter.Text = t);
             }
         }
 

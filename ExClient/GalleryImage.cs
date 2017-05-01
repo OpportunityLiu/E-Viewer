@@ -1,6 +1,7 @@
 ﻿using ExClient.Internal;
-using GalaSoft.MvvmLight.Threading;
 using HtmlAgilityPack;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace ExClient
     {
         static GalleryImage()
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(async () =>
+            DispatcherHelper.BeginInvokeOnUIThread(async () =>
             {
                 var info = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
                 thumbWidth = (uint)(100 * info.RawPixelsPerViewPixel);

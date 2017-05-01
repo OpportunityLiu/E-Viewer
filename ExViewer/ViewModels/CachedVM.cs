@@ -1,6 +1,6 @@
 ﻿using ExClient;
 using ExViewer.Views;
-using GalaSoft.MvvmLight.Command;
+using Opportunity.MvvmUniverse.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace ExViewer.ViewModels
 
         private CachedVM()
         {
-            this.Clear = new RelayCommand(() =>
+            this.Clear = new Command(() =>
             {
                 RootControl.RootController.TrackAsyncAction(CachedGallery.ClearCachedGalleriesAsync(), (s, e) =>
                 {
-                    this.Refresh.Execute(null);
+                    this.Refresh.Execute();
                 });
             });
-            this.Refresh = new RelayCommand(async () =>
+            this.Refresh = new Command(async () =>
             {
                 this.Galleries = null;
                 this.Refresh.RaiseCanExecuteChanged();

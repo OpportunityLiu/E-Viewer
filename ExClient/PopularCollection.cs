@@ -1,7 +1,7 @@
 ﻿using ExClient.Api;
-using ExClient.Collections;
 using ExClient.Internal;
 using HtmlAgilityPack;
+using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,6 @@ namespace ExClient
         public static PopularCollection Instance { get; } = new PopularCollection();
 
         private PopularCollection()
-            : base(0)
         {
             Reset();
         }

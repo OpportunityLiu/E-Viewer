@@ -7,7 +7,6 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Animation;
-using GalaSoft.MvvmLight.Threading;
 using System.Diagnostics;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Navigation;
@@ -18,6 +17,8 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.UI.Core;
 using System.Runtime.CompilerServices;
 using Windows.ApplicationModel.Core;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Helpers;
 
 namespace ExViewer.Views
 {
@@ -205,10 +206,10 @@ namespace ExViewer.Views
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
                 else
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                if(Frame.CanGoBack)
-                    root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-                else
-                    root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                //if(Frame.CanGoBack)
+                //    root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                //else
+                //    root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             }
 
             internal static void HandleUriLaunch()
@@ -238,7 +239,7 @@ namespace ExViewer.Views
             {
                 if(!Available)
                     return;
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                DispatcherHelper.BeginInvokeOnUIThread(() =>
                 {
                     if(source != null && source != root.fm_inner.Content?.GetType())
                         return;
@@ -268,7 +269,7 @@ namespace ExViewer.Views
                     root.sv_root.IsPaneOpen = true;
                     OpenSplitViewPane.Begin();
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                    root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                    //root.manager.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                     var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked);
                     (currentTab ?? root.svt_Search).Focus(FocusState.Programmatic);
                 }
@@ -331,7 +332,7 @@ namespace ExViewer.Views
             public static void TrackAsyncAction(IAsyncAction action)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.CheckBeginInvokeOnUI(EnableView);
+                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(EnableView);
             }
 
             public static void TrackAsyncAction(IAsyncActionWithProgress<double> action)
@@ -342,14 +343,14 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<TProgress>(IAsyncActionWithProgress<TProgress> action, Func<TProgress, double> progressConverter)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.CheckBeginInvokeOnUI(EnableView);
-                action.Progress = (s, p) => DispatcherHelper.CheckBeginInvokeOnUI(() => DisableView(progressConverter(p)));
+                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(EnableView);
+                action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
             }
 
             public static void TrackAsyncAction<T>(IAsyncOperation<T> action)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.CheckBeginInvokeOnUI(EnableView);
+                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(EnableView);
             }
 
             public static void TrackAsyncAction<T>(IAsyncOperationWithProgress<T, double> action)
@@ -360,14 +361,14 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<T, TProgress>(IAsyncOperationWithProgress<T, TProgress> action, Func<TProgress, double> progressConverter)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.CheckBeginInvokeOnUI(EnableView);
-                action.Progress = (s, p) => DispatcherHelper.CheckBeginInvokeOnUI(() => DisableView(progressConverter(p)));
+                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(EnableView);
+                action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
             }
 
             public static void TrackAsyncAction(IAsyncAction action, AsyncActionCompletedHandler completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(() =>
                 {
                     EnableView();
                     completed(s, e);
@@ -382,18 +383,18 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<TProgress>(IAsyncActionWithProgress<TProgress> action, Func<TProgress, double> progressConverter, AsyncActionWithProgressCompletedHandler<TProgress> completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(() =>
                 {
                     EnableView();
                     completed(s, e);
                 });
-                action.Progress = (s, p) => DispatcherHelper.CheckBeginInvokeOnUI(() => DisableView(progressConverter(p)));
+                action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
             }
 
             public static void TrackAsyncAction<T>(IAsyncOperation<T> action, AsyncOperationCompletedHandler<T> completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(() =>
                 {
                     EnableView();
                     completed(s, e);
@@ -408,12 +409,12 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<T, TProgress>(IAsyncOperationWithProgress<T, TProgress> action, Func<TProgress, double> progressConverter, AsyncOperationWithProgressCompletedHandler<T, TProgress> completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(() =>
                 {
                     EnableView();
                     completed(s, e);
                 });
-                action.Progress = (s, p) => DispatcherHelper.CheckBeginInvokeOnUI(() => DisableView(progressConverter(p)));
+                action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
             }
 
             private static void DisableView(double? progress)

@@ -2,8 +2,6 @@
 using ExViewer.Database;
 using ExViewer.Settings;
 using ExViewer.Views;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +10,9 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Linq;
 using EhTagTranslatorClient;
-using ExClient.Collections;
+using Opportunity.MvvmUniverse.Collections;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Commands;
 
 namespace ExViewer.ViewModels
 {
@@ -59,10 +59,10 @@ namespace ExViewer.ViewModels
             }
         }
 
-        internal RelayCommand<SearchHistory> DeleteHistory
+        internal Command<SearchHistory> DeleteHistory
         {
             get;
-        } = new RelayCommand<SearchHistory>(sh =>
+        } = new Command<SearchHistory>(sh =>
         {
             using (var db = new SearchHistoryDb())
             {

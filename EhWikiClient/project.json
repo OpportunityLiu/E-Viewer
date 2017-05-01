@@ -3,7 +3,8 @@
     "Microsoft.EntityFrameworkCore.Sqlite": "1.1.1",
     "Microsoft.EntityFrameworkCore.Tools": "1.1.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
-    "Newtonsoft.Json": "10.0.2"
+    "Newtonsoft.Json": "10.0.2",
+    "Opportunity.MvvmUniverse": "0.1.2"
   },
   "frameworks": {
     "uap10.0": {}
