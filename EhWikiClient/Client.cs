@@ -36,10 +36,10 @@ namespace EhWikiClient
             {
                 var record = db.Table.AsNoTracking().SingleOrDefault(r => r.Title == title);
                 if(record != null && record.IsValid)
-                    return Opportunity.MvvmUniverse.Helpers.AsyncWarpper.Create(record);
+                    return Opportunity.MvvmUniverse.Helpers.AsyncWrapper.Create(record);
                 if(record == null || record.LastUpdate.AddDays(7) < DateTimeOffset.Now)
                     return FetchAsync(title);
-                return Opportunity.MvvmUniverse.Helpers.AsyncWarpper.Create(default(Record));
+                return Opportunity.MvvmUniverse.Helpers.AsyncWrapper.Create(default(Record));
             }
         }
 

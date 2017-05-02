@@ -47,14 +47,14 @@ namespace ExClient
         public IAsyncOperation<Gallery> FetchParentAsync()
         {
             if(!(this.ParentInfo is GalleryInfo i))
-                return AsyncWarpper.Create<Gallery>();
+                return AsyncWrapper.Create<Gallery>();
             return i.FetchGalleryAsync();
         }
 
         public IAsyncOperation<Gallery> FetchLatestRevisionAsync()
         {
             if(this.Descendants.Count == 0)
-                return AsyncWarpper.Create(this.Owner);
+                return AsyncWrapper.Create(this.Owner);
             return this.Descendants.Last().Gallery.FetchGalleryAsync();
         }
     }

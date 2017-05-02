@@ -22,7 +22,10 @@ namespace ExClient
             this.PageCount = 0;
             this.models = models.ToList();
             this.RecordCount = this.models.Count;
-            AddRange(Enumerable.Repeat(DefaultGallery, this.RecordCount));
+            for (var i = 0; i < this.RecordCount; i++)
+            {
+                this.Add(DefaultGallery);
+            }
         }
 
         private List<TModel> models;

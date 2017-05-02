@@ -99,11 +99,11 @@ namespace ExClient.Launch
                 }
             }
             if(!ap)
-                return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search("")));
+                return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search("")));
             else if(av)
-                return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
+                return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
             else
-                return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category)));
+                return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category)));
         }
     }
 }

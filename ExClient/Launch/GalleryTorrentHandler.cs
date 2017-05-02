@@ -14,7 +14,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             GalleryInfo.TryParseGalleryTorrent(data, out var info);
-            return AsyncWarpper.Create((LaunchResult)new GalleryLaunchResult(info, -1, GalleryLaunchStatus.Torrent));
+            return AsyncWrapper.Create((LaunchResult)new GalleryLaunchResult(info, -1, GalleryLaunchStatus.Torrent));
         }
     }
 }
