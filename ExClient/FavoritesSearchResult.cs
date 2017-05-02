@@ -76,7 +76,7 @@ namespace ExClient
             if (categoty == null)
                 throw new ArgumentNullException(nameof(categoty));
             if (items == null || items.Count == 0)
-                return AsyncWarpper.Create();
+                return AsyncWrapper.Create();
             return AsyncInfo.Run(async token =>
             {
                 var ddact = default(string);

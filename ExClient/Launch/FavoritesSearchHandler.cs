@@ -38,9 +38,9 @@ namespace ExClient.Launch
                 }
             }
             if(!ap)
-                return AsyncWarpper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search("", category)));
+                return AsyncWrapper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search("", category)));
             else
-                return AsyncWarpper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search(keyword, category)));
+                return AsyncWrapper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search(keyword, category)));
         }
     }
 }

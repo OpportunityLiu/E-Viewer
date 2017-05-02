@@ -33,20 +33,20 @@ namespace ExViewer.Views
 
         private void collection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch(e.Action)
+            switch (e.Action)
             {
-            case NotifyCollectionChangedAction.Add:
-                for(var i = 0; i < e.NewItems.Count; i++)
-                {
-                    this.imageViewCache[e.NewStartingIndex + i].Refresh();
-                }
-                break;
-            default:
-                foreach(var item in this.imageViewCache.GetRange(0, this.Count))
-                {
-                    item.Refresh();
-                }
-                break;
+                case NotifyCollectionChangedAction.Add:
+                    for (var i = 0; i < e.NewItems.Count; i++)
+                    {
+                        this.imageViewCache[e.NewStartingIndex + i].Refresh();
+                    }
+                    break;
+                default:
+                    foreach (var item in this.imageViewCache.GetRange(0, this.Count))
+                    {
+                        item.Refresh();
+                    }
+                    break;
             }
         }
 
@@ -137,9 +137,7 @@ namespace ExViewer.Views
                 if(disposing)
                 {
                 }
-                if(this.collection != null)
-                    this.collection.CollectionChanged -= this.collection_CollectionChanged;
-                this.collection = null;
+                this.Collection = null;
                 foreach(var item in this.imageViewCache)
                 {
                     item.Dispose();

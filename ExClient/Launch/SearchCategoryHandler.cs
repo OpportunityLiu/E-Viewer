@@ -29,7 +29,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             var category = categoryDic[data.Path0];
-            return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search("", category)));
+            return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search("", category)));
         }
     }
 }

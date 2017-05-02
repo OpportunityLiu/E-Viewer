@@ -1,13 +1,14 @@
 ﻿{
   "dependencies": {
     "HockeySDK.UWP": "4.1.6",
+    "HtmlAgilityPack": "1.4.9.5",
     "JyAnalytics": "1.0.10",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.1.1",
     "Microsoft.EntityFrameworkCore.Tools": "1.1.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
     "Microsoft.Toolkit.Uwp.UI.Controls": "1.4.1",
     "Opportunity.Converters": "1.0.9",
-    "Opportunity.MvvmUniverse": "0.1.4"
+    "Opportunity.MvvmUniverse": "0.2.4"
   },
   "frameworks": {
     "uap10.0": {}

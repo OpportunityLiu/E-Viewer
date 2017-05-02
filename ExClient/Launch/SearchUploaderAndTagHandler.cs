@@ -29,9 +29,9 @@ namespace ExClient.Launch
             switch(data.Path0)
             {
             case "tag":
-                return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search()));
+                return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search()));
             case "uploader":
-                return AsyncWarpper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search($"uploader:\"{v}\"")));
+                return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search($"uploader:\"{v}\"")));
             }
             throw new NotSupportedException("Unsupported uri.");
         }

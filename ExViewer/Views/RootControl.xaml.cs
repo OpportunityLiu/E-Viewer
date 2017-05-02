@@ -22,6 +22,7 @@ using ExViewer.ViewModels;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Opportunity.MvvmUniverse.Views;
+using Opportunity.MvvmUniverse.Collections;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -36,7 +37,7 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
 
-            this.manager = Navigator.CreateOrGetForCurrentView();
+            this.manager = Navigator.GetOrCreateForCurrentView();
 
             this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
@@ -161,7 +162,7 @@ namespace ExViewer.Views
             {
                 tab.IsChecked = true;
             }
-            ((INavigationHandler)this).RaiseCanGoBackChanged();
+            this.RaiseCanGoBackChanged();
         }
 
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)
@@ -266,7 +267,6 @@ namespace ExViewer.Views
         public void GoBack()
         {
             this.fm_inner.GoBack();
-            ((INavigationHandler)this).RaiseCanGoBackChanged();
         }
     }
 }

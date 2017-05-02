@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Windows.UI.ViewManagement;
 using Windows.UI;
 using ExViewer.Controls;
+using Opportunity.MvvmUniverse.Views;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -32,7 +33,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class FavoritesPage : MyPage, IHasAppBar
+    public sealed partial class FavoritesPage : MyPage, IHasAppBar, INavigationHandler
     {
         public FavoritesPage()
         {
@@ -51,7 +52,7 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            NavigationManager.GetForCurrentView().BackRequested += this.FavoritesPage_BackRequested;
+            Navigator.GetForCurrentView().Handlers.Add(this);
             this.navId++;
             this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
             if (e.NavigationMode == NavigationMode.New)
@@ -77,7 +78,7 @@ namespace ExViewer.Views
         {
             base.OnNavigatingFrom(e);
             CloseAll();
-            NavigationManager.GetForCurrentView().BackRequested -= this.FavoritesPage_BackRequested;
+            Navigator.GetForCurrentView().Handlers.Remove(this);
         }
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
@@ -90,6 +91,7 @@ namespace ExViewer.Views
             get => (FavoritesVM)GetValue(VMProperty);
             set => SetValue(VMProperty, value);
         }
+
 
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VMProperty =
@@ -204,6 +206,7 @@ namespace ExViewer.Views
             this.cbCategory.Visibility = Visibility.Collapsed;
             this.asb.Visibility = Visibility.Collapsed;
             this.abbApply.IsEnabled = true;
+            this.RaiseCanGoBackChanged();
             return true;
         }
 
@@ -216,12 +219,18 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Collapsed;
             this.cbCategory.Visibility = Visibility.Visible;
             this.asb.Visibility = Visibility.Visible;
+            this.RaiseCanGoBackChanged();
             return true;
         }
 
-        private void FavoritesPage_BackRequested(object sender, Windows.UI.Core.BackRequestedEventArgs e)
+        public bool CanGoBack()
         {
-            e.Handled = exitSelectMode();
+            return (this.lv.SelectionMode != ListViewSelectionMode.None);
+        }
+
+        public void GoBack()
+        {
+            exitSelectMode();
         }
 
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
@@ -278,5 +287,7 @@ namespace ExViewer.Views
         {
             Grid.SetColumn(this.cbCategory2, 1);
         }
+
+        Navigator INavigationHandler.Parent { get; set; }
     }
 }

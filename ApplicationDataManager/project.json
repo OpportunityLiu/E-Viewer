@@ -1,7 +1,7 @@
 ﻿{
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
-    "Opportunity.MvvmUniverse": "0.1.4"
+    "Opportunity.MvvmUniverse": "0.2.4"
   },
   "frameworks": {
     "uap10.0": {}

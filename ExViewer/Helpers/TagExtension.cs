@@ -21,7 +21,7 @@ namespace ExClient
             {
                 var r = tag.GetEhTagTranslatorRecord();
                 if(r != null)
-                    return new AsyncWarpper<string>(r.Translated.Text);
+                    return new AsyncWrapper<string>(r.Translated.Text);
             }
             if(settings.UseJapaneseTagTranslation)
             {
@@ -29,7 +29,7 @@ namespace ExClient
                 if(t.Status == AsyncStatus.Completed)
                 {
                     var r = t.GetResults();
-                    return new AsyncWarpper<string>(r?.Japanese ?? tag.Content);
+                    return new AsyncWrapper<string>(r?.Japanese ?? tag.Content);
                 }
                 return Run(async token =>
                 {
@@ -44,7 +44,7 @@ namespace ExClient
                     }
                 });
             }
-            return new AsyncWarpper<string>(tag.Content);
+            return new AsyncWrapper<string>(tag.Content);
         }
 
         public static Record GetEhTagTranslatorRecord(this Tag tag)
