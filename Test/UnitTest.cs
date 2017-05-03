@@ -11,7 +11,7 @@ namespace Test
         [TestMethod]
         public void TestMethod1()
         {
-            for(int i = 0; i < 10000000; i++)
+            for (int i = 0; i < 10000000; i++)
             {
                 var ig = Enum.IsDefined(typeof(Category), ExClient.Category.All);
             }
@@ -19,7 +19,7 @@ namespace Test
         [TestMethod]
         public void TestMethod2()
         {
-            for(int i = 0; i < 10000000; i++)
+            for (int i = 0; i < 10000000; i++)
             {
                 var ig = ExClient.Category.All.IsDefined();
             }

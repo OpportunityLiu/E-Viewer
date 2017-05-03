@@ -184,11 +184,7 @@
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingProvider.cs" />
     <Compile Include="Settings\ExcludedTagNamespacesSettingProvider.cs" />
-    <Compile Include="Strings\Strings.tt.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Strings.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Strings\LocalizedStrings.cs" />
     <Compile Include="Tag.cs" />
     <Compile Include="TagCollection.cs" />
     <Compile Include="TorrentInfo.cs" />
@@ -198,10 +194,7 @@
     <PRIResource Include="Strings\en\Category.resjson" />
     <PRIResource Include="Strings\en\Resources.resjson" />
     <PRIResource Include="Strings\en\Language.resjson" />
-    <None Include="Strings\Strings.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Strings.tt.cs</LastGenOutput>
-    </None>
+    <None Include="Strings\LocalizedStrings.resgenconfig" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

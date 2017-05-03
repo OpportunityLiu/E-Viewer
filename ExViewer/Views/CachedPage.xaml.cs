@@ -41,8 +41,8 @@ namespace ExViewer.Views
             {
                 Title = Strings.Resources.Views.ClearCachedDialog.Title,
                 Content = Strings.Resources.Views.ClearCachedDialog.Content,
-                PrimaryButtonText = Strings.Resources.OK,
-                SecondaryButtonText = Strings.Resources.Cancel,
+                PrimaryButtonText = Strings.Resources.General.OK,
+                SecondaryButtonText = Strings.Resources.General.Cancel,
                 PrimaryButtonCommand = this.VM.Clear
             };
         }

@@ -340,7 +340,7 @@ namespace ExViewer.Views
             {
                 Title = Strings.Resources.Views.ImagePage.ImageViewTipsTitle,
                 Content = Strings.Resources.Views.ImagePage.ImageViewTipsContent,
-                PrimaryButtonText = Strings.Resources.OK,
+                PrimaryButtonText = Strings.Resources.General.OK,
                 RequestedTheme = SettingCollection.Current.Theme.ToElementTheme()
             }.ShowAsync();
             StatusCollection.Current.ImageViewTipShown = true;

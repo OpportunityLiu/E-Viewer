@@ -153,11 +153,7 @@
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Settings\StatusCollection.cs" />
-    <Compile Include="Strings\Strings.tt.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Strings.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Strings\Strings.cs" />
     <Compile Include="Telemetry.cs" />
     <Compile Include="Themes\ThemeExtention.cs" />
     <Compile Include="Themes\ThemeHelperControl.xaml.cs">
@@ -279,13 +275,88 @@
     <PRIResource Include="Strings\zh-hans\Resources.resJson" />
     <PRIResource Include="Strings\en\Resources.resJson" />
     <PRIResource Include="Strings\en\Settings.resJson" />
-    <None Include="Strings\Strings.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Strings.tt.cs</LastGenOutput>
-    </None>
+    <None Include="Strings\Strings.resgenconfig" />
     <Content Include="Images\Light\UserBackground.scale-100.png" />
     <Content Include="Images\Light\UserBackground.scale-200.png" />
     <Content Include="Images\Light\UserBackground.scale-400.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-16.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-16_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-16_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-16_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-16_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-16_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-20.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-20_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-20_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-20_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-20_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-20_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-24.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-24_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-24_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-24_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-24_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-24_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-256.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-256_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-256_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-256_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-256_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-256_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-30.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-30_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-30_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-30_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-30_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-30_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-32.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-32_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-32_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-32_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-32_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-32_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-36.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-36_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-36_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-36_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-36_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-36_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-40.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-40_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-40_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-40_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-40_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-40_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-48.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-48_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-48_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-48_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-48_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-48_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-64.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-64_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-64_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-64_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-64_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-64_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-72.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-72_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-72_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-72_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-72_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-72_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-80.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-80_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-80_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-80_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-80_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-80_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-96.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-96_altform-unplated.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-96_altform-unplated_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-96_altform-unplated_contrast-white.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-96_contrast-black.png" />
+    <Content Include="Images\MicrosoftEdgeSquare44x44.targetsize-96_contrast-white.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
   </ItemGroup>

@@ -36,23 +36,23 @@ namespace System
             public static ulong ToUInt64(T value)
             {
                 ulong result = 0;
-                switch(TTypeCode)
+                switch (TTypeCode)
                 {
-                case TypeCode.SByte:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                    result = (ulong)Convert.ToInt64(value, Globalization.CultureInfo.InvariantCulture);
-                    break;
+                    case TypeCode.SByte:
+                    case TypeCode.Int16:
+                    case TypeCode.Int32:
+                    case TypeCode.Int64:
+                        result = (ulong)Convert.ToInt64(value, Globalization.CultureInfo.InvariantCulture);
+                        break;
 
-                case TypeCode.Byte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Boolean:
-                case TypeCode.Char:
-                    result = Convert.ToUInt64(value, Globalization.CultureInfo.InvariantCulture);
-                    break;
+                    case TypeCode.Byte:
+                    case TypeCode.UInt16:
+                    case TypeCode.UInt32:
+                    case TypeCode.UInt64:
+                    case TypeCode.Boolean:
+                    case TypeCode.Char:
+                        result = Convert.ToUInt64(value, Globalization.CultureInfo.InvariantCulture);
+                        break;
                 }
                 return result;
             }
@@ -70,9 +70,9 @@ namespace System
             private static string ToFriendlyNameString(T that, Func<int, string> nameProvider)
             {
                 var idx = GetIndex(that);
-                if(idx >= 0)
+                if (idx >= 0)
                     return nameProvider(idx);
-                else if(!IsFlag)
+                else if (!IsFlag)
                     return that.ToString();
                 else
                     return ToFriendlyNameStringForFlagsFormat(that, nameProvider);
@@ -95,15 +95,15 @@ namespace System
                 // We will not optimize this code further to keep it maintainable. There are some boundary checks that can be applied
                 // to minimize the comparsions required. This code works the same for the best/worst case. In general the number of
                 // items in an enum are sufficiently small and not worth the optimization.
-                while(index >= 0)
+                while (index >= 0)
                 {
-                    if((index == 0) && (UInt64Values[index] == 0))
+                    if ((index == 0) && (UInt64Values[index] == 0))
                         break;
 
-                    if((result & UInt64Values[index]) == UInt64Values[index])
+                    if ((result & UInt64Values[index]) == UInt64Values[index])
                     {
                         result -= UInt64Values[index];
-                        if(!firstTime)
+                        if (!firstTime)
                             retval.Insert(0, enumSeperator);
 
                         retval.Insert(0, nameProvider(index));
@@ -114,13 +114,13 @@ namespace System
                 }
 
                 // We were unable to represent this number as a bitwise or of valid flags
-                if(result != 0)
+                if (result != 0)
                     return that.ToString();
 
                 // For the case when we have zero
-                if(saveResult == 0)
+                if (saveResult == 0)
                 {
-                    if(Values.Length > 0 && UInt64Values[0] == 0)
+                    if (Values.Length > 0 && UInt64Values[0] == 0)
                         return nameProvider(0); // Zero was one of the enum values.
                     else
                         return "0";

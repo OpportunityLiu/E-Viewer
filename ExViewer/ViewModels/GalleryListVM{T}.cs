@@ -20,7 +20,7 @@ namespace ExViewer.ViewModels
             {
                 await g.DeleteAsync();
                 this.Galleries?.Remove(g);
-                RootControl.RootController.SendToast(Strings.Resources.GalleryDeleted, null);
+                RootControl.RootController.SendToast(Strings.Resources.Views.CachedPage.GalleryDeleted, null);
             }, g => g != null);
             this.Open = new Command<Gallery>(g =>
             {
