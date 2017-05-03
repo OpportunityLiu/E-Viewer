@@ -137,9 +137,9 @@ namespace ExViewer.ViewModels
                 else
                 {
                     if (image == null)
-                        await Launcher.LaunchUriAsync(this.gallery.GalleryUri);
+                        await Launcher.LaunchUriAsync(this.gallery.GalleryUri, new LauncherOptions { IgnoreAppUriHandlers = true });
                     else
-                        await Launcher.LaunchUriAsync(image.PageUri);
+                        await Launcher.LaunchUriAsync(image.PageUri, new LauncherOptions { IgnoreAppUriHandlers = true });
                 }
             }, image => this.gallery != null);
             this.Save = new Command(() =>

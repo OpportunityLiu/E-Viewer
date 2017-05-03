@@ -26,8 +26,8 @@ namespace ExViewer.Views
         public AddToFavoritesDialog()
         {
             this.InitializeComponent();
-            this.PrimaryButtonText = Strings.Resources.OK;
-            this.SecondaryButtonText = Strings.Resources.Cancel;
+            this.PrimaryButtonText = Strings.Resources.General.OK;
+            this.SecondaryButtonText = Strings.Resources.General.Cancel;
             foreach(var item in Client.Current.Favorites)
             {
                 this.categories.Add(item);

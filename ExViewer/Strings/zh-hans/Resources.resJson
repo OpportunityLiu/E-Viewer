@@ -1,7 +1,6 @@
 ﻿{
   "AppDescription": "E-Viewer 是一个 E- 绅士和 Ex 绅士的第三方客户端。",
   "AppDisplayName": "E-Viewer",
-
   "Controls": {
     "AboutControl": {
       "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ Github.com",
@@ -21,17 +20,14 @@
     },
     "CommentViewer": {
       "AuthorFormatString": "{0}",
-      "EditedFormatString": "最后编辑于 {0}",
       "EditButton/Content": "编辑",
+      "EditedFormatString": "最后编辑于 {0}",
       "IsUploaderCommentTextBlock/Text": "上传者评论",
       "PostedFormatString": "发布于 {0}",
       "ScoreFormatString": "评分 {0:+#0;-#0}"
     },
     "ExcludedLanguagesSelector": {
       "AllTextBlock/Text": "全部",
-      "OriginalTextBlock/Text": "原始",
-      "RewriteTextBlock/Text": "重写",
-      "TranslatedTextBlock/Text": "翻译",
       "CellColumnDefination/MinWidth": "48",
       "ExcludedLanguage": {
         "Chinese": "中国语",
@@ -46,12 +42,15 @@
         "NotApplicable": "不适用",
         "Other": "其他",
         "Polish": "波兰语",
+        "Portuguese": "葡萄牙语",
         "Russian": "俄语",
         "Spanish": "西班牙语",
         "Thai": "泰语",
-        "Portuguese": "葡萄牙语",
         "Vietnamese": "越南语"
-      }
+      },
+      "OriginalTextBlock/Text": "原始",
+      "RewriteTextBlock/Text": "重写",
+      "TranslatedTextBlock/Text": "翻译"
     },
     "GalleryViewer": {
       "RecordCountFormatString": "{0} 页"
@@ -61,11 +60,44 @@
       "ReleaseTextBlock/Text": "释放刷新"
     }
   },
-
+  "Database": {
+    "EhTagClient": {
+      "Update": {
+        "Failed": "标签数据库更新失败，将在下次启动应用时重试",
+        "Success": "标签数据库已更新"
+      }
+    },
+    "EhTagTranslatorClient": {
+      "Update": {
+        "Failed": "标签中文翻译数据库更新失败，将在下次启动应用时重试",
+        "Success": "标签中文翻译数据库已更新"
+      }
+    }
+  },
+  "General": {
+    "Cancel": "取消",
+    "Exit": "退出",
+    "OK": "确定"
+  },
+  "Sharing": {
+    "OpenInBrowser": "在浏览器中打开"
+  },
+  "Verify": {
+    "Canceled": "您已取消验证。",
+    "DeviceBusy": "设备忙，请稍后重试。",
+    "Dialog": {
+      "Content": "需要使用 Windows Hello 验证身份。"
+    },
+    "Disabled": "验证已通过组策略禁用，请联系管理员。",
+    "FailedDialogTitle": "验证失败",
+    "NotConfigured": "请先设置 PIN。\n\n在 “设置 -> 账户-> 登陆选项 -> PIN -> 添加” 进行此项设定。",
+    "OtherFailure": "请重新启动应用后重试。",
+    "RetriesExhausted": "超过允许的重试次数，请重新启动应用后再试一次。"
+  },
   "Views": {
     "AddToFavoritesDialog": {
-      "FavoriteCategoryUnselected": "请选择一项。",
       "AddTitle": "添加至收藏",
+      "FavoriteCategoryUnselected": "请选择一项。",
       "ModifyTitle": "修改收藏信息",
       "NoteTextBox/Header": "收藏注释"
     },
@@ -73,6 +105,7 @@
       "DeleteAllAppBarButton/Label": "删除全部",
       "DeleteMenuFlyout/Text": "删除",
       "EmptyTextBlock/Text": "没有缓存的画廊",
+      "GalleryDeleted": "选定的画廊已删除。",
       "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
       "RefreshAppBarButton/Label": "刷新"
     },
@@ -86,21 +119,21 @@
     },
     "CommentDialog": {
       "AddTitle": "发表评论",
-      "EditTitle": "编辑评论",
+      "AppBarButtonBold/Label": "粗体",
+      "AppBarButtonBold/ToolTipService/ToolTip": "粗体 (Ctrl + B)",
+      "AppBarButtonItalic/Label": "斜体",
+      "AppBarButtonItalic/ToolTipService/ToolTip": "斜体 (Ctrl + T)",
+      "AppBarButtonLink/Label": "链接",
+      "AppBarButtonLink/ToolTipService/ToolTip": "链接 (Ctrl + L)",
+      "AppBarButtonStrike/Label": "删除线",
+      "AppBarButtonStrike/ToolTipService/ToolTip": "删除线 (Ctrl + S)",
+      "AppBarButtonUnderline/Label": "下划线",
+      "AppBarButtonUnderline/ToolTipService/ToolTip": "下划线 (Ctrl + U)",
       "ContentDialog": {
         "PrimaryButtonText": "发布",
         "SecondaryButtonText": "取消"
       },
-      "AppBarButtonBold/Label": "粗体",
-      "AppBarButtonItalic/Label": "斜体",
-      "AppBarButtonUnderline/Label": "下划线",
-      "AppBarButtonStrike/Label": "删除线",
-      "AppBarButtonLink/Label": "链接",
-      "AppBarButtonBold/ToolTipService/ToolTip": "粗体 (Ctrl + B)",
-      "AppBarButtonItalic/ToolTipService/ToolTip": "斜体 (Ctrl + T)",
-      "AppBarButtonUnderline/ToolTipService/ToolTip": "下划线 (Ctrl + U)",
-      "AppBarButtonStrike/ToolTipService/ToolTip": "删除线 (Ctrl + S)",
-      "AppBarButtonLink/ToolTipService/ToolTip": "链接 (Ctrl + L)"
+      "EditTitle": "编辑评论"
     },
     "EhWikiDialog": {
       "ContentDialog/PrimaryButtonText": "确定",
@@ -118,6 +151,7 @@
       "AppBarButtonAddComment/Label": "发表新评论",
       "CommentsEmptyTextBlock/Text": "没有评论",
       "CommentsLoadingTextBlock/Text": "正在加载评论...",
+      "FavoritesAppBarButton/Text": "添加至收藏",
       "GoToDefinitionMenuFlyoutItem/Text": "前往 EHWiki 查看定义",
       "ImagesLoadingMoreTextBlock/Text": "正在加载更多...",
       "PivotHeaderCommentsTextBlock/Text": "评论",
@@ -127,11 +161,11 @@
       "SaveAppBarButton/Label": "保存此画廊",
       "SearchTagMenuFlyoutItem/Text": "搜索含有此标签的画廊",
       "ShareAppBarButton/Label": "共享",
-      "TagNamespaceColumnDefinition/Width": "68",
       "TagCopied": "已将标签复制到剪贴板",
+      "TagNamespaceColumnDefinition/Width": "68",
       "TorrentDownloadButton/ToolTipService/ToolTip": "下载",
-      "TorrentDownloading": "开始下载种子…",
       "TorrentDownloaded": "种子下载完成，已保存至 {0}",
+      "TorrentDownloading": "开始下载种子…",
       "TorrentDownloadsTextBlock/Text": "完成",
       "TorrentExpungedTextBlock/Text": "已失效",
       "TorrentPeersTextBlock/Text": "下载",
@@ -140,8 +174,7 @@
       "TorrentsEmptyTextBlock/Text": "没有可用的种子",
       "TorrentSizeTextBlock/Text": "大小",
       "TorrentsLoadingTextBlock/Text": "正在加载种子...",
-      "TorrentUploaderTextBlock/Text": "上传者",
-      "FavoritesAppBarButton/Text": "添加至收藏"
+      "TorrentUploaderTextBlock/Text": "上传者"
     },
     "ImagePage": {
       "BackToWindow": "退出全屏",
@@ -193,6 +226,7 @@
       "DeleteAllAppBarButton/Label": "删除全部",
       "DeleteMenuFlyout/Text": "删除",
       "EmptyTextBlock/Text": "没有保存的画廊",
+      "GallerySavedTo": "选定的画廊已保存至指定位置。",
       "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
       "RefreshAppBarButton/Label": "刷新",
       "SaveToMenuFlyout/Text": "保存到…"
@@ -221,40 +255,5 @@
       },
       "ContentTemplate": "版本 {0}.{1}.{2}.{3} 已发布。"
     }
-  },
-
-  "Verify": {
-    "Dialog": {
-      "Content": "需要使用 Windows Hello 验证身份。"
-    },
-    "Canceled": "您已取消验证。",
-    "DeviceBusy": "设备忙，请稍后重试。",
-    "Disabled": "验证已通过组策略禁用，请联系管理员。",
-    "FailedDialogTitle": "验证失败",
-    "NotConfigured": "请先设置 PIN。\n\n在 “设置 -> 账户-> 登陆选项 -> PIN -> 添加” 进行此项设定。",
-    "OtherFailure": "请重新启动应用后重试。",
-    "RetriesExhausted": "超过允许的重试次数，请重新启动应用后再试一次。"
-  },
-
-  "Database": {
-    "EhTagClient": {
-      "Update": {
-        "Success": "标签数据库已更新",
-        "Failed": "标签数据库更新失败，将在下次启动应用时重试"
-      }
-    },
-    "EhTagTranslatorClient": {
-      "Update": {
-        "Success": "标签中文翻译数据库已更新",
-        "Failed": "标签中文翻译数据库更新失败，将在下次启动应用时重试"
-      }
-    }
-  },
-
-  "Cancel": "取消",
-  "Exit": "退出",
-  "OK": "确定",
-
-  "GalleryDeleted": "选定的画廊已删除。",
-  "GallerySavedTo": "选定的画廊已保存至给定位置。"
+  }
 }

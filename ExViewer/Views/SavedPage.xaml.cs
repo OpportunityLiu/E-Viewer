@@ -32,8 +32,8 @@ namespace ExViewer.Views
             {
                 Title = Strings.Resources.Views.ClearSavedDialog.Title,
                 Content = Strings.Resources.Views.ClearSavedDialog.Content,
-                PrimaryButtonText = Strings.Resources.OK,
-                SecondaryButtonText = Strings.Resources.Cancel,
+                PrimaryButtonText = Strings.Resources.General.OK,
+                SecondaryButtonText = Strings.Resources.General.Cancel,
                 PrimaryButtonCommand = this.VM.Clear
             };
         }

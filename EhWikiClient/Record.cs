@@ -80,11 +80,11 @@ namespace EhWikiClient
                 {
                     switch (item.Value)
                     {
-                        case "Tag": type = TagType.Fetish; break;
-                        case "Series_Tag": type = TagType.Series; break;
-                        case "Language_Tag": type = TagType.Language; break;
-                        case "Character_Tag": type = TagType.Character; break;
-                        case "Creator_Tag": type = TagType.Creator; break;
+                        case "Tag": type |= TagType.Fetish; break;
+                        case "Series_Tag": type |= TagType.Series; break;
+                        case "Language_Tag": type |= TagType.Language; break;
+                        case "Character_Tag": type |= TagType.Character; break;
+                        case "Creator_Tag": type |= TagType.Creator; break;
                     }
                 }
             }

@@ -106,6 +106,7 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <None Include="Strings\Strings.resgenconfig" />
     <PRIResource Include="Strings\zh-hans\Resources.resJson" />
     <PRIResource Include="Strings\en\Resources.resJson" />
   </ItemGroup>
@@ -124,18 +125,10 @@
       <DependentUpon>DefaultTemplateProvider.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\SettingTemplateSelector.cs" />
-    <Compile Include="Strings\Strings.tt.cs">
-      <DependentUpon>Strings.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
+    <Compile Include="Strings\Strings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\ApplicationDataManager.rd.xml" />
-    <None Include="Strings\Strings.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Strings.tt.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Settings\Xaml\DefaultTemplateProvider.xaml">

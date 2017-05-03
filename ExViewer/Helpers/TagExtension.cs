@@ -65,21 +65,25 @@ namespace ExClient
                 return false;
             if (tag.Namespace == Namespace.Unknown)
                 return true;
-            switch (wiki.Type)
+            if (wiki.Type == EhWikiClient.TagType.Unknown)
+                return true;
+            switch (tag.Namespace)
             {
-                case EhWikiClient.TagType.Character:
-                    return tag.Namespace == Namespace.Character;
-                case EhWikiClient.TagType.Creator:
-                    return tag.Namespace == Namespace.Artist
-                        || tag.Namespace == Namespace.Group;
-                case EhWikiClient.TagType.Language:
-                    return tag.Namespace == Namespace.Language;
-                case EhWikiClient.TagType.Series:
-                    return tag.Namespace == Namespace.Parody;
-                case EhWikiClient.TagType.Fetish:
-                    return tag.Namespace == Namespace.Misc
-                        || tag.Namespace == Namespace.Male
-                        || tag.Namespace == Namespace.Female;
+                case Namespace.Reclass:
+                    return false;
+                case Namespace.Language:
+                    return wiki.Type.HasFlag(EhWikiClient.TagType.Language);
+                case Namespace.Parody:
+                    return wiki.Type.HasFlag(EhWikiClient.TagType.Series);
+                case Namespace.Character:
+                    return wiki.Type.HasFlag(EhWikiClient.TagType.Character);
+                case Namespace.Group:
+                case Namespace.Artist:
+                    return wiki.Type.HasFlag(EhWikiClient.TagType.Creator);
+                case Namespace.Male:
+                case Namespace.Female:
+                case Namespace.Misc:
+                    return wiki.Type.HasFlag(EhWikiClient.TagType.Fetish);
                 default:
                     return true;
             }

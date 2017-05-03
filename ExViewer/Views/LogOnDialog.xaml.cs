@@ -159,9 +159,9 @@ namespace ExViewer.Views
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
             if(Client.Current.NeedLogOn)
-                this.SecondaryButtonText = Strings.Resources.Exit;
+                this.SecondaryButtonText = Strings.Resources.General.Exit;
             else
-                this.SecondaryButtonText = Strings.Resources.Cancel;
+                this.SecondaryButtonText = Strings.Resources.General.Cancel;
         }
 
         protected override void OnKeyDown(KeyRoutedEventArgs e)

@@ -1,7 +1,6 @@
 ﻿{
   "AppDescription": "E-Viewer is a client for e-hentai.org and exhentai.org.",
   "AppDisplayName": "E-Viewer",
-
   "Controls": {
     "AboutControl": {
       "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ Github.com",
@@ -21,25 +20,22 @@
     },
     "CommentViewer": {
       "AuthorFormatString": "By {0}",
+      "EditButton/Content": "Edit",
       "EditedFormatString": "Last edited on {0}",
       "IsUploaderCommentTextBlock/Text": "Uploader Comment",
-      "EditButton/Content": "Edit",
       "PostedFormatString": "Posted on {0}",
       "ScoreFormatString": "Score {0:+#0;-#0}"
     },
     "ExcludedLanguagesSelector": {
       "AllTextBlock/Text": "All",
-      "OriginalTextBlock/Text": "Original",
-      "RewriteTextBlock/Text": "Rewrite",
-      "TranslatedTextBlock/Text": "Translated",
       "CellColumnDefination/MinWidth": "80",
       "ExcludedLanguage": {
-        "Hungarian": "Hungarian",
-        "French": "French",
-        "Dutch": "Dutch",
         "Chinese": "Chinese",
+        "Dutch": "Dutch",
         "English": "English",
+        "French": "French",
         "German": "German",
+        "Hungarian": "Hungarian",
         "Italian": "Italian",
         "Japanese": "Japanese",
         "Korean": "Korean",
@@ -51,7 +47,10 @@
         "Spanish": "Spanish",
         "Thai": "Thai",
         "Vietnamese": "Vietnamese"
-      }
+      },
+      "OriginalTextBlock/Text": "Original",
+      "RewriteTextBlock/Text": "Rewrite",
+      "TranslatedTextBlock/Text": "Translated"
     },
     "GalleryViewer": {
       "RecordCountFormatString": "{0} pages"
@@ -61,11 +60,44 @@
       "ReleaseTextBlock/Text": "Release to refresh"
     }
   },
-
+  "Database": {
+    "EhTagClient": {
+      "Update": {
+        "Failed": "Failed to update tag database, we'll try again the next time you open this app.",
+        "Success": "Tag database has been updated successfully."
+      }
+    },
+    "EhTagTranslatorClient": {
+      "Update": {
+        "Failed": "Failed to update tag Chinese translation database, we'll try again the next time you open this app.",
+        "Success": "Tag Chinese translation database has been updated successfully."
+      }
+    }
+  },
+  "General": {
+    "Cancel": "Cancel",
+    "Exit": "Exit",
+    "OK": "OK"
+  },
+  "Sharing": {
+    "OpenInBrowser": "Open in browser"
+  },
+  "Verify": {
+    "Canceled": "The verification has been canceled.",
+    "DeviceBusy": "Device is busy. Please try again later.",
+    "Dialog": {
+      "Content": "Because of your settings, we need to request the verification."
+    },
+    "Disabled": "Verification has been disabled by group policy. Please contact your administrator.",
+    "FailedDialogTitle": "VERIFICATION FAILED",
+    "NotConfigured": "Please set up a PIN first. \n\nGo \"Settings -> Accounts - Sign-in options -> PIN -> Add\" to do this.",
+    "OtherFailure": "Plaese restart the app and try again.",
+    "RetriesExhausted": "You have exceeded the allowed number of verification. Plaese restart the app and try again."
+  },
   "Views": {
     "AddToFavoritesDialog": {
-      "FavoriteCategoryUnselected": "Please select one category.",
       "AddTitle": "ADD TO FAVORITES",
+      "FavoriteCategoryUnselected": "Please select one category.",
       "ModifyTitle": "MODIFY FAVORITES",
       "NoteTextBox/Header": "Favorite note"
     },
@@ -73,6 +105,7 @@
       "DeleteAllAppBarButton/Label": "Delete all",
       "DeleteMenuFlyout/Text": "Delete",
       "EmptyTextBlock/Text": "No cached galleries",
+      "GalleryDeleted": "Selected gallery has been deleted.",
       "LoadingMoreTextBlock/Text": "Loading more galleries...",
       "RefreshAppBarButton/Label": "Refresh"
     },
@@ -86,21 +119,21 @@
     },
     "CommentDialog": {
       "AddTitle": "POST COMMENT",
-      "EditTitle": "EDIT COMMENT",
+      "AppBarButtonBold/Label": "Bold",
+      "AppBarButtonBold/ToolTipService/ToolTip": "Bold (Ctrl + B)",
+      "AppBarButtonItalic/Label": "Italic",
+      "AppBarButtonItalic/ToolTipService/ToolTip": "Italic (Ctrl + T)",
+      "AppBarButtonLink/Label": "Link",
+      "AppBarButtonLink/ToolTipService/ToolTip": "Link (Ctrl + L)",
+      "AppBarButtonStrike/Label": "Strike",
+      "AppBarButtonStrike/ToolTipService/ToolTip": "Strike (Ctrl + S)",
+      "AppBarButtonUnderline/Label": "Underline",
+      "AppBarButtonUnderline/ToolTipService/ToolTip": "Underline (Ctrl + U)",
       "ContentDialog": {
         "PrimaryButtonText": "Post",
         "SecondaryButtonText": "Cancel"
       },
-      "AppBarButtonBold/Label": "Bold",
-      "AppBarButtonItalic/Label": "Italic",
-      "AppBarButtonUnderline/Label": "Underline",
-      "AppBarButtonStrike/Label": "Strike",
-      "AppBarButtonLink/Label": "Link",
-      "AppBarButtonBold/ToolTipService/ToolTip": "Bold (Ctrl + B)",
-      "AppBarButtonItalic/ToolTipService/ToolTip": "Italic (Ctrl + T)",
-      "AppBarButtonUnderline/ToolTipService/ToolTip": "Underline (Ctrl + U)",
-      "AppBarButtonStrike/ToolTipService/ToolTip": "Strike (Ctrl + S)",
-      "AppBarButtonLink/ToolTipService/ToolTip": "Link (Ctrl + L)"
+      "EditTitle": "EDIT COMMENT"
     },
     "EhWikiDialog": {
       "ContentDialog/PrimaryButtonText": "OK",
@@ -118,6 +151,7 @@
       "AppBarButtonAddComment/Label": "Post new comment",
       "CommentsEmptyTextBlock/Text": "No comments",
       "CommentsLoadingTextBlock/Text": "Loading comments...",
+      "FavoritesAppBarButton/Text": "Add to favorite",
       "GoToDefinitionMenuFlyoutItem/Text": "Go to EHWiki for definition",
       "ImagesLoadingMoreTextBlock/Text": "Loading more items...",
       "PivotHeaderCommentsTextBlock/Text": "Comments",
@@ -127,11 +161,11 @@
       "SaveAppBarButton/Label": "Save this gallery",
       "SearchTagMenuFlyoutItem/Text": "Show galleries with this tag",
       "ShareAppBarButton/Label": "Share",
-      "TagNamespaceColumnDefinition/Width": "72",
       "TagCopied": "Tag has been copied to clipboard",
+      "TagNamespaceColumnDefinition/Width": "72",
       "TorrentDownloadButton/ToolTipService/ToolTip": "Download",
-      "TorrentDownloading": "Start downloading...",
       "TorrentDownloaded": "Download finished, torrent file saved to {0}",
+      "TorrentDownloading": "Start downloading...",
       "TorrentDownloadsTextBlock/Text": "Downloads",
       "TorrentExpungedTextBlock/Text": "Expunged",
       "TorrentPeersTextBlock/Text": "Peers",
@@ -140,8 +174,7 @@
       "TorrentsEmptyTextBlock/Text": "No available torrents",
       "TorrentSizeTextBlock/Text": "Size",
       "TorrentsLoadingTextBlock/Text": "Loading torrents...",
-      "TorrentUploaderTextBlock/Text": "Uploader",
-      "FavoritesAppBarButton/Text": "Add to favorite"
+      "TorrentUploaderTextBlock/Text": "Uploader"
     },
     "ImagePage": {
       "BackToWindow": "Back to window",
@@ -152,11 +185,11 @@
       "ImageFileInfo": "File name: {0}\nSize: {1}\nDimensions: {2} × {3}",
       "ImageFileInfoDefault": "The image hasn't finished loading.",
       "ImageInfoAppBarButton/Label": "Image infomation",
+      "ImageViewTipsContent": "Zoom in/out\t\t\tSPACE\nZoom to maximum\t\t=\nZoom to minimun\t\t\t-\nZoom in\t\t\t\t]\nZoom out\t\t\t[\nPan / Next/Previous Image\t\tARROW KEYS\nFull screen\t\t\tENTER",
+      "ImageViewTipsTitle": "TIPS FOR KEYBOARD USERS",
       "LoadOriginalAppBarButton/Label": "Load original image",
       "ReloadAppBarButton/Label": "Reload",
-      "ShareAppBarButton/Label": "Share",
-      "ImageViewTipsContent": "Zoom in/out\t\t\tSPACE\nZoom to maximum\t\t=\nZoom to minimun\t\t\t-\nZoom in\t\t\t\t]\nZoom out\t\t\t[\nPan / Next/Previous Image\t\tARROW KEYS\nFull screen\t\t\tENTER",
-      "ImageViewTipsTitle": "TIPS FOR KEYBOARD USERS"
+      "ShareAppBarButton/Label": "Share"
     },
     "LogOnDialog": {
       "ContentDialog/PrimaryButtonText": "OK",
@@ -190,6 +223,7 @@
       "SettingsSplitViewTab/ToolTipService/ToolTip": "Settings"
     },
     "SavedPage": {
+      "GallerySavedTo": "Selected gallery has been saved to provided location.",
       "DeleteAllAppBarButton/Label": "Delete all",
       "DeleteMenuFlyout/Text": "Delete",
       "EmptyTextBlock/Text": "No saved galleries",
@@ -221,40 +255,5 @@
       },
       "ContentTemplate": "Version {0}.{1}.{2}.{3} has released."
     }
-  },
-
-  "Verify": {
-    "Dialog": {
-      "Content": "Because of your settings, we need to request the verification."
-    },
-    "Canceled": "The verification has been canceled.",
-    "DeviceBusy": "Device is busy. Please try again later.",
-    "Disabled": "Verification has been disabled by group policy. Please contact your administrator.",
-    "FailedDialogTitle": "VERIFICATION FAILED",
-    "NotConfigured": "Please set up a PIN first. \n\nGo \"Settings -> Accounts - Sign-in options -> PIN -> Add\" to do this.",
-    "OtherFailure": "Plaese restart the app and try again.",
-    "RetriesExhausted": "You have exceeded the allowed number of verification. Plaese restart the app and try again."
-  },
-
-  "Database": {
-    "EhTagClient": {
-      "Update": {
-        "Success": "Tag database has been updated successfully.",
-        "Failed": "Failed to update tag database, we'll try again the next time you open this app."
-      }
-    },
-    "EhTagTranslatorClient": {
-      "Update": {
-        "Success": "Tag Chinese translation database has been updated successfully.",
-        "Failed": "Failed to update tag Chinese translation database, we'll try again the next time you open this app."
-      }
-    }
-  },
-
-  "Cancel": "Cancel",
-  "Exit": "Exit",
-  "OK": "OK",
-
-  "GalleryDeleted": "Selected gallery has been deleted.",
-  "GallerySavedTo": "Selected gallery has been saved to provided location."
+  }
 }
