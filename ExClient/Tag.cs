@@ -53,7 +53,7 @@ namespace ExClient
             if (string.IsNullOrWhiteSpace(content))
                 throw new ArgumentNullException(nameof(content));
             this.Namespace = @namespace;
-            this.Content = content.Trim();
+            this.Content = content.Trim().ToLowerInvariant();
         }
 
         public Namespace Namespace
@@ -117,7 +117,6 @@ namespace ExClient
         public bool Equals(Tag other)
         {
             return this.Namespace == other.Namespace && string.Equals(this.Content, other.Content, StringComparison.OrdinalIgnoreCase);
-            throw new NotImplementedException();
         }
 
         // override object.Equals

@@ -14,37 +14,75 @@ namespace ExClient
 {
     static class TagExtension
     {
+        public static string GetDisplayContent(this Tag tag)
+        {
+            var r = GetDisplayContentAsync(tag);
+            if (r.Status == AsyncStatus.Completed)
+                return r.GetResults();
+            return tag.Content;
+        }
+
         public static IAsyncOperation<string> GetDisplayContentAsync(this Tag tag)
         {
             var settings = SettingCollection.Current;
-            if(settings.UseChineseTagTranslation)
+            if (settings.UseChineseTagTranslation)
             {
                 var r = tag.GetEhTagTranslatorRecord();
-                if(r != null)
+                if (r != null)
                     return new AsyncWrapper<string>(r.Translated.Text);
             }
-            if(settings.UseJapaneseTagTranslation)
+            if (settings.UseJapaneseTagTranslation)
             {
                 var t = tag.GetEhWikiRecordAsync();
-                if(t.Status == AsyncStatus.Completed)
+                if (t.Status == AsyncStatus.Completed)
                 {
                     var r = t.GetResults();
-                    return new AsyncWrapper<string>(r?.Japanese ?? tag.Content);
+                    if (!match(tag, r))
+                        return new AsyncWrapper<string>(tag.Content);
+                    return new AsyncWrapper<string>(r.Japanese ?? tag.Content);
                 }
                 return Run(async token =>
                 {
                     try
                     {
                         var r = await t;
-                        return r?.Japanese ?? tag.Content;
+                        if (!match(tag, r))
+                            return tag.Content;
+                        return r.Japanese ?? tag.Content;
                     }
-                    catch(Exception)
+                    catch (Exception)
                     {
                         return tag.Content;
                     }
                 });
             }
             return new AsyncWrapper<string>(tag.Content);
+        }
+
+        private static bool match(Tag tag, EhWikiClient.Record wiki)
+        {
+            if (wiki == null)
+                return false;
+            if (tag.Namespace == Namespace.Unknown)
+                return true;
+            switch (wiki.Type)
+            {
+                case EhWikiClient.TagType.Character:
+                    return tag.Namespace == Namespace.Character;
+                case EhWikiClient.TagType.Creator:
+                    return tag.Namespace == Namespace.Artist
+                        || tag.Namespace == Namespace.Group;
+                case EhWikiClient.TagType.Language:
+                    return tag.Namespace == Namespace.Language;
+                case EhWikiClient.TagType.Series:
+                    return tag.Namespace == Namespace.Parody;
+                case EhWikiClient.TagType.Fetish:
+                    return tag.Namespace == Namespace.Misc
+                        || tag.Namespace == Namespace.Male
+                        || tag.Namespace == Namespace.Female;
+                default:
+                    return true;
+            }
         }
 
         public static Record GetEhTagTranslatorRecord(this Tag tag)

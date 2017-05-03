@@ -2,6 +2,9 @@
 using ExClient;
 using ExViewer.Controls;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -43,17 +46,19 @@ namespace ExViewer.Views
             var sender = (EhWikiDialog)d;
             var o = (Tag)e.OldValue;
             var n = (Tag)e.NewValue;
-            if(n.Equals(o))
+            if (n.Equals(o))
                 return;
             sender.refresh(n);
         }
+
+        private static Regex regRedirect = new Regex(@"REDIRECT <a href=""([^""]+)"" title=""([^""]+)"">([^<]+)</a>", RegexOptions.Compiled);
 
         private async void refresh(Tag tag)
         {
             this.loadRecord?.Cancel();
             this.wv.Visibility = Visibility.Collapsed;
             this.pb.Visibility = Visibility.Visible;
-            if(tag.Content == null)
+            if (tag.Content == null)
             {
                 this.Title = "";
                 this.wv.NavigateToString("");
@@ -67,22 +72,28 @@ namespace ExViewer.Views
                     this.loadRecord = tag.FetchEhWikiRecordAsync();
                     var record = await this.loadRecord;
                     this.loadRecord = null;
-                    if(record?.DetialHtml == null)
+                    if (record?.DetialHtml == null)
                         str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
                     else
                         str = record.DetialHtml;
                 }
-                catch(System.Threading.Tasks.TaskCanceledException)
+                catch (System.Threading.Tasks.TaskCanceledException)
                 {
                     return;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     str = ex.GetMessage();
                 }
-                if(this.style == null)
+                var redirect = regRedirect.Match(str);
+                if (redirect.Success)
+                {
+                    this.navigate(new Uri(ew, HtmlAgilityPack.HtmlEntity.DeEntitize(redirect.Groups[1].Value)));
+                }
+                if (this.style == null)
                     this.initStyle();
                 this.wv.NavigateToString(this.style + str);
+
             }
             this.wv.Visibility = Visibility.Visible;
             this.pb.Visibility = Visibility.Collapsed;
@@ -135,29 +146,58 @@ namespace ExViewer.Views
         margin-bottom: 4px;
     }}
 </style>
-<base href='https://ehwiki.org/'>";
+<base href='{ew.ToString()}'>";
         }
 
         private static string color(SolidColorBrush color)
         {
-            if(color.Color.A == 255)
+            if (color.Color.A == 255)
                 return $"#{color.Color.R:X2}{color.Color.G:X2}{color.Color.B:X2}";
             return $"rgba({color.Color.R},{color.Color.G},{color.Color.B},{color.Color.A / 255d})";
         }
 
         private static readonly Uri eh = new Uri("https://e-hentai.org/");
+        private static readonly Uri ew = new Uri("https://ehwiki.org/");
+        private static readonly char[] invalidTagChar = ":/*%\"".ToCharArray();
+        private static readonly HashSet<string> notTag = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Power",
+            "Visual",
+            "Contextual",
+            "Costume",
+            "Namespace",
+            "Genderbend"
+        };
 
-        private async void wv_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
+        private async void navigate(Uri uri)
+        {
+            if (uri.Host == "ehwiki.org" && string.IsNullOrEmpty(uri.Fragment))
+            {
+                if (uri.AbsolutePath.StartsWith("/wiki/"))
+                {
+                    var tag = uri.AbsolutePath.Substring(6);
+                    if (!notTag.Contains(tag)
+                        && tag.IndexOfAny(invalidTagChar) < 0)
+                    {
+                        this.WikiTag = new Tag(Namespace.Misc, tag.Replace('_', ' '));
+                        return;
+                    }
+                }
+            }
+            if (uri.Host == "g.e-hentai.org")
+            {
+                uri = new Uri(eh, uri.PathAndQuery + uri.Fragment);
+            }
+            await Launcher.LaunchUriAsync(uri);
+        }
+
+        private void wv_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             var uri = args.Uri;
-            if(uri != null)
+            if (uri != null)
             {
                 args.Cancel = true;
-                if(uri.Host == "g.e-hentai.org")
-                {
-                    uri = new Uri(eh, uri.PathAndQuery + uri.Fragment);
-                }
-                await Launcher.LaunchUriAsync(uri);
+                navigate(uri);
             }
         }
     }
