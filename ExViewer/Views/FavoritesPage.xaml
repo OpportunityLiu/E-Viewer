@@ -28,6 +28,12 @@
             <controls:FavoriteCategoryPresenter Category="{x:Bind}"
                                                 IsLabelVisible="True" />
         </DataTemplate>
+        <cov:ObjectToBooleanConverter x:Key="SelectionConverter"
+                                      IfNeither="true">
+            <cov:ObjectToBooleanConverter.ValueForFalse>
+                <x:Int32>-1</x:Int32>
+            </cov:ObjectToBooleanConverter.ValueForFalse>
+        </cov:ObjectToBooleanConverter>
     </controls:MyPage.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -132,6 +138,7 @@
                                   x:Uid="Views/FavoritesPage/ApplyAppBarButton"
                                   Icon="Send"
                                   Label="Apply"
+                                  IsEnabled="{x:Bind lv.SelectedIndex, Converter={StaticResource SelectionConverter}, Mode=OneWay}"
                                   Click="abbApply_Click" />
                 </CommandBar.PrimaryCommands>
                 <CommandBar.SecondaryCommands>

@@ -56,7 +56,7 @@ namespace EhWikiClient
                     //https://ehwiki.org/api.php?action=parse&page={pageName}&prop=text&format=jsonfm&utf8=
                     yield return new KeyValuePair<string, string>("action", "parse");
                     yield return new KeyValuePair<string, string>("page", title);
-                    yield return new KeyValuePair<string, string>("prop", "text");
+                    yield return new KeyValuePair<string, string>("prop", "text|categories");
                     yield return new KeyValuePair<string, string>("format", "json");
                     yield return new KeyValuePair<string, string>("utf8", "");
                 }

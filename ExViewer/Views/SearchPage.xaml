@@ -5,6 +5,7 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
+                 xmlns:wp="using:Microsoft.Toolkit.Uwp.UI.Controls.WrapPanel"
                  mc:Ignorable="d"
                  Loading="root_Loading"
                  Unloaded="root_Unloaded"
@@ -17,6 +18,13 @@
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
+    <controls:MyPage.Resources>
+        <Style x:Name="AdvancedSearchOptionStyle"
+               TargetType="CheckBox">
+            <Setter Property="Margin"
+                    Value="0,0,24,0" />
+        </Style>
+    </controls:MyPage.Resources>
 
     <RelativePanel>
         <tk:PullToRefreshListView x:Name="lv"
@@ -114,32 +122,45 @@
                                       HorizontalAlignment="Center" />
                         <ListView x:Name="lv_AdvancedSearch"
                                   Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                                  Padding="8,0,8,8"
+                                  Padding="24,0,0,8"
                                   Style="{StaticResource StackPanelListViewStyle}">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <wp:WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
                             <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
                                       XYFocusUp="{x:Bind ts_Advanced}"
                                       Content="Search gallery name"
+                                      Style="{StaticResource AdvancedSearchOptionStyle}"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                             <CheckBox x:Uid="Views/SearchPage/TagsCheckBox"
                                       Content="Search gallery tags"
+                                      Style="{StaticResource AdvancedSearchOptionStyle}"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                             <CheckBox x:Uid="Views/SearchPage/DescriptionCheckBox"
                                       Content="Search gallery description"
+                                      Style="{StaticResource AdvancedSearchOptionStyle}"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchDescription, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                             <CheckBox x:Uid="Views/SearchPage/TorrentNamesCheckBox"
                                       Content="Search torrent filenames"
+                                      Style="{StaticResource AdvancedSearchOptionStyle}"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchTorrentFilenames, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                             <CheckBox x:Uid="Views/SearchPage/OnlyTorrentsCheckBox"
                                       Content="Only show galleries with torrents"
+                                      Style="{StaticResource AdvancedSearchOptionStyle}"
                                       IsChecked="{x:Bind VM.AdvancedSearch.GalleriesWithTorrentsOnly, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                             <CheckBox x:Uid="Views/SearchPage/LowPowerTagsCheckBox"
                                       Content="Search low-power tags"
+                                      Style="{StaticResource AdvancedSearchOptionStyle}"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchLowPowerTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                             <CheckBox x:Uid="Views/SearchPage/DownvotedTagsCheckBox"
                                       Content="Search downvoted tags"
+                                      Style="{StaticResource AdvancedSearchOptionStyle}"
                                       IsChecked="{x:Bind VM.AdvancedSearch.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                             <CheckBox x:Uid="Views/SearchPage/ShowExpungedCheckBox"
                                       Content="Show expunged galleries"
+                                      Style="{StaticResource AdvancedSearchOptionStyle}"
                                       IsChecked="{x:Bind VM.AdvancedSearch.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                             <StackPanel Orientation="Horizontal">
                                 <CheckBox x:Uid="Views/SearchPage/MinRatingCheckBox"
@@ -148,7 +169,7 @@
                                           IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                                 <ComboBox VerticalAlignment="Center"
                                           SelectedItem="{x:Bind VM.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
-                                          Margin="12,0,0,0"
+                                          Margin="12,0,24,0"
                                           MinWidth="0">
                                     <x:Int32>2</x:Int32>
                                     <x:Int32>3</x:Int32>

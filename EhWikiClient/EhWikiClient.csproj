@@ -117,10 +117,15 @@
     <Compile Include="Migrations\20170327042442_AddLastUpdateAndIsValid.designer.cs">
       <DependentUpon>20170327042442_AddLastUpdateAndIsValid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170503025602_AddTagType.cs" />
+    <Compile Include="Migrations\20170503025602_AddTagType.designer.cs">
+      <DependentUpon>20170503025602_AddTagType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\WikiDbModelSnapshot.cs" />
     <Compile Include="Models\WikiDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Record.cs" />
+    <Compile Include="TagType.cs" />
     <EmbeddedResource Include="Properties\EhWikiClient.rd.xml" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

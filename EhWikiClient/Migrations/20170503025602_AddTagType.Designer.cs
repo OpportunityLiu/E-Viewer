@@ -9,9 +9,10 @@ using EhWikiClient;
 namespace EhWikiClient.Migrations
 {
     [DbContext(typeof(WikiDb))]
-    partial class WikiDbModelSnapshot : ModelSnapshot
+    [Migration("20170503025602_AddTagType")]
+    partial class AddTagType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1");

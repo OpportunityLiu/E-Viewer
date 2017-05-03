@@ -79,7 +79,7 @@ namespace ExViewer.ViewModels
             [Namespace.Misc] = 20
         };
 
-        private static TagRecord<TransRecord> getRecord(TransRecord tag, string highlight)
+        private static TagRecord<Tag> getRecord(TransRecord tag, string highlight)
         {
             var score = 0;
             var io = tag.Original.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
@@ -99,25 +99,26 @@ namespace ExViewer.ViewModels
                     score = Math.Max(score, highlight.Length * 65536 / tag.TranslatedStr.Length);
             }
             score *= nsFactor[tag.Namespace];
-            return new TransTagRecord(highlight, tag, score);
+            return new TagRecord(highlight, tag.AsTag(), score);
         }
 
-        private static TagRecord<Tag> getRecord(Tag tag, string highlight)
+        private static TagRecord<Tag> getRecord(EhTagClient.TagRecord tag, string highlight)
         {
             var score = 0;
-            var io = tag.Content.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
+            var c = tag.TagConetnt;
+            var io = c.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
             if (io != -1)
             {
                 if (io == 0)
-                    score = highlight.Length * 65536 * 16 / tag.Content.Length;
+                    score = highlight.Length * 65536 * 16 / c.Length;
                 else
-                    score = highlight.Length * 65536 / tag.Content.Length;
+                    score = highlight.Length * 65536 / c.Length;
             }
-            score *= nsFactor[tag.Namespace];
-            return new EhTagRecord(highlight, tag, score);
+            score *= nsFactor[tag.TagNamespace];
+            return new TagRecord(highlight, tag.AsTag(), score);
         }
 
-        public static IEnumerable<TagRecord<TransRecord>> GetTranslatedRecords(string highlight, Namespace ns)
+        public static IEnumerable<TagRecord<Tag>> GetTranslatedRecords(string highlight, Namespace ns)
         {
             using (var db = TransClient.CreateDatabase())
             {
@@ -137,27 +138,6 @@ namespace ExViewer.ViewModels
             }
         }
 
-        private class TransTagRecord : TagRecord<TransRecord>
-        {
-            public TransTagRecord(string highlight, TransRecord tag, int score) : base(highlight, tag, score)
-            {
-            }
-
-            public override string TagToString()
-            {
-                return Tag.AsTag().ToSearchTerm();
-            }
-
-            public override string Title => Tag.Original;
-
-            public override string Caption =>
-                Settings.SettingCollection.Current.UseChineseTagTranslation
-                    ? Tag.Translated.Text
-                    : WikiClient.Get(Tag.Original)?.Japanese ?? "";
-
-            public override string AdditionalInfo => Tag.Namespace.ToFriendlyNameString();
-        }
-
         public static IEnumerable<TagRecord<Tag>> GetRecords(string highlight, Namespace ns)
         {
             using (var db = EhTagClient.Client.CreateDatabase())
@@ -172,13 +152,13 @@ namespace ExViewer.ViewModels
                                           WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")
                                .Where(t => t.TagNamespace == ns)
                                .ToList();
-                return r.Select(t => getRecord(t.AsTag(), highlight));
+                return r.Select(t => getRecord(t, highlight));
             }
         }
 
-        private class EhTagRecord : TagRecord<Tag>
+        private class TagRecord : TagRecord<Tag>
         {
-            public EhTagRecord(string highlight, Tag tag, int score) : base(highlight, tag, score)
+            public TagRecord(string highlight, Tag tag, int score) : base(highlight, tag, score)
             {
             }
 
@@ -189,7 +169,7 @@ namespace ExViewer.ViewModels
 
             public override string Title => Tag.Content;
 
-            public override string Caption => WikiClient.Get(Tag.Content)?.Japanese ?? "";
+            public override string Caption => Tag.GetDisplayContent();
 
             public override string AdditionalInfo => Tag.Namespace.ToFriendlyNameString();
         }

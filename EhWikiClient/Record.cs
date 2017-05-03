@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace EhWikiClient
 {
@@ -12,13 +13,14 @@ namespace EhWikiClient
     {
         internal Record() { }
 
-        private Record(string title, string japanese, string description, string html)
+        private Record(string title, string japanese, string description, string html, TagType type)
             : this(true)
         {
             this.Title = title;
             this.Japanese = japanese;
             this.Description = description;
             this.DetialHtml = html;
+            this.Type = type;
         }
 
         private Record(bool isValid)
@@ -39,7 +41,15 @@ namespace EhWikiClient
                 public class Text
                 {
                     [JsonProperty("*")]
-                    public string str;
+                    public string Str;
+                }
+
+                public IReadOnlyList<Catogory> categories;
+                public class Catogory
+                {
+                    public string sortkey;
+                    [JsonProperty("*")]
+                    public string Value;
                 }
             }
         }
@@ -52,18 +62,33 @@ namespace EhWikiClient
         internal static Record Load(string json)
         {
             var res = JsonConvert.DeserializeObject<Response>(json);
-            if(res.parse == null)
+            if (res.parse == null)
                 return new Record(false);
-            var str = Windows.Data.Html.HtmlUtilities.ConvertToText(res.parse.text.str);
+            var str = Windows.Data.Html.HtmlUtilities.ConvertToText(res.parse.text.Str);
             var match = reg.Matches(str);
             var j = (string)null;
-            if(match.Count > 0)
+            if (match.Count > 0)
                 j = string.Join(" | ", match.Cast<Match>().Select(m => m.Groups["Value"].Value));
             var matchd = regd.Match(str);
             var d = (string)null;
-            if(matchd.Success)
+            if (matchd.Success)
                 d = matchd.Groups["Value"].Value;
-            return new Record(res.parse.title, j, d, res.parse.text.str);
+            var type = TagType.Unknown;
+            if (res.parse.categories != null)
+            {
+                foreach (var item in res.parse.categories)
+                {
+                    switch (item.Value)
+                    {
+                        case "Tag": type = TagType.Fetish; break;
+                        case "Series_Tag": type = TagType.Series; break;
+                        case "Language_Tag": type = TagType.Language; break;
+                        case "Character_Tag": type = TagType.Character; break;
+                        case "Creator_Tag": type = TagType.Creator; break;
+                    }
+                }
+            }
+           return new Record(res.parse.title, j, d, res.parse.text.Str, type);
         }
 
         internal void Update(Record record)
@@ -89,6 +114,12 @@ namespace EhWikiClient
         }
 
         public string Description
+        {
+            get;
+            internal set;
+        }
+
+        public TagType Type
         {
             get;
             internal set;

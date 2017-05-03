@@ -1,28 +1,15 @@
 ﻿using ExClient;
-using ExViewer.Settings;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Graphics.Display;
-using Windows.Security.Credentials;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using ExViewer.ViewModels;
 using System.Threading.Tasks;
-using Windows.UI.ViewManagement;
-using Windows.UI;
 using ExViewer.Controls;
 using Opportunity.MvvmUniverse.Views;
 
@@ -143,19 +130,19 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.Key)
             {
-            case Windows.System.VirtualKey.GamepadY:
-                if (this.lv.SelectionMode == ListViewSelectionMode.None)
-                    this.cbCategory.Focus(FocusState.Keyboard);
-                else
-                    this.cbCategory2.Focus(FocusState.Keyboard);
-                break;
-            case Windows.System.VirtualKey.GamepadMenu:
-            case Windows.System.VirtualKey.Application:
-                e.Handled = false;
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case Windows.System.VirtualKey.GamepadY:
+                    if (this.lv.SelectionMode == ListViewSelectionMode.None)
+                        this.cbCategory.Focus(FocusState.Keyboard);
+                    else
+                        this.cbCategory2.Focus(FocusState.Keyboard);
+                    break;
+                case Windows.System.VirtualKey.GamepadMenu:
+                case Windows.System.VirtualKey.Application:
+                    e.Handled = false;
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 
@@ -187,7 +174,7 @@ namespace ExViewer.Views
 
         private bool startSelectMode()
         {
-            if (this.lv.SelectionMode == ListViewSelectionMode.Multiple)
+            if (!this.lv.IsItemClickEnabled)
                 return false;
             this.lv.SelectionMode = ListViewSelectionMode.Multiple;
             this.lv.IsItemClickEnabled = false;
@@ -205,14 +192,13 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Visible;
             this.cbCategory.Visibility = Visibility.Collapsed;
             this.asb.Visibility = Visibility.Collapsed;
-            this.abbApply.IsEnabled = true;
             this.RaiseCanGoBackChanged();
             return true;
         }
 
         private bool exitSelectMode()
         {
-            if (this.lv.SelectionMode == ListViewSelectionMode.None)
+            if (this.lv.IsItemClickEnabled)
                 return false;
             this.lv.SelectionMode = ListViewSelectionMode.None;
             this.lv.IsItemClickEnabled = true;
@@ -261,20 +247,18 @@ namespace ExViewer.Views
 
         private async void abbApply_Click(object sender, RoutedEventArgs e)
         {
-            this.abbApply.IsEnabled = false;
             var cat = (FavoriteCategory)this.cbCategory2.SelectedItem ?? FavoriteCategory.Removed;
             try
             {
-                await this.VM.SearchResult.AddToCategoryAsync(this.lv.SelectedRanges, cat);
+                var task = this.VM.SearchResult.AddToCategoryAsync(this.lv.SelectedRanges.ToList(), cat);
+                this.lv.SelectionMode = ListViewSelectionMode.None;
+                await task;
                 exitSelectMode();
             }
             catch (Exception ex)
             {
                 RootControl.RootController.SendToast(ex, this.GetType());
-            }
-            finally
-            {
-                this.abbApply.IsEnabled = true;
+                this.lv.SelectionMode = ListViewSelectionMode.Multiple;
             }
         }
 
