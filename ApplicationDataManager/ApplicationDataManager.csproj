@@ -125,7 +125,6 @@
       <DependentUpon>DefaultTemplateProvider.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\SettingTemplateSelector.cs" />
-    <Compile Include="Strings\Strings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\ApplicationDataManager.rd.xml" />

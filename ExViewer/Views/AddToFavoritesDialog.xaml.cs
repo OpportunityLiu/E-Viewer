@@ -129,7 +129,7 @@ namespace ExViewer.Views
             return success;
         }
 
-        private static readonly ExViewer_ResourceInfo.Resources.Views.IAddToFavoritesDialog strings
+        private static readonly ResourceInfo.Resources.Views.IAddToFavoritesDialog strings
             = Strings.Resources.Views.AddToFavoritesDialog;
 
         private void tbNote_TextChanged(object sender, TextChangedEventArgs e)
