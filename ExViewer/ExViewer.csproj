@@ -153,7 +153,6 @@
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Settings\StatusCollection.cs" />
-    <Compile Include="Strings\Strings.cs" />
     <Compile Include="Telemetry.cs" />
     <Compile Include="Themes\ThemeExtention.cs" />
     <Compile Include="Themes\ThemeHelperControl.xaml.cs">
