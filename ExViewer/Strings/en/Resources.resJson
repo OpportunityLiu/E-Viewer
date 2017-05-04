@@ -80,7 +80,9 @@
     "OK": "OK"
   },
   "Sharing": {
-    "OpenInBrowser": "Open in browser"
+    "OpenInBrowser": "Open in browser",
+    "CopyToClipboard": "Copy to clipboard",
+    "CopyedToClipboard": "Content has copied to clipboard"
   },
   "Verify": {
     "Canceled": "The verification has been canceled.",

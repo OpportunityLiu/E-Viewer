@@ -102,30 +102,51 @@ namespace ExViewer.ViewModels
                         var deferral = e.Request.GetDeferral();
                         try
                         {
-                            e.Request.Data.Properties.Title = this.gallery.GetDisplayTitle();
-                            e.Request.Data.Properties.Description = this.gallery.GetSecondaryTitle();
+                            var data = e.Request.Data;
+                            var gallery = this.gallery;
+                            data.Properties.Title = gallery.GetDisplayTitle();
+                            data.Properties.Description = gallery.GetSecondaryTitle();
                             if (image == null)
                             {
                                 var ms = new InMemoryRandomAccessStream();
                                 var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
-                                encoder.SetSoftwareBitmap(this.gallery.Thumb);
+                                encoder.SetSoftwareBitmap(gallery.Thumb);
                                 await encoder.FlushAsync();
-                                e.Request.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
-                                var firstImage = this.gallery.FirstOrDefault()?.ImageFile;
+                                data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
+                                var firstImage = gallery.FirstOrDefault(i => i?.ImageFile != null)?.ImageFile;
                                 if (firstImage != null)
-                                    e.Request.Data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
-                                e.Request.Data.Properties.ContentSourceWebLink = this.gallery.GalleryUri;
-                                e.Request.Data.SetWebLink(this.gallery.GalleryUri);
+                                    data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
+                                else
+                                    data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
+                                data.Properties.ContentSourceWebLink = gallery.GalleryUri;
+                                data.SetWebLink(gallery.GalleryUri);
+                                data.SetText(gallery.GalleryUri.ToString());
+                                data.RequestedOperation = DataPackageOperation.Move;
+                                data.Properties.FileTypes.Add(StandardDataFormats.StorageItems);
+                                data.SetDataProvider(StandardDataFormats.StorageItems, async request =>
+                                {
+                                    var d = request.GetDeferral();
+                                    try
+                                    {
+                                        var makeCopy = SavedVM.GetCopyOf(gallery);
+                                        request.SetData(Enumerable.Repeat(await makeCopy, 1));
+                                    }
+                                    finally { d.Complete(); }
+                                });
                             }
                             else
                             {
+                                data.RequestedOperation = DataPackageOperation.Copy;
                                 if (image.ImageFile != null)
                                 {
-                                    e.Request.Data.SetBitmap(RandomAccessStreamReference.CreateFromFile(image.ImageFile));
-                                    e.Request.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(await image.ImageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem));
+                                    var view = RandomAccessStreamReference.CreateFromFile(image.ImageFile);
+                                    data.SetBitmap(view);
+                                    data.Properties.Thumbnail = view;
+                                    data.SetStorageItems(Enumerable.Repeat(image.ImageFile, 1), true);
                                 }
-                                e.Request.Data.Properties.ContentSourceWebLink = image.PageUri;
-                                e.Request.Data.SetWebLink(image.PageUri);
+                                data.Properties.ContentSourceWebLink = image.PageUri;
+                                data.SetWebLink(image.PageUri);
+                                data.SetText(image.PageUri.ToString());
                             }
                         }
                         finally
