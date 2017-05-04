@@ -80,7 +80,9 @@
     "OK": "确定"
   },
   "Sharing": {
-    "OpenInBrowser": "在浏览器中打开"
+    "OpenInBrowser": "在浏览器中打开",
+    "CopyToClipboard": "复制到剪贴板",
+    "CopyedToClipboard": "内容已经复制到剪贴板"
   },
   "Verify": {
     "Canceled": "您已取消验证。",
