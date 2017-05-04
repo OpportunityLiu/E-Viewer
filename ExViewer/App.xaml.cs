@@ -5,6 +5,9 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using ExViewer.Views;
 using Windows.ApplicationModel.Core;
+#if !DEBUG
+using Microsoft.HockeyApp;
+#endif
 
 namespace ExViewer
 {
@@ -56,7 +59,7 @@ namespace ExViewer
             {
                 this.DebugSettings.EnableFrameRateCounter = true;
                 //this.DebugSettings.IsOverdrawHeatMapEnabled = true;
-                //this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
+                this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
             }
 #endif
             lanunchCore(e, e.PrelaunchActivated);
