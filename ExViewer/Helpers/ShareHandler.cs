@@ -10,8 +10,10 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
+using Windows.System.UserProfile;
 using Windows.UI;
 using Windows.UI.Core;
 
@@ -23,14 +25,60 @@ namespace ExViewer.Helpers
 
         public static void Share(TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler)
         {
+            if (!IsShareSupported)
+                return;
             new ShareHandlerStorage(handler);
             DataTransferManager.ShowShareUI();
         }
 
-
         private class ShareHandlerStorage
         {
-            private static ShareProvider openLinkProvider
+            public ShareHandlerStorage(TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler)
+            {
+                this.handler = handler;
+                var t = DataTransferManager.GetForCurrentView();
+                t.DataRequested += this.T_DataRequested;
+                if (CustomHandlers.Instance != null)
+                    t.ShareProvidersRequested += this.T_ShareProvidersRequested;
+            }
+
+            private void T_ShareProvidersRequested(DataTransferManager sender, ShareProvidersRequestedEventArgs args)
+            {
+                sender.ShareProvidersRequested -= this.T_ShareProvidersRequested;
+
+                args.Providers.Add(CustomHandlers.Instance.CopyProvider);
+
+                if (args.Data.Contains(StandardDataFormats.WebLink))
+                    args.Providers.Add(CustomHandlers.Instance.OpenLinkProvider);
+
+                if (args.Data.Contains(StandardDataFormats.StorageItems))
+                    args.Providers.Add(CustomHandlers.Instance.SetWallpaperProvider);
+            }
+
+            private TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler;
+
+            private void T_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
+            {
+                sender.DataRequested -= this.T_DataRequested;
+                var d = args.Request.Data;
+                d.Properties.Title = Package.Current.DisplayName;
+                d.Properties.ApplicationName = Package.Current.DisplayName;
+                d.Properties.PackageFamilyName = Package.Current.Id.FamilyName;
+                this.handler?.Invoke(sender, args);
+            }
+        }
+
+        private class CustomHandlers
+        {
+            public static CustomHandlers Instance { get; } = create();
+
+            private static CustomHandlers create()
+            {
+                if (!ApiInfo.ShareProviderSupported)
+                    return null;
+                return new CustomHandlers();
+            }
+            public ShareProvider OpenLinkProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.OpenInBrowser
                     , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Images/MicrosoftEdge.png"))
                     , (Color)Windows.UI.Xaml.Application.Current.Resources["SystemAccentColor"]
@@ -44,7 +92,7 @@ namespace ExViewer.Helpers
                             operation.ReportCompleted();
                         });
                     });
-            private static ShareProvider copyProvider
+            public ShareProvider CopyProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.CopyToClipboard
                     , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Images/CopyToClipboard.png"))
                     , (Color)Windows.UI.Xaml.Application.Current.Resources["SystemAccentColor"]
@@ -57,6 +105,39 @@ namespace ExViewer.Helpers
                         {
                             Clipboard.SetContent(pac.View);
                             RootControl.RootController.SendToast(Strings.Resources.Sharing.CopyedToClipboard, null);
+                            operation.ReportCompleted();
+                        });
+                    });
+            public ShareProvider SetWallpaperProvider { get; }
+                = new ShareProvider(Strings.Resources.Sharing.SetWallpaper
+                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Images/Settings.png"))
+                    , (Color)Windows.UI.Xaml.Application.Current.Resources["SystemAccentColor"]
+                    , async operation =>
+                    {
+                        var files = (await operation.Data.GetStorageItemsAsync()).FirstOrDefault();
+                        var file = files as StorageFile;
+                        if (file == null)
+                        {
+                            var folder = files as StorageFolder;
+                            if (folder == null)
+                            {
+                                return;
+                            }
+                            file = (await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).FirstOrDefault();
+                        }
+                        if (file == null)
+                            return;
+                        file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"{file.Path.GetHashCode()}{file.FileType}", NameCollisionOption.GenerateUniqueName);
+                        await Task.Delay(500);
+                        DispatcherHelper.BeginInvokeOnUIThread(async () =>
+                        {
+                            var succeeded = await User​Profile​Personalization​Settings.Current.TrySetWallpaperImageAsync(file);
+                            if (succeeded)
+                                RootControl.RootController.SendToast(Strings.Resources.Sharing.SetWallpaperSucceeded, null);
+                            else
+                                RootControl.RootController.SendToast(Strings.Resources.Sharing.SetWallpaperFailed, null);
+                            await Task.Delay(10000);
+                            await file.DeleteAsync();
                             operation.ReportCompleted();
                         });
                     });
@@ -118,36 +199,6 @@ namespace ExViewer.Helpers
                 {
                     get;
                 }
-            }
-
-            public ShareHandlerStorage(TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler)
-            {
-                this.handler = handler;
-                var t = DataTransferManager.GetForCurrentView();
-                t.DataRequested += this.T_DataRequested;
-                t.ShareProvidersRequested += this.T_ShareProvidersRequested;
-            }
-
-            private void T_ShareProvidersRequested(DataTransferManager sender, ShareProvidersRequestedEventArgs args)
-            {
-                sender.ShareProvidersRequested -= this.T_ShareProvidersRequested;
-                args.Providers.Add(copyProvider);
-                if (args.Data.Contains(StandardDataFormats.WebLink))
-                {
-                    args.Providers.Add(openLinkProvider);
-                }
-            }
-
-            private TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler;
-
-            private void T_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
-            {
-                sender.DataRequested -= this.T_DataRequested;
-                var d = args.Request.Data;
-                d.Properties.Title = Package.Current.DisplayName;
-                d.Properties.ApplicationName = Package.Current.DisplayName;
-                d.Properties.PackageFamilyName = Package.Current.Id.FamilyName;
-                this.handler?.Invoke(sender, args);
             }
         }
     }

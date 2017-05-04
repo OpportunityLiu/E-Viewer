@@ -282,6 +282,9 @@
     <Content Include="Images\Light\UserBackground.scale-100.png" />
     <Content Include="Images\Light\UserBackground.scale-200.png" />
     <Content Include="Images\Light\UserBackground.scale-400.png" />
+    <Content Include="Images\Settings.scale-100.png" />
+    <Content Include="Images\Settings.scale-200.png" />
+    <Content Include="Images\Settings.scale-400.png" />
     <Content Include="Images\MicrosoftEdge.scale-200.png" />
     <Content Include="Images\MicrosoftEdge.scale-400.png" />
     <Content Include="Images\MicrosoftEdge.scale-100.png" />

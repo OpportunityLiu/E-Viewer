@@ -64,13 +64,13 @@
     "EhTagClient": {
       "Update": {
         "Failed": "Failed to update tag database, we'll try again the next time you open this app.",
-        "Success": "Tag database has been updated successfully."
+        "Succeeded": "Tag database has been updated successfully."
       }
     },
     "EhTagTranslatorClient": {
       "Update": {
         "Failed": "Failed to update tag Chinese translation database, we'll try again the next time you open this app.",
-        "Success": "Tag Chinese translation database has been updated successfully."
+        "Succeeded": "Tag Chinese translation database has been updated successfully."
       }
     }
   },
@@ -80,9 +80,12 @@
     "OK": "OK"
   },
   "Sharing": {
-    "OpenInBrowser": "Open in browser",
+    "CopyedToClipboard": "Content has copied to clipboard.",
     "CopyToClipboard": "Copy to clipboard",
-    "CopyedToClipboard": "Content has copied to clipboard"
+    "OpenInBrowser": "Open in browser",
+    "SetWallpaper": "Set as background",
+    "SetWallpaperFailed": "Failed to set image as background.",
+    "SetWallpaperSucceeded": "Successfully set image as background."
   },
   "Verify": {
     "Canceled": "The verification has been canceled.",

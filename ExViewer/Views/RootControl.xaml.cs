@@ -72,18 +72,10 @@ namespace ExViewer.Views
 #endif
         }
 
-        public Type HomePageType
-        {
-            get; set;
-        }
-
-        public ApplicationExecutionState PreviousState
-        {
-            get; set;
-        }
-
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
         private readonly Dictionary<Type, Controls.SplitViewTab> pages;
+
+        private bool layoutLoaded;
 
         public UserInfo UserInfo
         {
@@ -124,25 +116,27 @@ namespace ExViewer.Views
 
         private void Control_Loading(FrameworkElement sender, object args)
         {
-            if (this.HomePageType == null)
+            if (!this.layoutLoaded)
             {
                 RootController.SetRoot(this);
             }
             else
             {
-                this.fm_inner.Navigate(this.HomePageType);
+                this.fm_inner.Navigate(typeof(SearchPage));
             }
-            this.manager.Handlers.Add(this);
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            if (this.HomePageType == null)
+            var temp = this.layoutLoaded;
+            this.layoutLoaded = true;
+            if (!temp)
             {
                 this.UserInfo = await UserInfo.LoadFromCache();
             }
             else
             {
+                this.manager.Handlers.Add(this);
                 RootController.UpdateUserInfo(false);
                 RootController.HandleUriLaunch();
                 this.tbtPane.Focus(FocusState.Pointer);
@@ -151,7 +145,6 @@ namespace ExViewer.Views
 
         private void Control_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.manager.Handlers.Remove(this);
         }
 
         private void fm_inner_Navigated(object sender, NavigationEventArgs e)

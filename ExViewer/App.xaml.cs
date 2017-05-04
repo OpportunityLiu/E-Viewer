@@ -76,7 +76,7 @@ namespace ExViewer
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
                 CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-                currentContent = new SplashControl(e.SplashScreen, e.PreviousExecutionState);
+                currentContent = new SplashControl(e.SplashScreen);
                 currentWindow.Content = currentContent;
             }
             if(currentContent is SplashControl sc)
