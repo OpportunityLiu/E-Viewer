@@ -131,6 +131,7 @@ namespace ExClient
         internal IAsyncAction PostFormAsync(string content, Comment editable)
         {
             content = (content ?? "").Trim();
+            content = content.Replace("\r\n", "\n").Replace('\r', '\n');
             if (string.IsNullOrEmpty(content))
                 throw new ArgumentException(LocalizedStrings.Resources.EmptyComment);
             var length = encoding.GetByteCount(content);
