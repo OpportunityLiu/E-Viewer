@@ -127,8 +127,8 @@ namespace ExViewer.Helpers
                         }
                         if (file == null)
                             return;
-                        file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"{file.Path.GetHashCode()}{file.FileType}", NameCollisionOption.GenerateUniqueName);
-                        await Task.Delay(500);
+                        // Only files in localfolder can be set as background.
+                        file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"Img_{file.Path.GetHashCode():X}{file.FileType}", NameCollisionOption.ReplaceExisting);
                         DispatcherHelper.BeginInvokeOnUIThread(async () =>
                         {
                             var succeeded = await User​Profile​Personalization​Settings.Current.TrySetWallpaperImageAsync(file);
