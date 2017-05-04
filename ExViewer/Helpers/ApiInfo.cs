@@ -14,5 +14,10 @@ namespace ExViewer
         {
             get;
         } = IsTypePresent("Windows.UI.ViewManagement.StatusBar");
+
+        public static bool ShareProviderSupported
+        {
+            get;
+        } = IsTypePresent("Windows.ApplicationModel.DataTransfer.ShareProvider");
     }
 }

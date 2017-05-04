@@ -64,13 +64,13 @@
     "EhTagClient": {
       "Update": {
         "Failed": "标签数据库更新失败，将在下次启动应用时重试",
-        "Success": "标签数据库已更新"
+        "Succeeded": "标签数据库已更新"
       }
     },
     "EhTagTranslatorClient": {
       "Update": {
         "Failed": "标签中文翻译数据库更新失败，将在下次启动应用时重试",
-        "Success": "标签中文翻译数据库已更新"
+        "Succeeded": "标签中文翻译数据库已更新"
       }
     }
   },
@@ -80,9 +80,12 @@
     "OK": "确定"
   },
   "Sharing": {
-    "OpenInBrowser": "在浏览器中打开",
+    "CopyedToClipboard": "内容已经复制到剪贴板",
     "CopyToClipboard": "复制到剪贴板",
-    "CopyedToClipboard": "内容已经复制到剪贴板"
+    "OpenInBrowser": "在浏览器中打开",
+    "SetWallpaper": "设置为背景",
+    "SetWallpaperFailed": "未能成功设置背景。",
+    "SetWallpaperSucceeded": "成功设置为背景。"
   },
   "Verify": {
     "Canceled": "您已取消验证。",

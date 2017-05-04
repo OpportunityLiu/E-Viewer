@@ -20,22 +20,23 @@ namespace ExViewer.Views
     {
         private SplashScreen splashScreen;
 
-        public SplashControl()
+        public SplashControl(SplashScreen splashScreen)
         {
             this.InitializeComponent();
             BannerProvider.Provider.GetBannerAsync().Completed =
                 async (s, e) => await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => loadBanner(s.GetResults()));
             this.loadApplication();
+            this.splashScreen = splashScreen;
         }
 
         private async void loadBanner(StorageFile banner)
         {
-            if(banner == null)
+            if (banner == null)
             {
                 ((BitmapImage)this.img_pic.Source).UriSource = BannerProvider.Provider.DefaultBanner;
                 return;
             }
-            using(var stream = await banner.OpenReadAsync())
+            using (var stream = await banner.OpenReadAsync())
             {
                 await ((BitmapImage)this.img_pic.Source).SetSourceAsync(stream);
             }
@@ -46,16 +47,6 @@ namespace ExViewer.Views
             Themes.ThemeExtention.SetTitleBar();
             JYAnalytics.TrackPageStart(nameof(SplashControl));
         }
-
-        public SplashControl(SplashScreen splashScreen, ApplicationExecutionState previousExecutionState)
-            : this()
-        {
-            this.splashScreen = splashScreen;
-            this.previousExecutionState = previousExecutionState;
-        }
-
-        private Type homePageType;
-        private ApplicationExecutionState previousExecutionState;
 
         private void ShowPic_Completed(object sender, object e)
         {
@@ -75,7 +66,7 @@ namespace ExViewer.Views
 
         private void splash_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(DeviceTrigger.IsMobile)
+            if (DeviceTrigger.IsMobile)
                 return;
             var l = this.splashScreen.ImageLocation;
             this.img_splash.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
@@ -91,11 +82,9 @@ namespace ExViewer.Views
 
         private async void goToContent()
         {
-            if(SettingCollection.Current.NeedVerify)
+            if (SettingCollection.Current.NeedVerify)
                 await verify();
             this.cpHided.Content = null;
-            this.rootControl.PreviousState = this.previousExecutionState;
-            this.rootControl.HomePageType = this.homePageType ?? typeof(SearchPage);
             Window.Current.Content = this.rootControl;
             this.rootControl = null;
             JYAnalytics.TrackPageEnd(nameof(SplashControl));
@@ -104,9 +93,9 @@ namespace ExViewer.Views
 
         private void setLoadingFinished()
         {
-            lock(this.goToContentSyncRoot)
+            lock (this.goToContentSyncRoot)
             {
-                if(this.goToContentEnabled)
+                if (this.goToContentEnabled)
                     goToContent();
                 else
                     this.loadingFinished = true;
@@ -115,9 +104,9 @@ namespace ExViewer.Views
 
         public void EnableGoToContent()
         {
-            lock(this.goToContentSyncRoot)
+            lock (this.goToContentSyncRoot)
             {
-                if(this.loadingFinished)
+                if (this.loadingFinished)
                     goToContent();
                 else
                     this.goToContentEnabled = true;
@@ -135,9 +124,9 @@ namespace ExViewer.Views
             await Task.Delay(200);
             Window.Current.Activate();
             this.ShowPic.Begin();
-            lock(this.loadingSyncRoot)
+            lock (this.loadingSyncRoot)
             {
-                if(this.applicationLoaded)
+                if (this.applicationLoaded)
                     setLoadingFinished();
                 else
                     this.effectLoaded = true;
@@ -149,55 +138,51 @@ namespace ExViewer.Views
             var loadingTask = Task.Run(async () =>
             {
                 var client = Client.Current;
-                if(client.NeedLogOn)
+                if (client.NeedLogOn)
                 {
                     try
                     {
                         var pass = AccountManager.CurrentCredential;
-                        if(pass != null)
+                        if (pass != null)
                         {
                             pass.RetrievePassword();
                             await client.LogOnAsync(pass.UserName, pass.Password, null);
                         }
                     }
-                    catch(Exception)
+                    catch (Exception)
                     {
                     }
                 }
-                var initSearchTask = (Task)null;
-                if(!client.NeedLogOn)
+                if (!client.NeedLogOn)
                 {
                     SettingCollection.Current.Apply();
                     client.ResetExCookie();
-                    initSearchTask = SearchVM.InitAsync().AsTask();
-                }
-                if(initSearchTask != null)
-                {
-                    try
+                    var initSearchTask = SearchVM.InitAsync();
+                    var waitTime = 0;
+                    while (waitTime < 7000)
                     {
-                        await await Task.WhenAny(initSearchTask, Task.Delay(7000));
-                        this.homePageType = typeof(SearchPage);
-                    }
-                    catch(Exception)
-                    {
-                        this.homePageType = typeof(SavedPage);
+                        await Task.Delay(250);
+                        waitTime += 250;
+                        if (initSearchTask.Status != Windows.Foundation.AsyncStatus.Started)
+                        {
+                            initSearchTask.Close();
+                            break;
+                        }
                     }
                 }
-                else
-                    this.homePageType = typeof(SearchPage);
             });
             await Task.Delay(500);
             this.rootControl = new RootControl();
             FindName(nameof(this.cpHided));
             this.cpHided.Content = this.rootControl;
             await loadingTask;
-            if(Client.Current.NeedLogOn)
+            if (Client.Current.NeedLogOn)
             {
                 await RootControl.RootController.RequestLogOn();
             }
-            lock(this.loadingSyncRoot)
+            lock (this.loadingSyncRoot)
             {
-                if(this.effectLoaded)
+                if (this.effectLoaded)
                     setLoadingFinished();
                 else
                     this.applicationLoaded = true;
@@ -209,44 +194,44 @@ namespace ExViewer.Views
             try
             {
                 var ver = await VersionChecker.CheckAsync();
-                if(ver is Windows.ApplicationModel.PackageVersion v)
+                if (ver is Windows.ApplicationModel.PackageVersion v)
                 {
                     var dialog = new UpdateDialog { Version = v };
                     await dialog.ShowAsync();
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 //Ignore exceptions here.
             }
-            if(DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
+            if (DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
                 try
                 {
                     await BannerProvider.Provider.FetchBanners();
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     //Ignore exceptions here.
                 }
-            if(DateTimeOffset.Now - EhTagClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
+            if (DateTimeOffset.Now - EhTagClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
                 try
                 {
                     await EhTagClient.Client.UpdateAsync();
-                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Success, null);
+                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Succeeded, null);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Failed, null);
                 }
             try
             {
-                if(await EhTagTranslatorClient.Client.NeedUpdateAsync())
+                if (await EhTagTranslatorClient.Client.NeedUpdateAsync())
                 {
                     await EhTagTranslatorClient.Client.UpdateAsync();
-                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Success, null);
+                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Succeeded, null);
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Failed, null);
             }
@@ -257,7 +242,7 @@ namespace ExViewer.Views
             string info = null;
             var succeed = false;
             var result = await UserConsentVerifier.RequestVerificationAsync(Strings.Resources.Verify.Dialog.Content);
-            switch(result)
+            switch (result)
             {
             case UserConsentVerificationResult.Verified:
                 succeed = true;
@@ -282,9 +267,9 @@ namespace ExViewer.Views
                 info = Strings.Resources.Verify.OtherFailure;
                 break;
             }
-            if(!succeed)
+            if (!succeed)
             {
-                if(info != null)
+                if (info != null)
                 {
                     var dialog = new MyContentDialog
                     {
