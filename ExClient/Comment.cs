@@ -3,11 +3,9 @@ using Newtonsoft.Json;
 using Opportunity.MvvmUniverse;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Windows.Foundation;
 
 namespace ExClient
@@ -16,7 +14,9 @@ namespace ExClient
     {
         internal static IEnumerable<Comment> AnalyzeDocument(CommentCollection owner, HtmlDocument document)
         {
-            var commentNodes = document.GetElementbyId("cdiv").ChildNodes;
+            var commentNodes = document?.GetElementbyId("cdiv")?.ChildNodes;
+            if (commentNodes == null)
+                yield break;
             for(var i = 0; i < commentNodes.Count; i += 2)
             {
                 var headerNode = commentNodes[i];

@@ -1,5 +1,5 @@
 ﻿using ExClient.Api;
-using Opportunity.MvvmUniverse.Helpers;
+using Opportunity.MvvmUniverse.AsyncWrappers;
 using Windows.Foundation;
 
 namespace ExClient.Launch
@@ -15,7 +15,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             GalleryInfo.TryParseGallery(data, out var info);
-            return AsyncWrapper.Create((LaunchResult)new GalleryLaunchResult(info, -1, GalleryLaunchStatus.Default));
+            return AsyncWrapper.CreateCompleted((LaunchResult)new GalleryLaunchResult(info, -1, GalleryLaunchStatus.Default));
         }
     }
 }

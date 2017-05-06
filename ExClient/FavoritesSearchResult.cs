@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using Opportunity.MvvmUniverse.AsyncWrappers;
 using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
@@ -76,7 +77,7 @@ namespace ExClient
             if (categoty == null)
                 throw new ArgumentNullException(nameof(categoty));
             if (items == null || items.Count == 0)
-                return AsyncWrapper.Create();
+                return AsyncWrapper.CreateCompleted();
             return AsyncInfo.Run(async token =>
             {
                 var ddact = default(string);

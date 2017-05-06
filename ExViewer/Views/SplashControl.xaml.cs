@@ -45,7 +45,6 @@ namespace ExViewer.Views
         private void splash_Loading(FrameworkElement sender, object args)
         {
             Themes.ThemeExtention.SetTitleBar();
-            JYAnalytics.TrackPageStart(nameof(SplashControl));
         }
 
         private void ShowPic_Completed(object sender, object e)
@@ -87,7 +86,6 @@ namespace ExViewer.Views
             this.cpHided.Content = null;
             Window.Current.Content = this.rootControl;
             this.rootControl = null;
-            JYAnalytics.TrackPageEnd(nameof(SplashControl));
             afterActions();
         }
 
@@ -171,7 +169,7 @@ namespace ExViewer.Views
                     }
                 }
             });
-            await Task.Delay(500);
+            await Task.Delay(200);
             this.rootControl = new RootControl();
             FindName(nameof(this.cpHided));
             this.cpHided.Content = this.rootControl;

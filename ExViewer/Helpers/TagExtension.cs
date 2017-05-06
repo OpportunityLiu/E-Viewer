@@ -8,7 +8,7 @@ using EhTagTranslatorClient;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.UI.Xaml;
-using Opportunity.MvvmUniverse.Helpers;
+using Opportunity.MvvmUniverse.AsyncWrappers;
 
 namespace ExClient
 {
@@ -29,7 +29,7 @@ namespace ExClient
             {
                 var r = tag.GetEhTagTranslatorRecord();
                 if (r != null)
-                    return new AsyncWrapper<string>(r.Translated.Text);
+                    return AsyncWrapper.CreateCompleted(r.Translated.Text);
             }
             if (settings.UseJapaneseTagTranslation)
             {
@@ -38,8 +38,8 @@ namespace ExClient
                 {
                     var r = t.GetResults();
                     if (!match(tag, r))
-                        return new AsyncWrapper<string>(tag.Content);
-                    return new AsyncWrapper<string>(r.Japanese ?? tag.Content);
+                        return AsyncWrapper.CreateCompleted(tag.Content);
+                    return AsyncWrapper.CreateCompleted(r.Japanese ?? tag.Content);
                 }
                 return Run(async token =>
                 {
@@ -56,7 +56,7 @@ namespace ExClient
                     }
                 });
             }
-            return new AsyncWrapper<string>(tag.Content);
+            return AsyncWrapper.CreateCompleted(tag.Content);
         }
 
         private static bool match(Tag tag, EhWikiClient.Record wiki)

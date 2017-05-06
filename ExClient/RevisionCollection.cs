@@ -1,5 +1,6 @@
 ﻿using ExClient.Api;
 using HtmlAgilityPack;
+using Opportunity.MvvmUniverse.AsyncWrappers;
 using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
@@ -47,14 +48,14 @@ namespace ExClient
         public IAsyncOperation<Gallery> FetchParentAsync()
         {
             if(!(this.ParentInfo is GalleryInfo i))
-                return AsyncWrapper.Create<Gallery>();
+                return AsyncWrapper.CreateCompleted<Gallery>();
             return i.FetchGalleryAsync();
         }
 
         public IAsyncOperation<Gallery> FetchLatestRevisionAsync()
         {
             if(this.Descendants.Count == 0)
-                return AsyncWrapper.Create(this.Owner);
+                return AsyncWrapper.CreateCompleted(this.Owner);
             return this.Descendants.Last().Gallery.FetchGalleryAsync();
         }
     }
