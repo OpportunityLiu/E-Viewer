@@ -1,4 +1,4 @@
-﻿using Opportunity.MvvmUniverse.Helpers;
+﻿using Opportunity.MvvmUniverse.AsyncWrappers;
 using Windows.Foundation;
 
 namespace ExClient.Launch
@@ -99,11 +99,11 @@ namespace ExClient.Launch
                 }
             }
             if(!ap)
-                return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search("")));
+                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search("")));
             else if(av)
-                return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
+                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
             else
-                return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category)));
+                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category)));
         }
     }
 }

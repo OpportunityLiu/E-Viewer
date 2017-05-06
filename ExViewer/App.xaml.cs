@@ -67,8 +67,8 @@ namespace ExViewer
 
         private async void lanunchCore(IActivatedEventArgs e, bool prelaunchActivated)
         {
-            Opportunity.MvvmUniverse.Helpers.DispatcherHelper.Init();
-            Opportunity.MvvmUniverse.Helpers.DispatcherHelper.UseForNotification = true;
+            Opportunity.MvvmUniverse.DispatcherHelper.Init();
+            Opportunity.MvvmUniverse.DispatcherHelper.UseForNotification = true;
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
             if(currentContent == null)

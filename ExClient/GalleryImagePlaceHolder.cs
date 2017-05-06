@@ -12,8 +12,6 @@ namespace ExClient
         {
         }
 
-        public override ImageSource Thumb => DefaultThumb;
-
         public override IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
             return Run(async token =>

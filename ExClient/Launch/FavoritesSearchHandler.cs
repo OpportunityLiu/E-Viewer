@@ -1,4 +1,4 @@
-﻿using Opportunity.MvvmUniverse.Helpers;
+﻿using Opportunity.MvvmUniverse.AsyncWrappers;
 using System;
 using Windows.Foundation;
 
@@ -38,9 +38,9 @@ namespace ExClient.Launch
                 }
             }
             if(!ap)
-                return AsyncWrapper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search("", category)));
+                return AsyncWrapper.CreateCompleted<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search("", category)));
             else
-                return AsyncWrapper.Create<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search(keyword, category)));
+                return AsyncWrapper.CreateCompleted<LaunchResult>(new FavoritesSearchLaunchResult(Client.Current.Favorites.Search(keyword, category)));
         }
     }
 }

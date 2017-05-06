@@ -33,33 +33,11 @@ namespace ExClient.Internal
 
         private BitmapImage getImage()
         {
-            if(this.image != null && this.image.TryGetTarget(out var image))
+            if (this.image != null && this.image.TryGetTarget(out var image))
                 return image;
             image = new BitmapImage();
             this.image = new WeakReference<BitmapImage>(image);
-            var loadImage = this.imageLoader(image);
-            loadImage.Completed = (sender, e) =>
-            {
-                switch(e)
-                {
-                case AsyncStatus.Completed:
-                    this.Loaded = true;
-                    var temp = ImageLoaded;
-                    if(temp != null)
-                        DispatcherHelper.BeginInvokeOnUIThread(() => temp.Invoke(this, EventArgs.Empty));
-                    break;
-                case AsyncStatus.Canceled:
-                    var temp2 = ImageFailed;
-                    if(temp2 != null)
-                        DispatcherHelper.BeginInvokeOnUIThread(() => temp2.Invoke(this, new TaskCanceledException()));
-                    break;
-                case AsyncStatus.Error:
-                    var temp3 = ImageFailed;
-                    if(temp3 != null)
-                        DispatcherHelper.BeginInvokeOnUIThread(() => temp3.Invoke(this, sender.ErrorCode));
-                    break;
-                }
-            };
+            this.imageLoader(new ImageLoaderData(this, image));
             return image;
         }
 
@@ -69,9 +47,51 @@ namespace ExClient.Internal
             private set;
         }
 
-        public event TypedEventHandler<ImageHandle,EventArgs> ImageLoaded;
-        public event TypedEventHandler<ImageHandle,Exception> ImageFailed;
+        public event TypedEventHandler<ImageHandle, EventArgs> ImageLoaded;
+        public event TypedEventHandler<ImageHandle, Exception> ImageFailed;
+
+        internal void Finished()
+        {
+            this.Loaded = true;
+            var temp = ImageLoaded;
+            if (temp != null)
+                DispatcherHelper.BeginInvokeOnUIThread(() => temp.Invoke(this, EventArgs.Empty));
+        }
+        internal void Failed(Exception error)
+        {
+            var temp3 = ImageFailed;
+            if (temp3 != null)
+                DispatcherHelper.BeginInvokeOnUIThread(() => temp3.Invoke(this, error));
+
+        }
     }
 
-    internal delegate IAsyncAction ImageLoader(BitmapImage image);
+    internal delegate void ImageLoader(ImageLoaderData data);
+
+    internal class ImageLoaderData
+    {
+        public ImageLoaderData(ImageHandle handle, BitmapImage image)
+        {
+            this.Handle = handle;
+            this.Image = image;
+        }
+
+        public BitmapImage Image { get; }
+        public ImageHandle Handle { get; }
+
+        public void ReportFailed(Exception error)
+        {
+            this.Handle.Failed(error);
+        }
+
+        public void ReportFailed()
+        {
+            ReportFailed(null);
+        }
+
+        public void ReportFinished()
+        {
+            this.Handle.Finished();
+        }
+    }
 }

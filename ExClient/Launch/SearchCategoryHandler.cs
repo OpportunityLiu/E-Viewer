@@ -1,4 +1,4 @@
-﻿using Opportunity.MvvmUniverse.Helpers;
+﻿using Opportunity.MvvmUniverse.AsyncWrappers;
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
@@ -29,7 +29,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             var category = categoryDic[data.Path0];
-            return AsyncWrapper.Create<LaunchResult>(new SearchLaunchResult(Client.Current.Search("", category)));
+            return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search("", category)));
         }
     }
 }

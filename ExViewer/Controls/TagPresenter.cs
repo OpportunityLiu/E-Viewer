@@ -46,7 +46,7 @@ namespace ExViewer.Controls
             if (e == AsyncStatus.Completed && this.presenter != null)
             {
                 var t = sender.GetResults();
-                Opportunity.MvvmUniverse.Helpers.DispatcherHelper.BeginInvokeOnUIThread(() => this.presenter.Text = t);
+                Opportunity.MvvmUniverse.DispatcherHelper.BeginInvokeOnUIThread(() => this.presenter.Text = t);
             }
         }
 

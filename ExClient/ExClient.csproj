@@ -126,7 +126,6 @@
     <Compile Include="Internal\FavoriteCollectionNames.cs" />
     <Compile Include="FavoritesSearchResult.cs" />
     <Compile Include="GalleryImagePlaceHolder.cs" />
-    <Compile Include="Helpers\EnumExtension.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="GalleryList{T}.cs" />
     <Compile Include="Api\ApiRequest.cs" />
@@ -162,7 +161,7 @@
     </Compile>
     <Compile Include="Migrations\GalleryDbModelSnapshot.cs" />
     <Compile Include="Models\SavedGalleryModel.cs" />
-    <Compile Include="Helpers\StorageHelper.cs" />
+    <Compile Include="Helpers\ExStorageHelper.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Helpers\ConnectionHelper.cs" />

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Storage;
 using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
@@ -20,7 +21,7 @@ namespace ExClient
             {
                 return Task.Run(() =>
                 {
-                    using(var db = new GalleryDb())
+                    using (var db = new GalleryDb())
                     {
                         db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                         var query = from gm in db.GallerySet
@@ -56,7 +57,7 @@ namespace ExClient
             return Run<double>(async (token, progress) =>
             {
                 progress.Report(double.NaN);
-                using(var db = new GalleryDb())
+                using (var db = new GalleryDb())
                 {
                     var query = from gm in db.GallerySet
                                 where gm.Images.Count != 0
@@ -66,7 +67,7 @@ namespace ExClient
                     var saveDic = db.SavedSet.Select(sm => sm.GalleryId).ToDictionary(id => id.ToString());
                     double count = cacheDic.Count;
                     var i = 0;
-                    foreach(var item in cacheDic)
+                    foreach (var item in cacheDic)
                     {
                         progress.Report(i / count);
                         var folder = await StorageHelper.LocalCache.CreateFolderAsync(item.Key, Windows.Storage.CreationCollisionOption.OpenIfExists);
@@ -75,9 +76,9 @@ namespace ExClient
                         i++;
                     }
                     var folders = await StorageHelper.LocalCache.GetItemsAsync();
-                    foreach(var item in folders)
+                    foreach (var item in folders)
                     {
-                        if(!saveDic.ContainsKey(item.Name))
+                        if (!saveDic.ContainsKey(item.Name))
                             await item.DeleteAsync();
                     }
                     await db.SaveChangesAsync();
@@ -94,17 +95,17 @@ namespace ExClient
 
         internal void LoadImageModels()
         {
-            if(this.ImageModels != null)
+            if (this.ImageModels != null)
                 return;
             this.ImageModels = new ImageModel[this.RecordCount];
-            using(var db = new GalleryDb())
+            using (var db = new GalleryDb())
             {
                 db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                 var gid = this.Id;
                 var models = from im in db.ImageSet
                              where im.OwnerId == gid
                              select im;
-                foreach(var item in models)
+                foreach (var item in models)
                 {
                     this.ImageModels[item.PageId - 1] = item;
                 }
@@ -119,10 +120,10 @@ namespace ExClient
                 this.LoadImageModels();
                 var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
                 var loadList = new GalleryImage[currentPageSize];
-                for(var i = 0; i < currentPageSize; i++)
+                for (var i = 0; i < currentPageSize; i++)
                 {
                     var model = this.ImageModels[this.Count + i];
-                    if(model == null)
+                    if (model == null)
                     {
                         loadList[i] = new GalleryImagePlaceHolder(this, this.Count + i + 1);
                     }
@@ -150,12 +151,12 @@ namespace ExClient
 
             private void action_Completed(IAsyncAction sender, AsyncStatus e)
             {
-                foreach(var item in this.completed)
+                if (Disposed)
+                    return;
+                foreach (var item in this.completed)
                 {
                     item(this, e);
                 }
-                this.action = null;
-                this.completed = null;
             }
 
             public bool Disposed => this.action == null;
@@ -176,7 +177,12 @@ namespace ExClient
 
             public void Cancel() => this.action.Cancel();
 
-            public void Close() => this.action.Close();
+            public void Close()
+            {
+                this.action.Close();
+                this.action = null;
+                this.completed = null;
+            }
 
             public void GetResults() => this.action.GetResults();
         }
@@ -185,9 +191,9 @@ namespace ExClient
         {
             var pageIndex = MathHelper.GetPageIndexOfRecord(PageSize, image.PageId - 1);
             var lpAc = (LoadPageAction)null;
-            if(this.loadingPageDic.TryGetValue(pageIndex, out lpAc))
+            if (this.loadingPageDic.TryGetValue(pageIndex, out lpAc))
             {
-                if(!lpAc.Disposed)
+                if (!lpAc.Disposed)
                     return lpAc;
                 else
                     this.loadingPageDic.Remove(pageIndex);
@@ -196,10 +202,10 @@ namespace ExClient
             {
                 var images = await base.LoadPageAsync(pageIndex);
                 var offset = MathHelper.GetStartIndexOfPage(PageSize, pageIndex);
-                for(var i = 0; i < images.Count; i++)
+                for (var i = 0; i < images.Count; i++)
                 {
                     var ph = this[i + offset] as GalleryImagePlaceHolder;
-                    if(ph == null)
+                    if (ph == null)
                         continue;
                     this[i + offset] = images[i];
                 }
@@ -220,9 +226,9 @@ namespace ExClient
             return Run<SaveGalleryProgress>(async (token, p) =>
             {
                 p.Report(new SaveGalleryProgress { ImageCount = this.RecordCount, ImageLoaded = -1 });
-                for(var i = 0; i < this.Count; i++)
+                for (var i = 0; i < this.Count; i++)
                 {
-                    if(this[i] is GalleryImagePlaceHolder ph)
+                    if (this[i] is GalleryImagePlaceHolder ph)
                     {
                         token.ThrowIfCancellationRequested();
                         await ph.LoadImageAsync(false, strategy, true);
@@ -240,20 +246,20 @@ namespace ExClient
             return DispatcherHelper.RunAsyncOnUIThread(async () =>
             {
                 var f = await GetFolderAsync();
-                if(this.Thumb != null)
+                if (this.Thumb != null)
                     return;
                 var file = (await f.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).SingleOrDefault();
-                if(file == null)
+                if (file == null)
                     return;
                 try
                 {
-                    using(var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                    using (var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                     {
                         var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
                         this.Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
                     }
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                 }
             });
