@@ -47,6 +47,7 @@ namespace ExClient
                     this.CookieManager.SetCookie(cookie);
                 }
             }
+            setDefaultCookies();
             this.Settings.ApplyChanges();
         }
 
@@ -65,6 +66,8 @@ namespace ExClient
 
             this.Settings = new SettingCollection(this);
             this.Favorites = new FavoriteCollection(this);
+            
+            ResetExCookie();
         }
 
         internal HttpCookieManager CookieManager
@@ -81,7 +84,7 @@ namespace ExClient
             => this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Count < 3
             && this.CookieManager.GetCookies(UriProvider.Ex.RootUri).Count < 3;
 
-        public IAsyncOperation<Client> LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
+        public IAsyncAction LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
         {
             if(string.IsNullOrWhiteSpace(userName))
                 throw new ArgumentNullException(nameof(userName));
@@ -127,13 +130,8 @@ namespace ExClient
                         }
                         throw new InvalidOperationException(errorText);
                     }
-                    async Task initCookie()
-                    {
-                        await this.HttpClient.GetAsync(new Uri(UriProvider.Eh.RootUri, "favorites.php"), HttpCompletionOption.ResponseHeadersRead);
-                        ResetExCookie();
-                    }
-                    await initCookie();
-                    return this;
+                    await this.HttpClient.GetAsync(new Uri(UriProvider.Eh.RootUri, "favorites.php"), HttpCompletionOption.ResponseHeadersRead);
+                    ResetExCookie();
                 }
                 catch(Exception)
                 {
@@ -162,6 +160,11 @@ namespace ExClient
             {
                 this.CookieManager.DeleteCookie(item);
             }
+            setDefaultCookies();
+        }
+        
+        private void setDefaultCookies()
+        {
             this.CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
             this.CookieManager.SetCookie(new HttpCookie("nw", "exhentai.org", "/") { Value = "1" });
         }
