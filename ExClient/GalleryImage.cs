@@ -110,32 +110,45 @@ namespace ExClient
 
         private readonly WeakReference<ImageSource> thumb = new WeakReference<ImageSource>(null);
 
-        private async void loadThumb()
+        private static HttpClient thumbClient { get; } = new HttpClient();
+
+        private void loadThumb()
         {
-            try
+            DispatcherHelper.BeginInvokeOnUIThread(async () =>
             {
                 var img = new BitmapImage();
-                this.thumb.SetTarget(img);
-                if (this.imageFile != null)
+                try
                 {
-                    using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 18 / 10))
+                    if (this.imageFile != null)
                     {
-                        await img.SetSourceAsync(stream);
+                        using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 18 / 10))
+                        {
+                            await img.SetSourceAsync(stream);
+                        }
+                    }
+                    else if (this.thumbUri != null)
+                    {
+                        img.DecodePixelType = DecodePixelType.Logical;
+                        img.DecodePixelWidth = 100;
+                        var buffer = await thumbClient.GetBufferAsync(this.thumbUri);
+                        using (var stream = buffer.AsRandomAccessStream())
+                        {
+                            await img.SetSourceAsync(stream);
+                        }
+                    }
+                    else
+                    {
+                        img = null;
                     }
                 }
-                else if (this.thumbUri != null)
+                catch (Exception)
                 {
-                    img.UriSource = this.thumbUri;
+                    img = null;
                 }
-                else
-                {
-                    this.thumb.SetTarget(null);
-                }
-            }
-            catch (Exception)
-            {
-                this.thumb.SetTarget(null);
-            }
+                this.thumb.SetTarget(img);
+                if (img != null)
+                    RaisePropertyChanged(nameof(Thumb));
+            });
         }
 
         public virtual ImageSource Thumb
@@ -145,8 +158,7 @@ namespace ExClient
                 if (this.thumb.TryGetTarget(out var thb))
                     return thb;
                 loadThumb();
-                this.thumb.TryGetTarget(out thb);
-                return thb;
+                return DefaultThumb;
             }
         }
 
@@ -305,8 +317,7 @@ namespace ExClient
                 Set(ref this.imageFile, value);
                 if (value != null)
                 {
-                    this.thumb.SetTarget(null);
-                    RaisePropertyChanged(nameof(Thumb));
+                    loadThumb();
                 }
             }
         }
