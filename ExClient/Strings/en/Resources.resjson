@@ -1,18 +1,18 @@
 ﻿{
-  "NoExPermittion": "This account dose not have permittion for exhentai.",
   "AllFavorites": "All favorites",
-  "RemoveFromFavorites": "Remove from favorites",
   "ClientDisposed": "The client has been disposed.",
   "DefaultTitle": "Gallery Title",
   "DefaultUploader": "Uploader",
+  "EmptyComment": "You did not enter a valid comment.",
   "ExpungedTorrent": "This torrent has beem expunged.",
   "OnlyIpv4": "Only IPV4 address supported.",
+  "RemoveFromFavorites": "Remove from favorites",
+  "SadPanda": "We've got the sad panda from exhentai, this probably means that current account dose not have permittion for exhentai.",
+  "ShortComment": "Your comment is too short.",
   "WrongAccountInfo": "User name or password incorrect.",
   "WrongCaptcha": "The captcha was not entered correctly. Please try again.",
-  "WrongVoteResponse": "The response of the server can't be analyzed.",
-  "WrongVoteState": "Can't vote when you had posted a comment.",
   "WrongEditState": "Can only edit own comment.",
-  "EmptyComment": "You did not enter a valid comment.",
-  "ShortComment": "Your comment is too short.",
-  "WrongGalleryState": "You can only add comments for active galleries."
+  "WrongGalleryState": "You can only add comments for active galleries.",
+  "WrongVoteResponse": "The response of the server can't be analyzed.",
+  "WrongVoteState": "Can't vote when you had posted a comment."
 }

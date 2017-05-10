@@ -23,7 +23,7 @@ namespace ExClient.Internal
 
         private void reformUri(ref Uri uri)
         {
-            if(!uri.IsAbsoluteUri)
+            if (!uri.IsAbsoluteUri)
             {
                 uri = new Uri(this.owner.Uris.RootUri, uri);
             }
@@ -43,19 +43,24 @@ namespace ExClient.Internal
         {
             reformUri(ref uri);
             var request = this.inner.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
-            if(completionOption == HttpCompletionOption.ResponseHeadersRead)
+            if (completionOption == HttpCompletionOption.ResponseHeadersRead)
                 return request;
             return Run<HttpResponseMessage, HttpProgress>(async (token, progress) =>
             {
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
+                if (response.Content.Headers.ContentDisposition?.FileName == "sadpanda.jpg")
+                {
+                    this.owner.ResetExCookie();
+                    throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
+                }
                 response.EnsureSuccessStatusCode();
                 var buffer = response.Content.BufferAllAsync();
-                if(!response.Content.TryComputeLength(out var length))
+                if (!response.Content.TryComputeLength(out var length))
                 {
                     var contentLength = response.Content.Headers.ContentLength;
-                    if(contentLength.HasValue)
+                    if (contentLength.HasValue)
                         length = contentLength.Value;
                     else
                         length = ulong.MaxValue;

@@ -5,6 +5,9 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using ExViewer.Views;
 using Windows.ApplicationModel.Core;
+using Windows.System.RemoteSystems;
+using System;
+using Windows.System;
 #if !DEBUG
 using Microsoft.HockeyApp;
 #endif
@@ -55,7 +58,7 @@ namespace ExViewer
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
-            if(System.Diagnostics.Debugger.IsAttached)
+            if (System.Diagnostics.Debugger.IsAttached)
             {
                 this.DebugSettings.EnableFrameRateCounter = true;
                 //this.DebugSettings.IsOverdrawHeatMapEnabled = true;
@@ -71,7 +74,7 @@ namespace ExViewer
             Opportunity.MvvmUniverse.DispatcherHelper.UseForNotification = true;
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
-            if(currentContent == null)
+            if (currentContent == null)
             {
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
@@ -79,9 +82,9 @@ namespace ExViewer
                 currentContent = new SplashControl(e.SplashScreen);
                 currentWindow.Content = currentContent;
             }
-            if(currentContent is SplashControl sc)
+            if (currentContent is SplashControl sc)
             {
-                if(!prelaunchActivated)
+                if (!prelaunchActivated)
                     sc.EnableGoToContent();
             }
             else
@@ -95,11 +98,11 @@ namespace ExViewer
         protected override void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);
-            if(args.Kind == ActivationKind.Protocol)
+            if (args.Kind == ActivationKind.Protocol)
             {
                 var e = (ProtocolActivatedEventArgs)args;
                 var needHandleInApp = RootControl.RootController.HandleUriLaunch(e.Uri);
-                if(!needHandleInApp
+                if (!needHandleInApp
                     && e.PreviousExecutionState != ApplicationExecutionState.Running
                     && e.PreviousExecutionState != ApplicationExecutionState.Suspended)
                     Exit();

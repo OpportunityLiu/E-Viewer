@@ -1,18 +1,18 @@
 ﻿{
-  "NoExPermittion": "此账户没有访问 Ex 绅士的权限。",
   "AllFavorites": "全部收藏",
-  "RemoveFromFavorites": "从收藏中移除",
   "ClientDisposed": "该连接已被销毁。",
   "DefaultTitle": "画廊标题",
   "DefaultUploader": "上传者",
+  "EmptyComment": "输入不能为空。",
   "ExpungedTorrent": "此种子已经被删除。",
   "OnlyIpv4": "仅支持 IPv4 地址。",
+  "RemoveFromFavorites": "从收藏中移除",
+  "SadPanda": "从 Ex 绅士返回了熊猫图，这可能意味着当前用户没有访问 Ex 绅士的权限。",
+  "ShortComment": "评论内容太短。",
   "WrongAccountInfo": "用户名或密码错误。",
   "WrongCaptcha": "验证码输入错误，请重试。",
-  "WrongVoteResponse": "服务器返回结果有误。",
-  "WrongVoteState": "发表评论后无法投票。",
   "WrongEditState": "你只能编辑自己的评论。",
-  "EmptyComment": "输入不能为空。",
-  "ShortComment": "评论内容太短。",
-  "WrongGalleryState": "当前画廊处于非活动状态，无法添加评论。"
+  "WrongGalleryState": "当前画廊处于非活动状态，无法添加评论。",
+  "WrongVoteResponse": "服务器返回结果有误。",
+  "WrongVoteState": "发表评论后无法投票。"
 }
