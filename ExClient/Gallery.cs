@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
+using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
@@ -50,21 +51,16 @@ namespace ExClient
 
         private class GalleryResult : ApiResponse
         {
-#pragma warning disable IDE1006 // 命名样式
 #pragma warning disable CS0649
-            public List<Gallery> gmetadata;
+            [JsonProperty("gmetadata")]
+            public List<Gallery> GalleryMetaData;
 #pragma warning restore CS0649
-#pragma warning restore IDE1006 // 命名样式
         }
 
         public static IAsyncOperation<IReadOnlyList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
         {
             return Run<IReadOnlyList<Gallery>>(async token =>
             {
-                async void myinit(Gallery g)
-                {
-                    await g.InitAsync();
-                }
                 var result = new Gallery[galleryInfo.Count];
                 var pageCount = MathHelper.GetPageCount(galleryInfo.Count, 25);
                 for (var i = 0; i < pageCount; i++)
@@ -74,8 +70,8 @@ namespace ExClient
                     var str = await Client.Current.HttpClient.PostApiAsync(new GalleryData(galleryInfo, startIndex, pageSize));
                     var re = JsonConvert.DeserializeObject<GalleryResult>(str);
                     re.CheckResponse();
-                    var data = re.gmetadata;
-                    data.ForEach(myinit);
+                    var data = re.GalleryMetaData;
+                    data.ForEach(async g => await g.InitAsync());
                     data.CopyTo(result, startIndex);
                 }
                 return result;
@@ -226,13 +222,15 @@ namespace ExClient
             return new Uri(imageUriRegex.Replace(uri, @"${scheme}://ehgt.org/${body}_l.${ext}"));
         }
 
+        private static HttpClient coverClient { get; } = new HttpClient();
+
         protected IAsyncAction InitAsync()
         {
             return Run(async token =>
             {
                 try
                 {
-                    var buffer = await Client.Current.HttpClient.GetBufferAsync(this.ThumbUri);
+                    var buffer = await coverClient.GetBufferAsync(this.ThumbUri);
                     using (var stream = buffer.AsRandomAccessStream())
                     {
                         var decoder = await BitmapDecoder.CreateAsync(stream);
@@ -391,7 +389,7 @@ namespace ExClient
             return Run(async token =>
             {
                 if (this.galleryFolder == null)
-                    this.GalleryFolder = await StorageHelper.LocalCache.CreateFolderAsync(this.Id.ToString(), CreationCollisionOption.OpenIfExists);
+                    this.GalleryFolder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(this.Id.ToString(), CreationCollisionOption.OpenIfExists);
                 return this.galleryFolder;
             });
         }

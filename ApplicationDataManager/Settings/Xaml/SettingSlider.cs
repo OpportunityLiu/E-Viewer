@@ -27,19 +27,21 @@ namespace ApplicationDataManager.Settings.Xaml
         {
             var s = (SettingSlider)d;
             s.ValueChanged -= s.valueChangedCallback;
-            if(e.OldValue != null)
+            var ov = (SettingInfo)e.OldValue;
+            var nv = (SettingInfo)e.NewValue;
+            if(ov != null)
             {
-                ((SettingInfo)e.OldValue).PropertyChanged -= s.settingInfoPropertyChanged;
+                ov.PropertyChanged -= s.settingInfoPropertyChanged;
             }
-            if(e.NewValue is SettingInfo sv)
+            if(nv != null)
             {
-                var range = (IValueRange)sv.ValueRepresent;
+                var range = (IValueRange)nv.ValueRepresent;
                 var min = Convert.ToDouble(range.Min);
                 var max = Convert.ToDouble(range.Max);
 
                 s.Minimum = min;
                 s.Maximum = max;
-                s.Value = Convert.ToDouble(sv.Value);
+                s.Value = Convert.ToDouble(nv.Value);
 
                 var small = (max - min) / 100;
                 var large = small * 10;
@@ -59,7 +61,7 @@ namespace ApplicationDataManager.Settings.Xaml
                     s.ClearValue(TickFrequencyProperty);
 
                 s.ValueChanged += s.valueChangedCallback;
-                sv.PropertyChanged += s.settingInfoPropertyChanged;
+                nv.PropertyChanged += s.settingInfoPropertyChanged;
             }
             else
             {
@@ -84,8 +86,7 @@ namespace ApplicationDataManager.Settings.Xaml
 
         private void valueChangedCallback(object sender, RangeBaseValueChangedEventArgs e)
         {
-            var s = (SettingSlider)sender;
-            s.SettingValue.Value = ConvertToBack(e.NewValue, s.SettingValue.Type);
+            this.SettingValue.Value = ConvertToBack(e.NewValue, this.SettingValue.Type);
         }
 
         public static object ConvertToBack(double value, ValueType parameter)

@@ -14,7 +14,6 @@ namespace ExClient.Settings
             {
                 item.Value.Owner = this;
             }
-            ApplyChanges();
         }
 
         private readonly Dictionary<string, SettingProvider> items = new Dictionary<string, SettingProvider>

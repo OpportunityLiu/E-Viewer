@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace ExViewer.Controls
 {
@@ -14,7 +15,7 @@ namespace ExViewer.Controls
             this.Loading += this.ContentDialog_Loading;
         }
 
-        private void ContentDialog_Loading(Windows.UI.Xaml.FrameworkElement sender, object args)
+        private void ContentDialog_Loading(FrameworkElement sender, object args)
         {
             var nextTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
             if(sender.RequestedTheme != nextTheme)

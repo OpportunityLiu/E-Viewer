@@ -111,7 +111,7 @@ namespace ExViewer
         {
             if (gp.VM == null)
                 return;
-            var pv = gp.FirstDescendant<Windows.UI.Xaml.Controls.Pivot>("pv");
+            var pv = gp.Descendants<Windows.UI.Xaml.Controls.Pivot>("pv").FirstOrDefault();
             if (pv != null)
                 sb.AppendLine($"Pivot: SelectedIndex={pv.SelectedIndex}");
             AddtionalInfo(sb, gp.VM);
@@ -121,7 +121,7 @@ namespace ExViewer
         {
             if (ip.VM == null)
                 return;
-            var fv = ip.FirstDescendant<Windows.UI.Xaml.Controls.FlipView>("fv");
+            var fv = ip.Descendants<Windows.UI.Xaml.Controls.FlipView>("fv").FirstOrDefault();
             if (fv != null)
                 sb.AppendLine($"FlipView: SelectedIndex={fv.SelectedIndex}");
             AddtionalInfo(sb, ip.VM);

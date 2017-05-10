@@ -22,7 +22,7 @@ namespace ExClient
             {
                 return Task.Run(() =>
                 {
-                    using(var db = new GalleryDb())
+                    using (var db = new GalleryDb())
                     {
                         db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                         var query = db.SavedSet
@@ -56,15 +56,16 @@ namespace ExClient
             return Run<double>(async (token, progress) =>
             {
                 progress.Report(double.NaN);
-                var items = await StorageHelper.LocalCache.GetItemsAsync();
+                var items = await ApplicationData.Current.LocalCacheFolder.GetItemsAsync();
                 double c = items.Count;
-                for(var i = 0; i < items.Count; i++)
+                for (var i = 0; i < items.Count; i++)
                 {
                     progress.Report(i / c);
-                    await items[i].DeleteAsync(StorageDeleteOption.PermanentDelete);
+                    if (long.TryParse(items[i].Name, out var r))
+                        await items[i].DeleteAsync(StorageDeleteOption.PermanentDelete);
                 }
                 progress.Report(1);
-                using(var db = new GalleryDb())
+                using (var db = new GalleryDb())
                 {
                     db.SavedSet.RemoveRange(db.SavedSet);
                     db.ImageSet.RemoveRange(db.ImageSet);
@@ -84,11 +85,11 @@ namespace ExClient
         {
             var temp = this.thumbFile;
             this.thumbFile = null;
-            if(temp == null)
+            if (temp == null)
                 return base.InitOverrideAsync();
             return DispatcherHelper.RunAsyncOnUIThread(async () =>
             {
-                using(var stream = temp.AsRandomAccessStream())
+                using (var stream = temp.AsRandomAccessStream())
                 {
                     var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
                     this.Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
@@ -102,7 +103,7 @@ namespace ExClient
         {
             return Task.Run(async () =>
             {
-                using(var db = new GalleryDb())
+                using (var db = new GalleryDb())
                 {
                     var gid = this.Id;
                     db.SavedSet.Remove(db.SavedSet.Single(c => c.GalleryId == gid));

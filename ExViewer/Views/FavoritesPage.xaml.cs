@@ -130,19 +130,19 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.Key)
             {
-                case Windows.System.VirtualKey.GamepadY:
-                    if (this.lv.SelectionMode == ListViewSelectionMode.None)
-                        this.cbCategory.Focus(FocusState.Keyboard);
-                    else
-                        this.cbCategory2.Focus(FocusState.Keyboard);
-                    break;
-                case Windows.System.VirtualKey.GamepadMenu:
-                case Windows.System.VirtualKey.Application:
-                    e.Handled = false;
-                    break;
-                default:
-                    e.Handled = false;
-                    break;
+            case Windows.System.VirtualKey.GamepadY:
+                if (this.lv.SelectionMode == ListViewSelectionMode.None)
+                    this.cbCategory.Focus(FocusState.Keyboard);
+                else
+                    this.cbCategory2.Focus(FocusState.Keyboard);
+                break;
+            case Windows.System.VirtualKey.GamepadMenu:
+            case Windows.System.VirtualKey.Application:
+                e.Handled = false;
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 
@@ -222,7 +222,7 @@ namespace ExViewer.Views
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
             args.Handled = startSelectMode();
-            var item = ((DependencyObject)args.OriginalSource).FirstAncestorOrSelf<ListViewItem>();
+            var item = ((DependencyObject)args.OriginalSource).AncestorsAndSelf<ListViewItem>().FirstOrDefault();
             if (item != null)
             {
                 args.Handled = true;
@@ -245,21 +245,21 @@ namespace ExViewer.Views
             this.lv.DeselectRange(new ItemIndexRange(0, uint.MaxValue));
         }
 
-        private async void abbApply_Click(object sender, RoutedEventArgs e)
+        private void abbApply_Click(object sender, RoutedEventArgs e)
         {
             var cat = (FavoriteCategory)this.cbCategory2.SelectedItem ?? FavoriteCategory.Removed;
-            try
+            var task = this.VM.SearchResult.AddToCategoryAsync(this.lv.SelectedRanges.ToList(), cat);
+            this.lv.SelectionMode = ListViewSelectionMode.None;
+            RootControl.RootController.TrackAsyncAction(task, (s, args) =>
             {
-                var task = this.VM.SearchResult.AddToCategoryAsync(this.lv.SelectedRanges.ToList(), cat);
-                this.lv.SelectionMode = ListViewSelectionMode.None;
-                await task;
-                exitSelectMode();
-            }
-            catch (Exception ex)
-            {
-                RootControl.RootController.SendToast(ex, this.GetType());
-                this.lv.SelectionMode = ListViewSelectionMode.Multiple;
-            }
+                if (args == Windows.Foundation.AsyncStatus.Completed)
+                    exitSelectMode();
+                else
+                {
+                    RootControl.RootController.SendToast(s.ErrorCode, this.GetType());
+                    this.lv.SelectionMode = ListViewSelectionMode.Multiple;
+                }
+            });
         }
 
         private void cbActions_Opening(object sender, object e)

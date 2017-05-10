@@ -70,12 +70,12 @@ namespace ExClient
                     foreach (var item in cacheDic)
                     {
                         progress.Report(i / count);
-                        var folder = await StorageHelper.LocalCache.CreateFolderAsync(item.Key, Windows.Storage.CreationCollisionOption.OpenIfExists);
+                        var folder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(item.Key, Windows.Storage.CreationCollisionOption.OpenIfExists);
                         await folder.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
                         db.ImageSet.RemoveRange(item.Value);
                         i++;
                     }
-                    var folders = await StorageHelper.LocalCache.GetItemsAsync();
+                    var folders = await ApplicationData.Current.LocalCacheFolder.GetItemsAsync();
                     foreach (var item in folders)
                     {
                         if (!saveDic.ContainsKey(item.Name))

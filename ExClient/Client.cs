@@ -22,9 +22,29 @@ namespace ExClient
             get;
         } = new Client();
 
+        private Client()
+        {
+            var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
+            httpFilter.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
+            this.CookieManager = httpFilter.CookieManager;
+            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
+
+            this.Settings = new SettingCollection(this);
+            this.Favorites = new FavoriteCollection(this);
+
+            ResetExCookie();
+        }
+
+        internal HttpCookieManager CookieManager { get; }
+
+        internal MyHttpClient HttpClient { get; }
+
         internal UriProvider Uris => this.Host == HostType.Exhentai ? UriProvider.Ex : UriProvider.Eh;
 
         public HostType Host { get; set; } = HostType.Exhentai;
+
+        public bool NeedLogOn
+            => this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Count(isImportantCookie) < 3;
 
         public void ResetExCookie()
         {
@@ -32,57 +52,46 @@ namespace ExClient
             {
                 this.CookieManager.DeleteCookie(item);
             }
-            this.CookieManager.SetCookie(new HttpCookie("nw", "exhentai.org", "/") { Value = "1" });
-            foreach(var item in this.getLogOnInfo())
+            foreach(var item in this.getLogOnInfo().Where(isImportantCookie))
             {
-                if(item.Name == "ipb_member_id"
-                    || item.Name == "ipb_pass_hash"
-                    || item.Name == "s")
+                var cookie = new HttpCookie(item.Name, "exhentai.org", "/")
                 {
-                    var cookie = new HttpCookie(item.Name, "exhentai.org", "/")
-                    {
-                        Expires = item.Expires,
-                        Value = item.Value
-                    };
-                    this.CookieManager.SetCookie(cookie);
-                }
+                    Expires = item.Expires,
+                    Value = item.Value
+                };
+                this.CookieManager.SetCookie(cookie);
             }
             setDefaultCookies();
+        }
+
+        private static bool isImportantCookie(HttpCookie cookie)
+        {
+            var name = cookie?.Name;
+            return name == "ipb_member_id"
+                || name == "ipb_pass_hash"
+                || name == "s";
+        }
+
+        private List<HttpCookie> getLogOnInfo()
+        {
+            return this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Concat(this.CookieManager.GetCookies(UriProvider.Ex.RootUri)).ToList();
+        }
+
+        public void ClearLogOnInfo()
+        {
+            foreach(var item in getLogOnInfo())
+            {
+                this.CookieManager.DeleteCookie(item);
+            }
+            setDefaultCookies();
+        }
+
+        private void setDefaultCookies()
+        {
+            this.CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
+            this.CookieManager.SetCookie(new HttpCookie("nw", "exhentai.org", "/") { Value = "1" });
             this.Settings.ApplyChanges();
         }
-
-        private Client()
-        {
-            var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
-            this.CookieManager = httpFilter.CookieManager;
-
-            var httpfilter2 = new HttpBaseProtocolFilter
-            {
-                AllowAutoRedirect = false,
-                CookieUsageBehavior = HttpCookieUsageBehavior.NoCookies
-            };
-            httpfilter2.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter, httpfilter2, new System.Text.RegularExpressions.Regex(@"://((\d{1,3}\.){3}\d{1,3}|forums\.e-hentai\.org/index\.php\?showuser=)"))));
-
-            this.Settings = new SettingCollection(this);
-            this.Favorites = new FavoriteCollection(this);
-            
-            ResetExCookie();
-        }
-
-        internal HttpCookieManager CookieManager
-        {
-            get;
-        }
-
-        internal MyHttpClient HttpClient
-        {
-            get;
-        }
-
-        public bool NeedLogOn
-            => this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Count < 3
-            && this.CookieManager.GetCookies(UriProvider.Ex.RootUri).Count < 3;
 
         public IAsyncAction LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
         {
@@ -145,30 +154,6 @@ namespace ExClient
             });
         }
 
-        private List<HttpCookie> getLogOnInfo()
-        {
-            return this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Concat(this.CookieManager.GetCookies(UriProvider.Ex.RootUri)).ToList();
-        }
-
-        public void ClearLogOnInfo()
-        {
-            foreach(var item in this.CookieManager.GetCookies(UriProvider.Eh.RootUri))
-            {
-                this.CookieManager.DeleteCookie(item);
-            }
-            foreach(var item in this.CookieManager.GetCookies(UriProvider.Ex.RootUri))
-            {
-                this.CookieManager.DeleteCookie(item);
-            }
-            setDefaultCookies();
-        }
-        
-        private void setDefaultCookies()
-        {
-            this.CookieManager.SetCookie(new HttpCookie("nw", "e-hentai.org", "/") { Value = "1" });
-            this.CookieManager.SetCookie(new HttpCookie("nw", "exhentai.org", "/") { Value = "1" });
-        }
-
         public int UserID
         {
             get
@@ -193,30 +178,15 @@ namespace ExClient
             {
                 if(disposing)
                 {
-                    // 释放托管状态(托管对象)。
+                    this.HttpClient.Dispose();
                 }
-
-                // 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
-                // 将大型字段设置为 null。
-                this.HttpClient.Dispose();
-
                 this.disposedValue = true;
             }
         }
 
-        // 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
-        // ~Client() {
-        //   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
-        //   Dispose(false);
-        // }
-
-        // 添加此代码以正确实现可处置模式。
         public void Dispose()
         {
-            // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
             Dispose(true);
-            // 如果在以上内容中替代了终结器，则取消注释以下行。
-            // GC.SuppressFinalize(this);
         }
         #endregion
     }

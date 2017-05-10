@@ -66,46 +66,6 @@ namespace ExClient
             this.imageKey = imageKey;
             this.PageUri = new Uri(Client.Current.Uris.RootUri, $"s/{imageKey.TokenToString()}/{Owner.Id}-{PageId}");
             this.thumbUri = thumb;
-            this.thumb = new ImageHandle(async data =>
-            {
-                try
-                {
-                    var img = data.Image;
-                    if (this.imageFile != null)
-                    {
-                        img.DecodePixelType = DecodePixelType.Logical;
-                        img.DecodePixelWidth = 100;
-                        using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 18 / 10))
-                        {
-                            await img.SetSourceAsync(stream);
-                            data.ReportFinished();
-                        }
-                    }
-                    else if (this.thumbUri != null)
-                    {
-                        var r = await Client.Current.HttpClient.GetBufferAsync(this.thumbUri);
-                        using (var s = r.AsRandomAccessStream())
-                        {
-                            await img.SetSourceAsync(s);
-                            data.ReportFinished();
-                        }
-                    }
-                    else
-                    {
-                        data.ReportFailed();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    data.ReportFailed(ex);
-                }
-            });
-            this.thumb.ImageLoaded += this.Thumb_ImageLoaded;
-        }
-
-        private void Thumb_ImageLoaded(object sender, EventArgs e)
-        {
-            RaisePropertyChanged(nameof(Thumb));
         }
 
         private static readonly Regex failTokenMatcher = new Regex(@"return\s+nl\(\s*'(.+?)'\s*\)", RegexOptions.Compiled);
@@ -146,17 +106,47 @@ namespace ExClient
             protected set => Set(ref state, value);
         }
 
-        private readonly ImageHandle thumb;
         private Uri thumbUri;
 
-        public ImageSource Thumb
+        private readonly WeakReference<ImageSource> thumb = new WeakReference<ImageSource>(null);
+
+        private async void loadThumb()
+        {
+            try
+            {
+                var img = new BitmapImage();
+                this.thumb.SetTarget(img);
+                if (this.imageFile != null)
+                {
+                    using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 18 / 10))
+                    {
+                        await img.SetSourceAsync(stream);
+                    }
+                }
+                else if (this.thumbUri != null)
+                {
+                    img.UriSource = this.thumbUri;
+                }
+                else
+                {
+                    this.thumb.SetTarget(null);
+                }
+            }
+            catch (Exception)
+            {
+                this.thumb.SetTarget(null);
+            }
+        }
+
+        public virtual ImageSource Thumb
         {
             get
             {
-                if (this.thumb.Loaded)
-                    return this.thumb.Image;
-                this.thumb.StartLoading();
-                return DefaultThumb;
+                if (this.thumb.TryGetTarget(out var thb))
+                    return thb;
+                loadThumb();
+                this.thumb.TryGetTarget(out thb);
+                return thb;
             }
         }
 
@@ -253,7 +243,7 @@ namespace ExClient
                     var buffer = await imageLoadResponse.Content.ReadAsBufferAsync();
                     var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
                     var pageId = this.PageId;
-                    this.ImageFile = await this.Owner.GalleryFolder.SaveFileAsync($"{pageId}{ext}", buffer);
+                    this.ImageFile = await this.Owner.GalleryFolder.SaveFileAsync($"{pageId}{ext}", CreationCollisionOption.ReplaceExisting, buffer);
                     using (var db = new Models.GalleryDb())
                     {
                         var gid = this.Owner.Id;
@@ -315,8 +305,8 @@ namespace ExClient
                 Set(ref this.imageFile, value);
                 if (value != null)
                 {
-                    this.thumb.Reset();
-                    this.thumb.StartLoading();
+                    this.thumb.SetTarget(null);
+                    RaisePropertyChanged(nameof(Thumb));
                 }
             }
         }
