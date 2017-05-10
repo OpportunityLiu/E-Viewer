@@ -10,15 +10,12 @@ namespace ExClient.Internal
 {
     internal class RedirectFilter : IHttpFilter
     {
-        public RedirectFilter(IHttpFilter innerFilter, IHttpFilter innerFilter2, Regex filter2UriMatcher)
+        public RedirectFilter(IHttpFilter innerFilter)
         {
             this.inner = innerFilter;
-            this.inner2 = innerFilter2;
-            this.filter2UriMatcher = filter2UriMatcher;
         }
 
-        IHttpFilter inner, inner2;
-        readonly Regex filter2UriMatcher;
+        IHttpFilter inner;
 
         private class HttpAsyncOperation : IHttpAsyncOperation
         {
@@ -49,10 +46,7 @@ namespace ExClient.Internal
 
             private void sendRequest()
             {
-                if(this.parent.filter2UriMatcher.IsMatch(this.request.RequestUri.ToString()))
-                    this.current = this.parent.inner2.SendRequestAsync(this.request);
-                else
-                    this.current = this.parent.inner.SendRequestAsync(this.request);
+                this.current = this.parent.inner.SendRequestAsync(this.request);
                 this.current.Progress = this.current_Progress;
                 this.current.Completed = this.current_Completed;
             }
@@ -156,10 +150,8 @@ namespace ExClient.Internal
                 if(disposing)
                 {
                     this.inner.Dispose();
-                    this.inner2.Dispose();
                 }
                 this.inner = null;
-                this.inner2 = null;
                 this.disposedValue = true;
             }
         }

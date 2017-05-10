@@ -120,7 +120,7 @@ namespace ExViewer.Views
 
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
-            var lvi = (args.OriginalSource as DependencyObject)?.FirstAncestorOrSelf<ListViewItem>();
+            var lvi = (args.OriginalSource as DependencyObject)?.AncestorsAndSelf<ListViewItem>()?.FirstOrDefault();
             if (lvi == null)
                 return;
             var dc = lvi.Content;

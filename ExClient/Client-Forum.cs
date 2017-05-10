@@ -62,9 +62,9 @@ namespace ExClient
             return Run(async token =>
             {
                 var str = JsonConvert.SerializeObject(this);
-                var file = await StorageHelper.LocalState.CreateFileAsync("UserInfo", CreationCollisionOption.ReplaceExisting);
+                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("UserInfo", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(file, str);
-                var avatarFile = await StorageHelper.LocalState.CreateFileAsync("UserAvatar", CreationCollisionOption.ReplaceExisting);
+                var avatarFile = await ApplicationData.Current.LocalFolder.CreateFileAsync("UserAvatar", CreationCollisionOption.ReplaceExisting);
                 var buffur = await Client.Current.HttpClient.GetBufferAsync(Avatar);
                 await FileIO.WriteBufferAsync(avatarFile, buffur);
             });
@@ -74,7 +74,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var file = await StorageHelper.LocalState.TryGetFileAsync("UserInfo");
+                var file = await ApplicationData.Current.LocalFolder.TryGetFileAsync("UserInfo");
                 if(file == null)
                     return null;
                 var str = await FileIO.ReadTextAsync(file);

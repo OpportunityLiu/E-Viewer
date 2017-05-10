@@ -123,9 +123,9 @@ namespace ExClient
                     throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
                 using(var client = new HttpClient())
                 {
-                    var filename = StorageHelper.ToValidFolderName(this.Name + ".torrent");
+                    var filename = StorageHelper.ToValidFileName(this.Name + ".torrent");
                     var result = await client.GetBufferAsync(this.TorrentUri);
-                    var file = await (await StorageHelper.CreateTempFolderAsync()).SaveFileAsync(filename, result);
+                    var file = await (await StorageHelper.CreateTempFolderAsync()).SaveFileAsync(filename, CreationCollisionOption.ReplaceExisting, result);
                     return file;
                 }
             });

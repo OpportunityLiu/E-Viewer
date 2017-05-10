@@ -46,7 +46,7 @@ namespace ExViewer.ViewModels
                 var target = await getTarget;
                 if(target == null)
                     return;
-                target = await target.CreateFolderAsync(StorageHelper.ToValidFolderName(g.GetDisplayTitle()), CreationCollisionOption.GenerateUniqueName);
+                target = await target.CreateFolderAsync(StorageHelper.ToValidFileName(g.GetDisplayTitle()), CreationCollisionOption.GenerateUniqueName);
                 foreach(var file in files)
                 {
                     await file.CopyAsync(target, file.Name, NameCollisionOption.ReplaceExisting);
@@ -80,7 +80,7 @@ namespace ExViewer.ViewModels
                 progress.Report(double.NaN);
                 var source = await gallery.GetFolderAsync();
                 var temp = await StorageHelper.CreateTempFolderAsync();
-                var name = StorageHelper.ToValidFolderName(gallery.GetDisplayTitle());
+                var name = StorageHelper.ToValidFileName(gallery.GetDisplayTitle());
                 var target = await temp.CreateFolderAsync(name);
                 var files = await source.GetFilesAsync();
                 for(var i = 0; i < files.Count; i++)

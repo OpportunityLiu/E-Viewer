@@ -52,7 +52,7 @@ namespace ExViewer.Views
                 if (e.Parameter != null)
                     this.VM?.SearchResult.Reset();
                 if (this.btnExpandButton == null)
-                    this.btnExpandButton = this.ab.FirstDescendant<Button>("ExpandButton");
+                    this.btnExpandButton = this.ab.Descendants<Button>("ExpandButton").FirstOrDefault();
                 this.btnExpandButton?.Focus(FocusState.Programmatic);
             }
             if (e.NavigationMode == NavigationMode.Back)

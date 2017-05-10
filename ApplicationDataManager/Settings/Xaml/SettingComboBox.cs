@@ -29,22 +29,24 @@ namespace ApplicationDataManager.Settings.Xaml
         private static void SettingValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var s = (SettingComboBox)d;
-            if(e.OldValue != null)
+            var ov = (SettingInfo)e.OldValue;
+            var nv = (SettingInfo)e.NewValue;
+            if(ov != null)
             {
-                ((SettingInfo)e.OldValue).PropertyChanged -= s.settingInfoPropertyChanged;
+                ov.PropertyChanged -= s.settingInfoPropertyChanged;
             }
             s.SelectionChanged -= s.selectionChangedCallback;
-            if(e.NewValue is SettingInfo sv)
+            if(nv!=null)
             {
-                s.settingType = sv.PropertyInfo.PropertyType;
+                s.settingType = nv.PropertyInfo.PropertyType;
                 var selections = Enum.GetNames(s.settingType)
                     .Select(name =>
-                        new EnumSelection(name, ((EnumRepresentAttribute)sv.ValueRepresent).GetFriendlyNameOf(name)))
+                        new EnumSelection(name, ((EnumRepresentAttribute)nv.ValueRepresent).GetFriendlyNameOf(name)))
                     .ToList();
                 s.ItemsSource = selections;
-                s.SelectedItem = selections.Single(sel => sel.EnumName == sv.Value.ToString());
+                s.SelectedItem = selections.Single(sel => sel.EnumName == nv.Value.ToString());
                 s.SelectionChanged += s.selectionChangedCallback;
-                sv.PropertyChanged += s.settingInfoPropertyChanged;
+                nv.PropertyChanged += s.settingInfoPropertyChanged;
             }
             else
             {
@@ -55,8 +57,7 @@ namespace ApplicationDataManager.Settings.Xaml
 
         private void selectionChangedCallback(object sender, SelectionChangedEventArgs e)
         {
-            var s = (SettingComboBox)sender;
-            s.SettingValue.Value = Enum.Parse(s.settingType, ((EnumSelection)s.SelectedItem).EnumName);
+            this.SettingValue.Value = Enum.Parse(this.settingType, ((EnumSelection)this.SelectedItem).EnumName);
         }
 
         private void settingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

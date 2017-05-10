@@ -14,7 +14,7 @@ namespace ExClient
             case ConnectionStrategy.LofiOnMetered:
                 var netProfile = NetworkInformation.GetInternetConnectionProfile();
                 var cost = netProfile.GetConnectionCost();
-                bool lofi = false;
+                var lofi = false;
                 if(cost.NetworkCostType != NetworkCostType.Unrestricted)
                     lofi = true;
                 if(cost.OverDataLimit || cost.ApproachingDataLimit)

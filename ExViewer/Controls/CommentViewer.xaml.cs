@@ -82,7 +82,7 @@ namespace ExViewer.Controls
 
         private void VotePopUp_Opened(object sender, object e)
         {
-            ((Popup)sender).Child.FirstDescendantOrSelf<Control>().Focus(FocusState.Programmatic);
+            ((Popup)sender).Child.DescendantsAndSelf<Control>().First().Focus(FocusState.Programmatic);
         }
 
         private async void Edit_Click(object sender, RoutedEventArgs e)

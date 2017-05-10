@@ -19,5 +19,7 @@ namespace ExClient
                 await ((CachedGallery)Owner).LoadImageAsync(this);
             });
         }
+
+        public override ImageSource Thumb => DefaultThumb;
     }
 }
