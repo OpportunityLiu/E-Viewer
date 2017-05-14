@@ -24,7 +24,12 @@
       "EditedFormatString": "Last edited on {0}",
       "IsUploaderCommentTextBlock/Text": "Uploader Comment",
       "PostedFormatString": "Posted on {0}",
-      "ScoreFormatString": "Score {0:+#0;-#0}"
+      "ScoreFormatString": "Score {0:+#0;-#0}",
+      // Use local language to replace "English"
+      "TranslateButton/OffContent": "Translate to English",
+      "TranslateButton/OnContent": "Original comment",
+      // see https://ctrlq.org/code/19899-google-translate-languages#languages
+      "TranslateLanguageCode": "en"
     },
     "ExcludedLanguagesSelector": {
       "AllTextBlock/Text": "All",

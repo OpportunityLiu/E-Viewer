@@ -153,7 +153,7 @@
             </con:ObjectToBooleanConverter.ValueForTrue>
             <con:InvertConverter>
                 <con:ObjectToBooleanConverter ValueForTrue="{StaticResource VotedButtonStyle}"
-                                              ValueForFalse="{StaticResource VoteButtonStyle}"/>
+                                              ValueForFalse="{StaticResource VoteButtonStyle}" />
             </con:InvertConverter>
         </con:ObjectToBooleanConverter>
         <con:ObjectToBooleanConverter x:Key="ConDown">
@@ -316,12 +316,20 @@
         <TextBlock x:Name="Edited"
                    Margin="12,4"
                    Pivot.SlideInAnimationGroup="GroupTwo"
-                   RelativePanel.AlignBottomWithPanel="True"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.AlignRightWithPanel="True"
                    RelativePanel.Below="Text"
+                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                    Style="{StaticResource EditedTextBlockStyle}"
                    Text="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/CommentViewer/EditedFormatString'}"
                    Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
+        <!--<ToggleSwitch x:Name="Translate"
+                      x:Uid="Controls/CommentViewer/TranslateButton"
+                      Pivot.SlideInAnimationGroup="GroupTwo"
+                      RelativePanel.AlignBottomWithPanel="True"
+                      RelativePanel.AlignLeftWithPanel="True"
+                      RelativePanel.AlignRightWithPanel="True"
+                      RelativePanel.Below="Edited"
+                      Style="{StaticResource TextBlockToggleSwitchStyle}"/>-->
     </RelativePanel>
 </UserControl>

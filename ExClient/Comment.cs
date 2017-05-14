@@ -1,12 +1,15 @@
 ﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Opportunity.MvvmUniverse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Web.Http;
 
 namespace ExClient
 {
@@ -15,7 +18,7 @@ namespace ExClient
         internal static IEnumerable<Comment> AnalyzeDocument(CommentCollection owner, HtmlDocument document)
         {
             var commentNodes = document?.GetElementbyId("cdiv")?.ChildNodes;
-            if (commentNodes == null)
+            if(commentNodes == null)
                 yield break;
             for(var i = 0; i < commentNodes.Count; i += 2)
             {
@@ -72,6 +75,26 @@ namespace ExClient
             }
         }
 
+        private static HttpClient transClient = new HttpClient();
+
+        public IAsyncOperation<HtmlNode> TranslateAsync(string targetLangCode)
+        {
+            return AsyncInfo.Run(async token =>
+            {
+                var node  = HtmlNode.CreateNode(this.Content.OuterHtml);
+                foreach(var item in node.Descendants("#text"))
+                {
+                    var uri = $"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8"
+                        + $"&sl=auto&tl={targetLangCode}&q={Uri.EscapeDataString(item.InnerHtml)}";
+                    var transRetHtml = await transClient.GetStringAsync(new Uri(uri));
+                    var obj = JsonConvert.DeserializeObject<JArray>(transRetHtml);
+                    item.InnerHtml = obj[0][0][0].ToString();
+                }
+                this.TranslatedContent = node;
+                return node;
+            });
+        }
+
         public CommentCollection Owner { get; }
 
         public int Id { get; }
@@ -94,6 +117,13 @@ namespace ExClient
         {
             get => this.content;
             internal set => Set(ref this.content, value);
+        }
+
+        private HtmlNode translatedContent;
+        public HtmlNode TranslatedContent
+        {
+            get => this.translatedContent;
+            internal set => Set(ref this.translatedContent, value);
         }
 
         private int score;
