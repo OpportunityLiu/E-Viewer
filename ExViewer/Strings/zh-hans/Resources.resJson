@@ -24,7 +24,12 @@
       "EditedFormatString": "最后编辑于 {0}",
       "IsUploaderCommentTextBlock/Text": "上传者评论",
       "PostedFormatString": "发布于 {0}",
-      "ScoreFormatString": "评分 {0:+#0;-#0}"
+      "ScoreFormatString": "评分 {0:+#0;-#0}",
+      // Use local language to replace "English"
+      "TranslateButton/OffContent": "翻译为简体中文",
+      "TranslateButton/OnContent": "查看原始评论",
+      // see https://ctrlq.org/code/19899-google-translate-languages#languages
+      "TranslateLanguageCode": "zh-CN"
     },
     "ExcludedLanguagesSelector": {
       "AllTextBlock/Text": "全部",
