@@ -1,5 +1,6 @@
 ﻿using Opportunity.MvvmUniverse.AsyncWrappers;
 using Windows.Foundation;
+using ExClient.Search;
 
 namespace ExClient.Launch
 {

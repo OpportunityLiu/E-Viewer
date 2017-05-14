@@ -1,4 +1,6 @@
-﻿namespace ExClient.Models
+﻿using ExClient.Galleries;
+
+namespace ExClient.Models
 {
     class ImageModel
     {

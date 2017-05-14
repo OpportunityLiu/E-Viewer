@@ -1,4 +1,5 @@
 ﻿using ExClient.Api;
+using ExClient.Galleries;
 using ExClient.Internal;
 using HtmlAgilityPack;
 using Opportunity.MvvmUniverse;

@@ -1,4 +1,6 @@
-﻿namespace ExClient
+﻿using ExClient.Search;
+
+namespace ExClient
 {
     public partial class Client
     {

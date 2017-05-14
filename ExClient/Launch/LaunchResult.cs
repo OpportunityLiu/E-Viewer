@@ -1,4 +1,6 @@
-﻿namespace ExClient.Launch
+﻿using ExClient.Search;
+
+namespace ExClient.Launch
 {
     public abstract class LaunchResult
     {

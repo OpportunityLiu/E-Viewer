@@ -52,8 +52,8 @@ namespace ExClient.Settings
             internal override string GetCookieContent()
             {
                 // Thumbnail Size - Large
-                // Thumbnail Rows - 2(means 4)
-                // search Result Count - 0(means 25) 
+                // Thumbnail Rows - LV2(means 4)
+                // search Result Count - LV0(means 25) 
                 // Favorite Search - order by Favorite time
                 return "ts_l-tr_2-rc_0-fs_f";
             }

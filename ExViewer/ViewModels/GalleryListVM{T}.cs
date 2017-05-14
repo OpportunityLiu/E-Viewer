@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExClient.Galleries;
 using ExViewer.Views;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;

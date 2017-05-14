@@ -1,5 +1,6 @@
 ﻿using EhTagClient.Models;
 using ExClient;
+using ExClient.Tagging;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;

@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Opportunity.MvvmUniverse;
+using ExClient.Tagging;
 
 namespace ExViewer.Controls
 {

@@ -12,6 +12,7 @@ using ExViewer.ViewModels;
 using System.Threading.Tasks;
 using ExViewer.Controls;
 using Opportunity.MvvmUniverse.Views;
+using ExClient.Galleries;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 

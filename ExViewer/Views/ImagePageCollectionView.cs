@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ExClient;
 using Opportunity.MvvmUniverse;
+using ExClient.Galleries;
 
 namespace ExViewer.Views
 {

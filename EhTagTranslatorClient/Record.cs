@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExClient.Tagging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,6 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Windows.Storage.Streams;
-using Namespace = ExClient.Namespace;
 
 namespace EhTagTranslatorClient
 {

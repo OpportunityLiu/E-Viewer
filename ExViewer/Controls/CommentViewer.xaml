@@ -6,7 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              xmlns:con="using:Opportunity.Converters"
-             xmlns:ex="using:ExClient"
+             xmlns:commenting="using:ExClient.Commenting"
              d:DesignHeight="200"
              d:DesignWidth="600"
              HorizontalContentAlignment="Stretch"
@@ -149,7 +149,7 @@
         </Style>
         <con:ObjectToBooleanConverter x:Key="ConUp">
             <con:ObjectToBooleanConverter.ValueForTrue>
-                <ex:CommentStatus>VotedUp</ex:CommentStatus>
+                <commenting:CommentStatus>VotedUp</commenting:CommentStatus>
             </con:ObjectToBooleanConverter.ValueForTrue>
             <con:InvertConverter>
                 <con:ObjectToBooleanConverter ValueForTrue="{StaticResource VotedButtonStyle}"
@@ -158,7 +158,7 @@
         </con:ObjectToBooleanConverter>
         <con:ObjectToBooleanConverter x:Key="ConDown">
             <con:ObjectToBooleanConverter.ValueForTrue>
-                <ex:CommentStatus>VotedDown</ex:CommentStatus>
+                <commenting:CommentStatus>VotedDown</commenting:CommentStatus>
             </con:ObjectToBooleanConverter.ValueForTrue>
             <con:InvertConverter>
                 <con:ObjectToBooleanConverter ValueForTrue="{StaticResource VotedButtonStyle}"
@@ -168,7 +168,7 @@
         <con:ObjectToBooleanConverter x:Key="ConEdit"
                                       NextConverter="{StaticResource TrueToVisibleConverter}">
             <con:ObjectToBooleanConverter.ValueForTrue>
-                <ex:CommentStatus>Editable</ex:CommentStatus>
+                <commenting:CommentStatus>Editable</commenting:CommentStatus>
             </con:ObjectToBooleanConverter.ValueForTrue>
         </con:ObjectToBooleanConverter>
     </UserControl.Resources>

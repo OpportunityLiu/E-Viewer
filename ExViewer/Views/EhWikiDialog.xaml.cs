@@ -1,5 +1,6 @@
 ﻿using EhWikiClient;
 using ExClient;
+using ExClient.Tagging;
 using ExViewer.Controls;
 using System;
 using System.Collections.Generic;

@@ -21,13 +21,14 @@ namespace ExClient.Settings
             {
                 if(string.IsNullOrWhiteSpace(value))
                 {
-                    ip = null;
+                    if(Set(nameof(AddressAndPort), ref this.ip, null))
+                        ApplyChanges();
                     return;
                 }
                 try
                 {
                     var ipv4 = value.Split(dotChars).Select(s => byte.Parse("0" + s)).ToArray();
-                    ip = $"{ipv4[0]}.{ipv4[1]}.{ipv4[2]}.{ipv4[3]}";
+                    Set(nameof(AddressAndPort), ref this.ip, $"{ipv4[0]}.{ipv4[1]}.{ipv4[2]}.{ipv4[3]}");
                 }
                 catch(Exception ex)
                 {
@@ -44,8 +45,8 @@ namespace ExClient.Settings
             get => port;
             set
             {
-                port = value;
-                ApplyChanges();
+                if(Set(nameof(AddressAndPort), ref this.port, value))
+                    ApplyChanges();
             }
         }
 
@@ -53,7 +54,7 @@ namespace ExClient.Settings
         {
             get
             {
-                if(string.IsNullOrEmpty(ip))
+                if(string.IsNullOrEmpty(this.ip))
                     return null;
                 return $"{ip}:{port}";
             }
@@ -61,14 +62,16 @@ namespace ExClient.Settings
             {
                 if(string.IsNullOrWhiteSpace(value))
                 {
-                    port = 80;
-                    ip = null;
+                    this.port = 80;
+                    this.ip = null;
+                    RaisePropertyChanged(nameof(Port), nameof(IPAddress), nameof(AddressAndPort));
+                    ApplyChanges();
                     return;
                 }
                 try
                 {
                     var ss = value.Split(colonChars, StringSplitOptions.RemoveEmptyEntries);
-                    port = uint.Parse(ss[1]);
+                    this.port = uint.Parse(ss[1]);
                     IPAddress = ss[0];
                 }
                 catch(Exception ex)

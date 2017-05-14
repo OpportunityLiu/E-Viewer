@@ -1,4 +1,5 @@
-﻿using ExClient.Internal;
+﻿using ExClient.Galleries;
+using ExClient.Internal;
 using ExClient.Launch;
 using Newtonsoft.Json;
 using System;
@@ -54,15 +55,6 @@ namespace ExClient.Api
             }
         }
 
-        private class GalleryInfoResult : ApiResponse
-        {
-#pragma warning disable IDE1006
-#pragma warning disable CS0649
-            public List<GalleryInfo> tokenlist;
-#pragma warning restore CS0649
-#pragma warning restore IDE1006 
-        }
-
         public static IAsyncOperation<IReadOnlyList<GalleryInfo>> FetchGalleryInfoListAsync(IEnumerable<ImageInfo> pageList)
         {
             return Run<IReadOnlyList<GalleryInfo>>(async token =>
@@ -70,7 +62,7 @@ namespace ExClient.Api
                 var result = await Client.Current.HttpClient.PostApiAsync(new GalleryToken(pageList));
                 var res = JsonConvert.DeserializeObject<GalleryInfoResult>(result);
                 res.CheckResponse();
-                return res.tokenlist;
+                return res.TokenList;
             });
         }
 
@@ -167,5 +159,11 @@ namespace ExClient.Api
         {
             return this.Id.GetHashCode() ^ this.Token.GetHashCode();
         }
+    }
+
+    internal class GalleryInfoResult : ApiResponse
+    {
+        [JsonProperty("tokenlist")]
+        public List<GalleryInfo> TokenList { get; set; }
     }
 }
