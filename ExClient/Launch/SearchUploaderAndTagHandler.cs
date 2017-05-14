@@ -1,4 +1,5 @@
-﻿using Opportunity.MvvmUniverse.AsyncWrappers;
+﻿using ExClient.Tagging;
+using Opportunity.MvvmUniverse.AsyncWrappers;
 using System;
 using Windows.Foundation;
 

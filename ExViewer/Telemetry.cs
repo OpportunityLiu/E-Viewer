@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
+using ExClient.Search;
+using ExClient.Galleries;
 
 namespace ExViewer
 {

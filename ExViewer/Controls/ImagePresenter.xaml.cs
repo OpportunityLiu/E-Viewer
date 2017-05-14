@@ -19,6 +19,7 @@ using System.ComponentModel;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
+using ExClient.Galleries;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 

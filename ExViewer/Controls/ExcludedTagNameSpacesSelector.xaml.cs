@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ExClient.Settings;
+using ExClient.Tagging;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -46,7 +47,7 @@ namespace ExViewer.Controls
         private void refresh(Namespace value)
         {
             this.changing = true;
-            foreach(Namespace item in this.gv.Items)
+            foreach(var item in this.gv.Items.Cast<Namespace>())
             {
                 var n = value.HasFlag(item);
                 var cb = ((CheckBox)((GridViewItem)this.gv.ContainerFromItem(item))?.ContentTemplateRoot);

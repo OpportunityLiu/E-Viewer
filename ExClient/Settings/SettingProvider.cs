@@ -1,6 +1,6 @@
 ﻿namespace ExClient.Settings
 {
-    public abstract class SettingProvider
+    public abstract class SettingProvider : Opportunity.MvvmUniverse.ObservableObject
     {
         internal SettingProvider()
         {

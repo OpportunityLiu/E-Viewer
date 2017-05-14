@@ -67,7 +67,7 @@
                 <tk:PullToRefreshIndicator />
             </tk:PullToRefreshListView.RefreshIndicatorContent>
             <tk:PullToRefreshListView.ItemTemplate>
-                <DataTemplate xmlns:c="using:ExClient"
+                <DataTemplate xmlns:c="using:ExClient.Galleries"
                               xmlns:controls="using:ExViewer.Controls"
                               x:DataType="c:Gallery">
                     <controls:GalleryViewer x:Name="gv_Gallery"

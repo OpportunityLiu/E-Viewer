@@ -1,4 +1,6 @@
-﻿namespace ExClient.Settings
+﻿using ExClient.Tagging;
+
+namespace ExClient.Settings
 {
     public sealed class ExcludedTagNamespacesSettingProvider : SettingProvider
     {
@@ -8,14 +10,14 @@
 
         internal override string GetCookieContent()
         {
-            if(ns == 0)
+            if(this.ns == 0)
                 return null;
-            return $"xns_{ns}";
+            return $"xns_{this.ns}";
         }
 
         public override string ToString()
         {
-            return ns.ToString();
+            return this.ns.ToString();
         }
 
         private byte ns;
@@ -26,10 +28,8 @@
             set
             {
                 var v = unchecked((byte)value);
-                if(v == ns)
-                    return;
-                ns = v;
-                ApplyChanges();
+                if(Set(ref this.ns, v))
+                    ApplyChanges();
             }
         }
     }

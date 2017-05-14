@@ -1,4 +1,5 @@
-﻿using ExViewer.Settings;
+﻿using ExClient.Galleries;
+using ExViewer.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;

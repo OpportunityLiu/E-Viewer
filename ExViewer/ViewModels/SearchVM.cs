@@ -10,10 +10,11 @@ using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using System.Linq;
 using Opportunity.MvvmUniverse.Commands;
+using ExClient.Search;
+using ExClient.Galleries;
 
 namespace ExViewer.ViewModels
 {
-
     public class SearchVM : SearchResultVM<SearchResult>
     {
         private class SearchResultData

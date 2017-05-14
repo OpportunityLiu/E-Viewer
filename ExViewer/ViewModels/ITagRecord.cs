@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExClient.Tagging;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

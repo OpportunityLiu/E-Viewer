@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Navigation;
 using ExViewer.ViewModels;
 using ExClient;
 using System.Threading.Tasks;
+using ExClient.Galleries;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 

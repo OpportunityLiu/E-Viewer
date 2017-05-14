@@ -13,6 +13,8 @@ using EhTagTranslatorClient;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Commands;
+using ExClient.Search;
+using ExClient.Galleries;
 
 namespace ExViewer.ViewModels
 {

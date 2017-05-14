@@ -21,6 +21,9 @@ using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Helpers;
+using ExClient.Tagging;
+using ExClient.Galleries;
+using ExClient.Galleries.Metadata;
 
 namespace ExViewer.ViewModels
 {

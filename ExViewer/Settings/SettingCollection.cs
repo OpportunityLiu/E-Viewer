@@ -5,6 +5,7 @@ using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using ExViewer.Helpers;
+using ExClient.Tagging;
 
 namespace ExViewer.Settings
 {

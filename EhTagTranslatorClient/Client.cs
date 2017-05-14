@@ -1,5 +1,6 @@
 ﻿using EhTagTranslatorClient.Model;
 using ExClient;
+using ExClient.Tagging;
 using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,6 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Web.Http;
-using Namespace = ExClient.Namespace;
 
 namespace EhTagTranslatorClient
 {

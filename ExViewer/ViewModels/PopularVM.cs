@@ -1,4 +1,6 @@
 ﻿using ExClient;
+using ExClient.Galleries;
+using ExClient.Search;
 using ExViewer.Views;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Commands;
@@ -23,7 +25,7 @@ namespace ExViewer.ViewModels
             }, g => g != null);
         }
 
-        public PopularCollection Galleries { get; } = PopularCollection.Instance;
+        public PopularCollection Galleries { get; } = new PopularCollection();
 
         public Command Refresh { get; }
 

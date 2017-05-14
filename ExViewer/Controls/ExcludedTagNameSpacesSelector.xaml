@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sys="using:System"
-             xmlns:client="using:ExClient"
+             xmlns:tagging="using:ExClient.Tagging"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="400">
@@ -30,20 +30,20 @@
             </Style>
         </GridView.ItemContainerStyle>
         <GridView.ItemTemplate>
-            <DataTemplate x:DataType="client:Namespace">
+            <DataTemplate x:DataType="tagging:Namespace">
                 <CheckBox Content="{x:Bind Converter={StaticResource NamespaceToFriendlyStringConverter}}"
                           Checked="CheckBox_Checked"
                           Unchecked="CheckBox_Unchecked"
                           Loaded="CheckBox_Loaded" />
             </DataTemplate>
         </GridView.ItemTemplate>
-        <client:Namespace>Reclass</client:Namespace>
-        <client:Namespace>Language</client:Namespace>
-        <client:Namespace>Parody</client:Namespace>
-        <client:Namespace>Character</client:Namespace>
-        <client:Namespace>Group</client:Namespace>
-        <client:Namespace>Artist</client:Namespace>
-        <client:Namespace>Male</client:Namespace>
-        <client:Namespace>Female</client:Namespace>
+        <tagging:Namespace>Reclass</tagging:Namespace>
+        <tagging:Namespace>Language</tagging:Namespace>
+        <tagging:Namespace>Parody</tagging:Namespace>
+        <tagging:Namespace>Character</tagging:Namespace>
+        <tagging:Namespace>Group</tagging:Namespace>
+        <tagging:Namespace>Artist</tagging:Namespace>
+        <tagging:Namespace>Male</tagging:Namespace>
+        <tagging:Namespace>Female</tagging:Namespace>
     </GridView>
 </UserControl>
