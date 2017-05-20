@@ -4,7 +4,7 @@ using ExClient.Search;
 
 namespace ExClient.Tagging
 {
-    [System.Diagnostics.DebuggerDisplay(@"[{Namespace}:{Content}]")]
+    [System.Diagnostics.DebuggerDisplay(@"[{ToString(),nq}]")]
     public struct Tag : IEquatable<Tag>
     {
         // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };

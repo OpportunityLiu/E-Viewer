@@ -64,8 +64,7 @@
             <DoubleAnimation Duration="0:0:0.12"
                              To="1"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
-                             Storyboard.TargetName="gd_Avatar"
-                             d:IsOptimized="True">
+                             Storyboard.TargetName="gd_Avatar">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
                 </DoubleAnimation.EasingFunction>
@@ -73,8 +72,7 @@
             <DoubleAnimation Duration="0:0:0.12"
                              To="1"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
-                             Storyboard.TargetName="gd_Avatar"
-                             d:IsOptimized="True">
+                             Storyboard.TargetName="gd_Avatar">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
                 </DoubleAnimation.EasingFunction>
@@ -82,8 +80,7 @@
             <DoubleAnimation Duration="0:0:0.12"
                              To="0"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
-                             Storyboard.TargetName="gd_Avatar"
-                             d:IsOptimized="True">
+                             Storyboard.TargetName="gd_Avatar">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
                 </DoubleAnimation.EasingFunction>

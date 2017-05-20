@@ -74,7 +74,7 @@ namespace ExClient.Commenting
                     }
                 }
             }
-            TranslateAsync("zh-cn");
+            //TranslateAsync("zh-cn");
         }
 
         private static HttpClient transClient = new HttpClient();

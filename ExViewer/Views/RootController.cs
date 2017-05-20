@@ -195,8 +195,8 @@ namespace ExViewer.Views
             private static Storyboard ShowDisablePanel => sbInitializer(ref showPanel, ShowPanel_Completed);
             private static Storyboard HideDisablePanel => sbInitializer(ref hidePanel, HidePanel_Completed);
             private static Storyboard PlayToastPanel => sbInitializer(ref playToast, PlayToast_Completed);
-            private static Storyboard CloseSplitViewPane => sbInitializer(ref openSplitViewPane, null);
-            private static Storyboard OpenSplitViewPane => sbInitializer(ref closeSplitViewPane, null);
+            private static Storyboard CloseSplitViewPane => sbInitializer(ref closeSplitViewPane, null);
+            private static Storyboard OpenSplitViewPane => sbInitializer(ref openSplitViewPane, null);
 
             private static void Sv_root_PaneClosing(SplitView sender, SplitViewPaneClosingEventArgs args)
             {

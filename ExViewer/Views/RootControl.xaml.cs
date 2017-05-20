@@ -187,7 +187,7 @@ namespace ExViewer.Views
 
         private void tbtPaneBindBack(bool? value)
         {
-            RootController.SwitchSplitView(value);
+            RootController.SwitchSplitView((bool)value);
         }
 
         private bool? tbtPaneBind(bool value)
