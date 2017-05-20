@@ -48,7 +48,7 @@ namespace ExClient.Galleries.Metadata
         public IAsyncOperation<Gallery> FetchParentAsync()
         {
             if(!(this.ParentInfo is GalleryInfo i))
-                return AsyncWrapper.CreateCompleted<Gallery>();
+                return AsyncWrapper.CreateCompleted<Gallery>(null);
             return i.FetchGalleryAsync();
         }
 

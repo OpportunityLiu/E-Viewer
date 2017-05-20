@@ -262,8 +262,8 @@ namespace ExViewer.ViewModels
         public Command<Tag> SearchTag { get; }
 
         private static readonly EhWikiDialog ewd = new EhWikiDialog();
-        public Command<Tag> ShowTagDefination { get; }
-            = new Command<Tag>(async tag =>
+        public AsyncCommand<Tag> ShowTagDefination { get; }
+            = new AsyncCommand<Tag>(async tag =>
             {
                 ewd.WikiTag = tag;
                 await ewd.ShowAsync();
