@@ -46,9 +46,9 @@ namespace ExClient.Galleries
             }
         }
 
-        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadSavedGalleriesAsync()
+        public static IAsyncOperation<ObservableCollection<Gallery>> LoadSavedGalleriesAsync()
         {
-            return Run<IncrementalLoadingCollection<Gallery>>(async token => await SavedGalleryList.LoadList());
+            return Run<ObservableCollection<Gallery>>(async token => await SavedGalleryList.LoadList());
         }
 
         public static IAsyncActionWithProgress<double> ClearAllGalleriesAsync()

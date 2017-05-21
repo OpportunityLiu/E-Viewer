@@ -32,12 +32,10 @@ namespace ExViewer.ViewModels
                     this.Refresh.Execute();
                 });
             });
-            this.Refresh = new Command(async () =>
+            this.Refresh = new AsyncCommand(async () =>
             {
                 this.Galleries = null;
-                this.Refresh.RaiseCanExecuteChanged();
                 this.Galleries = await SavedGallery.LoadSavedGalleriesAsync();
-                this.Refresh.RaiseCanExecuteChanged();
             });
             this.SaveTo = new Command<Gallery>(async g =>
             {

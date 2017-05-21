@@ -30,15 +30,15 @@ namespace ExViewer.ViewModels
             }, g => g != null);
         }
 
-        private IncrementalLoadingCollection<Gallery> galleries;
+        private ObservableCollection<Gallery> galleries;
 
-        public IncrementalLoadingCollection<Gallery> Galleries
+        public ObservableCollection<Gallery> Galleries
         {
             get => this.galleries;
             protected set => Set(ref this.galleries, value);
         }
 
-        public Command Refresh
+        public AsyncCommand Refresh
         {
             get;
             protected set;

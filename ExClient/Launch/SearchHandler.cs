@@ -1,4 +1,4 @@
-﻿using Opportunity.MvvmUniverse.AsyncWrappers;
+﻿using Opportunity.MvvmUniverse.AsyncHelpers;
 using Windows.Foundation;
 using ExClient.Search;
 

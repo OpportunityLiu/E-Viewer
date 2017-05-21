@@ -1,5 +1,6 @@
 ﻿using ExClient.Models;
 using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Helpers;
 using System;
@@ -47,9 +48,9 @@ namespace ExClient.Galleries
             }
         }
 
-        public static IAsyncOperation<IncrementalLoadingCollection<Gallery>> LoadCachedGalleriesAsync()
+        public static IAsyncOperation<ObservableCollection<Gallery>> LoadCachedGalleriesAsync()
         {
-            return Run<IncrementalLoadingCollection<Gallery>>(async token => await CachedGalleryList.LoadList());
+            return Run<ObservableCollection<Gallery>>(async token => await CachedGalleryList.LoadList());
         }
 
         public static IAsyncActionWithProgress<double> ClearCachedGalleriesAsync()
@@ -89,6 +90,7 @@ namespace ExClient.Galleries
         internal CachedGallery(GalleryModel model)
             : base(model)
         {
+            this.loadingPageArray = new MulticastAsyncAction[MathHelper.GetPageCount(model.RecordCount, PageSize)];
         }
 
         internal ImageModel[] ImageModels { get; private set; }
@@ -112,11 +114,13 @@ namespace ExClient.Galleries
             }
         }
 
-        protected override IAsyncOperation<IReadOnlyList<GalleryImage>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
-            return Task.Run<IReadOnlyList<GalleryImage>>(async () =>
+            return Task.Run<IList<GalleryImage>>(async () =>
             {
-                await GetFolderAsync();
+                // TODO: load offline only if there are no connections.
+                if (this.GalleryFolder == null)
+                    await GetFolderAsync();
                 this.LoadImageModels();
                 var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
                 var loadList = new GalleryImage[currentPageSize];
@@ -137,67 +141,14 @@ namespace ExClient.Galleries
             }).AsAsyncOperation();
         }
 
-        private Dictionary<int, LoadPageAction> loadingPageDic = new Dictionary<int, LoadPageAction>();
-
-        private class LoadPageAction : IAsyncAction
-        {
-            private IAsyncAction action;
-
-            public LoadPageAction(IAsyncAction action)
-            {
-                this.action = action;
-                this.action.Completed = this.action_Completed;
-            }
-
-            private void action_Completed(IAsyncAction sender, AsyncStatus e)
-            {
-                if (Disposed)
-                    return;
-                foreach (var item in this.completed)
-                {
-                    item(this, e);
-                }
-            }
-
-            public bool Disposed => this.action == null;
-
-            public AsyncActionCompletedHandler Completed
-            {
-                get => this.action.Completed;
-                set => completed.Add(value);
-            }
-
-            private List<AsyncActionCompletedHandler> completed = new List<AsyncActionCompletedHandler>();
-
-            public Exception ErrorCode => this.action.ErrorCode;
-
-            public uint Id => this.action.Id;
-
-            public AsyncStatus Status => this.action.Status;
-
-            public void Cancel() => this.action.Cancel();
-
-            public void Close()
-            {
-                this.action.Close();
-                this.action = null;
-                this.completed = null;
-            }
-
-            public void GetResults() => this.action.GetResults();
-        }
+        private readonly MulticastAsyncAction[] loadingPageArray;
 
         internal IAsyncAction LoadImageAsync(GalleryImagePlaceHolder image)
         {
             var pageIndex = MathHelper.GetPageIndexOfRecord(PageSize, image.PageId - 1);
-            var lpAc = (LoadPageAction)null;
-            if (this.loadingPageDic.TryGetValue(pageIndex, out lpAc))
-            {
-                if (!lpAc.Disposed)
-                    return lpAc;
-                else
-                    this.loadingPageDic.Remove(pageIndex);
-            }
+            var lpAc = this.loadingPageArray[pageIndex];
+            if (lpAc != null && !lpAc.Disposed)
+                return lpAc;
             var action = Run(async token =>
             {
                 var images = await base.LoadPageAsync(pageIndex);
@@ -209,15 +160,16 @@ namespace ExClient.Galleries
                         continue;
                     this[i + offset] = images[i];
                 }
+                await Task.Yield();
+                this.loadingPageArray[pageIndex] = null;
             });
-            lpAc = new LoadPageAction(action);
-            this.loadingPageDic[pageIndex] = lpAc;
-            return lpAc;
+            return this.loadingPageArray[pageIndex] = action.AsMulticast();
         }
 
         public override IAsyncAction DeleteAsync()
         {
             this.ImageModels = null;
+            Array.Clear(this.loadingPageArray, 0, this.loadingPageArray.Length);
             return base.DeleteAsync();
         }
 

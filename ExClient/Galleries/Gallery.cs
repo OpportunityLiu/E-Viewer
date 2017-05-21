@@ -60,9 +60,9 @@ namespace ExClient.Galleries
 #pragma warning restore CS0649
         }
 
-        public static IAsyncOperation<IReadOnlyList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
+        public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
         {
-            return Run<IReadOnlyList<Gallery>>(async token =>
+            return Run<IList<Gallery>>(async token =>
             {
                 var result = new Gallery[galleryInfo.Count];
                 var pageCount = MathHelper.GetPageCount(galleryInfo.Count, 25);
@@ -408,9 +408,9 @@ namespace ExClient.Galleries
             this.FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
         }
 
-        protected override IAsyncOperation<IReadOnlyList<GalleryImage>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
-            return Task.Run(async () =>
+            return Task.Run<IList<GalleryImage>>(async () =>
             {
                 await this.GetFolderAsync();
                 var needLoadComments = !this.Comments.IsLoaded;
@@ -482,7 +482,7 @@ namespace ExClient.Galleries
                         toAdd.Add(new GalleryImage(this, page.pageId, page.imageKey, page.thumbUri));
                     }
                 }
-                return (IReadOnlyList<GalleryImage>)toAdd;
+                return toAdd;
             }).AsAsyncOperation();
         }
 

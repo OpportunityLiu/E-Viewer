@@ -8,7 +8,7 @@ using EhTagTranslatorClient;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.UI.Xaml;
-using Opportunity.MvvmUniverse.AsyncWrappers;
+using Opportunity.MvvmUniverse.AsyncHelpers;
 using ExClient.Tagging;
 
 namespace ExClient

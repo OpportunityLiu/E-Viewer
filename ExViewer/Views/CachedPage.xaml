@@ -79,7 +79,7 @@
                            HorizontalAlignment="Center"
                            Margin="12"
                            Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.Galleries.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                           Visibility="{x:Bind VM.Galleries, FallbackValue=Visible, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
                            Text="Loading more galleries..." />
             </tk:PullToRefreshListView.Footer>
             <tk:PullToRefreshListView.Header>
