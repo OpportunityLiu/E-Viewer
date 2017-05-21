@@ -27,7 +27,7 @@ namespace ExClient.Search
             this.PageCount = 1;
         }
 
-        protected override IAsyncOperation<IReadOnlyList<Gallery>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IList<Gallery>> LoadPageAsync(int pageIndex)
         {
             return AsyncInfo.Run(async token =>
             {

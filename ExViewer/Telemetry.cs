@@ -144,7 +144,7 @@ namespace ExViewer
             var gl = glVM.Galleries;
             if (gl == null)
                 return;
-            sb.AppendLine($"GalleryList: Type={gl.GetType()}, RecordCount={gl.RecordCount}");
+            sb.AppendLine($"GalleryList: Type={gl.GetType()}, Count={gl.Count}");
             sb.AppendLine($"Gallery: Type={typeof(T)}");
         }
 

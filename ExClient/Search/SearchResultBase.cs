@@ -78,7 +78,7 @@ namespace ExClient.Search
 
         protected virtual void LoadPageOverride(HtmlDocument doc) { }
 
-        private async Task<IReadOnlyList<Gallery>> loadPage(HtmlDocument doc)
+        private async Task<IList<Gallery>> loadPage(HtmlDocument doc)
         {
             var table = doc.DocumentNode.Descendants("table").Single(node => node.GetAttributeValue("class", "") == "itg");
             var gInfoList = new List<GalleryInfo>(25);
@@ -102,7 +102,7 @@ namespace ExClient.Search
 
         protected Client Owner { get; }
 
-        protected sealed override IAsyncOperation<IReadOnlyList<Gallery>> LoadPageAsync(int pageIndex)
+        protected sealed override IAsyncOperation<IList<Gallery>> LoadPageAsync(int pageIndex)
         {
             return Run(async token =>
             {

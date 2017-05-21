@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Data;
 
 namespace ExClient.Galleries
 {
-    internal abstract class GalleryList<TGallery, TModel> : IncrementalLoadingCollection<Gallery>, IItemsRangeInfo
+    internal abstract class GalleryList<TGallery, TModel> : ObservableCollection<Gallery>, IItemsRangeInfo
          where TGallery : Gallery
     {
         protected static Gallery DefaultGallery
@@ -15,41 +15,33 @@ namespace ExClient.Galleries
             get;
         } = new Gallery(-1, null, "", "", LocalizedStrings.Resources.DefaultTitle, "", "", "ms-appx:///", LocalizedStrings.Resources.DefaultUploader, "0", "0", 0, false, "2.5", "0", new string[0]);
 
+        public bool IsEmpty => this.Count == 0;
+
         private int loadedCount;
 
         internal GalleryList(IEnumerable<TModel> models)
         {
-            this.PageCount = 0;
             this.models = models.ToList();
-            this.RecordCount = this.models.Count;
-            for (var i = 0; i < this.RecordCount; i++)
-            {
-                this.Add(DefaultGallery);
-            }
+            this.AddRange(Enumerable.Repeat(DefaultGallery, this.models.Count).ToList());
         }
 
         private List<TModel> models;
 
-        protected override void ClearItems()
+        protected override void RemoveItems(int index, int count)
         {
-            this.models.Clear();
-            this.RecordCount = 0;
-            base.ClearItems();
-            this.loadedCount = 0;
-        }
-
-        protected override void RemoveItem(int index)
-        {
-            this.models.RemoveAt(index);
-            this.RecordCount--;
-            if (this[index] != DefaultGallery)
-                this.loadedCount--;
-            base.RemoveItem(index);
+            this.models.RemoveRange(index, count);
+            for (var i = 0; i < count; i++)
+            {
+                if (this[index + i] != DefaultGallery)
+                    this.loadedCount--;
+            }
+            base.RemoveItems(index, count);
+            RaisePropertyChanged(nameof(IsEmpty));
         }
 
         void IItemsRangeInfo.RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)
         {
-            if (this.loadedCount == this.RecordCount)
+            if (this.loadedCount == this.models.Count)
             {
                 return;
             }
@@ -72,13 +64,6 @@ namespace ExClient.Galleries
 
         protected abstract TGallery Load(TModel model);
 
-        protected override IAsyncOperation<IReadOnlyList<Gallery>> LoadPageAsync(int pageIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-        }
+        void IDisposable.Dispose() { this.Clear(); }
     }
 }
