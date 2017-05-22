@@ -33,17 +33,6 @@
             <x:Int32>0</x:Int32>
         </c:ObjectToBooleanConverter.ValueForTrue>
     </c:ObjectToBooleanConverter>
-    <c:ObjectToBooleanConverter x:Key="OperationStateToVisibilityConverter"
-                                xmlns:VM="using:ExViewer.ViewModels"
-                                IfNeither="True"
-                                NextConverter="{uwp:StaticResource TrueToVisibleConverter}">
-        <c:ObjectToBooleanConverter.ValueForFalse>
-            <VM:OperationState>NotStarted</VM:OperationState>
-        </c:ObjectToBooleanConverter.ValueForFalse>
-        <c:ObjectToBooleanConverter.ValueForTrue>
-            <VM:OperationState>Started</VM:OperationState>
-        </c:ObjectToBooleanConverter.ValueForTrue>
-    </c:ObjectToBooleanConverter>
     <c:Int32OffsetConverter x:Key="IndexToStringConverter"
                             Offset="1"
                             NextConverter="{uwp:StaticResource DefaultConverter}"/>

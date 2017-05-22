@@ -105,15 +105,19 @@ namespace ExClient.Galleries
                     ImageLoaded = -1
                 };
                 progress.Report(toReport);
+                var thumb = (await Client.Current.HttpClient.GetBufferAsync(this.ThumbUri)).ToArray();
+                token.ThrowIfCancellationRequested();
                 while (this.HasMoreItems)
                 {
                     await this.LoadMoreItemsAsync((uint)PageSize);
+                    token.ThrowIfCancellationRequested();
                 }
                 toReport.ImageLoaded = 0;
                 progress.Report(toReport);
 
                 var loadTasks = this.Select(image => Task.Run(async () =>
                 {
+                    token.ThrowIfCancellationRequested();
                     await image.LoadImageAsync(false, strategy, true);
                     lock (toReport)
                     {
@@ -122,8 +126,6 @@ namespace ExClient.Galleries
                     }
                 }));
                 await Task.WhenAll(loadTasks);
-
-                var thumb = (await Client.Current.HttpClient.GetBufferAsync(this.ThumbUri)).ToArray();
                 using (var db = new GalleryDb())
                 {
                     var gid = this.Id;
