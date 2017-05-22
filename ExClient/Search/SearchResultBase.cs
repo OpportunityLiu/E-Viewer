@@ -41,17 +41,17 @@ namespace ExClient.Search
                 .Element("body")
                 .Element("div")
                 .Descendants("p")
-                .SingleOrDefault(node => node.ChildNodes.Count == 1 && node.FirstChild.NodeType == HtmlNodeType.Text);
-            if(rcNode == null)
+                .FirstOrDefault(node => node.ChildNodes.Count == 1 && node.FirstChild.NodeType == HtmlNodeType.Text);
+            if (rcNode == null)
             {
                 this.RecordCount = 0;
             }
             var match = recordCountMatcher.Match(rcNode.InnerText);
-            if(match.Success)
+            if (match.Success)
                 this.RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
             else
                 this.RecordCount = 0;
-            if(!this.IsEmpty)
+            if (!this.IsEmpty)
             {
                 var pcNodes = rcNode.NextSibling
                     .Element("tr")
@@ -59,7 +59,7 @@ namespace ExClient.Search
                     .Select(node =>
                     {
                         var su = int.TryParse(node.InnerText, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out var i);
-                        if(su) return i;
+                        if (su) return i;
                         return int.MinValue;
                     }).Max();
                 this.PageCount = Math.Max(1, pcNodes);
@@ -83,7 +83,7 @@ namespace ExClient.Search
             var table = doc.DocumentNode.Descendants("table").Single(node => node.GetAttributeValue("class", "") == "itg");
             var gInfoList = new List<GalleryInfo>(25);
             var trNodeList = new List<HtmlNode>(25);
-            foreach(var node in table.Elements("tr").Skip(1))//skip table header
+            foreach (var node in table.Elements("tr").Skip(1))//skip table header
             {
                 var infoNode = node.ChildNodes[2].FirstChild;
                 var detailNode = infoNode.ChildNodes[2]; //class = it5
@@ -92,7 +92,7 @@ namespace ExClient.Search
                 gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.StringToToken()));
             }
             var galleries = await Gallery.FetchGalleriesAsync(gInfoList);
-            for(var i = 0; i < galleries.Count; i++)
+            for (var i = 0; i < galleries.Count; i++)
             {
                 HandleAdditionalInfo(trNodeList[i], galleries[i]);
             }
@@ -109,12 +109,12 @@ namespace ExClient.Search
                 var uri = new Uri($"{this.SearchUri}&page={pageIndex}");
                 var getStream = this.Owner.HttpClient.GetInputStreamAsync(uri);
                 token.Register(getStream.Cancel);
-                using(var stream = (await getStream).AsStreamForRead())
+                using (var stream = (await getStream).AsStreamForRead())
                 {
                     var doc = new HtmlDocument();
                     doc.Load(stream);
                     updatePageCountAndRecordCount(doc);
-                    if(this.IsEmpty)
+                    if (this.IsEmpty)
                         return Array.Empty<Gallery>();
                     return await loadPage(doc);
                 }

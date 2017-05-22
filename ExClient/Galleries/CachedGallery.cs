@@ -30,12 +30,12 @@ namespace ExClient.Galleries
                                     where db.SavedSet.FirstOrDefault(sm => sm.GalleryId == gm.Id) == null
                                     orderby gm.Id descending
                                     select gm;
-                        return new CachedGalleryList(query);
+                        return new CachedGalleryList(query.ToList());
                     }
                 }).AsAsyncOperation();
             }
 
-            private CachedGalleryList(IEnumerable<GalleryModel> galleries)
+            private CachedGalleryList(List<GalleryModel> galleries)
                 : base(galleries)
             {
             }
@@ -116,28 +116,35 @@ namespace ExClient.Galleries
 
         protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
-            return Task.Run<IList<GalleryImage>>(async () =>
+            return Task.Run(async () =>
             {
-                // TODO: load offline only if there are no connections.
-                if (this.GalleryFolder == null)
-                    await GetFolderAsync();
-                this.LoadImageModels();
-                var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
-                var loadList = new GalleryImage[currentPageSize];
-                for (var i = 0; i < currentPageSize; i++)
+                try
                 {
-                    var model = this.ImageModels[this.Count + i];
-                    if (model == null)
-                    {
-                        loadList[i] = new GalleryImagePlaceHolder(this, this.Count + i + 1);
-                    }
-                    else
-                    {
-                        loadList[i] = await GalleryImage.LoadCachedImageAsync(this, model)
-                                ?? new GalleryImage(this, model.PageId, model.ImageKey, null);
-                    }
+                    return await base.LoadPageAsync(pageIndex);
                 }
-                return loadList;
+                catch
+                {
+                    // TODO: load offline only if there are no connections.
+                    if (this.GalleryFolder == null)
+                        await GetFolderAsync();
+                    this.LoadImageModels();
+                    var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
+                    var loadList = new GalleryImage[currentPageSize];
+                    for (var i = 0; i < currentPageSize; i++)
+                    {
+                        var model = this.ImageModels[this.Count + i];
+                        if (model == null)
+                        {
+                            loadList[i] = new GalleryImagePlaceHolder(this, this.Count + i + 1);
+                        }
+                        else
+                        {
+                            loadList[i] = await GalleryImage.LoadCachedImageAsync(this, model)
+                                    ?? new GalleryImage(this, model.PageId, model.ImageKey, null);
+                        }
+                    }
+                    return loadList;
+                }
             }).AsAsyncOperation();
         }
 

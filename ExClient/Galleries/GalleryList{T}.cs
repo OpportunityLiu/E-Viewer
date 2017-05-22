@@ -19,13 +19,30 @@ namespace ExClient.Galleries
 
         private int loadedCount;
 
-        internal GalleryList(IEnumerable<TModel> models)
+        internal GalleryList(List<TModel> models)
+            : base(Enumerable.Repeat(DefaultGallery, models.Count))
         {
-            this.models = models.ToList();
-            this.AddRange(Enumerable.Repeat(DefaultGallery, this.models.Count).ToList());
+            this.models = models;
         }
 
         private List<TModel> models;
+
+        protected override void ClearItems()
+        {
+            this.models.Clear();
+            this.loadedCount = 0;
+            base.ClearItems();
+            RaisePropertyChanged(nameof(IsEmpty));
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            this.models.RemoveAt(index);
+            if (this[index] != DefaultGallery)
+                this.loadedCount--;
+            base.RemoveItem(index);
+            RaisePropertyChanged(nameof(IsEmpty));
+        }
 
         protected override void RemoveItems(int index, int count)
         {

@@ -1,6 +1,7 @@
 ﻿using ExClient.Models;
 using Microsoft.EntityFrameworkCore;
 using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Helpers;
 using System;
@@ -28,12 +29,12 @@ namespace ExClient.Galleries
                         var query = db.SavedSet
                             .Include(s => s.Gallery)
                             .OrderByDescending(s => s.Saved);
-                        return new SavedGalleryList(query);
+                        return new SavedGalleryList(query.ToList());
                     }
                 }).AsAsyncOperation();
             }
 
-            private SavedGalleryList(IEnumerable<SavedGalleryModel> galleries)
+            private SavedGalleryList(List<SavedGalleryModel> galleries)
                 : base(galleries)
             {
             }
@@ -83,10 +84,12 @@ namespace ExClient.Galleries
 
         protected override IAsyncAction InitOverrideAsync()
         {
+            if (this.Thumb != null)
+                return AsyncWrapper.CreateCompleted();
             var temp = this.thumbFile;
             this.thumbFile = null;
             if (temp == null)
-                return base.InitOverrideAsync();
+                return AsyncWrapper.CreateCompleted();
             return DispatcherHelper.RunAsyncOnUIThread(async () =>
             {
                 using (var stream = temp.AsRandomAccessStream())

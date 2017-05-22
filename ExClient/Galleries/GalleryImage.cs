@@ -1,6 +1,7 @@
 ﻿using ExClient.Internal;
 using HtmlAgilityPack;
 using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.IO;
@@ -182,6 +183,22 @@ namespace ExClient.Galleries
         public virtual IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
             var previousAction = this.loadImageAction;
+            switch (this.state)
+            {
+            case ImageLoadingState.Loading:
+            case ImageLoadingState.Loaded:
+                if (!reload)
+                {
+                    if (previousAction == null)
+                        return AsyncWrapper.CreateCompleted();
+                    return PollingAsyncWrapper.Wrap(previousAction, 1500);
+                }
+                break;
+            case ImageLoadingState.Preparing:
+                if (previousAction == null)
+                    return AsyncWrapper.CreateCompleted();
+                return PollingAsyncWrapper.Wrap(previousAction, 1500);
+            }
             return this.loadImageAction = Run(async token =>
             {
                 IAsyncAction load;
@@ -194,15 +211,10 @@ namespace ExClient.Galleries
                     break;
                 case ImageLoadingState.Loading:
                 case ImageLoadingState.Loaded:
-                    if (reload)
-                    {
-                        if (previousAction?.Status == AsyncStatus.Started)
-                            previousAction.Cancel();
-                        await this.deleteImageFile();
-                        load = this.loadImageUri();
-                    }
-                    else
-                        return;
+                    if (previousAction?.Status == AsyncStatus.Started)
+                        previousAction.Cancel();
+                    await this.deleteImageFile();
+                    load = this.loadImageUri();
                     break;
                 default:
                     return;
@@ -229,8 +241,8 @@ namespace ExClient.Galleries
                         uri = this.imageUri;
                         this.OriginalLoaded = (this.originalImageUri == null);
                     }
-                    imageLoad = Client.Current.HttpClient.GetAsync(uri);
                     this.State = ImageLoadingState.Loading;
+                    imageLoad = Client.Current.HttpClient.GetAsync(uri);
                     imageLoad.Progress = (sender, progress) =>
                     {
                         if (this.State == ImageLoadingState.Loaded)
@@ -272,7 +284,7 @@ namespace ExClient.Galleries
                     }
                     this.State = ImageLoadingState.Loaded;
                 }
-                catch (TaskCanceledException) { }
+                catch (TaskCanceledException) { throw; }
                 catch (Exception)
                 {
                     this.Progress = 100;
@@ -283,17 +295,14 @@ namespace ExClient.Galleries
             });
         }
 
-        private IAsyncAction deleteImageFile()
+        private async Task deleteImageFile()
         {
-            return Run(async token =>
+            var file = this.ImageFile;
+            if (file != null)
             {
-                var file = this.ImageFile;
-                if (file != null)
-                {
-                    this.ImageFile = null;
-                    await file.DeleteAsync();
-                }
-            });
+                this.ImageFile = null;
+                await file.DeleteAsync();
+            }
         }
 
         private int progress;

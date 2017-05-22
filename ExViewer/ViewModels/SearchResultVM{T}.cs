@@ -102,7 +102,7 @@ namespace ExViewer.ViewModels
                                         .Select(sh => sh.SetHighlight(input));
                     AutoCompletion.SplitKeyword(input, out var lastwordNs, out var lastword, out var previous);
                     var dictionary = default(IEnumerable<ITagRecord>);
-                    if (!string.IsNullOrEmpty(lastword))
+                    if (!string.IsNullOrEmpty(lastword) && lastwordNs != ExClient.Tagging.Namespace.Unknown)
                     {
                         dictionary = TagRecordFactory.GetTranslatedRecords(lastword, lastwordNs)
                             .Concat<ITagRecord>(TagRecordFactory.GetRecords(lastword, lastwordNs))

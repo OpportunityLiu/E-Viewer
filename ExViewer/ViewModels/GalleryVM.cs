@@ -166,8 +166,9 @@ namespace ExViewer.ViewModels
             }, image => this.gallery != null);
             this.Save = new Command(() =>
             {
-                var task = this.gallery.SaveGalleryAsync(SettingCollection.Current.GetStrategy());
                 this.SaveStatus = OperationState.Started;
+                this.SaveProgress = -1;
+                var task = this.gallery.SaveGalleryAsync(SettingCollection.Current.GetStrategy());
                 task.Progress = (sender, e) =>
                 {
                     this.SaveProgress = e.ImageLoaded / (double)e.ImageCount;
@@ -190,7 +191,15 @@ namespace ExViewer.ViewModels
                     }
                     this.SaveProgress = 1;
                 };
-            }, () => this.SaveStatus != OperationState.Started && !(this.Gallery is SavedGallery));
+            }, () =>
+            {
+                if (this.SaveStatus == OperationState.Started)
+                    return false;
+                if (this.gallery is SavedGallery)
+                    return false;
+                return true;
+            }
+            );
             this.OpenImage = new Command<GalleryImage>(image =>
             {
                 this.CurrentIndex = image.PageId - 1;
@@ -315,7 +324,7 @@ namespace ExViewer.ViewModels
         public string CurrentInfo
         {
             get => this.currentInfo;
-            private set => DispatcherHelper.BeginInvokeOnUIThread(() => Set(ref this.currentInfo, value));
+            private set => Set(ref this.currentInfo, value);
         }
 
         public IAsyncAction RefreshInfoAsync()
@@ -341,11 +350,11 @@ namespace ExViewer.ViewModels
         public OperationState SaveStatus
         {
             get => this.saveStatus;
-            set => DispatcherHelper.BeginInvokeOnUIThread(() =>
-                 {
-                     Set(ref this.saveStatus, value);
-                     this.Save.RaiseCanExecuteChanged();
-                 });
+            set
+            {
+                Set(ref this.saveStatus, value);
+                this.Save.RaiseCanExecuteChanged();
+            }
         }
 
         private double saveProgress;
@@ -353,7 +362,7 @@ namespace ExViewer.ViewModels
         public double SaveProgress
         {
             get => this.saveProgress;
-            set => DispatcherHelper.BeginInvokeOnUIThread(() => Set(ref this.saveProgress, value));
+            set => Set(ref this.saveProgress, value);
         }
 
         #region Comments
