@@ -68,7 +68,7 @@ namespace EhWikiClient
             var match = reg.Matches(str);
             var j = (string)null;
             if (match.Count > 0)
-                j = string.Join(" | ", match.Cast<Match>().Select(m => m.Groups["Value"].Value));
+                j = string.Join(" | ", match.Cast<Match>().Select(m => m.Groups["Value"].Value).Distinct());
             var matchd = regd.Match(str);
             var d = (string)null;
             if (matchd.Success)

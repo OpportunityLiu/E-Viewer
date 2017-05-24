@@ -198,8 +198,7 @@ namespace ExViewer.ViewModels
                 if (this.gallery is SavedGallery)
                     return false;
                 return true;
-            }
-            );
+            });
             this.OpenImage = new Command<GalleryImage>(image =>
             {
                 this.CurrentIndex = image.PageId - 1;
