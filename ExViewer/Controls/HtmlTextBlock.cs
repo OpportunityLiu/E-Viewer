@@ -28,8 +28,6 @@ namespace ExViewer.Controls
         public HtmlTextBlock()
         {
             this.DefaultStyleKey = typeof(HtmlTextBlock);
-            this.Loaded += this.OnLoaded;
-            this.Unloaded += this.OnUnloaded;
             RegisterPropertyChangedCallback(XYFocusDownProperty, XYPropertyChanged);
             RegisterPropertyChangedCallback(XYFocusUpProperty, XYPropertyChanged);
             RegisterPropertyChangedCallback(XYFocusLeftProperty, XYPropertyChanged);
@@ -38,14 +36,14 @@ namespace ExViewer.Controls
 
         private void XYPropertyChanged(DependencyObject sender, DependencyProperty e)
         {
-            if(!this.HasHyperlinks)
+            if (!this.HasHyperlinks)
                 return;
             var u = this.XYFocusUp;
             var d = this.XYFocusDown;
             var l = this.XYFocusLeft;
             var r = this.XYFocusRight;
             var begin = this.FirstLink;
-            switch(begin)
+            switch (begin)
             {
             case Hyperlink hl:
                 hl.XYFocusUp = this.XYFocusUp;
@@ -57,7 +55,7 @@ namespace ExViewer.Controls
                 throw new InvalidOperationException();
             }
             var end = this.LastLink;
-            switch(end)
+            switch (end)
             {
             case Hyperlink hl:
                 hl.XYFocusDown = this.XYFocusDown;
@@ -69,9 +67,9 @@ namespace ExViewer.Controls
                 throw new InvalidOperationException();
             }
             var o = begin;
-            while(o != null)
+            while (o != null)
             {
-                switch(o)
+                switch (o)
                 {
                 case Hyperlink hl:
                     hl.XYFocusLeft = this.XYFocusLeft;
@@ -146,7 +144,7 @@ namespace ExViewer.Controls
             var s = (HtmlTextBlock)sender;
             var o = (bool)e.OldValue;
             var n = (bool)e.NewValue;
-            if(o == n)
+            if (o == n)
                 return;
             s.reload();
         }
@@ -155,14 +153,14 @@ namespace ExViewer.Controls
         {
             var presenter = this.Presenter;
             var htmlContent = this.HtmlContent;
-            if(presenter == null)
+            if (presenter == null)
                 return;
-            if(this.HasHyperlinks)
+            if (this.HasHyperlinks)
             {
                 var l = this.FirstLink;
-                while(l != null)
+                while (l != null)
                 {
-                    switch(l)
+                    switch (l)
                     {
                     case Hyperlink hl:
                         hl.XYFocusLeft = null;
@@ -184,7 +182,7 @@ namespace ExViewer.Controls
                 }
             }
             presenter.Blocks.Clear();
-            if(htmlContent == null)
+            if (htmlContent == null)
             {
                 this.HasHyperlinks = false;
                 this.FirstLink = null;
@@ -194,16 +192,16 @@ namespace ExViewer.Controls
             var para = new Paragraph();
             presenter.Blocks.Add(para);
             var links = await loadHtmlAsync(para, htmlContent, this.DetectLink);
-            if(presenter == this.Presenter && htmlContent == this.HtmlContent)
+            if (presenter == this.Presenter && htmlContent == this.HtmlContent)
             {
-                if(links.Count > 1)
+                if (links.Count > 1)
                 {
-                    for(var i = 0; i < links.Count - 1; i++)
+                    for (var i = 0; i < links.Count - 1; i++)
                     {
                         link(links[i], links[i + 1]);
                     }
                 }
-                if(links.Count != 0)
+                if (links.Count != 0)
                 {
                     this.HasHyperlinks = true;
                     this.FirstLink = links.First();
@@ -225,9 +223,9 @@ namespace ExViewer.Controls
             var o1b = obj1 as HyperlinkButton;
             var o2h = obj2 as Hyperlink;
             var o2b = obj2 as HyperlinkButton;
-            if(o1h != null)
+            if (o1h != null)
             {
-                if(o2h != null)
+                if (o2h != null)
                 {
                     o1h.XYFocusDown = o2h;
                     o2h.XYFocusUp = o1h;
@@ -240,7 +238,7 @@ namespace ExViewer.Controls
             }
             else
             {
-                if(o2h != null)
+                if (o2h != null)
                 {
                     o1b.XYFocusDown = o2h;
                     o2h.XYFocusUp = o1b;
@@ -266,7 +264,7 @@ namespace ExViewer.Controls
         private async Task<List<DependencyObject>> loadHtmlAsync(Paragraph target, HtmlNode content, bool detectLink)
         {
             var hyperlinks = new List<DependencyObject>();
-            foreach(var node in content.ChildNodes)
+            foreach (var node in content.ChildNodes)
             {
                 var tbNode = createNode(node, hyperlinks, detectLink);
                 target.Inlines.Add(tbNode);
@@ -278,27 +276,27 @@ namespace ExViewer.Controls
 
         private Inline createNode(HtmlNode node, List<DependencyObject> hyperlinks, bool detectLink)
         {
-            if(node is HtmlTextNode)
+            if (node is HtmlTextNode)
             {
                 var text = HtmlEntity.DeEntitize(node.InnerText);
                 MatchCollection matches;
-                if(detectLink && (matches = linkDetector.Matches(text)).Count > 0)
+                if (detectLink && (matches = linkDetector.Matches(text)).Count > 0)
                 {
                     var t = new Span();
                     var currentPos = 0;
-                    foreach(var match in matches.Cast<Match>())
+                    foreach (var match in matches.Cast<Match>())
                     {
                         t.Inlines.Add(CreateRun(text.Substring(currentPos, match.Index - currentPos)));
                         var uri = (Uri)null;
                         try
                         {
-                            if(match.Groups["implict"].Success)
+                            if (match.Groups["implict"].Success)
                                 uri = new Uri($"http://{match.Value}");
-                            else if(match.Groups["explict"].Success)
+                            else if (match.Groups["explict"].Success)
                                 uri = new Uri(match.Value);
                         }
-                        catch(UriFormatException) { }
-                        if(uri != null)
+                        catch (UriFormatException) { }
+                        if (uri != null)
                         {
                             try
                             {
@@ -306,7 +304,7 @@ namespace ExViewer.Controls
                                 hyperlinks.Add(hl);
                                 t.Inlines.Add(hl);
                             }
-                            catch(Exception)
+                            catch (Exception)
                             {
                                 t.Inlines.Add(CreateRun(match.Value));
                             }
@@ -325,28 +323,28 @@ namespace ExViewer.Controls
                     return CreateRun(text);
                 }
             }
-            switch(node.Name)
+            switch (node.Name)
             {
             case "br":
                 return new LineBreak();
             case "strong"://[b]
                 var b = new Bold();
-                foreach(var item in createChildNodes(node, hyperlinks, detectLink))
+                foreach (var item in createChildNodes(node, hyperlinks, detectLink))
                     b.Inlines.Add(item);
                 return b;
             case "em"://[i]
                 var i = new Italic();
-                foreach(var item in createChildNodes(node, hyperlinks, detectLink))
+                foreach (var item in createChildNodes(node, hyperlinks, detectLink))
                     i.Inlines.Add(item);
                 return i;
             case "span"://[u]
                 var u = new Underline();
-                foreach(var item in createChildNodes(node, hyperlinks, detectLink))
+                foreach (var item in createChildNodes(node, hyperlinks, detectLink))
                     u.Inlines.Add(item);
                 return u;
             case "del"://[s]
                 var s = new Span() { Foreground = (Brush)this.Resources["SystemControlBackgroundChromeMediumBrush"] };
-                foreach(var item in createChildNodes(node, hyperlinks, detectLink))
+                foreach (var item in createChildNodes(node, hyperlinks, detectLink))
                     s.Inlines.Add(item);
                 return s;
             case "a"://[url]
@@ -357,40 +355,44 @@ namespace ExViewer.Controls
                     target = new Uri(HtmlEntity.DeEntitize(node.GetAttributeValue("href", "https://exhentai.org")));
                     container = CreateHyperlink(null, target);
                 }
-                catch(UriFormatException)
+                catch (UriFormatException)
                 {
                     container = new Span();
                 }
                 try
                 {
-                    foreach(var item in createChildNodes(node, hyperlinks, false))
+                    foreach (var item in createChildNodes(node, hyperlinks, false))
                         container.Inlines.Add(item);
-                    if(container is Hyperlink)
+                    if (container is Hyperlink)
                         hyperlinks.Add(container);
                     return container;
                 }
-                catch(ArgumentException)// has InlineUIContainer in childnodes
+                catch (ArgumentException)// has InlineUIContainer in childnodes, eg: images
                 {
-                    var aBtnContent = new RichTextBlock { IsTextSelectionEnabled = false };
-                    var para = new Paragraph();
-                    aBtnContent.Blocks.Add(para);
-                    var ignore = loadHtmlAsync(para, node, false);
-                    var aBtn = CreateHyperlinkButton(aBtnContent, target);
+                    var aBtn = default(HyperlinkButton);
+                    if (node.ChildNodes.Count == 1 && node.FirstChild.Name == "img")
+                        // Speical case for single image
+                    {
+                        var imgNode = node.FirstChild;
+                        var uri = new Uri(HtmlEntity.DeEntitize(imgNode.GetAttributeValue("src", "")));
+                        aBtn = CreateHyperlinkButton(CreateImage(uri), target);
+                    }
+                    else
+                    {
+                        var aBtnContent = new RichTextBlock { IsTextSelectionEnabled = false };
+                        var para = new Paragraph();
+                        aBtnContent.Blocks.Add(para);
+                        var ignore = loadHtmlAsync(para, node, false);
+                        aBtn = CreateHyperlinkButton(aBtnContent, target);
+                    }
                     hyperlinks.Add(aBtn);
                     return new InlineUIContainer { Child = aBtn };
                 }
             case "img"://[img]
-                var image = new Image
+                var img = new InlineUIContainer
                 {
-                    Source = new BitmapImage
-                    {
-                        UriSource = new Uri(node.GetAttributeValue("src", ""))
-                    },
-                    Width = 0,
-                    Height = 0
+                    Child = CreateImage(new Uri(HtmlEntity.DeEntitize(node.GetAttributeValue("src", ""))))
                 };
-                image.ImageOpened += Image_ImageOpened;
-                var img = new InlineUIContainer { Child = image };
                 var con = new Span();
                 con.Inlines.Add(img);
                 return con;
@@ -402,7 +404,7 @@ namespace ExViewer.Controls
             }
         }
 
-        private static readonly string eof = " ";
+        private static readonly string eof = " ";
         private static readonly Regex linkDetector = new Regex(
             @"
 (
@@ -421,50 +423,15 @@ namespace ExViewer.Controls
   )
 )", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
 
-        private static void Image_ImageOpened(object sender, RoutedEventArgs e)
-        {
-            var image = (Image)sender;
-            setScale(image);
-            image.ImageOpened -= Image_ImageOpened;
-        }
-
         private IEnumerable<Inline> createChildNodes(HtmlNode node, List<DependencyObject> hyperlinks, bool detectLink)
         {
             return node.ChildNodes.Select(n => createNode(n, hyperlinks, detectLink));
-        }
-
-        private static void setScale(Image image)
-        {
-            var scaleRate = Math.Sqrt(dpi.RawPixelsPerViewPixel);
-            var bitmap = (BitmapImage)image.Source;
-            image.Width = bitmap.PixelWidth / scaleRate;
-            image.Height = bitmap.PixelHeight / scaleRate;
         }
 
         protected override void OnDisconnectVisualChildren()
         {
             ClearValue(HtmlContentProperty);
             base.OnDisconnectVisualChildren();
-        }
-
-        private static DisplayInformation dpi = DisplayInformation.GetForCurrentView();
-
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            dpi.DpiChanged += this.Dpi_DpiChanged;
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e)
-        {
-            dpi.DpiChanged -= this.Dpi_DpiChanged;
-        }
-
-        private void Dpi_DpiChanged(DisplayInformation sender, object args)
-        {
-            foreach(var item in this.Descendants<Image>())
-            {
-                setScale(item);
-            }
         }
     }
 }
