@@ -71,15 +71,16 @@ namespace ExClient.Galleries
                     foreach (var item in cacheDic)
                     {
                         progress.Report(i / count);
-                        var folder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(item.Key, Windows.Storage.CreationCollisionOption.OpenIfExists);
-                        await folder.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
+                        var folder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(item.Key, CreationCollisionOption.OpenIfExists);
+                        await folder.DeleteAsync(StorageDeleteOption.PermanentDelete);
                         db.ImageSet.RemoveRange(item.Value);
                         i++;
                     }
+                    //Delete empty folders
                     var folders = await ApplicationData.Current.LocalCacheFolder.GetItemsAsync();
                     foreach (var item in folders)
                     {
-                        if (!saveDic.ContainsKey(item.Name))
+                        if (!saveDic.ContainsKey(item.Name) && long.TryParse(item.Name, out var r))
                             await item.DeleteAsync();
                     }
                     await db.SaveChangesAsync();
@@ -124,8 +125,6 @@ namespace ExClient.Galleries
                 }
                 catch
                 {
-                    if (this.GalleryFolder == null)
-                        await GetFolderAsync();
                     this.LoadImageModels();
                     var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
                     var loadList = new GalleryImage[currentPageSize];
@@ -203,9 +202,9 @@ namespace ExClient.Galleries
         {
             return DispatcherHelper.RunAsyncOnUIThread(async () =>
             {
-                var f = await GetFolderAsync();
                 if (this.Thumb != null)
                     return;
+                var f = await GetFolderAsync();
                 var file = (await f.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).SingleOrDefault();
                 if (file == null)
                     return;

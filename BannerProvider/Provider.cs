@@ -19,7 +19,7 @@ namespace BannerProvider
         {
             get
             {
-                if(ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
+                if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
                     return (DateTimeOffset)r;
                 return DateTimeOffset.MinValue;
             }
@@ -28,7 +28,7 @@ namespace BannerProvider
 
         private static async Task init()
         {
-            if(bannerFolder != null)
+            if (bannerFolder != null)
                 return;
             bannerFolder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Banners", CreationCollisionOption.OpenIfExists);
         }
@@ -39,8 +39,11 @@ namespace BannerProvider
             {
                 await init();
                 var files = await bannerFolder.GetItemsAsync();
-                if(files.Count == 0)
+                if (files.Count == 0)
+                {
+                    LastUpdate = DateTimeOffset.MinValue;
                     return null;
+                }
                 return (StorageFile)files[new Random().Next(0, files.Count)];
             });
         }
@@ -50,13 +53,13 @@ namespace BannerProvider
             return Run(async token =>
             {
                 await init();
-                using(var f = new HttpBaseProtocolFilter())
+                using (var f = new HttpBaseProtocolFilter())
                 {
                     f.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
                     f.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-                    using(var client = new HttpClient(f))
+                    using (var client = new HttpClient(f))
                     {
-                        for(var i = 1; i < 8; i++)
+                        for (var i = 1; i < 8; i++)
                         {
                             var buf = await client.GetBufferAsync(new Uri($"https://ehgt.org/c/botm{i}.jpg"));
                             var file = await bannerFolder.CreateFileAsync($"{i}.jpg", CreationCollisionOption.ReplaceExisting);

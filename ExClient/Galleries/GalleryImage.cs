@@ -46,7 +46,8 @@ namespace ExClient.Galleries
         {
             return Run(async token =>
             {
-                var imageFile = await owner.GalleryFolder.TryGetFileAsync(model.FileName);
+                var folder = owner.GalleryFolder ?? await owner.GetFolderAsync();
+                var imageFile = await folder.TryGetFileAsync(model.FileName);
                 if (imageFile == null)
                     return null;
                 var img = new GalleryImage(owner, model.PageId, model.ImageKey, null)
@@ -267,7 +268,8 @@ namespace ExClient.Galleries
                     var buffer = await imageLoadResponse.Content.ReadAsBufferAsync();
                     var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
                     var pageId = this.PageId;
-                    this.ImageFile = await this.Owner.GalleryFolder.SaveFileAsync($"{pageId}{ext}", CreationCollisionOption.ReplaceExisting, buffer);
+                    var folder = this.Owner.GalleryFolder ?? await this.Owner.GetFolderAsync();
+                    this.ImageFile = await folder.SaveFileAsync($"{pageId}{ext}", CreationCollisionOption.ReplaceExisting, buffer);
                     using (var db = new Models.GalleryDb())
                     {
                         var gid = this.Owner.Id;

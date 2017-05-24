@@ -6,6 +6,7 @@ using ExClient.Models;
 using ExClient.Tagging;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
@@ -391,11 +392,18 @@ namespace ExClient.Galleries
 
         public IAsyncOperation<StorageFolder> GetFolderAsync()
         {
+            var temp = this.galleryFolder;
+            if (temp != null)
+                return AsyncWrapper.CreateCompleted(temp);
             return Run(async token =>
             {
-                if (this.galleryFolder == null)
-                    this.GalleryFolder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(this.Id.ToString(), CreationCollisionOption.OpenIfExists);
-                return this.galleryFolder;
+                var temp2 = this.galleryFolder;
+                if (temp2 == null)
+                {
+                    temp2 = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(this.Id.ToString(), CreationCollisionOption.OpenIfExists);
+                    this.GalleryFolder = temp2;
+                }
+                return temp2;
             });
         }
 
@@ -414,7 +422,6 @@ namespace ExClient.Galleries
         {
             return Task.Run<IList<GalleryImage>>(async () =>
             {
-                await this.GetFolderAsync();
                 var needLoadComments = !this.Comments.IsLoaded;
                 var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
                 var request = Client.Current.HttpClient.GetStringAsync(uri);
@@ -533,8 +540,7 @@ namespace ExClient.Galleries
             return Task.Run(async () =>
             {
                 var gid = this.Id;
-                await GetFolderAsync();
-                var temp = this.GalleryFolder;
+                var temp = this.GalleryFolder ?? await GetFolderAsync();
                 this.GalleryFolder = null;
                 await temp.DeleteAsync();
                 using (var db = new GalleryDb())
