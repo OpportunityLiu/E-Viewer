@@ -124,7 +124,6 @@ namespace ExClient.Galleries
                 }
                 catch
                 {
-                    // TODO: load offline only if there are no connections.
                     if (this.GalleryFolder == null)
                         await GetFolderAsync();
                     this.LoadImageModels();
