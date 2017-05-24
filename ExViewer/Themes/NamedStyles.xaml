@@ -105,6 +105,8 @@
                 Value="CharacterEllipsis" />
         <Setter Property="TextWrapping"
                 Value="Wrap" />
+        <Setter Property="IsTextSelectionEnabled"
+                Value="True" />
     </Style>
 
     <Style x:Key="TextBlockToggleSwitchStyle"

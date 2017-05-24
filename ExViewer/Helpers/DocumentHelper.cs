@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace ExViewer.Helpers
 {
@@ -68,6 +70,38 @@ namespace ExViewer.Helpers
                 ToolTipService.SetToolTip(aBtn, navigateUri.ToString());
             }
             return aBtn;
+        }
+
+        public static Image CreateImage(Uri imgSrc)
+        {
+            var image = new Image
+            {
+                Source = new BitmapImage
+                {
+                    UriSource = imgSrc
+                },
+                Width = 0,
+                Height = 0
+            };
+            image.ImageOpened += Image_ImageOpened;
+            return image;
+        }
+
+        private static DisplayInformation dpi = DisplayInformation.GetForCurrentView();
+
+        private static void setScale(Image image)
+        {
+            var scaleRate = Math.Sqrt(dpi.RawPixelsPerViewPixel);
+            var bitmap = (BitmapImage)image.Source;
+            image.Width = bitmap.PixelWidth / scaleRate;
+            image.Height = bitmap.PixelHeight / scaleRate;
+        }
+
+        private static void Image_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            var image = (Image)sender;
+            setScale(image);
+            image.ImageOpened -= Image_ImageOpened;
         }
 
         private static void Uri_Click(object sender, RoutedEventArgs e)
