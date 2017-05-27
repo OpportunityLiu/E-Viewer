@@ -371,7 +371,7 @@ namespace ExViewer.Controls
                 {
                     var aBtn = default(HyperlinkButton);
                     if (node.ChildNodes.Count == 1 && node.FirstChild.Name == "img")
-                        // Speical case for single image
+                    // Speical case for single image
                     {
                         var imgNode = node.FirstChild;
                         var uri = new Uri(HtmlEntity.DeEntitize(imgNode.GetAttributeValue("src", "")));
@@ -389,13 +389,10 @@ namespace ExViewer.Controls
                     return new InlineUIContainer { Child = aBtn };
                 }
             case "img"://[img]
-                var img = new InlineUIContainer
+                return new InlineUIContainer
                 {
                     Child = CreateImage(new Uri(HtmlEntity.DeEntitize(node.GetAttributeValue("src", ""))))
                 };
-                var con = new Span();
-                con.Inlines.Add(img);
-                return con;
             default:
                 return new Run
                 {

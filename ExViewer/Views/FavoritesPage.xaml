@@ -30,9 +30,9 @@
         </DataTemplate>
         <cov:ObjectToBooleanConverter x:Key="SelectionConverter"
                                       IfNeither="true">
-            <cov:ObjectToBooleanConverter.ValueForFalse>
+            <cov:ObjectToBooleanConverter.ValuesForFalse>
                 <x:Int32>-1</x:Int32>
-            </cov:ObjectToBooleanConverter.ValueForFalse>
+            </cov:ObjectToBooleanConverter.ValuesForFalse>
         </cov:ObjectToBooleanConverter>
     </controls:MyPage.Resources>
     <Grid>

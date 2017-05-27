@@ -19,13 +19,13 @@ namespace ExClient.Commenting
         internal static IEnumerable<Comment> AnalyzeDocument(CommentCollection owner, HtmlDocument document)
         {
             var commentNodes = document?.GetElementbyId("cdiv")?.ChildNodes;
-            if(commentNodes == null)
+            if (commentNodes == null)
                 yield break;
-            for(var i = 0; i < commentNodes.Count; i += 2)
+            for (var i = 0; i < commentNodes.Count; i += 2)
             {
                 var headerNode = commentNodes[i];
                 var commentNode = commentNodes[i + 1];
-                if(headerNode.Name != "a" || commentNode.Name != "div")
+                if (headerNode.Name != "a" || commentNode.Name != "div")
                     break;
                 var id = int.Parse(headerNode.GetAttributeValue("name", "c0").Substring(1));
                 yield return new Comment(owner, id, commentNode);
@@ -45,36 +45,35 @@ namespace ExClient.Commenting
             this.Content = HtmlNode.CreateNode(contentHtml);
 
             var editNode = commentNode.Descendants("div").FirstOrDefault(node => node.GetAttributeValue("class", "") == "c8");
-            if(editNode != null)
+            if (editNode != null)
                 this.Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
             var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.GetAttributeValue("class", "") == "c3");
             this.Author = postedAndAuthorNode.Element("a").InnerText.DeEntitize();
             this.Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
 
-            if(!this.IsUploaderComment)
+            if (!this.IsUploaderComment)
             {
                 this.score = int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
                 var actionNode = commentNode.Descendants("div").FirstOrDefault(node => node.GetAttributeValue("class", "") == "c4 nosel");
-                if(actionNode != null)
+                if (actionNode != null)
                 {
                     var vuNode = document.GetElementbyId($"comment_vote_up_{id}");
                     var vdNode = document.GetElementbyId($"comment_vote_down_{id}");
-                    if(vuNode != null && vdNode != null)
+                    if (vuNode != null && vdNode != null)
                     {
-                        if(vuNode.GetAttributeValue("style", "") == "color:blue")
+                        if (vuNode.GetAttributeValue("style", "") == "color:blue")
                             this.status = CommentStatus.VotedUp;
-                        else if(vdNode.GetAttributeValue("style", "") == "color:blue")
+                        else if (vdNode.GetAttributeValue("style", "") == "color:blue")
                             this.status = CommentStatus.VotedDown;
                         else
                             this.status = CommentStatus.Votable;
                     }
-                    else if(actionNode.InnerText == "[Edit]")
+                    else if (actionNode.InnerText == "[Edit]")
                     {
                         this.status = CommentStatus.Editable;
                     }
                 }
             }
-            //TranslateAsync("zh-cn");
         }
 
         private static HttpClient transClient = new HttpClient();
@@ -83,14 +82,15 @@ namespace ExClient.Commenting
         {
             return AsyncInfo.Run(async token =>
             {
-                var node  = HtmlNode.CreateNode(this.Content.OuterHtml);
-                foreach(var item in node.Descendants("#text"))
+                var node = HtmlNode.CreateNode(this.Content.OuterHtml);
+                foreach (var item in node.Descendants("#text"))
                 {
                     var uri = $"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8"
                         + $"&sl=auto&tl={targetLangCode}&q={Uri.EscapeDataString(item.InnerHtml)}";
                     var transRetHtml = await transClient.GetStringAsync(new Uri(uri));
                     var obj = JsonConvert.DeserializeObject<JArray>(transRetHtml);
-                    item.InnerHtml = obj[0][0][0].ToString();
+                    var objarr = (JArray)obj[0];
+                    item.InnerHtml = string.Join(" ", objarr.Select(a => a[0].ToString()));
                 }
                 this.TranslatedContent = node;
                 return node;
@@ -142,17 +142,20 @@ namespace ExClient.Commenting
 
         public IAsyncAction VoteAsync(Api.VoteCommand command)
         {
-            if(!this.CanVote)
-                throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteState);
+            if (!this.CanVote)
+                if (this.IsUploaderComment)
+                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteStateUploader);
+                else
+                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteState);
             var request = new Api.CommentVote(this, command);
             return AsyncInfo.Run(async token =>
             {
                 var res = await Client.Current.HttpClient.PostApiAsync(request);
                 var r = JsonConvert.DeserializeObject<CommentVoteResponse>(res);
                 r.CheckResponse();
-                if(this.Id != r.Id)
+                if (this.Id != r.Id)
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
-                switch(r.Vote)
+                switch (r.Vote)
                 {
                 case Api.VoteCommand.Default:
                     this.Status = CommentStatus.Votable;
@@ -172,7 +175,7 @@ namespace ExClient.Commenting
 
         public IAsyncOperation<string> FetchEditableAsync()
         {
-            if(!this.CanEdit)
+            if (!this.CanEdit)
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
             var request = new CommentEdit(this);
             return AsyncInfo.Run(async token =>
@@ -183,7 +186,7 @@ namespace ExClient.Commenting
                 var doc = new HtmlDocument();
                 doc.LoadHtml(r.Editable);
                 var textArea = doc.DocumentNode.Descendants("textarea").FirstOrDefault();
-                if(textArea == null)
+                if (textArea == null)
                     return "";
                 return HtmlEntity.DeEntitize(textArea.InnerText);
             });
@@ -191,7 +194,7 @@ namespace ExClient.Commenting
 
         public IAsyncAction EditAsync(string content)
         {
-            if(!this.CanEdit)
+            if (!this.CanEdit)
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
             return this.Owner.PostFormAsync(content, this);
         }

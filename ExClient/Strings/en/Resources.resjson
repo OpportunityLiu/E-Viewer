@@ -14,5 +14,6 @@
   "WrongEditState": "Can only edit own comment.",
   "WrongGalleryState": "You can only add comments for active galleries.",
   "WrongVoteResponse": "The response of the server can't be analyzed.",
-  "WrongVoteState": "Can't vote when you had posted a comment."
+  "WrongVoteState": "Can't vote when you had posted a comment.",
+  "WrongVoteStateUploader": "Can't vote to an uploader comment."
 }
