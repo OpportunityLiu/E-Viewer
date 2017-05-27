@@ -331,14 +331,6 @@ namespace ExViewer.Views
         }
 
         private AddToFavoritesDialog addToFavorites;
-        private AddCommentDialog addComment;
-
-        private async void abbComment_Click(object sender, RoutedEventArgs e)
-        {
-            var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref this.addComment);
-            addComment.Gallery = this.VM.Gallery;
-            await addComment.ShowAsync();
-        }
 
         private async void abbFavorites_Click(object sender, RoutedEventArgs e)
         {

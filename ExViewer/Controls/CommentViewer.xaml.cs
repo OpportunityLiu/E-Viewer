@@ -38,7 +38,21 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for Comment.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CommentProperty =
-            DependencyProperty.Register("Comment", typeof(Comment), typeof(CommentViewer), new PropertyMetadata(null));
+            DependencyProperty.Register("Comment", typeof(Comment), typeof(CommentViewer), new PropertyMetadata(null, CommentPropertyChanged));
+
+        private static void CommentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var sender = (CommentViewer)d;
+            if (e.NewValue is Comment c)
+            {
+                if (c.CanEdit)
+                {
+                    sender.FindName(nameof(AttentionHeader));
+                }
+            }
+            if (sender.Translated != null)
+                sender.Translated.HtmlContent = null;
+        }
 
         protected override void OnDisconnectVisualChildren()
         {
@@ -57,7 +71,7 @@ namespace ExViewer.Controls
             {
                 await this.Comment.VoteAsync(ExClient.Api.VoteCommand.Up);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 RootControl.RootController.SendToast(ex, typeof(GalleryPage));
             }
@@ -69,16 +83,10 @@ namespace ExViewer.Controls
             {
                 await this.Comment.VoteAsync(ExClient.Api.VoteCommand.Down);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 RootControl.RootController.SendToast(ex, typeof(GalleryPage));
             }
-        }
-
-        private void Score_Click(object sender, RoutedEventArgs e)
-        {
-            FindName(nameof(this.VotePopup));
-            this.VotePopup.IsOpen = true;
         }
 
         private void VotePopUp_Opened(object sender, object e)
@@ -90,6 +98,39 @@ namespace ExViewer.Controls
         {
             editDialog.EditableComment = this.Comment;
             await editDialog.ShowAsync();
+        }
+
+        private void WithdrawVote_Click(object sender, RoutedEventArgs e)
+        {
+            switch (this.Comment.Status)
+            {
+            case CommentStatus.VotedUp:
+                VoteUp_Click(sender, e);
+                break;
+            case CommentStatus.VotedDown:
+                VoteDown_Click(sender, e);
+                break;
+            }
+        }
+        
+        private void Reply_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void Translate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var r = await this.Comment.TranslateAsync(Strings.Resources.Controls.CommentViewer.TranslateLanguageCode);
+                FindName(nameof(Translated));
+                this.Bindings.Update();
+                this.Translated.HtmlContent = r;
+            }
+            catch (Exception ex)
+            {
+                RootControl.RootController.SendToast(ex, null);
+            }
         }
     }
 }

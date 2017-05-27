@@ -11,32 +11,33 @@
                            TrueForVisible="True" />
     <c:VisibilityConverter x:Key="FalseToVisibleConverter"
                            TrueForVisible="False" />
-    <c:ObjectToBooleanConverter x:Key="NullToVisibleConverter"
-                                IfBoth="True"
-                                IfNeither="False"
-                                NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
-    <c:ObjectToBooleanConverter x:Key="NullToCollapsedConverter"
-                                IfBoth="True"
-                                IfNeither="False"
-                                NextConverter="{uwp:StaticResource FalseToVisibleConverter}" />
+    <c:NullTestConverter x:Key="NullToTrueConverter"
+                         IfNull="True" />
+    <c:NullTestConverter x:Key="NullToFalseConverter"
+                         IfNull="False" />
+    <c:NullTestConverter x:Key="NullToVisibleConverter"
+                         IfNull="True"
+                         NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
+    <c:NullTestConverter x:Key="NullToCollapsedConverter"
+                         IfNull="False"
+                         NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
     <!--Code to initalize this converter is at App.xaml.cs-->
-    <!--Set ValueForFalse to string.Empty-->
-    <c:ObjectToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
+    <!--Add string.Empty to ValuesForFalse-->
+    <c:StringToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
                                 IfNeither="True"
-                                ValueForFalse=""
                                 NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
     <c:LengthConverter x:Key="LengthConverter" />
     <c:EmptyConverter x:Key="EmptyConverter" />
     <c:SystemConverter x:Key="DefaultConverter" />
-    <c:ObjectToBooleanConverter x:Key="ZeroToVisibleConverter"
-                                NextConverter="{uwp:StaticResource TrueToVisibleConverter}">
-        <c:ObjectToBooleanConverter.ValueForTrue>
+    <c:Int32ToBooleanConverter x:Key="ZeroToVisibleConverter"
+                               NextConverter="{uwp:StaticResource TrueToVisibleConverter}">
+        <c:Int32ToBooleanConverter.ValuesForTrue>
             <x:Int32>0</x:Int32>
-        </c:ObjectToBooleanConverter.ValueForTrue>
-    </c:ObjectToBooleanConverter>
+        </c:Int32ToBooleanConverter.ValuesForTrue>
+    </c:Int32ToBooleanConverter>
     <c:Int32OffsetConverter x:Key="IndexToStringConverter"
                             Offset="1"
-                            NextConverter="{uwp:StaticResource DefaultConverter}"/>
+                            NextConverter="{uwp:StaticResource DefaultConverter}" />
     <c:DateTimeOffsetToStringConverter x:Key="DateTimeOffsetToStringConverter"
                                        NextConverter="{uwp:StaticResource StringConverter}" />
     <c:ByteSizeToStringConverter x:Key="SizeConverter"

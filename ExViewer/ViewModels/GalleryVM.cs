@@ -98,71 +98,71 @@ namespace ExViewer.ViewModels
         {
             this.Share = new Command<GalleryImage>(async image =>
             {
-                if (Helpers.ShareHandler.IsShareSupported)
-                {
-                    Helpers.ShareHandler.Share(async (s, e) =>
-                    {
-                        var deferral = e.Request.GetDeferral();
-                        try
-                        {
-                            var data = e.Request.Data;
-                            var gallery = this.gallery;
-                            data.Properties.Title = gallery.GetDisplayTitle();
-                            data.Properties.Description = gallery.GetSecondaryTitle();
-                            if (image == null)
-                            {
-                                var ms = new InMemoryRandomAccessStream();
-                                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
-                                encoder.SetSoftwareBitmap(gallery.Thumb);
-                                await encoder.FlushAsync();
-                                data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
-                                var firstImage = gallery.FirstOrDefault()?.ImageFile;
-                                if (firstImage != null)
-                                    data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
-                                data.Properties.ContentSourceWebLink = gallery.GalleryUri;
-                                data.SetWebLink(gallery.GalleryUri);
-                                data.SetText(gallery.GalleryUri.ToString());
-                                data.RequestedOperation = DataPackageOperation.Move;
-                                data.Properties.FileTypes.Add(StandardDataFormats.StorageItems);
-                                data.SetDataProvider(StandardDataFormats.StorageItems, async request =>
-                                {
-                                    var d = request.GetDeferral();
-                                    try
-                                    {
-                                        var makeCopy = SavedVM.GetCopyOf(gallery);
-                                        request.SetData(Enumerable.Repeat(await makeCopy, 1));
-                                    }
-                                    finally { d.Complete(); }
-                                });
-                            }
-                            else
-                            {
-                                data.RequestedOperation = DataPackageOperation.Copy;
-                                if (image.ImageFile != null)
-                                {
-                                    var view = RandomAccessStreamReference.CreateFromFile(image.ImageFile);
-                                    data.SetBitmap(view);
-                                    data.Properties.Thumbnail = view;
-                                    data.SetStorageItems(Enumerable.Repeat(image.ImageFile, 1), true);
-                                }
-                                data.Properties.ContentSourceWebLink = image.PageUri;
-                                data.SetWebLink(image.PageUri);
-                                data.SetText(image.PageUri.ToString());
-                            }
-                        }
-                        finally
-                        {
-                            deferral.Complete();
-                        }
-                    });
-                }
-                else
+                if (!Helpers.ShareHandler.IsShareSupported)
                 {
                     if (image == null)
                         await Launcher.LaunchUriAsync(this.gallery.GalleryUri, new LauncherOptions { IgnoreAppUriHandlers = true });
                     else
                         await Launcher.LaunchUriAsync(image.PageUri, new LauncherOptions { IgnoreAppUriHandlers = true });
+                    return;
                 }
+                var gallery = this.gallery;
+                Helpers.ShareHandler.Share(async (s, e) =>
+                {
+                    var deferral = e.Request.GetDeferral();
+                    try
+                    {
+                        var data = e.Request.Data;
+                        data.Properties.Title = gallery.GetDisplayTitle();
+                        data.Properties.Description = gallery.GetSecondaryTitle();
+                        if (image == null)
+                        {
+                            var ms = new InMemoryRandomAccessStream();
+                            var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
+                            encoder.SetSoftwareBitmap(gallery.Thumb);
+                            await encoder.FlushAsync();
+                            data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
+                            var firstImage = gallery.FirstOrDefault()?.ImageFile;
+                            if (firstImage != null)
+                                data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
+                            else
+                                data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
+                            data.Properties.ContentSourceWebLink = gallery.GalleryUri;
+                            data.SetWebLink(gallery.GalleryUri);
+                            data.SetText(gallery.GalleryUri.ToString());
+                            data.RequestedOperation = DataPackageOperation.Move;
+                            data.Properties.FileTypes.Add(StandardDataFormats.StorageItems);
+                            data.SetDataProvider(StandardDataFormats.StorageItems, async request =>
+                            {
+                                var d = request.GetDeferral();
+                                try
+                                {
+                                    var makeCopy = SavedVM.GetCopyOf(gallery);
+                                    request.SetData(Enumerable.Repeat(await makeCopy, 1));
+                                }
+                                finally { d.Complete(); }
+                            });
+                        }
+                        else
+                        {
+                            data.RequestedOperation = DataPackageOperation.Copy;
+                            if (image.ImageFile != null)
+                            {
+                                var view = RandomAccessStreamReference.CreateFromFile(image.ImageFile);
+                                data.SetBitmap(view);
+                                data.Properties.Thumbnail = image.ImageFile;
+                                data.SetStorageItems(Enumerable.Repeat(image.ImageFile, 1), true);
+                            }
+                            data.Properties.ContentSourceWebLink = image.PageUri;
+                            data.SetWebLink(image.PageUri);
+                            data.SetText(image.PageUri.ToString());
+                        }
+                    }
+                    finally
+                    {
+                        deferral.Complete();
+                    }
+                });
             }, image => this.gallery != null);
             this.Save = new Command(() =>
             {
@@ -226,10 +226,11 @@ namespace ExViewer.ViewModels
                 {
                     var file = await torrent.LoadTorrentAsync();
                     var dfile = await DownloadsFolder.CreateFileAsync(file.Name, CreationCollisionOption.GenerateUniqueName);
+                    var folderPath = System.IO.Path.GetDirectoryName(dfile.Path);
                     var data = await FileIO.ReadBufferAsync(file);
                     await FileIO.WriteBufferAsync(dfile, data);
                     await Launcher.LaunchFileAsync(dfile);
-                    RootControl.RootController.SendToast(string.Format(Strings.Resources.Views.GalleryPage.TorrentDownloaded, dfile.Path), null);
+                    RootControl.RootController.SendToast(string.Format(Strings.Resources.Views.GalleryPage.TorrentDownloaded, folderPath), null);
                 }
                 catch (Exception ex)
                 {
@@ -241,6 +242,12 @@ namespace ExViewer.ViewModels
                 var vm = SearchVM.GetVM(tag.Search());
                 RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
             }, tag => tag.Content != null);
+            this.AddComment = new AsyncCommand(async () =>
+            {
+                var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref GalleryVM.addComment);
+                addComment.Gallery = this.Gallery;
+                await addComment.ShowAsync();
+            }, () => this.Gallery != null);
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -365,6 +372,10 @@ namespace ExViewer.ViewModels
         }
 
         #region Comments
+
+        private static AddCommentDialog addComment;
+
+        public AsyncCommand AddComment { get; }
 
         public IAsyncAction LoadComments()
         {

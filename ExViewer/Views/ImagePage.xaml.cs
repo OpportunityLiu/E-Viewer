@@ -211,10 +211,12 @@ namespace ExViewer.Views
 
         private System.Threading.CancellationTokenSource changingCbVisibility;
 
+        private static UISettings uiSettings = new UISettings();
+
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
             this.changingCbVisibility = new System.Threading.CancellationTokenSource();
-            await Task.Delay(200, this.changingCbVisibility.Token).ContinueWith(async t =>
+            await Task.Delay((int)uiSettings.DoubleClickTime, this.changingCbVisibility.Token).ContinueWith(async t =>
             {
                 if (t.IsCanceled)
                     return;

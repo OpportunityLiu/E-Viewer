@@ -89,7 +89,7 @@ namespace ExViewer
                 currentWindow.Activate();
             }
             await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("fcf0a9351ea5917ec80d8c1b58b56ff1");
-            ((Opportunity.Converters.ObjectToBooleanConverter)this.Resources["EmptyStringToCollapsedConverter"]).ValueForFalse = "";
+            ((Opportunity.Converters.StringToBooleanConverter)this.Resources["EmptyStringToCollapsedConverter"]).ValuesForFalse.Add("");
         }
 
         protected override void OnActivated(IActivatedEventArgs args)

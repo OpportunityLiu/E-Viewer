@@ -27,9 +27,9 @@
         <con:ObjectToBooleanConverter x:Key="ConAddComment"
                                       IfNeither="False"
                                       NextConverter="{StaticResource TrueToVisibleConverter}">
-            <con:ObjectToBooleanConverter.ValueForTrue>
+            <con:ObjectToBooleanConverter.ValuesForTrue>
                 <x:Int32>1</x:Int32>
-            </con:ObjectToBooleanConverter.ValueForTrue>
+            </con:ObjectToBooleanConverter.ValuesForTrue>
         </con:ObjectToBooleanConverter>
         <con:NumberToBooleanConverter x:Key="SaveProgressToIsIndeterminateConverter"
                                       RangeStart="0"
@@ -37,16 +37,10 @@
                                       RangeEnd="100"
                                       IncludeEnd="True"
                                       InRangeResult="False" />
-        <con:ObjectToBooleanConverter x:Key="OperationStateToVisibilityConverter"
-                                    IfNeither="True"
-                                    NextConverter="{StaticResource TrueToVisibleConverter}">
-            <con:ObjectToBooleanConverter.ValueForFalse>
-                <VM:OperationState>NotStarted</VM:OperationState>
-            </con:ObjectToBooleanConverter.ValueForFalse>
-            <con:ObjectToBooleanConverter.ValueForTrue>
-                <VM:OperationState>Started</VM:OperationState>
-            </con:ObjectToBooleanConverter.ValueForTrue>
-        </con:ObjectToBooleanConverter>
+        <con:EnumToBooleanConverter x:Key="OperationStateToVisibilityConverter"
+                                    NextConverter="{StaticResource FalseToVisibleConverter}">
+            <VM:OperationState>NotStarted</VM:OperationState>
+        </con:EnumToBooleanConverter>
 
         <Style x:Key="TorrentNameTextBlockStyle"
                TargetType="TextBlock">
@@ -635,7 +629,7 @@
                               Icon="Add"
                               Label="Post new comment"
                               Visibility="{x:Bind pv.SelectedIndex, Mode=OneWay, Converter={StaticResource ConAddComment}}"
-                              Click="abbComment_Click" />
+                              Command="{x:Bind VM.AddComment, Mode=OneWay}"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_share"
