@@ -5,6 +5,7 @@
                         xmlns:local="using:ExViewer.Views">
     <c:SoftwareBitmapToImageSourceConverter x:Key="SoftwareBitmapToImageSourceConverter" />
     <c:ThicknessConverter x:Key="ThicknessConverter" />
+    <c:IRandomAccessStreamReferenceToImageSourceConverter x:Key="FileConverter" />
     <FormatStringConverter x:Key="StringConverter" />
     <c:VisibilityConverter x:Key="TrueToVisibleConverter"
                            TrueForVisible="True" />

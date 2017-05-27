@@ -21,10 +21,20 @@
       the application package. The asterisks are not wildcards.
     -->
     <Assembly Name="*Application*" Dynamic="Required All"/>
-    
+
     <!-- Add your application specific runtime directives here. -->
     <Namespace Name="Windows.UI.Xaml" Dynamic="Required All"/>
-
-
+    <Type Name="Windows.UI.Xaml.DurationType" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.Media.Animation.RepeatBehaviorType" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.GridUnitType" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.CornerRadius" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.Duration" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.Thickness" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.Media.Matrix" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.Media.Animation.KeyTime" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.Media.Animation.RepeatBehavior" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.Controls.Primitives.GeneratorPosition" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.Media.Media3D.Matrix3D" Dynamic="Required All"/>
+    <Type Name="Windows.UI.Xaml.GridLength" Dynamic="Required All"/>
   </Application>
 </Directives>
