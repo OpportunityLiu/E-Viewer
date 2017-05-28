@@ -10,7 +10,8 @@
       mc:Ignorable="d"
       xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls">
     <Page.Resources>
-        <MenuFlyout x:Name="mf_Gallery">
+        <MenuFlyout x:Name="mf_Gallery"
+                    Placement="Bottom">
             <MenuFlyoutItem x:Uid="Views/SavedPage/DeleteMenuFlyout"
                             x:Name="mfi_DeleteGallery"
                             Text="Delete"

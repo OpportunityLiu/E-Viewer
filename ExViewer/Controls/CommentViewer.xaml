@@ -120,7 +120,7 @@
                 VerticalContentAlignment="Stretch">
             <FontIcon Glyph="" />
             <Button.Flyout>
-                <MenuFlyout x:Name="ActionsFlyout">
+                <MenuFlyout x:Name="ActionsFlyout" Placement="Bottom">
                     <MenuFlyoutItem x:Name="VoteUp"
                                     x:Uid="Controls/CommentViewer/VoteUpMenuFlyoutItem"
                                     Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConUp}}"
@@ -158,7 +158,7 @@
         <local:HtmlTextBlock x:Name="Text"
                              Margin="12,12,12,4"
                              DetectLink="True"
-                             Opacity="{x:Bind toOpacity(Translated.HtmlContent), Mode=OneWay, FallbackValue=1}"
+                             Opacity="{x:Bind Translated.HtmlContent,Converter={StaticResource ContentOpacity}, Mode=OneWay, FallbackValue=1}"
                              XYFocusUp="{x:Bind Score}"
                              XYFocusDown="{x:Bind Translated.FirstLink, Mode=OneWay}"
                              HtmlContent="{x:Bind Comment.Content, Mode=OneWay}"
