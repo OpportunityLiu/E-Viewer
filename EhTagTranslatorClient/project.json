@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "HtmlAgilityPack": "1.4.9.5",
+    "HtmlAgilityPack": "1.5.0-beta5",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.1.2",
     "Microsoft.EntityFrameworkCore.Tools": "1.1.1",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3"

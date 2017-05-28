@@ -122,27 +122,33 @@
             <Button.Flyout>
                 <MenuFlyout x:Name="ActionsFlyout">
                     <MenuFlyoutItem x:Name="VoteUp"
+                                    x:Uid="Controls/CommentViewer/VoteUpMenuFlyoutItem"
                                     Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConUp}}"
                                     Click="VoteUp_Click"
                                     Text="Vote up" />
                     <MenuFlyoutItem x:Name="WithdrawVote"
+                                    x:Uid="Controls/CommentViewer/WithdrawVoteMenuFlyoutItem"
                                     Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConWithdraw}}"
                                     Click="WithdrawVote_Click"
                                     Text="Withdraw vote" />
                     <MenuFlyoutItem x:Name="VoteDown"
+                                    x:Uid="Controls/CommentViewer/VoteDownMenuFlyoutItem"
                                     Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConDown}}"
                                     Click="VoteDown_Click"
                                     Text="Vote down" />
                     <MenuFlyoutItem x:Name="Edit"
+                                    x:Uid="Controls/CommentViewer/EditMenuFlyoutItem"
                                     Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConEdit}}"
                                     Text="Edit"
                                     Click="Edit_Click" />
                     <MenuFlyoutItem x:Name="Reply"
+                                    x:Uid="Controls/CommentViewer/ReplyMenuFlyoutItem"
                                     Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConReply}}"
                                     Text="Reply"
                                     Click="Reply_Click" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem x:Name="Translate"
+                                    x:Uid="Controls/CommentViewer/TranslateMenuFlyoutItem"
                                     Text="Translate to English"
                                     IsEnabled="{x:Bind Translated.HtmlContent, Mode=OneWay, Converter={StaticResource NullToTrueConverter}}"
                                     Click="Translate_Click" />
@@ -152,6 +158,7 @@
         <local:HtmlTextBlock x:Name="Text"
                              Margin="12,12,12,4"
                              DetectLink="True"
+                             Opacity="{x:Bind toOpacity(Translated.HtmlContent), Mode=OneWay, FallbackValue=1}"
                              XYFocusUp="{x:Bind Score}"
                              XYFocusDown="{x:Bind Translated.FirstLink, Mode=OneWay}"
                              HtmlContent="{x:Bind Comment.Content, Mode=OneWay}"

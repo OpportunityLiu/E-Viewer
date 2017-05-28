@@ -132,5 +132,12 @@ namespace ExViewer.Controls
                 RootControl.RootController.SendToast(ex, null);
             }
         }
+
+        private double toOpacity(HtmlAgilityPack.HtmlNode val)
+        {
+            if (val == null)
+                return 1;
+            return 0.7;
+        }
     }
 }

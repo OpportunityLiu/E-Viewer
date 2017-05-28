@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
 using ExClient.Api;
+using System.Text;
 
 namespace ExClient.Commenting
 {
@@ -85,12 +86,14 @@ namespace ExClient.Commenting
                 var node = HtmlNode.CreateNode(this.Content.OuterHtml);
                 foreach (var item in node.Descendants("#text"))
                 {
+                    var data = HtmlEntity.DeEntitize(item.InnerHtml);
                     var uri = $"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8"
-                        + $"&sl=auto&tl={targetLangCode}&q={Uri.EscapeDataString(item.InnerHtml)}";
+                        + $"&sl=auto&tl={targetLangCode}&q={Uri.EscapeDataString(data)}";
                     var transRetHtml = await transClient.GetStringAsync(new Uri(uri));
                     var obj = JsonConvert.DeserializeObject<JArray>(transRetHtml);
                     var objarr = (JArray)obj[0];
-                    item.InnerHtml = string.Join(" ", objarr.Select(a => a[0].ToString()));
+                    var translated = string.Concat(objarr.Select(a => a[0].ToString()));
+                    item.InnerHtml = HtmlEntity.Entitize(translated);
                 }
                 this.TranslatedContent = node;
                 return node;
