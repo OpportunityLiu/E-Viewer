@@ -50,4 +50,15 @@
                                 NextConverter="{StaticResource FalseToVisibleConverter}">
         <commenting:CommentStatus>Editable</commenting:CommentStatus>
     </con:EnumToBooleanConverter>
+    <con:NullTestConverter x:Key="ContentOpacity"
+                           IfNull="True">
+        <con:BooleanToObjectConverter>
+            <con:BooleanToObjectConverter.ValueForTrue>
+                <x:Double>1</x:Double>
+            </con:BooleanToObjectConverter.ValueForTrue>
+            <con:BooleanToObjectConverter.ValueForFalse>
+                <x:Double>0.6</x:Double>
+            </con:BooleanToObjectConverter.ValueForFalse>
+        </con:BooleanToObjectConverter>
+    </con:NullTestConverter>
 </ResourceDictionary>

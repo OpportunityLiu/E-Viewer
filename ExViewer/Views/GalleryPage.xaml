@@ -220,7 +220,8 @@
                     Value="Top" />
         </Style>
 
-        <MenuFlyout x:Name="mfo_Tag">
+        <MenuFlyout x:Name="mfo_Tag"
+                    Placement="Bottom">
             <MenuFlyoutItem Text="{Binding Content}"
                             ToolTipService.ToolTip="{Binding Content}"
                             Command="{x:Bind VM.CopyTag, Mode=OneWay}"
