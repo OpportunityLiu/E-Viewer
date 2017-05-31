@@ -28,5 +28,11 @@ namespace ExViewer.Settings
             get => GetLocal(false);
             set => SetLocal(value);
         }
+
+        public string TorrentFolderToken
+        {
+            get => GetLocal(default(string));
+            set => SetLocal(value);
+        }
     }
 }

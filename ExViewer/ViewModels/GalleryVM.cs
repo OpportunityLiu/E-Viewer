@@ -24,6 +24,7 @@ using Opportunity.MvvmUniverse.Helpers;
 using ExClient.Tagging;
 using ExClient.Galleries;
 using ExClient.Galleries.Metadata;
+using Windows.Storage.AccessCache;
 
 namespace ExViewer.ViewModels
 {
@@ -219,24 +220,6 @@ namespace ExViewer.ViewModels
                     await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null);
-            this.TorrentDownload = new Command<TorrentInfo>(async torrent =>
-            {
-                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
-                try
-                {
-                    var file = await torrent.LoadTorrentAsync();
-                    var dfile = await DownloadsFolder.CreateFileAsync(file.Name, CreationCollisionOption.GenerateUniqueName);
-                    var folderPath = System.IO.Path.GetDirectoryName(dfile.Path);
-                    var data = await FileIO.ReadBufferAsync(file);
-                    await FileIO.WriteBufferAsync(dfile, data);
-                    await Launcher.LaunchFileAsync(dfile);
-                    RootControl.RootController.SendToast(string.Format(Strings.Resources.Views.GalleryPage.TorrentDownloaded, folderPath), null);
-                }
-                catch (Exception ex)
-                {
-                    RootControl.RootController.SendToast(ex, typeof(GalleryPage));
-                }
-            }, torrent => torrent != null && torrent.TorrentUri != null);
             this.SearchTag = new Command<Tag>(tag =>
             {
                 var vm = SearchVM.GetVM(tag.Search());
@@ -271,8 +254,6 @@ namespace ExViewer.ViewModels
         public Command<GalleryImage> LoadOriginal { get; }
 
         public Command<GalleryImage> ReloadImage { get; }
-
-        public Command<TorrentInfo> TorrentDownload { get; }
 
         public Command<Tag> SearchTag { get; }
 
@@ -395,6 +376,57 @@ namespace ExViewer.ViewModels
         #endregion Comments
 
         #region Torrents
+
+        private static StorageFolder torrentfolder;
+
+        private static IAsyncAction loadTorrentFolder()
+        {
+            return Run(async token =>
+            {
+                var ftoken = StatusCollection.Current.TorrentFolderToken;
+                if (ftoken != null)
+                {
+                    try
+                    {
+                        torrentfolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(ftoken);
+                    }
+                    catch (Exception)
+                    {
+                        //Load failed
+                        torrentfolder = null;
+                    }
+                }
+                if (torrentfolder == null)
+                {
+                    torrentfolder = await DownloadsFolder.CreateFolderAsync("Torrents", CreationCollisionOption.GenerateUniqueName);
+                    if (ftoken == null)
+                        ftoken = StorageApplicationPermissions.FutureAccessList.Add(torrentfolder);
+                    else
+                        StorageApplicationPermissions.FutureAccessList.AddOrReplace(ftoken, torrentfolder);
+                }
+                StatusCollection.Current.TorrentFolderToken = ftoken;
+            });
+        }
+
+        public Command<TorrentInfo> TorrentDownload { get; } = new Command<TorrentInfo>(async torrent =>
+        {
+            RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
+            try
+            {
+                var file = await torrent.LoadTorrentAsync();
+                if (await Launcher.LaunchFileAsync(file))
+                    return;
+                if (torrentfolder == null)
+                    await loadTorrentFolder();
+                await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
+                await Launcher.LaunchFolderAsync(torrentfolder);
+                RootControl.RootController.SendToast(string.Format(Strings.Resources.Views.GalleryPage.TorrentDownloaded, torrentfolder.Path), null);
+            }
+            catch (Exception ex)
+            {
+                RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+            }
+        }, torrent => torrent != null && torrent.TorrentUri != null);
 
         public IAsyncAction LoadTorrents()
         {
