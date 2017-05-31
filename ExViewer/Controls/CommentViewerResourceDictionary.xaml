@@ -19,14 +19,6 @@
         <Setter Property="Margin"
                 Value="8,0" />
     </Style>
-    <Style x:Key="EditedTextBlockStyle"
-           BasedOn="{StaticResource CaptionTextBlockStyle}"
-           TargetType="TextBlock">
-        <Setter Property="FontStyle"
-                Value="Italic" />
-        <Setter Property="FontWeight"
-                Value="Medium" />
-    </Style>
     <con:EnumToBooleanConverter x:Key="ConUp"
                                 NextConverter="{StaticResource TrueToVisibleConverter}">
         <commenting:CommentStatus>VotedDown</commenting:CommentStatus>

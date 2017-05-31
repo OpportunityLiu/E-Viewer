@@ -26,10 +26,7 @@
       "PostedFormatString": "Posted on {0}",
       "ReplyMenuFlyoutItem/Text": "Reply",
       "ScoreFormatString": "Score {0:+#0;-#0}",
-      // see https://ctrlq.org/code/19899-google-translate-languages#languages
-      "TranslateLanguageCode": "en",
-      // Use local language to replace "English"
-      "TranslateMenuFlyoutItem/Text": "Translate to English",
+      "TranslateMenuFlyoutItem/Text": "Translate",
       "VoteDownMenuFlyoutItem/Text": "Vote down",
       "VoteUpMenuFlyoutItem/Text": "Vote up",
       "WithdrawVoteMenuFlyoutItem/Text": "Withdraw vote"
@@ -86,6 +83,9 @@
   "General": {
     "Cancel": "Cancel",
     "Exit": "Exit",
+    // see https://ctrlq.org/code/19899-google-translate-languages#languages
+    // Use local language to replace "English"
+    "LanguageCode": "en",
     "OK": "OK"
   },
   "Sharing": {

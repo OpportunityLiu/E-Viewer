@@ -40,6 +40,18 @@ namespace ExViewer.Controls
         public static readonly DependencyProperty CommentProperty =
             DependencyProperty.Register("Comment", typeof(Comment), typeof(CommentViewer), new PropertyMetadata(null, CommentPropertyChanged));
 
+
+
+        public HtmlAgilityPack.HtmlNode TranslatedContent
+        {
+            get { return (HtmlAgilityPack.HtmlNode)GetValue(TranslatedContentProperty); }
+            set { SetValue(TranslatedContentProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TranslatedContent.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TranslatedContentProperty =
+            DependencyProperty.Register("TranslatedContent", typeof(HtmlAgilityPack.HtmlNode), typeof(CommentViewer), new PropertyMetadata(null));
+
         private static void CommentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (CommentViewer)d;
@@ -49,6 +61,8 @@ namespace ExViewer.Controls
                 {
                     sender.FindName(nameof(AttentionHeader));
                 }
+                if (c.Edited.HasValue)
+                    sender.FindName(nameof(Edited));
             }
             if (sender.Translated != null)
                 sender.Translated.HtmlContent = null;
@@ -113,19 +127,22 @@ namespace ExViewer.Controls
             }
         }
         
-        private void Reply_Click(object sender, RoutedEventArgs e)
+        private async void Reply_Click(object sender, RoutedEventArgs e)
         {
-
+            var dialog = System.Threading.LazyInitializer.EnsureInitialized(ref replyDialog);
+            dialog.ReplyingComment = this.Comment;
+            await dialog.ShowAsync();
         }
+
+        private static ReplyCommentDialog replyDialog;
 
         private async void Translate_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var r = await this.Comment.TranslateAsync(Strings.Resources.Controls.CommentViewer.TranslateLanguageCode);
+                var translateTask = this.Comment.TranslateAsync(Settings.SettingCollection.Current.CommentTranslationCode);
                 FindName(nameof(Translated));
-                this.Bindings.Update();
-                this.Translated.HtmlContent = r;
+                this.TranslatedContent = await translateTask;
             }
             catch (Exception ex)
             {
