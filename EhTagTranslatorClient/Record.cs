@@ -60,6 +60,8 @@ namespace EhTagTranslatorClient
             {
                 var sb = new StringBuilder(value);
                 sb.Replace(@"\|", @"|");
+                sb.Replace(@"\~", @"~");
+                sb.Replace(@"\*", @"*");
                 sb.Replace(@"\\", @"\");
                 sb.Replace("<br>", Environment.NewLine);
                 return sb.ToString();
