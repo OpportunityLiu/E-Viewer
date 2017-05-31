@@ -125,6 +125,13 @@ namespace ExViewer.Settings
             set => SetRoaming(value);
         }
 
+        [Setting("Viewing", Index = 28)]
+        public string CommentTranslationCode
+        {
+            get => GetRoaming(Strings.Resources.General.LanguageCode);
+            set => SetRoaming(value);
+        }
+
         [Setting("Viewing", Index = 30)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseJapaneseTagTranslation

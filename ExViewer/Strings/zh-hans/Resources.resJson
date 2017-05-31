@@ -26,10 +26,7 @@
       "PostedFormatString": "发布于 {0}",
       "ReplyMenuFlyoutItem/Text": "回复",
       "ScoreFormatString": "评分 {0:+#0;-#0}",
-      // see https://ctrlq.org/code/19899-google-translate-languages#languages
-      "TranslateLanguageCode": "zh-CN",
-      // Use local language to replace "English"
-      "TranslateMenuFlyoutItem/Text": "翻译为简体中文",
+      "TranslateMenuFlyoutItem/Text": "翻译",
       "VoteDownMenuFlyoutItem/Text": "反对",
       "VoteUpMenuFlyoutItem/Text": "支持",
       "WithdrawVoteMenuFlyoutItem/Text": "撤销投票"
@@ -86,6 +83,9 @@
   "General": {
     "Cancel": "取消",
     "Exit": "退出",
+    // see https://ctrlq.org/code/19899-google-translate-languages#languages
+    // Use local language to replace "English"
+    "LanguageCode": "zh-CN",
     "OK": "确定"
   },
   "Sharing": {

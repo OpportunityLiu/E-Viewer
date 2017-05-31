@@ -47,23 +47,23 @@ namespace ExViewer.Views
 
         private string safeSubstring(string str, int start, int length)
         {
-            if(start < 0)
+            if (start < 0)
             {
                 length += start;
                 start = 0;
             }
-            if(length < 0)
+            if (length < 0)
                 return "";
-            if(start + length > str.Length)
+            if (start + length > str.Length)
                 return str.Substring(start);
             return str.Substring(start, length);
         }
 
         private void handleTag(string tag)
         {
-            if(this.tbContent.IsReadOnly)
+            if (this.tbContent.IsReadOnly)
                 return;
-            if(tag == "url")
+            if (tag == "url")
             {
                 handleUrl();
                 return;
@@ -75,41 +75,41 @@ namespace ExViewer.Views
             var currentSelected = this.tbContent.SelectedText;
             bool? startsWith = false;
             bool? endsWith = false;
-            if(currentSelected.StartsWith(begin))
+            if (currentSelected.StartsWith(begin))
             {
                 startsWith = true;
             }
-            else if(safeSubstring(text, sS - begin.Length, begin.Length) == begin)
+            else if (safeSubstring(text, sS - begin.Length, begin.Length) == begin)
             {
                 startsWith = null;
                 sS -= begin.Length;
                 this.tbContent.Select(sS, currentSelected.Length + begin.Length);
                 currentSelected = this.tbContent.SelectedText;
             }
-            if(currentSelected.EndsWith(end))
+            if (currentSelected.EndsWith(end))
             {
                 endsWith = true;
             }
-            else if(safeSubstring(text, sS + currentSelected.Length, end.Length) == end)
+            else if (safeSubstring(text, sS + currentSelected.Length, end.Length) == end)
             {
                 endsWith = null;
                 this.tbContent.Select(sS, currentSelected.Length + end.Length);
                 currentSelected = this.tbContent.SelectedText;
             }
-            if(startsWith == null && endsWith == false)
+            if (startsWith == null && endsWith == false)
             {
                 startsWith = false;
                 sS += begin.Length;
                 this.tbContent.Select(sS, currentSelected.Length - begin.Length);
                 currentSelected = this.tbContent.SelectedText;
             }
-            else if(startsWith == false && endsWith == null)
+            else if (startsWith == false && endsWith == null)
             {
                 endsWith = false;
                 this.tbContent.Select(sS, currentSelected.Length - end.Length);
                 currentSelected = this.tbContent.SelectedText;
             }
-            if(startsWith != false && endsWith != false)
+            if (startsWith != false && endsWith != false)
             {
                 this.tbContent.SelectedText = currentSelected.Substring(begin.Length, currentSelected.Length - begin.Length - end.Length);
                 return;
@@ -117,7 +117,7 @@ namespace ExViewer.Views
             var replaced = string.Concat(begin, currentSelected, end);
             this.tbContent.SelectedText = replaced;
             var s = this.tbContent.SelectionStart;
-            if(currentSelected.Length == 0)
+            if (currentSelected.Length == 0)
                 this.tbContent.Select(s + replaced.Length - end.Length, 0);
         }
 
@@ -128,12 +128,12 @@ namespace ExViewer.Views
             var currentSelected = this.tbContent.SelectedText;
             var end = "[/url]";
             var match = urlRegex.Match(currentSelected);
-            if(match.Success)
+            if (match.Success)
             {
                 this.tbContent.SelectedText = match.Groups[1].Value;
                 return;
             }
-            if(Uri.TryCreate(currentSelected, UriKind.Absolute, out var uri) &&
+            if (Uri.TryCreate(currentSelected, UriKind.Absolute, out var uri) &&
                 (uri.Host.EndsWith("e-hentai.org") || uri.Host.EndsWith("exhentai.org")))
             {
                 var begin = $"[url={currentSelected}]";
@@ -148,7 +148,7 @@ namespace ExViewer.Views
                 var replaced = string.Concat(begin, currentSelected, end);
                 this.tbContent.SelectedText = replaced;
                 var s = this.tbContent.SelectionStart;
-                if(currentSelected.Length == 0)
+                if (currentSelected.Length == 0)
                     this.tbContent.Select(s + replaced.Length - end.Length, 0);
             }
         }
@@ -157,7 +157,7 @@ namespace ExViewer.Views
 
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
-            if(e.OriginalKey == Windows.System.VirtualKey.Control ||
+            if (e.OriginalKey == Windows.System.VirtualKey.Control ||
                 e.OriginalKey == Windows.System.VirtualKey.LeftControl ||
                 e.OriginalKey == Windows.System.VirtualKey.RightControl)
             {
@@ -168,17 +168,17 @@ namespace ExViewer.Views
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
-            if(e.OriginalKey == Windows.System.VirtualKey.Control ||
+            if (e.OriginalKey == Windows.System.VirtualKey.Control ||
                 e.OriginalKey == Windows.System.VirtualKey.LeftControl ||
                 e.OriginalKey == Windows.System.VirtualKey.RightControl)
             {
                 this.ctrlDown = false;
             }
             base.OnKeyUp(e);
-            if(e.Handled || !this.ctrlDown)
+            if (e.Handled || !this.ctrlDown)
                 return;
             e.Handled = true;
-            switch(e.OriginalKey)
+            switch (e.OriginalKey)
             {
             case Windows.System.VirtualKey.B:
                 handleTag("b");
@@ -203,7 +203,7 @@ namespace ExViewer.Views
 
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(e.NewSize.Width > 320)
+            if (e.NewSize.Width > 320)
             {
                 this.gdEditBar.HorizontalAlignment = HorizontalAlignment.Right;
                 this.gdEditBar.Width = 320;
@@ -236,7 +236,7 @@ namespace ExViewer.Views
 
         private void AddCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            if(Gallery == null)
+            if (Gallery == null)
                 throw new InvalidOperationException();
             this.tbContent.Text = "";
             this.tbContent.Focus(FocusState.Programmatic);
@@ -250,7 +250,7 @@ namespace ExViewer.Views
             {
                 await Gallery.Comments.PostCommentAsync(this.tbContent.Text);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
                 args.Cancel = true;
@@ -285,14 +285,14 @@ namespace ExViewer.Views
         {
             var sender = (EditCommentDialog)d;
             var newValue = (Comment)e.NewValue;
-            if(newValue != null && !newValue.CanEdit)
+            if (newValue != null && !newValue.CanEdit)
                 throw new InvalidOperationException();
         }
 
         private async void EditCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
             this.tbContent.Text = "";
-            if(EditableComment == null)
+            if (EditableComment == null)
                 throw new InvalidOperationException();
             try
             {
@@ -301,7 +301,7 @@ namespace ExViewer.Views
                 this.tbContent.Text = editable;
                 this.tbContent.Select(editable.Length, 0);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.tbContent.Text = "";
                 this.tbInfo.Text = ex.GetMessage();
@@ -321,7 +321,65 @@ namespace ExViewer.Views
             {
                 await EditableComment.EditAsync(this.tbContent.Text);
             }
-            catch(Exception ex)
+            catch (Exception ex)
+            {
+                this.tbInfo.Text = ex.GetMessage();
+                args.Cancel = true;
+            }
+            finally
+            {
+                d.Complete();
+                this.pbLoading.IsIndeterminate = false;
+            }
+        }
+    }
+
+    public sealed class ReplyCommentDialog : CommentDialog
+    {
+        public ReplyCommentDialog()
+        {
+            this.Title = Strings.Resources.Views.CommentDialog.AddTitle;
+            this.Opened += this.EditCommentDialog_Opened;
+            this.PrimaryButtonClick += this.EditCommentDialog_PrimaryButtonClick;
+        }
+
+        public Comment ReplyingComment
+        {
+            get => (Comment)GetValue(ReplyingCommentProperty);
+            set => SetValue(ReplyingCommentProperty, value);
+        }
+
+        public static readonly DependencyProperty ReplyingCommentProperty =
+            DependencyProperty.Register(nameof(ReplyingComment), typeof(Comment), typeof(ReplyCommentDialog), new PropertyMetadata(null));
+
+        private void EditCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        {
+            this.tbContent.Text = "";
+            if (ReplyingComment == null)
+                throw new InvalidOperationException();
+            try
+            {
+                this.pbLoading.IsIndeterminate = true;
+                var reply = $"@{ReplyingComment.Author}{Environment.NewLine}";
+                this.tbContent.Text = reply;
+                this.tbContent.Select(reply.Length, 0);
+            }
+            finally
+            {
+                this.pbLoading.IsIndeterminate = false;
+            }
+            this.tbContent.Focus(FocusState.Programmatic);
+        }
+
+        private async void EditCommentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            this.pbLoading.IsIndeterminate = true;
+            var d = args.GetDeferral();
+            try
+            {
+                await ReplyingComment.Owner.PostCommentAsync(this.tbContent.Text);
+            }
+            catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
                 args.Cancel = true;
