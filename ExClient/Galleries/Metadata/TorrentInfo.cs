@@ -123,9 +123,10 @@ namespace ExClient.Galleries.Metadata
                     throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
                 using(var client = new HttpClient())
                 {
+                    var loadT = client.GetBufferAsync(this.TorrentUri);
                     var filename = StorageHelper.ToValidFileName(this.Name + ".torrent");
-                    var result = await client.GetBufferAsync(this.TorrentUri);
-                    var file = await (await StorageHelper.CreateTempFolderAsync()).SaveFileAsync(filename, CreationCollisionOption.ReplaceExisting, result);
+                    var folder = await StorageHelper.CreateTempFolderAsync();
+                    var file = await folder.SaveFileAsync(filename, CreationCollisionOption.ReplaceExisting, await loadT);
                     return file;
                 }
             });
