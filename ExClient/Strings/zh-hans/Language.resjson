@@ -1,5 +1,7 @@
 ﻿{
+  // Language tags, see: https://ehwiki.org/wiki/language
   "Modifiers": {
+    // Technical tags for language, make sure the localization string to be short.
     "Translated": "译",
     "Rewrite": "改"
   },
@@ -25,7 +27,7 @@
     "Indonesian": "印度尼西亚语",
     "Italian": "意大利语",
     "Japanese": "日语",
-    "Korean": "朝鲜语",
+    "Korean": "韩语",
     "Mongolian": "蒙古语",
     "Norwegian": "挪威语",
     "NotApplicable": "无文字",

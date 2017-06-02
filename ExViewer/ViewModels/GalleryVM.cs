@@ -20,7 +20,6 @@ using Windows.ApplicationModel.DataTransfer;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
 using Opportunity.MvvmUniverse;
-using Opportunity.MvvmUniverse.Helpers;
 using ExClient.Tagging;
 using ExClient.Galleries;
 using ExClient.Galleries.Metadata;
@@ -414,12 +413,11 @@ namespace ExViewer.ViewModels
             try
             {
                 var file = await torrent.LoadTorrentAsync();
-                if (await Launcher.LaunchFileAsync(file))
-                    return;
                 if (torrentfolder == null)
                     await loadTorrentFolder();
                 await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
-                await Launcher.LaunchFolderAsync(torrentfolder);
+                if (!await Launcher.LaunchFileAsync(file))
+                    await Launcher.LaunchFolderAsync(torrentfolder);
                 RootControl.RootController.SendToast(string.Format(Strings.Resources.Views.GalleryPage.TorrentDownloaded, torrentfolder.Path), null);
             }
             catch (Exception ex)

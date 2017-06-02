@@ -40,21 +40,10 @@ namespace ExViewer.Controls
         public static readonly DependencyProperty CommentProperty =
             DependencyProperty.Register("Comment", typeof(Comment), typeof(CommentViewer), new PropertyMetadata(null, CommentPropertyChanged));
 
-
-
-        public HtmlAgilityPack.HtmlNode TranslatedContent
-        {
-            get { return (HtmlAgilityPack.HtmlNode)GetValue(TranslatedContentProperty); }
-            set { SetValue(TranslatedContentProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for TranslatedContent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TranslatedContentProperty =
-            DependencyProperty.Register("TranslatedContent", typeof(HtmlAgilityPack.HtmlNode), typeof(CommentViewer), new PropertyMetadata(null));
-
         private static void CommentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (CommentViewer)d;
+            sender.TranslatedContent = null;
             if (e.NewValue is Comment c)
             {
                 if (c.CanEdit)
@@ -64,9 +53,17 @@ namespace ExViewer.Controls
                 if (c.Edited.HasValue)
                     sender.FindName(nameof(Edited));
             }
-            if (sender.Translated != null)
-                sender.Translated.HtmlContent = null;
         }
+
+        public HtmlAgilityPack.HtmlNode TranslatedContent
+        {
+            get => (HtmlAgilityPack.HtmlNode)GetValue(TranslatedContentProperty);
+            set => SetValue(TranslatedContentProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for TranslatedContent.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TranslatedContentProperty =
+            DependencyProperty.Register("TranslatedContent", typeof(HtmlAgilityPack.HtmlNode), typeof(CommentViewer), new PropertyMetadata(null));
 
         protected override void OnDisconnectVisualChildren()
         {

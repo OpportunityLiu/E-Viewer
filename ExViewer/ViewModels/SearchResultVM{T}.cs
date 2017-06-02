@@ -21,6 +21,18 @@ namespace ExViewer.ViewModels
     public abstract class SearchResultVM<T> : ViewModelBase
         where T : SearchResultBase
     {
+        protected SearchResultVM()
+        {
+            this.Open = new Command<Gallery>(g =>
+            {
+                this.SelectedGallery = g;
+                GalleryVM.GetVM(g);
+                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
+            }, g => g != null);
+        }
+
+        public Command<Gallery> Open { get; }
+
         private T searchResult;
 
         public T SearchResult

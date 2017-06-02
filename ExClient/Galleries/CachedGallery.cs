@@ -2,7 +2,6 @@
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
-using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +17,9 @@ namespace ExClient.Galleries
     {
         private sealed class CachedGalleryList : GalleryList<CachedGallery, GalleryModel>
         {
-            public static IAsyncOperation<CachedGalleryList> LoadList()
+            public static IAsyncOperation<ObservableCollection<Gallery>> LoadList()
             {
-                return Task.Run(() =>
+                return Task.Run<ObservableCollection<Gallery>>(() =>
                 {
                     using (var db = new GalleryDb())
                     {
@@ -50,7 +49,7 @@ namespace ExClient.Galleries
 
         public static IAsyncOperation<ObservableCollection<Gallery>> LoadCachedGalleriesAsync()
         {
-            return Run<ObservableCollection<Gallery>>(async token => await CachedGalleryList.LoadList());
+            return CachedGalleryList.LoadList();
         }
 
         public static IAsyncActionWithProgress<double> ClearCachedGalleriesAsync()
@@ -91,7 +90,7 @@ namespace ExClient.Galleries
         internal CachedGallery(GalleryModel model)
             : base(model)
         {
-            this.loadingPageArray = new MulticastAsyncAction[MathHelper.GetPageCount(model.RecordCount, PageSize)];
+            this.loadingPageArray = new IAsyncAction[MathHelper.GetPageCount(model.RecordCount, PageSize)];
         }
 
         internal ImageModel[] ImageModels { get; private set; }
@@ -146,15 +145,15 @@ namespace ExClient.Galleries
             }).AsAsyncOperation();
         }
 
-        private readonly MulticastAsyncAction[] loadingPageArray;
+        private readonly IAsyncAction[] loadingPageArray;
 
         internal IAsyncAction LoadImageAsync(GalleryImagePlaceHolder image)
         {
             var pageIndex = MathHelper.GetPageIndexOfRecord(PageSize, image.PageId - 1);
             var lpAc = this.loadingPageArray[pageIndex];
-            if (lpAc != null && !lpAc.Disposed)
+            if (lpAc != null && lpAc.Status == AsyncStatus.Started)
                 return lpAc;
-            var action = Run(async token =>
+            return this.loadingPageArray[pageIndex] = Run(async token =>
             {
                 var images = await base.LoadPageAsync(pageIndex);
                 var offset = MathHelper.GetStartIndexOfPage(PageSize, pageIndex);
@@ -167,8 +166,7 @@ namespace ExClient.Galleries
                 }
                 await Task.Yield();
                 this.loadingPageArray[pageIndex] = null;
-            });
-            return this.loadingPageArray[pageIndex] = action.AsMulticast();
+            }).AsMulticast();
         }
 
         public override IAsyncAction DeleteAsync()
