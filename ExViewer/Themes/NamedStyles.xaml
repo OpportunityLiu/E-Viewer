@@ -5,6 +5,29 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d">
+
+    <Style x:Key="PictureFrameFavoriteCategoryPresenterStyle"
+           TargetType="controls:FavoriteCategoryPresenter">
+        <Setter Property="BorderBrush"
+                Value="{ThemeResource AccentButtonBackground}" />
+        <Setter Property="HorizontalAlignment"
+                Value="Stretch" />
+        <Setter Property="VerticalAlignment"
+                Value="Stretch" />
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:FavoriteCategoryPresenter">
+                    <Path x:Name="Icon"
+                          Data="M0,0h20v20z"
+                          StrokeThickness="0"
+                          Fill="{TemplateBinding BorderBrush}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="TopBarPlaceholderBorderStyle"
            TargetType="Border">
         <Setter Property="HorizontalAlignment"
@@ -340,7 +363,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition/>
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -349,8 +372,8 @@
             <controls:HighlightTextBlock Text="{Binding Title, Mode=OneTime}"
                                          HighlightText="{Binding Highlight, Mode=OneTime}"
                                          Comparison="OrdinalIgnoreCase"
-                                         Grid.Column="1" 
-                                         Grid.ColumnSpan="2"/>
+                                         Grid.Column="1"
+                                         Grid.ColumnSpan="2" />
             <TextBlock Text="{Binding AdditionalInfo, Mode=OneTime}"
                        Margin="0,0,8,0"
                        Visibility="{Binding AdditionalInfo, Mode=OneTime, Converter={StaticResource NullToCollapsedConverter}}"

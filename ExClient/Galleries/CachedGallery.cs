@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Windows.Graphics.Imaging;
 
 namespace ExClient.Galleries
 {
@@ -198,24 +199,31 @@ namespace ExClient.Galleries
 
         protected override IAsyncAction InitOverrideAsync()
         {
-            return DispatcherHelper.RunAsyncOnUIThread(async () =>
+            return AsyncWrapper.CreateCompleted();
+        }
+
+        protected override IAsyncOperation<SoftwareBitmap> GetThumbAsync()
+        {
+            return Run(async token =>
             {
-                if (this.Thumb != null)
-                    return;
+                var r = await base.GetThumbAsync();
+                if (r != null)
+                    return r;
                 var f = await GetFolderAsync();
                 var file = (await f.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).SingleOrDefault();
                 if (file == null)
-                    return;
+                    return null;
                 try
                 {
                     using (var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                     {
-                        var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
-                        this.Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
+                        var decoder = await BitmapDecoder.CreateAsync(stream);
+                        return await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
                     }
                 }
                 catch (Exception)
                 {
+                    return null;
                 }
             });
         }
