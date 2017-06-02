@@ -11,12 +11,13 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Windows.Graphics.Imaging;
 
 namespace ExClient.Galleries
 {
     public sealed class SavedGallery : CachedGallery
     {
-        private sealed class SavedGalleryList : GalleryList<SavedGallery, SavedGalleryModel>
+        private sealed class SavedGalleryList : GalleryList<SavedGallery, GalleryModel>
         {
             public static IAsyncOperation<ObservableCollection<Gallery>> LoadList()
             {
@@ -26,21 +27,21 @@ namespace ExClient.Galleries
                     {
                         db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                         var query = db.SavedSet
-                            .Include(s => s.Gallery)
-                            .OrderByDescending(s => s.Saved);
+                            .OrderByDescending(s => s.Saved)
+                            .Select(s => s.Gallery);
                         return new SavedGalleryList(query.ToList());
                     }
                 }).AsAsyncOperation();
             }
 
-            private SavedGalleryList(List<SavedGalleryModel> galleries)
+            private SavedGalleryList(List<GalleryModel> galleries)
                 : base(galleries)
             {
             }
 
-            protected override SavedGallery Load(SavedGalleryModel model)
+            protected override SavedGallery Load(GalleryModel model)
             {
-                var sg = new SavedGallery(model.Gallery, model);
+                var sg = new SavedGallery(model);
                 var ignore = sg.InitAsync();
                 return sg;
             }
@@ -74,32 +75,44 @@ namespace ExClient.Galleries
             });
         }
 
-        internal SavedGallery(GalleryModel model, SavedGalleryModel savedModel)
+        internal SavedGallery(GalleryModel model)
                 : base(model)
         {
-            this.thumbFile = savedModel.ThumbData;
             this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
 
         protected override IAsyncAction InitOverrideAsync()
         {
-            if (this.Thumb != null)
-                return AsyncWrapper.CreateCompleted();
-            var temp = this.thumbFile;
-            this.thumbFile = null;
-            if (temp == null)
-                return AsyncWrapper.CreateCompleted();
-            return DispatcherHelper.RunAsyncOnUIThread(async () =>
+            return AsyncWrapper.CreateCompleted();
+        }
+
+        protected override IAsyncOperation<SoftwareBitmap> GetThumbAsync()
+        {
+            return Run(async token =>
             {
-                using (var stream = temp.AsRandomAccessStream())
+                byte[] thumbData;
+                using (var db = new GalleryDb())
                 {
-                    var decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
-                    this.Thumb = await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
+                    db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+                    var model = db.SavedSet.SingleOrDefault(s => s.GalleryId == this.Id);
+                    thumbData = model?.ThumbData;
+                }
+                if (thumbData == null)
+                    return null;
+                try
+                {
+                    using (var stream = thumbData.AsRandomAccessStream())
+                    {
+                        var decoder = await BitmapDecoder.CreateAsync(stream);
+                        return await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                    }
+                }
+                catch (Exception)
+                {
+                    return null;
                 }
             });
         }
-
-        private byte[] thumbFile;
 
         public override IAsyncAction DeleteAsync()
         {

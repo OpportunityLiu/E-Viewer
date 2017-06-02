@@ -21,6 +21,12 @@ namespace ExViewer.Controls
 
         private static ResourceDictionary getResource()
         {
+#if DEBUG
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                return null;
+            }
+#endif
             var r = new ResourceDictionary();
             Application.LoadComponent(r, new Uri("ms-appx:///Themes/Categories.xaml"));
             return r;
@@ -35,7 +41,15 @@ namespace ExViewer.Controls
         {
             base.OnApplyTemplate();
             this.textPresenter = ((TextBlock)this.GetTemplateChild("TextPresenter"));
-            if(this.textPresenter != null)
+#if DEBUG
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                if (this.textPresenter != null)
+                    this.textPresenter.Text = "TESTVALUE";
+                return;
+            }
+#endif
+            if (this.textPresenter != null)
                 this.textPresenter.Text = this.Category.ToFriendlyNameString().ToUpper();
         }
 
@@ -56,9 +70,18 @@ namespace ExViewer.Controls
             var sender = (CategoryTag)d;
             var oldValue = (Category)e.OldValue;
             var newValue = (Category)e.NewValue;
-            if(oldValue == newValue)
+            if (oldValue == newValue)
                 return;
-            if(categoryBrushes.TryGetValue($"Category{newValue}BackgroundBrush", out var brush))
+#if DEBUG
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                sender.Background = new SolidColorBrush(Colors.BlueViolet);
+                if (sender.textPresenter != null)
+                    sender.textPresenter.Text = "TESTVALUE";
+                return;
+            }
+#endif
+            if (categoryBrushes.TryGetValue($"Category{newValue}BackgroundBrush", out var brush))
             {
                 sender.Background = (Brush)brush;
             }
@@ -66,7 +89,7 @@ namespace ExViewer.Controls
             {
                 sender.ClearValue(BackgroundProperty);
             }
-            if(sender.textPresenter != null)
+            if (sender.textPresenter != null)
                 sender.textPresenter.Text = newValue.ToFriendlyNameString().ToUpper();
         }
     }

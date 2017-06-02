@@ -4,6 +4,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace ExViewer.Controls
 {
+    [TemplatePart(Name = nameof(Label), Type = typeof(TextBlock))]
+    [TemplatePart(Name = nameof(Icon), Type = typeof(UIElement))]
     public class FavoriteCategoryPresenter : Control
     {
         public FavoriteCategoryPresenter()
@@ -16,59 +18,30 @@ namespace ExViewer.Controls
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.Icon = null;
+            this.Icon = (UIElement)GetTemplateChild(nameof(Icon));
             this.Label = null;
-            set();
+            set(this.Category, this.IsLabelVisible);
         }
 
-        private TextBlock Icon, Label;
+        private TextBlock Label;
+        private UIElement Icon;
 
-        private void set()
+        private void set(FavoriteCategory category, bool labelVisible)
         {
-            var cat = getCategory(this.Category);
-            var labelVisibility = this.IsLabelVisible;
-            setIcon(cat);
-            setLabel(cat, labelVisibility);
-        }
-
-        private static FavoriteCategory getCategory(FavoriteCategory category)
-        {
-            return category ?? FavoriteCategory.All;
-        }
-
-        private void setIcon(FavoriteCategory category)
-        {
-            if(category.Index>=0)
+            category = category ?? FavoriteCategory.All;
+            var icon = this.Icon;
+            if (icon != null)
             {
-                var icon = this.Icon;
-                if(icon == null)
-                {
-                    icon = GetTemplateChild("Icon") as TextBlock;
-                    if(icon == null)
-                        return;
-                    else
-                        this.Icon = icon;
-                }
-                icon.Visibility = Visibility.Visible;
-                icon.Foreground = category.GetThemeBrush();
+                icon.Visibility = category.Index < 0 ? Visibility.Collapsed : Visibility.Visible;
             }
-            else
-            {
-                if(this.Icon == null)
-                    return;
-                this.Icon.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void setLabel(FavoriteCategory category, bool labelVisible)
-        {
-            if(labelVisible)
+            this.BorderBrush = category.GetThemeBrush();
+            if (labelVisible)
             {
                 var label = this.Label;
-                if(label == null)
+                if (label == null)
                 {
                     label = GetTemplateChild("Label") as TextBlock;
-                    if(label == null)
+                    if (label == null)
                         return;
                     else
                         this.Label = label;
@@ -78,17 +51,10 @@ namespace ExViewer.Controls
             }
             else
             {
-                if(this.Label == null)
+                if (this.Label == null)
                     return;
                 this.Label.Visibility = Visibility.Collapsed;
             }
-        }
-
-        private void setLabel(FavoriteCategory category)
-        {
-            if(!this.IsLabelVisible)
-                return;
-            setLabel(category, true);
         }
 
         public FavoriteCategory Category
@@ -107,14 +73,12 @@ namespace ExViewer.Controls
             var dp = (FavoriteCategoryPresenter)sender;
             var o = (FavoriteCategory)e.OldValue;
             var n = (FavoriteCategory)e.NewValue;
-            if(o != null)
+            if (o != null)
                 o.PropertyChanged -= dp.category_PropertyChanged;
-            if(dp.loaded && n != null)
+            if (dp.loaded && n != null)
                 n.PropertyChanged += dp.category_PropertyChanged;
-            var cat = getCategory(dp.Category);
-            dp.setIcon(cat);
-            dp.setLabel(cat);
-            if(n == null)
+            dp.set(n, dp.IsLabelVisible);
+            if (n == null)
             {
                 dp.ClearValue(CategoryProperty);
                 return;
@@ -123,14 +87,14 @@ namespace ExViewer.Controls
 
         private void category_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            setLabel(getCategory(this.Category));
+            this.set(this.Category, this.IsLabelVisible);
         }
 
         private void favoriteCategoryPresenter_Loaded(object sender, RoutedEventArgs e)
         {
             this.loaded = true;
             this.Category.PropertyChanged += this.category_PropertyChanged;
-            set();
+            this.set(this.Category, this.IsLabelVisible);
         }
 
         private void favoriteCategoryPresenter_Unloaded(object sender, RoutedEventArgs e)
@@ -150,9 +114,12 @@ namespace ExViewer.Controls
 
         private static void isLabelVisiblePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
+            var o = (bool)e.OldValue;
+            var n = (bool)e.NewValue;
+            if (o == n)
+                return;
             var dp = (FavoriteCategoryPresenter)sender;
-            var cat = getCategory(dp.Category);
-            dp.setLabel(cat, (bool)e.NewValue);
+            dp.set(dp.Category, n);
         }
     }
 }

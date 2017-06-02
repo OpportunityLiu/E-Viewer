@@ -479,7 +479,7 @@
                 <ControlTemplate TargetType="controls:FavoriteCategoryPresenter">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock x:Name="Icon"
-                                   x:DeferLoadStrategy="Lazy"
+                                   Foreground="{TemplateBinding BorderBrush}"
                                    Text="&#x2BC1;" />
                         <TextBlock x:Name="Label" 
                                    x:DeferLoadStrategy="Lazy"

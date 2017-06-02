@@ -45,7 +45,7 @@ namespace ExClient.Galleries
                     {
                         var r = (cm == null) ?
                              new Gallery(gm) :
-                             new SavedGallery(gm, cm);
+                             new SavedGallery(gm);
                         await r.InitAsync();
                         return r;
                     }
@@ -232,24 +232,11 @@ namespace ExClient.Galleries
 
         protected IAsyncAction InitAsync()
         {
-            return Run(async token =>
-            {
-                try
-                {
-                    var buffer = await coverClient.GetBufferAsync(this.ThumbUri);
-                    using (var stream = buffer.AsRandomAccessStream())
-                    {
-                        var decoder = await BitmapDecoder.CreateAsync(stream);
-                        this.Thumb = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-                    }
-                }
-                catch (Exception)
-                {
-                    this.thumbImage?.Dispose();
-                    this.Thumb = null;
-                }
-                await InitOverrideAsync();
-            });
+            //return Run(async token =>
+            //{
+            //    await InitOverrideAsync();
+            //});
+            return InitOverrideAsync();
         }
 
         protected virtual IAsyncAction InitOverrideAsync()
@@ -271,6 +258,26 @@ namespace ExClient.Galleries
                     db.SaveChanges();
                 }
             }).AsAsyncAction();
+        }
+
+        protected virtual IAsyncOperation<SoftwareBitmap> GetThumbAsync()
+        {
+            return Run(async token =>
+            {
+                try
+                {
+                    var buffer = await coverClient.GetBufferAsync(this.ThumbUri);
+                    using (var stream = buffer.AsRandomAccessStream())
+                    {
+                        var decoder = await BitmapDecoder.CreateAsync(stream);
+                        return await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                    }
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            });
         }
 
         #region MetaData
@@ -310,12 +317,42 @@ namespace ExClient.Galleries
             get; protected set;
         }
 
-        private SoftwareBitmap thumbImage;
+        private readonly WeakReference<SoftwareBitmap> thumbImage = new WeakReference<SoftwareBitmap>(null);
 
         public SoftwareBitmap Thumb
         {
-            get => this.thumbImage;
-            protected set => Set(ref this.thumbImage, value?.GetReadOnlyView());
+            get
+            {
+                if (this.thumbImage.TryGetTarget(out var img))
+                {
+                    return img;
+                }
+                var load = GetThumbAsync();
+                load.Completed = loadThumbCompleted;
+                return null;
+            }
+        }
+
+        private void loadThumbCompleted(IAsyncOperation<SoftwareBitmap> asyncInfo, AsyncStatus asyncStatus)
+        {
+            try
+            {
+                if (asyncStatus != AsyncStatus.Completed)
+                    return;
+                var r = asyncInfo.GetResults();
+                if (r == null)
+                    return;
+                if (this.thumbImage.TryGetTarget(out var img))
+                {
+                    img.Dispose();
+                }
+                this.thumbImage.SetTarget(r);
+                RaisePropertyChanged(nameof(Thumb));
+            }
+            finally
+            {
+                asyncInfo.Close();
+            }
         }
 
         public Uri ThumbUri
@@ -362,21 +399,24 @@ namespace ExClient.Galleries
 
         public FavoriteCategory FavoriteCategory
         {
-            get => this.favorite;
-            protected internal set => Set(ref this.favorite, value);
+            get => this.favoriteCategory;
+            protected internal set => Set(ref this.favoriteCategory, value);
         }
-
-        private FavoriteCategory favorite;
+        private FavoriteCategory favoriteCategory;
 
         public string FavoriteNote
         {
-            get => this.favNote;
-            protected internal set => Set(ref this.favNote, value);
+            get => this.favoriteNote;
+            protected internal set => Set(ref this.favoriteNote, value);
         }
+        private string favoriteNote;
 
-        private string favNote;
-
-        public RevisionCollection Revisions { get; private set; }
+        public RevisionCollection Revisions
+        {
+            get => this.revisions;
+            private set => Set(ref this.revisions, value);
+        }
+        private RevisionCollection revisions;
 
         #endregion
 
