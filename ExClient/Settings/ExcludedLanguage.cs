@@ -1,8 +1,10 @@
-﻿namespace ExClient.Settings
+﻿using ExClient.Galleries.Metadata;
+
+namespace ExClient.Settings
 {
     public enum ExcludedLanguage : ushort
     {
-        JapaneseOriginal=0,   JapaneseTranslated = 0 + 1024, JapaneseRewrite = 0 + 2048,
+        JapaneseOriginal = 0, JapaneseTranslated = 0 + 1024, JapaneseRewrite = 0 + 2048,
         EnglishOriginal = 1, EnglishTranslated = EnglishOriginal + 1024, EnglishRewrite = EnglishOriginal + 2048,
         ChineseOriginal = 10, ChineseTranslated = ChineseOriginal + 1024, ChineseRewrite = ChineseOriginal + 2048,
         DutchOriginal = 20, DutchTranslated = DutchOriginal + 1024, DutchRewrite = DutchOriginal + 2048,

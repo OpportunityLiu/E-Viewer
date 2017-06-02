@@ -1,5 +1,7 @@
 ﻿{
+  // Language tags, see: https://ehwiki.org/wiki/language
   "Modifiers": {
+    // Technical tags for language, make sure the localization string to be short.
     "Translated": "TR",
     "Rewrite": "RW"
   },

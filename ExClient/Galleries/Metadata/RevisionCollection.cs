@@ -1,15 +1,10 @@
 ﻿using ExClient.Api;
 using HtmlAgilityPack;
 using Opportunity.MvvmUniverse.AsyncHelpers;
-using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Galleries.Metadata
 {

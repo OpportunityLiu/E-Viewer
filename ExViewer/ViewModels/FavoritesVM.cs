@@ -115,23 +115,9 @@ namespace ExViewer.ViewModels
             {
                 RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), GetSearchQuery(queryText, this.category));
             });
-            this.Open = new Command<Gallery>(g =>
-            {
-                this.SelectedGallery = g;
-                GalleryVM.GetVM(g);
-                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
-            }, g => g != null);
         }
 
-        public Command<string> Search
-        {
-            get;
-        }
-
-        public Command<Gallery> Open
-        {
-            get;
-        }
+        public Command<string> Search { get; }
 
         public void SetQueryWithSearchResult()
         {

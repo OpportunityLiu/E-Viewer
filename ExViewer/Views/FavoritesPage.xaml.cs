@@ -1,18 +1,18 @@
 ﻿using ExClient;
+using ExClient.Galleries;
+using ExViewer.Controls;
+using ExViewer.ViewModels;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using ExViewer.ViewModels;
-using System.Threading.Tasks;
-using ExViewer.Controls;
-using Opportunity.MvvmUniverse.Views;
-using ExClient.Galleries;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 

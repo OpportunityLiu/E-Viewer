@@ -1,12 +1,13 @@
 ﻿{
-    "Artist": "Artist",
-    "Character": "Character",
-    "Female": "Female",
-    "Group": "Group",
-    "Language": "Language",
-    "Male": "Male",
-    "Misc": "Misc",
-    "Parody": "Parody",
-    "Reclass": "Reclass",
-    "Unknown": "Unknown"
+  // Namespaces of tags, see: https://ehwiki.org/wiki/namespace
+  "Artist": "Artist",
+  "Character": "Character",
+  "Female": "Female",
+  "Group": "Group",
+  "Language": "Language",
+  "Male": "Male",
+  "Misc": "Misc",
+  "Parody": "Parody",
+  "Reclass": "Reclass",
+  "Unknown": "Unknown"
 }

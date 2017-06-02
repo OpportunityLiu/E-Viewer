@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
-using Opportunity.MvvmUniverse.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,9 +18,9 @@ namespace ExClient.Galleries
     {
         private sealed class SavedGalleryList : GalleryList<SavedGallery, SavedGalleryModel>
         {
-            public static IAsyncOperation<SavedGalleryList> LoadList()
+            public static IAsyncOperation<ObservableCollection<Gallery>> LoadList()
             {
-                return Task.Run(() =>
+                return Task.Run<ObservableCollection<Gallery>>(() =>
                 {
                     using (var db = new GalleryDb())
                     {
@@ -49,7 +48,7 @@ namespace ExClient.Galleries
 
         public static IAsyncOperation<ObservableCollection<Gallery>> LoadSavedGalleriesAsync()
         {
-            return Run<ObservableCollection<Gallery>>(async token => await SavedGalleryList.LoadList());
+            return SavedGalleryList.LoadList();
         }
 
         public static IAsyncActionWithProgress<double> ClearAllGalleriesAsync()

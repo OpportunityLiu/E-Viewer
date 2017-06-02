@@ -18,7 +18,6 @@ using Windows.UI.Core;
 using System.Runtime.CompilerServices;
 using Windows.ApplicationModel.Core;
 using Opportunity.MvvmUniverse;
-using Opportunity.MvvmUniverse.Helpers;
 
 namespace ExViewer.Views
 {
