@@ -20,7 +20,7 @@ using static ExClient.Tagging.Namespace;
 namespace ExClient.Tagging
 {
     [DebuggerDisplay(@"\{{data.Length} tags in {keys.Length} namespaces\}")]
-    public sealed class TagCollection : ObservableCollectionBase, IReadOnlyList<NamespaceTagCollection>
+    public sealed class TagCollection : ObservableCollectionBase, IReadOnlyList<NamespaceTagCollection>, IList
     {
         private static readonly Namespace[] staticKeys = new[]
         {
@@ -53,18 +53,23 @@ namespace ExClient.Tagging
             initOrReset(items.Select(t => (t, TagState.NormalPower)));
         }
 
-        private void initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
+        private bool initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
         {
-            var rawData = items.OrderBy(t => t.tag).ToArray();
+            var rawData = items.OrderBy(t => t.tag.Namespace)
+                .ThenByDescending(t => t.ts & TagState.HighPower)
+                .ThenBy(t => t.tag.Content).ToArray();
+            var a = 1;
+            var b = a is default(int);
             var data = new Tag[rawData.Length];
             var state = new TagState[rawData.Length];
             for (var i = 0; i < rawData.Length; i++)
             {
-                var d = rawData[i];
-                data[i] = d.tag;
-                state[i] = d.ts;
+                (data[i], state[i]) = rawData[i];
             }
-
+            if (this.data != null && this.data.SequenceEqual(data))
+            {
+                return false;
+            }
             var offset = new int[staticKeys.Length + 1];
             var keys = new Namespace[staticKeys.Length];
             var currentIdx = 0;
@@ -86,6 +91,7 @@ namespace ExClient.Tagging
             this.state = state;
             this.keys = keys;
             this.offset = offset;
+            return true;
         }
 
         private Tag[] data;
@@ -99,6 +105,16 @@ namespace ExClient.Tagging
         public IReadOnlyList<Tag> Items => this.data;
 
         public int Count => this.keys.Length;
+
+        bool IList.IsFixedSize => false;
+
+        bool IList.IsReadOnly => true;
+
+        bool ICollection.IsSynchronized => false;
+
+        object ICollection.SyncRoot => null;
+
+        object IList.this[int index] { get => this[index]; set => throw new NotImplementedException(); }
 
         [IndexerName("Groups")]
         public NamespaceTagCollection this[int index]
@@ -202,7 +218,6 @@ namespace ExClient.Tagging
 
         private void updateCore(HtmlNode tableNode)
         {
-            //TODO:
             var query = tableNode.Descendants("div")
                 .Select(node =>
                 {
@@ -243,9 +258,11 @@ namespace ExClient.Tagging
                     var tag = divid.Substring(3).Replace('_', ' ');
                     return (Tag.Parse(tag), state);
                 });
-            initOrReset(query);
-            RaiseCollectionReset();
-            RaisePropertyChanged(nameof(Count), nameof(Items), "Groups");
+            if (initOrReset(query))
+            {
+                RaiseCollectionReset();
+                RaisePropertyChanged(nameof(Count), nameof(Items), "Groups");
+            }
         }
 
         public struct Enumerator : IEnumerator<NamespaceTagCollection>
@@ -327,5 +344,27 @@ namespace ExClient.Tagging
                 return TagState.NotPresented;
             return StateOf(i);
         }
+
+        int IList.Add(object value) => throw new NotImplementedException();
+
+        void IList.Clear() => throw new NotImplementedException();
+
+        bool IList.Contains(object value)
+        {
+            return false;
+        }
+
+        int IList.IndexOf(object value)
+        {
+            return -1;
+        }
+
+        void IList.Insert(int index, object value) => throw new NotImplementedException();
+
+        void IList.Remove(object value) => throw new NotImplementedException();
+
+        void IList.RemoveAt(int index) => throw new NotImplementedException();
+
+        void ICollection.CopyTo(Array array, int index) => throw new NotImplementedException();
     }
 }

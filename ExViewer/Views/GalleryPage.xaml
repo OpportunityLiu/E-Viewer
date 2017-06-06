@@ -219,97 +219,6 @@
             <Setter Property="VerticalAlignment"
                     Value="Top" />
         </Style>
-
-        <MenuFlyout x:Name="mfo_Tag"
-                    Placement="Bottom">
-            <MenuFlyoutItem Text="{Binding Content}"
-                            ToolTipService.ToolTip="{Binding Content}"
-                            Command="{x:Bind VM.CopyTag, Mode=OneWay}"
-                            CommandParameter="{Binding}" />
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem x:Uid="Views/GalleryPage/TagVoteUpMenuFlyoutItem"
-                            x:Name="mfiUp"
-                            Command="{x:Bind VM.TagVoteUp, Mode=OneWay}"
-                            CommandParameter="{Binding}"
-                            IsEnabledChanged="mfiVote_IsEnabledChanged"
-                            Text="Vote up" />
-            <MenuFlyoutItem x:Uid="Views/GalleryPage/TagVoteDownMenuFlyoutItem"
-                            x:Name="mfiDown"
-                            Command="{x:Bind VM.TagVoteDown, Mode=OneWay}"
-                            CommandParameter="{Binding}"
-                            IsEnabledChanged="mfiVote_IsEnabledChanged"
-                            Text="Vote down" />
-            <MenuFlyoutItem x:Uid="Views/GalleryPage/TagWithdrawVoteMenuFlyoutItem"
-                            x:Name="mfiWithdraw"
-                            Command="{x:Bind VM.TagWithdrawVote, Mode=OneWay}"
-                            CommandParameter="{Binding}"
-                            IsEnabledChanged="mfiVote_IsEnabledChanged"
-                            Text="Withdraw vote" />
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem x:Uid="Views/GalleryPage/GoToDefinitionMenuFlyoutItem"
-                            Command="{x:Bind VM.ShowTagDefination, Mode=OneWay}"
-                            CommandParameter="{Binding}"
-                            Text="Go to EHWiki for definition" />
-            <MenuFlyoutItem x:Uid="Views/GalleryPage/SearchTagMenuFlyoutItem"
-                            Command="{x:Bind VM.SearchTag, Mode=OneWay}"
-                            CommandParameter="{Binding}"
-                            Text="Show galleries with this tag" />
-        </MenuFlyout>
-        <DataTemplate  x:Key="TagTemplate"
-                       x:DataType="tagging:Tag">
-            <controls:TagPresenter Padding="4,0"
-                                   GalleryTag="{x:Bind}" />
-        </DataTemplate>
-        <DataTemplate x:Key="TagGroupTemplate"
-                      x:DataType="tagging:NamespaceTagCollection">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Uid="Views/GalleryPage/TagNamespaceColumnDefinition"
-                                      Width="200" />
-                    <ColumnDefinition Width="8" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0"
-                           Padding="2,0"
-                           HorizontalAlignment="Right"
-                           Text="{x:Bind Namespace, Converter={StaticResource NamespaceToFriendlyStringConverter}}" />
-                <GridView Grid.Column="2"
-                          Padding="0,0,0,4"
-                          IsItemClickEnabled="True"
-                          ItemClick="gv_Tags_ItemClick"
-                          ItemsSource="{x:Bind}"
-                          ItemTemplate="{StaticResource TagTemplate}"
-                          SelectionMode="None">
-                    <GridView.ItemContainerStyle>
-                        <Style TargetType="GridViewItem">
-                            <Setter Property="MinHeight"
-                                    Value="0" />
-                            <Setter Property="MinWidth"
-                                    Value="0" />
-                        </Style>
-                    </GridView.ItemContainerStyle>
-                    <GridView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <wp:WrapPanel />
-                        </ItemsPanelTemplate>
-                    </GridView.ItemsPanel>
-                    <GridView.ItemContainerTransitions>
-                        <TransitionCollection />
-                    </GridView.ItemContainerTransitions>
-                    <GridView.Template>
-                        <ControlTemplate TargetType="GridView">
-                            <ItemsPresenter Padding="{TemplateBinding Padding}"
-                                            Footer="{TemplateBinding Footer}"
-                                            FooterTemplate="{TemplateBinding FooterTemplate}"
-                                            FooterTransitions="{TemplateBinding FooterTransitions}"
-                                            Header="{TemplateBinding Header}"
-                                            HeaderTemplate="{TemplateBinding HeaderTemplate}"
-                                            HeaderTransitions="{TemplateBinding HeaderTransitions}" />
-                        </ControlTemplate>
-                    </GridView.Template>
-                </GridView>
-            </Grid>
-        </DataTemplate>
     </controls:MyPage.Resources>
     <Grid x:Name="gd_Root">
         <Grid.RowDefinitions>
@@ -385,19 +294,11 @@
                                        FontFamily="Segoe MDL2 Assets"
                                        Text="{x:Bind VM.Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}" />
                         </StackPanel>
-                        <ListView x:Name="lv_Tags"
-                                  Grid.Row="1"
-                                  Grid.Column="1"
-                                  Padding="6"
-                                  ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
-                                  ItemsSource="{x:Bind VM.Gallery.Tags, Mode=OneWay}"
-                                  ScrollViewer.IsVerticalScrollChainingEnabled="True"
-                                  SelectionMode="None"
-                                  ItemTemplate="{StaticResource TagGroupTemplate}">
-                            <ListView.ItemContainerTransitions>
-                                <TransitionCollection />
-                            </ListView.ItemContainerTransitions>
-                        </ListView>
+                        <controls:TagPresenter x:Name="tpTags"
+                                               Grid.Row="1"
+                                               Grid.Column="1"
+                                               Margin="6"
+                                               Tags="{x:Bind VM.Gallery.Tags, Mode=OneWay}" />
                     </Grid>
                 </Grid>
                 <Grid x:Name="gd_Pivot">
@@ -649,7 +550,7 @@
                               Icon="Add"
                               Label="Post new comment"
                               Visibility="{x:Bind pv.SelectedIndex, Mode=OneWay, Converter={StaticResource ConAddComment}}"
-                              Command="{x:Bind VM.AddComment, Mode=OneWay}"/>
+                              Command="{x:Bind VM.AddComment, Mode=OneWay}" />
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_share"

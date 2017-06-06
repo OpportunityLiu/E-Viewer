@@ -11,7 +11,7 @@ using Windows.UI.Xaml;
 using Opportunity.MvvmUniverse.AsyncHelpers;
 using ExClient.Tagging;
 
-namespace ExClient
+namespace ExClient.Tagging
 {
     static class TagExtension
     {

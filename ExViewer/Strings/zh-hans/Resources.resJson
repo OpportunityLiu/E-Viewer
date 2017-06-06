@@ -64,6 +64,16 @@
     "PullToRefreshIndicator": {
       "PullTextBlock/Text": "下拉刷新",
       "ReleaseTextBlock/Text": "释放刷新"
+    },
+    "TagPresenter": {
+      "GoToDefinitionMenuFlyoutItem/Text": "前往 EHWiki 查看定义",
+      "SearchTagMenuFlyoutItem/Text": "搜索含有此标签的画廊",
+      "TagCopied": "已将标签复制到剪贴板",
+      // Space for tag namespaces
+      "TagNamespaceColumnDefinition/Width": "68",
+      "TagVoteDownMenuFlyoutItem/Text": "反对",
+      "TagVoteUpMenuFlyoutItem/Text": "支持",
+      "TagWithdrawVoteMenuFlyoutItem/Text": "撤销投票"
     }
   },
   "Database": {
@@ -166,17 +176,13 @@
       "CommentsEmptyTextBlock/Text": "没有评论",
       "CommentsLoadingTextBlock/Text": "正在加载评论...",
       "FavoritesAppBarButton/Text": "添加至收藏",
-      "GoToDefinitionMenuFlyoutItem/Text": "前往 EHWiki 查看定义",
       "ImagesLoadingMoreTextBlock/Text": "正在加载更多...",
       "PivotHeaderCommentsTextBlock/Text": "评论",
       "PivotHeaderImagesTextBlock/Text": "图片",
       "PivotHeaderNumberFormatString": "[{0}]",
       "PivotHeaderTorrentsTextBlock/Text": "种子",
       "SaveAppBarButton/Label": "保存此画廊",
-      "SearchTagMenuFlyoutItem/Text": "搜索含有此标签的画廊",
       "ShareAppBarButton/Label": "共享",
-      "TagCopied": "已将标签复制到剪贴板",
-      "TagNamespaceColumnDefinition/Width": "68",
       "TorrentDownloadButton/ToolTipService/ToolTip": "下载",
       "TorrentDownloaded": "种子下载完成，已保存至 {0}",
       "TorrentDownloading": "开始下载种子…",

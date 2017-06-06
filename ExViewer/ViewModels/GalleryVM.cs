@@ -225,57 +225,6 @@ namespace ExViewer.ViewModels
                 addComment.Gallery = this.Gallery;
                 await addComment.ShowAsync();
             }, () => this.Gallery != null);
-            this.TagVoteUp = new Command<Tag>(async tag =>
-            {
-                await this.gallery.Tags.VoteAsync(tag, VoteCommand.Up);
-                this.TagVoteUp.RaiseCanExecuteChanged();
-                this.TagVoteDown.RaiseCanExecuteChanged();
-                this.TagWithdrawVote.RaiseCanExecuteChanged();
-            }, tag =>
-            {
-                if (this.gallery == null)
-                    return false;
-                var state = this.gallery.Tags.StateOf(tag);
-                if (state.HasFlag(TagState.Downvoted) || state.HasFlag(TagState.Upvoted) || state.HasFlag(TagState.Slave))
-                    return false;
-                return true;
-            });
-            this.TagVoteDown = new Command<Tag>(async tag =>
-            {
-                await this.gallery.Tags.VoteAsync(tag, VoteCommand.Down);
-                this.TagVoteUp.RaiseCanExecuteChanged();
-                this.TagVoteDown.RaiseCanExecuteChanged();
-                this.TagWithdrawVote.RaiseCanExecuteChanged();
-            }, tag =>
-            {
-                if (this.gallery == null)
-                    return false;
-                var state = this.gallery.Tags.StateOf(tag);
-                if (state.HasFlag(TagState.Downvoted) || state.HasFlag(TagState.Upvoted))
-                    return false;
-                return true;
-            });
-            this.TagWithdrawVote = new Command<Tag>(async tag =>
-            {
-                var state = this.gallery.Tags.StateOf(tag);
-                if (state.HasFlag(TagState.Downvoted))
-                    await this.gallery.Tags.VoteAsync(tag, VoteCommand.Up);
-                else if (state.HasFlag(TagState.Upvoted))
-                    await this.gallery.Tags.VoteAsync(tag, VoteCommand.Down);
-                this.TagVoteUp.RaiseCanExecuteChanged();
-                this.TagVoteDown.RaiseCanExecuteChanged();
-                this.TagWithdrawVote.RaiseCanExecuteChanged();
-            }, tag =>
-            {
-                if (this.gallery == null)
-                    return false;
-                var state = this.gallery.Tags.StateOf(tag);
-                if (state.HasFlag(TagState.Downvoted) && state.HasFlag(TagState.Slave))
-                    return false;
-                if (state.HasFlag(TagState.Upvoted) || state.HasFlag(TagState.Downvoted))
-                    return true;
-                return false;
-            });
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -299,33 +248,6 @@ namespace ExViewer.ViewModels
         public Command<GalleryImage> LoadOriginal { get; }
 
         public Command<GalleryImage> ReloadImage { get; }
-
-        public Command<Tag> TagVoteUp { get; }
-        public Command<Tag> TagVoteDown { get; }
-        public Command<Tag> TagWithdrawVote { get; }
-
-        public Command<Tag> SearchTag { get; } = new Command<Tag>(tag =>
-        {
-            var vm = SearchVM.GetVM(tag.Search());
-            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
-        }, tag => tag.Content != null);
-
-        private static readonly EhWikiDialog ewd = new EhWikiDialog();
-        public AsyncCommand<Tag> ShowTagDefination { get; }
-            = new AsyncCommand<Tag>(async tag =>
-            {
-                ewd.WikiTag = tag;
-                await ewd.ShowAsync();
-            }, tag => tag.Content != null);
-
-        public Command<Tag> CopyTag { get; }
-            = new Command<Tag>(tag =>
-            {
-                var data = new DataPackage();
-                data.SetText(tag.Content);
-                Clipboard.SetContent(data);
-                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TagCopied, typeof(GalleryPage));
-            }, tag => tag.Content != null);
 
         private Gallery gallery;
 
