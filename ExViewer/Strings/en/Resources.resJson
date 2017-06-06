@@ -64,6 +64,16 @@
     "PullToRefreshIndicator": {
       "PullTextBlock/Text": "Pull to refresh",
       "ReleaseTextBlock/Text": "Release to refresh"
+    },
+    "TagPresenter": {
+      "GoToDefinitionMenuFlyoutItem/Text": "Go to EHWiki for definition",
+      "SearchTagMenuFlyoutItem/Text": "Show galleries with this tag",
+      "TagCopied": "Tag has been copied to clipboard",
+      // Space for tag namespaces
+      "TagNamespaceColumnDefinition/Width": "72",
+      "TagVoteDownMenuFlyoutItem/Text": "Vote down",
+      "TagVoteUpMenuFlyoutItem/Text": "Vote up",
+      "TagWithdrawVoteMenuFlyoutItem/Text": "Withdraw vote"
     }
   },
   "Database": {
@@ -166,17 +176,13 @@
       "CommentsEmptyTextBlock/Text": "No comments",
       "CommentsLoadingTextBlock/Text": "Loading comments...",
       "FavoritesAppBarButton/Text": "Add to favorite",
-      "GoToDefinitionMenuFlyoutItem/Text": "Go to EHWiki for definition",
       "ImagesLoadingMoreTextBlock/Text": "Loading more items...",
       "PivotHeaderCommentsTextBlock/Text": "Comments",
       "PivotHeaderImagesTextBlock/Text": "Images",
       "PivotHeaderNumberFormatString": "[{0}]",
       "PivotHeaderTorrentsTextBlock/Text": "Torrents",
       "SaveAppBarButton/Label": "Save this gallery",
-      "SearchTagMenuFlyoutItem/Text": "Show galleries with this tag",
       "ShareAppBarButton/Label": "Share",
-      "TagCopied": "Tag has been copied to clipboard",
-      "TagNamespaceColumnDefinition/Width": "72",
       "TorrentDownloadButton/ToolTipService/ToolTip": "Download",
       "TorrentDownloaded": "Download finished, torrent file saved to {0}",
       "TorrentDownloading": "Start downloading...",

@@ -114,7 +114,9 @@
     <Compile Include="Controls\MyContentDialog.cs" />
     <Compile Include="Controls\MyPage.cs" />
     <Compile Include="Controls\PullToRefreshIndicator.cs" />
-    <Compile Include="Controls\TagPresenter.cs" />
+    <Compile Include="Controls\TagPresenter.xaml.cs">
+      <DependentUpon>TagPresenter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\AccountManager.cs" />
     <Compile Include="Converters\FormatStringConverter.cs" />
     <Compile Include="Helpers\ApiInfo.cs" />
@@ -320,6 +322,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ImagePresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TagPresenter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

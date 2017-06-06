@@ -373,23 +373,6 @@
                 Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
     </Style>
 
-    <Style TargetType="controls:TagPresenter">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="controls:TagPresenter">
-                    <TextBlock x:Name="Presenter"
-                               TextTrimming="None"
-                               TextWrapping="NoWrap"
-                               MaxLines="1"
-                               Foreground="{TemplateBinding Foreground}"
-                               Padding="{TemplateBinding Padding}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="IsTabStop"
-                Value="False" />
-    </Style>
-
     <Style TargetType="tk:PullToRefreshIndicator">
         <Setter Property="Height"
                 Value="100" />

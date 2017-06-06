@@ -54,6 +54,7 @@
         <RelativePanel Grid.Column="1"
                        Margin="8,4,0,4">
             <TextBlock x:Name="tbTitle"
+                       VerticalAlignment="Top"
                        RelativePanel.AlignLeftWithPanel="True"
                        RelativePanel.AlignRightWithPanel="True"
                        RelativePanel.AlignTopWithPanel="True"

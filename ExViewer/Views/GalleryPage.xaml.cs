@@ -104,7 +104,6 @@ namespace ExViewer.Views
             this.gv.ScrollIntoView(this.VM.Gallery.FirstOrDefault());
             this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
             this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
-            this.lv_Tags.ScrollIntoView(this.lv_Tags.Items.FirstOrDefault());
         }
 
         private void restoreView()
@@ -199,28 +198,6 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(GalleryVM), typeof(GalleryPage), new PropertyMetadata(null));
 
-        private async void gv_Tags_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            var s = (ListViewBase)sender;
-            var container = (SelectorItem)s.ContainerFromItem(e.ClickedItem);
-            foreach (var item in this.mfo_Tag.Items)
-            {
-                item.Visibility = Visibility.Visible;
-            }
-            await Task.Delay(1);
-            foreach (var item in this.mfo_Tag.Items)
-            {
-                item.DataContext = e.ClickedItem;
-            }
-            this.mfo_Tag.ShowAt(container);
-        }
-
-        private void mfiVote_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            var s = (MenuFlyoutItem)sender;
-            s.Visibility = s.IsEnabled ? Visibility.Visible : Visibility.Collapsed;
-        }
-
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
             await Task.Delay(50);
@@ -297,7 +274,7 @@ namespace ExViewer.Views
 
             case VirtualKey.GamepadY:
                 this.changeViewTo(false, false);
-                this.lv_Tags.Focus(FocusState.Keyboard);
+                this.tpTags.Focus(FocusState.Keyboard);
                 break;
             case VirtualKey.GamepadMenu:
             case VirtualKey.Application:
@@ -360,11 +337,6 @@ namespace ExViewer.Views
         {
             this.tbGalleryName.ClearValue(TextBlock.MaxLinesProperty);
             Grid.SetColumn(this.tbGalleryName, 1);
-        }
-
-        private void mfiUp_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
