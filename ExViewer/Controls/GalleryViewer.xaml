@@ -27,6 +27,10 @@
                TargetType="TextBlock">
             <Setter Property="Margin"
                     Value="8,0,0,0" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Right" />
+            <Setter Property="RelativePanel.AlignRightWithPanel"
+                    Value="True" />
         </Style>
     </UserControl.Resources>
     <Grid Background="{x:Bind Background, Mode=OneWay}"
@@ -40,13 +44,15 @@
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
         <Border Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}"
+                CacheMode="BitmapCache"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 MaxHeight="240">
             <Image Source="{x:Bind Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}"
                    Stretch="Uniform" />
         </Border>
-        <local:FavoriteCategoryPresenter Margin="-2"
+        <local:FavoriteCategoryPresenter x:Name="fcpFavorite"
+                                         Margin="-2"
                                          HorizontalAlignment="Right"
                                          VerticalAlignment="Top"
                                          Style="{StaticResource PictureFrameFavoriteCategoryPresenterStyle}"
@@ -89,22 +95,16 @@
             <TextBlock x:Name="tbCount"
                        RelativePanel.AlignVerticalCenterWith="ctCategory"
                        RelativePanel.RightOf="ctCategory"
-                       RelativePanel.AlignRightWithPanel="True"
-                       HorizontalAlignment="Right"
                        Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/GalleryViewer/RecordCountFormatString'}"
                        Style="{StaticResource DetailRightTextBlockStyle}" />
             <TextBlock x:Name="tbPosted"
                        RelativePanel.AlignVerticalCenterWith="tbLanguage"
                        RelativePanel.RightOf="tbLanguage"
-                       RelativePanel.AlignRightWithPanel="True"
-                       HorizontalAlignment="Right"
                        Text="{x:Bind Gallery.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}}"
                        Style="{StaticResource DetailRightTextBlockStyle}" />
             <TextBlock x:Name="tbUploader"
-                       RelativePanel.AlignRightWithPanel="True"
                        RelativePanel.AlignVerticalCenterWith="tbRating"
                        RelativePanel.RightOf="tbRating"
-                       HorizontalAlignment="Right"
                        Text="{x:Bind Gallery.Uploader, Mode=OneWay}"
                        Style="{StaticResource DetailRightTextBlockStyle}" />
         </RelativePanel>

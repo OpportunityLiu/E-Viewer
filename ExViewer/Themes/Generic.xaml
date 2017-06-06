@@ -205,9 +205,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            Margin="{TemplateBinding Padding}"
-                            d:DesignHeight="20"
-                            d:DesignWidth="100">
+                            Margin="{TemplateBinding Padding}">
                         <TextBlock x:Name="TextPresenter"
                                    Foreground="{TemplateBinding Foreground}"
                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"

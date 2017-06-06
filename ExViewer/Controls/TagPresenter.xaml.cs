@@ -114,7 +114,7 @@ namespace ExViewer.Controls
             var data = new DataPackage();
             data.SetText(content);
             Clipboard.SetContent(data);
-            RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TagCopied, typeof(GalleryPage));
+            RootControl.RootController.SendToast(Strings.Resources.Controls.TagPresenter.TagCopied, typeof(GalleryPage));
         }
 
         private async void mfiUp_Click(object sender, RoutedEventArgs e)

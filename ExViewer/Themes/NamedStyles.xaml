@@ -20,7 +20,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:FavoriteCategoryPresenter">
                     <Path x:Name="Icon"
-                          Data="M0,0h20v20z"
+                          Data="M0,2v-2h24v24h-2z"
                           StrokeThickness="0"
                           Fill="{TemplateBinding BorderBrush}" />
                 </ControlTemplate>

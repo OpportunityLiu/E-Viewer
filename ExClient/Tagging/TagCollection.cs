@@ -56,10 +56,10 @@ namespace ExClient.Tagging
         private bool initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
         {
             var rawData = items.OrderBy(t => t.tag.Namespace)
-                .ThenByDescending(t => t.ts & TagState.HighPower)
-                .ThenBy(t => t.tag.Content).ToArray();
-            var a = 1;
-            var b = a is default(int);
+                // put low-power tags to the end
+                .ThenByDescending(t => t.ts & TagState.NormalPower)
+                .ThenBy(t => t.tag.Content)
+                .ToArray();
             var data = new Tag[rawData.Length];
             var state = new TagState[rawData.Length];
             for (var i = 0; i < rawData.Length; i++)
@@ -68,18 +68,19 @@ namespace ExClient.Tagging
             }
             if (this.data != null && this.data.SequenceEqual(data))
             {
+                this.state = state;
                 return false;
             }
-            var offset = new int[staticKeys.Length + 1];
             var keys = new Namespace[staticKeys.Length];
+            var offset = new int[staticKeys.Length + 1];
             var currentIdx = 0;
             var currentNs = Unknown;
             for (var i = 0; i < data.Length; i++)
             {
-                var current = data[i];
-                if (currentNs == current.Namespace)
+                var cns = data[i].Namespace;
+                if (currentNs == cns)
                     continue;
-                currentNs = current.Namespace;
+                currentNs = cns;
                 keys[currentIdx] = currentNs;
                 offset[currentIdx] = i;
                 currentIdx++;
