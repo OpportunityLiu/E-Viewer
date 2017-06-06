@@ -55,6 +55,13 @@ namespace ExClient.Tagging
             return null;
         }
 
+        public static string ToShortString(this Namespace that)
+        {
+            if (searchDic.TryGetValue(that, out var r))
+                return r.Substring(0, 1);
+            return null;
+        }
+
         public static bool IsDefined(this Namespace that)
             => that.IsDefined<Namespace>() && that != Namespace.Unknown;
 

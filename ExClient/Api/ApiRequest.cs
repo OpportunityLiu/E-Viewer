@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using ExClient.Galleries;
+using ExClient.Internal;
+using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
 namespace ExClient.Api
@@ -35,5 +37,20 @@ namespace ExClient.Api
             if(mKey.Success)
                 key = mKey.Groups[1].Value;
         }
+    }
+
+    internal abstract class GalleryRequest : ApiRequest
+    {
+        public GalleryRequest(Gallery gallery)
+        {
+            this.GalleryId = gallery.Id;
+            this.GalleryToken = gallery.Token.TokenToString();
+        }
+
+        [JsonProperty("gid")]
+        public long GalleryId { get; }
+
+        [JsonProperty("token")]
+        public string GalleryToken { get; }
     }
 }

@@ -218,7 +218,7 @@ namespace ExClient.Galleries
                     using (var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                     {
                         var decoder = await BitmapDecoder.CreateAsync(stream);
-                        return await decoder.GetSoftwareBitmapAsync(Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                        return await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
                     }
                 }
                 catch (Exception)

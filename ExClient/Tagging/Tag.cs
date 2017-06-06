@@ -4,8 +4,8 @@ using ExClient.Search;
 
 namespace ExClient.Tagging
 {
-    [System.Diagnostics.DebuggerDisplay(@"[{ToString(),nq}]")]
-    public struct Tag : IEquatable<Tag>
+    [System.Diagnostics.DebuggerDisplay(@"[{Namespace}:{Content,nq}]")]
+    public struct Tag : IEquatable<Tag>, IComparable<Tag>, IComparable
     {
         // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };
         private static readonly char[] split = new char[] { ':' };
@@ -112,7 +112,7 @@ namespace ExClient.Tagging
         {
             if (Namespace == Namespace.Misc)
                 return Content;
-            return $"{Namespace}:{Content}";
+            return $"{Namespace.ToShortString()}:{Content}";
         }
 
         public bool Equals(Tag other)
@@ -133,5 +133,15 @@ namespace ExClient.Tagging
         {
             return unchecked((int)Namespace * StringComparer.OrdinalIgnoreCase.GetHashCode(Content));
         }
+
+        public int CompareTo(Tag other)
+        {
+            var c1 = this.Namespace - other.Namespace;
+            if (c1 != 0)
+                return c1;
+            return this.Content.CompareTo(other.Content);
+        }
+
+        int IComparable.CompareTo(object obj) => obj == null ? 1 : CompareTo((Tag)obj);
     }
 }

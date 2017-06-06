@@ -43,7 +43,7 @@ namespace ExViewer.Views
         private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)
         {
             var infoHeight = this.gd_Info.ActualHeight;
-            if(infoHeight < 1)
+            if (infoHeight < 1)
                 this.ct_btn_Scroll.Rotation = 0;
             else
                 this.ct_btn_Scroll.Rotation = this.sv_Content.VerticalOffset / infoHeight * 180d;
@@ -52,11 +52,11 @@ namespace ExViewer.Views
         private async void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
             await Task.Yield();
-            if(e.NextView.VerticalOffset < e.FinalView.VerticalOffset && this.sv_Content.VerticalOffset < 1)
+            if (e.NextView.VerticalOffset < e.FinalView.VerticalOffset && this.sv_Content.VerticalOffset < 1)
             {
                 changeViewTo(true, false);
             }
-            else if(e.IsInertial && e.NextView.VerticalOffset < 1 && this.sv_Content.VerticalOffset > this.gd_Info.ActualHeight - 1)
+            else if (e.IsInertial && e.NextView.VerticalOffset < 1 && this.sv_Content.VerticalOffset > this.gd_Info.ActualHeight - 1)
             {
                 changeViewTo(false, false);
             }
@@ -65,7 +65,7 @@ namespace ExViewer.Views
         private void pv_Header_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
         {
             var prop = e.GetCurrentPoint(this).Properties;
-            if(!prop.IsHorizontalMouseWheel && prop.MouseWheelDelta != 0)
+            if (!prop.IsHorizontalMouseWheel && prop.MouseWheelDelta != 0)
             {
                 changeViewTo(prop.MouseWheelDelta < 0, false);
                 e.Handled = true;
@@ -82,12 +82,12 @@ namespace ExViewer.Views
 
         private void page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(this.needResetView)
+            if (this.needResetView)
             {
                 this.needResetView = false;
                 resetView();
             }
-            else if(this.needRestoreView)
+            else if (this.needRestoreView)
             {
                 this.needRestoreView = false;
                 restoreView();
@@ -110,7 +110,7 @@ namespace ExViewer.Views
         private void restoreView()
         {
             var current = this.VM.GetCurrent();
-            if(current != null)
+            if (current != null)
             {
                 this.gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
             }
@@ -136,7 +136,7 @@ namespace ExViewer.Views
         private void changeViewTo(bool view, bool disableAnimation)
         {
             var fullOffset = this.gd_Info.ActualHeight;
-            if(view)
+            if (view)
                 this.sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
             else
                 this.sv_Content.ChangeView(null, 0, null, disableAnimation);
@@ -147,21 +147,21 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
 
-            if(e.NavigationMode == NavigationMode.New)
+            if (e.NavigationMode == NavigationMode.New)
             {
                 resetView();
                 this.needResetView = true;
             }
-            if(e.NavigationMode == NavigationMode.Back)
+            if (e.NavigationMode == NavigationMode.Back)
             {
                 this.entranceElement = (UIElement)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
-                if(this.entranceElement != null)
+                if (this.entranceElement != null)
                 {
                     EntranceNavigationTransitionInfo.SetIsTargetElement(this.entranceElement, true);
                 }
             }
             await Task.Delay(20);
-            switch(e.NavigationMode)
+            switch (e.NavigationMode)
             {
             case NavigationMode.New:
                 this.pv.Focus(FocusState.Programmatic);
@@ -178,7 +178,7 @@ namespace ExViewer.Views
         {
             this.isGd_InfoHideWhenLeave = this.IsGd_InfoHide;
             base.OnNavigatingFrom(e);
-            if(this.entranceElement != null)
+            if (this.entranceElement != null)
                 EntranceNavigationTransitionInfo.SetIsTargetElement(this.entranceElement, false);
         }
 
@@ -199,15 +199,26 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(GalleryVM), typeof(GalleryPage), new PropertyMetadata(null));
 
-        private void gv_Tags_ItemClick(object sender, ItemClickEventArgs e)
+        private async void gv_Tags_ItemClick(object sender, ItemClickEventArgs e)
         {
             var s = (ListViewBase)sender;
             var container = (SelectorItem)s.ContainerFromItem(e.ClickedItem);
-            foreach(var item in this.mfo_Tag.Items)
+            foreach (var item in this.mfo_Tag.Items)
+            {
+                item.Visibility = Visibility.Visible;
+            }
+            await Task.Delay(1);
+            foreach (var item in this.mfo_Tag.Items)
             {
                 item.DataContext = e.ClickedItem;
             }
             this.mfo_Tag.ShowAt(container);
+        }
+
+        private void mfiVote_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var s = (MenuFlyoutItem)sender;
+            s.Visibility = s.IsEnabled ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
@@ -218,17 +229,17 @@ namespace ExViewer.Views
 
         private async void pv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch(this.pv.SelectedIndex)
+            switch (this.pv.SelectedIndex)
             {
             case 1://Comments
-                if(!this.VM.Gallery.Comments.IsLoaded)
+                if (!this.VM.Gallery.Comments.IsLoaded)
                     await this.VM.LoadComments();
                 break;
             case 2://Torrents
-                if(this.VM.Torrents == null)
+                if (this.VM.Torrents == null)
                     await this.VM.LoadTorrents();
                 await Task.Delay(150);
-                if(this.lv_Torrents.Items.Count > 0)
+                if (this.lv_Torrents.Items.Count > 0)
                 {
                     this.lv_Torrents.SelectedIndex = -1;
                     this.lv_Torrents.SelectedIndex = 0;
@@ -244,19 +255,19 @@ namespace ExViewer.Views
 
         private void lv_Torrents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            foreach(var item in e.RemovedItems)
+            foreach (var item in e.RemovedItems)
             {
                 var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(item);
-                if(con == null)
+                if (con == null)
                     continue;
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
                 gd.Visibility = Visibility.Collapsed;
             }
             var added = e.AddedItems.FirstOrDefault();
-            if(added != null)
+            if (added != null)
             {
                 var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(added);
-                if(con == null)
+                if (con == null)
                     return;
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
                 gd.Visibility = Visibility.Visible;
@@ -281,18 +292,18 @@ namespace ExViewer.Views
         {
             base.OnKeyUp(e);
             e.Handled = true;
-            switch(e.Key)
+            switch (e.Key)
             {
-            
+
             case VirtualKey.GamepadY:
                 this.changeViewTo(false, false);
                 this.lv_Tags.Focus(FocusState.Keyboard);
                 break;
             case VirtualKey.GamepadMenu:
             case VirtualKey.Application:
-                if(this.cb_top.IsOpen = !this.cb_top.IsOpen)
+                if (this.cb_top.IsOpen = !this.cb_top.IsOpen)
                 {
-                    if(this.btn_MoreButton == null)
+                    if (this.btn_MoreButton == null)
                         this.btn_MoreButton = this.cb_top.Descendants<Button>("MoreButton").FirstOrDefault();
                     this.btn_MoreButton?.Focus(FocusState.Programmatic);
                 }
@@ -351,9 +362,14 @@ namespace ExViewer.Views
             Grid.SetColumn(this.tbGalleryName, 1);
         }
 
+        private void mfiUp_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
+
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
-            if(visible)
+            if (visible)
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
             else
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
@@ -365,7 +381,7 @@ namespace ExViewer.Views
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             var cat = (FavoriteCategory)value;
-            if(cat == null || cat.Index < 0)
+            if (cat == null || cat.Index < 0)
                 return Strings.Resources.Views.GalleryPage.FavoritesAppBarButton.Text;
             return cat.Name;
 

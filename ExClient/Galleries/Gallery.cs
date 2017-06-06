@@ -41,14 +41,11 @@ namespace ExClient.Galleries
                     var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
                     if (gm == null)
                         return null;
-                    else
-                    {
-                        var r = (cm == null) ?
-                             new Gallery(gm) :
-                             new SavedGallery(gm);
-                        await r.InitAsync();
-                        return r;
-                    }
+                    var r = (cm == null) ?
+                         new Gallery(gm) :
+                         new SavedGallery(gm);
+                    await r.InitAsync();
+                    return r;
                 }
             }).AsAsyncOperation();
         }
@@ -165,7 +162,7 @@ namespace ExClient.Galleries
             this.FileSize = model.FileSize;
             this.Expunged = model.Expunged;
             this.Rating = model.Rating;
-            this.Tags = new TagCollection(JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)));
+            this.Tags = new TagCollection(this, JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)));
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
             this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
@@ -209,7 +206,7 @@ namespace ExClient.Galleries
             this.Expunged = expunged;
             this.Rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
             this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
-            this.Tags = new TagCollection(tags.Select(tag => Tag.Parse(tag)));
+            this.Tags = new TagCollection(this, tags.Select(tag => Tag.Parse(tag)));
             this.ThumbUri = toEhCoverUri(thumb);
             this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
@@ -476,6 +473,7 @@ namespace ExClient.Galleries
                 }
                 if (this.Revisions == null)
                     this.Revisions = new RevisionCollection(this, html);
+                this.Tags.Update(html);
                 var pcNodes = html.DocumentNode.Descendants("td")
                     .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
                     .Select(node =>

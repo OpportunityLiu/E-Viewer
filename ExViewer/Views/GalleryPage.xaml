@@ -227,6 +227,25 @@
                             Command="{x:Bind VM.CopyTag, Mode=OneWay}"
                             CommandParameter="{Binding}" />
             <MenuFlyoutSeparator />
+            <MenuFlyoutItem x:Uid="Views/GalleryPage/TagVoteUpMenuFlyoutItem"
+                            x:Name="mfiUp"
+                            Command="{x:Bind VM.TagVoteUp, Mode=OneWay}"
+                            CommandParameter="{Binding}"
+                            IsEnabledChanged="mfiVote_IsEnabledChanged"
+                            Text="Vote up" />
+            <MenuFlyoutItem x:Uid="Views/GalleryPage/TagVoteDownMenuFlyoutItem"
+                            x:Name="mfiDown"
+                            Command="{x:Bind VM.TagVoteDown, Mode=OneWay}"
+                            CommandParameter="{Binding}"
+                            IsEnabledChanged="mfiVote_IsEnabledChanged"
+                            Text="Vote down" />
+            <MenuFlyoutItem x:Uid="Views/GalleryPage/TagWithdrawVoteMenuFlyoutItem"
+                            x:Name="mfiWithdraw"
+                            Command="{x:Bind VM.TagWithdrawVote, Mode=OneWay}"
+                            CommandParameter="{Binding}"
+                            IsEnabledChanged="mfiVote_IsEnabledChanged"
+                            Text="Withdraw vote" />
+            <MenuFlyoutSeparator />
             <MenuFlyoutItem x:Uid="Views/GalleryPage/GoToDefinitionMenuFlyoutItem"
                             Command="{x:Bind VM.ShowTagDefination, Mode=OneWay}"
                             CommandParameter="{Binding}"

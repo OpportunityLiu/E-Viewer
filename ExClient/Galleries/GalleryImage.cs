@@ -122,15 +122,13 @@ namespace ExClient.Galleries
                 {
                     if (this.imageFile != null)
                     {
-                        using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, thumbWidth * 18 / 10))
+                        using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView))
                         {
                             await img.SetSourceAsync(stream);
                         }
                     }
                     else if (this.thumbUri != null)
                     {
-                        img.DecodePixelType = DecodePixelType.Logical;
-                        img.DecodePixelWidth = 100;
                         var buffer = await thumbClient.GetBufferAsync(this.thumbUri);
                         using (var stream = buffer.AsRandomAccessStream())
                         {

@@ -219,17 +219,63 @@ namespace ExViewer.ViewModels
                     await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null);
-            this.SearchTag = new Command<Tag>(tag =>
-            {
-                var vm = SearchVM.GetVM(tag.Search());
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
-            }, tag => tag.Content != null);
             this.AddComment = new AsyncCommand(async () =>
             {
                 var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref GalleryVM.addComment);
                 addComment.Gallery = this.Gallery;
                 await addComment.ShowAsync();
             }, () => this.Gallery != null);
+            this.TagVoteUp = new Command<Tag>(async tag =>
+            {
+                await this.gallery.Tags.VoteAsync(tag, VoteCommand.Up);
+                this.TagVoteUp.RaiseCanExecuteChanged();
+                this.TagVoteDown.RaiseCanExecuteChanged();
+                this.TagWithdrawVote.RaiseCanExecuteChanged();
+            }, tag =>
+            {
+                if (this.gallery == null)
+                    return false;
+                var state = this.gallery.Tags.StateOf(tag);
+                if (state.HasFlag(TagState.Downvoted) || state.HasFlag(TagState.Upvoted) || state.HasFlag(TagState.Slave))
+                    return false;
+                return true;
+            });
+            this.TagVoteDown = new Command<Tag>(async tag =>
+            {
+                await this.gallery.Tags.VoteAsync(tag, VoteCommand.Down);
+                this.TagVoteUp.RaiseCanExecuteChanged();
+                this.TagVoteDown.RaiseCanExecuteChanged();
+                this.TagWithdrawVote.RaiseCanExecuteChanged();
+            }, tag =>
+            {
+                if (this.gallery == null)
+                    return false;
+                var state = this.gallery.Tags.StateOf(tag);
+                if (state.HasFlag(TagState.Downvoted) || state.HasFlag(TagState.Upvoted))
+                    return false;
+                return true;
+            });
+            this.TagWithdrawVote = new Command<Tag>(async tag =>
+            {
+                var state = this.gallery.Tags.StateOf(tag);
+                if (state.HasFlag(TagState.Downvoted))
+                    await this.gallery.Tags.VoteAsync(tag, VoteCommand.Up);
+                else if (state.HasFlag(TagState.Upvoted))
+                    await this.gallery.Tags.VoteAsync(tag, VoteCommand.Down);
+                this.TagVoteUp.RaiseCanExecuteChanged();
+                this.TagVoteDown.RaiseCanExecuteChanged();
+                this.TagWithdrawVote.RaiseCanExecuteChanged();
+            }, tag =>
+            {
+                if (this.gallery == null)
+                    return false;
+                var state = this.gallery.Tags.StateOf(tag);
+                if (state.HasFlag(TagState.Downvoted) && state.HasFlag(TagState.Slave))
+                    return false;
+                if (state.HasFlag(TagState.Upvoted) || state.HasFlag(TagState.Downvoted))
+                    return true;
+                return false;
+            });
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -254,7 +300,15 @@ namespace ExViewer.ViewModels
 
         public Command<GalleryImage> ReloadImage { get; }
 
-        public Command<Tag> SearchTag { get; }
+        public Command<Tag> TagVoteUp { get; }
+        public Command<Tag> TagVoteDown { get; }
+        public Command<Tag> TagWithdrawVote { get; }
+
+        public Command<Tag> SearchTag { get; } = new Command<Tag>(tag =>
+        {
+            var vm = SearchVM.GetVM(tag.Search());
+            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
+        }, tag => tag.Content != null);
 
         private static readonly EhWikiDialog ewd = new EhWikiDialog();
         public AsyncCommand<Tag> ShowTagDefination { get; }

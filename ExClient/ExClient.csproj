@@ -111,6 +111,8 @@
     <PRIResource Include="Strings\zh-hans\Namespace.resjson" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Tagging.cs" />
+    <Compile Include="Api\VoteCommand.cs" />
     <Compile Include="Galleries\Metadata\LanguageModifier.cs" />
     <Compile Include="Galleries\Metadata\LanguageName.cs" />
     <Compile Include="Galleries\Metadata\LanguageNameExtension.cs" />
@@ -194,6 +196,7 @@
     <Compile Include="Tagging\TagCollection.cs" />
     <Compile Include="Galleries\Metadata\TorrentInfo.cs" />
     <Compile Include="Launch\UriLauncher.cs" />
+    <Compile Include="Tagging\TagState.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
     <PRIResource Include="Strings\en\Namespace.resjson" />
     <PRIResource Include="Strings\en\Category.resjson" />

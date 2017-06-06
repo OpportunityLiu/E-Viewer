@@ -9,24 +9,17 @@ using System.Threading.Tasks;
 
 namespace ExClient.Api
 {
-    internal abstract class CommentRequest : ApiRequest
+    internal abstract class CommentRequest : GalleryRequest
     {
         public CommentRequest(Comment comment)
+            : base(comment.Owner.Owner)
         {
             var gallery = comment.Owner.Owner;
-            this.GalleryId = gallery.Id;
-            this.GalleryToken = gallery.Token.TokenToString();
             this.Id = comment.Id;
         }
 
         [JsonProperty("comment_id")]
         public int Id { get; }
-
-        [JsonProperty("gid")]
-        public long GalleryId { get; }
-
-        [JsonProperty("token")]
-        public string GalleryToken { get; }
     }
 
     internal sealed class CommentVote : CommentRequest
@@ -34,7 +27,7 @@ namespace ExClient.Api
         public CommentVote(Comment comment, VoteCommand vote)
             : base(comment)
         {
-            if(vote != VoteCommand.Down && vote != VoteCommand.Up)
+            if (vote != VoteCommand.Down && vote != VoteCommand.Up)
                 throw new ArgumentOutOfRangeException(nameof(vote));
             this.Vote = vote;
         }
@@ -55,14 +48,7 @@ namespace ExClient.Api
         public override string Method => "geteditcomment";
     }
 
-    public enum VoteCommand
-    {
-        Default = 0,
-        Up = 1,
-        Down = -1
-    }
-
-    internal class CommentResponse : Api.ApiResponse
+    internal class CommentResponse : ApiResponse
     {
         [JsonProperty("comment_id")]
         public int Id { get; set; }

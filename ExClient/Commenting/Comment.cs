@@ -145,6 +145,8 @@ namespace ExClient.Commenting
 
         public IAsyncAction VoteAsync(Api.VoteCommand command)
         {
+            if (command != VoteCommand.Down && command != VoteCommand.Up)
+                throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
             if (!this.CanVote)
                 if (this.IsUploaderComment)
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteStateUploader);
