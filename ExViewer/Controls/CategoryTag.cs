@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Media;
 
 namespace ExViewer.Controls
 {
+    [TemplatePart(Name = nameof(TextPresenter), Type = typeof(TextBlock))]
     public sealed class CategoryTag : Control
     {
         private static readonly ResourceDictionary categoryBrushes = getResource();
@@ -40,20 +41,25 @@ namespace ExViewer.Controls
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.textPresenter = ((TextBlock)this.GetTemplateChild("TextPresenter"));
+            this.TextPresenter = (TextBlock)this.GetTemplateChild(nameof(this.TextPresenter));
+            setValue(this.Category);
+        }
+
+        private void setValue(Category cat)
+        {
 #if DEBUG
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
-                if (this.textPresenter != null)
-                    this.textPresenter.Text = "TESTVALUE";
+                if (this.TextPresenter != null)
+                    this.TextPresenter.Text = "TESTVALUE";
                 return;
             }
 #endif
-            if (this.textPresenter != null)
-                this.textPresenter.Text = this.Category.ToFriendlyNameString().ToUpper();
+            if (this.TextPresenter != null)
+                this.TextPresenter.Text = cat.ToFriendlyNameString().ToUpper();
         }
 
-        private TextBlock textPresenter;
+        private TextBlock TextPresenter;
 
         public Category Category
         {
@@ -72,12 +78,10 @@ namespace ExViewer.Controls
             var newValue = (Category)e.NewValue;
             if (oldValue == newValue)
                 return;
+            sender.setValue(newValue);
 #if DEBUG
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
-                sender.Background = new SolidColorBrush(Colors.BlueViolet);
-                if (sender.textPresenter != null)
-                    sender.textPresenter.Text = "TESTVALUE";
                 return;
             }
 #endif
@@ -89,8 +93,6 @@ namespace ExViewer.Controls
             {
                 sender.ClearValue(BackgroundProperty);
             }
-            if (sender.textPresenter != null)
-                sender.textPresenter.Text = newValue.ToFriendlyNameString().ToUpper();
         }
     }
 }
