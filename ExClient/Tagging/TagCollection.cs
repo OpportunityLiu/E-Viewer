@@ -1,24 +1,34 @@
-﻿using ExClient.Internal;
+﻿using ExClient.Api;
+using ExClient.Galleries;
+using ExClient.Internal;
+using HtmlAgilityPack;
+using Newtonsoft.Json;
+using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
+using Windows.Foundation;
 using static ExClient.Tagging.Namespace;
 
 namespace ExClient.Tagging
 {
     [DebuggerDisplay(@"\{{data.Length} tags in {keys.Length} namespaces\}")]
-    public sealed class TagCollection : IReadOnlyList<NamespaceTagCollection>
+    public sealed class TagCollection : ObservableCollectionBase, IReadOnlyList<NamespaceTagCollection>
     {
         private static readonly Namespace[] staticKeys = new[]
         {
             Reclass,
-            Namespace.Language,
+            Language,
             Parody,
             Character,
-            Group,
+            Namespace.Group,
             Artist,
             Male,
             Female,
@@ -35,36 +45,62 @@ namespace ExClient.Tagging
             return -1;
         }
 
-        public TagCollection(IEnumerable<Tag> items)
+        public TagCollection(Gallery owner, IEnumerable<Tag> items)
         {
-            this.data = items.OrderBy(t => t.Namespace).ToArray();
-            this.offset = new int[staticKeys.Length + 1];
-            this.keys = new Namespace[staticKeys.Length];
+            this.Owner = owner;
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+            initOrReset(items.Select(t => (t, TagState.NormalPower)));
+        }
+
+        private void initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
+        {
+            var rawData = items.OrderBy(t => t.tag).ToArray();
+            var data = new Tag[rawData.Length];
+            var state = new TagState[rawData.Length];
+            for (var i = 0; i < rawData.Length; i++)
+            {
+                var d = rawData[i];
+                data[i] = d.tag;
+                state[i] = d.ts;
+            }
+
+            var offset = new int[staticKeys.Length + 1];
+            var keys = new Namespace[staticKeys.Length];
             var currentIdx = 0;
             var currentNs = Unknown;
-            for (var i = 0; i < this.data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
             {
-                var current = this.data[i];
+                var current = data[i];
                 if (currentNs == current.Namespace)
                     continue;
                 currentNs = current.Namespace;
-                this.keys[currentIdx] = currentNs;
-                this.offset[currentIdx] = i;
+                keys[currentIdx] = currentNs;
+                offset[currentIdx] = i;
                 currentIdx++;
             }
-            this.offset[currentIdx] = this.data.Length;
-            Array.Resize(ref this.keys, currentIdx);
-            Array.Resize(ref this.offset, currentIdx + 1);
+            offset[currentIdx] = data.Length;
+            Array.Resize(ref keys, currentIdx);
+            Array.Resize(ref offset, currentIdx + 1);
+            this.data = data;
+            this.state = state;
+            this.keys = keys;
+            this.offset = offset;
         }
 
-        private readonly Tag[] data;
-        private readonly int[] offset;
-        private readonly Namespace[] keys;
+        private Tag[] data;
+        private TagState[] state;
+
+        private Namespace[] keys;
+        private int[] offset;
+
+        public Gallery Owner { get; }
 
         public IReadOnlyList<Tag> Items => this.data;
 
         public int Count => this.keys.Length;
 
+        [IndexerName("Groups")]
         public NamespaceTagCollection this[int index]
         {
             get
@@ -75,6 +111,7 @@ namespace ExClient.Tagging
             }
         }
 
+        [IndexerName("Groups")]
         public RangedCollectionView<Tag> this[Namespace key]
         {
             get
@@ -108,43 +145,187 @@ namespace ExClient.Tagging
             return new RangedCollectionView<Tag>(this.data, this.offset[index], this.offset[index + 1] - this.offset[index]);
         }
 
-        public struct TagCollectionEnumerator : IEnumerator<NamespaceTagCollection>
+        public IAsyncAction VoteAsync(Tag tag, VoteCommand command)
         {
-            private readonly TagCollection parent;
+            if (command != VoteCommand.Down && command != VoteCommand.Up)
+                throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
+            return voteAsync(new TagRequest(this, tag, command));
+        }
+
+        public IAsyncAction VoteAsync(IEnumerable<Tag> tags, VoteCommand command)
+        {
+            if (tags == null)
+                throw new ArgumentNullException(nameof(tags));
+            if (command != VoteCommand.Down && command != VoteCommand.Up)
+                throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
+            var req = new TagRequest(this, tags, command);
+            if (string.IsNullOrWhiteSpace(req.Tags))
+                return AsyncWrapper.CreateCompleted();
+            return voteAsync(req);
+        }
+
+        private static Regex tagNotValid = new Regex(@"\s*The tag .+? is not currently valid\.\s*");
+        private static Regex tagNeedNs = new Regex(@"\s*The tag .+? is not allowed in this namespace - requires male: or female:\s*");
+        private static Regex tagCantVote = new Regex(@"\s*Cannot vote for tag\.\s*");
+
+        private IAsyncAction voteAsync(TagRequest req)
+        {
+            return AsyncInfo.Run(async token =>
+            {
+                var res = await Client.Current.HttpClient.PostApiAsync(req);
+                var r = JsonConvert.DeserializeObject<TagResponse>(res);
+                if (r.Error != null)
+                {
+                    if (tagNotValid.IsMatch(r.Error))
+                        throw new InvalidOperationException(LocalizedStrings.Resources.TagNotValid);
+                    if (tagNeedNs.IsMatch(r.Error))
+                        throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace);
+                    if (tagCantVote.IsMatch(r.Error))
+                        throw new InvalidOperationException(LocalizedStrings.Resources.TagNoVotePremition);
+                }
+                r.CheckResponse();
+                var doc = HtmlNode.CreateNode(r.TagPane);
+                updateCore(doc);
+            });
+        }
+
+        internal void Update(HtmlDocument doc)
+        {
+            var tablecontainer = doc.GetElementbyId("taglist");
+            if (tablecontainer == null)
+                return;
+            var tableNode = tablecontainer.Element("table");
+            if (tableNode == null)
+                return;
+            updateCore(tableNode);
+        }
+
+        private void updateCore(HtmlNode tableNode)
+        {
+            //TODO:
+            var query = tableNode.Descendants("div")
+                .Select(node =>
+                {
+                    var a = node.Element("a");
+                    var divid = node.Id;
+                    var divstyle = node.GetAttributeValue("style", "opacity:1.0");
+                    var divclass = node.GetAttributeValue("class", "gtl");
+                    var aclass = a.GetAttributeValue("class", "");
+                    var state = default(TagState);
+                    switch (divclass)
+                    {
+                    case "gt":
+                        state |= TagState.HighPower; break;
+                    case "gtw":
+                        state |= TagState.LowPower; break;
+                    case "gtl":
+                    default:
+                        state |= TagState.NormalPower; break;
+                    }
+                    switch (divstyle)
+                    {
+                    case "opacity:0.4":
+                        state |= TagState.Slave;
+                        break;
+                    case "opacity:1.0":
+                    default:
+                        break;
+                    }
+                    switch (aclass)
+                    {
+                    case "tup":
+                        state |= TagState.Upvoted;
+                        break;
+                    case "tdn":
+                        state |= TagState.Downvoted;
+                        break;
+                    }
+                    var tag = divid.Substring(3).Replace('_', ' ');
+                    return (Tag.Parse(tag), state);
+                });
+            initOrReset(query);
+            RaiseCollectionReset();
+            RaisePropertyChanged(nameof(Count), nameof(Items), "Groups");
+        }
+
+        public struct Enumerator : IEnumerator<NamespaceTagCollection>
+        {
+            private TagCollection parent;
             private int i;
 
-            internal TagCollectionEnumerator(TagCollection parent)
+            internal Enumerator(TagCollection parent)
             {
                 this.parent = parent;
                 this.i = -1;
+                this.Current = default(NamespaceTagCollection);
             }
 
-            public NamespaceTagCollection Current
-                => new NamespaceTagCollection(this.parent.keys[this.i], new RangedCollectionView<Tag>(this.parent.data, this.parent.offset[this.i], this.parent.offset[this.i + 1] - this.parent.offset[this.i]));
+            public NamespaceTagCollection Current { get; private set; }
 
             object IEnumerator.Current => Current;
-
-            public void Dispose()
-            {
-            }
 
             public bool MoveNext()
             {
                 this.i++;
-                return this.i < this.parent.keys.Length;
+                var ii = this.i;
+                var offset = this.parent.offset;
+                var success = ii < this.parent.keys.Length;
+                if (success)
+                    this.Current = new NamespaceTagCollection(this.parent.keys[ii], new RangedCollectionView<Tag>(this.parent.data, offset[ii], offset[ii + 1] - offset[ii]));
+                else
+                    this.Current = default(NamespaceTagCollection);
+                return success;
+            }
+
+            public void Dispose()
+            {
+                this.i = int.MaxValue;
+                this.Current = default(NamespaceTagCollection);
+                this.parent = null;
             }
 
             public void Reset()
             {
                 this.i = -1;
+                this.Current = default(NamespaceTagCollection);
             }
         }
 
-        public TagCollectionEnumerator GetEnumerator()
-            => new TagCollectionEnumerator(this);
+        public Enumerator GetEnumerator()
+            => new Enumerator(this);
 
         IEnumerator<NamespaceTagCollection> IEnumerable<NamespaceTagCollection>.GetEnumerator() => GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public int IndexOf(Tag tag)
+        {
+            var nsindex = getIndexOfKey(tag.Namespace);
+            if (nsindex < 0)
+                return -1;
+            for (var i = this.offset[nsindex]; i < this.offset[nsindex + 1]; i++)
+            {
+                if (this.data[i].Content == tag.Content)
+                    return i;
+            }
+            return -1;
+        }
+
+        public TagState StateOf(int index)
+        {
+            if (index < 0 || index >= this.data.Length)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            if (this.state == null)
+                return TagState.NormalPower;
+            return this.state[index];
+        }
+
+        public TagState StateOf(Tag tag)
+        {
+            var i = IndexOf(tag);
+            if (i < 0)
+                return TagState.NotPresented;
+            return StateOf(i);
+        }
     }
 }
