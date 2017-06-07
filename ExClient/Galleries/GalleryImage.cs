@@ -122,7 +122,7 @@ namespace ExClient.Galleries
                 {
                     if (this.imageFile != null)
                     {
-                        using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.PicturesView))
+                        using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, 180, Windows.Storage.FileProperties.ThumbnailOptions.ResizeThumbnail))
                         {
                             await img.SetSourceAsync(stream);
                         }
@@ -181,87 +181,77 @@ namespace ExClient.Galleries
         public virtual IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
             var previousAction = this.loadImageAction;
+            var previousEnded = previousAction == null || previousAction.Status != AsyncStatus.Started;
             switch (this.state)
             {
             case ImageLoadingState.Loading:
             case ImageLoadingState.Loaded:
                 if (!reload)
                 {
-                    if (previousAction == null)
+                    if (previousEnded)
                         return AsyncWrapper.CreateCompleted();
                     return PollingAsyncWrapper.Wrap(previousAction, 1500);
                 }
+                else
+                {
+                    if (!previousEnded)
+                        previousAction?.Cancel();
+                }
                 break;
             case ImageLoadingState.Preparing:
-                if (previousAction == null)
+                if (previousEnded)
                     return AsyncWrapper.CreateCompleted();
                 return PollingAsyncWrapper.Wrap(previousAction, 1500);
             }
-            return this.loadImageAction = Run(async token =>
+            return this.loadImageAction = startLoadImageAsync(strategy, throwIfFailed);
+        }
+
+        private IAsyncAction startLoadImageAsync(ConnectionStrategy strategy, bool throwIfFailed)
+        {
+            return Run(async token =>
             {
-                IAsyncAction load;
-                IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> imageLoad = null;
-                switch (this.state)
-                {
-                case ImageLoadingState.Waiting:
-                case ImageLoadingState.Failed:
-                    load = this.loadImageUri();
-                    break;
-                case ImageLoadingState.Loading:
-                case ImageLoadingState.Loaded:
-                    if (previousAction?.Status == AsyncStatus.Started)
-                        previousAction.Cancel();
-                    await this.deleteImageFile();
-                    load = this.loadImageUri();
-                    break;
-                default:
-                    return;
-                }
-                token.Register(() =>
-                {
-                    load.Cancel();
-                    imageLoad?.Cancel();
-                });
-                this.State = ImageLoadingState.Preparing;
-                this.Progress = 0;
                 try
                 {
-                    await load;
-                    Uri uri = null;
+                    this.State = ImageLoadingState.Preparing;
+                    this.Progress = 0;
+                    var loadImgUri = this.loadImageUri();
+                    IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> loadImg = null;
+                    token.Register(() =>
+                    {
+                        loadImgUri.Cancel();
+                        loadImg?.Cancel();
+                    });
+                    await loadImgUri;
+                    if (this.imageUri.LocalPath.EndsWith("/509.gif"))
+                        throw new InvalidOperationException(LocalizedStrings.Resources.ExceedLimits);
+                    Uri imgUri = null;
                     var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
                     if (loadFull)
                     {
-                        uri = this.originalImageUri ?? this.imageUri;
+                        imgUri = this.originalImageUri ?? this.imageUri;
                         this.OriginalLoaded = true;
                     }
                     else
                     {
-                        uri = this.imageUri;
+                        imgUri = this.imageUri;
                         this.OriginalLoaded = (this.originalImageUri == null);
                     }
                     this.State = ImageLoadingState.Loading;
-                    imageLoad = Client.Current.HttpClient.GetAsync(uri);
-                    imageLoad.Progress = (sender, progress) =>
-                    {
-                        if (this.State == ImageLoadingState.Loaded)
-                        {
-                            sender.Cancel();
-                            return;
-                        }
-                        if (progress.TotalBytesToReceive == null || progress.TotalBytesToReceive == 0)
-                            this.Progress = 0;
-                        else
-                        {
-                            var pro = (int)(progress.BytesReceived * 100 / ((ulong)progress.TotalBytesToReceive));
-                            this.Progress = pro;
-                        }
-                    };
                     token.ThrowIfCancellationRequested();
-                    await this.deleteImageFile();
-                    var imageLoadResponse = await imageLoad;
+                    loadImg = Client.Current.HttpClient.GetAsync(imgUri);
+                    loadImg.Progress = loadImgProgress;
+                    var imageLoadResponse = await loadImg;
                     if (imageLoadResponse.Content.Headers.ContentType.MediaType == "text/html")
-                        throw new InvalidOperationException(HtmlUtilities.ConvertToText(imageLoadResponse.Content.ToString()));
+                    {
+                        var error = HtmlUtilities.ConvertToText(imageLoadResponse.Content.ToString());
+                        if (error.StartsWith("You have exceeded your image viewing limits."))
+                        {
+                            throw new InvalidOperationException(LocalizedStrings.Resources.ExceedLimits);
+                        }
+                        throw new InvalidOperationException(error);
+                    }
                     token.ThrowIfCancellationRequested();
+                    await this.deleteImageFileAsync();
                     var buffer = await imageLoadResponse.Content.ReadAsBufferAsync();
                     var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
                     var pageId = this.PageId;
@@ -294,7 +284,18 @@ namespace ExClient.Galleries
             });
         }
 
-        private async Task deleteImageFile()
+        private void loadImgProgress(IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> asyncInfo, HttpProgress progress)
+        {
+            if (progress.TotalBytesToReceive == null || progress.TotalBytesToReceive == 0)
+                this.Progress = 0;
+            else
+            {
+                var pro = (int)(progress.BytesReceived * 100 / ((ulong)progress.TotalBytesToReceive));
+                this.Progress = pro;
+            }
+        }
+
+        private async Task deleteImageFileAsync()
         {
             var file = this.ImageFile;
             if (file != null)

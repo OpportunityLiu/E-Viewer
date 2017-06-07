@@ -20,5 +20,6 @@
   "WrongVoteStateUploader": "无法对上传者评论投票。",
   "TagNotValid": "此标签现在不可用。",
   "TagNeedNamespace": "此标签不允许使用当前命名空间——需要 male: 或 female:。",
-  "TagNoVotePremition": "不能为此标签投票。"
+  "TagNoVotePremition": "不能为此标签投票。",
+  "ExceedLimits": "已经超过图片访问流量限制。"
 }

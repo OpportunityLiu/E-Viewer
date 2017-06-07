@@ -4,6 +4,7 @@
   "DefaultTitle": "Gallery Title",
   "DefaultUploader": "Uploader",
   "EmptyComment": "You did not enter a valid comment.",
+  "ExceedLimits": "You have exceeded your image viewing limits.",
   "ExpungedTorrent": "This torrent has been expunged.",
   "OnlyIpv4": "Only IPV4 address supported.",
   "RemoveFromFavorites": "Remove from favorites",
