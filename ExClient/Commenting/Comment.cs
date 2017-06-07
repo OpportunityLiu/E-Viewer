@@ -188,9 +188,8 @@ namespace ExClient.Commenting
                 var res = await Client.Current.HttpClient.PostApiAsync(request);
                 var r = JsonConvert.DeserializeObject<CommentEditResponse>(res);
                 r.CheckResponse();
-                var doc = new HtmlDocument();
-                doc.LoadHtml(r.Editable);
-                var textArea = doc.DocumentNode.Descendants("textarea").FirstOrDefault();
+                var doc = HtmlNode.CreateNode(r.Editable);
+                var textArea = doc.Descendants("textarea").FirstOrDefault();
                 if (textArea == null)
                     return "";
                 return HtmlEntity.DeEntitize(textArea.InnerText);

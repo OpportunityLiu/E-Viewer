@@ -21,9 +21,7 @@ namespace ExClient.Galleries.Metadata
             return Task.Run(async () =>
             {
                 var torrentUri = new Uri(Client.Current.Uris.RootUri, $"gallerytorrents.php?gid={gallery.Id}&t={gallery.Token.TokenToString()}");
-                var torrentHtml = await Client.Current.HttpClient.GetStringAsync(torrentUri);
-                var doc = new HtmlDocument();
-                doc.LoadHtml(torrentHtml);
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(torrentUri);
                 var nodes = from n in doc.DocumentNode.Descendants("table")
                             where n.GetAttributeValue("style", "") == "width:99%"
                             let reg = infoMatcher.Match(n.InnerText)

@@ -302,7 +302,7 @@ namespace ExViewer.Views
                 var info = default(UserInfo);
                 try
                 {
-                    info = await Client.Current.LoadUserInfo(Client.Current.UserID);
+                    info = await Client.Current.FetchCurrentUserInfoAsync();
                     await info.SaveToCache();
                 }
                 catch(Exception)

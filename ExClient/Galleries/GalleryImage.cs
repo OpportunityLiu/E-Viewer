@@ -80,9 +80,7 @@ namespace ExClient.Galleries
                     loadPageUri = new Uri(this.PageUri, $"?nl={failToken}");
                 else
                     loadPageUri = this.PageUri;
-                var loadPage = Client.Current.HttpClient.GetStringAsync(loadPageUri);
-                var pageResult = new HtmlDocument();
-                pageResult.LoadHtml(await loadPage);
+                var pageResult = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri);
 
                 this.imageUri = new Uri(HtmlUtilities.ConvertToText(pageResult.GetElementbyId("img").GetAttributeValue("src", "")));
                 var originalNode = pageResult.GetElementbyId("i7").Descendants("a").FirstOrDefault();
