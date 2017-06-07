@@ -50,6 +50,15 @@ namespace ExViewer.Controls
                 s.ClearValue(TextBlock.TextProperty);
                 return;
             }
+            var state = this.Tags.StateOf(value);
+            if(state.HasFlag(TagState.Slave))
+            {
+                s.Opacity = 0.4;
+            }
+            else
+            {
+                s.ClearValue(OpacityProperty);
+            }
             var dc = value.GetDisplayContentAsync();
             if (dc.Status != AsyncStatus.Completed)
             {
@@ -91,7 +100,7 @@ namespace ExViewer.Controls
             var sl = state.HasFlag(TagState.Slave);
             var canVU = !dv && !uv && !sl;
             var canVD = !dv && !uv;
-            var canWV = ((dv || uv) && !sl) || (dv && sl);
+            var canWV = dv || uv;
             this.mfiUp.Visibility = canVU ? Visibility.Visible : Visibility.Collapsed;
             this.mfiDown.Visibility = canVD ? Visibility.Visible : Visibility.Collapsed;
             this.mfiWithdraw.Visibility = canWV ? Visibility.Visible : Visibility.Collapsed;

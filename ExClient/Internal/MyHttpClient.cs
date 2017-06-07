@@ -1,6 +1,9 @@
 ﻿using ExClient.Api;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 using System;
+using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
@@ -118,6 +121,25 @@ namespace ExClient.Internal
                 var response = await request;
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
+            });
+        }
+
+        public IAsyncOperationWithProgress<HtmlDocument, HttpProgress> GetDocumentAsync(Uri uri)
+        {
+            reformUri(ref uri);
+            return Run<HtmlDocument, HttpProgress>(async (token, progress) =>
+            {
+                var request = GetAsync(uri);
+                token.Register(request.Cancel);
+                request.Progress = (t, p) => progress.Report(p);
+                var doc = new HtmlDocument();
+                var response = await request;
+                response.EnsureSuccessStatusCode();
+                using (var stream = (await response.Content.ReadAsInputStreamAsync()).AsStreamForRead())
+                {
+                    doc.Load(stream);
+                    return doc;
+                }
             });
         }
 

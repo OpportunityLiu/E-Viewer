@@ -461,11 +461,8 @@ namespace ExClient.Galleries
             {
                 var needLoadComments = !this.Comments.IsLoaded;
                 var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
-                var request = Client.Current.HttpClient.GetStringAsync(uri);
-                var res = await request;
-                ApiRequest.UpdateToken(res);
-                var html = new HtmlDocument();
-                html.LoadHtml(res);
+                var html = await Client.Current.HttpClient.GetDocumentAsync(uri);
+                ApiRequest.UpdateToken(html.DocumentNode.OuterHtml);
                 updateFavoriteInfo(html);
                 if (needLoadComments)
                 {
@@ -544,9 +541,7 @@ namespace ExClient.Galleries
         {
             return Run(async token =>
             {
-                var r = await Client.Current.HttpClient.GetStringAsync(new Uri($"gallerypopups.php?gid={this.Id}&t={this.Token.TokenToString()}&act=addfav", UriKind.Relative));
-                var doc = new HtmlDocument();
-                doc.LoadHtml(r);
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={this.Id}&t={this.Token.TokenToString()}&act=addfav", UriKind.Relative));
                 var favdel = doc.GetElementbyId("favdel");
                 if (favdel != null)
                 {

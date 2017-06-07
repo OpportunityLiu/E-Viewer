@@ -31,9 +31,7 @@ namespace ExClient.Search
         {
             return AsyncInfo.Run(async token =>
             {
-                var html = await Client.Current.HttpClient.GetStringAsync(UriProvider.Eh.RootUri);
-                var doc = new HtmlDocument();
-                doc.LoadHtml(html);
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(UriProvider.Eh.RootUri);
                 var pp = doc.GetElementbyId("pp");
                 var ginfo = (from div in pp.Elements("div")
                              where div.GetAttributeValue("class", "") == "id1"

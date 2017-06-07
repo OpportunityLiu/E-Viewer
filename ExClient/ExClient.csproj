@@ -197,6 +197,7 @@
     <Compile Include="Galleries\Metadata\TorrentInfo.cs" />
     <Compile Include="Launch\UriLauncher.cs" />
     <Compile Include="Tagging\TagState.cs" />
+    <Compile Include="UserInfo.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
     <PRIResource Include="Strings\en\Namespace.resjson" />
     <PRIResource Include="Strings\en\Category.resjson" />

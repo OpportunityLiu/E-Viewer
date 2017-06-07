@@ -120,9 +120,9 @@ namespace ExClient
                 {
                     var log = await this.HttpClient.PostAsync(logOnUri, new HttpFormUrlEncodedContent(getParams()));
                     var html = new HtmlDocument();
-                    using(var stream = await log.Content.ReadAsInputStreamAsync())
+                    using(var stream = (await log.Content.ReadAsInputStreamAsync()).AsStreamForRead())
                     {
-                        html.Load(stream.AsStreamForRead());
+                        html.Load(stream);
                     }
                     var errorNode = html.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "") == "postcolor").FirstOrDefault();
                     if(errorNode != null)
@@ -154,7 +154,7 @@ namespace ExClient
             });
         }
 
-        public int UserID
+        public long UserID
         {
             get
             {

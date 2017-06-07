@@ -107,17 +107,13 @@ namespace ExClient.Search
             return Run(async token =>
             {
                 var uri = new Uri($"{this.SearchUri}&page={pageIndex}");
-                var getStream = this.Owner.HttpClient.GetInputStreamAsync(uri);
-                token.Register(getStream.Cancel);
-                using (var stream = (await getStream).AsStreamForRead())
-                {
-                    var doc = new HtmlDocument();
-                    doc.Load(stream);
-                    updatePageCountAndRecordCount(doc);
-                    if (this.IsEmpty)
-                        return Array.Empty<Gallery>();
-                    return await loadPage(doc);
-                }
+                var getDoc = this.Owner.HttpClient.GetDocumentAsync(uri);
+                token.Register(getDoc.Cancel);
+                var doc = await getDoc;
+                updatePageCountAndRecordCount(doc);
+                if (this.IsEmpty)
+                    return Array.Empty<Gallery>();
+                return await loadPage(doc);
             });
         }
     }

@@ -46,12 +46,10 @@ namespace ExClient.Commenting
                     this.Clear();
                     this.IsLoaded = false;
                 }
-                var get = Client.Current.HttpClient.GetStringAsync(new Uri(this.Owner.GalleryUri, "?hc=1"));
+                var get = Client.Current.HttpClient.GetDocumentAsync(new Uri(this.Owner.GalleryUri, "?hc=1"));
                 token.Register(get.Cancel);
-                var html = await get;
-                var document = new HtmlDocument();
-                document.LoadHtml(html);
-                Api.ApiRequest.UpdateToken(html);
+                var document = await get;
+                Api.ApiRequest.UpdateToken(document.DocumentNode.OuterHtml);
                 return AnalyzeDocument(document);
             });
         }
