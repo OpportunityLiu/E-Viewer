@@ -1,5 +1,6 @@
 # ExViewer
-A Client for e-hentai.org on Windows 10.
+A Client for e-hentai.org on Windows 10.    
+用于 WIndows 10 的 E-站 UWP 应用。
 
 ## Releases / 发布
 |   |   |
