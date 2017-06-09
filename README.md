@@ -15,10 +15,10 @@ Install dependencies [[x86](https://raw.github.com/wiki/OpportunityLiu/ExViewer/
 [x64](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x64.zip) |
 [ARM](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/ARM.zip)]和证书（`.cer` 文件）。
 
-Please download `*.appxbundle` or `*.appx` file to install.
-`*.appxsym` files are symbol files for debugging.    
-下载 `*.appxbundle` 或 `*.appx` 安装包来安装。
-`*.appxsym` 文件是用于调试的符号信息。
+Please download `.appxbundle` or `.appx` file to install.
+`.appxsym` files are symbol files for debugging.    
+下载 `.appxbundle` 或 `.appx` 安装包来安装。
+`.appxsym` 文件是用于调试的符号信息。
 
 ## How To Install / 安装
 see wiki [here](https://github.com/OpportunityLiu/ExViewer/wiki/How-to-Install)    
