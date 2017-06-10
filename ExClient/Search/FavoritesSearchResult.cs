@@ -11,7 +11,7 @@ using Windows.Web.Http;
 
 namespace ExClient.Search
 {
-    public class FavoritesSearchResult : SearchResultBase
+    public sealed class FavoritesSearchResult : SearchResult
     {
         public static Uri SearchBaseUri => new Uri(Client.Current.Uris.RootUri, "favorites.php");
 

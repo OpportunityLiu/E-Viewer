@@ -9,11 +9,13 @@ using Windows.Storage;
 
 namespace ExClient.Search
 {
-    public sealed class FileSearchResult : SearchResultBase
+    public sealed class FileSearchResult : KeywordSearchResult
     {
-        internal static IAsyncOperation<FileSearchResult> SearchAsync(Client owner, StorageFile file, bool includeSimilar, bool onlyCovers, bool includeExpunged)
+        internal static IAsyncOperation<FileSearchResult> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
         {
-            if (includeSimilar)
+            if (file == null)
+                throw new ArgumentNullException(nameof(file));
+            if (searchSimilar)
             {
                 //TODO:
                 throw null;
@@ -23,34 +25,44 @@ namespace ExClient.Search
                 return AsyncInfo.Run(async token =>
                 {
                     var hash = await SHA1Value.ComputeAsync(file);
-                    return new FileSearchResult(owner, Enumerable.Repeat(hash, 1), file.Name, false, onlyCovers, includeExpunged);
+                    return new FileSearchResult(keyword, category, Enumerable.Repeat(hash, 1), file.Name, false, onlyCovers, searchExpunged);
                 });
             }
         }
 
-        internal static FileSearchResult Search(Client owner, string fileName, IEnumerable<SHA1Value> fileHashes, bool includeSimilar, bool onlyCovers, bool includeExpunged)
+        internal static FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName, bool onlyCovers, bool searchExpunged)
         {
             if (fileHashes == null)
                 throw new ArgumentNullException(nameof(fileHashes));
-            return new FileSearchResult(owner, fileHashes, fileName, false, onlyCovers, includeExpunged);
+            return new FileSearchResult(keyword, category, fileHashes, fileName, false, onlyCovers, searchExpunged);
         }
 
-        private FileSearchResult(Client owner, IEnumerable<SHA1Value> hashes, string fileName, bool includeSimilar, bool onlyCovers, bool includeExpunged) 
+        private FileSearchResult(string keyword, Category category, IEnumerable<SHA1Value> hashes, string fileName, bool searchSimilar, bool onlyCovers, bool searchExpunged) : base(keyword, category, default(AdvancedSearchOptions))
         {
-            this.IncludeSimilar = includeSimilar;
+            this.SearchSimilar = searchSimilar;
             this.OnlyCovers = onlyCovers;
-            this.IncludeExpunged = includeExpunged;
+            this.SearchExpunged = searchExpunged;
             this.FileName = fileName ?? "";
             this.FileHashList = hashes.ToArray();
         }
 
-        public override Uri SearchUri => throw new NotImplementedException();
+        private string createSearchUriQuery()
+        {
+            return
+                $"&f_shash={string.Join(";", FileHashList)}" +
+                $"&fs_from={Uri.EscapeDataString(FileName)}" +
+                $"&fs_similar={(SearchSimilar ? 1 : 0)}" +
+                $"&fs_covers={(OnlyCovers ? 1 : 0)}" +
+                $"&fs_exp={(SearchExpunged ? 1 : 0)}";
+        }
 
-        public bool IncludeSimilar { get; }
+        public override Uri SearchUri => new Uri($"{base.SearchUri}{createSearchUriQuery()}");
+
+        public bool SearchSimilar { get; }
 
         public bool OnlyCovers { get; }
 
-        public bool IncludeExpunged { get; }
+        public bool SearchExpunged { get; }
 
         public IReadOnlyList<SHA1Value> FileHashList { get; }
 

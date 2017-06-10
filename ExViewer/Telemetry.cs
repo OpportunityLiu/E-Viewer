@@ -130,7 +130,7 @@ namespace ExViewer
         }
 
         private static void AddtionalInfo<T>(StringBuilder sb, SearchResultVM<T> srVM)
-            where T : SearchResultBase
+            where T : SearchResult
         {
             var s = srVM.SearchResult;
             if (s == null)

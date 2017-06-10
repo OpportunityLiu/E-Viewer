@@ -15,7 +15,7 @@ using ExClient.Galleries;
 
 namespace ExViewer.ViewModels
 {
-    public class SearchVM : SearchResultVM<SearchResult>
+    public class SearchVM : SearchResultVM<KeywordSearchResult>
     {
         private class SearchResultData
         {
@@ -96,14 +96,14 @@ namespace ExViewer.ViewModels
             return Cache.GetSearchVM(parameter ?? string.Empty);
         }
 
-        public static SearchVM GetVM(SearchResult searchResult)
+        public static SearchVM GetVM(KeywordSearchResult searchResult)
         {
             var vm = new SearchVM(searchResult);
             Cache.AddSearchVM(vm);
             return vm;
         }
 
-        private SearchVM(SearchResult searchResult)
+        private SearchVM(KeywordSearchResult searchResult)
             : this()
         {
             this.SearchResult = searchResult;
