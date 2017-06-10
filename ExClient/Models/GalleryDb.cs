@@ -17,8 +17,19 @@ namespace ExClient.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Data Source=ExClient.Gallery.db")
-                .ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning)); ;
+            optionsBuilder.UseSqlite($"Data Source=ExClient.Gallery.db");
+#if DEBUG
+            optionsBuilder
+                .ConfigureWarnings(warnings => warnings
+                    .Throw(
+                        RelationalEventId.QueryClientEvaluationWarning, 
+                        RelationalEventId.PossibleUnintendedUseOfEqualsWarning, 
+                        RelationalEventId.AmbientTransactionWarning)
+                    .Throw(
+                        CoreEventId.IncludeIgnoredWarning,
+                        CoreEventId.ModelValidationWarning,
+                        CoreEventId.SensitiveDataLoggingEnabledWarning));
+#endif
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
