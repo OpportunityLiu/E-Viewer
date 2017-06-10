@@ -78,7 +78,7 @@ namespace ExViewer
                     case SearchLaunchResult sr:
                         switch (sr.Data)
                         {
-                        case KeywordSearchResult ksr:
+                        case CategorySearchResult ksr:
                             var vm = SearchVM.GetVM(ksr);
                             RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
                             return;

@@ -19,8 +19,11 @@ namespace ExClient.Search
     {
         public abstract Uri SearchUri { get; }
 
-        internal SearchResult()
+        public string Keyword { get; }
+
+        internal SearchResult(string keyword)
         {
+            this.Keyword = keyword ?? "";
             Reset();
         }
 

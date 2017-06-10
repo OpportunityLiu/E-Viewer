@@ -27,7 +27,7 @@ namespace ExClient.Launch
             return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(sr));
         }
 
-        private KeywordSearchResult handleSearch(UriHandlerData data)
+        private CategorySearchResult handleSearch(UriHandlerData data)
         {
             var keyword = "";
             var category = Category.Unspecified;
