@@ -24,16 +24,15 @@ namespace ExClient.Search
             [Category.Misc] = "f_misc"
         };
 
-        internal static SearchResult Search(Client client, string keyword, Category category, AdvancedSearchOptions advancedSearch)
+        internal static SearchResult Search(string keyword, Category category, AdvancedSearchOptions advancedSearch)
         {
-            if(category == Category.Unspecified)
+            if (category == Category.Unspecified)
                 category = DefaultFliter;
-            var result = new SearchResult(client, keyword, category, advancedSearch?.Clone(true));
+            var result = new SearchResult(keyword, category, advancedSearch);
             return result;
         }
 
-        private SearchResult(Client client, string keyword, Category category, AdvancedSearchOptions advancedSearch)
-            : base(client)
+        private SearchResult(string keyword, Category category, AdvancedSearchOptions advancedSearch)
         {
             this.Keyword = keyword ?? "";
             this.Category = category;
@@ -44,7 +43,7 @@ namespace ExClient.Search
         private IEnumerable<KeyValuePair<string, string>> getUriQuery1()
         {
             yield return new KeyValuePair<string, string>("f_search", this.Keyword);
-            foreach(var item in searchFliterNames)
+            foreach (var item in searchFliterNames)
             {
                 yield return new KeyValuePair<string, string>(item.Value, this.Category.HasFlag(item.Key) ? "1" : "0");
             }
@@ -53,7 +52,7 @@ namespace ExClient.Search
 
         private IEnumerable<KeyValuePair<string, string>> getUriQuery()
         {
-            if(this.AdvancedSearch != null)
+            if (this.AdvancedSearch != default(AdvancedSearchOptions))
                 return getUriQuery1().Concat(this.AdvancedSearch.AsEnumerable());
             else
                 return getUriQuery1();

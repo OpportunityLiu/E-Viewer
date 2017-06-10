@@ -19,9 +19,8 @@ namespace ExClient.Search
     {
         public abstract Uri SearchUri { get; }
 
-        internal SearchResultBase(Client owner)
+        internal SearchResultBase()
         {
-            this.Owner = owner;
             Reset();
         }
 
@@ -73,7 +72,7 @@ namespace ExClient.Search
             var infoNode = trNode.ChildNodes[2].FirstChild;
             var attributeNode = infoNode.ChildNodes[1]; //class = it3
             var favNode = attributeNode.ChildNodes.FirstOrDefault(n => n.Id.StartsWith("favicon"));
-            gallery.FavoriteCategory = this.Owner.Favorites.GetCategory(favNode);
+            gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(favNode);
         }
 
         protected virtual void LoadPageOverride(HtmlDocument doc) { }
@@ -100,14 +99,12 @@ namespace ExClient.Search
             return galleries;
         }
 
-        protected Client Owner { get; }
-
         protected sealed override IAsyncOperation<IList<Gallery>> LoadPageAsync(int pageIndex)
         {
             return Run(async token =>
             {
                 var uri = new Uri($"{this.SearchUri}&page={pageIndex}");
-                var getDoc = this.Owner.HttpClient.GetDocumentAsync(uri);
+                var getDoc = Client.Current.HttpClient.GetDocumentAsync(uri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
                 updatePageCountAndRecordCount(doc);

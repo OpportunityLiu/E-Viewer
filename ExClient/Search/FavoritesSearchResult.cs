@@ -17,16 +17,15 @@ namespace ExClient.Search
 
         public override Uri SearchUri { get; }
 
-        internal static FavoritesSearchResult Search(Client client, string keyword, FavoriteCategory category)
+        internal static FavoritesSearchResult Search(string keyword, FavoriteCategory category)
         {
             if (category == null || category.Index < 0)
                 category = FavoriteCategory.All;
-            var result = new FavoritesSearchResult(client, keyword, category);
+            var result = new FavoritesSearchResult(keyword, category);
             return result;
         }
 
-        private FavoritesSearchResult(Client client, string keyword, FavoriteCategory category)
-            : base(client)
+        private FavoritesSearchResult(string keyword, FavoriteCategory category)
         {
             this.Keyword = keyword ?? "";
             this.Category = category;
@@ -68,7 +67,7 @@ namespace ExClient.Search
             fpNodes.Select(n =>
             {
                 var fav = n.Elements("div").First(nn => nn.GetAttributeValue("class", null) == "i");
-                return this.Owner.Favorites.GetCategory(fav);
+                return Client.Current.Favorites.GetCategory(fav);
             }).ToList();
         }
 
