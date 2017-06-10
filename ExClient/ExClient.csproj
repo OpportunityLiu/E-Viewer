@@ -148,6 +148,8 @@
     <Compile Include="FavoriteCategory.cs" />
     <Compile Include="FavoriteCollection.cs" />
     <Compile Include="Internal\FavoriteCollectionNames.cs" />
+    <Compile Include="Search\AdvancedSearchResult.cs" />
+    <Compile Include="Search\CategorySearchResult.cs" />
     <Compile Include="Search\FavoritesSearchResult.cs" />
     <Compile Include="Galleries\GalleryImagePlaceHolder.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
@@ -170,7 +172,6 @@
     <Compile Include="Launch\UriHandlerData.cs" />
     <Compile Include="Launch\UriHelper.cs" />
     <Compile Include="Search\FileSearchResult.cs" />
-    <Compile Include="Search\KeywordSearchResult.cs" />
     <Compile Include="Search\SearchResult.cs" />
     <Compile Include="Settings\ExcludedLanguage.cs" />
     <Compile Include="SHA1Value.cs" />

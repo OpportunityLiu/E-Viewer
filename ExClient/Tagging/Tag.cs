@@ -86,17 +86,17 @@ namespace ExClient.Tagging
             }
         }
 
-        public KeywordSearchResult Search()
+        public CategorySearchResult Search()
         {
             return Client.Current.Search(ToSearchTerm());
         }
 
-        public KeywordSearchResult Search(Category filter)
+        public CategorySearchResult Search(Category filter)
         {
             return Client.Current.Search(ToSearchTerm(), filter);
         }
 
-        public KeywordSearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
+        public CategorySearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
         {
             return Client.Current.Search(ToSearchTerm(), filter, advancedSearch);
         }

@@ -26,8 +26,8 @@ namespace ExClient.Search
         }
 
         private FavoritesSearchResult(string keyword, FavoriteCategory category)
+            : base(keyword)
         {
-            this.Keyword = keyword ?? "";
             this.Category = category;
             this.SearchUri = new Uri(SearchBaseUri, $"?{new HttpFormUrlEncodedContent(getUriQuery())}");
         }
@@ -87,7 +87,7 @@ namespace ExClient.Search
                 var post = Client.Current.HttpClient.PostAsync(this.SearchUri, new HttpFormUrlEncodedContent(getParameters()));
                 token.Register(post.Cancel);
                 var r = await post;
-                if(categoty.Index<0)
+                if (categoty.Index < 0)
                 {
                     this.Reset();
                 }
@@ -101,7 +101,7 @@ namespace ExClient.Search
                         }
                     }
                 }
-                IEnumerable<KeyValuePair<string,string>> getParameters()
+                IEnumerable<KeyValuePair<string, string>> getParameters()
                 {
                     yield return new KeyValuePair<string, string>("apply", "Apply");
                     yield return new KeyValuePair<string, string>("ddact", ddact);
@@ -115,11 +115,6 @@ namespace ExClient.Search
                 }
             });
 
-        }
-
-        public string Keyword
-        {
-            get;
         }
 
         public FavoriteCategory Category

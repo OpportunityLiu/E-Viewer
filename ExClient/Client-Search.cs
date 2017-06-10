@@ -7,17 +7,17 @@ namespace ExClient
 {
     public partial class Client
     {
-        public KeywordSearchResult Search(string keyword, Category category, AdvancedSearchOptions advancedSearch)
+        public AdvancedSearchResult Search(string keyword, Category category, AdvancedSearchOptions advancedSearch)
         {
-            return KeywordSearchResult.Search(keyword, category, advancedSearch);
+            return AdvancedSearchResult.Search(keyword, category, advancedSearch);
         }
 
-        public KeywordSearchResult Search(string keyword, Category category)
+        public AdvancedSearchResult Search(string keyword, Category category)
         {
             return Search(keyword, category, default(AdvancedSearchOptions));
         }
 
-        public KeywordSearchResult Search(string keyword)
+        public AdvancedSearchResult Search(string keyword)
         {
             return Search(keyword, Category.Unspecified);
         }

@@ -9,7 +9,7 @@ using Windows.Storage;
 
 namespace ExClient.Search
 {
-    public sealed class FileSearchResult : KeywordSearchResult
+    public sealed class FileSearchResult : CategorySearchResult
     {
         internal static IAsyncOperation<FileSearchResult> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
         {
@@ -37,7 +37,7 @@ namespace ExClient.Search
             return new FileSearchResult(keyword, category, fileHashes, fileName, false, onlyCovers, searchExpunged);
         }
 
-        private FileSearchResult(string keyword, Category category, IEnumerable<SHA1Value> hashes, string fileName, bool searchSimilar, bool onlyCovers, bool searchExpunged) : base(keyword, category, default(AdvancedSearchOptions))
+        private FileSearchResult(string keyword, Category category, IEnumerable<SHA1Value> hashes, string fileName, bool searchSimilar, bool onlyCovers, bool searchExpunged) : base(keyword, category)
         {
             this.SearchSimilar = searchSimilar;
             this.OnlyCovers = onlyCovers;
