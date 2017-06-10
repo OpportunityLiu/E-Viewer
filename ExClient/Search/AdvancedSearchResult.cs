@@ -19,13 +19,11 @@ namespace ExClient.Search
         private AdvancedSearchResult(string keyword, Category category, AdvancedSearchOptions advancedSearch)
             : base(keyword, category)
         {
-            this.AdvancedSearch = advancedSearch;
+            this.advSearchData = advancedSearch.Data;
             this.SearchUri = new Uri($"{base.SearchUri.OriginalString}&{new HttpFormUrlEncodedContent(this.AdvancedSearch.AsEnumerable())}");
         }
 
-        public AdvancedSearchOptions AdvancedSearch
-        {
-            get;
-        }
+        private readonly ushort advSearchData;
+        public AdvancedSearchOptions AdvancedSearch => new AdvancedSearchOptions(advSearchData);
     }
 }

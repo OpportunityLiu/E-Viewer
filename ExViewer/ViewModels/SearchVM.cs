@@ -148,7 +148,7 @@ namespace ExViewer.ViewModels
         {
             this.Keyword = this.SearchResult.Keyword;
             this.Category = this.SearchResult.Category;
-            this.AdvancedSearch = (this.SearchResult as AdvancedSearchResult)?.AdvancedSearch ?? default(AdvancedSearchOptions);
+            this.AdvancedSearch = (this.SearchResult as AdvancedSearchResult)?.AdvancedSearch ?? new AdvancedSearchOptions();
             RaisePropertyChanged(nameof(this.AdvancedSearch));
         }
 
@@ -169,8 +169,11 @@ namespace ExViewer.ViewModels
         }
 
         private AdvancedSearchOptions advancedSearch;
-
-        public ref AdvancedSearchOptions AdvancedSearch => ref this.advancedSearch;
+        public AdvancedSearchOptions AdvancedSearch
+        {
+            get => this.advancedSearch;
+            set => Set(ref this.advancedSearch, value);
+        }
 
         public string SearchQuery => GetSearchQuery(this.keyword, this.category, this.advancedSearch);
     }
