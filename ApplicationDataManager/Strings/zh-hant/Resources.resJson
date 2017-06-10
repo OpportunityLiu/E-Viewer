@@ -1,0 +1,20 @@
+﻿{
+  "Boolean": {
+    "YesNo": {
+      "True": "是",
+      "False": "否"
+    },
+    "EnabledDisabled": {
+      "True": "啟用",
+      "False": "停用"
+    },
+    "OnOff": {
+      "True": "開",
+      "False": "關"
+    },
+    "TrueFalse": {
+      "True": "真",
+      "False": "假"
+    }
+  }
+}

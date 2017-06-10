@@ -173,7 +173,7 @@ namespace ExViewer.Settings
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool LoadLofiOnAllInternetConnection
         {
-            get => GetLocal(false);
+            get => GetLocal(true);
             set
             {
                 SetLocal(value);

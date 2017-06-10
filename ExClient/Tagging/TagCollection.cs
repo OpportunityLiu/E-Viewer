@@ -51,6 +51,7 @@ namespace ExClient.Tagging
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
             initOrReset(items.Select(t => (t, TagState.NormalPower)));
+            this.state = null;
         }
 
         private bool initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
@@ -66,7 +67,7 @@ namespace ExClient.Tagging
             {
                 (data[i], state[i]) = rawData[i];
             }
-            if (this.data != null && this.data.SequenceEqual(data))
+            if (this.data != null && this.state != null && this.data.SequenceEqual(data))
             {
                 this.state = state;
                 return false;

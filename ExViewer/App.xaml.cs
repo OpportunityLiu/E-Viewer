@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Core;
 using Windows.System.RemoteSystems;
 using System;
 using Windows.System;
+using ExClient;
 #if !DEBUG
 using Microsoft.HockeyApp;
 #endif
@@ -58,7 +59,7 @@ namespace ExViewer
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 this.DebugSettings.EnableFrameRateCounter = true;
-                this.DebugSettings.IsOverdrawHeatMapEnabled = true;
+                //this.DebugSettings.IsOverdrawHeatMapEnabled = true;
                 //this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
             }
 #endif

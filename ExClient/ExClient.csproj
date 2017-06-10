@@ -26,6 +26,7 @@
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +36,7 @@
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
@@ -46,6 +48,7 @@
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
@@ -57,6 +60,7 @@
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -68,6 +72,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -79,6 +84,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -90,6 +96,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -101,10 +108,15 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-hant\Resources.resjson" />
+    <PRIResource Include="Strings\zh-hant\Namespace.resjson" />
+    <PRIResource Include="Strings\zh-hant\Language.resjson" />
+    <PRIResource Include="Strings\zh-hant\Category.resjson" />
     <PRIResource Include="Strings\zh-hans\Language.resjson" />
     <PRIResource Include="Strings\zh-hans\Resources.resjson" />
     <PRIResource Include="Strings\zh-hans\Category.resjson" />
@@ -116,6 +128,12 @@
     <Compile Include="Galleries\Metadata\LanguageModifier.cs" />
     <Compile Include="Galleries\Metadata\LanguageName.cs" />
     <Compile Include="Galleries\Metadata\LanguageNameExtension.cs" />
+    <Compile Include="Migrations\20170610145108_ResetMigration.cs" />
+    <Compile Include="Migrations\20170610145108_ResetMigration.designer.cs">
+      <DependentUpon>20170610145108_ResetMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\GalleryDbModelSnapshot.cs" />
+    <Compile Include="Models\GalleryImageModel.cs" />
     <Compile Include="Search\AdvancedSearchOptions.cs" />
     <Compile Include="Api\ApiResponse.cs" />
     <Compile Include="Api\Commenting.cs" />
@@ -152,6 +170,7 @@
     <Compile Include="Launch\UriHandlerData.cs" />
     <Compile Include="Launch\UriHelper.cs" />
     <Compile Include="Settings\ExcludedLanguage.cs" />
+    <Compile Include="SHA1Value.cs" />
     <Compile Include="Tagging\Namespace.cs" />
     <Compile Include="Search\PopularCollection.cs" />
     <Compile Include="Galleries\Metadata\RevisionCollection.cs" />
@@ -161,11 +180,6 @@
     <Compile Include="Helpers\HtmlHelper.cs" />
     <Compile Include="Internal\MyHttpClient.cs" />
     <Compile Include="Internal\RedirectFilter.cs" />
-    <Compile Include="Migrations\20160717022029_MyFirstMigration.cs" />
-    <Compile Include="Migrations\20160717022029_MyFirstMigration.designer.cs">
-      <DependentUpon>20160717022029_MyFirstMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\GalleryDbModelSnapshot.cs" />
     <Compile Include="Models\SavedGalleryModel.cs" />
     <Compile Include="Helpers\ExStorageHelper.cs" />
     <Compile Include="Category.cs" />
@@ -214,6 +228,7 @@
       <Name>ApplicationDataManager</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
@@ -227,6 +242,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugBounds|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -239,6 +255,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugBounds|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -251,6 +268,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugBounds|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -263,6 +281,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <ProjectExtensions />

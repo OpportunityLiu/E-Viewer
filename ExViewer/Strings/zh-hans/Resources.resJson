@@ -95,7 +95,7 @@
     "Exit": "退出",
     // see https://ctrlq.org/code/19899-google-translate-languages#languages
     // Use local language to replace "English"
-    "LanguageCode": "zh-CN",
+    "LanguageCode": "zh-Hans",
     "OK": "确定"
   },
   "Sharing": {
@@ -246,10 +246,8 @@
       "DeleteAllAppBarButton/Label": "删除全部",
       "DeleteMenuFlyout/Text": "删除",
       "EmptyTextBlock/Text": "没有保存的画廊",
-      "GallerySavedTo": "选定的画廊已保存至指定位置。",
       "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
-      "RefreshAppBarButton/Label": "刷新",
-      "SaveToMenuFlyout/Text": "保存到…"
+      "RefreshAppBarButton/Label": "刷新"
     },
     "SearchPage": {
       "AdvancedToggleButton/OffContent": "显示高级选项",
