@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace ExClient.Search
 {
     //advsearch=1
-    public struct AdvancedSearchOptions : IEquatable<AdvancedSearchOptions>
+    public sealed class AdvancedSearchOptions : IEquatable<AdvancedSearchOptions>
     {
         internal IEnumerable<KeyValuePair<string, string>> AsEnumerable()
         {
@@ -39,7 +39,40 @@ namespace ExClient.Search
             return value ? "1" : "0";
         }
 
+        public AdvancedSearchOptions() { }
+
+        public AdvancedSearchOptions(
+            bool searchName = true,
+            bool searchTags = true,
+            bool searchDescription = false,
+            bool searchTorrentFilenames = false,
+            bool galleriesWithTorrentsOnly = false,
+            bool searchLowPowerTags = false,
+            bool searchDownvotedTags = false,
+            bool showExpungedGalleries = false,
+            bool searchMinimumRating = false,
+            int minimumRating = 2)
+        {
+            this.SearchName = searchName;
+            this.SearchTags = searchTags;
+            this.SearchDescription = searchDescription;
+            this.SearchTorrentFilenames = searchTorrentFilenames;
+            this.GalleriesWithTorrentsOnly = galleriesWithTorrentsOnly;
+            this.SearchLowPowerTags = searchLowPowerTags;
+            this.SearchDownvotedTags = searchDownvotedTags;
+            this.ShowExpungedGalleries = showExpungedGalleries;
+            this.SearchMinimumRating = searchMinimumRating;
+            this.MinimumRating = minimumRating;
+        }
+
+        public AdvancedSearchOptions(ushort data)
+        {
+            this.data = data;
+        }
+
         private ushort data;
+
+        internal ushort Data => this.data;
 
         private bool getData(int pos)
         {
