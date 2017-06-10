@@ -19,7 +19,7 @@ using ExClient.Galleries;
 namespace ExViewer.ViewModels
 {
     public abstract class SearchResultVM<T> : ViewModelBase
-        where T : SearchResultBase
+        where T : SearchResult
     {
         protected SearchResultVM()
         {

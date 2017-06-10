@@ -123,7 +123,7 @@ namespace ExClient
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            var r = $"{this.dataHigh:x16}{this.dataMiddle:x8}{this.dataLow:x16}";
+            var r = CryptographicBuffer.EncodeToHexString(this.Data.AsBuffer());
             if (format != null && format.StartsWith("X"))
                 return r.ToUpperInvariant();
             return r;

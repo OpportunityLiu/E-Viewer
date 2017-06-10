@@ -9,6 +9,7 @@ using ExViewer.ViewModels;
 using Windows.System;
 using Windows.Foundation;
 using System.Runtime.InteropServices.WindowsRuntime;
+using ExClient.Search;
 
 namespace ExViewer
 {
@@ -26,9 +27,9 @@ namespace ExViewer
         /// <returns>表示是否在应用内处理</returns>
         public static bool Handle(Uri uri)
         {
-            if(uri == null)
+            if (uri == null)
                 return true;
-            if(!CanHandleInApp(uri))
+            if (!CanHandleInApp(uri))
             {
                 var ignore = Launcher.LaunchUriAsync(uri, new LauncherOptions
                 {
@@ -49,17 +50,17 @@ namespace ExViewer
                 try
                 {
                     var r = await UriLauncher.HandleAsync(uri);
-                    switch(r)
+                    switch (r)
                     {
                     case GalleryLaunchResult g:
                         var page = RootControl.RootController.Frame.Content;
-                        if(!(page is GalleryPage gPage && gPage.VM.Gallery.Id == g.GalleryInfo.Id))
+                        if (!(page is GalleryPage gPage && gPage.VM.Gallery.Id == g.GalleryInfo.Id))
                         {
                             await GalleryVM.GetVMAsync(g.GalleryInfo);
                             RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.GalleryInfo.Id);
                             await Task.Delay(500);
                         }
-                        switch(g.Status)
+                        switch (g.Status)
                         {
                         case GalleryLaunchStatus.Default:
                             (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
@@ -75,16 +76,21 @@ namespace ExViewer
                         }
                         return;
                     case SearchLaunchResult sr:
-                        var vm = SearchVM.GetVM(sr.Data);
-                        RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
-                        return;
-                    case FavoritesSearchLaunchResult fr:
-                        var fvm = FavoritesVM.GetVM(fr.Data);
-                        RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), fvm.SearchQuery);
-                        return;
+                        switch (sr.Data)
+                        {
+                        case KeywordSearchResult ksr:
+                            var vm = SearchVM.GetVM(ksr);
+                            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
+                            return;
+                        case FavoritesSearchResult fsr:
+                            var fvm = FavoritesVM.GetVM(fsr);
+                            RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), fvm.SearchQuery);
+                            return;
+                        }
+                        throw new InvalidOperationException();
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     RootControl.RootController.SendToast(e, null);
                 }

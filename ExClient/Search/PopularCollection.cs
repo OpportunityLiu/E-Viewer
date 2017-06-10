@@ -13,7 +13,7 @@ using Windows.Foundation;
 
 namespace ExClient.Search
 {
-    public class PopularCollection : IncrementalLoadingCollection<Gallery>
+    public sealed class PopularCollection : IncrementalLoadingCollection<Gallery>
     {
         public PopularCollection()
         {
