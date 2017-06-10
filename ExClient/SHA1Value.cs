@@ -32,13 +32,13 @@ namespace ExClient
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-            return AsyncInfo.Run(async token =>
+            return Task.Run(async () =>
             {
                 stream.Seek(0);
                 var buf = new Windows.Storage.Streams.Buffer((uint)stream.Size);
                 await stream.ReadAsync(buf, (uint)stream.Size, InputStreamOptions.None);
                 return new SHA1Value(sha1compute.HashData(buf));
-            });
+            }).AsAsyncOperation();
         }
 
         public static IAsyncOperation<SHA1Value> ComputeAsync(IRandomAccessStreamReference stream)

@@ -169,6 +169,7 @@
     <Compile Include="Launch\UriHandler.cs" />
     <Compile Include="Launch\UriHandlerData.cs" />
     <Compile Include="Launch\UriHelper.cs" />
+    <Compile Include="Search\FileSearchResult.cs" />
     <Compile Include="Settings\ExcludedLanguage.cs" />
     <Compile Include="SHA1Value.cs" />
     <Compile Include="Tagging\Namespace.cs" />

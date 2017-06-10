@@ -113,7 +113,7 @@ namespace ExViewer.ViewModels
         private SearchVM(string parameter)
             : this()
         {
-            if(string.IsNullOrEmpty(parameter))
+            if (string.IsNullOrEmpty(parameter))
             {
                 this.keyword = SettingCollection.Current.DefaultSearchString;
                 this.category = SettingCollection.Current.DefaultSearchCategory;
@@ -133,7 +133,7 @@ namespace ExViewer.ViewModels
         {
             this.Search = new Command<string>(queryText =>
             {
-                if(SettingCollection.Current.SaveLastSearch)
+                if (SettingCollection.Current.SaveLastSearch)
                 {
                     SettingCollection.Current.DefaultSearchCategory = this.category;
                     SettingCollection.Current.DefaultSearchString = queryText;
@@ -148,11 +148,8 @@ namespace ExViewer.ViewModels
         {
             this.Keyword = this.SearchResult.Keyword;
             this.Category = this.SearchResult.Category;
-            var adv = this.SearchResult.AdvancedSearch;
-            if(adv == null)
-                this.AdvancedSearch = new AdvancedSearchOptions();
-            else
-                this.AdvancedSearch = adv.Clone(false);
+            this.AdvancedSearch = this.SearchResult.AdvancedSearch;
+            RaisePropertyChanged(nameof(this.AdvancedSearch));
         }
 
         private string keyword;
@@ -173,11 +170,7 @@ namespace ExViewer.ViewModels
 
         private AdvancedSearchOptions advancedSearch;
 
-        public AdvancedSearchOptions AdvancedSearch
-        {
-            get => this.advancedSearch;
-            set => Set(ref this.advancedSearch, value);
-        }
+        public ref AdvancedSearchOptions AdvancedSearch => ref this.advancedSearch;
 
         public string SearchQuery => GetSearchQuery(this.keyword, this.category, this.advancedSearch);
     }

@@ -47,7 +47,7 @@ namespace ExClient
 
         public FavoritesSearchResult Search(string keyword, FavoriteCategory category)
         {
-            return FavoritesSearchResult.Search(Owner, keyword, category);
+            return FavoritesSearchResult.Search(keyword, category);
         }
 
         public FavoritesSearchResult Search(string keyword)

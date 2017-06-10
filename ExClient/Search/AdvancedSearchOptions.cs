@@ -5,29 +5,29 @@ using System.Collections.Generic;
 namespace ExClient.Search
 {
     //advsearch=1
-    public class AdvancedSearchOptions
+    public struct AdvancedSearchOptions : IEquatable<AdvancedSearchOptions>
     {
         internal IEnumerable<KeyValuePair<string, string>> AsEnumerable()
         {
             yield return new KeyValuePair<string, string>("advsearch", "1");
-            if(this.SearchName)
+            if (this.SearchName)
                 yield return new KeyValuePair<string, string>("f_sname", "1");
-            if(this.SearchTags)
+            if (this.SearchTags)
                 yield return new KeyValuePair<string, string>("f_stags", "1");
-            if(this.SearchDescription)
+            if (this.SearchDescription)
                 yield return new KeyValuePair<string, string>("f_sdesc", "1");
-            if(this.SearchTorrentFilenames)
+            if (this.SearchTorrentFilenames)
                 yield return new KeyValuePair<string, string>("f_storr", "1");
-            if(this.GalleriesWithTorrentsOnly)
+            if (this.GalleriesWithTorrentsOnly)
                 yield return new KeyValuePair<string, string>("f_sto", "1");
-            if(this.SearchLowPowerTags)
+            if (this.SearchLowPowerTags)
                 yield return new KeyValuePair<string, string>("f_sdt1", "1");
-            if(this.SearchDownvotedTags)
+            if (this.SearchDownvotedTags)
                 yield return new KeyValuePair<string, string>("f_sdt2", "1");
-            if(this.ShowExpungedGalleries)
+            if (this.ShowExpungedGalleries)
                 yield return new KeyValuePair<string, string>("f_sh", "1");
 
-            if(this.SearchMinimumRating)
+            if (this.SearchMinimumRating)
             {
                 yield return new KeyValuePair<string, string>("f_sr", "1");
                 yield return new KeyValuePair<string, string>("f_srdd", this.MinimumRating.ToString());
@@ -37,26 +37,6 @@ namespace ExClient.Search
         private static string toString(bool value)
         {
             return value ? "1" : "0";
-        }
-
-        public AdvancedSearchOptions Clone(bool isReadOnly)
-        {
-            return new AdvancedSearchOptions(isReadOnly) { data = this.data };
-        }
-
-        public AdvancedSearchOptions()
-        {
-        }
-
-        private AdvancedSearchOptions(bool isReadOnly)
-        {
-            this.IsReadOnly = isReadOnly;
-        }
-
-        [JsonIgnore]
-        public bool IsReadOnly
-        {
-            get;
         }
 
         private ushort data;
@@ -71,11 +51,10 @@ namespace ExClient.Search
 
         private void setData(int pos, bool value)
         {
-            checkWritable();
             unchecked
             {
                 pos += offset;
-                if(value)
+                if (value)
                 {
                     this.data |= (ushort)(1 << pos);
                 }
@@ -84,12 +63,6 @@ namespace ExClient.Search
                     this.data &= (ushort)~(1 << pos);
                 }
             }
-        }
-
-        private void checkWritable()
-        {
-            if(this.IsReadOnly)
-                throw new InvalidOperationException("The instanse is read only.");
         }
 
         private const int offset = 2;
@@ -163,10 +136,9 @@ namespace ExClient.Search
             get => (this.data & 3) + 2;
             set
             {
-                checkWritable();
-                if(value > 5)
+                if (value > 5)
                     value = 5;
-                else if(value < 2)
+                else if (value < 2)
                     value = 2;
                 value -= 2;
                 unchecked
@@ -179,12 +151,9 @@ namespace ExClient.Search
 
         public override bool Equals(object obj)
         {
-            if(obj == null || !(obj is AdvancedSearchOptions))
-            {
-                return false;
-            }
-            var other = (AdvancedSearchOptions)obj;
-            return this.data == other.data;
+            if (obj is AdvancedSearchOptions other)
+                return this.Equals(other);
+            return false;
         }
 
         // override object.GetHashCode
@@ -192,5 +161,15 @@ namespace ExClient.Search
         {
             return this.data.GetHashCode();
         }
+
+        public bool Equals(AdvancedSearchOptions other)
+        {
+            return this.data == other.data;
+        }
+
+        public static bool operator ==(AdvancedSearchOptions left, AdvancedSearchOptions right)
+            => left.data == right.data;
+        public static bool operator !=(AdvancedSearchOptions left, AdvancedSearchOptions right)
+            => left.data != right.data;
     }
 }
