@@ -26,13 +26,14 @@ namespace ExClient.Launch
 
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
-            var v = data.Paths[1].Unescape2();
+            var v = data.Paths[1].Unescape2().Trim();
             switch (data.Path0)
             {
             case "tag":
                 return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search()));
             case "uploader":
-                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search($"uploader:\"{v}\"")));
+                var uploader = v.IndexOf(' ') >= 0 ? $"uploader:\"{v}\"" : $"uploader:{v}";
+                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(uploader)));
             }
             return AsyncWrapper.CreateError<LaunchResult>(new NotSupportedException("Unsupported uri."));
         }

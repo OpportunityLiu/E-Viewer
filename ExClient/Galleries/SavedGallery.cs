@@ -27,7 +27,7 @@ namespace ExClient.Galleries
                     {
                         db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                         var query = db.SavedSet
-                            .OrderByDescending(s => s.Saved)
+                            .OrderByDescending(s => s.saved)
                             .Select(s => s.Gallery);
                         return new SavedGalleryList(query.ToList());
                     }
@@ -57,20 +57,21 @@ namespace ExClient.Galleries
             return Run<double>(async (token, progress) =>
             {
                 progress.Report(double.NaN);
-                var items = await ApplicationData.Current.LocalCacheFolder.GetItemsAsync();
-                double c = items.Count;
-                for (var i = 0; i < items.Count; i++)
-                {
-                    progress.Report(i / c);
-                    if (long.TryParse(items[i].Name, out var r))
-                        await items[i].DeleteAsync(StorageDeleteOption.PermanentDelete);
-                }
-                progress.Report(1);
+                var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
+                var getFiles = folder.GetFilesAsync();
                 using (var db = new GalleryDb())
                 {
                     db.SavedSet.RemoveRange(db.SavedSet);
                     db.ImageSet.RemoveRange(db.ImageSet);
                     await db.SaveChangesAsync();
+                }
+                var files = await getFiles;
+                double c = files.Count;
+                var i = 0;
+                foreach (var item in files)
+                {
+                    await item.DeleteAsync();
+                    progress.Report(++i / c);
                 }
             });
         }

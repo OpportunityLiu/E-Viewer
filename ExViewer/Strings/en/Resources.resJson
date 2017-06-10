@@ -243,13 +243,11 @@
       "SettingsSplitViewTab/ToolTipService/ToolTip": "Settings"
     },
     "SavedPage": {
-      "GallerySavedTo": "Selected gallery has been saved to provided location.",
       "DeleteAllAppBarButton/Label": "Delete all",
       "DeleteMenuFlyout/Text": "Delete",
       "EmptyTextBlock/Text": "No saved galleries",
       "LoadingMoreTextBlock/Text": "Loading more galleries...",
-      "RefreshAppBarButton/Label": "Refresh",
-      "SaveToMenuFlyout/Text": "Save to..."
+      "RefreshAppBarButton/Label": "Refresh"
     },
     "SearchPage": {
       "AdvancedToggleButton/OffContent": "Show advanced options",

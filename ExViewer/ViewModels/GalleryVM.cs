@@ -130,18 +130,6 @@ namespace ExViewer.ViewModels
                             data.Properties.ContentSourceWebLink = gallery.GalleryUri;
                             data.SetWebLink(gallery.GalleryUri);
                             data.SetText(gallery.GalleryUri.ToString());
-                            data.RequestedOperation = DataPackageOperation.Move;
-                            data.Properties.FileTypes.Add(StandardDataFormats.StorageItems);
-                            data.SetDataProvider(StandardDataFormats.StorageItems, async request =>
-                            {
-                                var d = request.GetDeferral();
-                                try
-                                {
-                                    var makeCopy = SavedVM.GetCopyOf(gallery);
-                                    request.SetData(Enumerable.Repeat(await makeCopy, 1));
-                                }
-                                finally { d.Complete(); }
-                            });
                         }
                         else
                         {
@@ -207,16 +195,30 @@ namespace ExViewer.ViewModels
             this.LoadOriginal = new Command<GalleryImage>(async image =>
             {
                 image.PropertyChanged += this.Image_PropertyChanged;
-                await image.LoadImageAsync(true, ConnectionStrategy.AllFull, false);
+                try
+                {
+                    await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
+                }
+                catch (Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(ImagePage));
+                }
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null && !image.OriginalLoaded);
             this.ReloadImage = new Command<GalleryImage>(async image =>
             {
                 image.PropertyChanged += this.Image_PropertyChanged;
-                if (image.OriginalLoaded)
-                    await image.LoadImageAsync(true, ConnectionStrategy.AllFull, false);
-                else
-                    await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), false);
+                try
+                {
+                    if (image.OriginalLoaded)
+                        await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
+                    else
+                        await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), true);
+                }
+                catch (Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(ImagePage));
+                }
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null);
             this.AddComment = new AsyncCommand(async () =>

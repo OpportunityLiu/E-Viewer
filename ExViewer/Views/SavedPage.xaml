@@ -15,11 +15,7 @@
             <MenuFlyoutItem x:Uid="Views/SavedPage/DeleteMenuFlyout"
                             x:Name="mfi_DeleteGallery"
                             Text="Delete"
-                            Command="{x:Bind VM.Delete, Mode=OneWay}"/>
-            <MenuFlyoutItem x:Uid="Views/SavedPage/SaveToMenuFlyout"
-                            x:Name="mfi_SaveTo"
-                            Text="Save to..."
-                            Command="{x:Bind VM.SaveTo, Mode=OneWay}" />
+                            Command="{x:Bind VM.Delete, Mode=OneWay}" />
         </MenuFlyout>
     </Page.Resources>
     <Page.Transitions>
@@ -53,7 +49,6 @@
                                   Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
                                   ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
                                   Style="{StaticResource GalleryListViewStyle}"
-                                  DragItemsStarting="lv_DragItemsStarting"
                                   ItemClick="lv_ItemClick"
                                   ContextCanceled="lv_ContextCanceled"
                                   ContextRequested="lv_ContextRequested">

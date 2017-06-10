@@ -1,0 +1,49 @@
+﻿{
+  // Language tags, see: https://ehwiki.org/wiki/language
+  "Modifiers": {
+    // Technical tags for language, make sure the localization string to be short.
+    "Translated": "譯",
+    "Rewrite": "改"
+  },
+  "Names": {
+    "Albanian": "阿爾巴尼亞語",
+    "Arabic": "阿拉伯語",
+    "Bengali": "孟加拉語",
+    "Catalan": "加泰羅尼亞語",
+    "Chinese": "中國語",
+    "Czech": "捷克語",
+    "Danish": "丹麥語",
+    "Dutch": "荷蘭語",
+    "English": "英語",
+    "Esperanto": "世界語",
+    "Estonian": "愛沙尼亞語",
+    "Finnish": "芬蘭語",
+    "French": "法語",
+    "German": "德語",
+    "Greek": "希臘語",
+    "Hebrew": "希伯來語",
+    "Hindi": "印地語",
+    "Hungarian": "匈牙利語",
+    "Indonesian": "印尼語",
+    "Italian": "義大利語",
+    "Japanese": "日語",
+    "Korean": "韓語",
+    "Mongolian": "蒙古語",
+    "Norwegian": "挪威語",
+    "NotApplicable": "無文字",
+    "Other": "其他",
+    "Polish": "波蘭語",
+    "Portuguese": "葡萄牙語",
+    "Romanian": "羅馬尼亞語",
+    "Russian": "俄語",
+    "Slovak": "斯洛伐克語",
+    "Slovenian": "斯洛維尼亞語",
+    "Spanish": "西班牙語",
+    "Swedish": "瑞典語",
+    "Tagalog": "他加祿語",
+    "Thai": "泰語",
+    "Turkish": "土耳其語",
+    "Ukrainian": "烏克蘭語",
+    "Vietnamese": "越南語"
+  }
+}

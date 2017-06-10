@@ -13,7 +13,7 @@ namespace ExClient.Models
             return this;
         }
 
-        private long saved;
+        public long saved;
 
         public DateTimeOffset Saved
         {

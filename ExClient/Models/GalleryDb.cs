@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
@@ -8,7 +9,7 @@ namespace ExClient.Models
     {
         static GalleryDb()
         {
-            using(var db = new GalleryDb())
+            using (var db = new GalleryDb())
             {
                 db.Database.Migrate();
             }
@@ -16,26 +17,21 @@ namespace ExClient.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Data Source=ExClient.db");
+            optionsBuilder.UseSqlite($"Data Source=ExClient.Gallery.db")
+                .ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning)); ;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ImageModel>()
-                .HasKey(i => new
-                {
-                    i.PageId,
-                    i.OwnerId
-                });
+                .HasKey(i => i.ImageId);
             modelBuilder.Entity<ImageModel>()
-                .Property(i => i.PageId).ValueGeneratedNever();
-            modelBuilder.Entity<ImageModel>()
-                .Property(i => i.OwnerId).ValueGeneratedNever();
+                .Property(i => i.FileName).ValueGeneratedNever();
 
             modelBuilder.Entity<GalleryModel>()
-                .HasKey(g => g.Id);
+                .HasKey(g => g.GalleryModelId);
             modelBuilder.Entity<GalleryModel>()
-                .Property(g => g.Id).ValueGeneratedNever();
+                .Property(g => g.GalleryModelId).ValueGeneratedNever();
             modelBuilder.Entity<GalleryModel>()
                 .Ignore(g => g.Posted);
             modelBuilder.Entity<GalleryModel>()
@@ -50,32 +46,34 @@ namespace ExClient.Models
             modelBuilder.Entity<SavedGalleryModel>()
                 .Property<long>("saved");
 
+            modelBuilder.Entity<GalleryImageModel>()
+                .HasKey(gi => new { gi.GalleryId, gi.PageId });
+            modelBuilder.Entity<GalleryImageModel>()
+                .Property(gi => gi.ImageId).IsRequired().ValueGeneratedNever();
+
             modelBuilder.Entity<SavedGalleryModel>()
                 .HasOne(c => c.Gallery)
                 .WithOne()
                 .HasForeignKey<SavedGalleryModel>(c => c.GalleryId);
-            modelBuilder.Entity<ImageModel>()
-                .HasOne(i => i.Owner)
+
+            modelBuilder.Entity<GalleryImageModel>()
+                .HasOne(gi => gi.Gallery)
                 .WithMany(g => g.Images)
-                .HasForeignKey(i => i.OwnerId);
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade)
+                .HasForeignKey(gi => gi.GalleryId);
+            modelBuilder.Entity<GalleryImageModel>()
+                .HasOne(gi => gi.Image)
+                .WithMany(i => i.UsingBy)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade)
+                .HasForeignKey(gi => gi.ImageId);
         }
 
-        internal DbSet<GalleryModel> GallerySet
-        {
-            get;
-            set;
-        }
+        internal DbSet<GalleryModel> GallerySet { get; set; }
 
-        internal DbSet<ImageModel> ImageSet
-        {
-            get;
-            set;
-        }
+        internal DbSet<GalleryImageModel> GalleryImageSet { get; set; }
 
-        internal DbSet<SavedGalleryModel> SavedSet
-        {
-            get;
-            set;
-        }
+        internal DbSet<ImageModel> ImageSet { get; set; }
+
+        internal DbSet<SavedGalleryModel> SavedSet { get; set; }
     }
 }

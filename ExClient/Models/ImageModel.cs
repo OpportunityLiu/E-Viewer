@@ -1,55 +1,26 @@
 ﻿using ExClient.Galleries;
+using System.Collections.Generic;
 
 namespace ExClient.Models
 {
     class ImageModel
     {
-        public ulong ImageKey
-        {
-            get;
-            set;
-        }
-
-        public bool OriginalLoaded
-        {
-            get;
-            set;
-        }
-        
-        public long OwnerId
-        {
-            get;
-            set;
-        }
-        
-        public GalleryModel Owner
-        {
-            get;
-            set;
-        }
-
         /// <summary>
-        /// 1-based Id for image.
+        /// SHA1 hash of the original image file.
         /// </summary>
-        public int PageId
-        {
-            get;
-            set;
-        }
+        public string ImageId { get; set; }
 
-        public string FileName
-        {
-            get;
-            set;
-        }
+        public bool OriginalLoaded { get; set; }
 
-        public ImageModel Update(GalleryImage galleryImage)
+        public string FileName { get; set; }
+
+        public IList<GalleryImageModel> UsingBy { get; set; }
+
+        public ImageModel Update(GalleryImage image)
         {
-            this.ImageKey = galleryImage.ImageKey;
-            this.FileName = galleryImage.ImageFile.Name;
-            this.OriginalLoaded = galleryImage.OriginalLoaded;
-            this.OwnerId = galleryImage.Owner.Id;
-            this.PageId = galleryImage.PageId;
+            this.ImageId = image.ImageHash.ToString();
+            this.FileName = image.ImageFile.Name;
+            this.OriginalLoaded = image.OriginalLoaded;
             return this;
         }
     }

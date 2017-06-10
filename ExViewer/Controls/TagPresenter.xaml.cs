@@ -48,6 +48,7 @@ namespace ExViewer.Controls
             if (value.Content == null)
             {
                 s.ClearValue(TextBlock.TextProperty);
+                s.ClearValue(OpacityProperty);
                 return;
             }
             var state = this.Tags.StateOf(value);

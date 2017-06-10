@@ -5,6 +5,7 @@ using ExClient.Internal;
 using ExClient.Models;
 using ExClient.Tagging;
 using HtmlAgilityPack;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
@@ -38,7 +39,7 @@ namespace ExClient.Galleries
                 {
                     db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                     var cm = db.SavedSet.SingleOrDefault(c => c.GalleryId == galleryId);
-                    var gm = db.GallerySet.SingleOrDefault(g => g.Id == galleryId);
+                    var gm = db.GallerySet.SingleOrDefault(g => g.GalleryModelId == galleryId);
                     if (gm == null)
                         return null;
                     var r = (cm == null) ?
@@ -150,10 +151,9 @@ namespace ExClient.Galleries
         }
 
         internal Gallery(GalleryModel model)
-            : this(model.Id, model.Token)
+            : this(model.GalleryModelId, model.Token)
         {
             this.Available = model.Available;
-            this.ArchiverKey = model.ArchiverKey;
             this.Title = model.Title;
             this.TitleJpn = model.TitleJpn;
             this.Category = model.Category;
@@ -173,7 +173,6 @@ namespace ExClient.Galleries
             long gid,
             string error = null,
             string token = null,
-            string archiver_key = null,
             string title = null,
             string title_jpn = null,
             string category = null,
@@ -193,7 +192,6 @@ namespace ExClient.Galleries
                 throw new Exception(error);
             }
             this.Available = !expunged;
-            this.ArchiverKey = archiver_key;
             this.Title = HtmlEntity.DeEntitize(title);
             this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
             if (!categoriesForRestApi.TryGetValue(category, out var ca))
@@ -243,7 +241,7 @@ namespace ExClient.Galleries
                 using (var db = new GalleryDb())
                 {
                     var gid = this.Id;
-                    var myModel = db.GallerySet.SingleOrDefault(model => model.Id == gid);
+                    var myModel = db.GallerySet.SingleOrDefault(model => model.GalleryModelId == gid);
                     if (myModel == null)
                     {
                         db.GallerySet.Add(new GalleryModel().Update(this));
@@ -290,11 +288,6 @@ namespace ExClient.Galleries
         }
 
         public ulong Token
-        {
-            get; protected set;
-        }
-
-        public string ArchiverKey
         {
             get; protected set;
         }
@@ -419,31 +412,6 @@ namespace ExClient.Galleries
 
         public Uri GalleryUri { get; }
 
-        private StorageFolder galleryFolder;
-
-        public StorageFolder GalleryFolder
-        {
-            get => this.galleryFolder;
-            private set => Set(ref this.galleryFolder, value);
-        }
-
-        public IAsyncOperation<StorageFolder> GetFolderAsync()
-        {
-            var temp = this.galleryFolder;
-            if (temp != null)
-                return AsyncWrapper.CreateCompleted(temp);
-            return Run(async token =>
-            {
-                var temp2 = this.galleryFolder;
-                if (temp2 == null)
-                {
-                    temp2 = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(this.Id.ToString(), CreationCollisionOption.OpenIfExists);
-                    this.GalleryFolder = temp2;
-                }
-                return temp2;
-            });
-        }
-
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
 
         private void updateFavoriteInfo(HtmlDocument html)
@@ -507,21 +475,20 @@ namespace ExClient.Galleries
                 var toAdd = new List<GalleryImage>(PageSize);
                 using (var db = new GalleryDb())
                 {
-                    db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
+                    db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                     foreach (var page in pics)
                     {
-                        var gid = this.Id;
-                        var pid = page.pageId;
-                        var imageModel = db.ImageSet.FirstOrDefault(im => im.OwnerId == gid && im.PageId == pid);
+                        var gId = this.Id;
+                        var pId = page.pageId;
+                        var imageModel = db.GalleryImageSet
+                            .Include(gi => gi.Image)
+                            .FirstOrDefault(gi => gi.GalleryId == gId && gi.PageId == pId);
                         if (imageModel != null)
                         {
                             // Load cache
-                            var galleryImage = await GalleryImage.LoadCachedImageAsync(this, imageModel);
-                            if (galleryImage != null)
-                            {
-                                toAdd.Add(galleryImage);
-                                continue;
-                            }
+                            var galleryImage = await GalleryImage.LoadCachedImageAsync(this, imageModel, imageModel.Image);
+                            toAdd.Add(galleryImage);
+                            continue;
                         }
                         toAdd.Add(new GalleryImage(this, page.pageId, page.imageKey, page.thumbUri));
                     }
@@ -573,12 +540,33 @@ namespace ExClient.Galleries
             return Task.Run(async () =>
             {
                 var gid = this.Id;
-                var temp = this.GalleryFolder ?? await GetFolderAsync();
-                this.GalleryFolder = null;
-                await temp.DeleteAsync();
                 using (var db = new GalleryDb())
                 {
-                    db.ImageSet.RemoveRange(db.ImageSet.Where(i => i.OwnerId == gid));
+                    var toDelete = db.GalleryImageSet
+                        .Include(gi => gi.Image)
+                        .Where(gi => gi.GalleryId == gid)
+                        .ToList();
+                    foreach (var item in toDelete)
+                    {
+                        var usingCount = db.GalleryImageSet
+                            .Count(gim => gim.ImageId == item.ImageId);
+                        if (usingCount <= 1)
+                        {
+                            var i = item.PageId - 1;
+                            var file = default(StorageFile);
+                            if (i < this.Count)
+                                file = this[i].ImageFile;
+                            if (file == null)
+                            {
+                                var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
+                                file = await folder.TryGetFileAsync(item.Image.FileName);
+                            }
+                            if (file != null)
+                                await file.DeleteAsync();
+                            db.ImageSet.Remove(item.Image);
+                        }
+                        db.GalleryImageSet.Remove(item);
+                    }
                     await db.SaveChangesAsync();
                 }
                 var c = this.RecordCount;

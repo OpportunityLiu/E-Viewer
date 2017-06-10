@@ -11,6 +11,7 @@ using Windows.Storage;
 using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.Graphics.Imaging;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExClient.Galleries
 {
@@ -27,8 +28,8 @@ namespace ExClient.Galleries
                         db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                         var query = from gm in db.GallerySet
                                     where gm.Images.Count != 0
-                                    where db.SavedSet.FirstOrDefault(sm => sm.GalleryId == gm.Id) == null
-                                    orderby gm.Id descending
+                                    where !db.SavedSet.Any(sm => sm.GalleryId == gm.GalleryModelId)
+                                    orderby gm.GalleryModelId descending
                                     select gm;
                         return new CachedGalleryList(query.ToList());
                     }
@@ -57,32 +58,22 @@ namespace ExClient.Galleries
         {
             return Run<double>(async (token, progress) =>
             {
-                progress.Report(double.NaN);
                 using (var db = new GalleryDb())
                 {
-                    var query = from gm in db.GallerySet
-                                where gm.Images.Count != 0
-                                where db.SavedSet.FirstOrDefault(sm => sm.GalleryId == gm.Id) == null
-                                select gm.Images;
-                    var cacheDic = query.ToDictionary(dm => dm.First().OwnerId.ToString());
-                    var saveDic = db.SavedSet.Select(sm => sm.GalleryId).ToDictionary(id => id.ToString());
-                    double count = cacheDic.Count;
+                    var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
+                    var todelete = await db.ImageSet
+                        .Where(im => !db.SavedSet.Any(sm => im.UsingBy.Any(gi => gi.GalleryId == sm.GalleryId)))
+                        .ToListAsync(token);
+                    double count = todelete.Count;
                     var i = 0;
-                    foreach (var item in cacheDic)
+                    foreach (var item in todelete)
                     {
-                        progress.Report(i / count);
-                        var folder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(item.Key, CreationCollisionOption.OpenIfExists);
-                        await folder.DeleteAsync(StorageDeleteOption.PermanentDelete);
-                        db.ImageSet.RemoveRange(item.Value);
-                        i++;
+                        var file = await folder.TryGetFileAsync(item.FileName);
+                        if (file != null)
+                            await file.DeleteAsync();
+                        progress.Report(++i / count);
                     }
-                    //Delete empty folders
-                    var folders = await ApplicationData.Current.LocalCacheFolder.GetItemsAsync();
-                    foreach (var item in folders)
-                    {
-                        if (!saveDic.ContainsKey(item.Name) && long.TryParse(item.Name, out var r))
-                            await item.DeleteAsync();
-                    }
+                    db.ImageSet.RemoveRange(todelete);
                     await db.SaveChangesAsync();
                 }
             });
@@ -94,23 +85,23 @@ namespace ExClient.Galleries
             this.loadingPageArray = new IAsyncAction[MathHelper.GetPageCount(model.RecordCount, PageSize)];
         }
 
-        internal ImageModel[] ImageModels { get; private set; }
+        internal GalleryImageModel[] GalleryImageModels { get; private set; }
 
         internal void LoadImageModels()
         {
-            if (this.ImageModels != null)
+            if (this.GalleryImageModels != null)
                 return;
-            this.ImageModels = new ImageModel[this.RecordCount];
+            this.GalleryImageModels = new GalleryImageModel[this.RecordCount];
             using (var db = new GalleryDb())
             {
-                db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
+                db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                 var gid = this.Id;
-                var models = from im in db.ImageSet
-                             where im.OwnerId == gid
-                             select im;
+                var models = db.GalleryImageSet
+                    .Include(gi => gi.Image)
+                    .Where(gi => gi.GalleryId == gid);
                 foreach (var item in models)
                 {
-                    this.ImageModels[item.PageId - 1] = item;
+                    this.GalleryImageModels[item.PageId - 1] = item;
                 }
             }
         }
@@ -130,15 +121,14 @@ namespace ExClient.Galleries
                     var loadList = new GalleryImage[currentPageSize];
                     for (var i = 0; i < currentPageSize; i++)
                     {
-                        var model = this.ImageModels[this.Count + i];
+                        var model = this.GalleryImageModels[this.Count + i];
                         if (model == null)
                         {
                             loadList[i] = new GalleryImagePlaceHolder(this, this.Count + i + 1);
                         }
                         else
                         {
-                            loadList[i] = await GalleryImage.LoadCachedImageAsync(this, model)
-                                    ?? new GalleryImage(this, model.PageId, model.ImageKey, null);
+                            loadList[i] = await GalleryImage.LoadCachedImageAsync(this, model, model.Image);
                         }
                     }
                     return loadList;
@@ -172,7 +162,7 @@ namespace ExClient.Galleries
 
         public override IAsyncAction DeleteAsync()
         {
-            this.ImageModels = null;
+            this.GalleryImageModels = null;
             Array.Clear(this.loadingPageArray, 0, this.loadingPageArray.Length);
             return base.DeleteAsync();
         }
@@ -209,21 +199,33 @@ namespace ExClient.Galleries
                 var r = await base.GetThumbAsync();
                 if (r != null)
                     return r;
-                var f = await GetFolderAsync();
-                var file = (await f.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).SingleOrDefault();
-                if (file == null)
-                    return null;
-                try
+                using (var db = new GalleryDb())
                 {
-                    using (var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                    db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+                    var gId = this.Id;
+                    var imageModel = db.GalleryImageSet
+                        .Include(gi => gi.Image)
+                        .Where(gi => gi.GalleryId == gId)
+                        .OrderBy(gi => gi.PageId)
+                        .FirstOrDefault();
+                    if (imageModel == null)
+                        return null;
+                    var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
+                    var file = await folder.TryGetFileAsync(imageModel.Image.FileName);
+                    if (file == null)
+                        return null;
+                    try
                     {
-                        var decoder = await BitmapDecoder.CreateAsync(stream);
-                        return await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                        using (var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
+                        {
+                            var decoder = await BitmapDecoder.CreateAsync(stream);
+                            return await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                        }
                     }
-                }
-                catch (Exception)
-                {
-                    return null;
+                    catch (Exception)
+                    {
+                        return null;
+                    }
                 }
             });
         }

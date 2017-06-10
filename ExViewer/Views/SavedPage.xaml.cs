@@ -29,14 +29,6 @@ namespace ExViewer.Views
             this.InitializeComponent();
             this.VisibleBoundHandledByDesign = true;
             this.VM = SavedVM.Instance;
-            this.cdg_ConfirmClear = new MyContentDialog()
-            {
-                Title = Strings.Resources.Views.ClearSavedDialog.Title,
-                Content = Strings.Resources.Views.ClearSavedDialog.Content,
-                PrimaryButtonText = Strings.Resources.General.OK,
-                SecondaryButtonText = Strings.Resources.General.Cancel,
-                PrimaryButtonCommand = this.VM.Clear
-            };
         }
 
         public SavedVM VM
@@ -98,38 +90,20 @@ namespace ExViewer.Views
             }
         }
 
-        private readonly MyContentDialog cdg_ConfirmClear;
+        private MyContentDialog cdg_ConfirmClear;
 
         private async void abb_DeleteAll_Click(object sender, RoutedEventArgs e)
         {
-            await this.cdg_ConfirmClear.ShowAsync();
-        }
-
-        private void lv_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
-        {
-            var item = e.Items.FirstOrDefault() as Gallery;
-            if (item == null)
-            {
-                e.Cancel = true;
-                return;
-            }
-            this.mf_Gallery.Hide();
-            e.Data.SetDataProvider(StandardDataFormats.StorageItems, async request =>
-            {
-                var d = request.GetDeferral();
-                try
+            if (this.cdg_ConfirmClear == null)
+                this.cdg_ConfirmClear = new MyContentDialog()
                 {
-                    var makeCopy = SavedVM.GetCopyOf(item);
-                    request.SetData(new IStorageItem[] { await makeCopy });
-                }
-                finally { d.Complete(); }
-            });
-            e.Data.Properties.ApplicationName = Package.Current.DisplayName;
-            e.Data.Properties.PackageFamilyName = Package.Current.Id.FamilyName;
-            e.Data.Properties.Description = item.Title;
-            e.Data.Properties.Title = item.Title;
-            e.Data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromUri(item.ThumbUri);
-            e.Data.RequestedOperation = DataPackageOperation.Move;
+                    Title = Strings.Resources.Views.ClearSavedDialog.Title,
+                    Content = Strings.Resources.Views.ClearSavedDialog.Content,
+                    PrimaryButtonText = Strings.Resources.General.OK,
+                    SecondaryButtonText = Strings.Resources.General.Cancel,
+                    PrimaryButtonCommand = this.VM.Clear
+                };
+            await this.cdg_ConfirmClear.ShowAsync();
         }
 
         public void CloseAll()
@@ -144,7 +118,6 @@ namespace ExViewer.Views
                 return;
             var dc = lvi.Content;
             this.mfi_DeleteGallery.CommandParameter = dc;
-            this.mfi_SaveTo.CommandParameter = dc;
             this.mf_Gallery.ShowAt(lvi);
             args.Handled = true;
         }

@@ -10,9 +10,8 @@ namespace ExClient.Models
     {
         internal GalleryModel Update(Gallery toCache)
         {
-            this.Id = toCache.Id;
+            this.GalleryModelId = toCache.Id;
             this.Available = toCache.Available;
-            this.ArchiverKey = toCache.ArchiverKey;
             this.Token = toCache.Token;
             this.Title = toCache.Title;
             this.TitleJpn = toCache.TitleJpn;
@@ -31,87 +30,39 @@ namespace ExClient.Models
             return this;
         }
 
-        public long Id
-        {
-            get; set;
-        }
+        public long GalleryModelId { get; set; }
 
-        public bool Available
-        {
-            get; set;
-        }
+        public bool Available { get; set; }
 
-        public ulong Token
-        {
-            get; set;
-        }
+        public ulong Token { get; set; }
 
-        public string ArchiverKey
-        {
-            get; set;
-        }
+        public string Title { get; set; }
 
-        public string Title
-        {
-            get; set;
-        }
+        public string TitleJpn { get; set; }
 
-        public string TitleJpn
-        {
-            get; set;
-        }
+        public Category Category { get; set; }
 
-        public Category Category
-        {
-            get; set;
-        }
-
-        public string Uploader
-        {
-            get; set;
-        }
+        public string Uploader { get; set; }
 
         private long posted;
-
         public DateTimeOffset Posted
         {
             get => DateTimeOffset.FromUnixTimeMilliseconds(posted);
             set => this.posted = value.ToUnixTimeMilliseconds();
         }
 
-        public long FileSize
-        {
-            get; set;
-        }
+        public long FileSize { get; set; }
 
-        public bool Expunged
-        {
-            get; set;
-        }
+        public bool Expunged { get; set; }
 
-        public double Rating
-        {
-            get; set;
-        }
+        public double Rating { get; set; }
 
-        public string ThumbUri
-        {
-            get; set;
-        }
+        public string ThumbUri { get; set; }
 
-        public int RecordCount
-        {
-            get; set;
-        }
+        public int RecordCount { get; set; }
 
-        public string Tags
-        {
-            get; set;
-        }
+        public string Tags { get; set; }
 
-        public List<ImageModel> Images
-        {
-            get; set;
-        }
+        public IList<GalleryImageModel> Images { get; set; }
     }
 }

@@ -97,6 +97,8 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="ExViewer_TemporaryKey.pfx" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-hant\Settings.resJson" />
+    <PRIResource Include="Strings\zh-hant\Resources.resJson" />
     <PRIResource Include="Strings\zh-hans\Settings.resJson" />
   </ItemGroup>
   <ItemGroup>
@@ -336,6 +338,11 @@
     <Page Include="Strings\en\Dictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Strings\zh-hant\Dictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Strings\zh-hans\Dictionary.xaml">

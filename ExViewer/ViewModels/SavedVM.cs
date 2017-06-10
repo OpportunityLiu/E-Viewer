@@ -37,21 +37,6 @@ namespace ExViewer.ViewModels
                 this.Galleries = null;
                 this.Galleries = await SavedGallery.LoadSavedGalleriesAsync();
             });
-            this.SaveTo = new Command<Gallery>(async g =>
-            {
-                var getTarget = savePicker.PickSingleFolderAsync();
-                var sourceFolder = await g.GetFolderAsync();
-                var files = await sourceFolder.GetFilesAsync();
-                var target = await getTarget;
-                if(target == null)
-                    return;
-                target = await target.CreateFolderAsync(StorageHelper.ToValidFileName(g.GetDisplayTitle()), CreationCollisionOption.GenerateUniqueName);
-                foreach(var file in files)
-                {
-                    await file.CopyAsync(target, file.Name, NameCollisionOption.ReplaceExisting);
-                }
-                RootControl.RootController.SendToast(Strings.Resources.Views.SavedPage.GallerySavedTo, typeof(SavedPage));
-            });
         }
 
         private static FolderPicker savePicker = initSavePicker();
@@ -65,30 +50,6 @@ namespace ExViewer.ViewModels
             };
             p.FileTypeFilter.Add("*");
             return p;
-        }
-
-        public Command<Gallery> SaveTo
-        {
-            get;
-        }
-
-        public static IAsyncOperationWithProgress<StorageFolder, double> GetCopyOf(Gallery gallery)
-        {
-            return Run<StorageFolder, double>(async (token, progress) =>
-            {
-                progress.Report(double.NaN);
-                var source = await gallery.GetFolderAsync();
-                var temp = await StorageHelper.CreateTempFolderAsync();
-                var name = StorageHelper.ToValidFileName(gallery.GetDisplayTitle());
-                var target = await temp.CreateFolderAsync(name);
-                var files = await source.GetFilesAsync();
-                for(var i = 0; i < files.Count; i++)
-                {
-                    progress.Report((double)i / files.Count);
-                    await files[i].CopyAsync(target);
-                }
-                return target;
-            });
         }
     }
 }

@@ -186,7 +186,6 @@ namespace ExViewer.Views
             setScale();
             if (this.fv.SelectedItem is IImagePageImageView gi && gi.Image != null)
             {
-
                 gi.Image.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), true).Completed =
                     (task, state) =>
                     {

@@ -1,42 +1,41 @@
-﻿using ExClient.Models;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+using ExClient.Models;
+using ExClient;
 
 namespace ExClient.Migrations
 {
     [DbContext(typeof(GalleryDb))]
-    [Migration("20160717022029_MyFirstMigration")]
-    partial class MyFirstMigration
+    [Migration("20170610145108_ResetMigration")]
+    partial class ResetMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.1");
+                .HasAnnotation("ProductVersion", "1.1.2");
 
-            modelBuilder.Entity("ExClient.Models.SavedGalleryModel", b =>
+            modelBuilder.Entity("ExClient.Models.GalleryImageModel", b =>
                 {
                     b.Property<long>("GalleryId");
 
-                    b.Property<long>("saved");
+                    b.Property<int>("PageId");
 
-                    b.Property<byte[]>("ThumbData");
+                    b.Property<string>("ImageId")
+                        .IsRequired();
 
-                    b.HasKey("GalleryId");
+                    b.HasKey("GalleryId", "PageId");
 
-                    b.HasIndex("GalleryId")
-                        .IsUnique();
+                    b.HasIndex("ImageId");
 
-                    b.ToTable("SavedSet");
+                    b.ToTable("GalleryImageSet");
                 });
 
             modelBuilder.Entity("ExClient.Models.GalleryModel", b =>
                 {
-                    b.Property<long>("Id");
-
-                    b.Property<string>("ArchiverKey");
+                    b.Property<long>("GalleryModelId");
 
                     b.Property<bool>("Available");
 
@@ -45,8 +44,6 @@ namespace ExClient.Migrations
                     b.Property<bool>("Expunged");
 
                     b.Property<long>("FileSize");
-
-                    b.Property<long>("posted");
 
                     b.Property<double>("Rating");
 
@@ -64,28 +61,51 @@ namespace ExClient.Migrations
 
                     b.Property<string>("Uploader");
 
-                    b.HasKey("Id");
+                    b.Property<long>("posted");
+
+                    b.HasKey("GalleryModelId");
 
                     b.ToTable("GallerySet");
                 });
 
             modelBuilder.Entity("ExClient.Models.ImageModel", b =>
                 {
-                    b.Property<int>("PageId");
-
-                    b.Property<long>("OwnerId");
+                    b.Property<string>("ImageId")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("FileName");
 
-                    b.Property<ulong>("ImageKey");
-
                     b.Property<bool>("OriginalLoaded");
 
-                    b.HasKey("PageId", "OwnerId");
-
-                    b.HasIndex("OwnerId");
+                    b.HasKey("ImageId");
 
                     b.ToTable("ImageSet");
+                });
+
+            modelBuilder.Entity("ExClient.Models.SavedGalleryModel", b =>
+                {
+                    b.Property<long>("GalleryId");
+
+                    b.Property<byte[]>("ThumbData");
+
+                    b.Property<long>("saved");
+
+                    b.HasKey("GalleryId");
+
+                    b.ToTable("SavedSet");
+                });
+
+            modelBuilder.Entity("ExClient.Models.GalleryImageModel", b =>
+                {
+                    b.HasOne("ExClient.Models.GalleryModel", "Gallery")
+                        .WithMany("Images")
+                        .HasForeignKey("GalleryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ExClient.Models.ImageModel", "Image")
+                        .WithMany("UsingBy")
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("ExClient.Models.SavedGalleryModel", b =>
@@ -93,14 +113,6 @@ namespace ExClient.Migrations
                     b.HasOne("ExClient.Models.GalleryModel", "Gallery")
                         .WithOne()
                         .HasForeignKey("ExClient.Models.SavedGalleryModel", "GalleryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("ExClient.Models.ImageModel", b =>
-                {
-                    b.HasOne("ExClient.Models.GalleryModel", "Owner")
-                        .WithMany("Images")
-                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }
