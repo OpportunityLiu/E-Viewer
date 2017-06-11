@@ -201,7 +201,7 @@
       "CounterSeparatorTextBlock/Text": "/",
       "FullScreen": "全屏",
       "FullScreenAppBarButton/Label": "全屏",
-      "ImageFileInfo": "文件名：{0}\n大小：{1}\n尺寸：{2} × {3}",
+      "ImageFileInfo": "文件类型：{0}\n大小：{1}\n尺寸：{2} × {3}",
       "ImageFileInfoDefault": "图片未加载完成。",
       "ImageInfoAppBarButton/Label": "文件信息",
       "LoadOriginalAppBarButton/Label": "加载原图",

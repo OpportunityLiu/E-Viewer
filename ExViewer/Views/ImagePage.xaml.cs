@@ -218,11 +218,9 @@ namespace ExViewer.Views
             {
                 if (t.IsCanceled)
                     return;
-                await this.cb_top.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    this.changingCbVisibility.Cancel();
-                    changeCbVisibility();
-                });
+                await Dispatcher.Yield();
+                this.changingCbVisibility.Cancel();
+                changeCbVisibility();
             });
         }
 

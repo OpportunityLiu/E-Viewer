@@ -9,6 +9,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -47,10 +48,12 @@ namespace ExViewer.Views
             if (e.NavigationMode != NavigationMode.Back || this.VM.Galleries == null)
             {
                 this.VM.Refresh.Execute();
+                await Dispatcher.YieldIdle();
+                this.lv.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
-                await Task.Delay(50);
+                await Dispatcher.YieldIdle();
                 ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
             }
         }

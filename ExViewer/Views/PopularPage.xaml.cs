@@ -17,6 +17,7 @@ using ExViewer.ViewModels;
 using ExClient;
 using System.Threading.Tasks;
 using ExClient.Galleries;
+using Windows.UI;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -47,8 +48,16 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.Back)
             {
-                await Task.Delay(50);
+                await Dispatcher.YieldIdle();
                 ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
+            }
+            else
+            {
+                await Dispatcher.YieldIdle();
+                if (this.lv.Items.Count != 0)
+                    this.lv.Focus(FocusState.Programmatic);
+                else
+                    this.cb_top.Focus(FocusState.Programmatic);
             }
         }
 

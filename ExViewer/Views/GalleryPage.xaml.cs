@@ -52,7 +52,7 @@ namespace ExViewer.Views
 
         private async void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
-            await Task.Yield();
+            await Dispatcher.YieldIdle();
             if (e.NextView.VerticalOffset < e.FinalView.VerticalOffset && this.sv_Content.VerticalOffset < 1)
             {
                 changeViewTo(true, false);

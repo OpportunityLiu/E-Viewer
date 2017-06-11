@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -47,14 +48,15 @@ namespace ExViewer.Views
             {
                 if (e.Parameter != null)
                     this.VM?.SearchResult.Reset();
+                await Dispatcher.YieldIdle();
                 this.cbCategory.Focus(FocusState.Programmatic);
             }
-            if (e.NavigationMode == NavigationMode.Back)
+            else if (e.NavigationMode == NavigationMode.Back)
             {
                 var selectedGallery = this.VM.SelectedGallery;
                 if (selectedGallery != null)
                 {
-                    await Task.Delay(100);
+                    await Dispatcher.YieldIdle();
                     this.lv.ScrollIntoView(selectedGallery);
                     ((Control)this.lv.ContainerFromItem(selectedGallery))?.Focus(FocusState.Programmatic);
                 }
@@ -111,7 +113,8 @@ namespace ExViewer.Views
             {
                 this.asb.Focus(FocusState.Keyboard);
                 // workaround for IME candidates, which will clean input.
-                await Dispatcher.RunIdleAsync(a => this.asb.Text = args.ChosenSuggestion.ToString());
+                await Dispatcher.YieldIdle();
+                this.asb.Text = args.ChosenSuggestion.ToString();
             }
         }
 

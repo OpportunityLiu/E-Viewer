@@ -201,7 +201,7 @@
       "CounterSeparatorTextBlock/Text": "/",
       "FullScreen": "Full screen",
       "FullScreenAppBarButton/Label": "Full screen",
-      "ImageFileInfo": "File name: {0}\nSize: {1}\nDimensions: {2} × {3}",
+      "ImageFileInfo": "File type: {0}\nSize: {1}\nDimensions: {2} × {3}",
       "ImageFileInfoDefault": "The image hasn't finished loading.",
       "ImageInfoAppBarButton/Label": "Image infomation",
       "LoadOriginalAppBarButton/Label": "Load original image",

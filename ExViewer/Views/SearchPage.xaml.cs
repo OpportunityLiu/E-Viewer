@@ -4,6 +4,7 @@ using ExViewer.ViewModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -39,14 +40,15 @@ namespace ExViewer.Views
                     this.VM?.SearchResult.Reset();
                 if (this.btnExpandButton == null)
                     this.btnExpandButton = this.ab.Descendants<Button>("ExpandButton").FirstOrDefault();
-                this.btnExpandButton?.Focus(FocusState.Programmatic);
+                await Dispatcher.YieldIdle();
+                this.asb.Focus(FocusState.Programmatic);
             }
-            if (e.NavigationMode == NavigationMode.Back)
+            else if (e.NavigationMode == NavigationMode.Back)
             {
                 var selectedGallery = this.VM.SelectedGallery;
                 if (selectedGallery != null)
                 {
-                    await Task.Delay(100);
+                    await Dispatcher.YieldIdle();
                     this.lv.ScrollIntoView(selectedGallery);
                     ((Control)this.lv.ContainerFromItem(selectedGallery))?.Focus(FocusState.Programmatic);
                 }
@@ -112,7 +114,8 @@ namespace ExViewer.Views
             {
                 this.asb.Focus(FocusState.Keyboard);
                 // workaround for IME candidates, which will clean input.
-                await Dispatcher.RunIdleAsync(a => this.asb.Text = args.ChosenSuggestion.ToString());
+                await Dispatcher.YieldIdle();
+                this.asb.Text = args.ChosenSuggestion.ToString();
             }
         }
 
