@@ -11,7 +11,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Data.Html;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
@@ -24,15 +26,21 @@ namespace ExClient.Galleries
     {
         static GalleryImage()
         {
-            DispatcherHelper.BeginInvokeOnUIThread(async () =>
+            DispatcherHelper.BeginInvokeOnUIThread(() =>
             {
+                display = DisplayInformation.GetForCurrentView();
                 DefaultThumb = new BitmapImage();
-                using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
+                DefaultThumb.Dispatcher.BeginIdle(async a =>
                 {
-                    await DefaultThumb.SetSourceAsync(stream);
-                }
+                    using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
+                    {
+                        await DefaultThumb.SetSourceAsync(stream);
+                    }
+                });
             });
         }
+
+        private static DisplayInformation display;
 
         protected internal static StorageFolder ImageFolder { get; private set; }
 
@@ -117,7 +125,7 @@ namespace ExClient.Galleries
                     this.originalImageUri = new Uri(HtmlEntity.DeEntitize(originalNode.GetAttributeValue("href", "")));
                 }
                 var hashNode = doc.GetElementbyId("i6").Element("a");
-                this.imageHash = SHA1Value.Parse(hashMatcher.Match(hashNode.GetAttributeValue("href", "")).Groups[1].Value);
+                this.ImageHash = SHA1Value.Parse(hashMatcher.Match(hashNode.GetAttributeValue("href", "")).Groups[1].Value);
                 var loadFail = doc.GetElementbyId("loadfail").GetAttributeValue("onclick", "");
                 var oft = this.failToken;
                 var nft = failTokenMatcher.Match(loadFail).Groups[1].Value;
@@ -152,7 +160,7 @@ namespace ExClient.Galleries
                 {
                     if (this.imageFile != null)
                     {
-                        using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, 180, Windows.Storage.FileProperties.ThumbnailOptions.ResizeThumbnail))
+                        using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, (uint)(180 * display.RawPixelsPerViewPixel), Windows.Storage.FileProperties.ThumbnailOptions.ResizeThumbnail))
                         {
                             await img.SetSourceAsync(stream);
                         }

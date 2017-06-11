@@ -242,7 +242,13 @@ namespace ExViewer.Views
                 var vb = RootController.ApplicationView.VisibleBounds;
                 var wb = Window.Current.Bounds;
                 var tbh = RootController.TitleBarHeight;
-                this.VisibleBoundsThickness = new Thickness(vb.Left - wb.Left, vb.Top + tbh - wb.Top, wb.Right - vb.Right, wb.Bottom - vb.Bottom);
+                this.VisibleBoundsThickness = new Thickness(
+                    bound(vb.Left - wb.Left),
+                    bound(vb.Top + tbh - wb.Top),
+                    bound(wb.Right - vb.Right),
+                    bound(wb.Bottom - vb.Bottom));
+
+                double bound(double value) => value < 0 ? 0 : value;
             }
             return base.MeasureOverride(availableSize);
         }

@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using Windows.Security.Credentials;
 using ExViewer.Controls;
+using Windows.UI;
 
 // “内容对话框”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上进行了说明
 
@@ -112,10 +113,8 @@ namespace ExViewer.Views
             }
             finally
             {
-                var ignore = Task.Delay(100)
-                    .ContinueWith(async t 
-                        => await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () 
-                            => this.pb_Loading.IsIndeterminate = false));
+                await Dispatcher.YieldIdle();
+                this.pb_Loading.IsIndeterminate = false;
             }
         }
 
