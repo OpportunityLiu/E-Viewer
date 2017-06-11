@@ -14,16 +14,40 @@ namespace ExClient.Search
             return new AdvancedSearchResult(keyword, category, advancedSearch);
         }
 
-        public override Uri SearchUri { get; }
+        private string getQueryString()
+        {
+            var adv = new AdvancedSearchOptions(this.advSearchData);
+            return $"&advsearch=1" +
+                $"{(adv.SearchName ? "&f_sname=1" : "")}" +
+                $"{(adv.SearchTags ? "&f_stags=1" : "")}" +
+                $"{(adv.SearchDescription ? "&f_sdesc=1" : "")}" +
+                $"{(adv.SearchTorrentFilenames ? "&f_storr=1" : "")}" +
+                $"{(adv.GalleriesWithTorrentsOnly ? "&f_sto=1" : "")}" +
+                $"{(adv.SearchLowPowerTags ? "&f_sdt1=1" : "")}" +
+                $"{(adv.SearchDownvotedTags ? "&f_sdt2=1" : "")}" +
+                $"{(adv.ShowExpungedGalleries ? "&f_sh=1" : "")}" +
+                $"{(adv.SearchMinimumRating ? "&f_sr=1&f_srdd=" + adv.MinimumRating.ToString() : "")}";
+        }
 
         private AdvancedSearchResult(string keyword, Category category, AdvancedSearchOptions advancedSearch)
             : base(keyword, category)
         {
-            this.advSearchData = advancedSearch.Data;
-            this.SearchUri = new Uri($"{base.SearchUri.OriginalString}&{new HttpFormUrlEncodedContent(this.AdvancedSearch.AsEnumerable())}");
+            if (advancedSearch != null)
+                this.advSearchData = advancedSearch.Data;
         }
 
         private readonly ushort advSearchData;
-        public AdvancedSearchOptions AdvancedSearch => new AdvancedSearchOptions(advSearchData);
+
+        public AdvancedSearchOptions AdvancedSearch => new AdvancedSearchOptions(this.advSearchData);
+
+        public override Uri SearchUri
+        {
+            get
+            {
+                if (this.advSearchData == default(ushort))
+                    return base.SearchUri;
+                return new Uri(base.SearchUri.OriginalString + getQueryString());
+            }
+        }
     }
 }

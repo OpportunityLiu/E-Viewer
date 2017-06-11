@@ -34,7 +34,7 @@ namespace ExClient.Api
                         gid = reader.ReadAsInt32().GetValueOrDefault();
                         break;
                     case "token":
-                        token = reader.ReadAsString().StringToToken();
+                        token = reader.ReadAsString().ToToken();
                         break;
                     default:
                         break;
@@ -50,7 +50,7 @@ namespace ExClient.Api
                 var v = (GalleryInfo)value;
                 writer.WriteStartArray();
                 writer.WriteValue(v.Id);
-                writer.WriteValue(v.Token.TokenToString());
+                writer.WriteValue(v.Token.ToTokenString());
                 writer.WriteEndArray();
             }
         }
@@ -72,7 +72,7 @@ namespace ExClient.Api
             {
                 if(long.TryParse(data.Paths[1], out var gId))
                 {
-                    info = new GalleryInfo(gId, data.Paths[2].StringToToken());
+                    info = new GalleryInfo(gId, data.Paths[2].ToToken());
                     return true;
                 }
             }
@@ -88,7 +88,7 @@ namespace ExClient.Api
                     && data.Queries.TryGetValue("t", out var gtoken)
                     && long.TryParse(data.Queries["gid"], out var gId))
                 {
-                    info = new GalleryInfo(gId, gtoken.StringToToken());
+                    info = new GalleryInfo(gId, gtoken.ToToken());
                     return true;
                 }
             }

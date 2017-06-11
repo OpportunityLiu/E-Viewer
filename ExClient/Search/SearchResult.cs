@@ -48,11 +48,14 @@ namespace ExClient.Search
             {
                 this.RecordCount = 0;
             }
-            var match = recordCountMatcher.Match(rcNode.InnerText);
-            if (match.Success)
-                this.RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
             else
-                this.RecordCount = 0;
+            {
+                var match = recordCountMatcher.Match(rcNode.InnerText);
+                if (match.Success)
+                    this.RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
+                else
+                    this.RecordCount = 0;
+            }
             if (!this.IsEmpty)
             {
                 var pcNodes = rcNode.NextSibling
@@ -91,7 +94,7 @@ namespace ExClient.Search
                 var detailNode = infoNode.ChildNodes[2]; //class = it5
                 var match = gLinkMatcher.Match(detailNode.FirstChild.GetAttributeValue("href", ""));
                 trNodeList.Add(node);
-                gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.StringToToken()));
+                gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.ToToken()));
             }
             var galleries = await Gallery.FetchGalleriesAsync(gInfoList);
             for (var i = 0; i < galleries.Count; i++)

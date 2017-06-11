@@ -15,8 +15,6 @@ namespace ExClient.Search
     {
         public static Uri SearchBaseUri => new Uri(Client.Current.Uris.RootUri, "favorites.php");
 
-        public override Uri SearchUri { get; }
-
         internal static FavoritesSearchResult Search(string keyword, FavoriteCategory category)
         {
             if (category == null || category.Index < 0)
@@ -29,20 +27,19 @@ namespace ExClient.Search
             : base(keyword)
         {
             this.Category = category;
-            this.SearchUri = new Uri(SearchBaseUri, $"?{new HttpFormUrlEncodedContent(getUriQuery())}");
         }
 
-        private IEnumerable<KeyValuePair<string, string>> getUriQuery()
+        public FavoriteCategory Category { get; }
+
+        public override Uri SearchUri => new Uri(SearchBaseUri, getUriQuery());
+
+        private string getUriQuery()
         {
             //?favcat=all&f_search=&f_apply=Search+Favorites
-            string cat;
-            if (this.Category == null || this.Category.Index < 0)
-                cat = "all";
-            else
-                cat = this.Category.Index.ToString();
-            yield return new KeyValuePair<string, string>("favcat", cat);
-            yield return new KeyValuePair<string, string>("f_search", this.Keyword);
-            yield return new KeyValuePair<string, string>("f_apply", "Search Favorites");
+            return
+                $"?favcat={(this.Category.Index < 0 ? "all" : this.Category.Index.ToString())}" +
+                $"&f_search={Uri.EscapeDataString(this.Keyword)}" +
+                $"&f_apply=Search+Favorites";
         }
 
         protected override void HandleAdditionalInfo(HtmlNode trNode, Gallery gallery)
@@ -64,11 +61,11 @@ namespace ExClient.Search
                 .Element("div")
                 .Elements("div").First();
             var fpNodes = noselNode.Elements("div").Take(10);
-            fpNodes.Select(n =>
+            foreach (var n in fpNodes)
             {
                 var fav = n.Elements("div").First(nn => nn.GetAttributeValue("class", null) == "i");
-                return Client.Current.Favorites.GetCategory(fav);
-            }).ToList();
+                Client.Current.Favorites.GetCategory(fav);
+            }
         }
 
         public IAsyncAction AddToCategoryAsync(IReadOnlyList<ItemIndexRange> items, FavoriteCategory categoty)
@@ -114,12 +111,6 @@ namespace ExClient.Search
                     }
                 }
             });
-
-        }
-
-        public FavoriteCategory Category
-        {
-            get;
         }
     }
 }

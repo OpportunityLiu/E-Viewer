@@ -3,7 +3,7 @@
 namespace ExClient.Tagging
 {
     [Flags]
-    public enum TagState
+    public enum TagState : uint
     {
         Upvoted = 0b0001,
         // 0b0010 is an invalid state.

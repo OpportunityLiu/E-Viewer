@@ -121,12 +121,12 @@ namespace ExClient.Launch
         private SearchResult handleFileSearch(UriHandlerData data)
         {
             var fn = default(string);
+            var sm = false;
             var cv = false;
             var exp = false;
             var hashes = default(IEnumerable<SHA1Value>);
             foreach (var item in data.Queries)
             {
-                var b = item.Value.QueryValueAsBoolean();
                 switch (item.Key)
                 {
                 case "f_shash":
@@ -134,6 +134,9 @@ namespace ExClient.Launch
                     break;
                 case "fs_from":
                     fn = item.Value;
+                    break;
+                case "fs_similar":
+                    sm = item.Value.QueryValueAsBoolean();
                     break;
                 case "fs_covers":
                     cv = item.Value.QueryValueAsBoolean();
@@ -144,7 +147,7 @@ namespace ExClient.Launch
                 }
             }
             var otherdata = handleSearch(data);
-            return Client.Current.Search(otherdata.Keyword, otherdata.Category, hashes, fn, cv, exp);
+            return FileSearchResult.Search(otherdata.Keyword, otherdata.Category, hashes, fn, sm, cv, exp);
         }
     }
 }

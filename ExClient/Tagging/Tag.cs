@@ -57,15 +57,9 @@ namespace ExClient.Tagging
             this.Content = content.Trim().ToLowerInvariant();
         }
 
-        public Namespace Namespace
-        {
-            get;
-        }
+        public Namespace Namespace { get; }
 
-        public string Content
-        {
-            get;
-        }
+        public string Content { get; }
 
         public string ToSearchTerm()
         {
@@ -117,18 +111,17 @@ namespace ExClient.Tagging
 
         public bool Equals(Tag other)
         {
-            return this.Namespace == other.Namespace && string.Equals(this.Content, other.Content, StringComparison.OrdinalIgnoreCase);
+            return this.Namespace == other.Namespace 
+                && string.Equals(this.Content, other.Content, StringComparison.OrdinalIgnoreCase);
         }
-
-        // override object.Equals
+        
         public override bool Equals(object obj)
         {
             if (obj is Tag o)
                 return this.Equals(o);
             return false;
         }
-
-        // override object.GetHashCode
+        
         public override int GetHashCode()
         {
             return unchecked((int)Namespace * StringComparer.OrdinalIgnoreCase.GetHashCode(Content));

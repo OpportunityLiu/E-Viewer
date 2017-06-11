@@ -146,7 +146,6 @@ namespace ExClient.Galleries
         {
             this.Id = id;
             this.Token = token;
-            this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{Id.ToString()}/{Token.TokenToString()}/");
             this.Comments = new CommentCollection(this);
         }
 
@@ -172,7 +171,7 @@ namespace ExClient.Galleries
         internal Gallery(
             long gid,
             string error = null,
-            string token = null,
+            string token = "0",
             string title = null,
             string title_jpn = null,
             string category = null,
@@ -185,7 +184,7 @@ namespace ExClient.Galleries
             string rating = null,
             string torrentcount = null,
             string[] tags = null)
-            : this(gid, token.StringToToken())
+            : this(gid, token.ToToken())
         {
             if (error != null)
             {
@@ -277,140 +276,94 @@ namespace ExClient.Galleries
 
         #region MetaData
 
-        public long Id
-        {
-            get; protected set;
-        }
+        public long Id { get; }
 
-        public bool Available
-        {
-            get; protected set;
-        }
+        public bool Available { get; protected set; }
 
-        public ulong Token
-        {
-            get; protected set;
-        }
+        public ulong Token { get; }
 
-        public string Title
-        {
-            get; protected set;
-        }
+        public string Title { get; protected set; }
 
-        public string TitleJpn
-        {
-            get; protected set;
-        }
+        public string TitleJpn { get; protected set; }
 
-        public Category Category
-        {
-            get; protected set;
-        }
+        public Category Category { get; protected set; }
 
         private readonly WeakReference<SoftwareBitmap> thumbImage = new WeakReference<SoftwareBitmap>(null);
-
         public SoftwareBitmap Thumb
         {
             get
             {
                 if (this.thumbImage.TryGetTarget(out var img))
-                {
                     return img;
-                }
                 var load = GetThumbAsync();
-                load.Completed = loadThumbCompleted;
+                load.Completed = (IAsyncOperation<SoftwareBitmap> asyncInfo, AsyncStatus asyncStatus) =>
+                {
+                    try
+                    {
+                        if (asyncStatus != AsyncStatus.Completed)
+                            return;
+                        var r = asyncInfo.GetResults();
+                        if (r == null)
+                            return;
+                        if (this.thumbImage.TryGetTarget(out var img2))
+                        {
+                            img2.Dispose();
+                        }
+                        this.thumbImage.SetTarget(r);
+                        RaisePropertyChanged(nameof(Thumb));
+                    }
+                    finally
+                    {
+                        asyncInfo.Close();
+                    }
+                };
                 return null;
             }
         }
 
-        private void loadThumbCompleted(IAsyncOperation<SoftwareBitmap> asyncInfo, AsyncStatus asyncStatus)
-        {
-            try
-            {
-                if (asyncStatus != AsyncStatus.Completed)
-                    return;
-                var r = asyncInfo.GetResults();
-                if (r == null)
-                    return;
-                if (this.thumbImage.TryGetTarget(out var img))
-                {
-                    img.Dispose();
-                }
-                this.thumbImage.SetTarget(r);
-                RaisePropertyChanged(nameof(Thumb));
-            }
-            finally
-            {
-                asyncInfo.Close();
-            }
-        }
 
-        public Uri ThumbUri
-        {
-            get; protected set;
-        }
+        public Uri ThumbUri { get; protected set; }
 
-        public string Uploader
-        {
-            get; protected set;
-        }
+        public string Uploader { get; protected set; }
 
-        public DateTimeOffset Posted
-        {
-            get; protected set;
-        }
+        public DateTimeOffset Posted { get; protected set; }
 
-        public long FileSize
-        {
-            get; protected set;
-        }
+        public long FileSize { get; protected set; }
 
-        public bool Expunged
-        {
-            get; protected set;
-        }
+        public bool Expunged { get; protected set; }
 
-        public double Rating
-        {
-            get; protected set;
-        }
+        public double Rating { get; protected set; }
 
-        public int TorrentCount
-        {
-            get; protected set;
-        }
+        public int TorrentCount { get; protected set; }
 
-        public TagCollection Tags
-        {
-            get;
-        }
+        public TagCollection Tags { get; }
 
         public Language Language => Language.Parse(this);
 
+        private FavoriteCategory favoriteCategory;
         public FavoriteCategory FavoriteCategory
         {
             get => this.favoriteCategory;
             protected internal set => Set(ref this.favoriteCategory, value);
         }
-        private FavoriteCategory favoriteCategory;
 
+        private string favoriteNote;
         public string FavoriteNote
         {
             get => this.favoriteNote;
             protected internal set => Set(ref this.favoriteNote, value);
         }
-        private string favoriteNote;
 
+        private RevisionCollection revisions;
         public RevisionCollection Revisions
         {
             get => this.revisions;
             private set => Set(ref this.revisions, value);
         }
-        private RevisionCollection revisions;
 
         #endregion
 
-        public Uri GalleryUri { get; }
+        public Uri GalleryUri => new Uri(Client.Current.Uris.RootUri, $"g/{Id.ToString()}/{Token.ToTokenString()}/");
 
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
 
@@ -469,7 +422,7 @@ namespace ExClient.Galleries
                            select new
                            {
                                pageId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer),
-                               imageKey = match.Groups[1].Value.StringToToken(),
+                               imageKey = match.Groups[1].Value.ToToken(),
                                thumbUri = toEhUri(thumb)
                            };
                 var toAdd = new List<GalleryImage>(PageSize);
@@ -508,7 +461,7 @@ namespace ExClient.Galleries
         {
             return Run(async token =>
             {
-                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={this.Id}&t={this.Token.TokenToString()}&act=addfav", UriKind.Relative));
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={this.Id}&t={this.Token.ToTokenString()}&act=addfav", UriKind.Relative));
                 var favdel = doc.GetElementbyId("favdel");
                 if (favdel != null)
                 {

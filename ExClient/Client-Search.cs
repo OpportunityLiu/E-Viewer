@@ -39,7 +39,7 @@ namespace ExClient
 
         public FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName, bool onlyCovers, bool searchExpunged)
         {
-            return FileSearchResult.Search(keyword, category, fileHashes, fileName, onlyCovers, searchExpunged);
+            return FileSearchResult.Search(keyword, category, fileHashes, fileName, false, onlyCovers, searchExpunged);
         }
 
         public FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName)
