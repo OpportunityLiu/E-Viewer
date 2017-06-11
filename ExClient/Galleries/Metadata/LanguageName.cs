@@ -1,6 +1,6 @@
 ﻿namespace ExClient.Galleries.Metadata
 {
-    public enum LanguageName : ushort
+    public enum LanguageName
     {
         /// <summary>日语</summary>
         Japanese = 0,

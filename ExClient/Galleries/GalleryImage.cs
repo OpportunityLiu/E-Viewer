@@ -156,6 +156,7 @@ namespace ExClient.Galleries
             DispatcherHelper.BeginInvokeOnUIThread(async () =>
             {
                 var img = new BitmapImage();
+                await img.Dispatcher.YieldIdle();
                 try
                 {
                     if (this.imageFile != null)

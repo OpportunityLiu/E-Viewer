@@ -7,6 +7,7 @@
              SizeChanged="userControl_SizeChanged"
              HorizontalAlignment="Stretch"
              mc:Ignorable="d"
+             MaxWidth="600"
              d:DesignHeight="300"
              d:DesignWidth="400">
     <UserControl.Resources>
