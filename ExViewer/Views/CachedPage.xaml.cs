@@ -15,6 +15,7 @@ using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -64,10 +65,12 @@ namespace ExViewer.Views
             if (e.NavigationMode != NavigationMode.Back || this.VM.Galleries == null)
             {
                 this.VM.Refresh.Execute();
+                await Dispatcher.YieldIdle();
+                this.lv.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
-                await Task.Delay(50);
+                await Dispatcher.YieldIdle();
                 ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
             }
         }
@@ -85,11 +88,11 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.Key)
             {
-            case Windows.System.VirtualKey.GamepadY:
+            case VirtualKey.GamepadY:
                 this.cb_top.Focus(FocusState.Keyboard);
                 break;
-            case Windows.System.VirtualKey.GamepadMenu:
-            case Windows.System.VirtualKey.Application:
+            case VirtualKey.GamepadMenu:
+            case VirtualKey.Application:
                 e.Handled = false;
                 break;
             default:

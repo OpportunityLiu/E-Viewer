@@ -42,6 +42,9 @@ namespace ExViewer.Controls
 
         private static readonly Brush upBrush = (Brush)Application.Current.Resources["VoteUpCommentBrush"];
         private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownCommentBrush"];
+        private static readonly Brush upSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteUpCommentBrush"];
+        private static readonly Brush downSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteDownCommentBrush"];
+        private static readonly Brush slaveBrush = (Brush)Application.Current.Resources["SlaveCommentBrush"];
 
         private void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -51,28 +54,31 @@ namespace ExViewer.Controls
             if (value.Content == null)
             {
                 s.ClearValue(TextBlock.TextProperty);
-                s.ClearValue(OpacityProperty);
                 s.ClearValue(TextBlock.ForegroundProperty);
                 return;
             }
 
             var state = this.Tags.StateOf(value);
 
-            if (state.IsSlave())
-                s.Opacity = 0.4;
-            else
-                s.ClearValue(OpacityProperty);
-
             switch (state.GetVoteState())
             {
             case TagState.Upvoted:
-                s.Foreground = upBrush;
+                if (state.IsSlave())
+                    s.Foreground = upSlaveBrush;
+                else
+                    s.Foreground = upBrush;
                 break;
             case TagState.Downvoted:
-                s.Foreground = downBrush;
+                if (state.IsSlave())
+                    s.Foreground = downSlaveBrush;
+                else
+                    s.Foreground = downBrush;
                 break;
             default:
-                s.ClearValue(TextBlock.ForegroundProperty);
+                if (state.IsSlave())
+                    s.Foreground = slaveBrush;
+                else
+                    s.ClearValue(TextBlock.ForegroundProperty);
                 break;
             }
 
