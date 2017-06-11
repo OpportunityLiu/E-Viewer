@@ -40,6 +40,9 @@ namespace ExViewer.Controls
         public static readonly DependencyProperty TagsProperty =
             DependencyProperty.Register(nameof(Tags), typeof(TagCollection), typeof(TagPresenter), new PropertyMetadata(null));
 
+        private static readonly Brush upBrush = (Brush)Application.Current.Resources["VoteUpCommentBrush"];
+        private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownCommentBrush"];
+
         private void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var s = (TextBlock)sender;
@@ -49,17 +52,30 @@ namespace ExViewer.Controls
             {
                 s.ClearValue(TextBlock.TextProperty);
                 s.ClearValue(OpacityProperty);
+                s.ClearValue(TextBlock.ForegroundProperty);
                 return;
             }
+
             var state = this.Tags.StateOf(value);
-            if(state.HasFlag(TagState.Slave))
-            {
+
+            if (state.IsSlave())
                 s.Opacity = 0.4;
-            }
             else
-            {
                 s.ClearValue(OpacityProperty);
+
+            switch (state.GetVoteState())
+            {
+            case TagState.Upvoted:
+                s.Foreground = upBrush;
+                break;
+            case TagState.Downvoted:
+                s.Foreground = downBrush;
+                break;
+            default:
+                s.ClearValue(TextBlock.ForegroundProperty);
+                break;
             }
+
             var dc = value.GetDisplayContentAsync();
             if (dc.Status != AsyncStatus.Completed)
             {
@@ -131,7 +147,7 @@ namespace ExViewer.Controls
         {
             try
             {
-                await this.Tags.VoteAsync(SelectedTag, VoteCommand.Up);
+                await this.Tags.VoteAsync(SelectedTag, VoteState.Up);
             }
             catch (Exception ex)
             {
@@ -144,7 +160,7 @@ namespace ExViewer.Controls
         {
             try
             {
-                await this.Tags.VoteAsync(SelectedTag, VoteCommand.Down);
+                await this.Tags.VoteAsync(SelectedTag, VoteState.Down);
             }
             catch (Exception ex)
             {
@@ -159,9 +175,9 @@ namespace ExViewer.Controls
             {
                 var state = this.Tags.StateOf(SelectedTag);
                 if (state.HasFlag(TagState.Downvoted))
-                    await this.Tags.VoteAsync(SelectedTag, VoteCommand.Up);
+                    await this.Tags.VoteAsync(SelectedTag, VoteState.Up);
                 else if (state.HasFlag(TagState.Upvoted))
-                    await this.Tags.VoteAsync(SelectedTag, VoteCommand.Down);
+                    await this.Tags.VoteAsync(SelectedTag, VoteState.Down);
             }
             catch (Exception ex)
             {

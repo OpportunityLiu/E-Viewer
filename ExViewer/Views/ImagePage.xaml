@@ -301,7 +301,7 @@
                         <FontIcon Glyph="&#xE72D;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarSeparator /> 
+                <AppBarSeparator />
                 <AppBarButton x:Name="abb_Info"
                               x:Uid="Views/ImagePage/ImageInfoAppBarButton"
                               Label="Image infomation">
@@ -338,12 +338,6 @@
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <AppBarSeparator />
-                <AppBarButton x:Name="abb_Help"
-                              x:Uid="Views/ImagePage/HelpAppBarButton"
-                              Click="abb_Help_Click"
-                              Label="Tips for keyboard users" 
-                              Icon="Help"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </RelativePanel>

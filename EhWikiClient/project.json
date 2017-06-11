@@ -4,7 +4,7 @@
     "Microsoft.EntityFrameworkCore.Tools": "1.1.1",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
     "Newtonsoft.Json": "10.0.2",
-    "Opportunity.MvvmUniverse": "0.2.17"
+    "Opportunity.MvvmUniverse": "0.2.18"
   },
   "frameworks": {
     "uap10.0": {}

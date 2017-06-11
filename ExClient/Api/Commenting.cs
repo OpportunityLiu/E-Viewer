@@ -24,10 +24,10 @@ namespace ExClient.Api
 
     internal sealed class CommentVote : CommentRequest
     {
-        public CommentVote(Comment comment, VoteCommand vote)
+        public CommentVote(Comment comment, VoteState vote)
             : base(comment)
         {
-            if (vote != VoteCommand.Down && vote != VoteCommand.Up)
+            if (vote != VoteState.Down && vote != VoteState.Up)
                 throw new ArgumentOutOfRangeException(nameof(vote));
             this.Vote = vote;
         }
@@ -35,7 +35,7 @@ namespace ExClient.Api
         public override string Method => "votecomment";
 
         [JsonProperty("comment_vote")]
-        public VoteCommand Vote { get; }
+        public VoteState Vote { get; }
     }
 
     internal sealed class CommentEdit : CommentRequest
@@ -60,7 +60,7 @@ namespace ExClient.Api
         [JsonProperty("comment_score")]
         public int Score { get; set; }
         [JsonProperty("comment_vote")]
-        public VoteCommand Vote { get; set; }
+        public VoteState Vote { get; set; }
     }
 
     internal class CommentEditResponse : CommentResponse

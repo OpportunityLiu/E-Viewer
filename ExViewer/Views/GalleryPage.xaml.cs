@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using ExViewer.Controls;
 using ExClient.Galleries;
+using Windows.UI.Core;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -145,13 +146,13 @@ namespace ExViewer.Views
         {
             base.OnNavigatedTo(e);
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
-
-            if (e.NavigationMode == NavigationMode.New)
+            var mode = e.NavigationMode;
+            if (mode == NavigationMode.New)
             {
                 resetView();
                 this.needResetView = true;
             }
-            if (e.NavigationMode == NavigationMode.Back)
+            if (mode == NavigationMode.Back)
             {
                 this.entranceElement = (UIElement)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
                 if (this.entranceElement != null)
@@ -159,8 +160,8 @@ namespace ExViewer.Views
                     EntranceNavigationTransitionInfo.SetIsTargetElement(this.entranceElement, true);
                 }
             }
-            await Task.Delay(20);
-            switch (e.NavigationMode)
+            await Dispatcher.YieldIdle();
+            switch (mode)
             {
             case NavigationMode.New:
                 this.pv.Focus(FocusState.Programmatic);

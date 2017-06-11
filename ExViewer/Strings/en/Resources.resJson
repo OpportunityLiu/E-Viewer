@@ -201,12 +201,9 @@
       "CounterSeparatorTextBlock/Text": "/",
       "FullScreen": "Full screen",
       "FullScreenAppBarButton/Label": "Full screen",
-      "HelpAppBarButton/Label": "Tips for keyboard users",
       "ImageFileInfo": "File name: {0}\nSize: {1}\nDimensions: {2} × {3}",
       "ImageFileInfoDefault": "The image hasn't finished loading.",
       "ImageInfoAppBarButton/Label": "Image infomation",
-      "ImageViewTipsContent": "Zoom in/out\t\t\tSPACE\nZoom to maximum\t\t=\nZoom to minimun\t\t\t-\nZoom in\t\t\t\t]\nZoom out\t\t\t[\nPan / Next/Previous Image\t\tARROW KEYS\nFull screen\t\t\tENTER",
-      "ImageViewTipsTitle": "TIPS FOR KEYBOARD USERS",
       "LoadOriginalAppBarButton/Label": "Load original image",
       "ReloadAppBarButton/Label": "Reload",
       "ShareAppBarButton/Label": "Share"
