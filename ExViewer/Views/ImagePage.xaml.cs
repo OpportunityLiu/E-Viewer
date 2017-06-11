@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
 using Windows.System.Display;
+using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -105,10 +107,7 @@ namespace ExViewer.Views
                 this.displayRequest.RequestActive();
                 this.displayActived = true;
             }
-            if (!StatusCollection.Current.ImageViewTipShown)
-                await showTip();
-            else
-                await Task.Delay(50);
+            await Dispatcher.YieldIdle();
             this.fv.Focus(FocusState.Programmatic);
             setScale();
         }
@@ -329,23 +328,6 @@ namespace ExViewer.Views
         }
 
         private bool enterPressed;
-
-        private async void abb_Help_Click(object sender, RoutedEventArgs e)
-        {
-            await showTip();
-        }
-
-        private async Task showTip()
-        {
-            await new ContentDialog
-            {
-                Title = Strings.Resources.Views.ImagePage.ImageViewTipsTitle,
-                Content = Strings.Resources.Views.ImagePage.ImageViewTipsContent,
-                PrimaryButtonText = Strings.Resources.General.OK,
-                RequestedTheme = SettingCollection.Current.Theme.ToElementTheme()
-            }.ShowAsync();
-            StatusCollection.Current.ImageViewTipShown = true;
-        }
 
         public void CloseAll()
         {

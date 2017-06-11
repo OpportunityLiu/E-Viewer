@@ -17,12 +17,6 @@ namespace ExViewer.Settings
         private StatusCollection()
             : base("Status") { }
 
-        public bool ImageViewTipShown
-        {
-            get => GetLocal(false);
-            set => SetLocal(value);
-        }
-
         public bool FullScreenInImagePage
         {
             get => GetLocal(false);

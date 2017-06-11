@@ -11,7 +11,7 @@ namespace ExClient.Api
 {
     internal sealed class TagRequest : GalleryRequest
     {
-        private TagRequest(TagCollection collection, string tags, VoteCommand vote)
+        private TagRequest(TagCollection collection, string tags, VoteState vote)
             : base(collection.Owner)
         {
             this.Vote = vote;
@@ -20,14 +20,14 @@ namespace ExClient.Api
             this.Tags = tags;
         }
 
-        public TagRequest(TagCollection collection, IEnumerable<Tag> tags, VoteCommand vote)
+        public TagRequest(TagCollection collection, IEnumerable<Tag> tags, VoteState vote)
             : this(collection, string.Join(",", tags), vote) { }
 
-        public TagRequest(TagCollection collection, Tag tag, VoteCommand vote)
+        public TagRequest(TagCollection collection, Tag tag, VoteState vote)
             : this(collection, tag.ToString(), vote) { }
 
         [JsonProperty("vote")]
-        public VoteCommand Vote { get; }
+        public VoteState Vote { get; }
 
         [JsonProperty("tags")]
         public string Tags { get; }

@@ -143,9 +143,9 @@ namespace ExClient.Commenting
             || this.status == CommentStatus.VotedUp
             || this.status == CommentStatus.VotedDown;
 
-        public IAsyncAction VoteAsync(Api.VoteCommand command)
+        public IAsyncAction VoteAsync(Api.VoteState command)
         {
-            if (command != VoteCommand.Down && command != VoteCommand.Up)
+            if (command != VoteState.Down && command != VoteState.Up)
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
             if (!this.CanVote)
                 if (this.IsUploaderComment)
@@ -162,13 +162,13 @@ namespace ExClient.Commenting
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
                 switch (r.Vote)
                 {
-                case Api.VoteCommand.Default:
+                case Api.VoteState.Default:
                     this.Status = CommentStatus.Votable;
                     break;
-                case Api.VoteCommand.Up:
+                case Api.VoteState.Up:
                     this.Status = CommentStatus.VotedUp;
                     break;
-                case Api.VoteCommand.Down:
+                case Api.VoteState.Down:
                     this.Status = CommentStatus.VotedDown;
                     break;
                 }

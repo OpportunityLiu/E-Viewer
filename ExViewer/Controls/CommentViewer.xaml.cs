@@ -80,7 +80,7 @@ namespace ExViewer.Controls
         {
             try
             {
-                await this.Comment.VoteAsync(ExClient.Api.VoteCommand.Up);
+                await this.Comment.VoteAsync(ExClient.Api.VoteState.Up);
             }
             catch (Exception ex)
             {
@@ -92,7 +92,7 @@ namespace ExViewer.Controls
         {
             try
             {
-                await this.Comment.VoteAsync(ExClient.Api.VoteCommand.Down);
+                await this.Comment.VoteAsync(ExClient.Api.VoteState.Down);
             }
             catch (Exception ex)
             {

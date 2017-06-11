@@ -8,7 +8,10 @@
                 <ResourceDictionary Source="Themes/GenericOverride.xaml" />
                 <ResourceDictionary Source="Themes/NamedStyles.xaml" />
                 <ResourceDictionary Source="Converters/Converters.xaml" />
+                <!--DO NOT CHANGE THE ORDER OF FOLLOWING TWO DICTIONARY-->
+                <ResourceDictionary Source="Strings/FallbackDictionary.xaml" />
                 <ResourceDictionary Source="Strings/Dictionary.xaml" />
+                <!--DO NOT CHANGE THE ORDER OF PREVIOUS TWO DICTIONARY-->
             </ResourceDictionary.MergedDictionaries>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark"

@@ -67,10 +67,12 @@ namespace ExClient.Tagging
             {
                 (data[i], state[i]) = rawData[i];
             }
-            if (this.data != null && this.state != null && this.data.SequenceEqual(data))
+            if (this.data != null && this.state != null && this.data.SequenceEqual(data)) 
             {
+                if (this.state.SequenceEqual(state))
+                    return false;
                 this.state = state;
-                return false;
+                return true;
             }
             var keys = new Namespace[staticKeys.Length];
             var offset = new int[staticKeys.Length + 1];
@@ -163,18 +165,18 @@ namespace ExClient.Tagging
             return new RangedCollectionView<Tag>(this.data, this.offset[index], this.offset[index + 1] - this.offset[index]);
         }
 
-        public IAsyncAction VoteAsync(Tag tag, VoteCommand command)
+        public IAsyncAction VoteAsync(Tag tag, VoteState command)
         {
-            if (command != VoteCommand.Down && command != VoteCommand.Up)
+            if (command != VoteState.Down && command != VoteState.Up)
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
             return voteAsync(new TagRequest(this, tag, command));
         }
 
-        public IAsyncAction VoteAsync(IEnumerable<Tag> tags, VoteCommand command)
+        public IAsyncAction VoteAsync(IEnumerable<Tag> tags, VoteState command)
         {
             if (tags == null)
                 throw new ArgumentNullException(nameof(tags));
-            if (command != VoteCommand.Down && command != VoteCommand.Up)
+            if (command != VoteState.Down && command != VoteState.Up)
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
             var req = new TagRequest(this, tags, command);
             if (string.IsNullOrWhiteSpace(req.Tags))
