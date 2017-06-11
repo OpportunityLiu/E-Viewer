@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Windows.Foundation;
 using System.Runtime.InteropServices.WindowsRuntime;
+using ExClient.Internal;
 
 namespace ExClient
 {
@@ -59,57 +60,59 @@ namespace ExClient
             return new SHA1Value(CryptographicBuffer.DecodeFromHexString(imageHash));
         }
 
-        private readonly ulong dataLow, dataHigh;
-        private readonly uint dataMiddle;
+        private unsafe struct DataPack
+        {
+            public fixed byte Data[HASH_SIZE];
+        }
 
-        public byte[] Data
+        private readonly DataPack data;
+
+        public unsafe byte[] Data
         {
             get
             {
-                var r = new byte[HASH_SIZE];
-                var dl = BitConverter.GetBytes(this.dataLow);
-                var dm = BitConverter.GetBytes(this.dataMiddle);
-                var dh = BitConverter.GetBytes(this.dataHigh);
-                if (BitConverter.IsLittleEndian)
-                {
-                    System.Buffer.BlockCopy(dl, 0, r, 0, 8);
-                    System.Buffer.BlockCopy(dm, 0, r, 8, 4);
-                    System.Buffer.BlockCopy(dh, 0, r, 12, 8);
-                }
-                else
-                {
-                    System.Buffer.BlockCopy(dh, 0, r, 0, 8);
-                    System.Buffer.BlockCopy(dm, 0, r, 8, 4);
-                    System.Buffer.BlockCopy(dl, 0, r, 12, 8);
-                }
-                return r;
+                var values = new byte[HASH_SIZE];
+                fixed (void* pThis = &this, pValue = &values[0])
+                    System.Buffer.MemoryCopy(pThis, pValue, HASH_SIZE, HASH_SIZE);
+                return values;
             }
+        }
+
+        public ulong ToToken()
+        {
+            var data = this.Data;
+            return
+                (ulong)data[0] << 32 |
+                (ulong)data[1] << 24 |
+                (ulong)data[2] << 16 |
+                (ulong)data[3] << 8 |
+                (ulong)data[4] << 0;
         }
 
         public SHA1Value(IBuffer values)
             : this(values.ToArray()) { }
 
-        public SHA1Value(byte[] values)
+        public unsafe SHA1Value(byte[] values)
         {
-            if (BitConverter.IsLittleEndian)
-            {
-                this.dataLow = BitConverter.ToUInt64(values, 0);
-                this.dataMiddle = BitConverter.ToUInt32(values, 8);
-                this.dataHigh = BitConverter.ToUInt64(values, 12);
-            }
-            else
-            {
-                this.dataHigh = BitConverter.ToUInt64(values, 0);
-                this.dataMiddle = BitConverter.ToUInt32(values, 8);
-                this.dataLow = BitConverter.ToUInt64(values, 12);
-            }
+            if ((values ?? throw new ArgumentNullException(nameof(values))).Length != HASH_SIZE)
+                throw new ArgumentException($"Length must be {HASH_SIZE}.", nameof(values));
+            fixed (void* pThis = &this, pValue = &values[0])
+                System.Buffer.MemoryCopy(pValue, pThis, HASH_SIZE, HASH_SIZE);
         }
 
-        public bool Equals(SHA1Value other)
+        public unsafe bool Equals(SHA1Value other)
         {
-            return this.dataHigh == other.dataHigh
-                && this.dataLow == other.dataLow
-                && this.dataMiddle == other.dataMiddle;
+            fixed (void* pThis = &this)
+            {
+                var pCurrent = (byte*)pThis;
+                var pOther = (byte*)&other;
+                for (var i = 0; i < HASH_SIZE; i++)
+                {
+                    if (pCurrent[i] != pOther[i])
+                        return false;
+                }
+            }
+            return true;
         }
 
         public override bool Equals(object obj)
@@ -119,19 +122,91 @@ namespace ExClient
             return false;
         }
 
-        public override int GetHashCode() => this.dataHigh.GetHashCode();
-
-        public string ToString(string format, IFormatProvider formatProvider)
+        public unsafe override int GetHashCode()
         {
-            var r = CryptographicBuffer.EncodeToHexString(this.Data.AsBuffer());
-            if (format != null && format.StartsWith("X"))
-                return r.ToUpperInvariant();
+            var r = 0;
+            fixed (void* p = &this)
+            {
+                var bytes = (byte*)p;
+                for (var i = 0; i < sizeof(int); i++)
+                {
+                    r |= bytes[i];
+                    r <<= 8;
+                }
+            }
             return r;
         }
 
-        public override string ToString()
+        public unsafe string ToString(string format, IFormatProvider formatProvider)
         {
-            return this.ToString(null, null);
+            var fmt = string.IsNullOrEmpty(format) ? 'x' : format[0];
+            switch (fmt)
+            {
+            case 'x':
+                return toStringL(HASH_SIZE);
+            case 'X':
+                return toStringU(HASH_SIZE);
+            case 't':
+                return toStringL(TokenExtension.TOKEN_LENGTH);
+            case 'T':
+                return toStringU(TokenExtension.TOKEN_LENGTH);
+            default:
+                throw new FormatException("Unknown format specifier.");
+            }
         }
+
+        private unsafe string toStringL(int length)
+        {
+            var str = stackalloc char[length * 2];
+            fixed (void* p = &this)
+            {
+                var data = (byte*)p;
+                var pStr = str;
+                for (var i = 0; i < length; i++)
+                {
+                    var b = data[i];
+                    getHexValueL(pStr++, b >> 4);
+                    getHexValueL(pStr++, b & 0xF);
+                }
+            }
+            return new string(str, 0, length * 2);
+        }
+
+        private unsafe string toStringU(int length)
+        {
+            var str = stackalloc char[length * 2];
+            fixed (void* p = &this)
+            {
+                var data = (byte*)p;
+                var pStr = str;
+                for (var i = 0; i < length; i++)
+                {
+                    var b = data[i];
+                    getHexValueU(pStr++, b >> 4);
+                    getHexValueU(pStr++, b & 0xF);
+                }
+            }
+            return new string(str, 0, length * 2);
+        }
+
+        private unsafe static void getHexValueL(char* p, int i)
+        {
+            if (i < 10)
+                *p = (char)(i + '0');
+            else
+                *p = (char)(i - 10 + 'a');
+        }
+
+        private unsafe static void getHexValueU(char* p, int i)
+        {
+            if (i < 10)
+                *p = (char)(i + '0');
+            else
+                *p = (char)(i - 10 + 'A');
+        }
+
+        public override string ToString() => toStringL(HASH_SIZE);
+
+        public string ToTokenString() => toStringL(TokenExtension.TOKEN_LENGTH);
     }
 }
