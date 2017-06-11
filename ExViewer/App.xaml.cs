@@ -1,14 +1,11 @@
-﻿using Windows.ApplicationModel;
+﻿using ExViewer.Views;
+using System;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using ExViewer.Views;
-using Windows.ApplicationModel.Core;
-using Windows.System.RemoteSystems;
-using System;
-using Windows.System;
-using ExClient;
 #if !DEBUG
 using Microsoft.HockeyApp;
 #endif
@@ -68,8 +65,11 @@ namespace ExViewer
 
         private async void lanunchCore(IActivatedEventArgs e, bool prelaunchActivated)
         {
-            Opportunity.MvvmUniverse.DispatcherHelper.Init();
-            Opportunity.MvvmUniverse.DispatcherHelper.UseForNotification = true;
+            if (!Opportunity.MvvmUniverse.DispatcherHelper.Initialized)
+            {
+                Opportunity.MvvmUniverse.DispatcherHelper.Initialize();
+                Opportunity.MvvmUniverse.DispatcherHelper.UseForNotification = true;
+            }
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
             if (currentContent == null)

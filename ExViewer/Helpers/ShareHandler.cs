@@ -85,7 +85,7 @@ namespace ExViewer.Helpers
                     , async operation =>
                     {
                         var uri = await operation.Data.GetWebLinkAsync();
-                        await Task.Delay(100);
+                        await Task.Delay(250);
                         DispatcherHelper.BeginInvokeOnUIThread(async () =>
                         {
                             await Launcher.LaunchUriAsync(uri, new LauncherOptions { IgnoreAppUriHandlers = true });
@@ -100,7 +100,7 @@ namespace ExViewer.Helpers
                     {
                         var data = operation.Data;
                         var pac = await DataProviderProxy.CreateAsync(data);
-                        await Task.Delay(500);
+                        await Task.Delay(1000);
                         DispatcherHelper.BeginInvokeOnUIThread(() =>
                         {
                             Clipboard.SetContent(pac.View);
@@ -128,7 +128,7 @@ namespace ExViewer.Helpers
                         if (file == null)
                             return;
                         // Only files in localfolder can be set as background.
-                        file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"Img_{file.Path.GetHashCode():X}{file.FileType}", NameCollisionOption.ReplaceExisting);
+                        file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"Img_{file.Name}", NameCollisionOption.ReplaceExisting);
                         DispatcherHelper.BeginInvokeOnUIThread(async () =>
                         {
                             var succeeded = await User​Profile​Personalization​Settings.Current.TrySetWallpaperImageAsync(file);
@@ -144,41 +144,42 @@ namespace ExViewer.Helpers
 
             private class DataProviderProxy
             {
-                private DataPackageView viewToProxy;
-
                 public static IAsyncOperation<DataProviderProxy> CreateAsync(DataPackageView viewToProxy)
                 {
                     if (viewToProxy == null)
                         throw new ArgumentNullException(nameof(viewToProxy));
-                    return AsyncInfo.Run(async token =>
-                    {
-                        var proxy = new DataProviderProxy(viewToProxy);
-                        var view = proxy.View;
-                        foreach (var item in await viewToProxy.GetResourceMapAsync())
-                        {
-                            view.ResourceMap.Add(item.Key, item.Value);
-                        }
-                        foreach (var item in viewToProxy.Properties)
-                        {
-                            view.Properties.Add(item.Key, item.Value);
-                        }
-                        foreach (var formatId in viewToProxy.AvailableFormats)
-                        {
-                            if (!view.Properties.FileTypes.Contains(formatId))
-                                view.Properties.FileTypes.Add(formatId);
-                            view.SetDataProvider(formatId, proxy.dataProvider);
-                        }
-                        return proxy;
-                    });
+                    var proxy = new DataProviderProxy(viewToProxy);
+                    return proxy.initAsync();
                 }
 
                 private DataProviderProxy(DataPackageView viewToProxy)
                 {
                     this.viewToProxy = viewToProxy;
-                    this.View = new DataPackage
+                    this.View = new DataPackage();
+                }
+
+                private IAsyncOperation<DataProviderProxy> initAsync()
+                {
+                    return AsyncInfo.Run(async token =>
                     {
-                        RequestedOperation = viewToProxy.RequestedOperation
-                    };
+                        var view = this.View;
+                        view.RequestedOperation = this.viewToProxy.RequestedOperation;
+                        foreach (var item in await this.viewToProxy.GetResourceMapAsync())
+                        {
+                            view.ResourceMap.Add(item.Key, item.Value);
+                        }
+                        foreach (var item in this.viewToProxy.Properties)
+                        {
+                            view.Properties.Add(item.Key, item.Value);
+                        }
+                        foreach (var formatId in this.viewToProxy.AvailableFormats)
+                        {
+                            if (!view.Properties.FileTypes.Contains(formatId))
+                                view.Properties.FileTypes.Add(formatId);
+                            view.SetDataProvider(formatId, this.dataProvider);
+                        }
+                        return this;
+                    });
                 }
 
                 private async void dataProvider(DataProviderRequest request)
@@ -195,10 +196,9 @@ namespace ExViewer.Helpers
                     }
                 }
 
-                public DataPackage View
-                {
-                    get;
-                }
+                private DataPackageView viewToProxy;
+
+                public DataPackage View { get; }
             }
         }
     }
