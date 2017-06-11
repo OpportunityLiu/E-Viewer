@@ -4,7 +4,7 @@ using System.Text;
 namespace ExClient
 {
     [Flags]
-    public enum Category : ushort
+    public enum Category
     {
         Unspecified = 0,
         Doujinshi = 0x01,

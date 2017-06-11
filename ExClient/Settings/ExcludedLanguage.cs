@@ -2,7 +2,7 @@
 
 namespace ExClient.Settings
 {
-    public enum ExcludedLanguage : ushort
+    public enum ExcludedLanguage
     {
         JapaneseOriginal = 0, JapaneseTranslated = 0 + 1024, JapaneseRewrite = 0 + 2048,
         EnglishOriginal = 1, EnglishTranslated = EnglishOriginal + 1024, EnglishRewrite = EnglishOriginal + 2048,
