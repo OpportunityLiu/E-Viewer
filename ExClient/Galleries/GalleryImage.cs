@@ -61,11 +61,12 @@ namespace ExClient.Galleries
             {
                 var folder = ImageFolder ?? await GetImageFolderAsync();
                 var imageFile = await folder.TryGetFileAsync(imageModel.FileName);
+                var hash = SHA1Value.Parse(galleryImageModel.ImageId);
                 if (imageFile == null)
-                    return new GalleryImage(owner, galleryImageModel.PageId, galleryImageModel.ImageId.Substring(0, 10).StringToToken(), null);
-                var img = new GalleryImage(owner, galleryImageModel.PageId, galleryImageModel.ImageId.Substring(0, 10).StringToToken(), null)
+                    return new GalleryImage(owner, galleryImageModel.PageId, hash.ToToken(), null);
+                var img = new GalleryImage(owner, galleryImageModel.PageId, hash.ToToken(), null)
                 {
-                    imageHash = SHA1Value.Parse(galleryImageModel.ImageId),
+                    imageHash = hash
                 };
                 if (imageFile == null)
                 {
@@ -88,7 +89,6 @@ namespace ExClient.Galleries
             this.Owner = owner;
             this.PageId = pageId;
             this.ImageKey = imageKey;
-            this.PageUri = new Uri(Client.Current.Uris.RootUri, $"s/{imageKey.TokenToString()}/{Owner.Id}-{PageId}");
             this.thumbUri = thumb;
         }
 
@@ -141,7 +141,7 @@ namespace ExClient.Galleries
 
         private readonly WeakReference<ImageSource> thumb = new WeakReference<ImageSource>(null);
 
-        private static HttpClient thumbClient { get; } = new HttpClient();
+        protected static HttpClient ThumbClient { get; } = new HttpClient();
 
         private void loadThumb()
         {
@@ -159,7 +159,7 @@ namespace ExClient.Galleries
                     }
                     else if (this.thumbUri != null)
                     {
-                        var buffer = await thumbClient.GetBufferAsync(this.thumbUri);
+                        var buffer = await ThumbClient.GetBufferAsync(this.thumbUri);
                         using (var stream = buffer.AsRandomAccessStream())
                         {
                             await img.SetSourceAsync(stream);
@@ -198,7 +198,7 @@ namespace ExClient.Galleries
         /// </summary>
         public int PageId { get; }
 
-        public Uri PageUri { get; }
+        public Uri PageUri => new Uri(Client.Current.Uris.RootUri, $"s/{ImageKey.ToTokenString()}/{Owner.Id}-{PageId}");
 
         public ulong ImageKey { get; }
 

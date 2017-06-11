@@ -66,7 +66,7 @@ namespace ExClient
                 yield return new KeyValuePair<string, string>("favnote", note);
                 yield return new KeyValuePair<string, string>("update", "1");
             }
-            var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken.TokenToString()}&act=addfav", UriKind.Relative);
+            var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken.ToTokenString()}&act=addfav", UriKind.Relative);
             var requestContent = new HttpFormUrlEncodedContent(getInfo());
             return Client.Current.HttpClient.PostAsync(requestUri, requestContent);
         }

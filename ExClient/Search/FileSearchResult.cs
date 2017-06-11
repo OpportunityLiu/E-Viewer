@@ -30,11 +30,11 @@ namespace ExClient.Search
             }
         }
 
-        internal static FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName, bool onlyCovers, bool searchExpunged)
+        internal static FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName, bool searchSimilarUriFlag, bool onlyCovers, bool searchExpunged)
         {
             if (fileHashes == null)
                 throw new ArgumentNullException(nameof(fileHashes));
-            return new FileSearchResult(keyword, category, fileHashes, fileName, false, onlyCovers, searchExpunged);
+            return new FileSearchResult(keyword, category, fileHashes, fileName, searchSimilarUriFlag, onlyCovers, searchExpunged);
         }
 
         private FileSearchResult(string keyword, Category category, IEnumerable<SHA1Value> hashes, string fileName, bool searchSimilar, bool onlyCovers, bool searchExpunged) : base(keyword, category)
@@ -56,7 +56,7 @@ namespace ExClient.Search
                 $"&fs_exp={(SearchExpunged ? 1 : 0)}";
         }
 
-        public override Uri SearchUri => new Uri($"{base.SearchUri}{createSearchUriQuery()}");
+        public override Uri SearchUri => new Uri(base.SearchUri + createSearchUriQuery());
 
         public bool SearchSimilar { get; }
 

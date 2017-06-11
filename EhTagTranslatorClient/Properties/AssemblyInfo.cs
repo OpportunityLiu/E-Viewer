@@ -6,7 +6,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("EhTagTranslatorClient")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("DEBUG")]
+#else
+[assembly: AssemblyConfiguration("RELEASE")]
+#endif
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EhTagTranslatorClient")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]

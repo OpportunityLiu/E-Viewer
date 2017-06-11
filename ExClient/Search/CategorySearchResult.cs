@@ -9,8 +9,6 @@ namespace ExClient.Search
     {
         public static Uri SearchBaseUri => Client.Current.Uris.RootUri;
 
-        public override Uri SearchUri { get; }
-
         public static readonly Category DefaultFliter = Category.All;
         private static readonly IReadOnlyDictionary<Category, string> searchFliterNames = new Dictionary<Category, string>()
         {
@@ -32,8 +30,11 @@ namespace ExClient.Search
             if (category == Category.Unspecified)
                 category = DefaultFliter;
             this.Category = category;
-            this.SearchUri = new Uri(SearchBaseUri, $"?{new HttpFormUrlEncodedContent(getUriQuery())}");
         }
+
+        public Category Category { get; }
+
+        public override Uri SearchUri => new Uri(SearchBaseUri, $"?{new HttpFormUrlEncodedContent(getUriQuery())}");
 
         private IEnumerable<KeyValuePair<string, string>> getUriQuery()
         {
@@ -43,11 +44,6 @@ namespace ExClient.Search
                 yield return new KeyValuePair<string, string>(item.Value, this.Category.HasFlag(item.Key) ? "1" : "0");
             }
             yield return new KeyValuePair<string, string>("f_apply", "Apply Filter");
-        }
-
-        public Category Category
-        {
-            get;
         }
     }
 }

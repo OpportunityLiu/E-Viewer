@@ -6,7 +6,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("EhWikiClient")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("DEBUG")]
+#else
+[assembly: AssemblyConfiguration("RELEASE")]
+#endif
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EhWikiClient")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]

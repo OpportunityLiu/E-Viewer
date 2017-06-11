@@ -7,7 +7,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("EhTagClient")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("DEBUG")]
+#else
+[assembly: AssemblyConfiguration("RELEASE")]
+#endif
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EhTagClient")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]

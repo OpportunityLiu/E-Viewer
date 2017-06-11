@@ -7,7 +7,13 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("ExViewer")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#elif PRERELEASE
+[assembly: AssemblyConfiguration("Pre-Release")]
+#else
+[assembly: AssemblyConfiguration("RELEASE")]
+#endif
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ExViewer")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]

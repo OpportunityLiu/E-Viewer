@@ -25,7 +25,7 @@ namespace ExClient.Galleries
                 {
                     using (var db = new GalleryDb())
                     {
-                        db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
+                        db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                         var query = from gm in db.GallerySet
                                     where gm.Images.Count != 0
                                     where !db.SavedSet.Any(sm => sm.GalleryId == gm.GalleryModelId)
@@ -37,9 +37,7 @@ namespace ExClient.Galleries
             }
 
             private CachedGalleryList(List<GalleryModel> galleries)
-                : base(galleries)
-            {
-            }
+                : base(galleries) { }
 
             protected override CachedGallery Load(GalleryModel model)
             {

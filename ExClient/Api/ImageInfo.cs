@@ -28,7 +28,7 @@ namespace ExClient.Api
                 var v = (ImageInfo)value;
                 writer.WriteStartArray();
                 writer.WriteValue(v.GalleryId);
-                writer.WriteValue(v.ImageToken.TokenToString());
+                writer.WriteValue(v.ImageToken.ToTokenString());
                 writer.WriteValue(v.PageId);
                 writer.WriteEndArray();
             }
@@ -43,7 +43,7 @@ namespace ExClient.Api
                     && long.TryParse(sp[0], out var gId)
                     && int.TryParse(sp[1], out var pId))
                 {
-                    info = new ImageInfo(gId, data.Paths[1].StringToToken(), pId);
+                    info = new ImageInfo(gId, data.Paths[1].ToToken(), pId);
                     return true;
                 }
             }

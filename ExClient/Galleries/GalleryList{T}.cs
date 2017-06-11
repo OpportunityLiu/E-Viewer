@@ -13,7 +13,7 @@ namespace ExClient.Galleries
         protected static Gallery DefaultGallery
         {
             get;
-        } = new Gallery(-1, null, "", LocalizedStrings.Resources.DefaultTitle, "", "", "ms-appx:///", LocalizedStrings.Resources.DefaultUploader, "0", "0", 0, false, "2.5", "0", new string[0]);
+        } = new Gallery(-1, null, "0", LocalizedStrings.Resources.DefaultTitle, "", "", "ms-appx:///", LocalizedStrings.Resources.DefaultUploader, "0", "0", 0, false, "2.5", "0", new string[0]);
 
         public bool IsEmpty => this.Count == 0;
 

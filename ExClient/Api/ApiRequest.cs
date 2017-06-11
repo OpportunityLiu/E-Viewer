@@ -44,7 +44,7 @@ namespace ExClient.Api
         public GalleryRequest(Gallery gallery)
         {
             this.GalleryId = gallery.Id;
-            this.GalleryToken = gallery.Token.TokenToString();
+            this.GalleryToken = gallery.Token.ToTokenString();
         }
 
         [JsonProperty("gid")]

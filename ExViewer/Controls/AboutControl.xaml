@@ -53,11 +53,11 @@
                    Margin="4"
                    Style="{StaticResource TitleTextBlockStyle}"
                    Text="AppName" />
-        <TextBlock x:Name="tb_DebugTag"
+        <TextBlock x:Name="tb_VersionInfoTag"
                    x:DeferLoadStrategy="Lazy"
                    Visibility="Collapsed"
                    Style="{StaticResource AboutControlBaseTextBlockStyle}"
-                   Text="DEBUG" />
+                   Text="Debug" />
         <TextBlock x:Name="tb_AppAuthor"
                    Text="AppAuthor"
                    Style="{StaticResource AboutControlBaseTextBlockStyle}" />

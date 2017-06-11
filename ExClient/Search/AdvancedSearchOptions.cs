@@ -7,38 +7,6 @@ namespace ExClient.Search
     //advsearch=1
     public sealed class AdvancedSearchOptions : IEquatable<AdvancedSearchOptions>
     {
-        internal IEnumerable<KeyValuePair<string, string>> AsEnumerable()
-        {
-            yield return new KeyValuePair<string, string>("advsearch", "1");
-            if (this.SearchName)
-                yield return new KeyValuePair<string, string>("f_sname", "1");
-            if (this.SearchTags)
-                yield return new KeyValuePair<string, string>("f_stags", "1");
-            if (this.SearchDescription)
-                yield return new KeyValuePair<string, string>("f_sdesc", "1");
-            if (this.SearchTorrentFilenames)
-                yield return new KeyValuePair<string, string>("f_storr", "1");
-            if (this.GalleriesWithTorrentsOnly)
-                yield return new KeyValuePair<string, string>("f_sto", "1");
-            if (this.SearchLowPowerTags)
-                yield return new KeyValuePair<string, string>("f_sdt1", "1");
-            if (this.SearchDownvotedTags)
-                yield return new KeyValuePair<string, string>("f_sdt2", "1");
-            if (this.ShowExpungedGalleries)
-                yield return new KeyValuePair<string, string>("f_sh", "1");
-
-            if (this.SearchMinimumRating)
-            {
-                yield return new KeyValuePair<string, string>("f_sr", "1");
-                yield return new KeyValuePair<string, string>("f_srdd", this.MinimumRating.ToString());
-            }
-        }
-
-        private static string toString(bool value)
-        {
-            return value ? "1" : "0";
-        }
-
         public AdvancedSearchOptions() { }
 
         public AdvancedSearchOptions(
@@ -197,12 +165,9 @@ namespace ExClient.Search
 
         public bool Equals(AdvancedSearchOptions other)
         {
+            if (other == null)
+                return false;
             return this.data == other.data;
         }
-
-        public static bool operator ==(AdvancedSearchOptions left, AdvancedSearchOptions right)
-            => left.data == right.data;
-        public static bool operator !=(AdvancedSearchOptions left, AdvancedSearchOptions right)
-            => left.data != right.data;
     }
 }

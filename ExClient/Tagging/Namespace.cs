@@ -5,7 +5,7 @@ using System.Linq;
 namespace ExClient.Tagging
 {
     [Flags]
-    public enum Namespace
+    public enum Namespace : ushort
     {
         Unknown = 0,
 
