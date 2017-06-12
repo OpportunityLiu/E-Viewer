@@ -78,7 +78,11 @@ namespace ExViewer.Controls
             }
 
             var dc = value.GetDisplayContentAsync();
-            if (dc.Status != AsyncStatus.Completed)
+            if (dc.Status == AsyncStatus.Completed)
+            {
+                s.Text = dc.GetResults();
+            }
+            else
             {
                 s.Text = value.Content;
                 dc.Completed = (IAsyncOperation<string> op, AsyncStatus e) =>
@@ -91,10 +95,6 @@ namespace ExViewer.Controls
                         s.Text = dispValue;
                     });
                 };
-            }
-            else
-            {
-                s.Text = dc.GetResults();
             }
         }
 

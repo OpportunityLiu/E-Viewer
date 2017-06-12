@@ -20,8 +20,8 @@ using static ExClient.Tagging.Namespace;
 namespace ExClient.Tagging
 {
     [DebuggerDisplay(@"\{{data.Length} tags in {keys.Length} namespaces\}")]
-    public sealed partial class TagCollection 
-        : ObservableCollectionBase, IReadOnlyList<TagCollection.NamespaceTagCollection>, IList
+    public sealed class TagCollection
+        : ObservableCollectionBase, IReadOnlyList<NamespaceTagCollection>, IList
     {
         private static readonly Namespace[] staticKeys = new[]
         {
@@ -52,10 +52,11 @@ namespace ExClient.Tagging
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
             initOrReset(items.Select(t => (t, TagState.NormalPower)));
-            this.state = null;
         }
 
-        private bool initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
+        internal event Action<int> itemStateChanged;
+
+        private void initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
         {
             var rawData = items.OrderBy(t => t.tag.Namespace)
                 // put low-power tags to the end
@@ -70,10 +71,22 @@ namespace ExClient.Tagging
             }
             if (this.data != null && this.state != null && this.data.SequenceEqual(data))
             {
-                if (this.state.SequenceEqual(state))
-                    return false;
-                this.state = state;
-                return true;
+                var notify = this.itemStateChanged;
+                if (notify == null)
+                {
+                    this.state = state;
+                    return;
+                }
+                for (var i = 0; i < this.state.Length; i++)
+                {
+                    var oldState = this.state[i];
+                    var newState = state[i];
+                    if (oldState == newState)
+                        continue;
+                    this.state[i] = newState;
+                    notify(i);
+                }
+                return;
             }
             var keys = new Namespace[staticKeys.Length];
             var offset = new int[staticKeys.Length + 1];
@@ -96,14 +109,17 @@ namespace ExClient.Tagging
             this.state = state;
             this.keys = keys;
             this.offset = offset;
-            return true;
+            RaiseCollectionReset();
+            RaisePropertyChanged(nameof(Count), nameof(Items), "Groups");
         }
 
-        private Tag[] data;
-        private TagState[] state;
+        internal Tag[] data;
+        internal TagState[] state;
 
-        private Namespace[] keys;
-        private int[] offset;
+        internal Namespace[] keys;
+        internal int[] offset;
+
+        internal int version;
 
         public Gallery Owner { get; }
 
@@ -263,22 +279,20 @@ namespace ExClient.Tagging
                     var tag = divid.Substring(3).Replace('_', ' ');
                     return (Tag.Parse(tag), state);
                 });
-            if (initOrReset(query))
-            {
-                RaiseCollectionReset();
-                RaisePropertyChanged(nameof(Count), nameof(Items), "Groups");
-            }
+            initOrReset(query);
         }
 
         public struct Enumerator : IEnumerator<NamespaceTagCollection>
         {
             private TagCollection parent;
             private int i;
+            private int version;
 
             internal Enumerator(TagCollection parent)
             {
                 this.parent = parent;
-                this.i = -1;
+                this.version = parent.version;
+                this.i = 0;
                 this.Current = default(NamespaceTagCollection);
             }
 
@@ -288,14 +302,15 @@ namespace ExClient.Tagging
 
             public bool MoveNext()
             {
-                this.i++;
-                var ii = this.i;
+                if (this.version != this.parent.version)
+                    throw new InvalidOperationException("Collection changed");
                 var offset = this.parent.offset;
-                var success = ii < this.parent.keys.Length;
+                var success = this.i < this.parent.keys.Length;
                 if (success)
-                    this.Current = new NamespaceTagCollection(this.parent.keys[ii], new RangedCollectionView<Tag>(this.parent.data, offset[ii], offset[ii + 1] - offset[ii]));
+                    this.Current = new NamespaceTagCollection(this.parent, this.i);
                 else
                     this.Current = default(NamespaceTagCollection);
+                this.i++;
                 return success;
             }
 
@@ -308,7 +323,7 @@ namespace ExClient.Tagging
 
             public void Reset()
             {
-                this.i = -1;
+                this.i = 0;
                 this.Current = default(NamespaceTagCollection);
             }
         }
@@ -354,15 +369,9 @@ namespace ExClient.Tagging
 
         void IList.Clear() => throw new NotImplementedException();
 
-        bool IList.Contains(object value)
-        {
-            return false;
-        }
+        bool IList.Contains(object value) => false;
 
-        int IList.IndexOf(object value)
-        {
-            return -1;
-        }
+        int IList.IndexOf(object value) => -1;
 
         void IList.Insert(int index, object value) => throw new NotImplementedException();
 
