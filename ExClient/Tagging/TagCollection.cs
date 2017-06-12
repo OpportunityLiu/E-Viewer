@@ -109,6 +109,8 @@ namespace ExClient.Tagging
             this.state = state;
             this.keys = keys;
             this.offset = offset;
+            this.version++;
+            this.itemStateChanged?.Invoke(-1);
             RaiseCollectionReset();
             RaisePropertyChanged(nameof(Count), nameof(Items), "Groups");
         }
