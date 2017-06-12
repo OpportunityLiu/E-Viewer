@@ -47,13 +47,12 @@ namespace ExViewer.Controls
         private static readonly Brush downSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteDownCommentBrush"];
         private static readonly Brush slaveBrush = (Brush)Application.Current.Resources["SlaveCommentBrush"];
 
-        private async void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        private void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var s = (TextBlock)sender;
             var value = (Tag)args.NewValue;
             args.Handled = true;
             var state = this.Tags.StateOf(value);
-            await s.Dispatcher.Yield();
 
             switch (state.GetVoteState())
             {
