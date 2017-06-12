@@ -29,7 +29,7 @@ namespace ExClient.Galleries
                         var query = from gm in db.GallerySet
                                     where gm.Images.Count != 0
                                     where !db.SavedSet.Any(sm => sm.GalleryId == gm.GalleryModelId)
-                                    orderby gm.GalleryModelId descending
+                                    orderby gm.posted descending
                                     select gm;
                         return new CachedGalleryList(query.ToList());
                     }

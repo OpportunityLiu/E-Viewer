@@ -87,34 +87,6 @@ namespace ExClient.Galleries
             return AsyncWrapper.CreateCompleted();
         }
 
-        protected override IAsyncOperation<SoftwareBitmap> GetThumbAsync()
-        {
-            return Run(async token =>
-            {
-                byte[] thumbData;
-                using (var db = new GalleryDb())
-                {
-                    db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                    var model = db.SavedSet.SingleOrDefault(s => s.GalleryId == this.Id);
-                    thumbData = model?.ThumbData;
-                }
-                if (thumbData == null)
-                    return null;
-                try
-                {
-                    using (var stream = thumbData.AsRandomAccessStream())
-                    {
-                        var decoder = await BitmapDecoder.CreateAsync(stream);
-                        return await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-                    }
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            });
-        }
-
         public override IAsyncAction DeleteAsync()
         {
             return Task.Run(async () =>

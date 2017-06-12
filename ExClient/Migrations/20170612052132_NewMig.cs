@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ExClient.Migrations
 {
-    public partial class ResetMigration : Migration
+    public partial class NewMig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,7 @@ namespace ExClient.Migrations
                 {
                     GalleryModelId = table.Column<long>(nullable: false),
                     Available = table.Column<bool>(nullable: false),
-                    Category = table.Column<uint>(nullable: false),
+                    Category = table.Column<int>(nullable: false),
                     Expunged = table.Column<bool>(nullable: false),
                     FileSize = table.Column<long>(nullable: false),
                     Rating = table.Column<double>(nullable: false),
@@ -36,13 +36,15 @@ namespace ExClient.Migrations
                 name: "ImageSet",
                 columns: table => new
                 {
-                    ImageId = table.Column<string>(nullable: false),
+                    Data0 = table.Column<ulong>(nullable: false),
+                    Data1 = table.Column<ulong>(nullable: false),
+                    Data2 = table.Column<uint>(nullable: false),
                     FileName = table.Column<string>(nullable: true),
                     OriginalLoaded = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImageSet", x => x.ImageId);
+                    table.PrimaryKey("PK_ImageSet", x => new { x.Data0, x.Data1, x.Data2 });
                 });
 
             migrationBuilder.CreateTable(
@@ -50,7 +52,6 @@ namespace ExClient.Migrations
                 columns: table => new
                 {
                     GalleryId = table.Column<long>(nullable: false),
-                    ThumbData = table.Column<byte[]>(nullable: true),
                     saved = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
@@ -70,7 +71,9 @@ namespace ExClient.Migrations
                 {
                     GalleryId = table.Column<long>(nullable: false),
                     PageId = table.Column<int>(nullable: false),
-                    ImageId = table.Column<string>(nullable: false)
+                    Data0 = table.Column<ulong>(nullable: false),
+                    Data1 = table.Column<ulong>(nullable: false),
+                    Data2 = table.Column<uint>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,17 +85,17 @@ namespace ExClient.Migrations
                         principalColumn: "GalleryModelId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GalleryImageSet_ImageSet_ImageId",
-                        column: x => x.ImageId,
+                        name: "FK_GalleryImageSet_ImageSet_Data0_Data1_Data2",
+                        columns: x => new { x.Data0, x.Data1, x.Data2 },
                         principalTable: "ImageSet",
-                        principalColumn: "ImageId",
+                        principalColumns: new[] { "Data0", "Data1", "Data2" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_GalleryImageSet_ImageId",
+                name: "IX_GalleryImageSet_Data0_Data1_Data2",
                 table: "GalleryImageSet",
-                column: "ImageId");
+                columns: new[] { "Data0", "Data1", "Data2" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

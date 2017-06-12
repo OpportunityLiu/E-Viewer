@@ -22,12 +22,15 @@ namespace ExClient.Migrations
 
                     b.Property<int>("PageId");
 
-                    b.Property<string>("ImageId")
-                        .IsRequired();
+                    b.Property<ulong>("Data0");
+
+                    b.Property<ulong>("Data1");
+
+                    b.Property<uint>("Data2");
 
                     b.HasKey("GalleryId", "PageId");
 
-                    b.HasIndex("ImageId");
+                    b.HasIndex("Data0", "Data1", "Data2");
 
                     b.ToTable("GalleryImageSet");
                 });
@@ -38,7 +41,7 @@ namespace ExClient.Migrations
 
                     b.Property<bool>("Available");
 
-                    b.Property<uint>("Category");
+                    b.Property<int>("Category");
 
                     b.Property<bool>("Expunged");
 
@@ -69,14 +72,17 @@ namespace ExClient.Migrations
 
             modelBuilder.Entity("ExClient.Models.ImageModel", b =>
                 {
-                    b.Property<string>("ImageId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<ulong>("Data0");
+
+                    b.Property<ulong>("Data1");
+
+                    b.Property<uint>("Data2");
 
                     b.Property<string>("FileName");
 
                     b.Property<bool>("OriginalLoaded");
 
-                    b.HasKey("ImageId");
+                    b.HasKey("Data0", "Data1", "Data2");
 
                     b.ToTable("ImageSet");
                 });
@@ -84,8 +90,6 @@ namespace ExClient.Migrations
             modelBuilder.Entity("ExClient.Models.SavedGalleryModel", b =>
                 {
                     b.Property<long>("GalleryId");
-
-                    b.Property<byte[]>("ThumbData");
 
                     b.Property<long>("saved");
 
@@ -103,7 +107,7 @@ namespace ExClient.Migrations
 
                     b.HasOne("ExClient.Models.ImageModel", "Image")
                         .WithMany("UsingBy")
-                        .HasForeignKey("ImageId")
+                        .HasForeignKey("Data0", "Data1", "Data2")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

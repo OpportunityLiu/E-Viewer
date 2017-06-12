@@ -22,8 +22,8 @@ namespace ExClient.Models
             optionsBuilder
                 .ConfigureWarnings(warnings => warnings
                     .Throw(
-                        RelationalEventId.QueryClientEvaluationWarning, 
-                        RelationalEventId.PossibleUnintendedUseOfEqualsWarning, 
+                        RelationalEventId.QueryClientEvaluationWarning,
+                        RelationalEventId.PossibleUnintendedUseOfEqualsWarning,
                         RelationalEventId.AmbientTransactionWarning)
                     .Throw(
                         CoreEventId.IncludeIgnoredWarning,
@@ -35,7 +35,9 @@ namespace ExClient.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ImageModel>()
-                .HasKey(i => i.ImageId);
+                .HasKey("Data0", "Data1", "Data2");
+            modelBuilder.Entity<ImageModel>()
+                .Ignore(i => i.ImageId);
             modelBuilder.Entity<ImageModel>()
                 .Property(i => i.FileName).ValueGeneratedNever();
 
@@ -49,18 +51,24 @@ namespace ExClient.Models
                 .Property<long>("posted");
 
             modelBuilder.Entity<SavedGalleryModel>()
-                .HasKey(c => c.GalleryId);
+                .HasKey(s => s.GalleryId);
             modelBuilder.Entity<SavedGalleryModel>()
-                .Property(c => c.GalleryId).ValueGeneratedNever();
+                .Property(s => s.GalleryId).ValueGeneratedNever();
             modelBuilder.Entity<SavedGalleryModel>()
-                .Ignore(c => c.Saved);
+                .Ignore(s => s.Saved);
             modelBuilder.Entity<SavedGalleryModel>()
                 .Property<long>("saved");
 
             modelBuilder.Entity<GalleryImageModel>()
                 .HasKey(gi => new { gi.GalleryId, gi.PageId });
             modelBuilder.Entity<GalleryImageModel>()
-                .Property(gi => gi.ImageId).IsRequired().ValueGeneratedNever();
+                .Ignore(gi => gi.ImageId);
+            modelBuilder.Entity<GalleryImageModel>()
+                .Property("Data0").ValueGeneratedNever();
+            modelBuilder.Entity<GalleryImageModel>()
+                .Property("Data1").ValueGeneratedNever();
+            modelBuilder.Entity<GalleryImageModel>()
+                .Property("Data2").ValueGeneratedNever();
 
             modelBuilder.Entity<SavedGalleryModel>()
                 .HasOne(c => c.Gallery)
@@ -76,7 +84,7 @@ namespace ExClient.Models
                 .HasOne(gi => gi.Image)
                 .WithMany(i => i.UsingBy)
                 .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade)
-                .HasForeignKey(gi => gi.ImageId);
+                .HasForeignKey("Data0", "Data1", "Data2");
         }
 
         internal DbSet<GalleryModel> GallerySet { get; set; }

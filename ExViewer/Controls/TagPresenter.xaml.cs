@@ -12,6 +12,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -46,19 +47,13 @@ namespace ExViewer.Controls
         private static readonly Brush downSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteDownCommentBrush"];
         private static readonly Brush slaveBrush = (Brush)Application.Current.Resources["SlaveCommentBrush"];
 
-        private void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        private async void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var s = (TextBlock)sender;
             var value = (Tag)args.NewValue;
             args.Handled = true;
-            if (value.Content == null)
-            {
-                s.ClearValue(TextBlock.TextProperty);
-                s.ClearValue(TextBlock.ForegroundProperty);
-                return;
-            }
-
             var state = this.Tags.StateOf(value);
+            await s.Dispatcher.Yield();
 
             switch (state.GetVoteState())
             {

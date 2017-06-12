@@ -10,17 +10,12 @@ namespace ExClient.Galleries
     internal abstract class GalleryList<TGallery, TModel> : ObservableCollection<Gallery>, IItemsRangeInfo
          where TGallery : Gallery
     {
-        protected static Gallery DefaultGallery
-        {
-            get;
-        } = new Gallery(-1, null, "0", LocalizedStrings.Resources.DefaultTitle, "", "", "ms-appx:///", LocalizedStrings.Resources.DefaultUploader, "0", "0", 0, false, "2.5", "0", new string[0]);
-
         public bool IsEmpty => this.Count == 0;
 
         private int loadedCount;
 
         internal GalleryList(List<TModel> models)
-            : base(Enumerable.Repeat(DefaultGallery, models.Count))
+            : base(Enumerable.Repeat<TGallery>(null, models.Count))
         {
             this.models = models;
         }
@@ -38,7 +33,7 @@ namespace ExClient.Galleries
         protected override void RemoveItem(int index)
         {
             this.models.RemoveAt(index);
-            if (this[index] != DefaultGallery)
+            if (this[index] != null)
                 this.loadedCount--;
             base.RemoveItem(index);
             RaisePropertyChanged(nameof(IsEmpty));
@@ -49,7 +44,7 @@ namespace ExClient.Galleries
             this.models.RemoveRange(index, count);
             for (var i = 0; i < count; i++)
             {
-                if (this[index + i] != DefaultGallery)
+                if (this[index + i] != null)
                     this.loadedCount--;
             }
             base.RemoveItems(index, count);
@@ -71,7 +66,7 @@ namespace ExClient.Galleries
                 end = this.Count;
             for (var i = start; i < end; i++)
             {
-                if (this[i] != DefaultGallery)
+                if (this[i] != null)
                     continue;
                 this[i] = Load(this.models[i]);
                 this.models[i] = default(TModel);

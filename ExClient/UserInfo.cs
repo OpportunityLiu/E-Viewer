@@ -58,9 +58,6 @@ namespace ExClient
                 var str = JsonConvert.SerializeObject(this);
                 var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("UserInfo", CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(file, str);
-                var avatarFile = await ApplicationData.Current.LocalFolder.CreateFileAsync("UserAvatar", CreationCollisionOption.ReplaceExisting);
-                var buffur = await Current.HttpClient.GetBufferAsync(Avatar);
-                await FileIO.WriteBufferAsync(avatarFile, buffur);
             });
         }
 
@@ -75,54 +72,28 @@ namespace ExClient
                 var obj = JsonConvert.DeserializeObject<UserInfo>(str);
                 if (obj == null)
                     return null;
-                obj.Avatar = new Uri("ms-appdata:///local/UserAvatar");
                 return obj;
             });
         }
 
-        internal UserInfo()
-        {
-        }
+        private UserInfo() { }
+        
+        [JsonProperty]
+        public string DisplayName { get; private set; }
 
         [JsonProperty]
-        public string DisplayName
-        {
-            get;
-            private set;
-        }
+        public long UserID { get; private set; }
 
         [JsonProperty]
-        public long UserID
-        {
-            get;
-            private set;
-        }
+        public string MemberGroup { get; private set; }
 
         [JsonProperty]
-        public string MemberGroup
-        {
-            get;
-            private set;
-        }
+        public DateTimeOffset RegisterDate { get; private set; }
 
         [JsonProperty]
-        public DateTimeOffset RegisterDate
-        {
-            get;
-            private set;
-        }
+        public string Infomation { get; private set; }
 
         [JsonProperty]
-        public string Infomation
-        {
-            get;
-            private set;
-        }
-
-        public Uri Avatar
-        {
-            get;
-            private set;
-        }
+        public Uri Avatar { get; private set; }
     }
 }
