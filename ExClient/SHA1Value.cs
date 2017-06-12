@@ -208,5 +208,10 @@ namespace ExClient
         public override string ToString() => toStringL(HASH_SIZE);
 
         public string ToTokenString() => toStringL(TokenExtension.TOKEN_LENGTH);
+
+        public static bool operator ==(SHA1Value left, SHA1Value right)
+            => left.Equals(right);
+        public static bool operator !=(SHA1Value left, SHA1Value right)
+            => !left.Equals(right);
     }
 }

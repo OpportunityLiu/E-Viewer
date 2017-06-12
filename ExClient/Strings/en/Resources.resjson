@@ -14,6 +14,7 @@
   "TagNotValid": "The tag is not currently valid.",
   "TagNoVotePremition": "Cannot vote for tag.",
   "TagsTooLong": "The field to add tags has an input cap of 200 characters.",
+  "UnsupportedFile": "The uploaded file was corrupted or unsupported.",
   "VoteOutOfRange": "Vote must be -1 or 1.",
   "WrongAccountInfo": "User name or password incorrect.",
   "WrongCaptcha": "The captcha was not entered correctly. Please try again.",

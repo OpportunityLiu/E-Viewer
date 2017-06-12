@@ -14,6 +14,7 @@
   "TagNotValid": "此標籤現在不可用。",
   "TagNoVotePremition": "不能為此標籤投票。",
   "TagsTooLong": "新增標籤的總長度不能超過 200 個字元。",
+  "UnsupportedFile": "上傳的檔案已損壞或不受支援。",
   "VoteOutOfRange": "投票必須為 -1 或 1。",
   "WrongAccountInfo": "使用者名稱或密碼錯誤。",
   "WrongCaptcha": "驗證碼輸入錯誤，請重試。",

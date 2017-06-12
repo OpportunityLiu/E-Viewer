@@ -206,6 +206,7 @@
       "ImageInfoAppBarButton/Label": "Image infomation",
       "LoadOriginalAppBarButton/Label": "Load original image",
       "ReloadAppBarButton/Label": "Reload",
+      "SearchAppBarButton/Label": "Show all galleries with this file",
       "ShareAppBarButton/Label": "Share"
     },
     "LogOnDialog": {
@@ -253,11 +254,19 @@
       "DescriptionCheckBox/Content": "Search gallery description",
       "DownvotedTagsCheckBox/Content": "Search downvoted tags",
       "EmptyTextBlock/Text": "No hits found",
+      "FileSearchButton/Content": "File search",
+      "FileSearchNameFormatString": "Search for file \"{0}\" with following options: ",
       "LoadingMoreTextBlock/Text": "Loading more galleries...",
       "LowPowerTagsCheckBox/Content": "Search low-power tags",
       "MinRatingCheckBox/Content": "Minimum rating:",
       "NamesCheckBox/Content": "Search gallery name",
-      "OnlyTorrentsCheckBox/Content": "Only show galleries with torrents hahah more text to make tj",
+      "NotOnlyCoversTextBlock/Text": "• Search all pages",
+      "OnlyCoversTextBlock/Text": "• Only search covers",
+      "OnlyTorrentsCheckBox/Content": "Only show galleries with torrents",
+      "SearchAvailableTextBlock/Text": "• Hide expunged galleries",
+      "SearchExactlyTextBlock/Text": "• Disable similarity scan",
+      "SearchExpungedTextBlock/Text": "• Show expunged galleries",
+      "SearchSimilarTextBlock/Text": "• Enable similarity scan",
       "ShowExpungedCheckBox/Content": "Show expunged galleries",
       "TagsCheckBox/Content": "Search gallery tags",
       "TorrentNamesCheckBox/Content": "Search torrent filenames"

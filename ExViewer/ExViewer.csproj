@@ -190,6 +190,9 @@
     <Compile Include="Views\EhWikiDialog.xaml.cs">
       <DependentUpon>EhWikiDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FileSearchDialog.xaml.cs">
+      <DependentUpon>FileSearchDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\IHasAppBar.cs" />
     <Compile Include="Views\PopularPage.xaml.cs">
       <DependentUpon>PopularPage.xaml</DependentUpon>
@@ -411,6 +414,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EhWikiDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FileSearchDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

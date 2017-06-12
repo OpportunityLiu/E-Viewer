@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.Security.Credentials.UI;
 using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -23,8 +24,8 @@ namespace ExViewer.Views
         public SplashControl(SplashScreen splashScreen)
         {
             this.InitializeComponent();
-            BannerProvider.Provider.GetBannerAsync().Completed =
-                async (s, e) => await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => loadBanner(s.GetResults()));
+            BannerProvider.Provider.GetBannerAsync().Completed = (s, e)
+                => this.Dispatcher.Begin(() => loadBanner(s.GetResults()));
             this.loadApplication();
             this.splashScreen = splashScreen;
         }

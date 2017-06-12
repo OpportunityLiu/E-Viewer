@@ -17,29 +17,27 @@ namespace ExViewer.ViewModels
 {
     public class SearchVM : SearchResultVM<CategorySearchResult>
     {
-        private class SearchResultData
-        {
-            public string Keyword
-            {
-                get; set;
-            }
-
-            public Category Category
-            {
-                get; set;
-            }
-
-            public AdvancedSearchOptions AdvancedSearch
-            {
-                get; set;
-            }
-        }
-
         private static class Cache
         {
             private static CacheStorage<string, SearchVM> srCache = new CacheStorage<string, SearchVM>(query =>
             {
-                var vm = new SearchVM(query);
+                var search = default(CategorySearchResult);
+                if (string.IsNullOrEmpty(query))
+                {
+                    var keyword = SettingCollection.Current.DefaultSearchString;
+                    var category = SettingCollection.Current.DefaultSearchCategory;
+                    search = Client.Current.Search(keyword, category);
+                }
+                else
+                {
+                    var uri = new Uri(query);
+
+                    var handle = ExClient.Launch.UriLauncher.HandleAsync(uri);
+                    if (handle.Status != AsyncStatus.Completed)
+                        throw new ArgumentException();
+                    search = (CategorySearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
+                }
+                var vm = new SearchVM(search);
                 AddHistory(vm.Keyword);
                 return vm;
             }, 10);
@@ -51,38 +49,11 @@ namespace ExViewer.ViewModels
 
             public static string AddSearchVM(SearchVM searchVM)
             {
-                var query = searchVM.SearchQuery;
+                var query = searchVM.SearchQuery.ToString();
                 AddHistory(searchVM.Keyword);
                 srCache.Add(query, searchVM);
                 return query;
             }
-        }
-
-        public static string GetSearchQuery(string keyword)
-        {
-            return JsonConvert.SerializeObject(new SearchResultData()
-            {
-                Keyword = keyword
-            });
-        }
-
-        public static string GetSearchQuery(string keyword, Category filter)
-        {
-            return JsonConvert.SerializeObject(new SearchResultData()
-            {
-                Keyword = keyword,
-                Category = filter
-            });
-        }
-
-        public static string GetSearchQuery(string keyword, Category filter, AdvancedSearchOptions advancedSearch)
-        {
-            return JsonConvert.SerializeObject(new SearchResultData()
-            {
-                Keyword = keyword,
-                Category = filter,
-                AdvancedSearch = advancedSearch
-            });
         }
 
         public static IAsyncAction InitAsync()
@@ -110,25 +81,6 @@ namespace ExViewer.ViewModels
             SetQueryWithSearchResult();
         }
 
-        private SearchVM(string parameter)
-            : this()
-        {
-            if (string.IsNullOrEmpty(parameter))
-            {
-                this.keyword = SettingCollection.Current.DefaultSearchString;
-                this.category = SettingCollection.Current.DefaultSearchCategory;
-                this.advancedSearch = new AdvancedSearchOptions();
-            }
-            else
-            {
-                var q = JsonConvert.DeserializeObject<SearchResultData>(parameter);
-                this.keyword = q.Keyword;
-                this.category = q.Category;
-                this.advancedSearch = q.AdvancedSearch;
-            }
-            this.SearchResult = Client.Current.Search(this.keyword, this.category, this.advancedSearch);
-        }
-
         private SearchVM()
         {
             this.Search = new Command<string>(queryText =>
@@ -138,7 +90,8 @@ namespace ExViewer.ViewModels
                     SettingCollection.Current.DefaultSearchCategory = this.category;
                     SettingCollection.Current.DefaultSearchString = queryText;
                 }
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), GetSearchQuery(queryText, this.category, this.advancedSearch));
+                var vm = GetVM(Client.Current.Search(queryText, this.category, this.advancedSearch));
+                RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
             });
         }
 
@@ -149,7 +102,7 @@ namespace ExViewer.ViewModels
             this.Keyword = this.SearchResult.Keyword;
             this.Category = this.SearchResult.Category;
             this.AdvancedSearch = (this.SearchResult as AdvancedSearchResult)?.AdvancedSearch ?? new AdvancedSearchOptions();
-            RaisePropertyChanged(nameof(this.AdvancedSearch));
+            this.FileSearch = this.SearchResult as FileSearchResult;
         }
 
         private string keyword;
@@ -172,9 +125,16 @@ namespace ExViewer.ViewModels
         public AdvancedSearchOptions AdvancedSearch
         {
             get => this.advancedSearch;
-            set => Set(ref this.advancedSearch, value);
+            private set => Set(ref this.advancedSearch, value);
         }
 
-        public string SearchQuery => GetSearchQuery(this.keyword, this.category, this.advancedSearch);
+        private FileSearchResult fileSearch;
+        public FileSearchResult FileSearch
+        {
+            get => this.fileSearch;
+            private set => Set(ref this.fileSearch, value);
+        }
+
+        public Uri SearchQuery => this.SearchResult.SearchUri;
     }
 }
