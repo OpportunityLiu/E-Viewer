@@ -20,7 +20,8 @@ using static ExClient.Tagging.Namespace;
 namespace ExClient.Tagging
 {
     [DebuggerDisplay(@"\{{data.Length} tags in {keys.Length} namespaces\}")]
-    public sealed class TagCollection : ObservableCollectionBase, IReadOnlyList<NamespaceTagCollection>, IList
+    public sealed partial class TagCollection 
+        : ObservableCollectionBase, IReadOnlyList<TagCollection.NamespaceTagCollection>, IList
     {
         private static readonly Namespace[] staticKeys = new[]
         {
@@ -67,7 +68,7 @@ namespace ExClient.Tagging
             {
                 (data[i], state[i]) = rawData[i];
             }
-            if (this.data != null && this.state != null && this.data.SequenceEqual(data)) 
+            if (this.data != null && this.state != null && this.data.SequenceEqual(data))
             {
                 if (this.state.SequenceEqual(state))
                     return false;
@@ -127,7 +128,7 @@ namespace ExClient.Tagging
             {
                 if (unchecked((uint)index >= (uint)Count))
                     throw new IndexOutOfRangeException();
-                return new NamespaceTagCollection(this.keys[index], this.getValue(index));
+                return new NamespaceTagCollection(this, index);
             }
         }
 

@@ -128,9 +128,9 @@
     <Compile Include="Galleries\Metadata\LanguageModifier.cs" />
     <Compile Include="Galleries\Metadata\LanguageName.cs" />
     <Compile Include="Galleries\Metadata\LanguageNameExtension.cs" />
-    <Compile Include="Migrations\20170610145108_ResetMigration.cs" />
-    <Compile Include="Migrations\20170610145108_ResetMigration.designer.cs">
-      <DependentUpon>20170610145108_ResetMigration.cs</DependentUpon>
+    <Compile Include="Migrations\20170612052132_NewMig.cs" />
+    <Compile Include="Migrations\20170612052132_NewMig.designer.cs">
+      <DependentUpon>20170612052132_NewMig.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\GalleryDbModelSnapshot.cs" />
     <Compile Include="Models\GalleryImageModel.cs" />

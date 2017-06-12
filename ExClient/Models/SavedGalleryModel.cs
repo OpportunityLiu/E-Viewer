@@ -5,10 +5,9 @@ namespace ExClient.Models
 {
     internal class SavedGalleryModel
     {
-        public SavedGalleryModel Update(Gallery gallery, byte[] thumbData)
+        public SavedGalleryModel Update(Gallery gallery)
         {
             GalleryId = gallery.Id;
-            ThumbData = thumbData;
             Saved = DateTimeOffset.UtcNow;
             return this;
         }
@@ -27,11 +26,6 @@ namespace ExClient.Models
         }
 
         public long GalleryId
-        {
-            get; set;
-        }
-
-        public byte[] ThumbData
         {
             get; set;
         }

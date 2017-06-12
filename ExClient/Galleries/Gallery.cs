@@ -104,7 +104,6 @@ namespace ExClient.Galleries
                     ImageLoaded = -1
                 };
                 progress.Report(toReport);
-                var thumb = (await Client.Current.HttpClient.GetBufferAsync(this.ThumbUri)).ToArray();
                 token.ThrowIfCancellationRequested();
                 while (this.HasMoreItems)
                 {
@@ -131,11 +130,11 @@ namespace ExClient.Galleries
                     var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == gid);
                     if (myModel == null)
                     {
-                        db.SavedSet.Add(new SavedGalleryModel().Update(this, thumb));
+                        db.SavedSet.Add(new SavedGalleryModel().Update(this));
                     }
                     else
                     {
-                        myModel.Update(this, thumb);
+                        myModel.Update(this);
                     }
                     await db.SaveChangesAsync();
                 }
@@ -502,7 +501,7 @@ namespace ExClient.Galleries
                     foreach (var item in toDelete)
                     {
                         var usingCount = db.GalleryImageSet
-                            .Count(gim => gim.ImageId == item.ImageId);
+                            .Count(GalleryImageModel.FKEquals(item.ImageId));
                         if (usingCount <= 1)
                         {
                             var i = item.PageId - 1;

@@ -68,14 +68,12 @@ namespace ExClient.Galleries
             return Run(async token =>
             {
                 var folder = ImageFolder ?? await GetImageFolderAsync();
-                var imageFile = await folder.TryGetFileAsync(imageModel.FileName);
-                var hash = SHA1Value.Parse(galleryImageModel.ImageId);
-                if (imageFile == null)
-                    return new GalleryImage(owner, galleryImageModel.PageId, hash.ToToken(), null);
+                var hash = galleryImageModel.ImageId;
                 var img = new GalleryImage(owner, galleryImageModel.PageId, hash.ToToken(), null)
                 {
                     imageHash = hash
                 };
+                var imageFile = await folder.TryGetFileAsync(imageModel.FileName);
                 if (imageFile == null)
                 {
                     img.originalLoaded = false;
@@ -254,6 +252,7 @@ namespace ExClient.Galleries
             {
                 try
                 {
+                    var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
                     var folder = ImageFolder ?? await GetImageFolderAsync();
                     using (var db = new GalleryDb())
                     {
@@ -267,8 +266,8 @@ namespace ExClient.Galleries
                             loadImg?.Cancel();
                         });
                         await loadImgInfo;
-                        var imageModel = db.ImageSet.SingleOrDefault(i => i.ImageId == this.imageHash.ToString());
-                        if (imageModel != null)
+                        var imageModel = db.ImageSet.SingleOrDefault(ImageModel.PKEquals(this.imageHash));
+                        if (imageModel != null && imageModel.OriginalLoaded == loadFull)
                         {
                             var file = await folder.TryGetFileAsync(imageModel.FileName);
                             if (file != null)
@@ -293,7 +292,6 @@ namespace ExClient.Galleries
                         if (this.imageUri.LocalPath.EndsWith("/509.gif"))
                             throw new InvalidOperationException(LocalizedStrings.Resources.ExceedLimits);
                         Uri imgUri = null;
-                        var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
                         if (loadFull)
                         {
                             imgUri = this.originalImageUri ?? this.imageUri;
@@ -326,9 +324,13 @@ namespace ExClient.Galleries
                         var myModel = db.GalleryImageSet
                             .Include(model => model.Image)
                             .SingleOrDefault(model => model.GalleryId == this.Owner.Id && model.PageId == this.PageId);
+                        imageModel?.Update(this);
                         if (myModel == null)
                         {
-                            db.ImageSet.Add(new ImageModel().Update(this));
+                            if (imageModel == null)
+                                db.ImageSet.Add(new ImageModel().Update(this));
+                            else
+                                imageModel.Update(this);
                             db.GalleryImageSet.Add(new GalleryImageModel().Update(this));
                         }
                         else

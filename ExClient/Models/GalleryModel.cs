@@ -44,7 +44,7 @@ namespace ExClient.Models
 
         public string Uploader { get; set; }
 
-        private long posted;
+        public long posted;
         public DateTimeOffset Posted
         {
             get => DateTimeOffset.FromUnixTimeMilliseconds(posted);
