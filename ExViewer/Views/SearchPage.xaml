@@ -24,6 +24,11 @@
             <Setter Property="Margin"
                     Value="0,0,24,0" />
         </Style>
+        <Style x:Name="FileSearchOptionStyle"
+               TargetType="TextBlock">
+            <Setter Property="Margin"
+                    Value="12,2,24,2" />
+        </Style>
     </controls:MyPage.Resources>
 
     <RelativePanel>
@@ -180,6 +185,50 @@
                                 </ComboBox>
                             </StackPanel>
                         </ListView>
+                        <StackPanel HorizontalAlignment="Stretch"
+                                    Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
+                                    Padding="0,0,0,12">
+                            <Button x:Name="btnFileSearch"
+                                    x:Uid="Views/SearchPage/FileSearchButton"
+                                    Content="File search"
+                                    HorizontalAlignment="Center"
+                                    Click="btnFileSearch_Click"
+                                    Style="{StaticResource TextBlockButtonStyle}" />
+                            <StackPanel Visibility="{x:Bind VM.FileSearch, Converter={StaticResource NullToCollapsedConverter}, Mode=OneWay}"
+                                        HorizontalAlignment="Center">
+                                <TextBlock Text="{x:Bind VM.FileSearch.FileName, Converter={StaticResource StringConverter}, ConverterParameter='Views/SearchPage/FileSearchNameFormatString', Mode=OneWay}"
+                                           HorizontalAlignment="Stretch"
+                                           TextWrapping="WrapWholeWords"
+                                           Margin="8" />
+                                <wp:WrapPanel HorizontalAlignment="Stretch"
+                                              Margin="12,0">
+                                    <TextBlock x:Uid="Views/SearchPage/SearchSimilarTextBlock"
+                                               Text="• Similarity scan enabled"
+                                               Style="{StaticResource FileSearchOptionStyle}"
+                                               Visibility="{x:Bind VM.FileSearch.SearchSimilar, Mode=OneWay}" />
+                                    <TextBlock x:Uid="Views/SearchPage/SearchExactlyTextBlock"
+                                               Text="• Similarity scan disabled"
+                                               Style="{StaticResource FileSearchOptionStyle}"
+                                               Visibility="{x:Bind VM.FileSearch.SearchSimilar, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
+                                    <TextBlock x:Uid="Views/SearchPage/OnlyCoversTextBlock"
+                                               Text="• Only searched covers"
+                                               Style="{StaticResource FileSearchOptionStyle}"
+                                               Visibility="{x:Bind VM.FileSearch.OnlyCovers, Mode=OneWay}" />
+                                    <TextBlock x:Uid="Views/SearchPage/NotOnlyCoversTextBlock"
+                                               Text="• Searched all pages"
+                                               Style="{StaticResource FileSearchOptionStyle}"
+                                               Visibility="{x:Bind VM.FileSearch.OnlyCovers, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
+                                    <TextBlock x:Uid="Views/SearchPage/SearchExpungedTextBlock"
+                                               Text="• Expunged shown"
+                                               Style="{StaticResource FileSearchOptionStyle}"
+                                               Visibility="{x:Bind VM.FileSearch.SearchExpunged, Mode=OneWay}" />
+                                    <TextBlock x:Uid="Views/SearchPage/SearchAvailableTextBlock"
+                                               Text="• Expunged hide"
+                                               Style="{StaticResource FileSearchOptionStyle}"
+                                               Visibility="{x:Bind VM.FileSearch.SearchExpunged, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
+                                </wp:WrapPanel>
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

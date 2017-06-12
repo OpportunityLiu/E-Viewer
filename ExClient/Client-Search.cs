@@ -32,6 +32,11 @@ namespace ExClient
             return SearchAsync(keyword, category, file, true, false, false);
         }
 
+        public IAsyncOperation<FileSearchResult> SearchAsync(StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
+        {
+            return FileSearchResult.SearchAsync(null, default(Category), file, searchSimilar, onlyCovers, searchExpunged);
+        }
+
         public IAsyncOperation<FileSearchResult> SearchAsync(StorageFile file)
         {
             return SearchAsync(null, default(Category), file);

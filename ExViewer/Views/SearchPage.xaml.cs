@@ -172,5 +172,15 @@ namespace ExViewer.Views
         {
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
         }
+
+        private FileSearchDialog dlgFIleSearch;
+
+        private async void btnFileSearch_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.dlgFIleSearch == null)
+                this.dlgFIleSearch = new FileSearchDialog();
+            CloseAll();
+            await this.dlgFIleSearch.ShowAsync();
+        }
     }
 }

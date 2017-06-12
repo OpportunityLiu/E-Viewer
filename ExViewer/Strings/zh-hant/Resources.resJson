@@ -206,6 +206,7 @@
       "ImageInfoAppBarButton/Label": "檔案資訊",
       "LoadOriginalAppBarButton/Label": "載入原圖",
       "ReloadAppBarButton/Label": "重新載入",
+      "SearchAppBarButton/Label": "顯示所有包含此檔案的畫廊",
       "ShareAppBarButton/Label": "共享"
     },
     "LogOnDialog": {
@@ -253,11 +254,19 @@
       "DescriptionCheckBox/Content": "搜尋畫廊描述",
       "DownvotedTagsCheckBox/Content": "搜尋投過反對票的標籤",
       "EmptyTextBlock/Text": "沒有結果",
+      "FileSearchButton/Content": "檔案搜尋",
+      "FileSearchNameFormatString": "使用以下設定搜尋檔案 \"{0}\" : ",
       "LoadingMoreTextBlock/Text": "正在載入更多畫廊…",
       "LowPowerTagsCheckBox/Content": "搜尋低權值的標籤",
       "MinRatingCheckBox/Content": "最低評分：",
       "NamesCheckBox/Content": "搜尋畫廊名稱",
+      "NotOnlyCoversTextBlock/Text": "• 檢索所有頁面",
+      "OnlyCoversTextBlock/Text": "• 只檢索封面",
       "OnlyTorrentsCheckBox/Content": "只顯示有種子的畫廊",
+      "SearchAvailableTextBlock/Text": "• 隱藏已失效的畫廊",
+      "SearchExactlyTextBlock/Text": "• 精確搜尋",
+      "SearchExpungedTextBlock/Text": "• 顯示已失效的畫廊",
+      "SearchSimilarTextBlock/Text": "• 搜尋相似內容",
       "ShowExpungedCheckBox/Content": "搜尋已失效的畫廊",
       "TagsCheckBox/Content": "搜尋畫廊標籤",
       "TorrentNamesCheckBox/Content": "搜尋種子檔名"

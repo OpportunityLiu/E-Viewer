@@ -202,7 +202,7 @@ namespace ExViewer.Controls
             if (SelectedTag.Content == null)
                 return;
             var vm = SearchVM.GetVM(SelectedTag.Search());
-            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
+            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
         }
     }
 }

@@ -1,24 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.Web.Http;
 
 namespace ExClient.Search
 {
     public sealed class FileSearchResult : CategorySearchResult
     {
+        private static readonly Uri fileSearchUriEh = new Uri("https://upload.e-hentai.org/image_lookup.php");
+        private static readonly Uri fileSearchUriEx = new Uri("https://exhentai.org/upload/image_lookup.php");
+
+        private static Uri fileSearchUri => Client.Current.Host == HostType.Ehentai ? fileSearchUriEh : fileSearchUriEx;
+
         internal static IAsyncOperation<FileSearchResult> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
         {
             if (file == null)
                 throw new ArgumentNullException(nameof(file));
             if (searchSimilar)
             {
-                //TODO:
-                throw null;
+                return AsyncInfo.Run(async token =>
+                {
+                    var read = FileIO.ReadBufferAsync(file);
+                    HttpStringContent contentOf(bool v) => new HttpStringContent(v ? "1" : "0");
+                    var data = new HttpMultipartFormDataContent
+                    {
+                        { contentOf(true), "fs_similar" },
+                        { contentOf(onlyCovers), "fs_covers" },
+                        { contentOf(searchExpunged), "fs_exp" }
+                    };
+                    var buf = await read;
+                    data.Add(new HttpBufferContent(buf), "sfile", file.Name);
+                    await data.BufferAllAsync();
+                    var r = await Client.Current.HttpClient.PostAsync(fileSearchUri, data);
+                    var uri = r.RequestMessage.RequestUri;
+                    var query = uri.Query.Split("?&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    var hashstr = query.Single(s => s.StartsWith("f_shash=")).Substring(8).Split(';');
+                    if (hashstr.Any(value => value.Length != 40))
+                        throw new ArgumentException(LocalizedStrings.Resources.UnsupportedFile, nameof(file));
+                    return new FileSearchResult(keyword, category, hashstr.Select(SHA1Value.Parse), file.Name, true, onlyCovers, searchExpunged);
+                });
             }
             else
             {

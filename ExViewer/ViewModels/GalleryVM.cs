@@ -221,6 +221,12 @@ namespace ExViewer.ViewModels
                 }
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null);
+            this.SearchImage = new Command<SHA1Value>(sha =>
+            {
+                var search = Client.Current.Search("", Category.All, Enumerable.Repeat(sha, 1), this.gallery.GetDisplayTitle());
+                var vm = SearchVM.GetVM(search);
+                RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+            }, sha => this.gallery != null && sha != default(SHA1Value));
             this.AddComment = new AsyncCommand(async () =>
             {
                 var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref GalleryVM.addComment);
@@ -250,6 +256,8 @@ namespace ExViewer.ViewModels
         public Command<GalleryImage> LoadOriginal { get; }
 
         public Command<GalleryImage> ReloadImage { get; }
+
+        public Command<SHA1Value> SearchImage { get; }
 
         private Gallery gallery;
 

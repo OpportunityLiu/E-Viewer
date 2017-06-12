@@ -302,6 +302,15 @@
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarSeparator />
+                <AppBarButton x:Name="abb_Search"
+                              x:Uid="Views/ImagePage/SearchAppBarButton"
+                              Command="{x:Bind VM.SearchImage, Mode=OneWay}"
+                              CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image.ImageHash, Mode=OneWay}"
+                              Label="Show all galleries with this file">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE155;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
                 <AppBarButton x:Name="abb_Info"
                               x:Uid="Views/ImagePage/ImageInfoAppBarButton"
                               Label="Image infomation">
