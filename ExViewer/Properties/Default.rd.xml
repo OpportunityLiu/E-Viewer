@@ -21,6 +21,10 @@
       the application package. The asterisks are not wildcards.
     -->
     <Assembly Name="*Application*" Dynamic="Required All"/>
+    
+    <Type Name="System.Collections.Generic.IEnumerable{Windows.Storage.IStorageItem}">
+      <Subtypes Dynamic="Required All" />
+    </Type>
 
     <!-- Add your application specific runtime directives here. -->
     <Namespace Name="Windows.UI.Xaml" Dynamic="Required All"/>

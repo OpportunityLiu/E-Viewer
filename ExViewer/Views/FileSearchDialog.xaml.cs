@@ -31,9 +31,10 @@ namespace ExViewer.Views
             this.InitializeComponent();
             this.picker = new Windows.Storage.Pickers.FileOpenPicker
             {
-                CommitButtonText = "Select",
+                CommitButtonText = Strings.Resources.Views.FileSearchDialog.FileOpenPicker.CommitButtonText,
                 SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary,
-                ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail
+                ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail,
+                SettingsIdentifier = nameof(FileSearchDialog)
             };
             this.picker.FileTypeFilter.Add(".jpg");
             this.picker.FileTypeFilter.Add(".jpe");
@@ -43,7 +44,13 @@ namespace ExViewer.Views
             this.picker.FileTypeFilter.Add(".png");
         }
 
-
+        private void MyContentDialog_Loading(FrameworkElement sender, object args)
+        {
+            this.SearchFile = null;
+            this.cbCover.IsChecked = false;
+            this.cbExp.IsChecked = false;
+            this.cbSimilar.IsChecked = true;
+        }
 
         public StorageFile SearchFile
         {
@@ -58,7 +65,7 @@ namespace ExViewer.Views
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            var search = ExClient.Client.Current.SearchAsync(this.SearchFile);
+            var search = ExClient.Client.Current.SearchAsync(this.SearchFile, this.cbSimilar.IsChecked ?? true, this.cbCover.IsChecked ?? false, this.cbExp.IsChecked ?? false);
             this.SearchFile = null;
             await this.Dispatcher.YieldIdle();
             RootControl.RootController.TrackAsyncAction(search, (s, e) =>
@@ -79,7 +86,6 @@ namespace ExViewer.Views
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            this.SearchFile = null;
         }
 
         private async void btnBrowse_Click(object sender, RoutedEventArgs e)
@@ -101,19 +107,20 @@ namespace ExViewer.Views
                 var deferral = e.GetDeferral();
                 try
                 {
+                    var info = Strings.Resources.Views.FileSearchDialog;
                     var storageitems = await e.DataView.GetStorageItemsAsync();
                     if (storageitems.Count != 1 || !(storageitems[0] is StorageFile file))
                     {
-                        e.DragUIOverride.Caption = "You can only search single file.";
+                        e.DragUIOverride.Caption = info.DropWrongFileNumber;
                         return null;
                     }
                     if (!this.picker.FileTypeFilter.Contains(file.FileType.ToLowerInvariant()))
                     {
-                        e.DragUIOverride.Caption = "Unsupported file type.";
+                        e.DragUIOverride.Caption = info.DropWrongFileType;
                         return null;
                     }
                     e.AcceptedOperation = DataPackageOperation.Copy | DataPackageOperation.Link | DataPackageOperation.Move;
-                    e.DragUIOverride.Caption = "Use this file";
+                    e.DragUIOverride.Caption = info.DropHint;
                     e.Handled = true;
                     return file;
                 }

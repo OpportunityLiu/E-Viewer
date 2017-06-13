@@ -141,17 +141,15 @@ namespace ExViewer.Controls
         [System.Diagnostics.DebuggerDisplay("U = {U} V = {V}")]
         private struct UvMeasure
         {
-            private const double FACTOR = 10000;
+            private double u, v;
+            internal double U { get { return u; } set { u = Math.Floor(value); } }
 
-            private int u, v;
-            internal double U { get => u / FACTOR; set => u = (int)(value * FACTOR); }
-
-            internal double V { get => v / FACTOR; set => v = (int)(value * FACTOR); }
+            internal double V { get { return v; } set { v = Math.Floor(value); } }
 
             public UvMeasure(Orientation orientation, double width, double height)
             {
-                this.u = 0;
-                this.v = 0;
+                this.u = 0.0;
+                this.v = 0.0;
                 if (orientation == Orientation.Horizontal)
                 {
                     U = width;
@@ -159,8 +157,8 @@ namespace ExViewer.Controls
                 }
                 else
                 {
-                    V = width;
                     U = height;
+                    V = width;
                 }
             }
         }

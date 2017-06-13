@@ -214,18 +214,10 @@
                                                Text="• Only searched covers"
                                                Style="{StaticResource FileSearchOptionStyle}"
                                                Visibility="{x:Bind VM.FileSearch.OnlyCovers, Mode=OneWay}" />
-                                    <TextBlock x:Uid="Views/SearchPage/NotOnlyCoversTextBlock"
-                                               Text="• Searched all pages"
-                                               Style="{StaticResource FileSearchOptionStyle}"
-                                               Visibility="{x:Bind VM.FileSearch.OnlyCovers, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
                                     <TextBlock x:Uid="Views/SearchPage/SearchExpungedTextBlock"
                                                Text="• Expunged shown"
                                                Style="{StaticResource FileSearchOptionStyle}"
                                                Visibility="{x:Bind VM.FileSearch.SearchExpunged, Mode=OneWay}" />
-                                    <TextBlock x:Uid="Views/SearchPage/SearchAvailableTextBlock"
-                                               Text="• Expunged hide"
-                                               Style="{StaticResource FileSearchOptionStyle}"
-                                               Visibility="{x:Bind VM.FileSearch.SearchExpunged, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
                                 </controls:WrapPanel>
                             </StackPanel>
                         </StackPanel>

@@ -171,6 +171,20 @@
       "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
       "SelectAllAppBarButton/Label": "全部选择"
     },
+    "FileSearchDialog": {
+      "BrowseButton/Content": "浏览...",
+      "ContentDialog/PrimaryButtonText": "搜索",
+      "ContentDialog/SecondaryButtonText": "取消",
+      "ContentDialog/Title": "文件搜索",
+      "CoverCheckBox/Content": "只检索封面",
+      "DropHint": "使用此文件",
+      "DropWrongFileNumber": "只能搜索单个文件",
+      "DropWrongFileType": "不支持的文件类型",
+      "ExpungedCheckBox/Content": "显示已失效的画廊",
+      "FileNameTextBox/PlaceholderText": "拖放文件到此处...",
+      "FileOpenPicker/CommitButtonText": "选择",
+      "SimilarCheckBox/Content": "搜索相似内容"
+    },
     "GalleryPage": {
       "AppBarButtonAddComment/Label": "发表新评论",
       "CommentsEmptyTextBlock/Text": "没有评论",
@@ -260,10 +274,8 @@
       "LowPowerTagsCheckBox/Content": "搜索低权值的标签",
       "MinRatingCheckBox/Content": "最低评分：",
       "NamesCheckBox/Content": "搜索画廊名称",
-      "NotOnlyCoversTextBlock/Text": "• 检索所有页面",
       "OnlyCoversTextBlock/Text": "• 只检索封面",
       "OnlyTorrentsCheckBox/Content": "只显示有种子的画廊",
-      "SearchAvailableTextBlock/Text": "• 隐藏已失效的画廊",
       "SearchExactlyTextBlock/Text": "• 精确搜索",
       "SearchExpungedTextBlock/Text": "• 显示已失效的画廊",
       "SearchSimilarTextBlock/Text": "• 搜索相似内容",

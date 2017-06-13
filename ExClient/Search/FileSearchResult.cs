@@ -41,8 +41,18 @@ namespace ExClient.Search
                     var uri = r.RequestMessage.RequestUri;
                     var query = uri.Query.Split("?&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     var hashstr = query.Single(s => s.StartsWith("f_shash=")).Substring(8).Split(';');
-                    if (hashstr.Any(value => value.Length != 40))
-                        throw new ArgumentException(LocalizedStrings.Resources.UnsupportedFile, nameof(file));
+                    var info = hashstr.FirstOrDefault(value => value.Length != 40);
+                    switch (info)
+                    {
+                    case "monotone":
+                        throw new InvalidOperationException(LocalizedStrings.Resources.UnsupportedMonotone);
+                    case "corrupt":
+                        throw new InvalidOperationException(LocalizedStrings.Resources.UnsupportedFile);
+                    case null:
+                        break;
+                    default:
+                        throw new InvalidOperationException(info);
+                    }
                     return new FileSearchResult(keyword, category, hashstr.Select(SHA1Value.Parse), file.Name, true, onlyCovers, searchExpunged);
                 });
             }
