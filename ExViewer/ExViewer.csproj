@@ -119,6 +119,7 @@
     <Compile Include="Controls\TagPresenter.xaml.cs">
       <DependentUpon>TagPresenter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\WrapPanel.cs" />
     <Compile Include="Helpers\AccountManager.cs" />
     <Compile Include="Converters\FormatStringConverter.cs" />
     <Compile Include="Helpers\ApiInfo.cs" />
