@@ -8,6 +8,7 @@
                           xmlns:controls="using:ExViewer.Controls"
                           mc:Ignorable="d"
                           Loading="MyContentDialog_Loading"
+                          Loaded="MyContentDialog_Loaded"
                           Title="FILE SEARCH"
                           PrimaryButtonText="Search"
                           SecondaryButtonText="Cancel"

@@ -52,6 +52,12 @@ namespace ExViewer.Views
             this.cbSimilar.IsChecked = true;
         }
 
+        private async void MyContentDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            await this.Dispatcher.Yield();
+            this.btnBrowse.Focus(FocusState.Programmatic);
+        }
+
         public StorageFile SearchFile
         {
             get => (StorageFile)GetValue(SearchFileProperty); set => SetValue(SearchFileProperty, value);
