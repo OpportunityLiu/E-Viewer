@@ -51,9 +51,9 @@ namespace ExViewer.Controls
         /// <inheritdoc />
         protected override Size MeasureOverride(Size availableSize)
         {
-            var totalMeasure = new UvMeasure();
+            var totalMeasure = UvMeasure.Zero;
             var parentMeasure = new UvMeasure(Orientation, availableSize.Width, availableSize.Height);
-            var lineMeasure = new UvMeasure();
+            var lineMeasure = UvMeasure.Zero;
             foreach (var child in Children)
             {
                 child.Measure(availableSize);
@@ -87,7 +87,7 @@ namespace ExViewer.Controls
                         totalMeasure.V += currentMeasure.V;
 
                         // add new empty line
-                        lineMeasure = new UvMeasure();
+                        lineMeasure = UvMeasure.Zero;
                     }
                 }
             }
@@ -99,6 +99,9 @@ namespace ExViewer.Controls
             // this way is faster than an if condition in every loop for checking the last item
             totalMeasure.U = Math.Max(lineMeasure.U, totalMeasure.U);
             totalMeasure.V += lineMeasure.V;
+
+            totalMeasure.U = Math.Ceiling(totalMeasure.U);
+
             return Orientation == Orientation.Horizontal ? new Size(totalMeasure.U, totalMeasure.V) : new Size(totalMeasure.V, totalMeasure.U);
         }
 
@@ -106,7 +109,7 @@ namespace ExViewer.Controls
         protected override Size ArrangeOverride(Size finalSize)
         {
             var parentMeasure = new UvMeasure(Orientation, finalSize.Width, finalSize.Height);
-            var position = new UvMeasure();
+            var position = UvMeasure.Zero;
 
             double currentV = 0;
             foreach (var child in Children)
@@ -137,19 +140,24 @@ namespace ExViewer.Controls
 
             return finalSize;
         }
+    }
 
+    /// <summary>
+    /// WrapPanel is a panel that position child control vertically or horizontally based on the orientation and when max width/ max height is recieved a new row(in case of horizontal) or column (in case of vertical) is created to fit new controls.
+    /// </summary>
+    public partial class WrapPanel
+    {
         [System.Diagnostics.DebuggerDisplay("U = {U} V = {V}")]
         private struct UvMeasure
         {
-            private double u, v;
-            internal double U { get { return u; } set { u = Math.Floor(value); } }
+            internal static readonly UvMeasure Zero = default(UvMeasure);
 
-            internal double V { get { return v; } set { v = Math.Floor(value); } }
+            internal double U { get; set; }
+
+            internal double V { get; set; }
 
             public UvMeasure(Orientation orientation, double width, double height)
             {
-                this.u = 0.0;
-                this.v = 0.0;
                 if (orientation == Orientation.Horizontal)
                 {
                     U = width;

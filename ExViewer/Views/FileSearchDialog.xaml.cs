@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -102,39 +103,36 @@ namespace ExViewer.Views
             this.SearchFile = file;
         }
 
-        private IAsyncOperation<StorageFile> check(DragEventArgs e)
+        private async Task<StorageFile> check(DragEventArgs e)
         {
             if (!e.DataView.Contains(StandardDataFormats.StorageItems))
             {
-                return AsyncWrapper.CreateCompleted(default(StorageFile));
+                return null;
             }
-            return AsyncInfo.Run(async token =>
+            var deferral = e.GetDeferral();
+            try
             {
-                var deferral = e.GetDeferral();
-                try
+                var info = Strings.Resources.Views.FileSearchDialog;
+                var storageitems = await e.DataView.GetStorageItemsAsync();
+                if (storageitems.Count != 1 || !(storageitems[0] is StorageFile file))
                 {
-                    var info = Strings.Resources.Views.FileSearchDialog;
-                    var storageitems = await e.DataView.GetStorageItemsAsync();
-                    if (storageitems.Count != 1 || !(storageitems[0] is StorageFile file))
-                    {
-                        e.DragUIOverride.Caption = info.DropWrongFileNumber;
-                        return null;
-                    }
-                    if (!this.picker.FileTypeFilter.Contains(file.FileType.ToLowerInvariant()))
-                    {
-                        e.DragUIOverride.Caption = info.DropWrongFileType;
-                        return null;
-                    }
-                    e.AcceptedOperation = DataPackageOperation.Copy | DataPackageOperation.Link | DataPackageOperation.Move;
-                    e.DragUIOverride.Caption = info.DropHint;
-                    e.Handled = true;
-                    return file;
+                    e.DragUIOverride.Caption = info.DropWrongFileNumber;
+                    return null;
                 }
-                finally
+                if (!this.picker.FileTypeFilter.Contains(file.FileType.ToLowerInvariant()))
                 {
-                    deferral.Complete();
+                    e.DragUIOverride.Caption = info.DropWrongFileType;
+                    return null;
                 }
-            });
+                e.AcceptedOperation = DataPackageOperation.Move | DataPackageOperation.Copy | DataPackageOperation.Link;
+                e.DragUIOverride.Caption = info.DropHint;
+                e.Handled = true;
+                return file;
+            }
+            finally
+            {
+                deferral.Complete();
+            }
         }
 
         private async void tbFileName_DragEnter(object sender, DragEventArgs e)
