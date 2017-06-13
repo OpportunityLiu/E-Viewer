@@ -171,6 +171,20 @@
       "LoadingMoreTextBlock/Text": "Loading more galleries...",
       "SelectAllAppBarButton/Label": "Select all"
     },
+    "FileSearchDialog": {
+      "BrowseButton/Content": "Browse...",
+      "ContentDialog/PrimaryButtonText": "Search",
+      "ContentDialog/SecondaryButtonText": "Cancel",
+      "ContentDialog/Title": "FILE SEARCH",
+      "CoverCheckBox/Content": "Only search covers",
+      "DropHint": "Use this file",
+      "DropWrongFileNumber": "You can only search single file",
+      "DropWrongFileType": "Unsupported file type",
+      "ExpungedCheckBox/Content": "Show expunged galleries",
+      "FileNameTextBox/PlaceholderText": "Drop a file here...",
+      "FileOpenPicker/CommitButtonText": "Select",
+      "SimilarCheckBox/Content": "Use similarity scan"
+    },
     "GalleryPage": {
       "AppBarButtonAddComment/Label": "Post new comment",
       "CommentsEmptyTextBlock/Text": "No comments",
@@ -260,10 +274,8 @@
       "LowPowerTagsCheckBox/Content": "Search low-power tags",
       "MinRatingCheckBox/Content": "Minimum rating:",
       "NamesCheckBox/Content": "Search gallery name",
-      "NotOnlyCoversTextBlock/Text": "• Search all pages",
       "OnlyCoversTextBlock/Text": "• Only search covers",
       "OnlyTorrentsCheckBox/Content": "Only show galleries with torrents",
-      "SearchAvailableTextBlock/Text": "• Hide expunged galleries",
       "SearchExactlyTextBlock/Text": "• Disable similarity scan",
       "SearchExpungedTextBlock/Text": "• Show expunged galleries",
       "SearchSimilarTextBlock/Text": "• Enable similarity scan",
