@@ -18,6 +18,7 @@ using Windows.UI.Core;
 using System.Runtime.CompilerServices;
 using Windows.ApplicationModel.Core;
 using Opportunity.MvvmUniverse;
+using Windows.UI;
 
 namespace ExViewer.Views
 {
@@ -449,11 +450,13 @@ namespace ExViewer.Views
                 }
             }
 
-            private static void HidePanel_Completed(object sender, object e)
+            private async static void HidePanel_Completed(object sender, object e)
             {
                 root.sv_root.IsEnabled = true;
                 root.rp_Disable.Visibility = Visibility.Collapsed;
                 ViewEnabled = true;
+                await root.Dispatcher.YieldIdle();
+                root.Focus(FocusState.Programmatic);
             }
 
             private static void ShowPanel_Completed(object sender, object e)
