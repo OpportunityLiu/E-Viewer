@@ -143,6 +143,8 @@ namespace ExViewer.Views
         {
             base.OnNavigatedFrom(e);
             this.av.VisibleBoundsChanged -= this.Av_VisibleBoundsChanged;
+            CloseAll();
+            cb_top_Closed(this.cb_top, null);
         }
 
         bool? isFullScreen;
