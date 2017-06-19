@@ -41,7 +41,7 @@ namespace ExViewer.Views
                 if (this.btnExpandButton == null)
                     this.btnExpandButton = this.ab.Descendants<Button>("ExpandButton").FirstOrDefault();
                 await Dispatcher.YieldIdle();
-                this.asb.Focus(FocusState.Programmatic);
+                this.btnExpandButton?.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
