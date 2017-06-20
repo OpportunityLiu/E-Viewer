@@ -1,15 +1,9 @@
-﻿using ExClient;
-using ExClient.Galleries;
+﻿using ExClient.Galleries;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;

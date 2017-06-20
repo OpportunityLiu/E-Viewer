@@ -15,7 +15,6 @@
     <UserControl.Resources>
         <Storyboard x:Key="ShowDisablePanel">
             <DoubleAnimation Duration="0:0:0.5"
-                             From="0"
                              To="1"
                              Storyboard.TargetName="rp_Disable"
                              Storyboard.TargetProperty="(UIElement.Opacity)">
@@ -26,7 +25,6 @@
         </Storyboard>
         <Storyboard x:Key="HideDisablePanel">
             <DoubleAnimation Duration="0:0:0.5"
-                             From="1"
                              To="0"
                              Storyboard.TargetName="rp_Disable"
                              Storyboard.TargetProperty="(UIElement.Opacity)">
@@ -320,9 +318,10 @@
         </Border>
         <RelativePanel x:Name="rp_Disable"
                        x:DeferLoadStrategy="Lazy"
+                       Opacity="0"
+                       Visibility="Collapsed"
                        Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}"
-                       Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay}"
-                       Visibility="Collapsed">
+                       Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay}">
             <TextBlock x:Name="tb_DisableInfo"
                        x:Uid="Views/RootControl/DisableInfoTextBlock"
                        Text="Operation in progress, plaese wait..."

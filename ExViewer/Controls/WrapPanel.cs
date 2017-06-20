@@ -27,8 +27,7 @@ namespace ExViewer.Controls
         /// </summary>
         public Orientation Orientation
         {
-            get { return (Orientation)GetValue(OrientationProperty); }
-            set { SetValue(OrientationProperty, value); }
+            get => (Orientation)GetValue(OrientationProperty); set => SetValue(OrientationProperty, value);
         }
 
         /// <summary>

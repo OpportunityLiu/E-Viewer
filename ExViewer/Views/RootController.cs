@@ -48,7 +48,7 @@ namespace ExViewer.Views
             {
                 var ov = TitleBarHeight;
                 var nv = sender.Height;
-                if(ov == nv)
+                if (ov == nv)
                     return;
                 TitleBarHeight = nv;
                 root.InvalidateMeasure();
@@ -59,7 +59,7 @@ namespace ExViewer.Views
             internal static void SetSplitViewButtonPlaceholderVisibility(bool visible)
             {
                 var old = SplitViewButtonPlaceholderVisibility;
-                if(old == visible)
+                if (old == visible)
                     return;
                 SplitViewButtonPlaceholderVisibility = visible;
                 SplitViewButtonPlaceholderVisibilityChanged?.Invoke(root, visible);
@@ -73,10 +73,10 @@ namespace ExViewer.Views
             internal static void SetSplitViewButtonOpacity(double opacity)
             {
                 tbtPaneOpacity = opacity;
-                if(Available)
+                if (Available)
                 {
                     root.tbtPane.Opacity = TbtPaneOpacity;
-                    if(TbtPaneOpacity < 0.6)
+                    if (TbtPaneOpacity < 0.6)
                         Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
                     else
                         Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
@@ -96,14 +96,14 @@ namespace ExViewer.Views
             /// <returns>表示是否在应用内处理</returns>
             public static bool HandleUriLaunch(Uri uri)
             {
-                if(uri == null)
+                if (uri == null)
                     return true;
-                if(!UriHandler.CanHandleInApp(uri))
+                if (!UriHandler.CanHandleInApp(uri))
                 {
                     UriHandler.Handle(uri);
                     return false;
                 }
-                if(Available)
+                if (Available)
                     UriHandler.Handle(uri);
                 else
                     launchUri = uri;
@@ -122,14 +122,14 @@ namespace ExViewer.Views
 #endif
             private static void av_VisibleBoundsChanged(ApplicationView sender, object args)
             {
-                if(IsFullScreen)
+                if (IsFullScreen)
                     sender.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
                 else
                     sender.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
 #if !DEBUG_BOUNDS
-                if(ApiInfo.StatusBarSupported)
+                if (ApiInfo.StatusBarSupported)
                 {
-                    if(sender.Orientation == ApplicationViewOrientation.Landscape)
+                    if (sender.Orientation == ApplicationViewOrientation.Landscape)
                     {
                         await StatusBar.HideAsync();
                     }
@@ -148,9 +148,9 @@ namespace ExViewer.Views
 
             public static void SetFullScreen(bool fullScreen)
             {
-                if(fullScreen)
+                if (fullScreen)
                 {
-                    if(ApplicationView.TryEnterFullScreenMode())
+                    if (ApplicationView.TryEnterFullScreenMode())
                     {
                         ApplicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
                     }
@@ -181,10 +181,10 @@ namespace ExViewer.Views
 
             private static Storyboard sbInitializer(ref Storyboard storage, EventHandler<object> completed, [CallerMemberName]string name = null)
             {
-                if(storage != null)
+                if (storage != null)
                     return storage;
                 var sb = (Storyboard)root.Resources[name];
-                if(completed != null)
+                if (completed != null)
                     sb.Completed += completed;
                 return storage = sb;
             }
@@ -202,7 +202,7 @@ namespace ExViewer.Views
             {
                 CloseSplitViewPane.Begin();
                 root.CloseSplitViewPaneBtnPane.To = TbtPaneOpacity;
-                if(TbtPaneOpacity < 0.6)
+                if (TbtPaneOpacity < 0.6)
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
                 else
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
@@ -211,7 +211,7 @@ namespace ExViewer.Views
 
             internal static void HandleUriLaunch()
             {
-                if(launchUri != null)
+                if (launchUri != null)
                     HandleUriLaunch(launchUri);
             }
 
@@ -234,11 +234,11 @@ namespace ExViewer.Views
 
             public static void SendToast(string content, Type source)
             {
-                if(!Available)
+                if (!Available)
                     return;
                 DispatcherHelper.BeginInvokeOnUIThread(() =>
                 {
-                    if(source != null && source != root.fm_inner.Content?.GetType())
+                    if (source != null && source != root.fm_inner.Content?.GetType())
                         return;
                     root.FindName(nameof(root.bd_Toast));
                     root.tb_Toast.Text = content;
@@ -254,13 +254,13 @@ namespace ExViewer.Views
 
             public static void SwitchSplitView(bool? open)
             {
-                if(!Available)
+                if (!Available)
                     return;
                 var currentState = root.sv_root.IsPaneOpen;
-                if(open == currentState)
+                if (open == currentState)
                     return;
                 var targetState = open ?? !currentState;
-                if(targetState)
+                if (targetState)
                 {
                     (root.fm_inner.Content as IHasAppBar)?.CloseAll();
                     root.sv_root.IsPaneOpen = true;
@@ -284,7 +284,7 @@ namespace ExViewer.Views
                     var succeed = !Client.Current.NeedLogOn;
                     JYAnalytics.TrackEvent("LogOnRequested", $"Result: {(succeed ? "Succeed" : "Failed")}");
                     UpdateUserInfo(result == ContentDialogResult.Primary);
-                    if(succeed)
+                    if (succeed)
                     {
                         Settings.SettingCollection.Current.Apply();
                     }
@@ -294,11 +294,11 @@ namespace ExViewer.Views
 
             public static async void UpdateUserInfo(bool setNull)
             {
-                if(Available && setNull)
+                if (Available && setNull)
                 {
                     root.UserInfo = null;
                 }
-                if(Client.Current.UserID == -1)
+                if (Client.Current.UserID == -1)
                     return;
                 var info = default(UserInfo);
                 try
@@ -306,25 +306,15 @@ namespace ExViewer.Views
                     info = await Client.Current.FetchCurrentUserInfoAsync();
                     await info.SaveToCache();
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     info = await UserInfo.LoadFromCache();
                 }
-                if(Available)
+                if (Available)
                 {
                     root.UserInfo = info;
                 }
             }
-
-            public static bool ViewDisabled
-            {
-                get; private set;
-            }
-
-            public static bool ViewEnabled
-            {
-                get; private set;
-            } = true;
 
             public static void TrackAsyncAction(IAsyncAction action)
             {
@@ -414,54 +404,47 @@ namespace ExViewer.Views
                 action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
             }
 
+            public static bool ViewEnabled
+            {
+                get; private set;
+            } = true;
+
             private static void DisableView(double? progress)
             {
-                if(ViewEnabled && !ViewDisabled)
-                {
-                    ViewDisabled = true;
+                ViewEnabled = false;
 
-                    root.FindName(nameof(root.rp_Disable));
-                    root.sv_root.IsEnabled = false;
-                    root.rp_Disable.Visibility = Visibility.Visible;
-
-                    ShowDisablePanel.Begin();
-                }
+                root.FindName(nameof(root.rp_Disable));
+                root.sv_root.IsEnabled = false;
+                root.rp_Disable.Visibility = Visibility.Visible;
                 var indeterminate = !progress.HasValue || double.IsNaN(progress.Value);
                 root.pb_Disable.IsIndeterminate = indeterminate;
-                if(!indeterminate)
+                if (!indeterminate)
                     root.pb_Disable.Value = progress.Value;
+
+                HideDisablePanel.Stop();
+                ShowDisablePanel.Begin();
             }
 
-            private static void EnableView()
+            private static async void EnableView()
             {
-                if(ViewDisabled)
-                {
-                    //entering
-                    if(ViewEnabled)
-                    {
-                        ShowDisablePanel.Stop();
-                    }
-                    //entered
-                    else
-                    {
-                    }
-                    ViewDisabled = false;
-                    HideDisablePanel.Begin();
-                }
-            }
-
-            private async static void HidePanel_Completed(object sender, object e)
-            {
-                root.sv_root.IsEnabled = true;
-                root.rp_Disable.Visibility = Visibility.Collapsed;
                 ViewEnabled = true;
-                await root.Dispatcher.YieldIdle();
+
+                root.sv_root.IsEnabled = true;
+
+                ShowDisablePanel.Stop();
+                HideDisablePanel.Begin();
+
+                await root.Dispatcher.Yield();
                 root.Focus(FocusState.Programmatic);
+            }
+
+            private static void HidePanel_Completed(object sender, object e)
+            {
+                root.rp_Disable.Visibility = Visibility.Collapsed;
             }
 
             private static void ShowPanel_Completed(object sender, object e)
             {
-                ViewEnabled = false;
             }
         }
     }
