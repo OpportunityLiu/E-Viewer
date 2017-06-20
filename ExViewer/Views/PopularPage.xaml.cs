@@ -18,6 +18,7 @@ using ExClient;
 using System.Threading.Tasks;
 using ExClient.Galleries;
 using Windows.UI;
+using Windows.UI.Core;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
