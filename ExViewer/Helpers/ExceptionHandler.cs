@@ -16,17 +16,20 @@ namespace ExViewer
 
         public static string GetMessage(this Exception ex)
         {
-            if(ex.InnerException!=null)
+            if (ex.InnerException != null)
             {
-                if(ex is System.Reflection.TargetInvocationException)
+                if (ex is System.Reflection.TargetInvocationException)
                     ex = ex.InnerException;
-                else if(ex is AggregateException)
+                else if (ex is AggregateException)
                     ex = ex.InnerException;
             }
+            var localizedMsg = Strings.Exceptions.GetValue(ex.HResult.ToString("X8"));
+            if (!string.IsNullOrEmpty(localizedMsg))
+                return localizedMsg;
             var msg = ex.Message.TrimStart();
-            foreach(var prefix in prefixes)
+            foreach (var prefix in prefixes)
             {
-                if(msg.StartsWith(prefix))
+                if (msg.StartsWith(prefix))
                 {
                     msg = msg.Substring(prefix.Length);
                     break;

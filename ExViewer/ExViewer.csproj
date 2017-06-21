@@ -100,6 +100,8 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="ExViewer_TemporaryKey.pfx" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-hant\Exceptions.resJson" />
+    <PRIResource Include="Strings\zh-hans\Exceptions.resJson" />
     <PRIResource Include="Strings\zh-hant\Settings.resJson" />
     <PRIResource Include="Strings\zh-hant\Resources.resJson" />
     <PRIResource Include="Strings\zh-hans\Settings.resJson" />
@@ -287,6 +289,7 @@
     <PRIResource Include="Strings\zh-hans\Resources.resJson" />
     <PRIResource Include="Strings\en\Resources.resJson" />
     <PRIResource Include="Strings\en\Settings.resJson" />
+    <PRIResource Include="Strings\en\Exceptions.resJson" />
     <None Include="Strings\Strings.resgenconfig" />
     <Content Include="Images\Light\UserBackground.scale-100.png" />
     <Content Include="Images\Light\UserBackground.scale-200.png" />

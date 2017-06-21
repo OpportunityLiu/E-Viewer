@@ -20,12 +20,14 @@ namespace ExViewer
             {
                 return value.Replace("\"", "\"\"");
             }
+
             var sb = new StringBuilder();
             do
             {
                 sb.AppendLine($"Type: {ex.GetType()}");
                 sb.AppendLine($"HResult: 0x{ex.HResult:X8}");
                 sb.AppendLine($"Message: @\"{toRaw(ex.Message)}\"");
+                sb.AppendLine($"DisplayedMessage: @\"{toRaw(ex.GetMessage())}\"");
                 sb.AppendLine();
                 sb.AppendLine("Data:");
                 foreach (var item in ex.Data.Keys)
