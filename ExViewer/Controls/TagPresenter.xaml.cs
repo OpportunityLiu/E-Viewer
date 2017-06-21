@@ -82,7 +82,7 @@ namespace ExViewer.Controls
                 s.FontWeight = Windows.UI.Text.FontWeights.ExtraLight;
                 break;
             case TagState.HighPower:
-                s.FontWeight = Windows.UI.Text.FontWeights.SemiBold;
+                s.FontWeight = Windows.UI.Text.FontWeights.Medium;
                 break;
             }
 
