@@ -76,6 +76,16 @@ namespace ExViewer.Controls
                 break;
             }
 
+            switch (state.GetPowerState())
+            {
+            case TagState.LowPower:
+                s.FontWeight = Windows.UI.Text.FontWeights.ExtraLight;
+                break;
+            case TagState.HighPower:
+                s.FontWeight = Windows.UI.Text.FontWeights.SemiBold;
+                break;
+            }
+
             var dc = value.GetDisplayContentAsync();
             if (dc.Status == AsyncStatus.Completed)
             {
