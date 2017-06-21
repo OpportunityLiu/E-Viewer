@@ -9,10 +9,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
-#elif PRERELEASE
+#elif PRE_RELEASE
 [assembly: AssemblyConfiguration("Pre-Release")]
 #else
-[assembly: AssemblyConfiguration("RELEASE")]
+[assembly: AssemblyConfiguration("Release")]
 #endif
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ExViewer")]
