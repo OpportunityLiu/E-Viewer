@@ -25,6 +25,7 @@ namespace ExViewer.Controls
             this.tb_AppAuthor.Text = Package.Current.PublisherDisplayName;
             this.tb_AppDescription.Text = Package.Current.Description;
             this.refreshTimer.Tick += this.RefreshTimer_Tick;
+            this.hlbHV.NavigateUri = ExClient.HentaiVerseInfo.LogOnUri;
         }
 
         private void RefreshTimer_Tick(object sender, object e)
