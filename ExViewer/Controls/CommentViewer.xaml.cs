@@ -1,5 +1,5 @@
 ﻿using ExClient;
-using ExClient.Commenting;
+using ExClient.Galleries.Commenting;
 using ExViewer.Views;
 using System;
 using System.Collections.Generic;

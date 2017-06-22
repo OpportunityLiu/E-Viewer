@@ -13,7 +13,7 @@ using Windows.Web.Http;
 using ExClient.Api;
 using System.Text;
 
-namespace ExClient.Commenting
+namespace ExClient.Galleries.Commenting
 {
     public sealed class Comment : ObservableObject
     {
@@ -143,7 +143,7 @@ namespace ExClient.Commenting
             || this.status == CommentStatus.VotedUp
             || this.status == CommentStatus.VotedDown;
 
-        public IAsyncAction VoteAsync(Api.VoteState command)
+        public IAsyncAction VoteAsync(VoteState command)
         {
             if (command != VoteState.Down && command != VoteState.Up)
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
@@ -152,7 +152,7 @@ namespace ExClient.Commenting
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteStateUploader);
                 else
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteState);
-            var request = new Api.CommentVote(this, command);
+            var request = new CommentVote(this, command);
             return AsyncInfo.Run(async token =>
             {
                 var res = await Client.Current.HttpClient.PostApiAsync(request);
@@ -162,13 +162,13 @@ namespace ExClient.Commenting
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
                 switch (r.Vote)
                 {
-                case Api.VoteState.Default:
+                case VoteState.Default:
                     this.Status = CommentStatus.Votable;
                     break;
-                case Api.VoteState.Up:
+                case VoteState.Up:
                     this.Status = CommentStatus.VotedUp;
                     break;
-                case Api.VoteState.Down:
+                case VoteState.Down:
                     this.Status = CommentStatus.VotedDown;
                     break;
                 }

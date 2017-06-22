@@ -1,4 +1,4 @@
-﻿using ExClient.Commenting;
+﻿using ExClient.Galleries.Commenting;
 using ExClient.Internal;
 using Newtonsoft.Json;
 using System;

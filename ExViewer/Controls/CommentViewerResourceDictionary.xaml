@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:ExViewer.Controls"
                     xmlns:con="using:Opportunity.Converters"
-                    xmlns:commenting="using:ExClient.Commenting">
+                    xmlns:commenting="using:ExClient.Galleries.Commenting">
     <Style x:Key="HeaderRectangleStyle"
            TargetType="Rectangle">
         <Setter Property="Fill"

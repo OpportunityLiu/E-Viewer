@@ -6,7 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              xmlns:con="using:Opportunity.Converters"
-             xmlns:commenting="using:ExClient.Commenting"
+             xmlns:commenting="using:ExClient.Galleries.Commenting"
              d:DesignHeight="200"
              d:DesignWidth="600"
              HorizontalContentAlignment="Stretch"

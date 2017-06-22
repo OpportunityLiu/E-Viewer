@@ -1,5 +1,5 @@
 ﻿using ExClient.Api;
-using ExClient.Commenting;
+using ExClient.Galleries.Commenting;
 using ExClient.Galleries.Metadata;
 using ExClient.Internal;
 using ExClient.Models;

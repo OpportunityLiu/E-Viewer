@@ -30,19 +30,13 @@ namespace ExClient
             return fav;
         }
 
-        internal FavoriteCollection(Client owner)
+        internal FavoriteCollection()
         {
             this.data = new FavoriteCategory[10];
             for(var i = 0; i < this.data.Length; i++)
             {
                 this.data[i] = new FavoriteCategory(i);
             }
-            this.Owner = owner;
-        }
-
-        internal Client Owner
-        {
-            get;
         }
 
         public FavoritesSearchResult Search(string keyword, FavoriteCategory category)

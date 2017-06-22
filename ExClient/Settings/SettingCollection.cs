@@ -7,10 +7,12 @@ namespace ExClient.Settings
 {
     public class SettingCollection
     {
-        internal SettingCollection(Client owner)
+        private readonly Client client;
+
+        internal SettingCollection(Client client)
         {
-            this.owner = owner;
-            foreach(var item in this.items)
+            this.client = client;
+            foreach (var item in this.items)
             {
                 item.Value.Owner = this;
             }
@@ -39,12 +41,12 @@ namespace ExClient.Settings
             {
                 Value = string.Join("-", this.items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray())
             };
-            this.owner.CookieManager.SetCookie(cookie);
+            this.client.CookieManager.SetCookie(cookie);
             cookie = new HttpCookie("uconfig", "e-hentai.org", "/")
             {
                 Value = string.Join("-", this.items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray())
             };
-            this.owner.CookieManager.SetCookie(cookie);
+            this.client.CookieManager.SetCookie(cookie);
         }
 
         private class DefaultSettingProvider : SettingProvider
@@ -58,7 +60,5 @@ namespace ExClient.Settings
                 return "ts_l-tr_2-rc_0-fs_f";
             }
         }
-
-        private readonly Client owner;
     }
 }
