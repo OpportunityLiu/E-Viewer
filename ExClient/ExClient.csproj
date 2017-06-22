@@ -143,8 +143,8 @@
     <Compile Include="Api\GalleryToken.cs" />
     <Compile Include="Api\ImageInfo.cs" />
     <Compile Include="Galleries\CachedGallery.cs" />
-    <Compile Include="Commenting\CommentCollection.cs" />
-    <Compile Include="Commenting\CommentStatus.cs" />
+    <Compile Include="Galleries\Commenting\CommentCollection.cs" />
+    <Compile Include="Galleries\Commenting\CommentStatus.cs" />
     <Compile Include="ConnectionStrategy.cs" />
     <Compile Include="FavoriteCategory.cs" />
     <Compile Include="FavoriteCollection.cs" />
@@ -181,7 +181,7 @@
     <Compile Include="Galleries\Metadata\RevisionCollection.cs" />
     <Compile Include="Galleries\SavedGallery.cs" />
     <Compile Include="Client-User.cs" />
-    <Compile Include="Commenting\Comment.cs" />
+    <Compile Include="Galleries\Commenting\Comment.cs" />
     <Compile Include="Helpers\HtmlHelper.cs" />
     <Compile Include="Internal\MyHttpClient.cs" />
     <Compile Include="Internal\RedirectFilter.cs" />
@@ -214,7 +214,9 @@
     <Compile Include="Galleries\Metadata\TorrentInfo.cs" />
     <Compile Include="Launch\UriLauncher.cs" />
     <Compile Include="Tagging\TagState.cs" />
+    <Compile Include="TopList.cs" />
     <Compile Include="UserInfo.cs" />
+    <Compile Include="UserStatus.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
     <PRIResource Include="Strings\en\Namespace.resjson" />
     <PRIResource Include="Strings\en\Category.resjson" />

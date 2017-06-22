@@ -84,8 +84,6 @@ namespace ExClient
                 throw new ArgumentNullException(nameof(password));
             return AsyncInfo.Run(async token =>
             {
-                if (this.disposedValue)
-                    throw new InvalidOperationException(LocalizedStrings.Resources.ClientDisposed);
                 var cookieBackUp = getLogOnInfo();
                 ClearLogOnInfo();
                 IEnumerable<KeyValuePair<string, string>> getParams()

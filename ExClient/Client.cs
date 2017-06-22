@@ -6,7 +6,7 @@ using Windows.Web.Http.Filters;
 
 namespace ExClient
 {
-    public partial class Client : IDisposable
+    public partial class Client
     {
         public static Client Current { get; } = new Client();
 
@@ -16,9 +16,7 @@ namespace ExClient
             httpFilter.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
             this.CookieManager = httpFilter.CookieManager;
             this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
-
             this.Settings = new SettingCollection(this);
-            this.Favorites = new FavoriteCollection(this);
 
             ResetExCookie();
         }
@@ -33,27 +31,10 @@ namespace ExClient
 
         public SettingCollection Settings { get; }
 
-        public FavoriteCollection Favorites { get; }
+        private readonly FavoriteCollection favotites = new FavoriteCollection();
+        public FavoriteCollection Favorites => NeedLogOn ? null : this.favotites;
 
-        #region IDisposable Support
-        private bool disposedValue = false; // 要检测冗余调用
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if(!this.disposedValue)
-            {
-                if(disposing)
-                {
-                    this.HttpClient.Dispose();
-                }
-                this.disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-        #endregion
+        private readonly UserStatus userStatus = new UserStatus();
+        public UserStatus UserStatus => NeedLogOn ? null : this.userStatus;
     }
 }

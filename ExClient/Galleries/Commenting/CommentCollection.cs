@@ -9,7 +9,7 @@ using System.Text;
 using Windows.Foundation;
 using Windows.Web.Http;
 
-namespace ExClient.Commenting
+namespace ExClient.Galleries.Commenting
 {
     public sealed class CommentCollection : ObservableCollection<Comment>
     {

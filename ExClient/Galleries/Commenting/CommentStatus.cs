@@ -1,6 +1,6 @@
 ﻿using ExClient.Api;
 
-namespace ExClient.Commenting
+namespace ExClient.Galleries.Commenting
 {
     public enum CommentStatus
     {

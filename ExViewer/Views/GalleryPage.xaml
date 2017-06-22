@@ -429,7 +429,7 @@
                                       Loaded="pv_Content_Loaded"
                                       SelectionMode="None">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate xmlns:c="using:ExClient.Commenting"
+                                    <DataTemplate xmlns:c="using:ExClient.Galleries.Commenting"
                                                   x:DataType="c:Comment">
                                         <controls:CommentViewer Comment="{x:Bind}" />
                                     </DataTemplate>
