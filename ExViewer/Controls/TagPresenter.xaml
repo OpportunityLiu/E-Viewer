@@ -10,6 +10,35 @@
              d:DesignHeight="200"
              d:DesignWidth="700">
     <UserControl.Resources>
+        <MenuFlyout x:Name="mfoTag"
+                    Placement="Bottom">
+            <MenuFlyoutItem x:Name="mfiContent"
+                            Text="{x:Bind SelectedTag.Content, Mode=OneWay}"
+                            ToolTipService.ToolTip="{x:Bind SelectedTag.Content, Mode=OneWay}"
+                            Click="mfiContent_Click" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteUpMenuFlyoutItem"
+                            x:Name="mfiUp"
+                            Click="mfiUp_Click"
+                            Text="Vote up" />
+            <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteDownMenuFlyoutItem"
+                            x:Name="mfiDown"
+                            Click="mfiDown_Click"
+                            Text="Vote down" />
+            <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagWithdrawVoteMenuFlyoutItem"
+                            x:Name="mfiWithdraw"
+                            Click="mfiWithdraw_Click"
+                            Text="Withdraw vote" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem x:Name="mfiTagDefination"
+                            x:Uid="Controls/TagPresenter/GoToDefinitionMenuFlyoutItem"
+                            Click="mfiTagDefination_Click"
+                            Text="Go to EHWiki for definition" />
+            <MenuFlyoutItem x:Name="mfiTagSearch"
+                            x:Uid="Controls/TagPresenter/SearchTagMenuFlyoutItem"
+                            Click="mfiTagSearch_Click"
+                            Text="Show galleries with this tag" />
+        </MenuFlyout>
         <Style x:Key="TagTextBlockStyle"
                TargetType="TextBlock">
             <Setter Property="Margin"
@@ -76,35 +105,6 @@
                 </GridView>
             </Grid>
         </DataTemplate>
-        <MenuFlyout x:Name="mfoTag"
-                    Placement="Bottom">
-            <MenuFlyoutItem x:Name="mfiContent"
-                            Text="{x:Bind SelectedTag.Content, Mode=OneWay}"
-                            ToolTipService.ToolTip="{x:Bind SelectedTag.Content, Mode=OneWay}"
-                            Click="mfiContent_Click" />
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteUpMenuFlyoutItem"
-                            x:Name="mfiUp"
-                            Click="mfiUp_Click"
-                            Text="Vote up" />
-            <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteDownMenuFlyoutItem"
-                            x:Name="mfiDown"
-                            Click="mfiDown_Click"
-                            Text="Vote down" />
-            <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagWithdrawVoteMenuFlyoutItem"
-                            x:Name="mfiWithdraw"
-                            Click="mfiWithdraw_Click"
-                            Text="Withdraw vote" />
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem x:Name="mfiTagDefination"
-                            x:Uid="Controls/TagPresenter/GoToDefinitionMenuFlyoutItem"
-                            Click="mfiTagDefination_Click"
-                            Text="Go to EHWiki for definition" />
-            <MenuFlyoutItem x:Name="mfiTagSearch"
-                            x:Uid="Controls/TagPresenter/SearchTagMenuFlyoutItem"
-                            Click="mfiTagSearch_Click"
-                            Text="Show galleries with this tag" />
-        </MenuFlyout>
     </UserControl.Resources>
     <ListView x:Name="lv_Tags"
               Grid.Row="1"
@@ -117,5 +117,27 @@
         <ListView.ItemContainerTransitions>
             <TransitionCollection />
         </ListView.ItemContainerTransitions>
+        <ListView.Footer>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="btnStartNew"
+                        Style="{ThemeResource TextBlockButtonStyle}"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Center"
+                        Content="Add new tags"
+                        Click="btnStartNew_Click"
+                        Margin="2" />
+                <TextBox x:Name="tbNewTags"
+                         InputScope="AlphanumericHalfWidth"
+                         PlaceholderText="Enter new tags, separated with comma." />
+                <Button x:Name="btnNewTags"
+                        Click="btnNewTags_Click"
+                        Grid.Column="1"
+                        Content="Tag" />
+            </Grid>
+        </ListView.Footer>
     </ListView>
 </UserControl>

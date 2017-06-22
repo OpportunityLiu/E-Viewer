@@ -91,6 +91,7 @@ namespace ExViewer
             }
             await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("fcf0a9351ea5917ec80d8c1b58b56ff1");
             ((Opportunity.Converters.StringToBooleanConverter)this.Resources["EmptyStringToCollapsedConverter"]).ValuesForFalse.Add("");
+            ((Opportunity.Converters.StringToBooleanConverter)this.Resources["EmptyStringToFalseConverter"]).ValuesForFalse.Add("");
         }
 
         protected override void OnActivated(IActivatedEventArgs args)

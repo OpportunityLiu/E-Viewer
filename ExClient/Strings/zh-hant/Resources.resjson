@@ -6,6 +6,7 @@
   "EmptyComment": "輸入不能為空。",
   "ExceedLimits": "已經超過圖片訪問配額限制，請稍後再試。",
   "ExpungedTorrent": "此種子已經被刪除。",
+  "InvalidNamespace": "無效的標籤名稱空間。",
   "OnlyIpv4": "僅支援 IPv4 地址。",
   "RemoveFromFavorites": "從收藏中移除",
   "SadPanda": "從 Ex 紳士返回了熊貓圖，這可能意味著當前使用者沒有訪問 Ex 紳士的許可權。",

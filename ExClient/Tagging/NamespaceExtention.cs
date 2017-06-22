@@ -69,7 +69,7 @@ namespace ExClient.Tagging
         {
             if (TryParse(str, out var r))
                 return r;
-            throw new FormatException("Wrong namespace.");
+            throw new FormatException(LocalizedStrings.Resources.InvalidNamespace);
         }
 
         public static bool TryParse(string str, out Namespace result)

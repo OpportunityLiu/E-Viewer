@@ -13,6 +13,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -30,6 +31,7 @@ namespace ExViewer.Controls
         public TagPresenter()
         {
             this.InitializeComponent();
+            this.resetNewTagState(false);
         }
 
         public TagCollection Tags
@@ -39,7 +41,13 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for Gallery.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TagsProperty =
-            DependencyProperty.Register(nameof(Tags), typeof(TagCollection), typeof(TagPresenter), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(Tags), typeof(TagCollection), typeof(TagPresenter), new PropertyMetadata(null, TagsPropertyChanged));
+
+        private static void TagsPropertyChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        {
+            var sender = (TagPresenter)dp;
+            sender.resetNewTagState(false);
+        }
 
         private static readonly Brush upBrush = (Brush)Application.Current.Resources["VoteUpCommentBrush"];
         private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownCommentBrush"];
@@ -213,6 +221,61 @@ namespace ExViewer.Controls
                 return;
             var vm = SearchVM.GetVM(SelectedTag.Search());
             RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+        }
+
+        private void resetNewTagState(bool startToTag)
+        {
+            this.tbNewTags.Text = "";
+            this.btnNewTags.IsEnabled = true;
+            this.tbNewTags.IsReadOnly = false;
+            if (startToTag)
+            {
+                this.tbNewTags.Visibility = Visibility.Visible;
+                this.btnNewTags.Visibility = Visibility.Visible;
+                this.btnStartNew.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                this.tbNewTags.Visibility = Visibility.Collapsed;
+                this.btnNewTags.Visibility = Visibility.Collapsed;
+                this.btnStartNew.Visibility = Visibility.Visible;
+            }
+        }
+
+        private async void btnStartNew_Click(object sender, RoutedEventArgs e)
+        {
+            resetNewTagState(true);
+            await this.Dispatcher.Yield();
+            this.tbNewTags.Focus(FocusState.Programmatic);
+        }
+
+        private static readonly char[] commas = new[] { ',', '՝', '،', '߸', '፣', '᠂', '⸲', '⸴', '⹁', '꘍', '꛵', '᠈', '꓾', 'ʻ', 'ʽ', '、', '﹐', '，', '﹑', '､', '︐', '︑' };
+
+        private async void btnNewTags_Click(object sender, RoutedEventArgs e)
+        {
+            var contentToTag = this.tbNewTags.Text;
+            var tagc = this.Tags;
+            if (tagc == null)
+                return;
+            try
+            {
+                this.tbNewTags.IsReadOnly = true;
+                this.btnNewTags.IsEnabled = false;
+                var tags = contentToTag.Split(commas, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Select(ExClient.Tagging.Tag.Parse).ToList();
+                if (Tags.Count == 0)
+                    return;
+                await tagc.VoteAsync(tags, VoteState.Up);
+            }
+            catch (Exception ex)
+            {
+                RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+            }
+            finally
+            {
+                resetNewTagState(false);
+            }
         }
     }
 }
