@@ -1,10 +1,9 @@
 ﻿using Opportunity.MvvmUniverse.Collections;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using IReadOnlyList = System.Collections.Generic.IReadOnlyList<ExClient.Tagging.Tag>;
-using System;
-using System.Collections.Specialized;
 
 namespace ExClient.Tagging
 {

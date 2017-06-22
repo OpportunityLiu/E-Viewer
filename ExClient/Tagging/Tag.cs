@@ -1,6 +1,5 @@
-﻿using System;
-using System.Text;
-using ExClient.Search;
+﻿using ExClient.Search;
+using System;
 
 namespace ExClient.Tagging
 {

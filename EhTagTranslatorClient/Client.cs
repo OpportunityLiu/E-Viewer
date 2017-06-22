@@ -1,5 +1,4 @@
 ﻿using EhTagTranslatorClient.Model;
-using ExClient;
 using ExClient.Tagging;
 using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;

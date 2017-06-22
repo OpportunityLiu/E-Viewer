@@ -1,6 +1,5 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
-using ExClient.Internal;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Opportunity.MvvmUniverse.AsyncHelpers;
@@ -10,7 +9,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;

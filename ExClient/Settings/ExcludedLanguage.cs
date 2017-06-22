@@ -1,6 +1,4 @@
-﻿using ExClient.Galleries.Metadata;
-
-namespace ExClient.Settings
+﻿namespace ExClient.Settings
 {
     public enum ExcludedLanguage
     {

@@ -1,9 +1,6 @@
-﻿using ExClient;
-using ExClient.Tagging;
+﻿using ExClient.Tagging;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.IO;
 using System.Text;

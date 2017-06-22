@@ -1,11 +1,9 @@
 ﻿using EhWikiClient.Models;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
-using Windows.Storage;
 using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 

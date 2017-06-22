@@ -4,7 +4,6 @@
              xmlns:local="using:ExViewer.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:wp="using:Microsoft.Toolkit.Uwp.UI.Controls.WrapPanel"
              xmlns:tagging="using:ExClient.Tagging"
              mc:Ignorable="d"
              d:DesignHeight="200"
