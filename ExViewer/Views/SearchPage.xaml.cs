@@ -55,7 +55,6 @@ namespace ExViewer.Views
                 }
             }
             this.VM.SetQueryWithSearchResult();
-            await ExClient.Client.Current.UserStatus.RefreshAsync();
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

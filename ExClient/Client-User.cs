@@ -122,6 +122,7 @@ namespace ExClient
                     }
                     await this.HttpClient.GetAsync(new Uri(UriProvider.Eh.RootUri, "favorites.php"), HttpCompletionOption.ResponseHeadersRead);
                     ResetExCookie();
+                    var ignore = this.UserStatus?.RefreshAsync();
                 }
                 catch (Exception)
                 {

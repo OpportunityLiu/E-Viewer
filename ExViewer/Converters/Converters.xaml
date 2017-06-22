@@ -23,6 +23,8 @@
                          NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
     <!--Code to initalize this converter is at App.xaml.cs-->
     <!--Add string.Empty to ValuesForFalse-->
+    <c:StringToBooleanConverter x:Key="EmptyStringToFalseConverter"
+                                IfNeither="True" />
     <c:StringToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
                                 IfNeither="True"
                                 NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
