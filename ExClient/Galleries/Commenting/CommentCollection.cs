@@ -1,5 +1,4 @@
-﻿using ExClient.Galleries;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;

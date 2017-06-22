@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using ExClient.Api;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Opportunity.MvvmUniverse;
@@ -7,11 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
-using ExClient.Api;
-using System.Text;
 
 namespace ExClient.Galleries.Commenting
 {

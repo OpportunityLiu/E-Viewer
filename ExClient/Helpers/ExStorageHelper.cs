@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Windows.Foundation;
 using Windows.Storage;
-using Windows.Storage.FileProperties;
-using Windows.Storage.Streams;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient

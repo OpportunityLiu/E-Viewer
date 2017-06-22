@@ -1,17 +1,13 @@
 ﻿using ExClient.Models;
 using Microsoft.EntityFrameworkCore;
-using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Storage;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Windows.Graphics.Imaging;
 
 namespace ExClient.Galleries
 {

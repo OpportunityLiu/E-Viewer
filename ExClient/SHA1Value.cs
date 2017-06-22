@@ -1,16 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
+﻿using ExClient.Internal;
+using System;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Storage.Streams;
-using Windows.Foundation;
-using System.Runtime.InteropServices.WindowsRuntime;
-using ExClient.Internal;
 
 namespace ExClient
 {

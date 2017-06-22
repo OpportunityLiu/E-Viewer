@@ -13,7 +13,6 @@ using Windows.Data.Html;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage;
-using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;

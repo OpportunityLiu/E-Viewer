@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ExClient.Internal
+﻿namespace ExClient.Internal
 {
     internal class FavoriteCollectionNames
         : ApplicationDataManager.Settings.ApplicationSettingCollection

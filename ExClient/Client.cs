@@ -1,6 +1,5 @@
 ﻿using ExClient.Internal;
 using ExClient.Settings;
-using System;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 

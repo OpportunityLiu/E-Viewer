@@ -1,10 +1,6 @@
-﻿using System;
+﻿using EhWikiClient.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using EhWikiClient.Models;
-using EhWikiClient;
 
 namespace EhWikiClient.Migrations
 {

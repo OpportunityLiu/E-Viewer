@@ -1,27 +1,17 @@
-﻿using ExClient;
-using ExClient.Api;
-using ExClient.Galleries;
+﻿using ExClient.Api;
 using ExClient.Tagging;
 using ExViewer.ViewModels;
 using ExViewer.Views;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -32,8 +22,8 @@ namespace ExViewer.Controls
         public TagPresenter()
         {
             this.InitializeComponent();
-            this.resetNewTagState(false);
             this.submitCmd = new Opportunity.MvvmUniverse.Commands.AsyncCommand<string>(submit);
+            this.resetNewTagState(false);
         }
 
         public TagCollection Tags
@@ -225,31 +215,6 @@ namespace ExViewer.Controls
             RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
         }
 
-        private void resetNewTagState(bool startToTag)
-        {
-            var id = TagSuggestionService.GetStateCode(this.asbNewTags);
-            this.asbNewTags.Text = "";
-            this.asbNewTags.IsEnabled = true;
-            if (startToTag)
-            {
-                this.asbNewTags.Visibility = Visibility.Visible;
-                this.btnStartNew.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                this.asbNewTags.Visibility = Visibility.Collapsed;
-                this.btnStartNew.Visibility = Visibility.Visible;
-            }
-            TagSuggestionService.SetStateCode(this.asbNewTags, id + 1);
-        }
-
-        private async void btnStartNew_Click(object sender, RoutedEventArgs e)
-        {
-            resetNewTagState(true);
-            await this.Dispatcher.Yield();
-            this.asbNewTags.Focus(FocusState.Programmatic);
-        }
-
         private static readonly char[] commas = new[] { ',', '՝', '،', '߸', '፣', '᠂', '⸲', '⸴', '⹁', '꘍', '꛵', '᠈', '꓾', 'ʻ', 'ʽ', '、', '﹐', '，', '﹑', '､', '︐', '︑' };
 
         private Opportunity.MvvmUniverse.Commands.AsyncCommand<string> submitCmd;
@@ -277,6 +242,31 @@ namespace ExViewer.Controls
             {
                 resetNewTagState(false);
             }
+        }
+
+        private void resetNewTagState(bool startToTag)
+        {
+            var id = TagSuggestionService.GetStateCode(this.asbNewTags);
+            this.asbNewTags.Text = "";
+            this.asbNewTags.IsEnabled = true;
+            if (startToTag)
+            {
+                this.asbNewTags.Visibility = Visibility.Visible;
+                this.btnStartNew.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                this.asbNewTags.Visibility = Visibility.Collapsed;
+                this.btnStartNew.Visibility = Visibility.Visible;
+            }
+            TagSuggestionService.SetStateCode(this.asbNewTags, id + 1);
+        }
+
+        private async void btnStartNew_Click(object sender, RoutedEventArgs e)
+        {
+            resetNewTagState(true);
+            await this.Dispatcher.Yield();
+            this.asbNewTags.Focus(FocusState.Programmatic);
         }
 
         private void asbNewTags_LostFocus(object sender, RoutedEventArgs e)
