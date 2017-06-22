@@ -35,15 +35,23 @@ namespace ExViewer.Views
             };
             l.AddRange(Client.Current.Favorites);
             this.cbCategory.ItemsSource = l;
+            this.submitSearchCmd = new Opportunity.MvvmUniverse.Commands.Command<string>(submitSearch);
         }
 
-        private int navId;
+        private Opportunity.MvvmUniverse.Commands.Command<string> submitSearchCmd;
+
+        private void submitSearch(string text)
+        {
+            CloseAll();
+            this.VM.Search.Execute(text);
+        }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             Navigator.GetForCurrentView().Handlers.Add(this);
-            this.navId++;
+            var id = TagSuggestionService.GetStateCode(this.asb);
+            TagSuggestionService.SetStateCode(this.asb, id + 1);
             this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
             if (e.NavigationMode == NavigationMode.New)
             {
@@ -87,42 +95,6 @@ namespace ExViewer.Views
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(FavoritesVM), typeof(FavoritesPage), new PropertyMetadata(null));
-
-        private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput;
-            var currentId = this.navId;
-            if (needAutoComplete)
-            {
-                var r = await this.VM.LoadSuggestion(sender.Text);
-                if (args.CheckCurrent() && currentId == this.navId)
-                {
-                    this.asb.ItemsSource = r;
-                }
-            }
-        }
-
-        private async void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            sender.ItemsSource = null;
-            if (args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
-            {
-                CloseAll();
-                this.VM.Search.Execute(args.QueryText);
-            }
-            else
-            {
-                this.asb.Focus(FocusState.Keyboard);
-                // workaround for IME candidates, which will clean input.
-                await Dispatcher.YieldIdle();
-                this.asb.Text = args.ChosenSuggestion.ToString();
-            }
-        }
-
-        private void asb_LostFocus(object sender, RoutedEventArgs e)
-        {
-            this.asb.ItemsSource = null;
-        }
 
         private void lv_RefreshRequested(object sender, EventArgs e)
         {

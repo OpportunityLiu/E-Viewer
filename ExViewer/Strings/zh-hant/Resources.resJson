@@ -67,6 +67,8 @@
       "ReleaseTextBlock/Text": "釋放重新整理"
     },
     "TagPresenter": {
+      "AddNewTagsAutoSuggestBox/PlaceholderText": "輸入新標籤，逗號分隔",
+      "AddNewTagsButton/Content": "新增標籤",
       "GoToDefinitionMenuFlyoutItem/Text": "前往 EHWiki 檢視定義",
       "SearchTagMenuFlyoutItem/Text": "搜尋含有此標籤的畫廊",
       "TagCopied": "已將標籤複製到剪貼簿",

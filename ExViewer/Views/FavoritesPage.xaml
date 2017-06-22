@@ -104,9 +104,8 @@
                             Margin="8"
                             Text="{x:Bind VM.Keyword, Mode=TwoWay}"
                             PlaceholderText="Search..."
-                            QuerySubmitted="asb_QuerySubmitted"
-                            TextChanged="asb_TextChanged"
-                            LostFocus="asb_LostFocus"
+                            controls:TagSuggestionService.IsEnabled="True"
+                            controls:TagSuggestionService.SubmitCommand="{x:Bind submitSearchCmd}"
                             VerticalAlignment="Stretch" />
             <CommandBar x:Name="cbActions"
                         x:DeferLoadStrategy="Lazy"
@@ -124,13 +123,13 @@
                                               Width="{x:Bind cdSplitViewPlaceholder.Width, Mode=OneWay}" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                    <ComboBox x:Name="cbCategory2"
-                              Margin="8"
-                              Grid.Column="1"
-                              Grid.ColumnSpan="1000"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
-                              ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
+                        <ComboBox x:Name="cbCategory2"
+                                  Margin="8"
+                                  Grid.Column="1"
+                                  Grid.ColumnSpan="1000"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
                     </Grid>
                 </CommandBar.Content>
                 <CommandBar.PrimaryCommands>

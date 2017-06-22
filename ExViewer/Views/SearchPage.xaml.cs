@@ -25,15 +25,24 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
             this.VisibleBoundHandledByDesign = true;
+            this.submitSearchCmd = new Opportunity.MvvmUniverse.Commands.Command<string>(submitSearch);
         }
 
-        private int navId;
+        private Opportunity.MvvmUniverse.Commands.Command<string> submitSearchCmd;
+
+        private void submitSearch(string text)
+        {
+            CloseAll();
+            this.VM.Search.Execute(text);
+        }
+
         private Button btnExpandButton;
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            this.navId++;
+            var id = TagSuggestionService.GetStateCode(this.asb);
+            TagSuggestionService.SetStateCode(this.asb, id + 1);
             this.VM = SearchVM.GetVM(e.Parameter?.ToString());
             if (e.NavigationMode == NavigationMode.New)
             {
@@ -87,42 +96,6 @@ namespace ExViewer.Views
         {
             this.sv_AdvancedSearch.IsEnabled = false;
             Grid.SetColumn(this.asb, 1);
-        }
-
-        private async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            var needAutoComplete = args.Reason == AutoSuggestionBoxTextChangeReason.UserInput;
-            var currentId = this.navId;
-            if (needAutoComplete)
-            {
-                var r = await this.VM.LoadSuggestion(sender.Text);
-                if (args.CheckCurrent() && currentId == this.navId)
-                {
-                    this.asb.ItemsSource = r;
-                }
-            }
-        }
-
-        private async void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            sender.ItemsSource = null;
-            if (args.ChosenSuggestion == null || this.VM.AutoCompleteFinished(args.ChosenSuggestion))
-            {
-                CloseAll();
-                this.VM.Search.Execute(args.QueryText);
-            }
-            else
-            {
-                this.asb.Focus(FocusState.Keyboard);
-                // workaround for IME candidates, which will clean input.
-                await Dispatcher.YieldIdle();
-                this.asb.Text = args.ChosenSuggestion.ToString();
-            }
-        }
-
-        private void asb_LostFocus(object sender, RoutedEventArgs e)
-        {
-            this.asb.ItemsSource = null;
         }
 
         private void lv_RefreshRequested(object sender, EventArgs e)
