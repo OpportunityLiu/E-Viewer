@@ -85,69 +85,6 @@ namespace ExViewer.ViewModels
             }
         }, sh => sh != null);
 
-        private class TagRecordEqulityComparer : IEqualityComparer<ITagRecord>
-        {
-            public bool Equals(ITagRecord x, ITagRecord y)
-            {
-                return x.TagToString() == y.TagToString();
-            }
-
-            public int GetHashCode(ITagRecord obj)
-            {
-                return (obj?.TagToString() ?? "").GetHashCode();
-            }
-        }
-
-        private static readonly IEqualityComparer<ITagRecord> tagComparer = new TagRecordEqulityComparer();
-
-        internal IAsyncOperation<IReadOnlyList<object>> LoadSuggestion(string input)
-        {
-            return Task.Run<IReadOnlyList<object>>(() =>
-            {
-                input = input?.Trim() ?? "";
-                using (var db = new SearchHistoryDb())
-                {
-                    var history = ((IEnumerable<SearchHistory>)db.SearchHistorySet
-                                                                 .Where(sh => sh.Content.Contains(input))
-                                                                 .OrderByDescending(sh => sh.Time))
-                                        .Distinct()
-                                        .Select(sh => sh.SetHighlight(input));
-                    AutoCompletion.SplitKeyword(input, out var lastwordNs, out var lastword, out var previous);
-                    var dictionary = default(IEnumerable<ITagRecord>);
-                    if (!string.IsNullOrEmpty(lastword) && lastwordNs != ExClient.Tagging.Namespace.Unknown)
-                    {
-                        dictionary = TagRecordFactory.GetTranslatedRecords(lastword, lastwordNs)
-                            .Concat<ITagRecord>(TagRecordFactory.GetRecords(lastword, lastwordNs))
-                            .Where(t => t != null)
-                            .OrderByDescending(t => t.Score)
-                            .Take(25)
-                            .Distinct(tagComparer)
-                            .Select(tag => tag.SetPrevious(previous));
-                    }
-                    else
-                    {
-                        dictionary = Enumerable.Empty<ITagRecord>();
-                    }
-                    try
-                    {
-                        return ((IEnumerable<object>)AutoCompletion.GetCompletions(input)).Concat(dictionary).Concat(history).ToList().AsReadOnly();
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        //Collection changed
-                        return null;
-                    }
-                }
-            }).AsAsyncOperation();
-        }
-
-        internal bool AutoCompleteFinished(object selectedSuggestion)
-        {
-            if (selectedSuggestion is SearchHistory)
-                return true;
-            return false;
-        }
-
         public IAsyncAction ClearHistoryAsync()
         {
             return Run(async token =>

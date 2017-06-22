@@ -8,19 +8,21 @@ using TransClient = EhTagTranslatorClient.Client;
 using TransRecord = EhTagTranslatorClient.Record;
 using WikiClient = EhWikiClient.Client;
 
-namespace ExViewer.ViewModels
+namespace ExViewer.Controls.TagSuggestion
 {
     public interface ITagRecord
     {
         string AdditionalInfo { get; }
         string Caption { get; }
         string Highlight { get; }
-        string Previous { get; set; }
         int Score { get; }
         string Title { get; }
 
         string TagToString();
-        ITagRecord SetPrevious(string p);
+        string Prefix { get; set; }
+        ITagRecord SetPrefix(string p);
+        string Suffix { get; set; }
+        ITagRecord SetSuffix(string s);
         string ToString();
     }
 
@@ -39,13 +41,14 @@ namespace ExViewer.ViewModels
 
         public int Score { get; }
 
-        public string Previous { get; set; }
-
         public abstract string Title { get; }
 
         public abstract string Caption { get; }
 
         public abstract string AdditionalInfo { get; }
+
+        public string Prefix { get; set; }
+        public string Suffix { get; set; } = " ";
 
         public virtual string TagToString()
         {
@@ -54,12 +57,18 @@ namespace ExViewer.ViewModels
 
         public override string ToString()
         {
-            return Previous + TagToString() + " ";
+            return Prefix + TagToString() + Suffix;
         }
 
-        ITagRecord ITagRecord.SetPrevious(string p)
+        ITagRecord ITagRecord.SetPrefix(string p)
         {
-            this.Previous = p;
+            this.Prefix = p;
+            return this;
+        }
+
+        ITagRecord ITagRecord.SetSuffix(string s)
+        {
+            this.Suffix = s;
             return this;
         }
     }

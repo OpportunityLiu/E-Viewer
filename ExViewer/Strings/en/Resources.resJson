@@ -67,6 +67,8 @@
       "ReleaseTextBlock/Text": "Release to refresh"
     },
     "TagPresenter": {
+      "AddNewTagsAutoSuggestBox/PlaceholderText": "Enter new tags, separated with comma",
+      "AddNewTagsButton/Content": "Add new tags",
       "GoToDefinitionMenuFlyoutItem/Text": "Go to EHWiki for definition",
       "SearchTagMenuFlyoutItem/Text": "Show galleries with this tag",
       "TagCopied": "Tag has been copied to clipboard",

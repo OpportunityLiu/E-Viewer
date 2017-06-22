@@ -104,9 +104,8 @@
                                 Margin="8"
                                 Text="{x:Bind VM.Keyword, Mode=TwoWay}"
                                 PlaceholderText="Search..."
-                                QuerySubmitted="asb_QuerySubmitted"
-                                TextChanged="asb_TextChanged"
-                                LostFocus="asb_LostFocus" />
+                                controls:TagSuggestionService.IsEnabled="True"
+                                controls:TagSuggestionService.SubmitCommand="{x:Bind submitSearchCmd}" />
                 <ScrollViewer x:Name="sv_AdvancedSearch"
                               Grid.Row="1"
                               Grid.ColumnSpan="2"

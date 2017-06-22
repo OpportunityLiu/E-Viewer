@@ -67,6 +67,8 @@
       "ReleaseTextBlock/Text": "释放刷新"
     },
     "TagPresenter": {
+      "AddNewTagsAutoSuggestBox/PlaceholderText": "输入新标签，逗号分隔",
+      "AddNewTagsButton/Content": "添加新标签",
       "GoToDefinitionMenuFlyoutItem/Text": "前往 EHWiki 查看定义",
       "SearchTagMenuFlyoutItem/Text": "搜索含有此标签的画廊",
       "TagCopied": "已将标签复制到剪贴板",

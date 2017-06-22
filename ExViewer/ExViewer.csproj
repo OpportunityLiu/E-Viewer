@@ -121,6 +121,7 @@
     <Compile Include="Controls\MyContentDialog.cs" />
     <Compile Include="Controls\MyPage.cs" />
     <Compile Include="Controls\PullToRefreshIndicator.cs" />
+    <Compile Include="Controls\TagAutoSuggestBox\TagSuggestionService.cs" />
     <Compile Include="Controls\TagPresenter.xaml.cs">
       <DependentUpon>TagPresenter.xaml</DependentUpon>
     </Compile>
@@ -170,12 +171,11 @@
     </Compile>
     <Compile Include="UriHandler.cs" />
     <Compile Include="VersionChecker.cs" />
-    <Compile Include="ViewModels\AutoCompletion.cs" />
     <Compile Include="ViewModels\CachedVM.cs" />
     <Compile Include="ViewModels\CacheStorage{TKey,TCache}.cs" />
     <Compile Include="ViewModels\FavoritesVM.cs" />
     <Compile Include="ViewModels\GalleryListVM{T}.cs" />
-    <Compile Include="ViewModels\ITagRecord.cs" />
+    <Compile Include="Controls\TagAutoSuggestBox\ITagRecord.cs" />
     <Compile Include="ViewModels\PopularVM.cs" />
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />

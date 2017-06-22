@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -32,6 +33,7 @@ namespace ExViewer.Controls
         {
             this.InitializeComponent();
             this.resetNewTagState(false);
+            this.submitCmd = new Opportunity.MvvmUniverse.Commands.AsyncCommand<string>(submit);
         }
 
         public TagCollection Tags
@@ -225,43 +227,42 @@ namespace ExViewer.Controls
 
         private void resetNewTagState(bool startToTag)
         {
-            this.tbNewTags.Text = "";
-            this.btnNewTags.IsEnabled = true;
-            this.tbNewTags.IsReadOnly = false;
+            var id = TagSuggestionService.GetStateCode(this.asbNewTags);
+            this.asbNewTags.Text = "";
+            this.asbNewTags.IsEnabled = true;
             if (startToTag)
             {
-                this.tbNewTags.Visibility = Visibility.Visible;
-                this.btnNewTags.Visibility = Visibility.Visible;
+                this.asbNewTags.Visibility = Visibility.Visible;
                 this.btnStartNew.Visibility = Visibility.Collapsed;
             }
             else
             {
-                this.tbNewTags.Visibility = Visibility.Collapsed;
-                this.btnNewTags.Visibility = Visibility.Collapsed;
+                this.asbNewTags.Visibility = Visibility.Collapsed;
                 this.btnStartNew.Visibility = Visibility.Visible;
             }
+            TagSuggestionService.SetStateCode(this.asbNewTags, id + 1);
         }
 
         private async void btnStartNew_Click(object sender, RoutedEventArgs e)
         {
             resetNewTagState(true);
             await this.Dispatcher.Yield();
-            this.tbNewTags.Focus(FocusState.Programmatic);
+            this.asbNewTags.Focus(FocusState.Programmatic);
         }
 
         private static readonly char[] commas = new[] { ',', '՝', '،', '߸', '፣', '᠂', '⸲', '⸴', '⹁', '꘍', '꛵', '᠈', '꓾', 'ʻ', 'ʽ', '、', '﹐', '，', '﹑', '､', '︐', '︑' };
 
-        private async void btnNewTags_Click(object sender, RoutedEventArgs e)
+        private Opportunity.MvvmUniverse.Commands.AsyncCommand<string> submitCmd;
+
+        private async Task submit(string text)
         {
-            var contentToTag = this.tbNewTags.Text;
             var tagc = this.Tags;
             if (tagc == null)
                 return;
             try
             {
-                this.tbNewTags.IsReadOnly = true;
-                this.btnNewTags.IsEnabled = false;
-                var tags = contentToTag.Split(commas, StringSplitOptions.RemoveEmptyEntries)
+                this.asbNewTags.IsEnabled = false;
+                var tags = text.Split(commas, StringSplitOptions.RemoveEmptyEntries)
                     .Where(s => !string.IsNullOrWhiteSpace(s))
                     .Select(ExClient.Tagging.Tag.Parse).ToList();
                 if (Tags.Count == 0)
@@ -276,6 +277,18 @@ namespace ExViewer.Controls
             {
                 resetNewTagState(false);
             }
+        }
+
+        private void asbNewTags_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(this.asbNewTags.Text))
+                resetNewTagState(false);
+        }
+
+        private void btnStartNew_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (this.btnStartNew.FocusState == FocusState.Keyboard)
+                btnStartNew_Click(sender, e);
         }
     }
 }
