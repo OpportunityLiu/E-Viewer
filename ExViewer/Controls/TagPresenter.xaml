@@ -127,6 +127,7 @@
                         Margin="16,0"
                         QueryIcon="Tag"
                         PlaceholderText="Enter new tags, separated with comma"
+                        Loaded="asbNewTags_Loaded"
                         TextBoxStyle="{StaticResource AutoSuggestBoxTextBoxStyle}"
                         Style="{StaticResource SearchAutoSuggestBoxStyle}"
                         LostFocus="asbNewTags_LostFocus"

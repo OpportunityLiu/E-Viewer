@@ -253,7 +253,7 @@
                       VerticalScrollMode="Auto"
                       VerticalSnapPointsType="Mandatory">
             <StackPanel>
-                <Grid x:Name="gd_Info"
+                <Grid x:Name="gdInfo"
                       Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                       MinHeight="100"
                       MaxHeight="300">

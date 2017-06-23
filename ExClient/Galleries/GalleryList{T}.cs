@@ -16,6 +16,13 @@ namespace ExClient.Galleries
         internal GalleryList(List<TModel> models)
             : base(Enumerable.Repeat<TGallery>(null, models.Count))
         {
+            var end = Math.Min(models.Count, 10);
+            for (var i = 0; i < end; i++)
+            {
+                this[i] = Load(models[i]);
+                models[i] = default(TModel);
+                this.loadedCount++;
+            }
             this.models = models;
         }
 
