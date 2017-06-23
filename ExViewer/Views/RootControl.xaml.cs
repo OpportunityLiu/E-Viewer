@@ -243,10 +243,6 @@ namespace ExViewer.Views
             }
             else
             {
-                if (RootController.InputPane.OccludedRect.Height == 0)
-                    ClearValue(VisibleBoundsThicknessProperty);
-                else
-                    ClearValue(VisibleBoundsThicknessProperty);
                 var vb = RootController.ApplicationView.VisibleBounds;
                 var wb = Window.Current.Bounds;
                 var tbh = RootController.TitleBarHeight;
@@ -254,7 +250,7 @@ namespace ExViewer.Views
                     bound(vb.Left - wb.Left),
                     bound(vb.Top + tbh - wb.Top),
                     bound(wb.Right - vb.Right),
-                    bound(paneHeight == 0 ? wb.Bottom - vb.Bottom : paneHeight));
+                    bound(wb.Bottom - vb.Bottom + paneHeight));
 
                 double bound(double value) => value < 0 ? 0 : value;
             }
