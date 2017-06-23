@@ -37,13 +37,13 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
             this.VisibleBoundHandledByDesign = true;
-            this.gd_Info.RegisterPropertyChangedCallback(ActualHeightProperty, this.set_btn_Scroll_Rotation);
+            this.gdInfo.RegisterPropertyChangedCallback(ActualHeightProperty, this.set_btn_Scroll_Rotation);
             this.sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, this.set_btn_Scroll_Rotation);
         }
 
         private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)
         {
-            var infoHeight = this.gd_Info.ActualHeight;
+            var infoHeight = this.gdInfo.ActualHeight;
             if (infoHeight < 1)
                 this.ct_btn_Scroll.Rotation = 0;
             else
@@ -57,7 +57,7 @@ namespace ExViewer.Views
             {
                 changeViewTo(true, false);
             }
-            else if (e.IsInertial && e.NextView.VerticalOffset < 1 && this.sv_Content.VerticalOffset > this.gd_Info.ActualHeight - 1)
+            else if (e.IsInertial && e.NextView.VerticalOffset < 1 && this.sv_Content.VerticalOffset > this.gdInfo.ActualHeight - 1)
             {
                 changeViewTo(false, false);
             }
@@ -77,9 +77,12 @@ namespace ExViewer.Views
 
         protected override async void VisibleBoundsChanged(Thickness visibleBoundsThickness)
         {
+            if (this.needResetView || this.needRestoreView)
+                return;
             InvalidateMeasure();
-            await Dispatcher.Yield();
-            changeView(true, true);
+            await Dispatcher.YieldIdle();
+            await Dispatcher.YieldIdle();
+            changeViewTo(false, true);
         }
 
         private Grid gdPvContentHeaderPresenter;
@@ -96,7 +99,7 @@ namespace ExViewer.Views
                 if (this.gdPvContentHeaderPresenter != null)
                     infoH -= this.gdPvContentHeaderPresenter.ActualHeight;
             }
-            this.gd_Info.MaxHeight = Math.Min(infoH - 24, 360);
+            this.gdInfo.MaxHeight = Math.Min(infoH - 24, 360);
             this.gd_Pivot.Height = height;
             return base.MeasureOverride(availableSize);
         }
@@ -130,31 +133,22 @@ namespace ExViewer.Views
             {
                 this.gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
             }
-            changeViewTo(this.isGd_InfoHideWhenLeave, true);
+            changeViewTo(true, true);
         }
 
-        private bool isGd_InfoHideWhenLeave;
-
-        private bool IsGd_InfoHide
+        private bool isGdInfoHide
         {
             get
             {
-                var fullOffset = this.gd_Info.ActualHeight;
+                var fullOffset = this.gdInfo.ActualHeight;
                 return this.sv_Content.VerticalOffset > fullOffset * 0.95;
             }
         }
 
-        private void changeView(bool keep, bool disableAnimation)
+        private void changeViewTo(bool hideGdInfo, bool disableAnimation)
         {
-            var state = this.IsGd_InfoHide;
-            if (!keep) state = !state;
-            changeViewTo(state, disableAnimation);
-        }
-
-        private void changeViewTo(bool view, bool disableAnimation)
-        {
-            var fullOffset = this.gd_Info.ActualHeight;
-            if (view)
+            var fullOffset = this.gdInfo.ActualHeight;
+            if (hideGdInfo)
                 this.sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
             else
                 this.sv_Content.ChangeView(null, 0, null, disableAnimation);
@@ -164,13 +158,14 @@ namespace ExViewer.Views
         {
             base.OnNavigatedTo(e);
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
-            var mode = e.NavigationMode;
-            if (mode == NavigationMode.New)
+            var reset = e.NavigationMode == NavigationMode.New;
+            var restore = e.NavigationMode == NavigationMode.Back;
+            if (reset)
             {
                 resetView();
                 this.needResetView = true;
             }
-            if (mode == NavigationMode.Back)
+            else if (restore)
             {
                 this.entranceElement = (UIElement)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
                 if (this.entranceElement != null)
@@ -179,22 +174,20 @@ namespace ExViewer.Views
                 }
             }
             await Dispatcher.YieldIdle();
-            switch (mode)
+            if (reset)
             {
-            case NavigationMode.New:
                 this.pv.Focus(FocusState.Programmatic);
                 this.pv.SelectedIndex = 0;
-                break;
-            case NavigationMode.Back:
+            }
+            else if (restore)
+            {
                 this.needRestoreView = true;
                 ((Control)this.entranceElement)?.Focus(FocusState.Programmatic);
-                break;
             }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            this.isGd_InfoHideWhenLeave = this.IsGd_InfoHide;
             base.OnNavigatingFrom(e);
             if (this.entranceElement != null)
                 EntranceNavigationTransitionInfo.SetIsTargetElement(this.entranceElement, false);
@@ -216,6 +209,13 @@ namespace ExViewer.Views
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(GalleryVM), typeof(GalleryPage), new PropertyMetadata(null));
+
+        private void changeView(bool keep, bool disableAnimation)
+        {
+            var state = this.isGdInfoHide;
+            if (!keep) state = !state;
+            changeViewTo(state, disableAnimation);
+        }
 
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {

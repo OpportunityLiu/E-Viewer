@@ -270,7 +270,16 @@ namespace ExViewer.Controls
 
         private async void btnStartNew_Click(object sender, RoutedEventArgs e)
         {
+            var firstLoad = this.asbNewTags == null;
             resetNewTagState(true);
+            if (firstLoad)
+                return;
+            await this.Dispatcher.Yield();
+            this.asbNewTags.Focus(FocusState.Programmatic);
+        }
+
+        private async void asbNewTags_Loaded(object sender, RoutedEventArgs e)
+        {
             await this.Dispatcher.Yield();
             this.asbNewTags.Focus(FocusState.Programmatic);
         }
