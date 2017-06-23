@@ -79,14 +79,24 @@ namespace ExViewer.Views
         {
             InvalidateMeasure();
             await Dispatcher.Yield();
-            changeView(true);
+            changeView(true, true);
         }
+
+        private Grid gdPvContentHeaderPresenter;
 
         protected override Size MeasureOverride(Size availableSize)
         {
             var t = VisibleBoundsThickness;
             var height = availableSize.Height - 48 - t.Top;
-            this.gd_Info.MaxHeight = height - t.Bottom - 24;
+            var infoH = height - t.Bottom;
+            if (RootControl.RootController.InputPane.OccludedRect.Height == 0)
+            {
+                if (this.gdPvContentHeaderPresenter == null)
+                    this.gdPvContentHeaderPresenter = this.pv.Descendants<Grid>("HeaderPresenter").FirstOrDefault();
+                if (this.gdPvContentHeaderPresenter != null)
+                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight;
+            }
+            this.gd_Info.MaxHeight = Math.Min(infoH - 24, 360);
             this.gd_Pivot.Height = height;
             return base.MeasureOverride(availableSize);
         }
@@ -102,10 +112,6 @@ namespace ExViewer.Views
             {
                 this.needRestoreView = false;
                 restoreView();
-            }
-            else
-            {
-                changeView(true);
             }
         }
 
@@ -138,9 +144,11 @@ namespace ExViewer.Views
             }
         }
 
-        private void changeView(bool keep)
+        private void changeView(bool keep, bool disableAnimation)
         {
-            changeViewTo(!this.IsGd_InfoHide ^ keep, false);
+            var state = this.IsGd_InfoHide;
+            if (!keep) state = !state;
+            changeViewTo(state, disableAnimation);
         }
 
         private void changeViewTo(bool view, bool disableAnimation)
@@ -212,7 +220,7 @@ namespace ExViewer.Views
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
             await Dispatcher.YieldIdle();
-            changeView(false);
+            changeView(false, false);
         }
 
         private async void pv_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -226,7 +234,7 @@ namespace ExViewer.Views
             case 2://Torrents
                 if (this.VM.Torrents == null)
                     await this.VM.LoadTorrents();
-                await Dispatcher.YieldIdle();
+                await Task.Delay(150);
                 if (this.lv_Torrents.Items.Count > 0)
                 {
                     this.lv_Torrents.SelectedIndex = -1;
