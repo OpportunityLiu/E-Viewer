@@ -81,7 +81,6 @@ namespace ExViewer.Views
                 return;
             InvalidateMeasure();
             await Dispatcher.YieldIdle();
-            await Dispatcher.YieldIdle();
             changeViewTo(false, true);
         }
 
@@ -147,9 +146,8 @@ namespace ExViewer.Views
 
         private void changeViewTo(bool hideGdInfo, bool disableAnimation)
         {
-            var fullOffset = this.gdInfo.ActualHeight;
             if (hideGdInfo)
-                this.sv_Content.ChangeView(null, fullOffset, null, disableAnimation);
+                this.sv_Content.ChangeView(null, this.gdInfo.ActualHeight, null, disableAnimation);
             else
                 this.sv_Content.ChangeView(null, 0, null, disableAnimation);
         }
@@ -157,13 +155,16 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             var reset = e.NavigationMode == NavigationMode.New;
             var restore = e.NavigationMode == NavigationMode.Back;
             if (reset)
+                this.needResetView = true;
+            else if (restore)
+                this.needRestoreView = true;
+            this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
+            if (reset)
             {
                 resetView();
-                this.needResetView = true;
             }
             else if (restore)
             {
@@ -181,7 +182,8 @@ namespace ExViewer.Views
             }
             else if (restore)
             {
-                this.needRestoreView = true;
+                if (this.entranceElement == null)
+                    this.entranceElement = (UIElement)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
                 ((Control)this.entranceElement)?.Focus(FocusState.Programmatic);
             }
         }

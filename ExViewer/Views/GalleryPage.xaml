@@ -248,6 +248,7 @@
         </VisualStateManager.VisualStateGroups>
         <ScrollViewer x:Name="sv_Content"
                       Grid.Row="1"
+                      BringIntoViewOnFocusChange="False"
                       IsVerticalScrollChainingEnabled="True"
                       VerticalScrollBarVisibility="Hidden"
                       VerticalScrollMode="Auto"
