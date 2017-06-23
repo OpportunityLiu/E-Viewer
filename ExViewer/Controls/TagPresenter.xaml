@@ -118,6 +118,17 @@
         </ListView.ItemContainerTransitions>
         <ListView.Footer>
             <Grid Margin="16,0">
+                <AutoSuggestBox x:Uid="Controls/TagPresenter/AddNewTagsAutoSuggestBox"
+                                x:Name="asbNewTags"
+                                QueryIcon="Tag"
+                                PlaceholderText="Enter new tags, separated with comma"
+                                TextBoxStyle="{StaticResource AutoSuggestBoxTextBoxStyle}"
+                                Style="{StaticResource SearchAutoSuggestBoxStyle}"
+                                LostFocus="asbNewTags_LostFocus"
+                                local:TagSuggestionService.IsEnabled="True"
+                                local:TagSuggestionService.Separator=","
+                                local:TagSuggestionService.UseHistory="False"
+                                local:TagSuggestionService.SubmitCommand="{x:Bind submitCmd}" />
                 <Button x:Uid="Controls/TagPresenter/AddNewTagsButton"
                         x:Name="btnStartNew"
                         Style="{ThemeResource TextBlockButtonStyle}"
@@ -126,17 +137,6 @@
                         GotFocus="btnStartNew_GotFocus"
                         Click="btnStartNew_Click"
                         Margin="2" />
-                <AutoSuggestBox x:Uid="Controls/TagPresenter/AddNewTagsAutoSuggestBox"
-                                x:Name="asbNewTags"
-                                QueryIcon="Tag"
-                                Style="{StaticResource SearchAutoSuggestBoxStyle}"
-                                PlaceholderText="Enter new tags, separated with comma."
-                                LostFocus="asbNewTags_LostFocus"
-                                local:TagSuggestionService.IsEnabled="True"
-                                local:TagSuggestionService.Separator=","
-                                local:TagSuggestionService.UseHistory="False"
-                                local:TagSuggestionService.SubmitCommand="{x:Bind submitCmd}"
-                                VerticalAlignment="Stretch" />
             </Grid>
         </ListView.Footer>
     </ListView>
