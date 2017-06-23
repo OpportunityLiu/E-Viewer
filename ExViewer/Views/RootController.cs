@@ -42,6 +42,15 @@ namespace ExViewer.Views
 
                 av_VisibleBoundsChanged(ApplicationView, null);
                 ApplicationView.VisibleBoundsChanged += av_VisibleBoundsChanged;
+
+                InputPane.Showing += InputPane_VisibilityChanging;
+                InputPane.Hiding += InputPane_VisibilityChanging;
+            }
+
+            private static void InputPane_VisibilityChanging(InputPane sender, InputPaneVisibilityEventArgs args)
+            {
+                args.EnsuredFocusedElementInView = true;
+                root.InvalidateMeasure();
             }
 
             private static void titleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
@@ -145,6 +154,8 @@ namespace ExViewer.Views
             public static bool IsFullScreen => ApplicationView.IsFullScreenMode;
 
             public static ApplicationView ApplicationView { get; } = ApplicationView.GetForCurrentView();
+
+            public static InputPane InputPane { get; } = InputPane.GetForCurrentView();
 
             public static void SetFullScreen(bool fullScreen)
             {
@@ -267,8 +278,8 @@ namespace ExViewer.Views
                     OpenSplitViewPane.Begin();
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
                     root.manager.AppViewBackButtonVisibilityOverride = AppViewBackButtonVisibility.Collapsed;
-                    var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked);
-                    (currentTab ?? root.svt_Search).Focus(FocusState.Programmatic);
+                    var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked)?? root.svt_Search;
+                    currentTab.Focus(FocusState.Programmatic);
                 }
                 else
                 {

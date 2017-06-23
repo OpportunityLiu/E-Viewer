@@ -248,16 +248,16 @@
         </VisualStateManager.VisualStateGroups>
         <ScrollViewer x:Name="sv_Content"
                       Grid.Row="1"
-                      VerticalScrollBarVisibility="Hidden"
                       IsVerticalScrollChainingEnabled="True"
+                      VerticalScrollBarVisibility="Hidden"
+                      Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
                       VerticalScrollMode="Auto"
                       VerticalSnapPointsType="Mandatory">
             <StackPanel>
                 <Grid x:Name="gd_Info"
                       Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                       MinHeight="100"
-                      MaxHeight="300"
-                      SizeChanged="gd_Info_SizeChanged">
+                      MaxHeight="300">
                     <Grid.Background>
                         <LinearGradientBrush StartPoint="0.5,0"
                                              EndPoint="0.5,1">
@@ -360,7 +360,7 @@
                             <GridView xmlns:animation="using:Microsoft.Toolkit.Uwp.UI.Animations"
                                       x:Name="gv"
                                       Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                                      Padding="8,4,8,12"
+                                      Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
                                       VerticalAlignment="Top"
                                       animation:ReorderGridAnimation.Duration="100"
                                       IsItemClickEnabled="True"
@@ -386,14 +386,12 @@
                                     </DataTemplate>
                                 </GridView.ItemTemplate>
                                 <GridView.Footer>
-                                    <Border x:Name="bd_GvFooter">
-                                        <TextBlock x:Uid="Views/GalleryPage/ImagesLoadingMoreTextBlock"
-                                                   Margin="12"
-                                                   HorizontalAlignment="Center"
-                                                   Style="{StaticResource BaseTextBlockStyle}"
-                                                   Text="Loading more items..."
-                                                   Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
-                                    </Border>
+                                    <TextBlock x:Uid="Views/GalleryPage/ImagesLoadingMoreTextBlock"
+                                               Padding="12"
+                                               HorizontalAlignment="Center"
+                                               Style="{StaticResource BaseTextBlockStyle}"
+                                               Text="Loading more items..."
+                                               Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
                                 </GridView.Footer>
                             </GridView>
                         </PivotItem>

@@ -75,9 +75,19 @@ namespace ExViewer.Views
 
         private bool needResetView, needRestoreView;
 
+        protected override async void VisibleBoundsChanged(Thickness visibleBoundsThickness)
+        {
+            InvalidateMeasure();
+            await Dispatcher.Yield();
+            changeView(true);
+        }
+
         protected override Size MeasureOverride(Size availableSize)
         {
-            this.gd_Pivot.Height = availableSize.Height - 48 - VisibleBoundsThickness.Top;
+            var t = VisibleBoundsThickness;
+            var height = availableSize.Height - 48 - t.Top;
+            this.gd_Info.MaxHeight = height - t.Bottom - 24;
+            this.gd_Pivot.Height = height;
             return base.MeasureOverride(availableSize);
         }
 
@@ -201,7 +211,7 @@ namespace ExViewer.Views
 
         private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Delay(50);
+            await Dispatcher.YieldIdle();
             changeView(false);
         }
 
@@ -216,7 +226,7 @@ namespace ExViewer.Views
             case 2://Torrents
                 if (this.VM.Torrents == null)
                     await this.VM.LoadTorrents();
-                await Task.Delay(150);
+                await Dispatcher.YieldIdle();
                 if (this.lv_Torrents.Items.Count > 0)
                 {
                     this.lv_Torrents.SelectedIndex = -1;
@@ -259,11 +269,6 @@ namespace ExViewer.Views
             sv_pv.PointerWheelChanged += this.pv_Header_PointerWheelChanged;
             sv_pv2.PointerWheelChanged += this.pv_Header_PointerWheelChanged;
             this.pv.Loaded -= this.pv_Loaded;
-        }
-
-        private void gd_Info_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            this.bd_GvFooter.Height = e.NewSize.Height;
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
