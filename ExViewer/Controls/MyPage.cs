@@ -14,7 +14,9 @@ namespace ExViewer.Controls
     {
         private void VisibleBoundsThicknessPropertyChangedCallback(DependencyObject d, DependencyProperty p)
         {
-            this.SetValue(VisibleBoundsThicknessProperty, RootControl.RootController.Parent.ContentVisibleBoundsThickness);
+            var t = RootControl.RootController.Parent.ContentVisibleBoundsThickness;
+            this.SetValue(VisibleBoundsThicknessProperty, t);
+            this.VisibleBoundsChanged(t);
         }
 
         private long rootControlVisibleBoundsCallbackId;
@@ -27,7 +29,7 @@ namespace ExViewer.Controls
 
         private void MyPage_Loading(FrameworkElement sender, object args)
         {
-            this.SetValue(VisibleBoundsThicknessProperty, RootControl.RootController.Parent.ContentVisibleBoundsThickness);
+            this.VisibleBoundsThicknessPropertyChangedCallback(RootControl.RootController.Parent, RootControl.VisibleBoundsThicknessProperty);
             this.rootControlVisibleBoundsCallbackId = RootControl.RootController.Parent.RegisterPropertyChangedCallback(RootControl.VisibleBoundsThicknessProperty, VisibleBoundsThicknessPropertyChangedCallback);
         }
 
@@ -49,6 +51,10 @@ namespace ExViewer.Controls
         {
             get;
             protected set;
+        }
+
+        protected virtual void VisibleBoundsChanged(Thickness visibleBoundsThickness)
+        {
         }
 
         protected override Size ArrangeOverride(Size finalSize)

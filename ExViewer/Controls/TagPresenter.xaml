@@ -105,40 +105,43 @@
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
-    <ListView x:Name="lv_Tags"
-              Grid.Row="1"
-              Grid.Column="1"
-              ItemsSource="{x:Bind Tags, Mode=OneWay}"
-              ScrollViewer.IsVerticalScrollChainingEnabled="True"
-              SelectionMode="None"
-              ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
-              ItemTemplate="{StaticResource TagGroupTemplate}">
-        <ListView.ItemContainerTransitions>
-            <TransitionCollection />
-        </ListView.ItemContainerTransitions>
-        <ListView.Footer>
-            <Grid Margin="16,0">
-                <AutoSuggestBox x:Uid="Controls/TagPresenter/AddNewTagsAutoSuggestBox"
-                                x:DeferLoadStrategy="Lazy"
-                                x:Name="asbNewTags"
-                                QueryIcon="Tag"
-                                PlaceholderText="Enter new tags, separated with comma"
-                                TextBoxStyle="{StaticResource AutoSuggestBoxTextBoxStyle}"
-                                Style="{StaticResource SearchAutoSuggestBoxStyle}"
-                                LostFocus="asbNewTags_LostFocus"
-                                local:TagSuggestionService.IsEnabled="True"
-                                local:TagSuggestionService.Separator=","
-                                local:TagSuggestionService.UseHistory="False"
-                                local:TagSuggestionService.SubmitCommand="{x:Bind submitCmd}" />
-                <Button x:Uid="Controls/TagPresenter/AddNewTagsButton"
-                        x:Name="btnStartNew"
-                        Style="{ThemeResource TextBlockButtonStyle}"
-                        HorizontalAlignment="Center"
-                        Content="Add new tags"
-                        GotFocus="btnStartNew_GotFocus"
-                        Click="btnStartNew_Click"
-                        Margin="2" />
-            </Grid>
-        </ListView.Footer>
-    </ListView>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ListView x:Name="lv_Tags"
+                  ItemsSource="{x:Bind Tags, Mode=OneWay}"
+                  ScrollViewer.IsVerticalScrollChainingEnabled="True"
+                  SelectionMode="None"
+                  ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
+                  ItemTemplate="{StaticResource TagGroupTemplate}">
+            <ListView.ItemContainerTransitions>
+                <TransitionCollection />
+            </ListView.ItemContainerTransitions>
+        </ListView>
+        <AutoSuggestBox x:Uid="Controls/TagPresenter/AddNewTagsAutoSuggestBox"
+                        x:DeferLoadStrategy="Lazy"
+                        x:Name="asbNewTags"
+                        Grid.Row="1"
+                        Margin="16,0"
+                        QueryIcon="Tag"
+                        PlaceholderText="Enter new tags, separated with comma"
+                        TextBoxStyle="{StaticResource AutoSuggestBoxTextBoxStyle}"
+                        Style="{StaticResource SearchAutoSuggestBoxStyle}"
+                        LostFocus="asbNewTags_LostFocus"
+                        local:TagSuggestionService.IsEnabled="True"
+                        local:TagSuggestionService.Separator=","
+                        local:TagSuggestionService.UseHistory="False"
+                        local:TagSuggestionService.SubmitCommand="{x:Bind submitCmd}" />
+        <Button x:Uid="Controls/TagPresenter/AddNewTagsButton"
+                x:Name="btnStartNew"
+                Grid.Row="1"
+                Margin="18,2"
+                Style="{ThemeResource TextBlockButtonStyle}"
+                HorizontalAlignment="Center"
+                Content="Add new tags"
+                GotFocus="btnStartNew_GotFocus"
+                Click="btnStartNew_Click" />
+    </Grid>
 </UserControl>
