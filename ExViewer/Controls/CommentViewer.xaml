@@ -120,12 +120,14 @@
                    Text="Uploader Comment"
                    Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}, FallbackValue=Collapsed}" />
         <Button x:Name="Actions"
+                x:Uid="Controls/CommentViewer/ActionsButton"
                 Style="{StaticResource EllipsisButton}"
                 RelativePanel.AlignTopWith="Author"
                 RelativePanel.AlignBottomWith="Header"
                 RelativePanel.AlignRightWithPanel="True"
                 XYFocusDown="{x:Bind Text.FirstLink, Mode=OneWay}"
                 XYFocusLeft="{x:Bind Text.FirstLink, Mode=OneWay}"
+                ToolTipService.ToolTip="Actions"
                 VerticalContentAlignment="Stretch">
             <FontIcon Glyph="" />
             <Button.Flyout>

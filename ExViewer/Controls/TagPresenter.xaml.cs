@@ -246,20 +246,26 @@ namespace ExViewer.Controls
 
         private void resetNewTagState(bool startToTag)
         {
-            var id = TagSuggestionService.GetStateCode(this.asbNewTags);
-            this.asbNewTags.Text = "";
-            this.asbNewTags.IsEnabled = true;
             if (startToTag)
             {
+                if (this.asbNewTags == null)
+                    FindName(nameof(asbNewTags));
                 this.asbNewTags.Visibility = Visibility.Visible;
                 this.btnStartNew.Visibility = Visibility.Collapsed;
             }
             else
             {
-                this.asbNewTags.Visibility = Visibility.Collapsed;
+                if (this.asbNewTags != null)
+                    this.asbNewTags.Visibility = Visibility.Collapsed;
                 this.btnStartNew.Visibility = Visibility.Visible;
             }
-            TagSuggestionService.SetStateCode(this.asbNewTags, id + 1);
+            if (this.asbNewTags != null)
+            {
+                var id = TagSuggestionService.GetStateCode(this.asbNewTags);
+                this.asbNewTags.Text = "";
+                this.asbNewTags.IsEnabled = true;
+                TagSuggestionService.SetStateCode(this.asbNewTags, id + 1);
+            }
         }
 
         private async void btnStartNew_Click(object sender, RoutedEventArgs e)

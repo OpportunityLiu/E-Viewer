@@ -274,7 +274,8 @@
                               x:Uid="Views/ImagePage/FullScreenAppBarButton"
                               Click="abb_fullScreen_Click"
                               Icon="FullScreen"
-                              Label="Full screen" />
+                              Label="Full screen" 
+                              ToolTipService.ToolTip="{x:Bind abb_fullScreen.Label, Mode=OneWay}"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_reload"

@@ -137,6 +137,7 @@
                                   x:Uid="Views/FavoritesPage/ApplyAppBarButton"
                                   Icon="Send"
                                   Label="Apply"
+                                  ToolTipService.ToolTip="{x:Bind abbApply.Label}"
                                   IsEnabled="{x:Bind lv.SelectedIndex, Converter={StaticResource SelectionConverter}, Mode=OneWay}"
                                   Click="abbApply_Click" />
                 </CommandBar.PrimaryCommands>
