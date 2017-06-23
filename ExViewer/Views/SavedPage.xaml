@@ -93,6 +93,7 @@
                 <AppBarButton x:Uid="Views/SavedPage/RefreshAppBarButton"
                               x:Name="abb_Refresh"
                               Command="{x:Bind VM.Refresh}"
+                              ToolTipService.ToolTip="{x:Bind abb_Refresh.Label}"
                               Icon="Refresh"
                               Label="Refresh" />
             </CommandBar.PrimaryCommands>

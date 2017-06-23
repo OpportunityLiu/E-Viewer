@@ -20,6 +20,7 @@
       "TagDatabaseTextBlock/Text": "標籤資料庫"
     },
     "CommentViewer": {
+      "ActionsButton/ToolTipService/ToolTip": "檢視更多",
       "AuthorFormatString": "{0}",
       "EditedFormatString": "最後編輯於 {0}",
       "EditMenuFlyoutItem/Text": "編輯",

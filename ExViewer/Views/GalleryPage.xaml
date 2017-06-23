@@ -544,11 +544,13 @@
                               Icon="Favorite"
                               Foreground="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToBrushConverter}, Mode=OneWay}"
                               Label="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToNameConverter}, Mode=OneWay}"
+                              ToolTipService.ToolTip="{x:Bind abbFavorites.Label, Mode=OneWay}"
                               Click="abbFavorites_Click" />
                 <AppBarButton x:Name="abbComment"
                               x:Uid="Views/GalleryPage/AppBarButtonAddComment"
                               Icon="Add"
                               Label="Post new comment"
+                              ToolTipService.ToolTip="{x:Bind abbComment.Label}"
                               Visibility="{x:Bind pv.SelectedIndex, Mode=OneWay, Converter={StaticResource ConAddComment}}"
                               Command="{x:Bind VM.AddComment, Mode=OneWay}" />
             </CommandBar.PrimaryCommands>

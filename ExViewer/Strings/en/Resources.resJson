@@ -20,6 +20,7 @@
       "TagDatabaseTextBlock/Text": "Tag database"
     },
     "CommentViewer": {
+      "ActionsButton/ToolTipService/ToolTip": "See more",
       "AuthorFormatString": "By {0}",
       "EditedFormatString": "Last edited on {0}",
       "EditMenuFlyoutItem/Text": "Edit",

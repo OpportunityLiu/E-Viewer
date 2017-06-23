@@ -119,6 +119,7 @@
         <ListView.Footer>
             <Grid Margin="16,0">
                 <AutoSuggestBox x:Uid="Controls/TagPresenter/AddNewTagsAutoSuggestBox"
+                                x:DeferLoadStrategy="Lazy"
                                 x:Name="asbNewTags"
                                 QueryIcon="Tag"
                                 PlaceholderText="Enter new tags, separated with comma"
