@@ -168,12 +168,12 @@
     <RelativePanel>
         <FlipView x:Name="fv"
                   Background="Transparent"
-                  EntranceNavigationTransitionInfo.IsTargetElement="True"
                   RelativePanel.AlignBottomWithPanel="True"
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignRightWithPanel="True"
                   RelativePanel.AlignTopWithPanel="True"
                   SelectionChanged="fv_SelectionChanged"
+                  EntranceNavigationTransitionInfo.IsTargetElement="True"
                   Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay}"
                   ItemTemplate="{StaticResource FlipViewItemTemplate}">
             <FlipView.Clip>
@@ -274,8 +274,8 @@
                               x:Uid="Views/ImagePage/FullScreenAppBarButton"
                               Click="abb_fullScreen_Click"
                               Icon="FullScreen"
-                              Label="Full screen" 
-                              ToolTipService.ToolTip="{x:Bind abb_fullScreen.Label, Mode=OneWay}"/>
+                              Label="Full screen"
+                              ToolTipService.ToolTip="{x:Bind abb_fullScreen.Label, Mode=OneWay}" />
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="abb_reload"

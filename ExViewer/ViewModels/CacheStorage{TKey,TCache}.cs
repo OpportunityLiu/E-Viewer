@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Opportunity.MvvmUniverse.AsyncHelpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,38 +56,38 @@ namespace ExViewer.ViewModels
         public void Add(TKey key, TCache value)
         {
             EnsureCapacity();
-            if(!this.cacheDictionary.ContainsKey(key))
+            if (!this.cacheDictionary.ContainsKey(key))
                 this.cacheQueue.Enqueue(key);
             this.cacheDictionary[key] = value;
         }
 
         public IAsyncOperation<TCache> GetAsync(TKey key)
         {
+            EnsureCapacity();
+            if (this.cacheDictionary.ContainsKey(key))
+                return AsyncWrapper.CreateCompleted(this.cacheDictionary[key]);
+            this.cacheQueue.Enqueue(key);
+            if (this.asyncLoader == null)
+            {
+                var result = this.loader(key);
+                this.cacheDictionary[key] = result;
+                return AsyncWrapper.CreateCompleted(result);
+            }
             return Run(async token =>
             {
-                EnsureCapacity();
-                if(this.cacheDictionary.ContainsKey(key))
-                    return this.cacheDictionary[key];
-                else
-                {
-                    this.cacheQueue.Enqueue(key);
-                    if(this.asyncLoader != null)
-                        return this.cacheDictionary[key] = await this.asyncLoader(key);
-                    else
-                        return this.cacheDictionary[key] = this.loader(key);
-                }
+                return this.cacheDictionary[key] = await this.asyncLoader(key);
             });
         }
 
         public TCache Get(TKey key)
         {
             EnsureCapacity();
-            if(this.cacheDictionary.ContainsKey(key))
+            if (this.cacheDictionary.ContainsKey(key))
                 return this.cacheDictionary[key];
             else
             {
                 this.cacheQueue.Enqueue(key);
-                if(this.asyncLoader != null)
+                if (this.asyncLoader != null)
                     return this.cacheDictionary[key] = this.asyncLoader(key).AsTask().Result;
                 else
                     return this.cacheDictionary[key] = this.loader(key);
@@ -110,7 +111,7 @@ namespace ExViewer.ViewModels
 
         public void EnsureCapacity()
         {
-            while(this.cacheQueue.Count > this.MaxCount)
+            while (this.cacheQueue.Count > this.MaxCount)
                 this.cacheDictionary.Remove(this.cacheQueue.Dequeue());
         }
     }

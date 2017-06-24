@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Color = Windows.UI.Color;
 
@@ -45,19 +46,14 @@ namespace ExViewer.Views
 
         private ImagePageCollectionView collectionView = new ImagePageCollectionView();
 
-        private static async void VMPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        private static void VMPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
         {
-            var that = (ImagePage)dp;
-            var pageFlipView = that.fv;
             var oldVM = (GalleryVM)e.OldValue;
             var newVM = (GalleryVM)e.NewValue;
-            if (oldVM != null)
-            {
-                if (pageFlipView.SelectedIndex < oldVM.Gallery.Count)
-                    oldVM.CurrentIndex = pageFlipView.SelectedIndex;
-                else
-                    oldVM.CurrentIndex = oldVM.Gallery.Count - 1;
-            }
+            if (oldVM == newVM)
+                return;
+            var that = (ImagePage)dp;
+            var pageFlipView = that.fv;
             pageFlipView.ItemsSource = null;
             if (newVM == null)
             {
@@ -65,11 +61,8 @@ namespace ExViewer.Views
             }
             else
             {
-                var i = newVM.CurrentIndex;
                 that.collectionView.Collection = newVM.Gallery;
                 pageFlipView.ItemsSource = that.collectionView;
-                pageFlipView.SelectedIndex = i;
-                await that.Dispatcher.RunIdleAsync(idle => pageFlipView.SelectedIndex = i);
             }
         }
 
@@ -77,12 +70,28 @@ namespace ExViewer.Views
         private readonly DisplayRequest displayRequest = new DisplayRequest();
         private bool displayActived;
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        private Color currentBackColor, currentNeedColor;
+
+        private void setCbColor()
         {
             var backColor = this.scbBack.Color;
             var needColor = this.scbNeed.Color;
+            if (this.currentBackColor == backColor && this.currentNeedColor == needColor)
+                return;
+            this.currentBackColor = backColor;
+            this.currentNeedColor = needColor;
 
-            var toColor = getCbColor(backColor, needColor, 85);
+            Color getCbColor(byte alpha)
+            {
+                var ratio = alpha / 255d;
+                var ratio_1 = ratio - 1;
+                return Color.FromArgb(alpha,
+                    (byte)((needColor.R + ratio_1 * backColor.R) / ratio),
+                    (byte)((needColor.G + ratio_1 * backColor.G) / ratio),
+                    (byte)((needColor.B + ratio_1 * backColor.B) / ratio));
+            }
+
+            var toColor = getCbColor(85);
             this.cb_top.Background = new SolidColorBrush(toColor);
             this.fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
                 FlowDirection.RightToLeft : FlowDirection.LeftToRight;
@@ -91,41 +100,47 @@ namespace ExViewer.Views
             var offset = (255d - 85d) / (kfc - 1);
             for (var i = 0; i < kfc; i++)
             {
-                var c = getCbColor(backColor, needColor, (byte)(85 + i * offset));
+                var c = getCbColor((byte)(85 + i * offset));
                 this.cb_top_OpenAnimation.KeyFrames[i].Value = c;
                 this.cb_top_CloseAnimation.KeyFrames[kfc - 1 - i].Value = c;
             }
+        }
 
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            setCbColor();
             base.OnNavigatedTo(e);
 
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
-            this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
+
+            var index = this.VM.CurrentIndex;
+            this.fv.SelectedIndex = index;
+
             Av_VisibleBoundsChanged(this.av, null);
+            this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
+
             RootControl.RootController.SetFullScreen(StatusCollection.Current.FullScreenInImagePage);
             if (SettingCollection.Current.KeepScreenOn)
             {
                 this.displayRequest.RequestActive();
                 this.displayActived = true;
             }
+
             await Dispatcher.YieldIdle();
+            this.fv.SelectedIndex = index;
             this.fv.Focus(FocusState.Programmatic);
             setScale();
         }
 
-        private static Color getCbColor(Color backColor, Color needColor, byte alpha)
-        {
-            var ratio = alpha / 255d;
-            var ratio_1 = ratio - 1;
-            return Color.FromArgb(alpha,
-                (byte)((needColor.R + ratio_1 * backColor.R) / ratio),
-                (byte)((needColor.G + ratio_1 * backColor.G) / ratio),
-                (byte)((needColor.B + ratio_1 * backColor.B) / ratio));
-        }
-
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
+            var index = this.fv.SelectedIndex;
+            if (index < VM.Gallery.Count)
+                VM.CurrentIndex = index;
+            else
+                VM.CurrentIndex = VM.Gallery.Count - 1;
+            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ImageAnimation", this.fv.ContainerFromIndex(index).Descendants<Image>().First());
             base.OnNavigatingFrom(e);
-            this.VM = null;
 
             if (!this.cbVisible)
                 changeCbVisibility();

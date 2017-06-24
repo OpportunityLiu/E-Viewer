@@ -80,9 +80,9 @@ namespace ExViewer.Views
             if (this.needResetView || this.needRestoreView)
                 return;
             InvalidateMeasure();
-            await Dispatcher.Yield();
+            await Dispatcher.YieldIdle();
             changeViewTo(false, true);
-            await Task.Delay(10);
+            await Task.Delay(33);
             changeViewTo(false, true);
         }
 
@@ -98,9 +98,9 @@ namespace ExViewer.Views
                 if (this.gdPvContentHeaderPresenter == null)
                     this.gdPvContentHeaderPresenter = this.pv.Descendants<Grid>("HeaderPresenter").FirstOrDefault();
                 if (this.gdPvContentHeaderPresenter != null)
-                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight;
+                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight - 24;
             }
-            this.gdInfo.MaxHeight = Math.Min(infoH - 24, 360);
+            this.gdInfo.MaxHeight = Math.Min(infoH, 360);
             this.gd_Pivot.Height = height;
             return base.MeasureOverride(availableSize);
         }
@@ -164,16 +164,21 @@ namespace ExViewer.Views
             else if (restore)
                 this.needRestoreView = true;
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
+            Control restoreElement = null;
             if (reset)
             {
                 resetView();
             }
             else if (restore)
             {
-                this.entranceElement = (UIElement)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
-                if (this.entranceElement != null)
+                var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
+                if (animation != null)
                 {
-                    EntranceNavigationTransitionInfo.SetIsTargetElement(this.entranceElement, true);
+                    var container = this.gv.ContainerFromIndex(this.VM.CurrentIndex);
+                    if (container != null)
+                        animation.TryStart(container.Descendants<Image>().First());
+                    else
+                        animation.Cancel();
                 }
             }
             await Dispatcher.YieldIdle();
@@ -184,20 +189,16 @@ namespace ExViewer.Views
             }
             else if (restore)
             {
-                if (this.entranceElement == null)
-                    this.entranceElement = (UIElement)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
-                ((Control)this.entranceElement)?.Focus(FocusState.Programmatic);
+                if (restoreElement == null)
+                    restoreElement = (Control)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
+                restoreElement?.Focus(FocusState.Programmatic);
             }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            if (this.entranceElement != null)
-                EntranceNavigationTransitionInfo.SetIsTargetElement(this.entranceElement, false);
         }
-
-        UIElement entranceElement;
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
         {

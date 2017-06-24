@@ -377,7 +377,8 @@
                                 <GridView.ItemTemplate>
                                     <DataTemplate xmlns:c="using:ExClient.Galleries"
                                                   x:DataType="c:GalleryImage">
-                                        <Image Width="100"
+                                        <Image x:Name="Image"
+                                               Width="100"
                                                MinHeight="100"
                                                MaxHeight="200"
                                                Source="{x:Bind Thumb, Mode=OneWay}"
