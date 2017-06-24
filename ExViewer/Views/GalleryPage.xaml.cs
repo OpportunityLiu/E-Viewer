@@ -80,7 +80,9 @@ namespace ExViewer.Views
             if (this.needResetView || this.needRestoreView)
                 return;
             InvalidateMeasure();
-            await Dispatcher.YieldIdle();
+            await Dispatcher.Yield();
+            changeViewTo(false, true);
+            await Task.Delay(10);
             changeViewTo(false, true);
         }
 
