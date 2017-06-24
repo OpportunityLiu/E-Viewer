@@ -237,24 +237,32 @@ namespace ExViewer.Views
             if (RootController.ApplicationView.DesiredBoundsMode == ApplicationViewBoundsMode.UseCoreWindow)
             {
                 if (paneHeight == 0)
-                    ClearValue(VisibleBoundsThicknessProperty);
+                    setVisibleBoundsThickness(new Thickness());
                 else
-                    this.VisibleBoundsThickness = new Thickness(0, 0, 0, paneHeight);
+                    setVisibleBoundsThickness(new Thickness(0, 0, 0, paneHeight));
             }
             else
             {
                 var vb = RootController.ApplicationView.VisibleBounds;
                 var wb = Window.Current.Bounds;
                 var tbh = RootController.TitleBarHeight;
-                this.VisibleBoundsThickness = new Thickness(
+                setVisibleBoundsThickness(new Thickness(
                     bound(vb.Left - wb.Left),
                     bound(vb.Top + tbh - wb.Top),
                     bound(wb.Right - vb.Right),
-                    bound(wb.Bottom - vb.Bottom + paneHeight));
+                    bound(wb.Bottom - vb.Bottom + paneHeight)));
 
                 double bound(double value) => value < 0 ? 0 : value;
             }
             return base.MeasureOverride(availableSize);
+        }
+
+        private void setVisibleBoundsThickness(Thickness value)
+        {
+            var old = this.VisibleBoundsThickness;
+            if (old == value)
+                return;
+            this.VisibleBoundsThickness = value;
         }
 
         private double getPaneLength(Thickness visibleBounds, double offset)
