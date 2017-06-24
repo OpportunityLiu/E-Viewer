@@ -201,10 +201,13 @@ namespace ExClient.Tagging
             return voteAsync(req);
         }
 
-        private static Regex tagNotValid = new Regex(@"\s*The tag\s+(.+?)\s+is not currently valid\.\s*");
-        private static Regex tagNeedNs = new Regex(@"\s*The tag ""(.+?)"" is not allowed in this namespace - requires male: or female:\s*");
-        private static Regex tagBanned = new Regex(@"\s*The tag\s+(.+?)\s+has been vetoed on this gallery; it is an incorrect tag\. Please read the wiki\.\s*");
-        private static Regex tagCantVote = new Regex(@"\s*Cannot vote for tag\.\s*");
+        // See https://ehwiki.org/wiki/Technical_Issues#Gallery_Tagging
+        // Here are mostly used ones.
+        private static Regex tagNotValid = new Regex(@"The tag (.+?) is not currently valid");
+        private static Regex tagNeedNs = new Regex(@"The tag ""(.+?)"" is not allowed in this namespace - requires male: or female:");
+        private static Regex tagInBlackList = new Regex(@"The tag (.+?) cannot be used");
+        private static Regex tagVetoed = new Regex(@"The tag (.+?) has been vetoed on this gallery");
+        private static Regex tagCantVote = new Regex(@"Cannot vote for tag");
 
         private IAsyncAction voteAsync(TagRequest req)
         {
@@ -224,10 +227,15 @@ namespace ExClient.Tagging
                     {
                         throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace, needNsMatch.Groups[1].Value));
                     }
-                    var bannedMatch = tagBanned.Match(r.Error);
-                    if (bannedMatch.Success)
+                    var vetoedMatch = tagVetoed.Match(r.Error);
+                    if (vetoedMatch.Success)
                     {
-                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagBannedForGallery, bannedMatch.Groups[1].Value));
+                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagVetoedForGallery, vetoedMatch.Groups[1].Value));
+                    }
+                    var blacklistMatch = tagInBlackList.Match(r.Error);
+                    if(blacklistMatch.Success)
+                    {
+                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagInBlackList, blacklistMatch.Groups[1].Value));
                     }
                     if (tagCantVote.IsMatch(r.Error))
                         throw new InvalidOperationException(LocalizedStrings.Resources.TagNoVotePremition);
