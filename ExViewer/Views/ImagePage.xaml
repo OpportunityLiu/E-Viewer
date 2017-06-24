@@ -14,7 +14,7 @@
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
-                <EntranceNavigationTransitionInfo />
+                <SuppressNavigationTransitionInfo />
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
@@ -166,6 +166,12 @@
         </Style>
     </Page.Resources>
     <RelativePanel>
+        <Image x:Name="imgConnect"
+               RelativePanel.AlignBottomWithPanel="True"
+               RelativePanel.AlignLeftWithPanel="True"
+               RelativePanel.AlignRightWithPanel="True"
+               RelativePanel.AlignTopWithPanel="True"
+               Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay}" />
         <FlipView x:Name="fv"
                   Background="Transparent"
                   RelativePanel.AlignBottomWithPanel="True"
@@ -173,7 +179,6 @@
                   RelativePanel.AlignRightWithPanel="True"
                   RelativePanel.AlignTopWithPanel="True"
                   SelectionChanged="fv_SelectionChanged"
-                  EntranceNavigationTransitionInfo.IsTargetElement="True"
                   Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay}"
                   ItemTemplate="{StaticResource FlipViewItemTemplate}">
             <FlipView.Clip>

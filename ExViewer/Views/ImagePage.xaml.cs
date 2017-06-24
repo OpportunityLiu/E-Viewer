@@ -31,6 +31,8 @@ namespace ExViewer.Views
         public ImagePage()
         {
             this.InitializeComponent();
+            this.fv.Opacity = 0;
+            this.fv.IsEnabled = false;
             this.VisibleBoundHandledByDesign = true;
         }
 
@@ -115,6 +117,18 @@ namespace ExViewer.Views
 
             var index = this.VM.CurrentIndex;
             this.fv.SelectedIndex = index;
+            if (index < this.VM.Gallery.Count)
+            {
+                this.imgConnect.Source = this.VM.Gallery[index].Thumb;
+            }
+            var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
+            var animationSucceed = true;
+            if (animation != null)
+            {
+                animationSucceed = animation.TryStart(this.imgConnect, new UIElement[] { this.cb_top, this.bdLeft, this.bdRight, this.bdTop });
+                if (animationSucceed)
+                    animation.Completed += this.Animation_Completed;
+            }
 
             Av_VisibleBoundsChanged(this.av, null);
             this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
@@ -128,8 +142,19 @@ namespace ExViewer.Views
 
             await Dispatcher.YieldIdle();
             this.fv.SelectedIndex = index;
-            this.fv.Focus(FocusState.Programmatic);
             setScale();
+            if (!animationSucceed)
+                Animation_Completed(null, null);
+        }
+
+        private void Animation_Completed(ConnectedAnimation sender, object args)
+        {
+            this.imgConnect.Visibility = Visibility.Collapsed;
+            this.fv.IsEnabled = true;
+            this.fv.Opacity = 1;
+            this.fv.Focus(FocusState.Programmatic);
+            if (sender != null)
+                sender.Completed -= Animation_Completed;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -156,6 +181,9 @@ namespace ExViewer.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            this.fv.Opacity = 0;
+            this.fv.IsEnabled = false;
+            this.imgConnect.Visibility = Visibility.Visible;
             base.OnNavigatedFrom(e);
             this.av.VisibleBoundsChanged -= this.Av_VisibleBoundsChanged;
             CloseAll();

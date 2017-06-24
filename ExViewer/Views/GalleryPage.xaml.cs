@@ -203,6 +203,7 @@ namespace ExViewer.Views
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
         {
+            this.gv.PrepareConnectedAnimation("ImageAnimation", e.ClickedItem, "Image");
             this.VM.OpenImage.Execute((GalleryImage)e.ClickedItem);
         }
 
