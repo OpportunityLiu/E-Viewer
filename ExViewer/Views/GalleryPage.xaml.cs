@@ -122,6 +122,7 @@ namespace ExViewer.Views
         private void resetView()
         {
             changeViewTo(false, true);
+            this.pv.SelectedIndex = 0;
             this.gv.ScrollIntoView(this.VM.Gallery.FirstOrDefault());
             this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
             this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
