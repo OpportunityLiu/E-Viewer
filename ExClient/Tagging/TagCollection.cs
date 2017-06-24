@@ -203,8 +203,8 @@ namespace ExClient.Tagging
 
         private static Regex tagNotValid = new Regex(@"\s*The tag\s+(.+?)\s+is not currently valid\.\s*");
         private static Regex tagNeedNs = new Regex(@"\s*The tag ""(.+?)"" is not allowed in this namespace - requires male: or female:\s*");
-        private static Regex tagCantVote = new Regex(@"\s*Cannot vote for tag\.\s*");
         private static Regex tagBanned = new Regex(@"\s*The tag\s+(.+?)\s+has been vetoed on this gallery; it is an incorrect tag\. Please read the wiki\.\s*");
+        private static Regex tagCantVote = new Regex(@"\s*Cannot vote for tag\.\s*");
 
         private IAsyncAction voteAsync(TagRequest req)
         {
@@ -214,14 +214,23 @@ namespace ExClient.Tagging
                 var r = JsonConvert.DeserializeObject<TagResponse>(res);
                 if (r.Error != null)
                 {
-                    if (tagNotValid.IsMatch(r.Error))
-                        throw new InvalidOperationException(LocalizedStrings.Resources.TagNotValid);
-                    if (tagNeedNs.IsMatch(r.Error))
-                        throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace);
+                    var validMatch = tagNotValid.Match(r.Error);
+                    if (validMatch.Success)
+                    {
+                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNotValid, validMatch.Groups[1].Value));
+                    }
+                    var needNsMatch = tagNeedNs.Match(r.Error);
+                    if (needNsMatch.Success)
+                    {
+                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace, needNsMatch.Groups[1].Value));
+                    }
+                    var bannedMatch = tagBanned.Match(r.Error);
+                    if (bannedMatch.Success)
+                    {
+                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagBannedForGallery, bannedMatch.Groups[1].Value));
+                    }
                     if (tagCantVote.IsMatch(r.Error))
                         throw new InvalidOperationException(LocalizedStrings.Resources.TagNoVotePremition);
-                    if (tagBanned.IsMatch(r.Error))
-                        throw new InvalidOperationException(LocalizedStrings.Resources.TagBannedForGallery);
                 }
                 r.CheckResponse();
                 var doc = HtmlNode.CreateNode(r.TagPane);
@@ -253,31 +262,31 @@ namespace ExClient.Tagging
                     var state = default(TagState);
                     switch (divclass)
                     {
-                    case "gt":
-                        state |= TagState.HighPower; break;
-                    case "gtw":
-                        state |= TagState.LowPower; break;
-                    case "gtl":
-                    default:
-                        state |= TagState.NormalPower; break;
+                        case "gt":
+                            state |= TagState.HighPower; break;
+                        case "gtw":
+                            state |= TagState.LowPower; break;
+                        case "gtl":
+                        default:
+                            state |= TagState.NormalPower; break;
                     }
                     switch (divstyle)
                     {
-                    case "opacity:0.4":
-                        state |= TagState.Slave;
-                        break;
-                    case "opacity:1.0":
-                    default:
-                        break;
+                        case "opacity:0.4":
+                            state |= TagState.Slave;
+                            break;
+                        case "opacity:1.0":
+                        default:
+                            break;
                     }
                     switch (aclass)
                     {
-                    case "tup":
-                        state |= TagState.Upvoted;
-                        break;
-                    case "tdn":
-                        state |= TagState.Downvoted;
-                        break;
+                        case "tup":
+                            state |= TagState.Upvoted;
+                            break;
+                        case "tdn":
+                            state |= TagState.Downvoted;
+                            break;
                     }
                     var tag = divid.Substring(3).Replace('_', ' ');
                     return (Tag.Parse(tag), state);
