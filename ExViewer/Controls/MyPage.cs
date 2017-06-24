@@ -16,7 +16,7 @@ namespace ExViewer.Controls
         {
             var t = RootControl.RootController.Parent.ContentVisibleBoundsThickness;
             this.SetValue(VisibleBoundsThicknessProperty, t);
-            this.VisibleBoundsChanged(t);
+            this.VisibleBoundsThicknessChanged(t);
         }
 
         private long rootControlVisibleBoundsCallbackId;
@@ -53,7 +53,7 @@ namespace ExViewer.Controls
             protected set;
         }
 
-        protected virtual void VisibleBoundsChanged(Thickness visibleBoundsThickness)
+        protected virtual void VisibleBoundsThicknessChanged(Thickness visibleBoundsThickness)
         {
         }
 
