@@ -111,6 +111,15 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             setCbColor();
+            Av_VisibleBoundsChanged(this.av, null);
+            this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
+            RootControl.RootController.SetFullScreen(StatusCollection.Current.FullScreenInImagePage);
+            if (SettingCollection.Current.KeepScreenOn)
+            {
+                this.displayRequest.RequestActive();
+                this.displayActived = true;
+            }
+
             base.OnNavigatedTo(e);
 
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
@@ -125,19 +134,12 @@ namespace ExViewer.Views
             var animationSucceed = true;
             if (animation != null)
             {
-                animationSucceed = animation.TryStart(this.imgConnect, new UIElement[] { this.cb_top, this.bdLeft, this.bdRight, this.bdTop });
+                animationSucceed = animation.TryStart(this.imgConnect, new UIElement[]
+                {
+                    this.cb_top, this.bdLeft, this.bdRight, this.bdTop
+                });
                 if (animationSucceed)
                     animation.Completed += this.Animation_Completed;
-            }
-
-            Av_VisibleBoundsChanged(this.av, null);
-            this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
-
-            RootControl.RootController.SetFullScreen(StatusCollection.Current.FullScreenInImagePage);
-            if (SettingCollection.Current.KeepScreenOn)
-            {
-                this.displayRequest.RequestActive();
-                this.displayActived = true;
             }
 
             await Dispatcher.YieldIdle();
@@ -159,17 +161,12 @@ namespace ExViewer.Views
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            var index = this.fv.SelectedIndex;
-            if (index < VM.Gallery.Count)
-                VM.CurrentIndex = index;
-            else
-                VM.CurrentIndex = VM.Gallery.Count - 1;
-            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ImageAnimation", this.fv.ContainerFromIndex(index).Descendants<Image>().First());
             base.OnNavigatingFrom(e);
 
             if (!this.cbVisible)
                 changeCbVisibility();
 
+            this.av.VisibleBoundsChanged -= this.Av_VisibleBoundsChanged;
             StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
             RootControl.RootController.SetFullScreen(false);
             if (this.displayActived)
@@ -177,6 +174,13 @@ namespace ExViewer.Views
                 this.displayRequest.RequestRelease();
                 this.displayActived = false;
             }
+
+            var index = this.fv.SelectedIndex;
+            if (index < VM.Gallery.Count)
+                VM.CurrentIndex = index;
+            else
+                VM.CurrentIndex = VM.Gallery.Count - 1;
+            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ImageAnimation", this.fv.ContainerFromIndex(index).Descendants<Image>().First());
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -185,7 +189,6 @@ namespace ExViewer.Views
             this.fv.IsEnabled = false;
             this.imgConnect.Visibility = Visibility.Visible;
             base.OnNavigatedFrom(e);
-            this.av.VisibleBoundsChanged -= this.Av_VisibleBoundsChanged;
             CloseAll();
             cb_top_Closed(this.cb_top, null);
         }

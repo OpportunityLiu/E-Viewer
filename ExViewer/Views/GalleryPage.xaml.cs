@@ -75,7 +75,7 @@ namespace ExViewer.Views
 
         private bool needResetView, needRestoreView;
 
-        protected override async void VisibleBoundsChanged(Thickness visibleBoundsThickness)
+        protected override async void VisibleBoundsThicknessChanged(Thickness visibleBoundsThickness)
         {
             if (this.needResetView || this.needRestoreView)
                 return;
@@ -117,12 +117,15 @@ namespace ExViewer.Views
                 this.needRestoreView = false;
                 restoreView();
             }
+            else
+            {
+                changeView(true, true);
+            }
         }
 
         private void resetView()
         {
             changeViewTo(false, true);
-            this.pv.SelectedIndex = 0;
             this.gv.ScrollIntoView(this.VM.Gallery.FirstOrDefault());
             this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
             this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
