@@ -201,9 +201,10 @@ namespace ExClient.Tagging
             return voteAsync(req);
         }
 
-        private static Regex tagNotValid = new Regex(@"\s*The tag .+? is not currently valid\.\s*");
-        private static Regex tagNeedNs = new Regex(@"\s*The tag .+? is not allowed in this namespace - requires male: or female:\s*");
+        private static Regex tagNotValid = new Regex(@"\s*The tag\s+(.+?)\s+is not currently valid\.\s*");
+        private static Regex tagNeedNs = new Regex(@"\s*The tag ""(.+?)"" is not allowed in this namespace - requires male: or female:\s*");
         private static Regex tagCantVote = new Regex(@"\s*Cannot vote for tag\.\s*");
+        private static Regex tagBanned = new Regex(@"\s*The tag\s+(.+?)\s+has been vetoed on this gallery; it is an incorrect tag\. Please read the wiki\.\s*");
 
         private IAsyncAction voteAsync(TagRequest req)
         {
@@ -219,6 +220,8 @@ namespace ExClient.Tagging
                         throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace);
                     if (tagCantVote.IsMatch(r.Error))
                         throw new InvalidOperationException(LocalizedStrings.Resources.TagNoVotePremition);
+                    if (tagBanned.IsMatch(r.Error))
+                        throw new InvalidOperationException(LocalizedStrings.Resources.TagBannedForGallery);
                 }
                 r.CheckResponse();
                 var doc = HtmlNode.CreateNode(r.TagPane);
