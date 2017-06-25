@@ -229,7 +229,8 @@ namespace ExViewer.Controls
                 this.asbNewTags.IsEnabled = false;
                 var tags = text.Split(commas, StringSplitOptions.RemoveEmptyEntries)
                     .Where(s => !string.IsNullOrWhiteSpace(s))
-                    .Select(ExClient.Tagging.Tag.Parse).ToList();
+                    .Select(ExClient.Tagging.Tag.Parse)
+                    .Distinct().ToList();
                 if (Tags.Count == 0)
                     return;
                 await tagc.VoteAsync(tags, VoteState.Up);

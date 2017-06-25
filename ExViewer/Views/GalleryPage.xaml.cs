@@ -169,6 +169,7 @@ namespace ExViewer.Views
                 this.needRestoreView = true;
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
             Control restoreElement = null;
+            var idx = this.VM.CurrentIndex;
             if (reset)
             {
                 resetView();
@@ -178,9 +179,10 @@ namespace ExViewer.Views
                 var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
                 if (animation != null)
                 {
-                    var container = this.gv.ContainerFromIndex(this.VM.CurrentIndex);
-                    if (container != null)
-                        animation.TryStart(container.Descendants<Image>().First());
+                    if (idx < this.VM.Gallery.Count)
+                    {
+                        await this.gv.TryStartConnectedAnimationAsync(animation, this.VM.Gallery[idx], "Image");
+                    }
                     else
                         animation.Cancel();
                 }

@@ -110,20 +110,23 @@ namespace ExClient.Tagging
 
         public bool Equals(Tag other)
         {
-            return this.Namespace == other.Namespace 
-                && string.Equals(this.Content, other.Content, StringComparison.OrdinalIgnoreCase);
+            return this.Namespace == other.Namespace
+                && this.Content == other.Content;
         }
-        
+
         public override bool Equals(object obj)
         {
             if (obj is Tag o)
                 return this.Equals(o);
             return false;
         }
-        
+
+        public static bool operator ==(Tag left, Tag right) => left.Equals(right);
+        public static bool operator !=(Tag left, Tag right) => !left.Equals(right);
+
         public override int GetHashCode()
         {
-            return unchecked((int)Namespace * StringComparer.OrdinalIgnoreCase.GetHashCode(Content));
+            return unchecked(((int)Namespace * 958339) ^ Content.GetHashCode());
         }
 
         public int CompareTo(Tag other)

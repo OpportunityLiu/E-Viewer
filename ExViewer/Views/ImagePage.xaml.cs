@@ -131,7 +131,7 @@ namespace ExViewer.Views
                 this.imgConnect.Source = this.VM.Gallery[index].Thumb;
             }
             var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
-            var animationSucceed = true;
+            var animationSucceed = false;
             if (animation != null)
             {
                 animationSucceed = animation.TryStart(this.imgConnect, new UIElement[]
