@@ -16,8 +16,9 @@
       "LicenceTextBlock/Text": "協議",
       "OnlineContentsTextBlock/Text": "線上內容",
       "RateHyperlinkButton/Content": "打分和評價",
-      "SourceCodeHyperlinkButton/Content": "在 GitHub 上檢視原始碼",
-      "TagDatabaseTextBlock/Text": "標籤資料庫"
+      "SourceCodeHyperlinkButton/Content": "反饋和原始碼",
+      "TagDatabaseTextBlock/Text": "標籤資料庫",
+      "UpdateButton/Content": "立即更新"
     },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "檢視更多",

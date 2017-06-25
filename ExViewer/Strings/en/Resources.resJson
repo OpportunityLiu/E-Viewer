@@ -16,8 +16,9 @@
       "LicenceTextBlock/Text": "License",
       "OnlineContentsTextBlock/Text": "Online contents",
       "RateHyperlinkButton/Content": "Rate and review",
-      "SourceCodeHyperlinkButton/Content": "View source code at GitHub.com",
-      "TagDatabaseTextBlock/Text": "Tag database"
+      "SourceCodeHyperlinkButton/Content": "Feedback & source code",
+      "TagDatabaseTextBlock/Text": "Tag database",
+      "UpdateButton/Content": "Update now"
     },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "See more",
