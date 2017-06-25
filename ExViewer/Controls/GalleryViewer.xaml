@@ -9,7 +9,7 @@
              d:DesignWidth="500"
              IsTabStop="False"
              UseSystemFocusVisuals="False"
-             AutomationProperties.LabeledBy="{x:Bind Title}">
+             AutomationProperties.LabeledBy="{x:Bind TitleTextBlock}">
     <UserControl.Resources>
         <Style x:Key="DetailTextBlockStyle"
                TargetType="TextBlock">
@@ -60,12 +60,12 @@
                                          Category="{x:Bind Gallery.FavoriteCategory, Mode=OneWay}" />
         <RelativePanel Grid.Column="1"
                        Margin="8,4,0,4">
-            <TextBlock x:Name="Title"
+            <TextBlock x:Name="TitleTextBlock"
                        VerticalAlignment="Top"
                        RelativePanel.AlignLeftWithPanel="True"
                        RelativePanel.AlignRightWithPanel="True"
                        RelativePanel.AlignTopWithPanel="True"
-                       RelativePanel.Above="Category"
+                       RelativePanel.Above="CategoryTag"
                        Text="{x:Bind Gallery, Converter={StaticResource GalleryToTitleStringConverter}, Mode=OneWay}"
                        Style="{StaticResource SubtitleTextBlockStyle}"
                        TextWrapping="WrapWholeWords"
@@ -73,16 +73,16 @@
                        TextTrimming="CharacterEllipsis"
                        Margin="0,0,0,8">
                 <ToolTipService.ToolTip>
-                    <ToolTip x:Name="tt_Title">
+                    <ToolTip x:Name="TitleToolTop">
                         <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                    TextWrapping="WrapWholeWords" />
                     </ToolTip>
                 </ToolTipService.ToolTip>
             </TextBlock>
-            <local:CategoryTag x:Name="Category"
-                               RelativePanel.Above="Language"
+            <local:CategoryTag x:Name="CategoryTag"
+                               RelativePanel.Above="LanguageTextBlock"
                                Category="{x:Bind Gallery.Category, Mode=OneWay}" />
-            <TextBlock x:Name="Language"
+            <TextBlock x:Name="LanguageTextBlock"
                        RelativePanel.Above="Rating"
                        Text="{x:Bind Gallery.Language, Mode=OneWay, Converter={StaticResource StringConverter}}"
                        Style="{StaticResource DetailTextBlockStyle}" />
@@ -94,13 +94,13 @@
                        TextTrimming="None"
                        FontFamily="Segoe MDL2 Assets" />
             <TextBlock x:Name="tbCount"
-                       RelativePanel.AlignVerticalCenterWith="Category"
-                       RelativePanel.RightOf="Category"
+                       RelativePanel.AlignVerticalCenterWith="CategoryTag"
+                       RelativePanel.RightOf="CategoryTag"
                        Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/GalleryViewer/RecordCountFormatString'}"
                        Style="{StaticResource DetailRightTextBlockStyle}" />
             <TextBlock x:Name="tbPosted"
-                       RelativePanel.AlignVerticalCenterWith="Language"
-                       RelativePanel.RightOf="Language"
+                       RelativePanel.AlignVerticalCenterWith="LanguageTextBlock"
+                       RelativePanel.RightOf="LanguageTextBlock"
                        Text="{x:Bind Gallery.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}}"
                        Style="{StaticResource DetailRightTextBlockStyle}" />
             <TextBlock x:Name="tbUploader"
