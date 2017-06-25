@@ -1,5 +1,6 @@
-﻿{
+{
   "80190194": "Not found (404). The requested URL does not exist on the server, try ExHentai.",
   "80072F78": "The server returned an invalid or unrecognized response.",
-  "80072EFF": "The connection with the server was reset."
+  "80072EFF": "The connection with the server was reset.",
+  "80072EE7": "The server name or address could not be resolved."
 }
