@@ -24,10 +24,10 @@ namespace ExViewer.Views
 
         public SplashControl(SplashScreen splashScreen)
         {
-            this.InitializeComponent();
+            InitializeComponent();
             BannerProvider.Provider.GetBannerAsync().Completed = (s, e)
-                => this.Dispatcher.Begin(() => loadBanner(s.GetResults()));
-            this.loadApplication();
+                => Dispatcher.Begin(() => loadBanner(s.GetResults()));
+            loadApplication();
             this.splashScreen = splashScreen;
         }
 
@@ -35,12 +35,12 @@ namespace ExViewer.Views
         {
             if (banner == null)
             {
-                ((BitmapImage)this.img_pic.Source).UriSource = BannerProvider.Provider.DefaultBanner;
+                ((BitmapImage)img_pic.Source).UriSource = BannerProvider.Provider.DefaultBanner;
                 return;
             }
             using (var stream = await banner.OpenReadAsync())
             {
-                await ((BitmapImage)this.img_pic.Source).SetSourceAsync(stream);
+                await ((BitmapImage)img_pic.Source).SetSourceAsync(stream);
             }
         }
 
@@ -69,14 +69,14 @@ namespace ExViewer.Views
         {
             if (DeviceTrigger.IsMobile)
                 return;
-            var l = this.splashScreen.ImageLocation;
-            this.img_splash.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
-            this.img_splash.Width = l.Width;
-            this.img_splash.Height = l.Height;
+            var l = splashScreen.ImageLocation;
+            img_splash.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
+            img_splash.Width = l.Width;
+            img_splash.Height = l.Height;
 
-            this.img_pic.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
-            this.img_pic.Width = l.Width;
-            this.img_pic.Height = l.Height;
+            img_pic.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
+            img_pic.Width = l.Width;
+            img_pic.Height = l.Height;
         }
 
         private RootControl rootControl;
@@ -85,9 +85,9 @@ namespace ExViewer.Views
         {
             if (SettingCollection.Current.NeedVerify)
                 await verify();
-            this.cpHided.Content = null;
-            Window.Current.Content = this.rootControl;
-            this.rootControl = null;
+            cpHided.Content = null;
+            Window.Current.Content = rootControl;
+            rootControl = null;
             afterActions();
         }
 

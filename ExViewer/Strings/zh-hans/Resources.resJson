@@ -16,8 +16,9 @@
       "LicenceTextBlock/Text": "协议",
       "OnlineContentsTextBlock/Text": "在线内容",
       "RateHyperlinkButton/Content": "打分和评价",
-      "SourceCodeHyperlinkButton/Content": "在 GitHub 上查看源代码",
-      "TagDatabaseTextBlock/Text": "标签数据库"
+      "SourceCodeHyperlinkButton/Content": "反馈和源代码",
+      "TagDatabaseTextBlock/Text": "标签数据库",
+      "UpdateButton/Content": "立即更新"
     },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "查看更多",
