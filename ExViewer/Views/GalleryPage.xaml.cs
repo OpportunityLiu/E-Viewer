@@ -133,12 +133,12 @@ namespace ExViewer.Views
 
         private void restoreView()
         {
+            changeViewTo(true, true);
             var current = this.VM.GetCurrent();
             if (current != null)
             {
                 this.gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
             }
-            changeViewTo(true, true);
         }
 
         private bool isGdInfoHide
@@ -179,10 +179,9 @@ namespace ExViewer.Views
                 var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
                 if (animation != null)
                 {
-                    if (idx < this.VM.Gallery.Count)
-                    {
-                        await this.gv.TryStartConnectedAnimationAsync(animation, this.VM.Gallery[idx], "Image");
-                    }
+                    var con = this.gv.ContainerFromIndex(idx);
+                    if (con != null)
+                        animation.TryStart(con.Descendants<Image>().First());
                     else
                         animation.Cancel();
                 }
