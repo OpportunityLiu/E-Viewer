@@ -50,9 +50,10 @@ namespace ExViewer.Controls
         private void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var s = (TextBlock)sender;
-            var value = (Tag)args.NewValue;
+            var newValue = (Tag)args.NewValue;
+            var oldValue = (Tag?)s.Tag ?? default(Tag);
             args.Handled = true;
-            var state = this.Tags.StateOf(value);
+            var state = this.Tags.StateOf(newValue);
 
             switch (state.GetVoteState())
             {
@@ -86,14 +87,17 @@ namespace ExViewer.Controls
                 break;
             }
 
-            var dc = value.GetDisplayContentAsync();
+            if (oldValue == newValue)
+                return;
+            s.Tag = newValue;
+            var dc = newValue.GetDisplayContentAsync();
             if (dc.Status == AsyncStatus.Completed)
             {
                 s.Text = dc.GetResults();
             }
             else
             {
-                s.Text = value.Content;
+                s.Text = newValue.Content;
                 dc.Completed = (IAsyncOperation<string> op, AsyncStatus e) =>
                 {
                     if (e != AsyncStatus.Completed)

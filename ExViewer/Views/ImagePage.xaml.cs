@@ -155,8 +155,6 @@ namespace ExViewer.Views
             this.fv.IsEnabled = true;
             this.fv.Opacity = 1;
             this.fv.Focus(FocusState.Programmatic);
-            if (sender != null)
-                sender.Completed -= Animation_Completed;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
