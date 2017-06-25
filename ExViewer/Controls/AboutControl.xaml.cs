@@ -54,6 +54,7 @@ namespace ExViewer.Controls
             {
                 await EhTagClient.Client.UpdateAsync();
                 RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Succeeded, null);
+                Bindings.Update();
             }
             catch (Exception ex)
             {
@@ -72,6 +73,7 @@ namespace ExViewer.Controls
             {
                 await EhTagTranslatorClient.Client.UpdateAsync();
                 RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Succeeded, null);
+                Bindings.Update();
             }
             catch (Exception ex)
             {
