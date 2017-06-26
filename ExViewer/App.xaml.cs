@@ -6,6 +6,9 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
+using Microsoft.Azure.Mobile;
+using System.Collections.Generic;
+using Microsoft.Azure.Mobile.Analytics;
 #if !DEBUG
 using Microsoft.HockeyApp;
 #endif
@@ -65,6 +68,12 @@ namespace ExViewer
 
         private async void lanunchCore(IActivatedEventArgs e, bool prelaunchActivated)
         {
+            if (!MobileCenter.Configured)
+            {
+                var region = new Windows.Globalization.GeographicRegion();
+                MobileCenter.SetCountryCode(region.CodeTwoLetter);
+                MobileCenter.Start("4b9c5e4f-ebf5-46ed-9ee8-72e5de8e0236", typeof(Analytics)/*, typeof(Crashes)*/);
+            }
             if (!Opportunity.MvvmUniverse.DispatcherHelper.Initialized)
             {
                 Opportunity.MvvmUniverse.DispatcherHelper.Initialize();
@@ -105,8 +114,13 @@ namespace ExViewer
                     && e.PreviousExecutionState != ApplicationExecutionState.Running
                     && e.PreviousExecutionState != ApplicationExecutionState.Suspended)
                     Exit();
+                lanunchCore(args, false);
+                Analytics.TrackEvent("Launched by uri", new Dictionary<string, string> { ["Uri"] = e.Uri.ToString() });
             }
-            lanunchCore(args, false);
+            else
+            {
+                lanunchCore(args, false);
+            }
         }
 
         private async void OnResuming(object sender, object e)

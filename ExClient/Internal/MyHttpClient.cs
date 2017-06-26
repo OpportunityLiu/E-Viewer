@@ -1,4 +1,5 @@
 ﻿using ExClient.Api;
+using ExClient.HentaiVerse;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using System;
@@ -137,6 +138,8 @@ namespace ExClient.Internal
                 using (var stream = (await response.Content.ReadAsInputStreamAsync()).AsStreamForRead())
                 {
                     doc.Load(stream);
+                    if (HentaiVerseInfo.IsEnabled)
+                        HentaiVerseInfo.AnalyzePage(doc);
                     return doc;
                 }
             });

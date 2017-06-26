@@ -22,6 +22,7 @@
   "LoadLofiOnAllInternetConnection": "Always load compressed image",
   "LoadLofiOnMeteredInternetConnection": "Load compressed image while using metered Internet connection",
   "NeedVerify": "Verify my PIN when the app is starting",
+  "OpenHVOnMonsterEncountered": "Open HentaiVerse when I have encountered a monster",
   "ReverseFlowDirection": "Flip direction",
   "SaveLastSearch": "Save my lastest search as default",
   "Searching": "SEARCHING",

@@ -159,6 +159,14 @@ namespace ExViewer.Views
                         }
                     }
                 }
+                ExClient.HentaiVerse.HentaiVerseInfo.MonsterEncountered += (s, e) =>
+                {
+                    if (SettingCollection.Current.OpenHVOnMonsterEncountered)
+                        Opportunity.MvvmUniverse.DispatcherHelper.BeginInvokeOnUIThread(async () =>
+                        {
+                            await Windows.System.Launcher.LaunchUriAsync(e.Uri);
+                        });
+                };
             });
             await Dispatcher.YieldIdle();
             this.rootControl = new RootControl();

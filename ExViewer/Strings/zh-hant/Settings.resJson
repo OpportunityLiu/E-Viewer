@@ -22,6 +22,7 @@
   "LoadLofiOnAllInternetConnection": "始終載入壓縮的圖片",
   "LoadLofiOnMeteredInternetConnection": "使用按流量計費的網路時載入壓縮的圖片",
   "NeedVerify": "啟動程式時使用 Windows Hello 驗證身份",
+  "OpenHVOnMonsterEncountered": "當我遇到怪物時啟動 HentaiVerse",
   "ReverseFlowDirection": "翻頁方向",
   "SaveLastSearch": "儲存最後一次搜尋為預設",
   "Searching": "搜尋",
