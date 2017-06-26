@@ -36,9 +36,9 @@ namespace ExClient.Tagging
 
         private int getIndexOfKey(Namespace key)
         {
-            for (var i = 0; i < this.keys.Length; i++)
+            for (var i = 0; i < this.Keys.Length; i++)
             {
-                if (this.keys[i] == key)
+                if (this.Keys[i] == key)
                     return i;
             }
             return -1;
@@ -52,7 +52,7 @@ namespace ExClient.Tagging
             initOrReset(items.Select(t => (t, TagState.NormalPower)));
         }
 
-        internal event Action<int> itemStateChanged;
+        internal event Action<int> ItemStateChanged;
 
         private void initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
         {
@@ -67,21 +67,21 @@ namespace ExClient.Tagging
             {
                 (data[i], state[i]) = rawData[i];
             }
-            if (this.data != null && this.state != null && this.data.SequenceEqual(data))
+            if (this.Data != null && this.State != null && this.Data.SequenceEqual(data))
             {
-                var notify = this.itemStateChanged;
+                var notify = this.ItemStateChanged;
                 if (notify == null)
                 {
-                    this.state = state;
+                    this.State = state;
                     return;
                 }
-                for (var i = 0; i < this.state.Length; i++)
+                for (var i = 0; i < this.State.Length; i++)
                 {
-                    var oldState = this.state[i];
+                    var oldState = this.State[i];
                     var newState = state[i];
                     if (oldState == newState)
                         continue;
-                    this.state[i] = newState;
+                    this.State[i] = newState;
                     notify(i);
                 }
                 return;
@@ -103,29 +103,29 @@ namespace ExClient.Tagging
             offset[currentIdx] = data.Length;
             Array.Resize(ref keys, currentIdx);
             Array.Resize(ref offset, currentIdx + 1);
-            this.data = data;
-            this.state = state;
-            this.keys = keys;
-            this.offset = offset;
-            this.version++;
-            this.itemStateChanged?.Invoke(-1);
+            this.Data = data;
+            this.State = state;
+            this.Keys = keys;
+            this.Offset = offset;
+            this.Version++;
+            this.ItemStateChanged?.Invoke(-1);
             RaiseCollectionReset();
             RaisePropertyChanged(nameof(Count), nameof(Items), "Groups");
         }
 
-        internal Tag[] data;
-        internal TagState[] state;
+        internal Tag[] Data;
+        internal TagState[] State;
 
-        internal Namespace[] keys;
-        internal int[] offset;
+        internal Namespace[] Keys;
+        internal int[] Offset;
 
-        internal int version;
+        internal int Version;
 
         public Gallery Owner { get; }
 
-        public IReadOnlyList<Tag> Items => this.data;
+        public IReadOnlyList<Tag> Items => this.Data;
 
-        public int Count => this.keys.Length;
+        public int Count => this.Keys.Length;
 
         bool IList.IsFixedSize => false;
 
@@ -179,7 +179,7 @@ namespace ExClient.Tagging
 
         private RangedCollectionView<Tag> getValue(int index)
         {
-            return new RangedCollectionView<Tag>(this.data, this.offset[index], this.offset[index + 1] - this.offset[index]);
+            return new RangedCollectionView<Tag>(this.Data, this.Offset[index], this.Offset[index + 1] - this.Offset[index]);
         }
 
         public IAsyncAction VoteAsync(Tag tag, VoteState command)
@@ -233,7 +233,7 @@ namespace ExClient.Tagging
                         throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagVetoedForGallery, vetoedMatch.Groups[1].Value));
                     }
                     var blacklistMatch = tagInBlackList.Match(r.Error);
-                    if(blacklistMatch.Success)
+                    if (blacklistMatch.Success)
                     {
                         throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagInBlackList, blacklistMatch.Groups[1].Value));
                     }
@@ -270,31 +270,31 @@ namespace ExClient.Tagging
                     var state = default(TagState);
                     switch (divclass)
                     {
-                        case "gt":
-                            state |= TagState.HighPower; break;
-                        case "gtw":
-                            state |= TagState.LowPower; break;
-                        case "gtl":
-                        default:
-                            state |= TagState.NormalPower; break;
+                    case "gt":
+                        state |= TagState.HighPower; break;
+                    case "gtw":
+                        state |= TagState.LowPower; break;
+                    case "gtl":
+                    default:
+                        state |= TagState.NormalPower; break;
                     }
                     switch (divstyle)
                     {
-                        case "opacity:0.4":
-                            state |= TagState.Slave;
-                            break;
-                        case "opacity:1.0":
-                        default:
-                            break;
+                    case "opacity:0.4":
+                        state |= TagState.Slave;
+                        break;
+                    case "opacity:1.0":
+                    default:
+                        break;
                     }
                     switch (aclass)
                     {
-                        case "tup":
-                            state |= TagState.Upvoted;
-                            break;
-                        case "tdn":
-                            state |= TagState.Downvoted;
-                            break;
+                    case "tup":
+                        state |= TagState.Upvoted;
+                        break;
+                    case "tdn":
+                        state |= TagState.Downvoted;
+                        break;
                     }
                     var tag = divid.Substring(3).Replace('_', ' ');
                     return (Tag.Parse(tag), state);
@@ -311,7 +311,7 @@ namespace ExClient.Tagging
             internal Enumerator(TagCollection parent)
             {
                 this.parent = parent;
-                this.version = parent.version;
+                this.version = parent.Version;
                 this.i = 0;
                 this.Current = default(NamespaceTagCollection);
             }
@@ -322,10 +322,10 @@ namespace ExClient.Tagging
 
             public bool MoveNext()
             {
-                if (this.version != this.parent.version)
+                if (this.version != this.parent.Version)
                     throw new InvalidOperationException("Collection changed");
-                var offset = this.parent.offset;
-                var success = this.i < this.parent.keys.Length;
+                var offset = this.parent.Offset;
+                var success = this.i < this.parent.Keys.Length;
                 if (success)
                     this.Current = new NamespaceTagCollection(this.parent, this.i);
                 else
@@ -360,9 +360,9 @@ namespace ExClient.Tagging
             var nsindex = getIndexOfKey(tag.Namespace);
             if (nsindex < 0)
                 return -1;
-            for (var i = this.offset[nsindex]; i < this.offset[nsindex + 1]; i++)
+            for (var i = this.Offset[nsindex]; i < this.Offset[nsindex + 1]; i++)
             {
-                if (this.data[i].Content == tag.Content)
+                if (this.Data[i].Content == tag.Content)
                     return i;
             }
             return -1;
@@ -370,11 +370,11 @@ namespace ExClient.Tagging
 
         public TagState StateOf(int index)
         {
-            if (index < 0 || index >= this.data.Length)
+            if (index < 0 || index >= this.Data.Length)
                 throw new ArgumentOutOfRangeException(nameof(index));
-            if (this.state == null)
+            if (this.State == null)
                 return TagState.NormalPower;
-            return this.state[index];
+            return this.State[index];
         }
 
         public TagState StateOf(Tag tag)
