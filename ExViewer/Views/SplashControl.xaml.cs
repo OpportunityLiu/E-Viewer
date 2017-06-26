@@ -35,12 +35,12 @@ namespace ExViewer.Views
         {
             if (banner == null)
             {
-                ((BitmapImage)img_pic.Source).UriSource = BannerProvider.Provider.DefaultBanner;
+                ((BitmapImage)this.img_pic.Source).UriSource = BannerProvider.Provider.DefaultBanner;
                 return;
             }
             using (var stream = await banner.OpenReadAsync())
             {
-                await ((BitmapImage)img_pic.Source).SetSourceAsync(stream);
+                await ((BitmapImage)this.img_pic.Source).SetSourceAsync(stream);
             }
         }
 
@@ -69,14 +69,14 @@ namespace ExViewer.Views
         {
             if (DeviceTrigger.IsMobile)
                 return;
-            var l = splashScreen.ImageLocation;
-            img_splash.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
-            img_splash.Width = l.Width;
-            img_splash.Height = l.Height;
+            var l = this.splashScreen.ImageLocation;
+            this.img_splash.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
+            this.img_splash.Width = l.Width;
+            this.img_splash.Height = l.Height;
 
-            img_pic.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
-            img_pic.Width = l.Width;
-            img_pic.Height = l.Height;
+            this.img_pic.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
+            this.img_pic.Width = l.Width;
+            this.img_pic.Height = l.Height;
         }
 
         private RootControl rootControl;
@@ -85,52 +85,41 @@ namespace ExViewer.Views
         {
             if (SettingCollection.Current.NeedVerify)
                 await verify();
-            cpHided.Content = null;
-            Window.Current.Content = rootControl;
-            rootControl = null;
+            this.ccHided.Content = null;
+            Window.Current.Content = this.rootControl;
+            this.rootControl = null;
             afterActions();
         }
 
         private void setLoadingFinished()
         {
-            lock (this.goToContentSyncRoot)
-            {
-                if (this.goToContentEnabled)
-                    goToContent();
-                else
-                    this.loadingFinished = true;
-            }
+            if (this.goToContentEnabled)
+                goToContent();
+            else
+                this.loadingFinished = true;
         }
 
         public void EnableGoToContent()
         {
-            lock (this.goToContentSyncRoot)
-            {
-                if (this.loadingFinished)
-                    goToContent();
-                else
-                    this.goToContentEnabled = true;
-            }
+            if (this.loadingFinished)
+                goToContent();
+            else
+                this.goToContentEnabled = true;
         }
 
         private bool loadingFinished, goToContentEnabled;
-        private object goToContentSyncRoot = new object();
 
         private bool effectLoaded, applicationLoaded;
-        private object loadingSyncRoot = new object();
 
         private async void loadEffect()
         {
-            await Task.Delay(200);
+            await Dispatcher.YieldIdle();
             Window.Current.Activate();
             this.ShowPic.Begin();
-            lock (this.loadingSyncRoot)
-            {
-                if (this.applicationLoaded)
-                    setLoadingFinished();
-                else
-                    this.effectLoaded = true;
-            }
+            if (this.applicationLoaded)
+                setLoadingFinished();
+            else
+                this.effectLoaded = true;
         }
 
         private async void loadApplication()
@@ -171,22 +160,19 @@ namespace ExViewer.Views
                     }
                 }
             });
-            await Task.Delay(200);
+            await Dispatcher.YieldIdle();
             this.rootControl = new RootControl();
-            FindName(nameof(this.cpHided));
-            this.cpHided.Content = this.rootControl;
+            FindName(nameof(this.ccHided));
+            this.ccHided.Content = this.rootControl;
             await loadingTask;
             if (Client.Current.NeedLogOn)
             {
                 await RootControl.RootController.RequestLogOn();
             }
-            lock (this.loadingSyncRoot)
-            {
-                if (this.effectLoaded)
-                    setLoadingFinished();
-                else
-                    this.applicationLoaded = true;
-            }
+            if (this.effectLoaded)
+                setLoadingFinished();
+            else
+                this.applicationLoaded = true;
         }
 
         private async void afterActions()
