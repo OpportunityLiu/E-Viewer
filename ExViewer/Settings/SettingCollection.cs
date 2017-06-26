@@ -27,6 +27,7 @@ namespace ExViewer.Settings
             this.ExcludedTagNamespaces = this.ExcludedTagNamespaces;
             this.ExcludedLanguages = this.ExcludedLanguages;
             this.VisitEx = this.VisitEx;
+            this.OpenHVOnMonsterEncountered = this.OpenHVOnMonsterEncountered;
         }
 
         [Setting("Searching", Index = 10)]
@@ -109,6 +110,18 @@ namespace ExViewer.Settings
             }
         }
 
+        [Setting("Global", Index = 17)]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
+        public bool OpenHVOnMonsterEncountered
+        {
+            get => GetLocal(false);
+            set
+            {
+                SetLocal(value);
+                ExClient.HentaiVerse.HentaiVerseInfo.IsEnabled = value;
+            }
+        }
+
         [Setting("Global", Index = 20)]
         [ToggleSwitchRepresent("BooleanJT", "BooleanDT")]
         public bool UseJapaneseTitle
@@ -125,18 +138,18 @@ namespace ExViewer.Settings
             set => SetRoaming(value);
         }
 
-        [Setting("Viewing", Index = 28)]
-        public string CommentTranslationCode
-        {
-            get => GetRoaming(Strings.Resources.General.LanguageCode);
-            set => SetRoaming(value);
-        }
-
         [Setting("Viewing", Index = 30)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseJapaneseTagTranslation
         {
             get => GetRoaming(false);
+            set => SetRoaming(value);
+        }
+
+        [Setting("Viewing", Index = 35)]
+        public string CommentTranslationCode
+        {
+            get => GetRoaming(Strings.Resources.General.LanguageCode);
             set => SetRoaming(value);
         }
 
@@ -162,7 +175,7 @@ namespace ExViewer.Settings
             get => GetLocal(true);
             set
             {
-                if(this.LoadLofiOnAllInternetConnection)
+                if (this.LoadLofiOnAllInternetConnection)
                     ForceSetLocal(true);
                 else
                     ForceSetLocal(value);
@@ -177,7 +190,7 @@ namespace ExViewer.Settings
             set
             {
                 SetLocal(value);
-                if(value)
+                if (value)
                     this.LoadLofiOnMeteredInternetConnection = true;
             }
         }
@@ -189,14 +202,14 @@ namespace ExViewer.Settings
             set
             {
                 var old = GetLocal("");
-                if(string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrWhiteSpace(value))
                     value = "";
                 try
                 {
                     Client.Current.Settings.HahProxy.AddressAndPort = value;
                     ForceSetLocal(Client.Current.Settings.HahProxy.AddressAndPort);
                 }
-                catch(System.Exception ex)
+                catch (System.Exception ex)
                 {
                     ForceSetLocal(old);
                     Views.RootControl.RootController.SendToast(ex, null);

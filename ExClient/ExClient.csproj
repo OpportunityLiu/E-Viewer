@@ -128,7 +128,8 @@
     <Compile Include="Galleries\Metadata\LanguageModifier.cs" />
     <Compile Include="Galleries\Metadata\LanguageName.cs" />
     <Compile Include="Galleries\Metadata\LanguageNameExtension.cs" />
-    <Compile Include="HentaiVerseInfo.cs" />
+    <Compile Include="Hentaiverse\HentaiVerseInfo.cs" />
+    <Compile Include="Hentaiverse\MonsterEncounteredEventArgs.cs" />
     <Compile Include="Migrations\20170612052132_NewMig.cs" />
     <Compile Include="Migrations\20170612052132_NewMig.designer.cs">
       <DependentUpon>20170612052132_NewMig.cs</DependentUpon>

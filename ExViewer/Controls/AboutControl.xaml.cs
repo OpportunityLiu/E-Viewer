@@ -14,47 +14,47 @@ namespace ExViewer.Controls
         {
             InitializeComponent();
             var version = Package.Current.Id.Version;
-            tb_AppVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
-            tb_AppName.Text = Package.Current.DisplayName;
+            this.tb_AppVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
+            this.tb_AppName.Text = Package.Current.DisplayName;
             var config = GetType().GetTypeInfo().Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
             if (!"release".Equals(config.Configuration, StringComparison.OrdinalIgnoreCase))
             {
                 FindName(nameof(tb_VersionInfoTag));
-                tb_VersionInfoTag.Visibility = Visibility.Visible;
-                tb_VersionInfoTag.Text = config.Configuration;
+                this.tb_VersionInfoTag.Visibility = Visibility.Visible;
+                this.tb_VersionInfoTag.Text = config.Configuration;
             }
-            tb_AppAuthor.Text = Package.Current.PublisherDisplayName;
-            tb_AppDescription.Text = Package.Current.Description;
-            refreshTimer.Tick += RefreshTimer_Tick;
-            hlbHV.NavigateUri = ExClient.HentaiVerseInfo.LogOnUri;
+            this.tb_AppAuthor.Text = Package.Current.PublisherDisplayName;
+            this.tb_AppDescription.Text = Package.Current.Description;
+            this.refreshTimer.Tick += RefreshTimer_Tick;
+            this.hlbHV.NavigateUri = ExClient.HentaiVerse.HentaiVerseInfo.LogOnUri;
         }
 
         private void RefreshTimer_Tick(object sender, object e)
         {
-            Bindings.Update();
+            this.Bindings.Update();
         }
 
         private DispatcherTimer refreshTimer = new DispatcherTimer { Interval = new TimeSpan(10_000_000) };
 
         private void UserControl_Loading(FrameworkElement sender, object args)
         {
-            refreshTimer.Start();
-            Bindings.Update();
+            this.refreshTimer.Start();
+            this.Bindings.Update();
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            refreshTimer.Stop();
+            this.refreshTimer.Stop();
         }
 
         private async void btnUpdateEt_Click(object sender, RoutedEventArgs e)
         {
-            btnUpdateEt.IsEnabled = false;
+            this.btnUpdateEt.IsEnabled = false;
             try
             {
                 await EhTagClient.Client.UpdateAsync();
                 RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Succeeded, null);
-                Bindings.Update();
+                this.Bindings.Update();
             }
             catch (Exception ex)
             {
@@ -62,18 +62,18 @@ namespace ExViewer.Controls
             }
             finally
             {
-                btnUpdateEt.IsEnabled = true;
+                this.btnUpdateEt.IsEnabled = true;
             }
         }
 
         private async void btnUpdateEht_Click(object sender, RoutedEventArgs e)
         {
-            btnUpdateEht.IsEnabled = false;
+            this.btnUpdateEht.IsEnabled = false;
             try
             {
                 await EhTagTranslatorClient.Client.UpdateAsync();
                 RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Succeeded, null);
-                Bindings.Update();
+                this.Bindings.Update();
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace ExViewer.Controls
             }
             finally
             {
-                btnUpdateEht.IsEnabled = true;
+                this.btnUpdateEht.IsEnabled = true;
             }
         }
     }
