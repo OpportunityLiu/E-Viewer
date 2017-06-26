@@ -13,22 +13,22 @@ namespace ExClient.Tagging
         internal NamespaceTagCollection(TagCollection owner, int index)
         {
             this.Owner = owner;
-            this.version = owner.version;
-            this.index = index;
-            owner.itemStateChanged += this.Owner_itemStateChanged; ;
+            this.version = owner.Version;
+            this.groupIndex = index;
+            owner.ItemStateChanged += this.Owner_itemStateChanged; ;
         }
 
         private void Owner_itemStateChanged(int index)
         {
-            if (this.version != this.Owner.version)
+            if (this.version != this.Owner.Version)
             {
                 dispose();
                 return;
             }
-            var offset = this.Owner.offset[this.index];
-            if (offset <= index && index < this.Owner.offset[this.index + 1])
+            var offset = this.Owner.Offset[this.groupIndex];
+            if (offset <= index && index < this.Owner.Offset[this.groupIndex + 1])
             {
-                var item = this.Owner.data[index];
+                var item = this.Owner.Data[index];
                 RaiseCollectionReplace(item, item, index - offset);
             }
         }
@@ -37,19 +37,19 @@ namespace ExClient.Tagging
         {
             if (this.Owner == null)
                 return;
-            this.Owner.itemStateChanged -= this.Owner_itemStateChanged;
+            this.Owner.ItemStateChanged -= this.Owner_itemStateChanged;
             this.Owner = null;
         }
 
-        private readonly int index;
+        private readonly int groupIndex;
 
         private readonly int version;
 
         public TagCollection Owner { get; private set; }
 
-        public Namespace Namespace => this.Owner.keys[this.index];
+        public Namespace Namespace => this.Owner.Keys[this.groupIndex];
 
-        public int Count => this.Owner.offset[this.index + 1] - this.Owner.offset[this.index];
+        public int Count => this.Owner.Offset[this.groupIndex + 1] - this.Owner.Offset[this.groupIndex];
 
         public bool IsFixedSize => true;
 
@@ -61,14 +61,14 @@ namespace ExClient.Tagging
 
         object IList.this[int index] { get => this[index]; set => throw new InvalidOperationException(); }
 
-        public Tag this[int index] => this.Owner.data[this.Owner.offset[this.index] + index];
+        public Tag this[int index] => this.Owner.Data[this.Owner.Offset[this.groupIndex] + index];
 
         public IEnumerator<Tag> GetEnumerator()
         {
-            var end = this.Owner.offset[this.index + 1];
-            for (var i = this.Owner.offset[this.index]; i < end; i++)
+            var end = this.Owner.Offset[this.groupIndex + 1];
+            for (var i = this.Owner.Offset[this.groupIndex]; i < end; i++)
             {
-                yield return this.Owner.data[i];
+                yield return this.Owner.Data[i];
             }
         }
 
