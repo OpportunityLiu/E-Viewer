@@ -4,63 +4,64 @@
              Loading="splash_Loading"
              UseLayoutRounding="False"
              SizeChanged="splash_SizeChanged">
-    <UserControl.Resources>
-        <Storyboard x:Name="ShowPic"
-                    Completed="ShowPic_Completed">
-            <DoubleAnimation Storyboard.TargetName="img_pic"
-                             Storyboard.TargetProperty="(UIElement.Opacity)"
-                             To="1"
-                             Duration="0:0:0.7">
-                <DoubleAnimation.EasingFunction>
-                    <CircleEase EasingMode="EaseIn" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Storyboard.TargetName="img_splash"
-                             Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
-                             To="4"
-                             Duration="0:0:2">
-                <DoubleAnimation.EasingFunction>
-                    <CircleEase EasingMode="EaseIn" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
-    </UserControl.Resources>
-    <Grid>
-        <ContentPresenter x:Name="cpHided"
-                          x:DeferLoadStrategy="Lazy" />
-        <Grid Background="{StaticResource SplashBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="2*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Image x:Name="img_splash"
-                   Grid.RowSpan="2"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   RenderTransformOrigin="0.5,0.5"
-                   Source="ms-appx:///Assets/SplashScreen.png">
-                <Image.RenderTransform>
-                    <CompositeTransform />
-                </Image.RenderTransform>
-            </Image>
-            <Image x:Name="img_pic"
-                   Grid.RowSpan="2"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   ImageFailed="img_pic_ImageFailed"
-                   ImageOpened="img_pic_ImageOpened"
-                   Opacity="0">
-                <Image.Source>
-                    <BitmapImage />
-                </Image.Source>
-            </Image>
-            <ProgressRing x:Name="pr"
-                          Grid.Row="1"
-                          Width="40"
-                          Height="40"
-                          x:DeferLoadStrategy="Lazy"
-                          IsActive="True"
-                          VerticalAlignment="Top" />
-        </Grid>
+  <UserControl.Resources>
+    <Storyboard x:Name="ShowPic"
+                Completed="ShowPic_Completed">
+      <DoubleAnimation Storyboard.TargetName="img_pic"
+                       Storyboard.TargetProperty="(UIElement.Opacity)"
+                       To="1"
+                       Duration="0:0:0.7">
+        <DoubleAnimation.EasingFunction>
+          <CircleEase EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="img_splash"
+                       Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
+                       To="4"
+                       Duration="0:0:2">
+        <DoubleAnimation.EasingFunction>
+          <CircleEase EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+    </Storyboard>
+  </UserControl.Resources>
+  <Grid>
+    <ContentControl x:Name="ccHided"
+                    x:DeferLoadStrategy="Lazy"
+                    IsEnabled="False" />
+    <Grid Background="{StaticResource SplashBrush}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="2*" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <Image x:Name="img_splash"
+             Grid.RowSpan="2"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center"
+             RenderTransformOrigin="0.5,0.5"
+             Source="ms-appx:///Assets/SplashScreen.png">
+        <Image.RenderTransform>
+          <CompositeTransform />
+        </Image.RenderTransform>
+      </Image>
+      <Image x:Name="img_pic"
+             Grid.RowSpan="2"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center"
+             ImageFailed="img_pic_ImageFailed"
+             ImageOpened="img_pic_ImageOpened"
+             Opacity="0">
+        <Image.Source>
+          <BitmapImage />
+        </Image.Source>
+      </Image>
+      <ProgressRing x:Name="pr"
+                    Grid.Row="1"
+                    Width="40"
+                    Height="40"
+                    x:DeferLoadStrategy="Lazy"
+                    IsActive="True"
+                    VerticalAlignment="Top" />
     </Grid>
+  </Grid>
 </UserControl>
