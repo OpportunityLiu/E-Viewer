@@ -23,6 +23,7 @@
                   VerticalScrollBarVisibility="Auto"
                   MinZoomFactor="1"
                   MaxZoomFactor="8"
+                  ViewChanged="sv_ViewChanged"
                   ManipulationDelta="sv_ManipulationDelta"
                   PointerEntered="sv_PointerEntered"
                   PointerMoved="sv_PointerMoved"
@@ -31,11 +32,8 @@
         <Grid HorizontalAlignment="Center"
               VerticalAlignment="Center"
               x:Name="gd_ContentRoot">
-            <Image x:Name="img_Thumb"
-                   Source="{x:Bind Image.Thumb, Mode=OneWay, FallbackValue={ThemeResource LoadingImageSource}}" />
-            <Image x:Name="img_Content"
-                   Source="{x:Bind Image.ImageFile, Mode=OneWay, Converter={StaticResource FileConverter}}"
-                   Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
+            <Image x:Name="img_Thumb"/>
+            <Image x:Name="img_Content" />
         </Grid>
     </ScrollViewer>
 </UserControl>
