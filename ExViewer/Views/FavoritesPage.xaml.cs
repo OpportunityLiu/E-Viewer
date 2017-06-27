@@ -48,11 +48,12 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
-            Navigator.GetForCurrentView().Handlers.Add(this);
             var id = TagSuggestionService.GetStateCode(this.asb);
             TagSuggestionService.SetStateCode(this.asb, id + 1);
+            Navigator.GetForCurrentView().Handlers.Add(this);
+            base.OnNavigatedTo(e);
             this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
+            this.VM.SetQueryWithSearchResult();
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (e.Parameter != null)
@@ -65,12 +66,11 @@ namespace ExViewer.Views
                 var selectedGallery = this.VM.SelectedGallery;
                 if (selectedGallery != null)
                 {
-                    await Dispatcher.YieldIdle();
                     this.lv.ScrollIntoView(selectedGallery);
+                    await Dispatcher.YieldIdle();
                     ((Control)this.lv.ContainerFromItem(selectedGallery))?.Focus(FocusState.Programmatic);
                 }
             }
-            this.VM.SetQueryWithSearchResult();
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
