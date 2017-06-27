@@ -152,6 +152,7 @@ namespace ExViewer.Views
         private void Animation_Completed(ConnectedAnimation sender, object args)
         {
             this.imgConnect.Visibility = Visibility.Collapsed;
+            this.imgConnect.Source = null;
             this.fv.IsEnabled = true;
             this.fv.Opacity = 1;
             this.fv.Focus(FocusState.Programmatic);
