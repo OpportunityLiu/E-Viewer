@@ -204,7 +204,7 @@ namespace ExClient.Tagging
         // See https://ehwiki.org/wiki/Technical_Issues#Gallery_Tagging
         // Here are mostly used ones.
         private static Regex tagNotValid = new Regex(@"The tag (.+?) is not currently valid");
-        private static Regex tagNeedNs = new Regex(@"The tag ""(.+?)"" is not allowed in this namespace - requires male: or female:");
+        private static Regex tagNeedNs = new Regex(@"The tag ""(.+?)"" is not allowed in this namespace - requires (.+?) or (.+?:)");
         private static Regex tagInBlackList = new Regex(@"The tag (.+?) cannot be used");
         private static Regex tagVetoed = new Regex(@"The tag (.+?) has been vetoed on this gallery");
         private static Regex tagCantVote = new Regex(@"Cannot vote for tag");
@@ -225,7 +225,7 @@ namespace ExClient.Tagging
                     var needNsMatch = tagNeedNs.Match(r.Error);
                     if (needNsMatch.Success)
                     {
-                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace, needNsMatch.Groups[1].Value));
+                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace, needNsMatch.Groups[1].Value, needNsMatch.Groups[2].Value, needNsMatch.Groups[3].Value));
                     }
                     var vetoedMatch = tagVetoed.Match(r.Error);
                     if (vetoedMatch.Success)

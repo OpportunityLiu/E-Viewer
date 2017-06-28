@@ -14,7 +14,7 @@
   "SadPanda": "We've got the sad panda from exhentai, this probably means that current account dose not have permittion for exhentai.",
   "ShortComment": "Your comment is too short.",
   "TagInBlackList": "The tag {0} cannot be used. You are attempting to upvote or add a tag that is blocked or blacklisted.",
-  "TagNeedNamespace": "The tag \"{0}\" is not allowed in this namespace - requires male: or female:.",
+  "TagNeedNamespace": "The tag \"{0}\" is not allowed in this namespace - requires {1} or {2}.",
   "TagNotValid": "The tag \"{0}\" is not currently valid.",
   "TagNoVotePremition": "Cannot vote for tag.",
   "TagsTooLong": "The field to add tags has an input cap of 200 characters.",
