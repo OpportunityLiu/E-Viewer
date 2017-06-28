@@ -181,7 +181,7 @@ namespace ExClient.Galleries
             string rating = null,
             string torrentcount = null,
             string[] tags = null)
-            : this(gid, token.ToToken())
+            : this(gid, token?.ToToken() ?? 0)
         {
             if (error != null)
             {

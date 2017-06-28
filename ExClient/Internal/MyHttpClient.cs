@@ -37,12 +37,7 @@ namespace ExClient.Internal
 
         public HttpRequestHeaderCollection DefaultRequestHeaders => this.inner.DefaultRequestHeaders;
 
-        public IHttpAsyncOperation GetAsync(Uri uri)
-        {
-            return this.GetAsync(uri, HttpCompletionOption.ResponseContentRead);
-        }
-
-        public IHttpAsyncOperation GetAsync(Uri uri, HttpCompletionOption completionOption)
+        public IHttpAsyncOperation GetAsync(Uri uri, HttpCompletionOption completionOption, bool checkStatusCode)
         {
             reformUri(ref uri);
             var request = this.inner.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
@@ -58,7 +53,8 @@ namespace ExClient.Internal
                     this.owner.ResetExCookie();
                     throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
                 }
-                response.EnsureSuccessStatusCode();
+                if (checkStatusCode)
+                    response.EnsureSuccessStatusCode();
                 var buffer = response.Content.BufferAllAsync();
                 if (!response.Content.TryComputeLength(out var length))
                 {
@@ -82,6 +78,11 @@ namespace ExClient.Internal
             });
         }
 
+        public IHttpAsyncOperation GetAsync(Uri uri)
+        {
+            return this.GetAsync(uri, HttpCompletionOption.ResponseContentRead, true);
+        }
+
         public IAsyncOperationWithProgress<IBuffer, HttpProgress> GetBufferAsync(Uri uri)
         {
             reformUri(ref uri);
@@ -91,7 +92,6 @@ namespace ExClient.Internal
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
-                response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsBufferAsync();
             });
         }
@@ -105,7 +105,6 @@ namespace ExClient.Internal
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
-                response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsInputStreamAsync();
             });
         }
@@ -119,7 +118,6 @@ namespace ExClient.Internal
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
-                response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
             });
         }
@@ -129,19 +127,42 @@ namespace ExClient.Internal
             reformUri(ref uri);
             return Run<HtmlDocument, HttpProgress>(async (token, progress) =>
             {
-                var request = GetAsync(uri);
+                var request = GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, false);
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var doc = new HtmlDocument();
                 var response = await request;
-                response.EnsureSuccessStatusCode();
                 using (var stream = (await response.Content.ReadAsInputStreamAsync()).AsStreamForRead())
                 {
                     doc.Load(stream);
-                    if (HentaiVerseInfo.IsEnabled)
-                        HentaiVerseInfo.AnalyzePage(doc);
-                    return doc;
                 }
+                do
+                {
+                    if (response.StatusCode != HttpStatusCode.NotFound)
+                        break;
+                    var title = doc.DocumentNode.Element("html").Element("head").Element("title");
+                    if (title == null)
+                        break;
+                    if (!HtmlEntity.DeEntitize(title.InnerText).StartsWith("Gallery Not Available - "))
+                        break;
+                    var error = doc.DocumentNode.Element("html").Element("body")?.Element("div")?.Element("p");
+                    if (error == null)
+                        break;
+                    var msg = HtmlEntity.DeEntitize(error.InnerText);
+                    switch (msg)
+                    {
+                    case "This gallery has been removed, and is unavailable.":
+                        throw new InvalidOperationException(LocalizedStrings.Resources.GalleryRemoved);
+                    case "This gallery has been locked for review. Please check back later.":
+                        throw new InvalidOperationException(LocalizedStrings.Resources.GalleryReviewing);
+                    default:
+                        throw new InvalidOperationException(msg);
+                    }
+                } while (false);
+                response.EnsureSuccessStatusCode();
+                if (HentaiVerseInfo.IsEnabled)
+                    HentaiVerseInfo.AnalyzePage(doc);
+                return doc;
             });
         }
 
