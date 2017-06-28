@@ -1,5 +1,5 @@
 ﻿{
-  "AppDescription": "E-Viewer 是一個 E- 紳士和 Ex 紳士的第三方客戶端。",
+  "AppDescription": "E-Viewer 是一個 E-Hentai 和 ExHentai 的第三方客戶端。",
   "AppDisplayName": "E-Viewer",
   "Controls": {
     "AboutControl": {
@@ -8,7 +8,7 @@
       "DataProvidersTextBlock/Text": "資料提供方",
       "EHTextBlock/Text": "E-Hentai.org",
       "EHWikiTextBlock/Text": "EHWiki.org",
-      "ForumsHyperlinkButton/Content": "E - 紳士論壇",
+      "ForumsHyperlinkButton/Content": "E-Hentai 論壇",
       "HelpTranslateTagsHyperlinkButton/Content": "幫助提供標籤翻譯",
       "HentaiVerseHyperlinkButton/Content": "HentaiVerse",
       "JapaneseTagProviderTextBlock/Text": "標籤日文翻譯",

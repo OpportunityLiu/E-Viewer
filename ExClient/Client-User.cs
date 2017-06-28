@@ -118,7 +118,7 @@ namespace ExClient
                         }
                         throw new InvalidOperationException(errorText);
                     }
-                    await this.HttpClient.GetAsync(new Uri(UriProvider.Eh.RootUri, "favorites.php"), HttpCompletionOption.ResponseHeadersRead);
+                    await this.HttpClient.GetAsync(new Uri(UriProvider.Eh.RootUri, "hathperks.php"), HttpCompletionOption.ResponseHeadersRead, true);
                     ResetExCookie();
                     var ignore = this.UserStatus?.RefreshAsync();
                 }
