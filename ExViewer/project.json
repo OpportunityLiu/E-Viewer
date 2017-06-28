@@ -3,7 +3,7 @@
     "HockeySDK.UWP": "4.1.6",
     "HtmlAgilityPack": "1.5.0-beta5",
     "JyAnalytics": "1.0.10",
-    "Microsoft.Azure.Mobile.Analytics": "0.13.0",
+    "Microsoft.Azure.Mobile.Analytics": "0.13.1",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.1.2",
     "Microsoft.EntityFrameworkCore.Tools": "1.1.1",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",

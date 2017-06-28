@@ -187,6 +187,14 @@ namespace ExViewer.Views
         {
             try
             {
+                await Client.Current.UserStatus.RefreshAsync();
+            }
+            catch (Exception)
+            {
+                //Ignore exceptions here.
+            }
+            try
+            {
                 var ver = await VersionChecker.CheckAsync();
                 if (ver is Windows.ApplicationModel.PackageVersion v)
                 {
