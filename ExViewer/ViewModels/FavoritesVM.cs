@@ -77,7 +77,7 @@ namespace ExViewer.ViewModels
 
         public static FavoritesVM GetVM(FavoritesSearchResult searchResult)
         {
-            var vm = new FavoritesVM(searchResult);
+            var vm = new FavoritesVM(searchResult ?? throw new ArgumentNullException(nameof(searchResult)));
             Cache.AddSearchVM(vm);
             return vm;
         }
@@ -92,7 +92,7 @@ namespace ExViewer.ViewModels
         private FavoritesVM(string parameter)
             : this()
         {
-            if(string.IsNullOrEmpty(parameter))
+            if (string.IsNullOrEmpty(parameter))
             {
                 this.keyword = "";
                 this.category = FavoriteCategory.All;
@@ -101,7 +101,7 @@ namespace ExViewer.ViewModels
             {
                 var q = JsonConvert.DeserializeObject<SearchResultData>(parameter);
                 this.keyword = q.Keyword;
-                if(q.CategoryIndex > 0)
+                if (q.CategoryIndex > 0)
                     this.category = Client.Current.Favorites[q.CategoryIndex];
                 else
                     this.category = FavoriteCategory.All;

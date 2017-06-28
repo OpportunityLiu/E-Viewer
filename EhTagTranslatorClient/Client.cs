@@ -9,7 +9,9 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 
 namespace EhTagTranslatorClient
 {
@@ -26,7 +28,7 @@ namespace EhTagTranslatorClient
         {
             var ns = tag.Namespace;
             var key = tag.Content;
-            using(var db = new TranslateDb())
+            using (var db = new TranslateDb())
             {
                 return db.Table.AsNoTracking()
                     .SingleOrDefault(r => r.Namespace == ns && r.Original == key);
@@ -39,7 +41,7 @@ namespace EhTagTranslatorClient
         {
             get
             {
-                if(ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
+                if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
                     return (DateTimeOffset)r;
                 return DateTimeOffset.MinValue;
             }
@@ -52,7 +54,7 @@ namespace EhTagTranslatorClient
         {
             get
             {
-                if(ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_COMMIT, out var r))
+                if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_COMMIT, out var r))
                     return (DateTimeOffset)r;
                 return DateTimeOffset.MinValue.AddDays(1);
             }
@@ -69,8 +71,11 @@ namespace EhTagTranslatorClient
             {
                 try
                 {
-                    using(var client = new HttpClient())
+                    using (var c = new HttpBaseProtocolFilter())
                     {
+                        c.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
+                        c.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
+                        var client = new HttpClient(c);
                         var html = await client.GetStringAsync(stateUri);
                         var doc = new HtmlDocument();
                         doc.LoadHtml(html);
@@ -101,10 +106,10 @@ namespace EhTagTranslatorClient
             Namespace.Misc
         };
 
-        private static async Task<IList<Record>> fetchDatabaseTableAsync(Namespace @namespace, HttpClient client)
+        private static IList<Record> analyzeDatabaseTableAsync(Namespace @namespace, IInputStream stream)
         {
             var dbUri = new Uri(wikiDbRootUri, $"{@namespace.ToString().ToLowerInvariant()}.md");
-            using(var stream = await client.GetInputStreamAsync(dbUri))
+            using (stream)
             {
                 return Record.Analyze(stream, @namespace).ToList();
             }
@@ -112,54 +117,59 @@ namespace EhTagTranslatorClient
 
         public static IAsyncAction UpdateAsync()
         {
-            return AsyncInfo.Run(async token =>
+            return AsyncInfo.Run(async token => await Task.Run(async () =>
             {
-                await Task.Run(async () =>
+                var streams = new IAsyncOperationWithProgress<IInputStream, HttpProgress>[tables.Length];
+                var mergedCache = new Dictionary<string, Record>[tables.Length];
+
+                using (var c = new HttpBaseProtocolFilter())
                 {
-                    var cache = new IList<Record>[tables.Length];
-                    using(var client = new HttpClient())
+                    c.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
+                    c.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
+                    var client = new HttpClient(c);
+                    for (var i = 0; i < tables.Length; i++)
                     {
-                        for(var i = 0; i < tables.Length; i++)
-                        {
-                            cache[i] = await fetchDatabaseTableAsync(tables[i], client);
-                            token.ThrowIfCancellationRequested();
-                        }
+                        var dbUri = new Uri(wikiDbRootUri, $"{tables[i].ToString().ToLowerInvariant()}.md");
+                        streams[i] = client.GetInputStreamAsync(dbUri);
                     }
-                    var mergedCache = new IDictionary<string, Record>[tables.Length];
-                    for(var i = 0; i < tables.Length; i++)
+                    for (var i = 0; i < tables.Length; i++)
                     {
-                        var dic = new Dictionary<string, Record>();
-                        foreach(var item in cache[i])
+                        using (var stream = await streams[i])
                         {
-                            if(dic.TryGetValue(item.Original, out var existed))
+                            var unmergedCache = Record.Analyze(stream, tables[i]).ToList();
+                            var dic = new Dictionary<string, Record>();
+                            foreach (var item in unmergedCache)
                             {
+                                if (dic.TryGetValue(item.Original, out var existed))
+                                {
 #if DEBUG
-                                if(System.Diagnostics.Debugger.IsAttached)
-                                    System.Diagnostics.Debugger.Break();
+                                    if (System.Diagnostics.Debugger.IsAttached)
+                                        System.Diagnostics.Debugger.Break();
 #endif
-                                existed = Record.Combine(existed, item);
+                                    existed = Record.Combine(existed, item);
+                                }
+                                else
+                                {
+                                    existed = item;
+                                }
+                                dic[item.Original] = existed;
                             }
-                            else
-                            {
-                                existed = item;
-                            }
-                            dic[item.Original] = existed;
+                            mergedCache[i] = dic;
                         }
-                        mergedCache[i] = dic;
                     }
-                    using(var db = new TranslateDb())
+                }
+                using (var db = new TranslateDb())
+                {
+                    db.Table.RemoveRange(db.Table);
+                    await db.SaveChangesAsync();
+                    foreach (var item in mergedCache)
                     {
-                        db.Table.RemoveRange(db.Table);
-                        await db.SaveChangesAsync();
-                        foreach(var item in mergedCache)
-                        {
-                            db.Table.AddRange(item.Values);
-                        }
-                        await db.SaveChangesAsync();
+                        db.Table.AddRange(item.Values);
                     }
-                    LastUpdate = DateTimeOffset.Now;
-                });
-            });
+                    await db.SaveChangesAsync();
+                }
+                LastUpdate = DateTimeOffset.Now;
+            }));
         }
     }
 }

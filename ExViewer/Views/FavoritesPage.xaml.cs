@@ -54,22 +54,24 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
             this.VM.SetQueryWithSearchResult();
-            if (e.NavigationMode == NavigationMode.New)
+            if (e.NavigationMode == NavigationMode.New || this.VM.SelectedGallery == null)
             {
                 if (e.Parameter != null)
-                    this.VM?.SearchResult.Reset();
+                    this.VM.SearchResult.Reset();
                 await Dispatcher.YieldIdle();
                 this.cbCategory.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
                 var selectedGallery = this.VM.SelectedGallery;
-                if (selectedGallery != null)
-                {
-                    this.lv.ScrollIntoView(selectedGallery);
-                    await Dispatcher.YieldIdle();
-                    ((Control)this.lv.ContainerFromItem(selectedGallery))?.Focus(FocusState.Programmatic);
-                }
+                this.lv.ScrollIntoView(selectedGallery);
+                await Dispatcher.YieldIdle();
+                this.lv.ScrollIntoView(selectedGallery);
+                var con = (Control)this.lv.ContainerFromItem(selectedGallery);
+                if (con == null)
+                    this.cbCategory.Focus(FocusState.Programmatic);
+                else
+                    con.Focus(FocusState.Programmatic);
             }
         }
 
