@@ -539,6 +539,14 @@
         </Grid>
       </CommandBar.Content>
       <CommandBar.PrimaryCommands>
+        <AppBarButton x:Name="abbLatestRevision"
+                      x:Uid="Views/GalleryPage/AppBarButtonLatestRevision"
+                      Icon="Sync"
+                      Label="Go to latest revision"
+                      ToolTipService.ToolTip="{x:Bind abbLatestRevision.Label}"
+                      Visibility="{x:Bind abbLatestRevision.IsEnabled, Mode=OneWay}"
+                      Command="{x:Bind VM.GoToLatestRevision, Mode=OneWay}"
+                      CommandParameter="{x:Bind VM.Gallery.Revisions, Mode=OneWay}" />
         <AppBarButton x:Name="abbFavorites"
                       Icon="Favorite"
                       Foreground="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToBrushConverter}, Mode=OneWay}"
