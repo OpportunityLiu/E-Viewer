@@ -192,6 +192,7 @@
     },
     "GalleryPage": {
       "AppBarButtonAddComment/Label": "发表新评论",
+      "AppBarButtonLatestRevision/Label": "转到最新版本",
       "CommentsEmptyTextBlock/Text": "没有评论",
       "CommentsLoadingTextBlock/Text": "正在加载评论...",
       "FavoritesAppBarButton/Text": "添加至收藏",

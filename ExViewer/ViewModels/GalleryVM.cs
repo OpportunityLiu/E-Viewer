@@ -233,6 +233,19 @@ namespace ExViewer.ViewModels
                 addComment.Gallery = this.Gallery;
                 await addComment.ShowAsync();
             }, () => this.Gallery != null);
+            this.GoToLatestRevision = new Command<RevisionCollection>(c =>
+            {
+                var info = c.Descendants.Last().Gallery;
+                var load = GetVMAsync(info);
+                if (load.Status != AsyncStatus.Completed)
+                    RootControl.RootController.TrackAsyncAction(load, async (s, e) =>
+                    {
+                        await DispatcherHelper.YieldIdle();
+                        RootControl.RootController.Frame.Navigate(typeof(GalleryPage), info.Id);
+                    });
+                else
+                    RootControl.RootController.Frame.Navigate(typeof(GalleryPage), info.Id);
+            }, c => c != null && c.Descendants.Count != 0);
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -246,6 +259,8 @@ namespace ExViewer.ViewModels
         {
             this.Gallery = gallery;
         }
+
+        public Command<RevisionCollection> GoToLatestRevision { get; }
 
         public Command<GalleryImage> Share { get; }
 

@@ -192,6 +192,7 @@
     },
     "GalleryPage": {
       "AppBarButtonAddComment/Label": "Post new comment",
+      "AppBarButtonLatestRevision/Label": "Go to latest revision",
       "CommentsEmptyTextBlock/Text": "No comments",
       "CommentsLoadingTextBlock/Text": "Loading comments...",
       "FavoritesAppBarButton/Text": "Add to favorite",
