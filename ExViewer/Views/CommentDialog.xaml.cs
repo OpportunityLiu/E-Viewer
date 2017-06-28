@@ -29,6 +29,11 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
+        private void MyContentDialog_Loading(FrameworkElement sender, object args)
+        {
+            this.tbInfo.Text = "";
+        }
+
         private void tbContent_TextChanged(object sender, TextChangedEventArgs e)
         {
             this.tbInfo.Text = "";
@@ -339,7 +344,7 @@ namespace ExViewer.Views
         public ReplyCommentDialog()
         {
             this.Title = Strings.Resources.Views.CommentDialog.AddTitle;
-            this.Opened += this.EditCommentDialog_Opened;
+            this.Opened += this.ReplyCommentDialog_Opened;
             this.PrimaryButtonClick += this.EditCommentDialog_PrimaryButtonClick;
         }
 
@@ -352,7 +357,7 @@ namespace ExViewer.Views
         public static readonly DependencyProperty ReplyingCommentProperty =
             DependencyProperty.Register(nameof(ReplyingComment), typeof(Comment), typeof(ReplyCommentDialog), new PropertyMetadata(null));
 
-        private void EditCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        private void ReplyCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
             this.tbContent.Text = "";
             if (ReplyingComment == null)

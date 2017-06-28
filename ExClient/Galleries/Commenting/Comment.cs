@@ -186,7 +186,7 @@ namespace ExClient.Galleries.Commenting
                 var res = await Client.Current.HttpClient.PostApiAsync(request);
                 var r = JsonConvert.DeserializeObject<CommentEditResponse>(res);
                 r.CheckResponse();
-                var doc = HtmlNode.CreateNode(r.Editable);
+                var doc = HtmlNode.CreateNode(r.Editable.Trim());
                 var textArea = doc.Descendants("textarea").FirstOrDefault();
                 if (textArea == null)
                     return "";
