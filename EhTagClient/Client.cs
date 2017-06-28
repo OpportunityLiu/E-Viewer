@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 
 namespace EhTagClient
 {
@@ -30,7 +31,7 @@ namespace EhTagClient
         {
             get
             {
-                if(ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
+                if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
                     return (DateTimeOffset)r;
                 return DateTimeOffset.MinValue;
             }
@@ -45,10 +46,15 @@ namespace EhTagClient
                 {
                     try
                     {
-                        using(var client = new HttpClient())
+                        using (var c = new HttpBaseProtocolFilter())
                         {
-                            var r = await client.GetStringAsync(DbUri);
-                            await updateDbAsync(r, token);
+                            c.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
+                            c.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
+                            using (var client = new HttpClient(c))
+                            {
+                                var r = await client.GetStringAsync(DbUri);
+                                await updateDbAsync(r, token);
+                            }
                         }
                         LastUpdate = DateTimeOffset.Now;
                     }
@@ -67,7 +73,7 @@ namespace EhTagClient
             token.ThrowIfCancellationRequested();
             var matches = reg.Matches(s);
             var toAdd = new List<TagRecord>(matches.Count);
-            foreach(var item in matches.Cast<Match>())
+            foreach (var item in matches.Cast<Match>())
             {
                 var tagid = int.Parse(item.Groups[1].Value);
                 var tagstr = item.Groups[2].Value;
@@ -76,7 +82,7 @@ namespace EhTagClient
                 toAdd.Add(tagrecord);
             }
             token.ThrowIfCancellationRequested();
-            using(var db = new TagDb())
+            using (var db = new TagDb())
             {
                 db.TagTable.RemoveRange(db.TagTable);
                 await db.SaveChangesAsync();

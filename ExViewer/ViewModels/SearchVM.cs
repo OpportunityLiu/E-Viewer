@@ -69,7 +69,7 @@ namespace ExViewer.ViewModels
 
         public static SearchVM GetVM(CategorySearchResult searchResult)
         {
-            var vm = new SearchVM(searchResult);
+            var vm = new SearchVM(searchResult ?? throw new ArgumentNullException(nameof(searchResult)));
             Cache.AddSearchVM(vm);
             return vm;
         }
