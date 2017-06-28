@@ -50,8 +50,6 @@ namespace ExViewer.Controls
                 {
                     sender.FindName(nameof(AttentionHeader));
                 }
-                if (c.Edited.HasValue)
-                    sender.FindName(nameof(Edited));
             }
         }
 
@@ -123,7 +121,7 @@ namespace ExViewer.Controls
                 break;
             }
         }
-        
+
         private async void Reply_Click(object sender, RoutedEventArgs e)
         {
             var dialog = System.Threading.LazyInitializer.EnsureInitialized(ref replyDialog);

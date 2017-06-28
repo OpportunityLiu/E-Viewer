@@ -6,6 +6,7 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           mc:Ignorable="d"
+                          Loading="MyContentDialog_Loading"
                           Title="ADD/EDIT COMMENT"
                           PrimaryButtonText="OK"
                           PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
@@ -13,97 +14,97 @@
                           IsPrimaryButtonEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
                           VerticalContentAlignment="Stretch"
                           HorizontalContentAlignment="Stretch">
-    <ContentControl.Resources>
-        <Style x:Key="AppBarButtonStyle"
-               TargetType="AppBarButton">
-            <Setter Property="LabelPosition"
-                    Value="Collapsed" />
-            <Setter Property="Width"
-                    Value="Auto" />
-            <Setter Property="MinWidth"
-                    Value="48" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Stretch" />
-        </Style>
-    </ContentControl.Resources>
+  <ContentControl.Resources>
+    <Style x:Key="AppBarButtonStyle"
+           TargetType="AppBarButton">
+      <Setter Property="LabelPosition"
+              Value="Collapsed" />
+      <Setter Property="Width"
+              Value="Auto" />
+      <Setter Property="MinWidth"
+              Value="48" />
+      <Setter Property="HorizontalAlignment"
+              Value="Stretch" />
+    </Style>
+  </ContentControl.Resources>
 
-    <Grid Margin="0,8,0,0"
-          SizeChanged="Grid_SizeChanged">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <TextBox x:Name="tbContent"
-                 MinHeight="96"
-                 x:FieldModifier="protected"
-                 AcceptsReturn="True"
-                 TextWrapping="Wrap"
-                 InputScope="Text"
-                 TextChanged="tbContent_TextChanged"
-                 IsReadOnly="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}" />
-        <Grid x:Name="gdEditBar"
-              HorizontalAlignment="Stretch"
-              Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <AppBarButton x:Name="abbBold"
-                          Grid.Column="0"
-                          x:Uid="Views/CommentDialog/AppBarButtonBold"
-                          Style="{StaticResource AppBarButtonStyle}"
-                          Click="abb_Click"
-                          Icon="Bold"
-                          Tag="b" />
-            <AppBarButton x:Name="abbItalic"
-                          Grid.Column="1"
-                          x:Uid="Views/CommentDialog/AppBarButtonItalic"
-                          Style="{StaticResource AppBarButtonStyle}"
-                          Click="abb_Click"
-                          Icon="Italic"
-                          Tag="i" />
-            <AppBarButton x:Name="abbUnderline"
-                          Grid.Column="2"
-                          x:Uid="Views/CommentDialog/AppBarButtonUnderline"
-                          Style="{StaticResource AppBarButtonStyle}"
-                          Click="abb_Click"
-                          Icon="Underline"
-                          Tag="u" />
-            <AppBarButton x:Name="abbStrike"
-                          Grid.Column="3"
-                          x:Uid="Views/CommentDialog/AppBarButtonStrike"
-                          Style="{StaticResource AppBarButtonStyle}"
-                          Click="abb_Click"
-                          Tag="s">
-                <AppBarButton.Icon>
-                    <PathIcon Data="M11,0 C12.3545,0 13.709,0.193338 15.0635,0.579915 L15.0635,1.9825 C13.7301,1.47006 12.3069,1.21379 10.7937,1.21379 C9.24869,1.21379 8.02382,1.54641 7.11905,2.21174 C6.2143,2.87708 5.76191,3.72224 5.76191,4.74713 C5.76191,5.73612 6.07144,6.52288 6.69048,7.10723 C7.30954,7.69169 8.64551,8.48733 10.6984,9.49426 L10.7102,9.5 L20,9.5 L20,10.5 L12.621,10.5 L12.6396,10.5106 C13.7144,11.1316 14.4826,11.7031 14.9444,12.2253 C15.6482,13.0209 16,13.9357 16,14.9697 C16,16.4531 15.3942,17.6624 14.1826,18.5975 C12.9709,19.5325 11.2593,20 9.04764,20 C8.26457,20 7.36244,19.8966 6.34128,19.6899 C5.32011,19.483 4.53968,19.2448 4,18.9751 L4,17.4511 C5.62964,18.3323 7.28043,18.7728 8.9524,18.7728 C10.7302,18.7728 12.0794,18.4604 13,17.8355 C13.9206,17.2106 14.381,16.3363 14.381,15.2124 C14.381,14.2234 14.0715,13.4345 13.4524,12.8456 C12.8527,12.2751 11.5752,11.5042 9.61992,10.533 L9.55323,10.5 L0,10.5 L0,9.5 L7.64946,9.5 L7.5139,9.42253 C6.29167,8.71768 5.46958,8.10102 5.04762,7.57253 C4.43387,6.80381 4.12699,5.91594 4.12699,4.909 C4.12699,3.54242 4.75133,2.38259 6.00001,1.42962 C7.24869,0.476539 8.91535,0 11,0 z"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center" />
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton x:Name="abbLink"
-                          Grid.Column="4"
-                          x:Uid="Views/CommentDialog/AppBarButtonLink"
-                          Style="{StaticResource AppBarButtonStyle}"
-                          Click="abb_Click"
-                          Icon="Link"
-                          Tag="url" />
-        </Grid>
-        <Grid Grid.Row="2"
-              MinHeight="4">
-            <TextBlock x:Name="tbInfo"
-                       x:FieldModifier="protected"
-                       HorizontalAlignment="Stretch"
-                       TextWrapping="WrapWholeWords"
-                       Visibility="{x:Bind tbInfo.Text, Converter={StaticResource EmptyStringToCollapsedConverter}, Mode=OneWay}" />
-            <ProgressBar x:Name="pbLoading"
-                         x:FieldModifier="protected"
-                         VerticalAlignment="Top"
-                         Visibility="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
-        </Grid>
+  <Grid Margin="0,8,0,0"
+        SizeChanged="Grid_SizeChanged">
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <TextBox x:Name="tbContent"
+             MinHeight="96"
+             x:FieldModifier="protected"
+             AcceptsReturn="True"
+             TextWrapping="Wrap"
+             InputScope="Text"
+             TextChanged="tbContent_TextChanged"
+             IsReadOnly="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}" />
+    <Grid x:Name="gdEditBar"
+          HorizontalAlignment="Stretch"
+          Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition />
+        <ColumnDefinition />
+        <ColumnDefinition />
+        <ColumnDefinition />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+      <AppBarButton x:Name="abbBold"
+                    Grid.Column="0"
+                    x:Uid="Views/CommentDialog/AppBarButtonBold"
+                    Style="{StaticResource AppBarButtonStyle}"
+                    Click="abb_Click"
+                    Icon="Bold"
+                    Tag="b" />
+      <AppBarButton x:Name="abbItalic"
+                    Grid.Column="1"
+                    x:Uid="Views/CommentDialog/AppBarButtonItalic"
+                    Style="{StaticResource AppBarButtonStyle}"
+                    Click="abb_Click"
+                    Icon="Italic"
+                    Tag="i" />
+      <AppBarButton x:Name="abbUnderline"
+                    Grid.Column="2"
+                    x:Uid="Views/CommentDialog/AppBarButtonUnderline"
+                    Style="{StaticResource AppBarButtonStyle}"
+                    Click="abb_Click"
+                    Icon="Underline"
+                    Tag="u" />
+      <AppBarButton x:Name="abbStrike"
+                    Grid.Column="3"
+                    x:Uid="Views/CommentDialog/AppBarButtonStrike"
+                    Style="{StaticResource AppBarButtonStyle}"
+                    Click="abb_Click"
+                    Tag="s">
+        <AppBarButton.Icon>
+          <PathIcon Data="M11,0 C12.3545,0 13.709,0.193338 15.0635,0.579915 L15.0635,1.9825 C13.7301,1.47006 12.3069,1.21379 10.7937,1.21379 C9.24869,1.21379 8.02382,1.54641 7.11905,2.21174 C6.2143,2.87708 5.76191,3.72224 5.76191,4.74713 C5.76191,5.73612 6.07144,6.52288 6.69048,7.10723 C7.30954,7.69169 8.64551,8.48733 10.6984,9.49426 L10.7102,9.5 L20,9.5 L20,10.5 L12.621,10.5 L12.6396,10.5106 C13.7144,11.1316 14.4826,11.7031 14.9444,12.2253 C15.6482,13.0209 16,13.9357 16,14.9697 C16,16.4531 15.3942,17.6624 14.1826,18.5975 C12.9709,19.5325 11.2593,20 9.04764,20 C8.26457,20 7.36244,19.8966 6.34128,19.6899 C5.32011,19.483 4.53968,19.2448 4,18.9751 L4,17.4511 C5.62964,18.3323 7.28043,18.7728 8.9524,18.7728 C10.7302,18.7728 12.0794,18.4604 13,17.8355 C13.9206,17.2106 14.381,16.3363 14.381,15.2124 C14.381,14.2234 14.0715,13.4345 13.4524,12.8456 C12.8527,12.2751 11.5752,11.5042 9.61992,10.533 L9.55323,10.5 L0,10.5 L0,9.5 L7.64946,9.5 L7.5139,9.42253 C6.29167,8.71768 5.46958,8.10102 5.04762,7.57253 C4.43387,6.80381 4.12699,5.91594 4.12699,4.909 C4.12699,3.54242 4.75133,2.38259 6.00001,1.42962 C7.24869,0.476539 8.91535,0 11,0 z"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+        </AppBarButton.Icon>
+      </AppBarButton>
+      <AppBarButton x:Name="abbLink"
+                    Grid.Column="4"
+                    x:Uid="Views/CommentDialog/AppBarButtonLink"
+                    Style="{StaticResource AppBarButtonStyle}"
+                    Click="abb_Click"
+                    Icon="Link"
+                    Tag="url" />
     </Grid>
+    <Grid Grid.Row="2"
+          MinHeight="4">
+      <TextBlock x:Name="tbInfo"
+                 x:FieldModifier="protected"
+                 HorizontalAlignment="Stretch"
+                 TextWrapping="WrapWholeWords"
+                 Visibility="{x:Bind tbInfo.Text, Converter={StaticResource EmptyStringToCollapsedConverter}, Mode=OneWay}" />
+      <ProgressBar x:Name="pbLoading"
+                   x:FieldModifier="protected"
+                   VerticalAlignment="Top"
+                   Visibility="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
+    </Grid>
+  </Grid>
 </controls:MyContentDialog>

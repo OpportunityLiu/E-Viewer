@@ -95,9 +95,8 @@
             <TextBlock x:Name="Posted"
                        Style="{StaticResource CommentHeaderTextBlockStyle}"
                        Text="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/CommentViewer/PostedFormatString'}"
-                       Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToVisibleConverter}}" />
+                       Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToVisibleConverter}}"/>
             <TextBlock x:Name="Edited"
-                       x:DeferLoadStrategy="Lazy"
                        Style="{StaticResource CommentHeaderTextBlockStyle}"
                        Text="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/CommentViewer/EditedFormatString'}"
                        Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
