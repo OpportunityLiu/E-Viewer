@@ -126,7 +126,7 @@ namespace ExViewer.Views
 
             var index = this.VM.CurrentIndex;
             this.fv.SelectedIndex = index;
-            if (index < this.VM.Gallery.Count)
+            if (unchecked((uint)index < (uint)this.VM.Gallery.Count))
             {
                 this.imgConnect.Source = this.VM.Gallery[index].Thumb;
             }
