@@ -107,15 +107,17 @@ namespace ExViewer.Views
             {
                 if (uri == null)
                     return true;
+                if (Available)
+                {
+                    return UriHandler.Handle(uri);
+                }
                 if (!UriHandler.CanHandleInApp(uri))
                 {
                     UriHandler.Handle(uri);
                     return false;
                 }
-                if (Available)
-                    UriHandler.Handle(uri);
-                else
-                    launchUri = uri;
+
+                launchUri = uri;
                 return true;
             }
 
@@ -278,7 +280,7 @@ namespace ExViewer.Views
                     OpenSplitViewPane.Begin();
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
                     root.manager.AppViewBackButtonVisibilityOverride = AppViewBackButtonVisibility.Collapsed;
-                    var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked)?? root.svt_Search;
+                    var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? root.svt_Search;
                     currentTab.Focus(FocusState.Programmatic);
                 }
                 else
