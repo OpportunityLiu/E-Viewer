@@ -205,6 +205,7 @@ namespace ExClient.Tagging
         // Here are mostly used ones.
         private static Regex tagNotValid = new Regex(@"The tag (.+?) is not currently valid");
         private static Regex tagNeedNs = new Regex(@"The tag ""(.+?)"" is not allowed in this namespace - requires (.+?) or (.+?:)");
+        private static Regex tagNeedNs1 = new Regex(@"The tag ""(.+?)"" is not allowed in this namespace - requires (.+?:)");
         private static Regex tagInBlackList = new Regex(@"The tag (.+?) cannot be used");
         private static Regex tagVetoed = new Regex(@"The tag (.+?) has been vetoed on this gallery");
         private static Regex tagCantVote = new Regex(@"Cannot vote for tag");
@@ -225,7 +226,12 @@ namespace ExClient.Tagging
                     var needNsMatch = tagNeedNs.Match(r.Error);
                     if (needNsMatch.Success)
                     {
-                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace, needNsMatch.Groups[1].Value, needNsMatch.Groups[2].Value, needNsMatch.Groups[3].Value));
+                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespaceMul, needNsMatch.Groups[1].Value, needNsMatch.Groups[2].Value, needNsMatch.Groups[3].Value));
+                    }
+                    var needNsMatch1 = tagNeedNs1.Match(r.Error);
+                    if (needNsMatch1.Success)
+                    {
+                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace, needNsMatch1.Groups[1].Value, needNsMatch1.Groups[2].Value));
                     }
                     var vetoedMatch = tagVetoed.Match(r.Error);
                     if (vetoedMatch.Success)
