@@ -35,14 +35,14 @@ namespace ExClient.Api
 
         internal static bool TryParse(UriHandlerData data, out ImageInfo info)
         {
-            if(data.Path0 == "s" && data.Paths.Count == 3)
+            if (data.Path0 == "s" && data.Paths.Count == 3)
             {
                 var sp = data.Paths[2].Split('-');
-                if((sp.Length == 2)
+                if ((sp.Length == 2)
                     && long.TryParse(sp[0], out var gId)
                     && int.TryParse(sp[1], out var pId))
                 {
-                    info = new ImageInfo(gId, data.Paths[1].ToToken(), pId);
+                    info = new ImageInfo(gId, data.Paths[1].Substring(0, 10).ToToken(), pId);
                     return true;
                 }
             }
@@ -53,7 +53,7 @@ namespace ExClient.Api
         public static bool TryParse(Uri uri, out ImageInfo info)
         {
             var data = new UriHandlerData(uri);
-            if(TryParse(data, out info))
+            if (TryParse(data, out info))
                 return true;
             info = default(ImageInfo);
             return false;
@@ -61,7 +61,7 @@ namespace ExClient.Api
 
         public static ImageInfo Parse(Uri uri)
         {
-            if(TryParse(uri, out var r))
+            if (TryParse(uri, out var r))
                 return r;
             throw new FormatException();
         }
@@ -75,7 +75,7 @@ namespace ExClient.Api
 
         public IAsyncOperation<GalleryInfo> FetchGalleryInfoAsync()
         {
-            var info =new[] { this };
+            var info = new[] { this };
             return Run(async token =>
             {
                 var result = await GalleryInfo.FetchGalleryInfoListAsync(info);
@@ -96,7 +96,7 @@ namespace ExClient.Api
 
         public override bool Equals(object obj)
         {
-            if(obj == null || typeof(GalleryInfo) != obj.GetType())
+            if (obj == null || typeof(GalleryInfo) != obj.GetType())
             {
                 return false;
             }
