@@ -165,8 +165,8 @@ namespace EhTagTranslatorClient
                     foreach (var item in mergedCache)
                     {
                         db.Table.AddRange(item.Values);
+                        await db.SaveChangesAsync();
                     }
-                    await db.SaveChangesAsync();
                 }
                 LastUpdate = DateTimeOffset.Now;
             }));

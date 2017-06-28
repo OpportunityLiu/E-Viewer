@@ -68,12 +68,14 @@ namespace ExViewer
 
         private async void lanunchCore(IActivatedEventArgs e, bool prelaunchActivated)
         {
+#if !DEBUG
             if (!MobileCenter.Configured)
             {
                 var region = new Windows.Globalization.GeographicRegion();
                 MobileCenter.SetCountryCode(region.CodeTwoLetter);
                 MobileCenter.Start("4b9c5e4f-ebf5-46ed-9ee8-72e5de8e0236", typeof(Analytics)/*, typeof(Crashes)*/);
             }
+#endif
             if (!Opportunity.MvvmUniverse.DispatcherHelper.Initialized)
             {
                 Opportunity.MvvmUniverse.DispatcherHelper.Initialize();
