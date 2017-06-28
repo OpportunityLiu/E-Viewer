@@ -117,7 +117,8 @@ namespace ExViewer
                     && e.PreviousExecutionState != ApplicationExecutionState.Suspended)
                     Exit();
                 lanunchCore(args, false);
-                Analytics.TrackEvent("Launched by uri", new Dictionary<string, string> { ["Uri"] = e.Uri.ToString() });
+                if (needHandleInApp)
+                    Analytics.TrackEvent("Launched by uri", new Dictionary<string, string> { ["Uri"] = e.Uri.ToString() });
             }
             else
             {
