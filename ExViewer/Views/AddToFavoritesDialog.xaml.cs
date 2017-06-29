@@ -10,6 +10,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -29,7 +30,7 @@ namespace ExViewer.Views
             this.InitializeComponent();
             this.PrimaryButtonText = Strings.Resources.General.OK;
             this.SecondaryButtonText = Strings.Resources.General.Cancel;
-            foreach(var item in Client.Current.Favorites)
+            foreach (var item in Client.Current.Favorites)
             {
                 this.categories.Add(item);
             }
@@ -54,7 +55,7 @@ namespace ExViewer.Views
             var def = args.GetDeferral();
             try
             {
-                if(this.cbCategory.SelectedItem is FavoriteCategory cat)
+                if (this.cbCategory.SelectedItem is FavoriteCategory cat)
                 {
                     await cat.AddAsync(this.Gallery, this.tbNote.Text);
                 }
@@ -63,7 +64,7 @@ namespace ExViewer.Views
                     throw new Exception(strings.FavoriteCategoryUnselected);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
                 args.Cancel = true;
@@ -75,35 +76,34 @@ namespace ExViewer.Views
             }
         }
 
-        private async void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        private async void MyContentDialog_Loading(FrameworkElement sender, object args)
         {
-            if(this.Gallery == null)
+            if (this.Gallery == null)
                 throw new InvalidOperationException("Property AddToFavoritesDialog.Gallery is null.");
             var galleryInFavorites = this.Gallery.FavoriteCategory == null ? null : (bool?)(this.Gallery.FavoriteCategory.Index >= 0);
             this.tbInfo.Text = "";
             this.tbNote.Text = this.Gallery.FavoriteNote ?? "";
             this.cbCategory.SelectedItem = this.cbCategory.Items.FirstOrDefault();
             this.Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
-            if(galleryInFavorites == null)
+            await Dispatcher.YieldIdle();
+            if (galleryInFavorites == null)
             {
-                if(!await loadNotesAsync())
+                if (!await loadNotesAsync())
                     return;
                 galleryInFavorites = this.Gallery.FavoriteCategory.Index >= 0;
                 this.Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
             }
-            else
-                await Task.Delay(50);
-            if(galleryInFavorites == true)
+            if (galleryInFavorites == true)
             {
-                if(this.categories.Count == 10)
+                if (this.categories.Count == 10)
                     this.categories.Add(FavoriteCategory.Removed);
                 this.cbCategory.SelectedIndex = this.Gallery.FavoriteCategory.Index;
-                if(this.Gallery.FavoriteNote == null)
+                if (this.Gallery.FavoriteNote == null)
                     await loadNotesAsync();
             }
             else
             {
-                if(this.categories.Count == 11)
+                if (this.categories.Count == 11)
                     this.categories.RemoveAt(10);
                 this.cbCategory.SelectedIndex = 0;
             }
@@ -119,7 +119,7 @@ namespace ExViewer.Views
                 this.cbCategory.SelectedIndex = this.Gallery.FavoriteCategory.Index;
                 success = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
             }
