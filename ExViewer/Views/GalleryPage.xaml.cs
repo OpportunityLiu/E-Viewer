@@ -245,6 +245,7 @@ namespace ExViewer.Views
             case 2://Torrents
                 if (this.VM.Torrents == null)
                     await this.VM.LoadTorrents();
+                // finish the add animation
                 await Task.Delay(150);
                 if (this.lv_Torrents.Items.Count > 0)
                 {

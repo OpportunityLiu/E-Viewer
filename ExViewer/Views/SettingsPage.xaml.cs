@@ -9,6 +9,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -38,8 +39,8 @@ namespace ExViewer.Views
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            await Task.Delay(50);
-            switch(e.NavigationMode)
+            await Dispatcher.YieldIdle();
+            switch (e.NavigationMode)
             {
             case NavigationMode.New:
                 this.pv_root.SelectedIndex = 0;
@@ -53,7 +54,7 @@ namespace ExViewer.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            switch(e.NavigationMode)
+            switch (e.NavigationMode)
             {
             case NavigationMode.New:
             case NavigationMode.Forward:
@@ -77,7 +78,7 @@ namespace ExViewer.Views
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
-            if(visible)
+            if (visible)
                 this.bdSplitViewPlaceholder.Width = 48;
             else
                 this.bdSplitViewPlaceholder.Width = 0;

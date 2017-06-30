@@ -204,11 +204,60 @@ namespace ExClient.Tagging
         // See https://ehwiki.org/wiki/Technical_Issues#Gallery_Tagging
         // Here are mostly used ones.
         private static Regex tagNotValid = new Regex(@"The tag (.+?) is not currently valid");
-        private static Regex tagNeedNs = new Regex(@"The tag ""(.+?)"" is not allowed in this namespace - requires (.+?) or (.+?:)");
-        private static Regex tagNeedNs1 = new Regex(@"The tag ""(.+?)"" is not allowed in this namespace - requires (.+?:)");
+        private static Regex tagNeedNs = new Regex(@"The tag ""(.+?)"" is not allowed in this namespace - requires (.+:)");
+        private static string[] tagNeedNsSplit = new[] { "or", ",", " " };
         private static Regex tagInBlackList = new Regex(@"The tag (.+?) cannot be used");
         private static Regex tagVetoed = new Regex(@"The tag (.+?) has been vetoed on this gallery");
         private static Regex tagCantVote = new Regex(@"Cannot vote for tag");
+
+        private static void myCheckResponse(TagResponse r)
+        {
+            if (r.Error == null && r.LogIn == null)
+                return;
+            var validMatch = tagNotValid.Match(r.Error);
+            if (validMatch.Success)
+            {
+                throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNotValid, validMatch.Groups[1].Value));
+            }
+            var needNsMatch = tagNeedNs.Match(r.Error);
+            if (needNsMatch.Success)
+            {
+                var ns = needNsMatch.Groups[2].Value.Split(tagNeedNsSplit, StringSplitOptions.RemoveEmptyEntries);
+                var tag = needNsMatch.Groups[1].Value;
+                switch (ns.Length)
+                {
+                case 1:
+                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace1, tag, ns[0]));
+                case 2:
+                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace2, tag, ns[0], ns[1]));
+                case 3:
+                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace3, tag, ns[0], ns[1], ns[2]));
+                case 4:
+                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace4, tag, ns[0], ns[1], ns[2], ns[3]));
+                case 5:
+                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace5, tag, ns[0], ns[1], ns[2], ns[3], ns[4]));
+                case 6:
+                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace6, tag, ns[0], ns[1], ns[2], ns[3], ns[4], ns[5]));
+                case 7:
+                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace7, tag, ns[0], ns[1], ns[2], ns[3], ns[4], ns[5], ns[6]));
+                case 8:
+                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace8, tag, ns[0], ns[1], ns[2], ns[3], ns[4], ns[5], ns[6], ns[7]));
+                }
+            }
+            var vetoedMatch = tagVetoed.Match(r.Error);
+            if (vetoedMatch.Success)
+            {
+                throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagVetoedForGallery, vetoedMatch.Groups[1].Value));
+            }
+            var blacklistMatch = tagInBlackList.Match(r.Error);
+            if (blacklistMatch.Success)
+            {
+                throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagInBlackList, blacklistMatch.Groups[1].Value));
+            }
+            if (tagCantVote.IsMatch(r.Error))
+                throw new InvalidOperationException(LocalizedStrings.Resources.TagNoVotePremition);
+            r.CheckResponse();
+        }
 
         private IAsyncAction voteAsync(TagRequest req)
         {
@@ -216,37 +265,7 @@ namespace ExClient.Tagging
             {
                 var res = await Client.Current.HttpClient.PostApiAsync(req);
                 var r = JsonConvert.DeserializeObject<TagResponse>(res);
-                if (r.Error != null)
-                {
-                    var validMatch = tagNotValid.Match(r.Error);
-                    if (validMatch.Success)
-                    {
-                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNotValid, validMatch.Groups[1].Value));
-                    }
-                    var needNsMatch = tagNeedNs.Match(r.Error);
-                    if (needNsMatch.Success)
-                    {
-                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespaceMul, needNsMatch.Groups[1].Value, needNsMatch.Groups[2].Value, needNsMatch.Groups[3].Value));
-                    }
-                    var needNsMatch1 = tagNeedNs1.Match(r.Error);
-                    if (needNsMatch1.Success)
-                    {
-                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace, needNsMatch1.Groups[1].Value, needNsMatch1.Groups[2].Value));
-                    }
-                    var vetoedMatch = tagVetoed.Match(r.Error);
-                    if (vetoedMatch.Success)
-                    {
-                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagVetoedForGallery, vetoedMatch.Groups[1].Value));
-                    }
-                    var blacklistMatch = tagInBlackList.Match(r.Error);
-                    if (blacklistMatch.Success)
-                    {
-                        throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagInBlackList, blacklistMatch.Groups[1].Value));
-                    }
-                    if (tagCantVote.IsMatch(r.Error))
-                        throw new InvalidOperationException(LocalizedStrings.Resources.TagNoVotePremition);
-                }
-                r.CheckResponse();
+                myCheckResponse(r);
                 var doc = HtmlNode.CreateNode(r.TagPane);
                 updateCore(doc);
             });
