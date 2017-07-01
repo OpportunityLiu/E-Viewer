@@ -150,12 +150,10 @@ namespace ExClient.Galleries.Commenting
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteStateUploader);
                 else
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteState);
-            var request = new CommentVote(this, command);
+            var request = new CommentVoteRequest(this, command);
             return AsyncInfo.Run(async token =>
             {
-                var res = await Client.Current.HttpClient.PostApiAsync(request);
-                var r = JsonConvert.DeserializeObject<CommentVoteResponse>(res);
-                r.CheckResponse();
+                var r = await request.GetResponseAsync(true);
                 if (this.Id != r.Id)
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
                 switch (r.Vote)
@@ -180,12 +178,10 @@ namespace ExClient.Galleries.Commenting
         {
             if (!this.CanEdit)
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
-            var request = new CommentEdit(this);
+            var request = new CommentEditRequest(this);
             return AsyncInfo.Run(async token =>
             {
-                var res = await Client.Current.HttpClient.PostApiAsync(request);
-                var r = JsonConvert.DeserializeObject<CommentEditResponse>(res);
-                r.CheckResponse();
+                var r = await request.GetResponseAsync(true);
                 var doc = HtmlNode.CreateNode(r.Editable.Trim());
                 var textArea = doc.Descendants("textarea").FirstOrDefault();
                 if (textArea == null)
