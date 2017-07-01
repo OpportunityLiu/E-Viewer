@@ -17,9 +17,9 @@ namespace ExClient.Api
         public int Id { get; }
     }
 
-    internal sealed class CommentVote : CommentRequest
+    internal sealed class CommentVoteRequest : CommentRequest, IRequestOf<CommentVoteResponse>
     {
-        public CommentVote(Comment comment, VoteState vote)
+        public CommentVoteRequest(Comment comment, VoteState vote)
             : base(comment)
         {
             if (vote != VoteState.Down && vote != VoteState.Up)
@@ -33,9 +33,9 @@ namespace ExClient.Api
         public VoteState Vote { get; }
     }
 
-    internal sealed class CommentEdit : CommentRequest
+    internal sealed class CommentEditRequest : CommentRequest, IRequestOf<CommentEditResponse>
     {
-        public CommentEdit(Comment comment)
+        public CommentEditRequest(Comment comment)
             : base(comment)
         {
         }
@@ -50,7 +50,7 @@ namespace ExClient.Api
 
     }
 
-    internal class CommentVoteResponse : CommentResponse
+    internal class CommentVoteResponse : CommentResponse, IResponseOf<CommentVoteRequest>
     {
         [JsonProperty("comment_score")]
         public int Score { get; set; }
@@ -58,7 +58,7 @@ namespace ExClient.Api
         public VoteState Vote { get; set; }
     }
 
-    internal class CommentEditResponse : CommentResponse
+    internal class CommentEditResponse : CommentResponse, IResponseOf<CommentEditRequest>
     {
         [JsonProperty("editable_comment")]
         public string Editable { get; set; }

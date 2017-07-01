@@ -1,7 +1,5 @@
-﻿using ExClient.Api;
-using ExClient.HentaiVerse;
+﻿using ExClient.HentaiVerse;
 using HtmlAgilityPack;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using Windows.Foundation;
@@ -184,11 +182,6 @@ namespace ExClient.Internal
                 res.EnsureSuccessStatusCode();
                 return await res.Content.ReadAsStringAsync();
             });
-        }
-
-        public IAsyncOperationWithProgress<string, HttpProgress> PostApiAsync(ApiRequest request)
-        {
-            return PostStringAsync(this.owner.Uris.ApiUri, JsonConvert.SerializeObject(request));
         }
 
         public IHttpAsyncOperation PutAsync(Uri uri, IHttpContent content)

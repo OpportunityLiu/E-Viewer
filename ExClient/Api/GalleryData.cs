@@ -1,23 +1,30 @@
-﻿using Opportunity.MvvmUniverse.Collections;
+﻿using ExClient.Galleries;
+using Newtonsoft.Json;
+using Opportunity.MvvmUniverse.Collections;
 using System.Collections.Generic;
 
 #pragma warning disable IDE1006 // 命名样式
 namespace ExClient.Api
 {
-    internal class GalleryData : ApiRequest
+    internal class GalleryDataRequest : ApiRequest, IRequestOf<GalleryDataResponse>
     {
         public override string Method => "gdata";
 
-        public int @namespace => 1;
+        [JsonProperty("namespace")]
+        public int Namespace => 1;
 
-        public IReadOnlyCollection<GalleryInfo> gidlist
-        {
-            get;
-        }
+        [JsonProperty("gidlist")]
+        public IReadOnlyCollection<GalleryInfo> GalleryIDList { get; }
 
-        public GalleryData(IReadOnlyList<GalleryInfo> list, int startIndex, int count)
+        public GalleryDataRequest(IReadOnlyList<GalleryInfo> list, int startIndex, int count)
         {
-            this.gidlist = new RangedCollectionView<GalleryInfo>(list, startIndex, count);
+            this.GalleryIDList = new RangedCollectionView<GalleryInfo>(list, startIndex, count);
         }
+    }
+
+    internal class GalleryDataResponse : ApiResponse, IResponseOf<GalleryDataRequest>
+    {
+        [JsonProperty("gmetadata")]
+        public List<Gallery> GalleryMetaData { get; private set; }
     }
 }

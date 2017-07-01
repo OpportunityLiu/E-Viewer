@@ -263,10 +263,8 @@ namespace ExClient.Tagging
         {
             return AsyncInfo.Run(async token =>
             {
-                var res = await Client.Current.HttpClient.PostApiAsync(req);
-                var r = JsonConvert.DeserializeObject<TagResponse>(res);
-                myCheckResponse(r);
-                var doc = HtmlNode.CreateNode(r.TagPane);
+                var res = await req.GetResponseAsync(true);
+                var doc = HtmlNode.CreateNode(res.TagPane);
                 updateCore(doc);
             });
         }

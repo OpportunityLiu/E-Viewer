@@ -1,12 +1,14 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries.Commenting;
 using ExClient.Galleries.Metadata;
+using ExClient.Galleries.Rating;
 using ExClient.Internal;
 using ExClient.Models;
 using ExClient.Tagging;
 using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Opportunity.MvvmUniverse.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
@@ -49,33 +51,40 @@ namespace ExClient.Galleries
             }).AsAsyncOperation();
         }
 
-        private class GalleryResult : ApiResponse
-        {
-#pragma warning disable CS0649
-            [JsonProperty("gmetadata")]
-            public List<Gallery> GalleryMetaData;
-#pragma warning restore CS0649
-        }
-
         public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
         {
-            return Run<IList<Gallery>>(async token =>
+            if (galleryInfo == null)
+                throw new ArgumentNullException(nameof(galleryInfo));
+            if (galleryInfo.Count <= 0)
+                return AsyncWrapper.CreateCompleted((IList<Gallery>)Array.Empty<Gallery>());
+            if (galleryInfo.Count <= 25)
             {
-                var result = new Gallery[galleryInfo.Count];
-                var pageCount = MathHelper.GetPageCount(galleryInfo.Count, 25);
-                for (var i = 0; i < pageCount; i++)
+                return Run<IList<Gallery>>(async token =>
                 {
-                    var pageSize = MathHelper.GetSizeOfPage(galleryInfo.Count, 25, i);
-                    var startIndex = MathHelper.GetStartIndexOfPage(25, i);
-                    var str = await Client.Current.HttpClient.PostApiAsync(new GalleryData(galleryInfo, startIndex, pageSize));
-                    var re = JsonConvert.DeserializeObject<GalleryResult>(str);
-                    re.CheckResponse();
+                    var re = await new GalleryDataRequest(galleryInfo, 0, galleryInfo.Count).GetResponseAsync(true);
                     var data = re.GalleryMetaData;
                     data.ForEach(async g => await g.InitAsync());
-                    data.CopyTo(result, startIndex);
-                }
-                return result;
-            });
+                    return data;
+                });
+            }
+            else
+            {
+                return Run<IList<Gallery>>(async token =>
+                {
+                    var result = new Gallery[galleryInfo.Count];
+                    var pageCount = MathHelper.GetPageCount(galleryInfo.Count, 25);
+                    for (var i = 0; i < pageCount; i++)
+                    {
+                        var pageSize = MathHelper.GetSizeOfPage(galleryInfo.Count, 25, i);
+                        var startIndex = MathHelper.GetStartIndexOfPage(25, i);
+                        var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync(true);
+                        var data = re.GalleryMetaData;
+                        data.ForEach(async g => await g.InitAsync());
+                        data.CopyTo(result, startIndex);
+                    }
+                    return result;
+                });
+            }
         }
 
         private static readonly IReadOnlyDictionary<string, Category> categoriesForRestApi = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
@@ -157,7 +166,7 @@ namespace ExClient.Galleries
             this.Posted = model.Posted;
             this.FileSize = model.FileSize;
             this.Expunged = model.Expunged;
-            this.Rating = model.Rating;
+            this.rating = model.Rating;
             this.Tags = new TagCollection(this, JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)));
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
@@ -198,7 +207,7 @@ namespace ExClient.Galleries
             this.RecordCount = int.Parse(filecount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
             this.FileSize = filesize;
             this.Expunged = expunged;
-            this.Rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
+            this.rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
             this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
             this.Tags = new TagCollection(this, tags.Select(tag => Tag.Parse(tag)));
             this.ThumbUri = toEhCoverUri(thumb);
@@ -319,19 +328,31 @@ namespace ExClient.Galleries
         }
 
 
-        public Uri ThumbUri { get; protected set; }
+        public Uri ThumbUri { get; }
 
-        public string Uploader { get; protected set; }
+        public string Uploader { get; }
 
-        public DateTimeOffset Posted { get; protected set; }
+        public DateTimeOffset Posted { get; }
 
-        public long FileSize { get; protected set; }
+        public long FileSize { get; }
 
-        public bool Expunged { get; protected set; }
+        public bool Expunged { get; }
 
-        public double Rating { get; protected set; }
+        private double rating;
+        public double Rating { get => this.rating; protected set => Set(ref this.rating, value); }
 
-        public int TorrentCount { get; protected set; }
+        public IAsyncAction RatingAsync(Score rating)
+        {
+            return Run(async token =>
+            {
+                var r = RatingHelper.RatingAsync(this, rating);
+                token.Register(r.Cancel);
+                var result = await r;
+                this.Rating = result.AverageRating;
+            });
+        }
+
+        public int TorrentCount { get; }
 
         public TagCollection Tags { get; }
 

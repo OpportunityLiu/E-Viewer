@@ -31,10 +31,10 @@ namespace ExClient.Api
         public static void UpdateToken(string html)
         {
             var mUid = regUid.Match(html);
-            if(mUid.Success)
+            if (mUid.Success)
                 uid = long.Parse(mUid.Groups[1].Value);
             var mKey = regKey.Match(html);
-            if(mKey.Success)
+            if (mKey.Success)
                 key = mKey.Groups[1].Value;
         }
     }

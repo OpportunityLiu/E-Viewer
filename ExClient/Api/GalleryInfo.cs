@@ -21,14 +21,14 @@ namespace ExClient.Api
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
-                if(reader.TokenType != JsonToken.StartObject)
+                if (reader.TokenType != JsonToken.StartObject)
                     return null;
                 long gid = 0;
                 ulong token = 0;
                 reader.Read();
                 do
                 {
-                    switch(reader.Value.ToString())
+                    switch (reader.Value.ToString())
                     {
                     case "gid":
                         gid = reader.ReadAsInt32().GetValueOrDefault();
@@ -40,7 +40,7 @@ namespace ExClient.Api
                         break;
                     }
                     reader.Read();
-                } while(reader.TokenType != JsonToken.EndObject);
+                } while (reader.TokenType != JsonToken.EndObject);
 
                 return new GalleryInfo(gid, token);
             }
@@ -59,18 +59,16 @@ namespace ExClient.Api
         {
             return Run<IReadOnlyList<GalleryInfo>>(async token =>
             {
-                var result = await Client.Current.HttpClient.PostApiAsync(new GalleryToken(pageList));
-                var res = JsonConvert.DeserializeObject<GalleryInfoResult>(result);
-                res.CheckResponse();
+                var res = await new GalleryTokenRequest(pageList).GetResponseAsync(true);
                 return res.TokenList;
             });
         }
 
         internal static bool TryParseGallery(UriHandlerData data, out GalleryInfo info)
         {
-            if(data.Path0 == "g" && data.Paths.Count == 3)
+            if (data.Path0 == "g" && data.Paths.Count == 3)
             {
-                if(long.TryParse(data.Paths[1], out var gId))
+                if (long.TryParse(data.Paths[1], out var gId))
                 {
                     info = new GalleryInfo(gId, data.Paths[2].ToToken());
                     return true;
@@ -82,9 +80,9 @@ namespace ExClient.Api
 
         internal static bool TryParseGalleryTorrent(UriHandlerData data, out GalleryInfo info)
         {
-            if(data.Path0 == "gallerytorrents.php" && data.Paths.Count == 1)
+            if (data.Path0 == "gallerytorrents.php" && data.Paths.Count == 1)
             {
-                if(data.Queries.TryGetValue("gid", out var gidStr)
+                if (data.Queries.TryGetValue("gid", out var gidStr)
                     && data.Queries.TryGetValue("t", out var gtoken)
                     && long.TryParse(data.Queries["gid"], out var gId))
                 {
@@ -99,9 +97,9 @@ namespace ExClient.Api
         public static bool TryParse(Uri uri, out GalleryInfo info)
         {
             var data = new UriHandlerData(uri);
-            if(TryParseGallery(data, out info))
+            if (TryParseGallery(data, out info))
                 return true;
-            if(TryParseGalleryTorrent(data, out info))
+            if (TryParseGalleryTorrent(data, out info))
                 return true;
 
             info = default(GalleryInfo);
@@ -110,7 +108,7 @@ namespace ExClient.Api
 
         public static GalleryInfo Parse(Uri uri)
         {
-            if(TryParse(uri, out var r))
+            if (TryParse(uri, out var r))
                 return r;
             throw new FormatException();
         }
@@ -148,7 +146,7 @@ namespace ExClient.Api
 
         public override bool Equals(object obj)
         {
-            if(obj == null || typeof(GalleryInfo) != obj.GetType())
+            if (obj == null || typeof(GalleryInfo) != obj.GetType())
             {
                 return false;
             }
@@ -159,11 +157,5 @@ namespace ExClient.Api
         {
             return this.Id.GetHashCode() ^ this.Token.GetHashCode();
         }
-    }
-
-    internal class GalleryInfoResult : ApiResponse
-    {
-        [JsonProperty("tokenlist")]
-        public List<GalleryInfo> TokenList { get; set; }
     }
 }
