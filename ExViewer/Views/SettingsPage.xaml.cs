@@ -49,6 +49,7 @@ namespace ExViewer.Views
                 this.pv_root.SelectedIndex = this.navigateStack.Pop();
                 break;
             }
+            this.pv_root.Focus(FocusState.Programmatic);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

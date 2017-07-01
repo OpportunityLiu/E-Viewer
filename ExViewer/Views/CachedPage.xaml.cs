@@ -63,15 +63,19 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (e.NavigationMode != NavigationMode.Back || this.VM.Galleries == null)
+            await Dispatcher.YieldIdle();
+            if (e.NavigationMode != NavigationMode.Back)
             {
-                this.VM.Refresh.Execute();
-                await Dispatcher.YieldIdle();
-                this.lv.Focus(FocusState.Programmatic);
+                if (this.VM.Galleries == null)
+                {
+                    this.VM.Refresh.Execute();
+                    this.abb_Refresh.Focus(FocusState.Programmatic);
+                }
+                else
+                    this.lv.Focus(FocusState.Programmatic);
             }
-            else if (e.NavigationMode == NavigationMode.Back)
+            else
             {
-                await Dispatcher.YieldIdle();
                 ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
             }
         }
