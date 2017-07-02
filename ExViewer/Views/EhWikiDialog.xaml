@@ -9,6 +9,7 @@
                           Title="TITLE"
                           FullSizeDesired="True"
                           PrimaryButtonText="Ok"
+                          Opened="MyContentDialog_Opened"
                           RequiresPointer="WhenFocused"
                           mc:Ignorable="d">
     <controls:MyContentDialog.TitleTemplate>
