@@ -166,6 +166,7 @@ namespace ExViewer.Views
                     if (ApplicationView.TryEnterFullScreenMode())
                     {
                         ApplicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
+                        Microsoft.Azure.Mobile.Analytics.Analytics.TrackEvent("Full screen entered");
                     }
                 }
                 else
@@ -231,6 +232,7 @@ namespace ExViewer.Views
             private static void Frame_Navigated(object sender, NavigationEventArgs e)
             {
                 CurrentPageName = Frame.Content.GetType().ToString();
+                Microsoft.Azure.Mobile.Analytics.Analytics.TrackEvent("Navigated", new Dictionary<string, string> { ["Type"] = e.SourcePageType.ToString() });
             }
 
             public static void SendToast(Exception ex, Type source)
@@ -296,6 +298,7 @@ namespace ExViewer.Views
                     var result = await new LogOnDialog().ShowAsync();
                     var succeed = !Client.Current.NeedLogOn;
                     JYAnalytics.TrackEvent("LogOnRequested", $"Result: {(succeed ? "Succeed" : "Failed")}");
+                    Microsoft.Azure.Mobile.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (succeed ? "Succeed" : "Failed") });
                     UpdateUserInfo(result == ContentDialogResult.Primary);
                     if (succeed)
                     {
