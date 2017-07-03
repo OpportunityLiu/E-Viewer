@@ -52,7 +52,7 @@ namespace ExViewer.Views
             sender.refresh(n);
         }
 
-        private static Regex regRedirect = new Regex(@"REDIRECT <a href=""([^""]+)"" title=""([^""]+)"">([^<]+)</a>", RegexOptions.Compiled);
+        private static Regex regRedirect = new Regex(@"<div class=""redirectMsg""><p>Redirect to:</p><ul class=""redirectText""><li><a href=""([^""]+)"" title=""([^""]+)"">([^<]+)</a></li></ul></div>", RegexOptions.Compiled);
 
         private async void refresh(Tag tag)
         {

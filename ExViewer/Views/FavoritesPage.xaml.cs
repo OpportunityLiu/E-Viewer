@@ -67,6 +67,7 @@ namespace ExViewer.Views
                 this.lv.ScrollIntoView(selectedGallery);
                 await Dispatcher.YieldIdle();
                 this.lv.ScrollIntoView(selectedGallery);
+                await Dispatcher.YieldIdle();
                 var con = (Control)this.lv.ContainerFromItem(selectedGallery);
                 if (con == null)
                     this.cbCategory.Focus(FocusState.Programmatic);

@@ -36,7 +36,8 @@ namespace ExViewer.Views
             this.VM.Search.Execute(text);
         }
 
-        private Button btnExpandButton;
+        private Button _btnExpandButton;
+        private Button btnExpandButton => System.Threading.LazyInitializer.EnsureInitialized(ref this._btnExpandButton, () => this.ab.Descendants<Button>("ExpandButton").FirstOrDefault());
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -49,17 +50,17 @@ namespace ExViewer.Views
             {
                 if (e.Parameter != null)
                     this.VM.SearchResult.Reset();
-                if (this.btnExpandButton == null)
-                    this.btnExpandButton = this.ab.Descendants<Button>("ExpandButton").FirstOrDefault();
                 await Dispatcher.YieldIdle();
                 this.btnExpandButton?.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
                 var selectedGallery = this.VM.SelectedGallery;
+                selectedGallery = null;
                 this.lv.ScrollIntoView(selectedGallery);
                 await Dispatcher.YieldIdle();
                 this.lv.ScrollIntoView(selectedGallery);
+                await Dispatcher.YieldIdle();
                 var con = (Control)this.lv.ContainerFromItem(selectedGallery);
                 if (con == null)
                     this.btnExpandButton?.Focus(FocusState.Programmatic);
