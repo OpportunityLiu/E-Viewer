@@ -112,7 +112,7 @@ namespace ExClient.Galleries
                     loadPageUri = this.PageUri;
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri);
 
-                this.imageUri = new Uri(HtmlEntity.DeEntitize(doc.GetElementbyId("img").GetAttributeValue("src", "")));
+                this.imageUri = new Uri(doc.GetElementbyId("img").GetAttributeValue("src", ""));
                 var originalNode = doc.GetElementbyId("i7").Element("a");
                 if (originalNode == null)
                 {
@@ -120,7 +120,7 @@ namespace ExClient.Galleries
                 }
                 else
                 {
-                    this.originalImageUri = new Uri(HtmlEntity.DeEntitize(originalNode.GetAttributeValue("href", "")));
+                    this.originalImageUri = new Uri(originalNode.GetAttributeValue("href", ""));
                 }
                 var hashNode = doc.GetElementbyId("i6").Element("a");
                 this.ImageHash = SHA1Value.Parse(hashMatcher.Match(hashNode.GetAttributeValue("href", "")).Groups[1].Value);

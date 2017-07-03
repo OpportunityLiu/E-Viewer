@@ -16,7 +16,7 @@ namespace ExClient
         {
             if(favoriteIconNode == null)
                 return FavoriteCategory.Removed;
-            var favName = HtmlEntity.DeEntitize(favoriteIconNode.GetAttributeValue("title", null));
+            var favName = favoriteIconNode.GetAttributeValue("title", null);
             if(favName == null)
                 return FavoriteCategory.Removed;
             var favStyle = favoriteIconNode.GetAttributeValue("style", "");

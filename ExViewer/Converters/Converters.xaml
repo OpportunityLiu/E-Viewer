@@ -3,53 +3,52 @@
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:c="using:Opportunity.Converters"
                         xmlns:local="using:ExViewer.Views">
-    <c:SoftwareBitmapToImageSourceConverter x:Key="SoftwareBitmapToImageSourceConverter" />
-    <c:ThicknessConverter x:Key="ThicknessConverter" />
-    <c:IRandomAccessStreamReferenceToImageSourceConverter x:Key="FileConverter" />
-    <FormatStringConverter x:Key="StringConverter" />
-    <c:VisibilityConverter x:Key="TrueToVisibleConverter"
-                           TrueForVisible="True" />
-    <c:VisibilityConverter x:Key="FalseToVisibleConverter"
-                           TrueForVisible="False" />
-    <c:NullTestConverter x:Key="NullToTrueConverter"
-                         IfNull="True" />
-    <c:NullTestConverter x:Key="NullToFalseConverter"
-                         IfNull="False" />
-    <c:NullTestConverter x:Key="NullToVisibleConverter"
-                         IfNull="True"
-                         NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
-    <c:NullTestConverter x:Key="NullToCollapsedConverter"
-                         IfNull="False"
-                         NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
-    <!--Code to initalize this converter is at App.xaml.cs-->
-    <!--Add string.Empty to ValuesForFalse-->
-    <c:StringToBooleanConverter x:Key="EmptyStringToFalseConverter"
-                                IfNeither="True" />
-    <c:StringToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
-                                IfNeither="True"
-                                NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
-    <c:LengthConverter x:Key="LengthConverter" />
-    <c:EmptyConverter x:Key="EmptyConverter" />
-    <c:SystemConverter x:Key="DefaultConverter" />
-    <c:Int32ToBooleanConverter x:Key="ZeroToVisibleConverter"
-                               NextConverter="{uwp:StaticResource TrueToVisibleConverter}">
-        <c:Int32ToBooleanConverter.ValuesForTrue>
-            <x:Int32>0</x:Int32>
-        </c:Int32ToBooleanConverter.ValuesForTrue>
-    </c:Int32ToBooleanConverter>
-    <c:Int32OffsetConverter x:Key="IndexToStringConverter"
-                            Offset="1"
-                            NextConverter="{uwp:StaticResource DefaultConverter}" />
-    <c:DateTimeOffsetToStringConverter x:Key="DateTimeOffsetToStringConverter"
-                                       NextConverter="{uwp:StaticResource StringConverter}" />
-    <c:ByteSizeToStringConverter x:Key="SizeConverter"
-                                 UnitPrefix="Binary" />
-    <c:LogicalNotConverter x:Key="LogicalNotConverter" />
+  <c:SoftwareBitmapToImageSourceConverter x:Key="SoftwareBitmapToImageSourceConverter" />
+  <c:ThicknessConverter x:Key="ThicknessConverter" />
+  <c:IRandomAccessStreamReferenceToImageSourceConverter x:Key="FileConverter" />
+  <FormatStringConverter x:Key="StringConverter" />
+  <c:BooleanToVisibilityConverter x:Key="TrueToVisibleConverter"
+                                  TrueForVisible="True" />
+  <c:BooleanToVisibilityConverter x:Key="FalseToVisibleConverter"
+                                  TrueForVisible="False" />
+  <c:NullTestConverter x:Key="NullToTrueConverter"
+                       IfNull="True" />
+  <c:NullTestConverter x:Key="NullToFalseConverter"
+                       IfNull="False" />
+  <c:NullTestConverter x:Key="NullToVisibleConverter"
+                       IfNull="True"
+                       NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
+  <c:NullTestConverter x:Key="NullToCollapsedConverter"
+                       IfNull="False"
+                       NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
+  <!--Code to initalize this converter is at App.xaml.cs-->
+  <!--Add string.Empty to ValuesForFalse-->
+  <c:StringToBooleanConverter x:Key="EmptyStringToFalseConverter"
+                              IfNeither="True" />
+  <c:StringToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
+                              IfNeither="True"
+                              NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
+  <c:EmptyConverter x:Key="EmptyConverter" />
+  <c:SystemConverter x:Key="DefaultConverter" />
+  <c:Int32ToBooleanConverter x:Key="ZeroToVisibleConverter"
+                             NextConverter="{uwp:StaticResource TrueToVisibleConverter}">
+    <c:Int32ToBooleanConverter.ValuesForTrue>
+      <x:Int32>0</x:Int32>
+    </c:Int32ToBooleanConverter.ValuesForTrue>
+  </c:Int32ToBooleanConverter>
+  <c:Int32OffsetConverter x:Key="IndexToStringConverter"
+                          Offset="1"
+                          NextConverter="{uwp:StaticResource DefaultConverter}" />
+  <c:DateTimeOffsetToStringConverter x:Key="DateTimeOffsetToStringConverter"
+                                     NextConverter="{uwp:StaticResource StringConverter}" />
+  <c:ByteSizeToStringConverter x:Key="SizeConverter"
+                               UnitPrefix="Binary" />
+  <c:LogicalNotConverter x:Key="LogicalNotConverter" />
 
-    <local:RateStringConverter x:Key="RateStringConverter" />
-    <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />
-    <local:OperationStateToBrushConverter x:Key="OperationStateToBrushConverter" />
-    <local:NamespaceToFriendlyStringConverter x:Key="NamespaceToFriendlyStringConverter" />
-    <local:FavoriteCategoryToBrushConverter x:Key="FavoriteCategoryToBrushConverter" />
-    <local:FavoriteCategoryToNameConverter x:Key="FavoriteCategoryToNameConverter" />
+  <local:RateStringConverter x:Key="RateStringConverter" />
+  <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />
+  <local:OperationStateToBrushConverter x:Key="OperationStateToBrushConverter" />
+  <local:NamespaceToFriendlyStringConverter x:Key="NamespaceToFriendlyStringConverter" />
+  <local:FavoriteCategoryToBrushConverter x:Key="FavoriteCategoryToBrushConverter" />
+  <local:FavoriteCategoryToNameConverter x:Key="FavoriteCategoryToNameConverter" />
 </uwp:ResourceDictionary>
