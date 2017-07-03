@@ -327,7 +327,7 @@ namespace ExViewer.ViewModels
                 var prop = await current.ImageFile.GetBasicPropertiesAsync();
                 var imageProp = await current.ImageFile.Properties.GetImagePropertiesAsync();
                 this.CurrentInfo = string.Format(Strings.Resources.Views.ImagePage.ImageFileInfo, current.ImageFile.DisplayType,
-                    Opportunity.Converters.ByteSizeToStringConverter.ByteSizeToString(prop.Size, Opportunity.Converters.UnitPrefix.Binary),
+                    Opportunity.Converters.ByteSizeToStringConverter.ByteSizeToString((long)prop.Size, Opportunity.Converters.UnitPrefix.Binary),
                     imageProp.Width.ToString(), imageProp.Height.ToString());
             });
         }

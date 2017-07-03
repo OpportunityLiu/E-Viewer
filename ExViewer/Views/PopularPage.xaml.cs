@@ -44,12 +44,14 @@ namespace ExViewer.Views
 
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register(nameof(VM), typeof(PopularVM), typeof(PopularPage), new PropertyMetadata(null));
+
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.Back)
             {
                 await Dispatcher.YieldIdle();
+                this.lv.ScrollIntoView(this.opened);
                 ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
             }
             else
