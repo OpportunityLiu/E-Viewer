@@ -11,6 +11,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -41,63 +42,24 @@ namespace ExViewer.Controls
             sender.resetNewTagState(false);
         }
 
-        private static readonly Brush upBrush = (Brush)Application.Current.Resources["VoteUpCommentBrush"];
-        private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownCommentBrush"];
-        private static readonly Brush upSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteUpCommentBrush"];
-        private static readonly Brush downSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteDownCommentBrush"];
-        private static readonly Brush slaveBrush = (Brush)Application.Current.Resources["SlaveCommentBrush"];
-
         private void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var s = (TextBlock)sender;
-            var newValue = (Tag)args.NewValue;
-            var oldValue = (Tag?)s.Tag ?? default(Tag);
+            var newValue = (GalleryTag)args.NewValue;
+            var oldValue = (GalleryTag)s.Tag;
             args.Handled = true;
-            var state = this.Tags.StateOf(newValue);
-
-            switch (state.GetVoteState())
-            {
-            case TagState.Upvoted:
-                if (state.IsSlave())
-                    s.Foreground = upSlaveBrush;
-                else
-                    s.Foreground = upBrush;
-                break;
-            case TagState.Downvoted:
-                if (state.IsSlave())
-                    s.Foreground = downSlaveBrush;
-                else
-                    s.Foreground = downBrush;
-                break;
-            default:
-                if (state.IsSlave())
-                    s.Foreground = slaveBrush;
-                else
-                    s.ClearValue(TextBlock.ForegroundProperty);
-                break;
-            }
-
-            switch (state.GetPowerState())
-            {
-            case TagState.LowPower:
-                s.FontWeight = Windows.UI.Text.FontWeights.ExtraLight;
-                break;
-            case TagState.HighPower:
-                s.FontWeight = Windows.UI.Text.FontWeights.Medium;
-                break;
-            }
 
             if (oldValue == newValue)
                 return;
             s.Tag = newValue;
-            var dc = newValue.GetDisplayContentAsync();
+            var dc = newValue.Content.GetDisplayContentAsync();
             if (dc.Status == AsyncStatus.Completed)
             {
                 s.Text = dc.GetResults();
             }
             else
             {
-                s.Text = newValue.Content;
+                s.Text = newValue.Content.Content;
                 dc.Completed = (IAsyncOperation<string> op, AsyncStatus e) =>
                 {
                     if (e != AsyncStatus.Completed)
@@ -113,7 +75,7 @@ namespace ExViewer.Controls
 
         private void gvTagGroup_ItemClick(object sender, ItemClickEventArgs e)
         {
-            this.SelectedTag = (Tag)e.ClickedItem;
+            this.SelectedTag = (GalleryTag)e.ClickedItem;
             updateState();
             var s = (ListViewBase)sender;
             var container = (SelectorItem)s.ContainerFromItem(e.ClickedItem);
@@ -125,7 +87,7 @@ namespace ExViewer.Controls
             if (Tags == null || SelectedTag.Content == null)
                 return;
 
-            var state = Tags.StateOf(SelectedTag);
+            var state = SelectedTag.State;
             var dv = state.HasFlag(TagState.Downvoted);
             var uv = state.HasFlag(TagState.Upvoted);
             var sl = state.HasFlag(TagState.Slave);
@@ -137,18 +99,18 @@ namespace ExViewer.Controls
             this.mfiWithdraw.Visibility = canWV ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public Tag SelectedTag
+        public GalleryTag SelectedTag
         {
-            get => (Tag)GetValue(SelectedTagProperty); set => SetValue(SelectedTagProperty, value);
+            get => (GalleryTag)GetValue(SelectedTagProperty); set => SetValue(SelectedTagProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for SelectedTag.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedTagProperty =
-            DependencyProperty.Register("SelectedTag", typeof(Tag), typeof(TagPresenter), new PropertyMetadata(default(Tag)));
+            DependencyProperty.Register("SelectedTag", typeof(GalleryTag), typeof(TagPresenter), new PropertyMetadata(default(GalleryTag)));
 
         private void mfiContent_Click(object sender, RoutedEventArgs e)
         {
-            var content = SelectedTag.Content;
+            var content = SelectedTag.Content.Content;
             if (content == null)
                 return;
             var data = new DataPackage();
@@ -161,7 +123,7 @@ namespace ExViewer.Controls
         {
             try
             {
-                await this.Tags.VoteAsync(SelectedTag, VoteState.Up);
+                await this.Tags.VoteAsync(SelectedTag.Content, VoteState.Up);
             }
             catch (Exception ex)
             {
@@ -174,7 +136,7 @@ namespace ExViewer.Controls
         {
             try
             {
-                await this.Tags.VoteAsync(SelectedTag, VoteState.Down);
+                await this.Tags.VoteAsync(SelectedTag.Content, VoteState.Down);
             }
             catch (Exception ex)
             {
@@ -187,11 +149,11 @@ namespace ExViewer.Controls
         {
             try
             {
-                var state = this.Tags.StateOf(SelectedTag);
+                var state = SelectedTag.State;
                 if (state.HasFlag(TagState.Downvoted))
-                    await this.Tags.VoteAsync(SelectedTag, VoteState.Up);
+                    await this.Tags.VoteAsync(SelectedTag.Content, VoteState.Up);
                 else if (state.HasFlag(TagState.Upvoted))
-                    await this.Tags.VoteAsync(SelectedTag, VoteState.Down);
+                    await this.Tags.VoteAsync(SelectedTag.Content, VoteState.Down);
             }
             catch (Exception ex)
             {
@@ -207,7 +169,7 @@ namespace ExViewer.Controls
             if (SelectedTag.Content == null)
                 return;
             var dialog = System.Threading.LazyInitializer.EnsureInitialized(ref ewd);
-            dialog.WikiTag = SelectedTag;
+            dialog.WikiTag = SelectedTag.Content;
             await dialog.ShowAsync();
         }
 
@@ -215,7 +177,7 @@ namespace ExViewer.Controls
         {
             if (SelectedTag.Content == null)
                 return;
-            var vm = SearchVM.GetVM(SelectedTag.Search());
+            var vm = SearchVM.GetVM(SelectedTag.Content.Search());
             RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
         }
 
@@ -299,6 +261,69 @@ namespace ExViewer.Controls
         {
             if (this.btnStartNew.FocusState == FocusState.Keyboard)
                 btnStartNew_Click(sender, e);
+        }
+    }
+
+    public sealed class TagStateToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var state = (TagState)value;
+            switch (state.GetVoteState())
+            {
+            case TagState.Upvoted:
+                if (state.IsSlave())
+                    return upSlaveBrush;
+                else
+                    return upBrush;
+            case TagState.Downvoted:
+                if (state.IsSlave())
+                    return downSlaveBrush;
+                else
+                    return downBrush;
+            default:
+                if (state.IsSlave())
+                    return slaveBrush;
+                else
+                    return normalBrush;
+            }
+        }
+
+        private static readonly Brush normalBrush = (Brush)Application.Current.Resources["NormalCommentBrush"];
+        private static readonly Brush slaveBrush = (Brush)Application.Current.Resources["SlaveCommentBrush"];
+
+        private static readonly Brush upBrush = (Brush)Application.Current.Resources["VoteUpCommentBrush"];
+        private static readonly Brush upSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteUpCommentBrush"];
+
+        private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownCommentBrush"];
+        private static readonly Brush downSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteDownCommentBrush"];
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public sealed class TagStateToFontWeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var state = (TagState)value;
+            switch (state.GetPowerState())
+            {
+            case TagState.LowPower:
+                return Windows.UI.Text.FontWeights.ExtraLight;
+            case TagState.HighPower:
+                return Windows.UI.Text.FontWeights.Medium;
+            default:
+                return Windows.UI.Text.FontWeights.Normal;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
         }
     }
 }

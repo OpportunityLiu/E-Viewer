@@ -181,6 +181,7 @@
     <Compile Include="Search\SearchResult.cs" />
     <Compile Include="Settings\ExcludedLanguage.cs" />
     <Compile Include="SHA1Value.cs" />
+    <Compile Include="Tagging\GalleryTag.cs" />
     <Compile Include="Tagging\Namespace.cs" />
     <Compile Include="Search\PopularCollection.cs" />
     <Compile Include="Galleries\Metadata\RevisionCollection.cs" />

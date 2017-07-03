@@ -8,141 +8,145 @@
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="700">
-    <UserControl.Resources>
-        <MenuFlyout x:Name="mfoTag"
-                    Placement="Bottom">
-            <MenuFlyoutItem x:Name="mfiContent"
-                            Text="{x:Bind SelectedTag.Content, Mode=OneWay}"
-                            ToolTipService.ToolTip="{x:Bind SelectedTag.Content, Mode=OneWay}"
-                            Click="mfiContent_Click" />
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteUpMenuFlyoutItem"
-                            x:Name="mfiUp"
-                            Click="mfiUp_Click"
-                            Text="Vote up" />
-            <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteDownMenuFlyoutItem"
-                            x:Name="mfiDown"
-                            Click="mfiDown_Click"
-                            Text="Vote down" />
-            <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagWithdrawVoteMenuFlyoutItem"
-                            x:Name="mfiWithdraw"
-                            Click="mfiWithdraw_Click"
-                            Text="Withdraw vote" />
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem x:Name="mfiTagDefination"
-                            x:Uid="Controls/TagPresenter/GoToDefinitionMenuFlyoutItem"
-                            Click="mfiTagDefination_Click"
-                            Text="Go to EHWiki for definition" />
-            <MenuFlyoutItem x:Name="mfiTagSearch"
-                            x:Uid="Controls/TagPresenter/SearchTagMenuFlyoutItem"
-                            Click="mfiTagSearch_Click"
-                            Text="Show galleries with this tag" />
-        </MenuFlyout>
-        <Style x:Key="TagTextBlockStyle"
-               TargetType="TextBlock">
-            <Setter Property="Margin"
-                    Value="4,0" />
-            <Setter Property="TextTrimming"
-                    Value="None" />
-            <Setter Property="TextWrapping"
-                    Value="NoWrap" />
-            <Setter Property="MaxLines"
-                    Value="1" />
-        </Style>
-        <DataTemplate x:Key="TagTemplate"
-                      x:DataType="tagging:Tag">
-            <TextBlock Style="{StaticResource TagTextBlockStyle}"
-                       DataContextChanged="tbContent_DataContextChanged" />
-        </DataTemplate>
-        <DataTemplate x:Key="TagGroupTemplate"
-                      x:DataType="tagging:NamespaceTagCollection">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Uid="Controls/TagPresenter/TagNamespaceColumnDefinition"
-                                      Width="200" />
-                    <ColumnDefinition Width="8" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0"
-                           Padding="2,0"
-                           HorizontalAlignment="Right"
-                           Text="{x:Bind Namespace, Converter={StaticResource NamespaceToFriendlyStringConverter}}" />
-                <GridView Grid.Column="2"
-                          Padding="0,0,0,4"
-                          IsItemClickEnabled="True"
-                          ItemClick="gvTagGroup_ItemClick"
-                          ItemsSource="{x:Bind}"
-                          ItemTemplate="{StaticResource TagTemplate}"
-                          SelectionMode="None">
-                    <GridView.ItemContainerStyle>
-                        <Style TargetType="GridViewItem">
-                            <Setter Property="MinHeight"
-                                    Value="0" />
-                            <Setter Property="MinWidth"
-                                    Value="0" />
-                        </Style>
-                    </GridView.ItemContainerStyle>
-                    <GridView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <local:WrapPanel />
-                        </ItemsPanelTemplate>
-                    </GridView.ItemsPanel>
-                    <GridView.ItemContainerTransitions>
-                        <TransitionCollection />
-                    </GridView.ItemContainerTransitions>
-                    <GridView.Template>
-                        <ControlTemplate TargetType="GridView">
-                            <ItemsPresenter Padding="{TemplateBinding Padding}"
-                                            Footer="{TemplateBinding Footer}"
-                                            FooterTemplate="{TemplateBinding FooterTemplate}"
-                                            FooterTransitions="{TemplateBinding FooterTransitions}"
-                                            Header="{TemplateBinding Header}"
-                                            HeaderTemplate="{TemplateBinding HeaderTemplate}"
-                                            HeaderTransitions="{TemplateBinding HeaderTransitions}" />
-                        </ControlTemplate>
-                    </GridView.Template>
-                </GridView>
-            </Grid>
-        </DataTemplate>
-    </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <ListView x:Name="lv_Tags"
-                  ItemsSource="{x:Bind Tags, Mode=OneWay}"
-                  ScrollViewer.IsVerticalScrollChainingEnabled="True"
-                  SelectionMode="None"
-                  ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
-                  ItemTemplate="{StaticResource TagGroupTemplate}">
-            <ListView.ItemContainerTransitions>
-                <TransitionCollection />
-            </ListView.ItemContainerTransitions>
-        </ListView>
-        <AutoSuggestBox x:Uid="Controls/TagPresenter/AddNewTagsAutoSuggestBox"
-                        x:DeferLoadStrategy="Lazy"
-                        x:Name="asbNewTags"
-                        Grid.Row="1"
-                        Margin="16,0"
-                        QueryIcon="Tag"
-                        PlaceholderText="Enter new tags, separated with comma"
-                        Loaded="asbNewTags_Loaded"
-                        TextBoxStyle="{StaticResource AutoSuggestBoxTextBoxStyle}"
-                        Style="{StaticResource SearchAutoSuggestBoxStyle}"
-                        LostFocus="asbNewTags_LostFocus"
-                        local:TagSuggestionService.IsEnabled="True"
-                        local:TagSuggestionService.Separator=","
-                        local:TagSuggestionService.UseHistory="False"
-                        local:TagSuggestionService.SubmitCommand="{x:Bind submitCmd}" />
-        <Button x:Uid="Controls/TagPresenter/AddNewTagsButton"
-                x:Name="btnStartNew"
-                Grid.Row="1"
-                Margin="18,2"
-                Style="{ThemeResource TextBlockButtonStyle}"
-                HorizontalAlignment="Center"
-                Content="Add new tags"
-                GotFocus="btnStartNew_GotFocus"
-                Click="btnStartNew_Click" />
-    </Grid>
+  <UserControl.Resources>
+    <MenuFlyout x:Name="mfoTag"
+                Placement="Bottom">
+      <MenuFlyoutItem x:Name="mfiContent"
+                      Text="{x:Bind SelectedTag.Content.Content, Mode=OneWay}"
+                      ToolTipService.ToolTip="{x:Bind SelectedTag.Content.Content, Mode=OneWay}"
+                      Click="mfiContent_Click" />
+      <MenuFlyoutSeparator />
+      <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteUpMenuFlyoutItem"
+                      x:Name="mfiUp"
+                      Click="mfiUp_Click"
+                      Text="Vote up" />
+      <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteDownMenuFlyoutItem"
+                      x:Name="mfiDown"
+                      Click="mfiDown_Click"
+                      Text="Vote down" />
+      <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagWithdrawVoteMenuFlyoutItem"
+                      x:Name="mfiWithdraw"
+                      Click="mfiWithdraw_Click"
+                      Text="Withdraw vote" />
+      <MenuFlyoutSeparator />
+      <MenuFlyoutItem x:Name="mfiTagDefination"
+                      x:Uid="Controls/TagPresenter/GoToDefinitionMenuFlyoutItem"
+                      Click="mfiTagDefination_Click"
+                      Text="Go to EHWiki for definition" />
+      <MenuFlyoutItem x:Name="mfiTagSearch"
+                      x:Uid="Controls/TagPresenter/SearchTagMenuFlyoutItem"
+                      Click="mfiTagSearch_Click"
+                      Text="Show galleries with this tag" />
+    </MenuFlyout>
+    <Style x:Key="TagTextBlockStyle"
+           TargetType="TextBlock">
+      <Setter Property="Margin"
+              Value="4,0" />
+      <Setter Property="TextTrimming"
+              Value="None" />
+      <Setter Property="TextWrapping"
+              Value="NoWrap" />
+      <Setter Property="MaxLines"
+              Value="1" />
+    </Style>
+    <local:TagStateToBrushConverter x:Key="TagStateToBrushConverter" />
+    <local:TagStateToFontWeightConverter x:Key="TagStateToFontWeightConverter" />
+    <DataTemplate x:Key="TagTemplate"
+                  x:DataType="tagging:GalleryTag">
+      <TextBlock Style="{StaticResource TagTextBlockStyle}"
+                 DataContextChanged="tbContent_DataContextChanged"
+                 FontWeight="{x:Bind State, Mode=OneWay, Converter={StaticResource TagStateToFontWeightConverter}}"
+                 Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource TagStateToBrushConverter}}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="TagGroupTemplate"
+                  x:DataType="tagging:NamespaceTagCollection">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition x:Uid="Controls/TagPresenter/TagNamespaceColumnDefinition"
+                            Width="200" />
+          <ColumnDefinition Width="8" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0"
+                   Padding="2,0"
+                   HorizontalAlignment="Right"
+                   Text="{x:Bind Namespace, Converter={StaticResource NamespaceToFriendlyStringConverter}}" />
+        <GridView Grid.Column="2"
+                  Padding="0,0,0,4"
+                  IsItemClickEnabled="True"
+                  ItemClick="gvTagGroup_ItemClick"
+                  ItemsSource="{x:Bind}"
+                  ItemTemplate="{StaticResource TagTemplate}"
+                  SelectionMode="None">
+          <GridView.ItemContainerStyle>
+            <Style TargetType="GridViewItem">
+              <Setter Property="MinHeight"
+                      Value="0" />
+              <Setter Property="MinWidth"
+                      Value="0" />
+            </Style>
+          </GridView.ItemContainerStyle>
+          <GridView.ItemsPanel>
+            <ItemsPanelTemplate>
+              <local:WrapPanel />
+            </ItemsPanelTemplate>
+          </GridView.ItemsPanel>
+          <GridView.ItemContainerTransitions>
+            <TransitionCollection />
+          </GridView.ItemContainerTransitions>
+          <GridView.Template>
+            <ControlTemplate TargetType="GridView">
+              <ItemsPresenter Padding="{TemplateBinding Padding}"
+                              Footer="{TemplateBinding Footer}"
+                              FooterTemplate="{TemplateBinding FooterTemplate}"
+                              FooterTransitions="{TemplateBinding FooterTransitions}"
+                              Header="{TemplateBinding Header}"
+                              HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                              HeaderTransitions="{TemplateBinding HeaderTransitions}" />
+            </ControlTemplate>
+          </GridView.Template>
+        </GridView>
+      </Grid>
+    </DataTemplate>
+  </UserControl.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <ListView x:Name="lv_Tags"
+              ItemsSource="{x:Bind Tags, Mode=OneWay}"
+              ScrollViewer.IsVerticalScrollChainingEnabled="True"
+              SelectionMode="None"
+              ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
+              ItemTemplate="{StaticResource TagGroupTemplate}">
+      <ListView.ItemContainerTransitions>
+        <TransitionCollection />
+      </ListView.ItemContainerTransitions>
+    </ListView>
+    <AutoSuggestBox x:Uid="Controls/TagPresenter/AddNewTagsAutoSuggestBox"
+                    x:DeferLoadStrategy="Lazy"
+                    x:Name="asbNewTags"
+                    Grid.Row="1"
+                    Margin="16,0"
+                    QueryIcon="Tag"
+                    PlaceholderText="Enter new tags, separated with comma"
+                    Loaded="asbNewTags_Loaded"
+                    TextBoxStyle="{StaticResource AutoSuggestBoxTextBoxStyle}"
+                    Style="{StaticResource SearchAutoSuggestBoxStyle}"
+                    LostFocus="asbNewTags_LostFocus"
+                    local:TagSuggestionService.IsEnabled="True"
+                    local:TagSuggestionService.Separator=","
+                    local:TagSuggestionService.UseHistory="False"
+                    local:TagSuggestionService.SubmitCommand="{x:Bind submitCmd}" />
+    <Button x:Uid="Controls/TagPresenter/AddNewTagsButton"
+            x:Name="btnStartNew"
+            Grid.Row="1"
+            Margin="18,2"
+            Style="{ThemeResource TextBlockButtonStyle}"
+            HorizontalAlignment="Center"
+            Content="Add new tags"
+            GotFocus="btnStartNew_GotFocus"
+            Click="btnStartNew_Click" />
+  </Grid>
 </UserControl>

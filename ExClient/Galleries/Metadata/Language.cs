@@ -22,14 +22,14 @@ namespace ExClient.Galleries.Metadata
         internal static Language Parse(Gallery gallery)
         {
             var tags = gallery.Tags;
-            if(tags == null)
+            if (tags == null)
                 return default(Language);
             var modi = LanguageModifier.None;
             var language = new List<LanguageName>(1);
             var lanNA = false;
-            foreach(var item in tags[Namespace.Language])
+            foreach (var item in tags[Namespace.Language])
             {
-                switch(item.Content)
+                switch (item.Content.Content)
                 {
                 case "rewrite":
                     modi = LanguageModifier.Rewrite;
@@ -38,14 +38,14 @@ namespace ExClient.Galleries.Metadata
                     modi = LanguageModifier.Translated;
                     continue;
                 default:
-                    if(naTags.Contains(item.Content))
+                    if (naTags.Contains(item.Content.Content))
                     {
                         language.Clear();
                         lanNA = true;
                     }
-                    else if(!lanNA)
+                    else if (!lanNA)
                     {
-                        if(Enum.TryParse<LanguageName>(item.Content, true, out var lan))
+                        if (Enum.TryParse<LanguageName>(item.Content.Content, true, out var lan))
                             language.Add(lan);
                         else
                             language.Add(LanguageName.Other);
@@ -53,7 +53,7 @@ namespace ExClient.Galleries.Metadata
                     continue;
                 }
             }
-            if(!lanNA && language.Count == 0)
+            if (!lanNA && language.Count == 0)
                 return new Language(null, modi);
             else
                 return new Language(language, modi);
@@ -62,7 +62,7 @@ namespace ExClient.Galleries.Metadata
         public Language(IEnumerable<LanguageName> names, LanguageModifier modifier)
         {
             Modifier = modifier;
-            if(names == null)
+            if (names == null)
             {
                 this.names = null;
                 return;
@@ -84,13 +84,13 @@ namespace ExClient.Galleries.Metadata
         public override string ToString()
         {
             string name;
-            if(this.Names.Count == 0)
+            if (this.Names.Count == 0)
                 name = LocalizedStrings.Language.Names.NotApplicable;
-            else if(this.Names.Count == 1)
+            else if (this.Names.Count == 1)
                 name = this.Names[0].ToFriendlyNameString();
             else
                 name = string.Join(", ", this.Names.Select(LanguageNameExtension.ToFriendlyNameString));
-            switch(Modifier)
+            switch (Modifier)
             {
             case LanguageModifier.Translated:
                 return $"{name} {LocalizedStrings.Language.Modifiers.Translated}";
@@ -103,22 +103,22 @@ namespace ExClient.Galleries.Metadata
 
         public bool Equals(Language other)
         {
-            if(this.Modifier != other.Modifier)
+            if (this.Modifier != other.Modifier)
                 return false;
-            if(this.names == null)
+            if (this.names == null)
             {
-                if(other.names == null)
+                if (other.names == null)
                     return true;
                 return false;
             }
-            if(other.names == null)
+            if (other.names == null)
                 return false;
             return this.names.SequenceEqual(other.names);
         }
 
         public override bool Equals(object obj)
         {
-            if(obj is Language l)
+            if (obj is Language l)
                 return Equals(l);
             return false;
         }
@@ -126,7 +126,7 @@ namespace ExClient.Galleries.Metadata
         public override int GetHashCode()
         {
             var hash = this.Modifier.GetHashCode();
-            foreach(var item in this.Names)
+            foreach (var item in this.Names)
             {
                 hash = unchecked(hash * 7 ^ item.GetHashCode());
             }

@@ -52,37 +52,24 @@ namespace ExClient.Tagging
             initOrReset(items.Select(t => (t, TagState.NormalPower)));
         }
 
-        internal event Action<int> ItemStateChanged;
-
         private void initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
         {
             var rawData = items.OrderBy(t => t.tag.Namespace)
                 // put low-power tags to the end
                 .ThenByDescending(t => t.ts & TagState.NormalPower)
                 .ThenBy(t => t.tag.Content)
-                .ToArray();
-            var data = new Tag[rawData.Length];
-            var state = new TagState[rawData.Length];
-            for (var i = 0; i < rawData.Length; i++)
+                .ToList();
+            var data = new Tag[rawData.Count];
+            var state = new TagState[rawData.Count];
+            for (var i = 0; i < rawData.Count; i++)
             {
                 (data[i], state[i]) = rawData[i];
             }
-            if (this.Data != null && this.State != null && this.Data.SequenceEqual(data))
+            if (this.Data != null && this.Data.Select(d => d.Content).SequenceEqual(data))
             {
-                var notify = this.ItemStateChanged;
-                if (notify == null)
+                for (var i = 0; i < this.Data.Length; i++)
                 {
-                    this.State = state;
-                    return;
-                }
-                for (var i = 0; i < this.State.Length; i++)
-                {
-                    var oldState = this.State[i];
-                    var newState = state[i];
-                    if (oldState == newState)
-                        continue;
-                    this.State[i] = newState;
-                    notify(i);
+                    this.Data[i].State = state[i];
                 }
                 return;
             }
@@ -103,18 +90,20 @@ namespace ExClient.Tagging
             offset[currentIdx] = data.Length;
             Array.Resize(ref keys, currentIdx);
             Array.Resize(ref offset, currentIdx + 1);
-            this.Data = data;
-            this.State = state;
+            var tagData = new GalleryTag[data.Length];
+            for (var i = 0; i < data.Length; i++)
+            {
+                tagData[i] = new GalleryTag(this, data[i], state[i]);
+            }
+            this.Data = tagData;
             this.Keys = keys;
             this.Offset = offset;
             this.Version++;
-            this.ItemStateChanged?.Invoke(-1);
             RaiseCollectionReset();
             RaisePropertyChanged(nameof(Count), nameof(Items), "Groups");
         }
 
-        internal Tag[] Data;
-        internal TagState[] State;
+        internal GalleryTag[] Data;
 
         internal Namespace[] Keys;
         internal int[] Offset;
@@ -123,7 +112,7 @@ namespace ExClient.Tagging
 
         public Gallery Owner { get; }
 
-        public IReadOnlyList<Tag> Items => this.Data;
+        public IReadOnlyList<GalleryTag> Items => this.Data;
 
         public int Count => this.Keys.Length;
 
@@ -149,7 +138,7 @@ namespace ExClient.Tagging
         }
 
         [IndexerName("Groups")]
-        public RangedCollectionView<Tag> this[Namespace key]
+        public RangedCollectionView<GalleryTag> this[Namespace key]
         {
             get
             {
@@ -164,22 +153,22 @@ namespace ExClient.Tagging
             }
         }
 
-        private RangedCollectionView<Tag> getValue(Namespace key)
+        private RangedCollectionView<GalleryTag> getValue(Namespace key)
         {
             var i = getIndexOfKey(key);
             if (i < 0)
             {
                 if (key.IsDefined())
-                    return RangedCollectionView<Tag>.Empty;
+                    return RangedCollectionView<GalleryTag>.Empty;
                 else
                     throw new ArgumentOutOfRangeException(nameof(key));
             }
             return getValue(i);
         }
 
-        private RangedCollectionView<Tag> getValue(int index)
+        private RangedCollectionView<GalleryTag> getValue(int index)
         {
-            return new RangedCollectionView<Tag>(this.Data, this.Offset[index], this.Offset[index + 1] - this.Offset[index]);
+            return new RangedCollectionView<GalleryTag>(this.Data, this.Offset[index], this.Offset[index + 1] - this.Offset[index]);
         }
 
         public IAsyncAction VoteAsync(Tag tag, VoteState command)
@@ -378,9 +367,9 @@ namespace ExClient.Tagging
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public int IndexOf(Tag tag)
+        public int IndexOf(GalleryTag tag)
         {
-            var nsindex = getIndexOfKey(tag.Namespace);
+            var nsindex = getIndexOfKey(tag.Content.Namespace);
             if (nsindex < 0)
                 return -1;
             for (var i = this.Offset[nsindex]; i < this.Offset[nsindex + 1]; i++)
@@ -389,23 +378,6 @@ namespace ExClient.Tagging
                     return i;
             }
             return -1;
-        }
-
-        public TagState StateOf(int index)
-        {
-            if (index < 0 || index >= this.Data.Length)
-                throw new ArgumentOutOfRangeException(nameof(index));
-            if (this.State == null)
-                return TagState.NormalPower;
-            return this.State[index];
-        }
-
-        public TagState StateOf(Tag tag)
-        {
-            var i = IndexOf(tag);
-            if (i < 0)
-                return TagState.NotPresented;
-            return StateOf(i);
         }
 
         int IList.Add(object value) => throw new NotImplementedException();

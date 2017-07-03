@@ -39,7 +39,7 @@ namespace ExViewer.Controls
                 new FilterRecord(Category.AsianPorn, true),
                 new FilterRecord(Category.Misc, true)
             };
-            foreach(var item in this.filter)
+            foreach (var item in this.filter)
             {
                 item.PropertyChanged += this.filterItem_PropertyChanged;
             }
@@ -48,9 +48,9 @@ namespace ExViewer.Controls
         private void filterItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var category = Category.Unspecified;
-            foreach(var item in this.filter)
+            foreach (var item in this.filter)
             {
-                if(item.IsChecked)
+                if (item.IsChecked)
                     category |= item.Category;
             }
             this.SelectedCategory = category;
@@ -71,9 +71,9 @@ namespace ExViewer.Controls
             var s = (CategorySelector)d;
             var oldValue = (Category)e.OldValue;
             var newValue = (Category)e.NewValue;
-            if(oldValue == newValue)
+            if (oldValue == newValue)
                 return;
-            foreach(var item in s.filter)
+            foreach (var item in s.filter)
             {
                 item.IsChecked = newValue.HasFlag(item.Category);
             }
