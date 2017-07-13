@@ -56,7 +56,6 @@ namespace ExViewer.Views
             else if (e.NavigationMode == NavigationMode.Back)
             {
                 var selectedGallery = this.VM.SelectedGallery;
-                selectedGallery = null;
                 this.lv.ScrollIntoView(selectedGallery);
                 await Dispatcher.YieldIdle();
                 this.lv.ScrollIntoView(selectedGallery);
