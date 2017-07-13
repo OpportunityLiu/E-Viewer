@@ -25,7 +25,7 @@ namespace ExClient.HentaiVerse
             var a = eventPane.Descendants("a").FirstOrDefault();
             if (a != null)
             {
-                var uri = a.GetAttributeValue("href", "");
+                var uri = HtmlEntity.DeEntitize(a.GetAttributeValue("href", ""));
                 var ev = MonsterEncountered;
                 if (ev == null)
                     return;

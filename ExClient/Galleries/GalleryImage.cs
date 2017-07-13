@@ -112,7 +112,7 @@ namespace ExClient.Galleries
                     loadPageUri = this.PageUri;
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri);
 
-                this.imageUri = new Uri(doc.GetElementbyId("img").GetAttributeValue("src", ""));
+                this.imageUri = new Uri(HtmlEntity.DeEntitize(doc.GetElementbyId("img").GetAttributeValue("src", "")));
                 var originalNode = doc.GetElementbyId("i7").Element("a");
                 if (originalNode == null)
                 {
@@ -120,11 +120,11 @@ namespace ExClient.Galleries
                 }
                 else
                 {
-                    this.originalImageUri = new Uri(originalNode.GetAttributeValue("href", ""));
+                    this.originalImageUri = new Uri(HtmlEntity.DeEntitize(originalNode.GetAttributeValue("href", "")));
                 }
                 var hashNode = doc.GetElementbyId("i6").Element("a");
-                this.ImageHash = SHA1Value.Parse(hashMatcher.Match(hashNode.GetAttributeValue("href", "")).Groups[1].Value);
-                var loadFail = doc.GetElementbyId("loadfail").GetAttributeValue("onclick", "");
+                this.ImageHash = SHA1Value.Parse(hashMatcher.Match(HtmlEntity.DeEntitize(hashNode.GetAttributeValue("href", ""))).Groups[1].Value);
+                var loadFail = HtmlEntity.DeEntitize(doc.GetElementbyId("loadfail").GetAttributeValue("onclick", ""));
                 var oft = this.failToken;
                 var nft = failTokenMatcher.Match(loadFail).Groups[1].Value;
                 if (oft == null)
@@ -248,6 +248,7 @@ namespace ExClient.Galleries
 
         private IAsyncAction startLoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
+            this.State = ImageLoadingState.Preparing;
             return Run(async token =>
             {
                 try
@@ -256,7 +257,6 @@ namespace ExClient.Galleries
                     var folder = ImageFolder ?? await GetImageFolderAsync();
                     using (var db = new GalleryDb())
                     {
-                        this.State = ImageLoadingState.Preparing;
                         this.Progress = 0;
                         var loadImgInfo = this.loadImageUriAndHash();
                         IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> loadImg = null;
