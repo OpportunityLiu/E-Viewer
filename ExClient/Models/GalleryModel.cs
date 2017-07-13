@@ -24,7 +24,7 @@ namespace ExClient.Models
             if (toCache.Tags == null || toCache.Tags.Items.Count == 0)
                 this.Tags = "[]";
             else
-                this.Tags = JsonConvert.SerializeObject(toCache.Tags.Items.Select(tag => tag.ToString()));
+                this.Tags = JsonConvert.SerializeObject(toCache.Tags.Items.Select(tag => tag.Content.ToString()));
             this.RecordCount = toCache.RecordCount;
             this.ThumbUri = toCache.ThumbUri.ToString();
             return this;
