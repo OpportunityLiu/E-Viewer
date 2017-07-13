@@ -243,10 +243,10 @@ namespace ExClient.Galleries
                     return AsyncWrapper.CreateCompleted();
                 return PollingAsyncWrapper.Wrap(previousAction, 1500);
             }
-            return this.loadImageAction = startLoadImageAsync(strategy, throwIfFailed);
+            return this.loadImageAction = startLoadImageAsync(reload, strategy, throwIfFailed);
         }
 
-        private IAsyncAction startLoadImageAsync(ConnectionStrategy strategy, bool throwIfFailed)
+        private IAsyncAction startLoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
             return Run(async token =>
             {
@@ -267,7 +267,7 @@ namespace ExClient.Galleries
                         });
                         await loadImgInfo;
                         var imageModel = db.ImageSet.SingleOrDefault(ImageModel.PKEquals(this.imageHash));
-                        if (imageModel != null && imageModel.OriginalLoaded == loadFull)
+                        if (!reload && imageModel != null && (imageModel.OriginalLoaded || imageModel.OriginalLoaded == loadFull))
                         {
                             var file = await folder.TryGetFileAsync(imageModel.FileName);
                             if (file != null)
@@ -342,7 +342,7 @@ namespace ExClient.Galleries
                         this.State = ImageLoadingState.Loaded;
                     }
                 }
-                catch (TaskCanceledException) { throw; }
+                catch (OperationCanceledException) { throw; }
                 catch (Exception)
                 {
                     this.Progress = 100;
