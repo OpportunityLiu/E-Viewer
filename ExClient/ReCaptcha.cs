@@ -18,15 +18,15 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                using(var c = new HttpClient())
+                using (var c = new HttpClient())
                 {
                     var g = c.GetStringAsync(recaptchaUri);
                     token.Register(g.Cancel);
                     var h = await g;
                     var html = new HtmlDocument();
                     html.LoadHtml(h);
-                    var cf = html.GetElementbyId("recaptcha_challenge_field").GetAttributeValue("value", "");
-                    var imgUri = html.DocumentNode.Descendants("img").Single().GetAttributeValue("src", "");
+                    var cf = HtmlEntity.DeEntitize(html.GetElementbyId("recaptcha_challenge_field").GetAttributeValue("value", ""));
+                    var imgUri = HtmlEntity.DeEntitize(html.DocumentNode.Descendants("img").Single().GetAttributeValue("src", ""));
                     return new ReCaptcha(cf, imgUri);
                 }
             });
@@ -51,7 +51,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                using(var c = new HttpClient())
+                using (var c = new HttpClient())
                 {
                     IEnumerable<KeyValuePair<string, string>> message()
                     {
@@ -65,7 +65,7 @@ namespace ExClient
                     var html = new HtmlDocument();
                     html.LoadHtml(str);
                     var ans = html.DocumentNode.Descendants("textarea").SingleOrDefault();
-                    if(ans == null)
+                    if (ans == null)
                         throw new ArgumentException(LocalizedStrings.Resources.WrongCaptcha);
                     this.Answer = ans.InnerText;
                 }

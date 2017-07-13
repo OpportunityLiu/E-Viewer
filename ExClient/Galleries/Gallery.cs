@@ -432,10 +432,8 @@ namespace ExClient.Galleries
                 var pics = from node in html.GetElementbyId("gdt").Descendants("div")
                            where node.GetAttributeValue("class", null) == "gdtl"
                            let nodeA = node.Descendants("a").Single()
-                           let nodeI = nodeA.Descendants("img").Single()
-                           let thumb = nodeI.GetAttributeValue("src", null)
-                           let imgLink = nodeA.GetAttributeValue("href", null)
-                           let match = imgLinkMatcher.Match(nodeA.GetAttributeValue("href", ""))
+                           let thumb = HtmlEntity.DeEntitize(nodeA.Descendants("img").Single().GetAttributeValue("src", null))
+                           let match = imgLinkMatcher.Match(HtmlEntity.DeEntitize(nodeA.GetAttributeValue("href", "")))
                            where match.Success && thumb != null
                            select new
                            {

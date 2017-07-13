@@ -36,7 +36,7 @@ namespace ExClient.Galleries.Metadata
                                 Peers = int.Parse(reg.Groups[4].Value),
                                 Downloads = int.Parse(reg.Groups[5].Value),
                                 Uploader = reg.Groups[6].Value.DeEntitize(),
-                                TorrentUri = link == null ? null : new Uri(link.GetAttributeValue("href", ""))
+                                TorrentUri = link == null ? null : new Uri(HtmlEntity.DeEntitize(link.GetAttributeValue("href", "")))
                             };
                 return nodes.ToList().AsReadOnly();
             }).AsAsyncOperation();
@@ -46,7 +46,7 @@ namespace ExClient.Galleries.Metadata
         {
             var s = sizeStr.Split(' ');
             var value = double.Parse(s[0]);
-            switch(s[1])
+            switch (s[1])
             {
             case "B":
                 return (long)value;
@@ -117,9 +117,9 @@ namespace ExClient.Galleries.Metadata
         {
             return Run(async token =>
             {
-                if(this.TorrentUri == null)
+                if (this.TorrentUri == null)
                     throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
-                using(var client = new HttpClient())
+                using (var client = new HttpClient())
                 {
                     var loadT = client.GetBufferAsync(this.TorrentUri);
                     var filename = StorageHelper.ToValidFileName(this.Name + ".torrent");

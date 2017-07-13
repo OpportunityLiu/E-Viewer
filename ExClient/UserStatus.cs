@@ -37,7 +37,7 @@ namespace ExClient
                     continue;
                 if (!int.TryParse(HtmlEntity.DeEntitize(rankNode.InnerText).TrimStart('#'), out var rank))
                     continue;
-                var link = new Uri(listNode.GetAttributeValue("href", ""));
+                var link = new Uri(HtmlEntity.DeEntitize(listNode.GetAttributeValue("href", "")));
                 if (!int.TryParse(link.Query.Split('=').Last(), out var listID))
                     continue;
                 var item = new TopListItem(rank, (TopListName)listID);

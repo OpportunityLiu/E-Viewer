@@ -43,7 +43,7 @@ namespace ExClient.Search
                              select div).ToList();
                 var ginfo = nodes.Select(n =>
                 {
-                    var link = n.Descendants("a").First().GetAttributeValue("href", "");
+                    var link = HtmlEntity.DeEntitize(n.Descendants("a").First().GetAttributeValue("href", ""));
                     return GalleryInfo.Parse(new Uri(link));
                 }).ToList();
                 this.RecordCount = ginfo.Count;
