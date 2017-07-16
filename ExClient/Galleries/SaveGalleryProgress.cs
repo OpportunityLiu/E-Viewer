@@ -1,11 +1,10 @@
 ﻿namespace ExClient.Galleries
 {
-    public class SaveGalleryProgress
+    public struct SaveGalleryProgress
     {
-        public int ImageLoaded
-        {
-            get; internal set;
-        }
+        internal int ImageLoadedInternal;
+
+        public int ImageLoaded => this.ImageLoadedInternal;
 
         public int ImageCount
         {

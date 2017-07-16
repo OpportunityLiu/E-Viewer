@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
@@ -101,34 +102,34 @@ namespace ExClient.Galleries
             ["Misc"] = Category.Misc
         };
 
-        public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync(ConnectionStrategy strategy)
+        public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveAsync(ConnectionStrategy strategy)
         {
             return Run<SaveGalleryProgress>(async (token, progress) =>
             {
                 var toReport = new SaveGalleryProgress
                 {
                     ImageCount = this.RecordCount,
-                    ImageLoaded = -1
+                    ImageLoadedInternal = -1
                 };
-                progress.Report(toReport);
-                token.ThrowIfCancellationRequested();
-                while (this.HasMoreItems)
+                if (this.HasMoreItems)
                 {
-                    await this.LoadMoreItemsAsync((uint)PageSize);
-                    token.ThrowIfCancellationRequested();
+                    progress.Report(toReport);
+                    while (this.HasMoreItems)
+                    {
+                        await this.LoadMoreItemsAsync((uint)PageSize);
+                        token.ThrowIfCancellationRequested();
+                    }
                 }
-                toReport.ImageLoaded = 0;
+
+                toReport.ImageLoadedInternal = 0;
                 progress.Report(toReport);
 
                 var loadTasks = this.Select(image => Task.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
                     await image.LoadImageAsync(false, strategy, true);
-                    lock (toReport)
-                    {
-                        toReport.ImageLoaded++;
-                        progress.Report(toReport);
-                    }
+                    Interlocked.Increment(ref toReport.ImageLoadedInternal);
+                    progress.Report(toReport);
                 }));
                 await Task.WhenAll(loadTasks);
                 using (var db = new GalleryDb())

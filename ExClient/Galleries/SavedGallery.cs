@@ -83,6 +83,14 @@ namespace ExClient.Galleries
             return AsyncWrapper.CreateCompleted();
         }
 
+        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
+        {
+            if (this.Comments.IsLoaded)
+                return LoadPageLocalAsync(pageIndex);
+            else
+                return base.LoadPageAsync(pageIndex);
+        }
+
         public override IAsyncAction DeleteAsync()
         {
             return Task.Run(async () =>
