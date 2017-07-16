@@ -272,7 +272,7 @@
       "AdvancedToggleButton/OnContent": "隐藏高级选项",
       "AutoSuggestBox/PlaceholderText": "搜索…",
       "DescriptionCheckBox/Content": "搜索画廊描述",
-      "DownvotedTagsCheckBox/Content": "搜索投过反对票的标签",
+      "DownvotedTagsCheckBox/Content": "搜索被反对的标签",
       "EmptyTextBlock/Text": "没有结果",
       "FileSearchButton/Content": "文件搜索",
       "FileSearchNameFormatString": "使用以下设置搜索文件 \"{0}\" : ",
