@@ -156,7 +156,7 @@ namespace ExViewer.ViewModels
             {
                 this.SaveStatus = OperationState.Started;
                 this.SaveProgress = -1;
-                var task = this.gallery.SaveGalleryAsync(SettingCollection.Current.GetStrategy());
+                var task = this.gallery.SaveAsync(SettingCollection.Current.GetStrategy());
                 task.Progress = (sender, e) =>
                 {
                     this.SaveProgress = e.ImageLoaded / (double)e.ImageCount;

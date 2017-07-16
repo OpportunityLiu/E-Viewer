@@ -104,7 +104,7 @@ namespace ExClient.Galleries
 
         protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
-            return Task.Run(async () =>
+            return Run(async token =>
             {
                 try
                 {
@@ -112,23 +112,31 @@ namespace ExClient.Galleries
                 }
                 catch
                 {
-                    this.LoadImageModels();
-                    var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
-                    var loadList = new GalleryImage[currentPageSize];
-                    for (var i = 0; i < currentPageSize; i++)
-                    {
-                        var model = this.GalleryImageModels[this.Count + i];
-                        if (model == null)
-                        {
-                            loadList[i] = new GalleryImagePlaceHolder(this, this.Count + i + 1);
-                        }
-                        else
-                        {
-                            loadList[i] = await GalleryImage.LoadCachedImageAsync(this, model, model.Image);
-                        }
-                    }
-                    return loadList;
+                    return await LoadPageLocalAsync(pageIndex);
                 }
+            });
+        }
+
+        protected IAsyncOperation<IList<GalleryImage>> LoadPageLocalAsync(int pageIndex)
+        {
+            return Task.Run<IList<GalleryImage>>(async () =>
+            {
+                this.LoadImageModels();
+                var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
+                var loadList = new GalleryImage[currentPageSize];
+                for (var i = 0; i < currentPageSize; i++)
+                {
+                    var model = this.GalleryImageModels[this.Count + i];
+                    if (model == null)
+                    {
+                        loadList[i] = new GalleryImagePlaceHolder(this, this.Count + i + 1);
+                    }
+                    else
+                    {
+                        loadList[i] = await GalleryImage.LoadCachedImageAsync(this, model, model.Image);
+                    }
+                }
+                return loadList;
             }).AsAsyncOperation();
         }
 
@@ -163,21 +171,32 @@ namespace ExClient.Galleries
             return base.DeleteAsync();
         }
 
-        public override IAsyncActionWithProgress<SaveGalleryProgress> SaveGalleryAsync(ConnectionStrategy strategy)
+        public override IAsyncActionWithProgress<SaveGalleryProgress> SaveAsync(ConnectionStrategy strategy)
         {
-            return Run<SaveGalleryProgress>(async (token, p) =>
+            return Run<SaveGalleryProgress>(async (token, progress) =>
             {
-                p.Report(new SaveGalleryProgress { ImageCount = this.RecordCount, ImageLoaded = -1 });
+                var toReport = new SaveGalleryProgress
+                {
+                    ImageCount = this.RecordCount,
+                    ImageLoadedInternal = -1
+                };
+                progress.Report(toReport);
+                while (this.HasMoreItems)
+                {
+                    await this.LoadMoreItemsAsync((uint)PageSize);
+                    token.ThrowIfCancellationRequested();
+                }
                 for (var i = 0; i < this.Count; i++)
                 {
                     if (this[i] is GalleryImagePlaceHolder ph)
                     {
-                        token.ThrowIfCancellationRequested();
                         await ph.LoadImageAsync(false, strategy, true);
+                        token.ThrowIfCancellationRequested();
                     }
                 }
-                var load = base.SaveGalleryAsync(strategy);
-                load.Progress = (sender, pro) => p.Report(pro);
+
+                var load = base.SaveAsync(strategy);
+                load.Progress = (sender, pro) => progress.Report(pro);
                 token.Register(load.Cancel);
                 await load;
             });
