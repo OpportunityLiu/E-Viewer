@@ -29,20 +29,15 @@ namespace ExClient.Search
         {
             if (advancedSearch != null)
                 this.advSearchData = advancedSearch.Data;
+            this.SearchUri = this.advSearchData == default(ushort)
+                ? base.SearchUri
+                : new Uri(base.SearchUri.OriginalString + getQueryString());
         }
 
         private readonly ushort advSearchData;
 
         public AdvancedSearchOptions AdvancedSearch => new AdvancedSearchOptions(this.advSearchData);
 
-        public override Uri SearchUri
-        {
-            get
-            {
-                if (this.advSearchData == default(ushort))
-                    return base.SearchUri;
-                return new Uri(base.SearchUri.OriginalString + getQueryString());
-            }
-        }
+        public override Uri SearchUri { get; }
     }
 }

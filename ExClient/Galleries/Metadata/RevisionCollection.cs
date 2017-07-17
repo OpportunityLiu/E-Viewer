@@ -30,15 +30,15 @@ namespace ExClient.Galleries.Metadata
                     var dto = DateTimeOffset.ParseExact(textNode.InnerText, "', added' yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                     descendants[i] = (dto, GalleryInfo.Parse(link));
                 }
-                this.Descendants = descendants;
+                this.DescendantsInfo = descendants;
             }
             else
-                this.Descendants = Array.Empty<(DateTimeOffset, GalleryInfo)>();
+                this.DescendantsInfo = Array.Empty<(DateTimeOffset, GalleryInfo)>();
         }
 
         internal Gallery Owner { get; }
         public GalleryInfo? ParentInfo { get; }
-        public IReadOnlyList<(DateTimeOffset UpdatedTime, GalleryInfo Gallery)> Descendants { get; }
+        public IReadOnlyList<(DateTimeOffset UpdatedTime, GalleryInfo Gallery)> DescendantsInfo { get; }
 
         public IAsyncOperation<Gallery> FetchParentAsync()
         {
@@ -49,9 +49,9 @@ namespace ExClient.Galleries.Metadata
 
         public IAsyncOperation<Gallery> FetchLatestRevisionAsync()
         {
-            if (this.Descendants.Count == 0)
+            if (this.DescendantsInfo.Count == 0)
                 return AsyncWrapper.CreateCompleted(this.Owner);
-            return this.Descendants.Last().Gallery.FetchGalleryAsync();
+            return this.DescendantsInfo.Last().Gallery.FetchGalleryAsync();
         }
     }
 }

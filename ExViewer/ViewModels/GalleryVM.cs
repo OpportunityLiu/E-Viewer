@@ -235,7 +235,7 @@ namespace ExViewer.ViewModels
             }, () => this.Gallery != null);
             this.GoToLatestRevision = new Command<RevisionCollection>(c =>
             {
-                var info = c.Descendants.Last().Gallery;
+                var info = c.DescendantsInfo.Last().Gallery;
                 var load = GetVMAsync(info);
                 if (load.Status != AsyncStatus.Completed)
                     RootControl.RootController.TrackAsyncAction(load, async (s, e) =>
@@ -245,7 +245,7 @@ namespace ExViewer.ViewModels
                     });
                 else
                     RootControl.RootController.Frame.Navigate(typeof(GalleryPage), info.Id);
-            }, c => c != null && c.Descendants.Count != 0);
+            }, c => c != null && c.DescendantsInfo.Count != 0);
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

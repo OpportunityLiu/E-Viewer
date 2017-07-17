@@ -154,6 +154,7 @@ namespace ExClient.Galleries
             this.Id = id;
             this.Token = token;
             this.Comments = new CommentCollection(this);
+            this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{Id.ToString()}/{Token.ToTokenString()}/");
         }
 
         internal Gallery(GalleryModel model)
@@ -281,6 +282,8 @@ namespace ExClient.Galleries
             });
         }
 
+        public Uri GalleryUri { get; }
+
         #region MetaData
 
         public long Id { get; }
@@ -381,8 +384,6 @@ namespace ExClient.Galleries
         }
 
         #endregion
-
-        public Uri GalleryUri => new Uri(Client.Current.Uris.RootUri, $"g/{Id.ToString()}/{Token.ToTokenString()}/");
 
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
 

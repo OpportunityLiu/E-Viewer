@@ -27,11 +27,12 @@ namespace ExClient.Search
             : base(keyword)
         {
             this.Category = category;
+            this.SearchUri = new Uri(SearchBaseUri, getUriQuery());
         }
 
         public FavoriteCategory Category { get; }
 
-        public override Uri SearchUri => new Uri(SearchBaseUri, getUriQuery());
+        public override Uri SearchUri { get; }
 
         private string getUriQuery()
         {

@@ -77,6 +77,7 @@ namespace ExClient.Search
             this.SearchExpunged = searchExpunged;
             this.FileName = fileName ?? "";
             this.FileHashList = hashes.ToArray();
+            this.SearchUri = new Uri(base.SearchUri + createSearchUriQuery());
         }
 
         private string createSearchUriQuery()
@@ -89,7 +90,7 @@ namespace ExClient.Search
                 $"&fs_exp={(SearchExpunged ? 1 : 0)}";
         }
 
-        public override Uri SearchUri => new Uri(base.SearchUri + createSearchUriQuery());
+        public override Uri SearchUri { get; }
 
         public bool SearchSimilar { get; }
 
