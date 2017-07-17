@@ -14,7 +14,7 @@ namespace ExClient.Galleries.Rating
         public static IAsyncOperation<RatingResponse> RatingAsync(Gallery gallery, Score rating)
         {
             var reqInfo = new RatingRequest(gallery, rating);
-            return reqInfo.GetResponseAsync(true);
+            return reqInfo.GetResponseAsync();
         }
     }
 }

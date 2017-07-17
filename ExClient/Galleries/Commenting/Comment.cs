@@ -153,7 +153,7 @@ namespace ExClient.Galleries.Commenting
             var request = new CommentVoteRequest(this, command);
             return AsyncInfo.Run(async token =>
             {
-                var r = await request.GetResponseAsync(true);
+                var r = await request.GetResponseAsync();
                 if (this.Id != r.Id)
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
                 switch (r.Vote)
@@ -181,7 +181,7 @@ namespace ExClient.Galleries.Commenting
             var request = new CommentEditRequest(this);
             return AsyncInfo.Run(async token =>
             {
-                var r = await request.GetResponseAsync(true);
+                var r = await request.GetResponseAsync();
                 var doc = HtmlNode.CreateNode(r.Editable.Trim());
                 var textArea = doc.Descendants("textarea").FirstOrDefault();
                 if (textArea == null)

@@ -62,7 +62,7 @@ namespace ExClient.Galleries
             {
                 return Run<IList<Gallery>>(async token =>
                 {
-                    var re = await new GalleryDataRequest(galleryInfo, 0, galleryInfo.Count).GetResponseAsync(true);
+                    var re = await new GalleryDataRequest(galleryInfo, 0, galleryInfo.Count).GetResponseAsync();
                     var data = re.GalleryMetaData;
                     data.ForEach(async g => await g.InitAsync());
                     return data;
@@ -78,7 +78,7 @@ namespace ExClient.Galleries
                     {
                         var pageSize = MathHelper.GetSizeOfPage(galleryInfo.Count, 25, i);
                         var startIndex = MathHelper.GetStartIndexOfPage(25, i);
-                        var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync(true);
+                        var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync();
                         var data = re.GalleryMetaData;
                         data.ForEach(async g => await g.InitAsync());
                         data.CopyTo(result, startIndex);

@@ -252,7 +252,7 @@ namespace ExClient.Tagging
         {
             return AsyncInfo.Run(async token =>
             {
-                var res = await req.GetResponseAsync(true);
+                var res = await req.GetResponseAsync(myCheckResponse);
                 var doc = HtmlNode.CreateNode(res.TagPane);
                 updateCore(doc);
             });

@@ -59,7 +59,7 @@ namespace ExClient.Api
         {
             return Run<IReadOnlyList<GalleryInfo>>(async token =>
             {
-                var res = await new GalleryTokenRequest(pageList).GetResponseAsync(true);
+                var res = await new GalleryTokenRequest(pageList).GetResponseAsync();
                 return res.TokenList;
             });
         }
