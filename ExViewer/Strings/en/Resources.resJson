@@ -73,7 +73,7 @@
       "AddNewTagsButton/Content": "Add new tags",
       "GoToDefinitionMenuFlyoutItem/Text": "Go to EHWiki for definition",
       "SearchTagMenuFlyoutItem/Text": "Show galleries with this tag",
-      "TagCopied": "Tag has been copied to clipboard",
+      "TagCopied": "Tag has been copied to clipboard.",
       // Space for tag namespaces
       "TagNamespaceColumnDefinition/Width": "72",
       "TagVoteDownMenuFlyoutItem/Text": "Vote down",

@@ -73,7 +73,7 @@
       "AddNewTagsButton/Content": "新增標籤",
       "GoToDefinitionMenuFlyoutItem/Text": "前往 EHWiki 檢視定義",
       "SearchTagMenuFlyoutItem/Text": "搜尋含有此標籤的畫廊",
-      "TagCopied": "已將標籤複製到剪貼簿",
+      "TagCopied": "已將標籤複製到剪貼簿。",
       // Space for tag namespaces
       "TagNamespaceColumnDefinition/Width": "68",
       "TagVoteDownMenuFlyoutItem/Text": "反對",
