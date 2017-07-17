@@ -123,7 +123,7 @@ namespace ExViewer.Controls
         {
             try
             {
-                await this.Tags.VoteAsync(SelectedTag.Content, VoteState.Up);
+                await SelectedTag?.VoteAsync(VoteState.Up);
             }
             catch (Exception ex)
             {
@@ -136,7 +136,7 @@ namespace ExViewer.Controls
         {
             try
             {
-                await this.Tags.VoteAsync(SelectedTag.Content, VoteState.Down);
+                await SelectedTag?.VoteAsync(VoteState.Down);
             }
             catch (Exception ex)
             {
@@ -149,11 +149,7 @@ namespace ExViewer.Controls
         {
             try
             {
-                var state = SelectedTag.State;
-                if (state.HasFlag(TagState.Downvoted))
-                    await this.Tags.VoteAsync(SelectedTag.Content, VoteState.Up);
-                else if (state.HasFlag(TagState.Upvoted))
-                    await this.Tags.VoteAsync(SelectedTag.Content, VoteState.Down);
+                await SelectedTag?.VoteAsync(VoteState.Default);
             }
             catch (Exception ex)
             {

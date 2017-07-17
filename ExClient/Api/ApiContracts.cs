@@ -23,7 +23,13 @@ namespace ExClient.Api
 
     internal static class ApiHelper
     {
-        public static IAsyncOperation<TResponse> GetResponseAsync<TResponse>(this IRequestOf<TResponse> request, bool checkResponse)
+        public static IAsyncOperation<TResponse> GetResponseAsync<TResponse>(this IRequestOf<TResponse> request)
+            where TResponse : ApiResponse
+        {
+            return request.GetResponseAsync(null);
+        }
+
+        public static IAsyncOperation<TResponse> GetResponseAsync<TResponse>(this IRequestOf<TResponse> request, Action<TResponse> responseChecker)
             where TResponse : ApiResponse
         {
             return AsyncInfo.Run(async token =>
@@ -33,8 +39,8 @@ namespace ExClient.Api
                 token.Register(req.Cancel);
                 var res = await req;
                 var resobj = JsonConvert.DeserializeObject<TResponse>(res);
-                if (checkResponse)
-                    resobj.CheckResponse();
+                responseChecker?.Invoke(resobj);
+                resobj.CheckResponse();
                 return resobj;
             });
         }
