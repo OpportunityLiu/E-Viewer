@@ -6,7 +6,7 @@
   "EmptyComment": "輸入不能為空。",
   "ExceedLimits": "已經超過圖片訪問配額限制，請稍後再試。",
   "ExpungedTorrent": "此種子已經被刪除。",
-  "GalleryRemoved": "此畫廊已被移除，現在無法檢視。",
+  "GalleryRemoved": "此畫廊已移除或失效。",
   "GalleryReviewing": "此畫廊正在審查中，請稍後再試。",
   "InvalidNamespace": "無效的標籤名稱空間。",
   "OnlyIpv4": "僅支援 IPv4 地址。",

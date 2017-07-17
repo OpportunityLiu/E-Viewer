@@ -149,7 +149,7 @@ namespace ExClient.Internal
                     var msg = HtmlEntity.DeEntitize(error.InnerText);
                     switch (msg)
                     {
-                    case "This gallery has been removed, and is unavailable.":
+                    case "This gallery has been removed or is unavailable.":
                         throw new InvalidOperationException(LocalizedStrings.Resources.GalleryRemoved);
                     case "This gallery has been locked for review. Please check back later.":
                         throw new InvalidOperationException(LocalizedStrings.Resources.GalleryReviewing);
