@@ -6,7 +6,7 @@
   "EmptyComment": "输入不能为空。",
   "ExceedLimits": "已经超过图片访问配额限制，请稍后再试。",
   "ExpungedTorrent": "此种子已经被删除。",
-  "GalleryRemoved": "此画廊已被移除，现在无法查看。",
+  "GalleryRemoved": "此画廊已移除或失效。",
   "GalleryReviewing": "此画廊正在审查中，请稍后再试。",
   "InvalidNamespace": "无效的标签命名空间。",
   "OnlyIpv4": "仅支持 IPv4 地址。",

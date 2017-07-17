@@ -59,10 +59,10 @@ namespace ExViewer.Controls
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if(VisibleBoundHandledByDesign)
+            if (VisibleBoundHandledByDesign)
             {
                 var c = this.Content;
-                if(c != null)
+                if (c != null)
                 {
                     c.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
                 }
@@ -74,10 +74,10 @@ namespace ExViewer.Controls
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            if(VisibleBoundHandledByDesign)
+            if (VisibleBoundHandledByDesign)
             {
                 var c = this.Content;
-                if(c != null)
+                if (c != null)
                 {
                     c.Measure(availableSize);
                     return c.DesiredSize;

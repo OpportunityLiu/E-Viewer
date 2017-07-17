@@ -6,7 +6,7 @@
   "EmptyComment": "You did not enter a valid comment.",
   "ExceedLimits": "You have exceeded your image viewing limits, please try again later.",
   "ExpungedTorrent": "This torrent has been expunged.",
-  "GalleryRemoved": "This gallery has been removed, and is unavailable.",
+  "GalleryRemoved": "This gallery has been removed or is unavailable.",
   "GalleryReviewing": "This gallery has been locked for review. Please check back later.",
   "InvalidNamespace": "Invalid namespace of tags.",
   "OnlyIpv4": "Only IPV4 address supported.",
