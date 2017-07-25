@@ -214,6 +214,14 @@ namespace ExClient.Galleries
                 var r = await base.GetThumbAsync();
                 if (r != null)
                     return r;
+                return await GetLocalThumbAsync();
+            });
+        }
+
+        protected IAsyncOperation<SoftwareBitmap> GetLocalThumbAsync()
+        {
+            return Run(async token =>
+            {
                 using (var db = new GalleryDb())
                 {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
