@@ -306,7 +306,7 @@ namespace ExClient.Galleries
                 if (this.thumbImage.TryGetTarget(out var img))
                     return img;
                 var load = GetThumbAsync();
-                load.Completed = (IAsyncOperation<SoftwareBitmap> asyncInfo, AsyncStatus asyncStatus) =>
+                load.Completed = (asyncInfo, asyncStatus) =>
                 {
                     try
                     {

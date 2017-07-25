@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Graphics.Imaging;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Galleries
@@ -89,6 +90,17 @@ namespace ExClient.Galleries
                 return LoadPageLocalAsync(pageIndex);
             else
                 return base.LoadPageAsync(pageIndex);
+        }
+
+        protected override IAsyncOperation<SoftwareBitmap> GetThumbAsync()
+        {
+            return Run(async token =>
+            {
+                var r = await GetLocalThumbAsync();
+                if (r != null)
+                    return r;
+                return await base.GetThumbAsync();
+            });
         }
 
         public override IAsyncAction DeleteAsync()
