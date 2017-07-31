@@ -23,7 +23,7 @@ namespace EhTagClient
 
         private const string LAST_UPDATE = "EhTagClient.LastUpdate";
 
-        private static readonly Regex reg = new Regex(@"<a href=""https://e-hentai\.org/tools\.php\?act=taggroup&amp;taggroup=(\d+)"" style=""color:black"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
+        private static readonly Regex reg = new Regex(@"<a href=""https://e-hentai\.org/tools\.php\?act=taggroup&amp;mastertag=(\d+)"" style=""color:black"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
 
         private static readonly Uri DbUri = new Uri("https://e-hentai.org/tools.php?act=taggroup");
 

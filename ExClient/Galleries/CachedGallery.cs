@@ -112,12 +112,12 @@ namespace ExClient.Galleries
                 }
                 catch
                 {
-                    return await LoadPageLocalAsync(pageIndex);
+                    return await LoadPageLocalilyAsync(pageIndex);
                 }
             });
         }
 
-        protected IAsyncOperation<IList<GalleryImage>> LoadPageLocalAsync(int pageIndex)
+        protected IAsyncOperation<IList<GalleryImage>> LoadPageLocalilyAsync(int pageIndex)
         {
             return Task.Run<IList<GalleryImage>>(async () =>
             {
@@ -214,11 +214,11 @@ namespace ExClient.Galleries
                 var r = await base.GetThumbAsync();
                 if (r != null)
                     return r;
-                return await GetLocalThumbAsync();
+                return await GetThumbLocalilyAsync();
             });
         }
 
-        protected IAsyncOperation<SoftwareBitmap> GetLocalThumbAsync()
+        protected IAsyncOperation<SoftwareBitmap> GetThumbLocalilyAsync()
         {
             return Run(async token =>
             {
