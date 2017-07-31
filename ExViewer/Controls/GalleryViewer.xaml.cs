@@ -31,7 +31,7 @@ namespace ExViewer.Controls
             get => (Gallery)GetValue(GalleryProperty);
             set => SetValue(GalleryProperty, value);
         }
-        
+
         public static readonly DependencyProperty GalleryProperty =
             DependencyProperty.Register("Gallery", typeof(Gallery), typeof(GalleryViewer), new PropertyMetadata(null));
 
@@ -39,6 +39,18 @@ namespace ExViewer.Controls
         {
             ClearValue(GalleryProperty);
             base.OnDisconnectVisualChildren();
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            var width = availableSize.Width;
+            var leftWidth = width / 3;
+            if (leftWidth < 100)
+                leftWidth = 100;
+            else if (leftWidth > 150)
+                leftWidth = 150;
+            this.CoverBorder.Height = leftWidth * 1.41428;
+            return base.MeasureOverride(availableSize);
         }
     }
 }
