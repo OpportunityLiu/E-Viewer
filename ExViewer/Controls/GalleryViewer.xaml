@@ -44,10 +44,10 @@
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
         <Border Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}"
+                x:Name="CoverBorder"
                 CacheMode="BitmapCache"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                MaxHeight="240">
+                VerticalAlignment="Stretch">
             <Image x:Name="CoverImage"
                    Source="{x:Bind Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}"
                    Stretch="Uniform" />
