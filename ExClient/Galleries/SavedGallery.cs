@@ -87,7 +87,7 @@ namespace ExClient.Galleries
         protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
         {
             if (this.Comments.IsLoaded)
-                return LoadPageLocalAsync(pageIndex);
+                return LoadPageLocalilyAsync(pageIndex);
             else
                 return base.LoadPageAsync(pageIndex);
         }
@@ -96,7 +96,7 @@ namespace ExClient.Galleries
         {
             return Run(async token =>
             {
-                var r = await GetLocalThumbAsync();
+                var r = await GetThumbLocalilyAsync();
                 if (r != null)
                     return r;
                 return await base.GetThumbAsync();
