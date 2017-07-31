@@ -51,7 +51,10 @@ namespace ExViewer.Views
             if (e.NavigationMode == NavigationMode.Back)
             {
                 await Dispatcher.YieldIdle();
+                if (this.opened == null)
+                    return;
                 this.lv.ScrollIntoView(this.opened);
+                await Dispatcher.YieldIdle();
                 ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
             }
             else
