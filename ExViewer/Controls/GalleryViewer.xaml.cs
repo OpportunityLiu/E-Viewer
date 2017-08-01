@@ -49,7 +49,7 @@ namespace ExViewer.Controls
                 leftWidth = 100;
             else if (leftWidth > 150)
                 leftWidth = 150;
-            this.CoverBorder.Height = leftWidth * 1.41428;
+            this.Cover.Height = leftWidth * 1.41428;
             return base.MeasureOverride(availableSize);
         }
     }
