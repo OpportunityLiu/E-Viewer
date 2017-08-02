@@ -158,6 +158,7 @@
     <Compile Include="Helpers\ExceptionHandler.cs" />
     <Compile Include="Helpers\ShareHandler.cs" />
     <Compile Include="Helpers\TagExtension.cs" />
+    <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Migrations\20170327142247_MigrationReset.cs" />
     <Compile Include="Migrations\20170327142247_MigrationReset.designer.cs">
       <DependentUpon>20170327142247_MigrationReset.cs</DependentUpon>

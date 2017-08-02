@@ -55,14 +55,8 @@ namespace ExViewer.Views
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
-                var selectedGallery = this.VM.SelectedGallery;
-                this.lv.ScrollIntoView(selectedGallery);
-                await Dispatcher.YieldIdle();
-                var con = (Control)this.lv.ContainerFromItem(selectedGallery);
-                if (con == null)
+                if (!await ViewHelper.ScrollAndFocus(this.lv, this.VM.SelectedGallery))
                     this.btnExpandButton?.Focus(FocusState.Programmatic);
-                else
-                    con.Focus(FocusState.Programmatic);
             }
         }
 
