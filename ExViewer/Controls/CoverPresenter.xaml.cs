@@ -54,9 +54,16 @@ namespace ExViewer.Controls
         {
             DispatcherHelper.BeginInvokeOnUIThread(() =>
             {
-                this.BackgroundImage.Visibility =
-                    PowerManager.EnergySaverStatus == EnergySaverStatus.On
-                        ? Visibility.Collapsed : Visibility.Visible;
+                if (PowerManager.EnergySaverStatus != EnergySaverStatus.On)
+                {
+                    FindName(nameof(this.BackgroundImage));
+                    this.BackgroundImage.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    if (this.BackgroundImage != null)
+                        this.BackgroundImage.Visibility = Visibility.Collapsed;
+                }
             });
         }
     }

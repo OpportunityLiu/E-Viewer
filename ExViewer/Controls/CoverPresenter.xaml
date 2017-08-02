@@ -13,6 +13,7 @@
              d:DesignWidth="400">
   <Grid Background="{x:Bind Background, Mode=OneWay}">
     <Image x:Name="BackgroundImage"
+           x:DeferLoadStrategy="Lazy"
            Source="{x:Bind Source, Mode=OneWay}"
            Stretch="UniformToFill">
       <interactivity:Interaction.Behaviors>
@@ -23,6 +24,6 @@
       </interactivity:Interaction.Behaviors>
     </Image>
     <Image x:Name="ForegroundImage"
-           Source="{x:Bind Source, Mode=OneWay}"/>
+           Source="{x:Bind Source, Mode=OneWay}" />
   </Grid>
 </UserControl>
