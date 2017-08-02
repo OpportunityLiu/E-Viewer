@@ -50,21 +50,14 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.Back)
             {
-                await Dispatcher.YieldIdle();
-                if (this.opened == null)
+                if (await ViewHelper.ScrollAndFocus(this.lv, this.opened))
                     return;
-                this.lv.ScrollIntoView(this.opened);
-                await Dispatcher.YieldIdle();
-                ((ListViewItem)this.lv.ContainerFromItem(this.opened))?.Focus(FocusState.Programmatic);
             }
+            await Dispatcher.YieldIdle();
+            if (this.lv.Items.Count != 0)
+                this.lv.Focus(FocusState.Programmatic);
             else
-            {
-                await Dispatcher.YieldIdle();
-                if (this.lv.Items.Count != 0)
-                    this.lv.Focus(FocusState.Programmatic);
-                else
-                    this.cb_top.Focus(FocusState.Programmatic);
-            }
+                this.cb_top.Focus(FocusState.Programmatic);
         }
 
         private Gallery opened;
