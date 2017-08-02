@@ -23,6 +23,6 @@
       </interactivity:Interaction.Behaviors>
     </Image>
     <Image x:Name="ForegroundImage"
-           Source="{x:Bind Source, Mode=OneWay}" />
+           Source="{x:Bind Source, Mode=OneWay}"/>
   </Grid>
 </UserControl>
