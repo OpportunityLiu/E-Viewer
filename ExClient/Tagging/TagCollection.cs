@@ -193,7 +193,7 @@ namespace ExClient.Tagging
         // See https://ehwiki.org/wiki/Technical_Issues#Gallery_Tagging
         // Here are mostly used ones.
         private static Regex tagNotValid = new Regex(@"The tag (.+?) is not currently valid");
-        private static Regex tagNeedNs = new Regex(@"The tag ""(.+?)"" is not allowed in this namespace - requires (.+:)");
+        private static Regex tagNeedNs = new Regex(@"The tag ""(.+?)"" is not allowed\. Use (.+)");
         private static string[] tagNeedNsSplit = new[] { "or", ",", " " };
         private static Regex tagInBlackList = new Regex(@"The tag (.+?) cannot be used");
         private static Regex tagVetoed = new Regex(@"The tag (.+?) has been vetoed on this gallery");
