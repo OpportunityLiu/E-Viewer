@@ -4,7 +4,7 @@ using System.Collections.Generic;
 #pragma warning disable IDE1006 // 命名样式
 namespace ExClient.Api
 {
-    internal sealed class GalleryTokenRequest : ApiRequest, IRequestOf<GalleryTokenResponse>
+    internal sealed class GalleryTokenRequest : ApiRequest, IRequestOf<GalleryTokenRequest, GalleryTokenResponse>
     {
         public override string Method => "gtoken";
 
@@ -19,7 +19,7 @@ namespace ExClient.Api
         }
     }
 
-    internal class GalleryTokenResponse : ApiResponse, IResponseOf<GalleryTokenRequest>
+    internal class GalleryTokenResponse : ApiResponse, IResponseOf<GalleryTokenRequest, GalleryTokenResponse>
     {
         [JsonProperty("tokenlist")]
         public List<GalleryInfo> TokenList { get; set; }

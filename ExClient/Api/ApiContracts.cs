@@ -9,28 +9,30 @@ using Windows.Foundation;
 
 namespace ExClient.Api
 {
-    internal interface IRequestOf<TResponse>
-        where TResponse : ApiResponse
+    internal interface IRequestOf<TRequest, TResponse>
+        where TRequest : ApiRequest, IRequestOf<TRequest, TResponse>
+        where TResponse : ApiResponse, IResponseOf<TRequest, TResponse>
     {
-
     }
 
-    internal interface IResponseOf<TRequest>
-        where TRequest : ApiRequest
+    internal interface IResponseOf<TRequest, TResponse>
+        where TRequest : ApiRequest, IRequestOf<TRequest, TResponse>
+        where TResponse : ApiResponse, IResponseOf<TRequest, TResponse>
     {
-
     }
 
     internal static class ApiHelper
     {
-        public static IAsyncOperation<TResponse> GetResponseAsync<TResponse>(this IRequestOf<TResponse> request)
-            where TResponse : ApiResponse
+        public static IAsyncOperation<TResponse> GetResponseAsync<TRequest, TResponse>(this IRequestOf<TRequest, TResponse> request)
+            where TRequest : ApiRequest, IRequestOf<TRequest, TResponse>
+            where TResponse : ApiResponse, IResponseOf<TRequest, TResponse>
         {
             return request.GetResponseAsync(null);
         }
 
-        public static IAsyncOperation<TResponse> GetResponseAsync<TResponse>(this IRequestOf<TResponse> request, Action<TResponse> responseChecker)
-            where TResponse : ApiResponse
+        public static IAsyncOperation<TResponse> GetResponseAsync<TRequest, TResponse>(this IRequestOf<TRequest, TResponse> request, Action<TResponse> responseChecker)
+            where TRequest : ApiRequest, IRequestOf<TRequest, TResponse>
+            where TResponse : ApiResponse, IResponseOf<TRequest, TResponse>
         {
             return AsyncInfo.Run(async token =>
             {

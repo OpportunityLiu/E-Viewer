@@ -6,7 +6,7 @@ using System.Collections.Generic;
 #pragma warning disable IDE1006 // 命名样式
 namespace ExClient.Api
 {
-    internal class GalleryDataRequest : ApiRequest, IRequestOf<GalleryDataResponse>
+    internal class GalleryDataRequest : ApiRequest, IRequestOf<GalleryDataRequest, GalleryDataResponse>
     {
         public override string Method => "gdata";
 
@@ -22,7 +22,7 @@ namespace ExClient.Api
         }
     }
 
-    internal class GalleryDataResponse : ApiResponse, IResponseOf<GalleryDataRequest>
+    internal class GalleryDataResponse : ApiResponse, IResponseOf<GalleryDataRequest, GalleryDataResponse>
     {
         [JsonProperty("gmetadata")]
         public List<Gallery> GalleryMetaData { get; private set; }

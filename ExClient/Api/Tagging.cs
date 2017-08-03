@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ExClient.Api
 {
-    internal sealed class TagRequest : GalleryRequest, IRequestOf<TagResponse>
+    internal sealed class TagRequest : GalleryRequest, IRequestOf<TagRequest, TagResponse>
     {
         private TagRequest(TagCollection collection, string tags, VoteState vote)
             : base(collection.Owner)
@@ -31,7 +31,7 @@ namespace ExClient.Api
         public override string Method => "taggallery";
     }
 
-    internal class TagResponse : ApiResponse, IResponseOf<TagRequest>
+    internal class TagResponse : ApiResponse, IResponseOf<TagRequest, TagResponse>
     {
         [JsonProperty("tagpane")]
         public string TagPane { get; set; }
