@@ -11,218 +11,219 @@
                  Unloaded="root_Unloaded"
                  xmlns:controls="using:ExViewer.Controls"
                  NavigationCacheMode="Enabled">
-    <Page.Transitions>
-        <TransitionCollection>
-            <NavigationThemeTransition>
-                <DrillInNavigationTransitionInfo />
-            </NavigationThemeTransition>
-        </TransitionCollection>
-    </Page.Transitions>
-    <controls:MyPage.Resources>
-        <Style x:Name="AdvancedSearchOptionStyle"
-               TargetType="CheckBox">
-            <Setter Property="Margin"
-                    Value="0,0,24,0" />
-        </Style>
-        <Style x:Name="FileSearchOptionStyle"
-               TargetType="TextBlock">
-            <Setter Property="Margin"
-                    Value="12,2,24,2" />
-        </Style>
-    </controls:MyPage.Resources>
+  <Page.Transitions>
+    <TransitionCollection>
+      <NavigationThemeTransition>
+        <DrillInNavigationTransitionInfo />
+      </NavigationThemeTransition>
+    </TransitionCollection>
+  </Page.Transitions>
+  <controls:MyPage.Resources>
+    <Style x:Name="AdvancedSearchOptionStyle"
+           TargetType="CheckBox">
+      <Setter Property="Margin"
+              Value="0,0,24,0" />
+    </Style>
+    <Style x:Name="FileSearchOptionStyle"
+           TargetType="TextBlock">
+      <Setter Property="Margin"
+              Value="12,2,24,2" />
+    </Style>
+  </controls:MyPage.Resources>
 
-    <RelativePanel>
-        <tk:PullToRefreshListView x:Name="lv"
-                                  RelativePanel.Below="ab"
-                                  RelativePanel.AlignBottomWithPanel="True"
-                                  RelativePanel.AlignLeftWithPanel="True"
-                                  RelativePanel.AlignRightWithPanel="True"
-                                  SelectionMode="None"
-                                  RefreshRequested="lv_RefreshRequested"
-                                  Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                                  Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
-                                  ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
-                                  ContinuumNavigationTransitionInfo.ExitElementContainer="True"
-                                  Style="{StaticResource GalleryListViewStyle}"
-                                  ItemClick="lv_ItemClick">
-            <tk:PullToRefreshListView.RefreshIndicatorContent>
-                <tk:PullToRefreshIndicator />
-            </tk:PullToRefreshListView.RefreshIndicatorContent>
-            <ListView.ItemTemplate>
-                <DataTemplate xmlns:c="using:ExClient.Galleries"
-                              xmlns:controls="using:ExViewer.Controls"
-                              x:DataType="c:Gallery">
-                    <controls:GalleryViewer Gallery="{x:Bind}"
-                                            ContinuumNavigationTransitionInfo.IsExitElement="True" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <ListView.Header>
-                <TextBlock x:Uid="Views/SearchPage/EmptyTextBlock"
-                           HorizontalAlignment="Center"
-                           Margin="12"
-                           Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                           Text="No hits found" />
-            </ListView.Header>
-            <ListView.Footer>
-                <TextBlock x:Uid="Views/SearchPage/LoadingMoreTextBlock"
-                           HorizontalAlignment="Center"
-                           Margin="12"
-                           Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                           Text="Loading more galleries..." />
-            </ListView.Footer>
-        </tk:PullToRefreshListView>
-        <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
-                Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,48,x1,x0'}"
-                RelativePanel.AlignLeftWithPanel="True"
-                RelativePanel.AlignRightWithPanel="True" />
-        <AppBar x:Name="ab"
-                Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
-                ClosedDisplayMode="Compact"
-                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-                RelativePanel.AlignLeftWithPanel="True"
-                RelativePanel.AlignRightWithPanel="True"
-                Opening="ab_Opening"
-                Closed="ab_Closed">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="cdSplitViewPlaceholder"
-                                      Width="0" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <AutoSuggestBox x:Uid="Views/SearchPage/AutoSuggestBox"
-                                x:Name="asb"
-                                Style="{StaticResource SearchAutoSuggestBoxStyle}"
-                                Grid.Column="1"
-                                Grid.ColumnSpan="2"
-                                QueryIcon="Find"
-                                Margin="8"
-                                Text="{x:Bind VM.Keyword, Mode=TwoWay}"
-                                PlaceholderText="Search..."
-                                controls:TagSuggestionService.IsEnabled="True"
-                                controls:TagSuggestionService.SubmitCommand="{x:Bind submitSearchCmd}" />
-                <ScrollViewer x:Name="sv_AdvancedSearch"
-                              Grid.Row="1"
-                              Grid.ColumnSpan="2"
-                              IsEnabled="False"
-                              VerticalScrollBarVisibility="Hidden">
-                    <StackPanel>
-                        <controls:CategorySelector x:Name="cs_Category"
-                                                   MaxWidth="560"
-                                                   XYFocusDown="{x:Bind ts_Advanced}"
-                                                   SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
-                                                   HorizontalAlignment="Center" />
-                        <ToggleSwitch x:Uid="Views/SearchPage/AdvancedToggleButton"
-                                      x:Name="ts_Advanced"
-                                      Margin="8"
-                                      Style="{StaticResource TextBlockToggleSwitchStyle}"
-                                      OffContent="Show advanced options"
-                                      OnContent="Hide advanced options"
-                                      HorizontalAlignment="Center" />
-                        <ListView x:Name="lv_AdvancedSearch"
-                                  Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                                  Padding="24,0,0,8"
-                                  Style="{StaticResource StackPanelListViewStyle}"
-                                  MaxWidth="800"
-                                  HorizontalAlignment="Center">
-                            <ListView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <wp:WrapPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
-                            <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
-                                      XYFocusUp="{x:Bind ts_Advanced}"
-                                      Content="Search gallery name"
-                                      Style="{StaticResource AdvancedSearchOptionStyle}"
-                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                            <CheckBox x:Uid="Views/SearchPage/TagsCheckBox"
-                                      Content="Search gallery tags"
-                                      Style="{StaticResource AdvancedSearchOptionStyle}"
-                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                            <CheckBox x:Uid="Views/SearchPage/DescriptionCheckBox"
-                                      Content="Search gallery description"
-                                      Style="{StaticResource AdvancedSearchOptionStyle}"
-                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchDescription, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                            <CheckBox x:Uid="Views/SearchPage/TorrentNamesCheckBox"
-                                      Content="Search torrent filenames"
-                                      Style="{StaticResource AdvancedSearchOptionStyle}"
-                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchTorrentFilenames, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                            <CheckBox x:Uid="Views/SearchPage/OnlyTorrentsCheckBox"
-                                      Content="Only show galleries with torrents"
-                                      Style="{StaticResource AdvancedSearchOptionStyle}"
-                                      IsChecked="{x:Bind VM.AdvancedSearch.GalleriesWithTorrentsOnly, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                            <CheckBox x:Uid="Views/SearchPage/LowPowerTagsCheckBox"
-                                      Content="Search low-power tags"
-                                      Style="{StaticResource AdvancedSearchOptionStyle}"
-                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchLowPowerTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                            <CheckBox x:Uid="Views/SearchPage/DownvotedTagsCheckBox"
-                                      Content="Search downvoted tags"
-                                      Style="{StaticResource AdvancedSearchOptionStyle}"
-                                      IsChecked="{x:Bind VM.AdvancedSearch.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                            <CheckBox x:Uid="Views/SearchPage/ShowExpungedCheckBox"
-                                      Content="Show expunged galleries"
-                                      Style="{StaticResource AdvancedSearchOptionStyle}"
-                                      IsChecked="{x:Bind VM.AdvancedSearch.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                            <StackPanel Orientation="Horizontal">
-                                <CheckBox x:Uid="Views/SearchPage/MinRatingCheckBox"
-                                          MinWidth="0"
-                                          Content="Minimum rating: "
-                                          IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                                <ComboBox VerticalAlignment="Center"
-                                          SelectedItem="{x:Bind VM.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
-                                          Margin="12,0,24,0"
-                                          MinWidth="0">
-                                    <x:Int32>2</x:Int32>
-                                    <x:Int32>3</x:Int32>
-                                    <x:Int32>4</x:Int32>
-                                    <x:Int32>5</x:Int32>
-                                </ComboBox>
-                            </StackPanel>
-                        </ListView>
-                        <StackPanel HorizontalAlignment="Stretch"
-                                    Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
-                                    Padding="0,0,0,12">
-                            <Button x:Name="btnFileSearch"
-                                    x:Uid="Views/SearchPage/FileSearchButton"
-                                    Content="File search"
-                                    HorizontalAlignment="Center"
-                                    Click="btnFileSearch_Click"
-                                    Style="{StaticResource TextBlockButtonStyle}" />
-                            <StackPanel Visibility="{x:Bind VM.FileSearch, Converter={StaticResource NullToCollapsedConverter}, Mode=OneWay}"
-                                        HorizontalAlignment="Center">
-                                <TextBlock Text="{x:Bind VM.FileSearch.FileName, Converter={StaticResource StringConverter}, ConverterParameter='Views/SearchPage/FileSearchNameFormatString', Mode=OneWay}"
-                                           HorizontalAlignment="Stretch"
-                                           TextWrapping="WrapWholeWords"
-                                           Margin="8" />
-                                <controls:WrapPanel HorizontalAlignment="Stretch"
-                                              Margin="12,0">
-                                    <TextBlock x:Uid="Views/SearchPage/SearchSimilarTextBlock"
-                                               Text="• Similarity scan enabled"
-                                               Style="{StaticResource FileSearchOptionStyle}"
-                                               Visibility="{x:Bind VM.FileSearch.SearchSimilar, Mode=OneWay}" />
-                                    <TextBlock x:Uid="Views/SearchPage/SearchExactlyTextBlock"
-                                               Text="• Similarity scan disabled"
-                                               Style="{StaticResource FileSearchOptionStyle}"
-                                               Visibility="{x:Bind VM.FileSearch.SearchSimilar, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
-                                    <TextBlock x:Uid="Views/SearchPage/OnlyCoversTextBlock"
-                                               Text="• Only searched covers"
-                                               Style="{StaticResource FileSearchOptionStyle}"
-                                               Visibility="{x:Bind VM.FileSearch.OnlyCovers, Mode=OneWay}" />
-                                    <TextBlock x:Uid="Views/SearchPage/SearchExpungedTextBlock"
-                                               Text="• Expunged shown"
-                                               Style="{StaticResource FileSearchOptionStyle}"
-                                               Visibility="{x:Bind VM.FileSearch.SearchExpunged, Mode=OneWay}" />
-                                </controls:WrapPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                </ScrollViewer>
-            </Grid>
-        </AppBar>
-    </RelativePanel>
+  <RelativePanel>
+    <tk:PullToRefreshListView x:Name="lv"
+                              RelativePanel.Below="ab"
+                              RelativePanel.AlignBottomWithPanel="True"
+                              RelativePanel.AlignLeftWithPanel="True"
+                              RelativePanel.AlignRightWithPanel="True"
+                              SelectionMode="None"
+                              RefreshRequested="lv_RefreshRequested"
+                              Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                              Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                              ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
+                              ContinuumNavigationTransitionInfo.ExitElementContainer="True"
+                              Style="{StaticResource GalleryListViewStyle}"
+                              ItemClick="lv_ItemClick">
+      <tk:PullToRefreshListView.RefreshIndicatorContent>
+        <tk:PullToRefreshIndicator />
+      </tk:PullToRefreshListView.RefreshIndicatorContent>
+      <ListView.ItemTemplate>
+        <DataTemplate xmlns:c="using:ExClient.Galleries"
+                      xmlns:controls="using:ExViewer.Controls"
+                      x:DataType="c:Gallery">
+          <controls:GalleryViewer Gallery="{x:Bind}"
+                                  ContinuumNavigationTransitionInfo.IsExitElement="True" />
+        </DataTemplate>
+      </ListView.ItemTemplate>
+      <ListView.Header>
+        <TextBlock x:Uid="Views/SearchPage/EmptyTextBlock"
+                   HorizontalAlignment="Center"
+                   Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                   Text="No hits found" />
+      </ListView.Header>
+      <ListView.Footer>
+        <TextBlock x:Uid="Views/SearchPage/LoadingMoreTextBlock"
+                   HorizontalAlignment="Center"
+                   Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                   Text="Loading more galleries..." />
+      </ListView.Footer>
+    </tk:PullToRefreshListView>
+    <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
+            Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,48,x1,x0'}"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True" />
+    <AppBar x:Name="ab"
+            Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
+            ClosedDisplayMode="Compact"
+            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True"
+            Opening="ab_Opening"
+            Closed="ab_Closed">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition x:Name="cdSplitViewPlaceholder"
+                            Width="0" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <AutoSuggestBox x:Uid="Views/SearchPage/AutoSuggestBox"
+                        x:Name="asb"
+                        Style="{StaticResource SearchAutoSuggestBoxStyle}"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="2"
+                        QueryIcon="Find"
+                        Margin="8"
+                        Text="{x:Bind VM.Keyword, Mode=TwoWay}"
+                        PlaceholderText="Search..."
+                        controls:TagSuggestionService.IsEnabled="True"
+                        controls:TagSuggestionService.InputScope="Search"
+                        controls:TagSuggestionService.SubmitCommand="{x:Bind submitSearchCmd}" />
+        <ScrollViewer x:Name="sv_AdvancedSearch"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      IsEnabled="False"
+                      VerticalScrollBarVisibility="Hidden">
+          <StackPanel>
+            <controls:CategorySelector x:Name="cs_Category"
+                                       MaxWidth="560"
+                                       XYFocusDown="{x:Bind ts_Advanced}"
+                                       SelectedCategory="{x:Bind VM.Category, Mode=TwoWay}"
+                                       HorizontalAlignment="Center" />
+            <ToggleSwitch x:Uid="Views/SearchPage/AdvancedToggleButton"
+                          x:Name="ts_Advanced"
+                          Margin="8"
+                          Style="{StaticResource TextBlockToggleSwitchStyle}"
+                          OffContent="Show advanced options"
+                          OnContent="Hide advanced options"
+                          HorizontalAlignment="Center" />
+            <ListView x:Name="lv_AdvancedSearch"
+                      Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                      Padding="24,0,0,8"
+                      Style="{StaticResource StackPanelListViewStyle}"
+                      MaxWidth="800"
+                      HorizontalAlignment="Center">
+              <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <wp:WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+              </ListView.ItemsPanel>
+              <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
+                        XYFocusUp="{x:Bind ts_Advanced}"
+                        Content="Search gallery name"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <CheckBox x:Uid="Views/SearchPage/TagsCheckBox"
+                        Content="Search gallery tags"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.SearchTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <CheckBox x:Uid="Views/SearchPage/DescriptionCheckBox"
+                        Content="Search gallery description"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.SearchDescription, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <CheckBox x:Uid="Views/SearchPage/TorrentNamesCheckBox"
+                        Content="Search torrent filenames"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.SearchTorrentFilenames, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <CheckBox x:Uid="Views/SearchPage/OnlyTorrentsCheckBox"
+                        Content="Only show galleries with torrents"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.GalleriesWithTorrentsOnly, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <CheckBox x:Uid="Views/SearchPage/LowPowerTagsCheckBox"
+                        Content="Search low-power tags"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.SearchLowPowerTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <CheckBox x:Uid="Views/SearchPage/DownvotedTagsCheckBox"
+                        Content="Search downvoted tags"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <CheckBox x:Uid="Views/SearchPage/ShowExpungedCheckBox"
+                        Content="Show expunged galleries"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <StackPanel Orientation="Horizontal">
+                <CheckBox x:Uid="Views/SearchPage/MinRatingCheckBox"
+                          MinWidth="0"
+                          Content="Minimum rating: "
+                          IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+                <ComboBox VerticalAlignment="Center"
+                          SelectedItem="{x:Bind VM.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
+                          Margin="12,0,24,0"
+                          MinWidth="0">
+                  <x:Int32>2</x:Int32>
+                  <x:Int32>3</x:Int32>
+                  <x:Int32>4</x:Int32>
+                  <x:Int32>5</x:Int32>
+                </ComboBox>
+              </StackPanel>
+            </ListView>
+            <StackPanel HorizontalAlignment="Stretch"
+                        Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
+                        Padding="0,0,0,12">
+              <Button x:Name="btnFileSearch"
+                      x:Uid="Views/SearchPage/FileSearchButton"
+                      Content="File search"
+                      HorizontalAlignment="Center"
+                      Click="btnFileSearch_Click"
+                      Style="{StaticResource TextBlockButtonStyle}" />
+              <StackPanel Visibility="{x:Bind VM.FileSearch, Converter={StaticResource NullToCollapsedConverter}, Mode=OneWay}"
+                          HorizontalAlignment="Center">
+                <TextBlock Text="{x:Bind VM.FileSearch.FileName, Converter={StaticResource StringConverter}, ConverterParameter='Views/SearchPage/FileSearchNameFormatString', Mode=OneWay}"
+                           HorizontalAlignment="Stretch"
+                           TextWrapping="WrapWholeWords"
+                           Margin="8" />
+                <controls:WrapPanel HorizontalAlignment="Stretch"
+                                    Margin="12,0">
+                  <TextBlock x:Uid="Views/SearchPage/SearchSimilarTextBlock"
+                             Text="• Similarity scan enabled"
+                             Style="{StaticResource FileSearchOptionStyle}"
+                             Visibility="{x:Bind VM.FileSearch.SearchSimilar, Mode=OneWay}" />
+                  <TextBlock x:Uid="Views/SearchPage/SearchExactlyTextBlock"
+                             Text="• Similarity scan disabled"
+                             Style="{StaticResource FileSearchOptionStyle}"
+                             Visibility="{x:Bind VM.FileSearch.SearchSimilar, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
+                  <TextBlock x:Uid="Views/SearchPage/OnlyCoversTextBlock"
+                             Text="• Only searched covers"
+                             Style="{StaticResource FileSearchOptionStyle}"
+                             Visibility="{x:Bind VM.FileSearch.OnlyCovers, Mode=OneWay}" />
+                  <TextBlock x:Uid="Views/SearchPage/SearchExpungedTextBlock"
+                             Text="• Expunged shown"
+                             Style="{StaticResource FileSearchOptionStyle}"
+                             Visibility="{x:Bind VM.FileSearch.SearchExpunged, Mode=OneWay}" />
+                </controls:WrapPanel>
+              </StackPanel>
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
+    </AppBar>
+  </RelativePanel>
 </controls:MyPage>

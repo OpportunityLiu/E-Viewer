@@ -15,143 +15,144 @@
                  xmlns:controls="using:ExViewer.Controls"
                  xmlns:client="using:ExClient"
                  NavigationCacheMode="Enabled">
-    <controls:MyPage.Transitions>
-        <TransitionCollection>
-            <NavigationThemeTransition>
-                <DrillInNavigationTransitionInfo />
-            </NavigationThemeTransition>
-        </TransitionCollection>
-    </controls:MyPage.Transitions>
-    <controls:MyPage.Resources>
-        <DataTemplate x:Key="FavoriteCategoryDataTemplate"
-                      x:DataType="client:FavoriteCategory">
-            <controls:FavoriteCategoryPresenter Category="{x:Bind}"
-                                                IsLabelVisible="True" />
+  <controls:MyPage.Transitions>
+    <TransitionCollection>
+      <NavigationThemeTransition>
+        <DrillInNavigationTransitionInfo />
+      </NavigationThemeTransition>
+    </TransitionCollection>
+  </controls:MyPage.Transitions>
+  <controls:MyPage.Resources>
+    <DataTemplate x:Key="FavoriteCategoryDataTemplate"
+                  x:DataType="client:FavoriteCategory">
+      <controls:FavoriteCategoryPresenter Category="{x:Bind}"
+                                          IsLabelVisible="True" />
+    </DataTemplate>
+    <cov:ObjectToBooleanConverter x:Key="SelectionConverter"
+                                  IfNeither="true">
+      <cov:ObjectToBooleanConverter.ValuesForFalse>
+        <x:Int32>-1</x:Int32>
+      </cov:ObjectToBooleanConverter.ValuesForFalse>
+    </cov:ObjectToBooleanConverter>
+  </controls:MyPage.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <tk:PullToRefreshListView x:Name="lv"
+                              Grid.Row="1"
+                              RefreshRequested="lv_RefreshRequested"
+                              Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                              Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                              ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
+                              ContinuumNavigationTransitionInfo.ExitElementContainer="True"
+                              Style="{StaticResource GalleryListViewStyle}"
+                              ItemClick="lv_ItemClick"
+                              ContextRequested="lv_ContextRequested"
+                              ContextCanceled="lv_ContextCanceled">
+      <tk:PullToRefreshListView.RefreshIndicatorContent>
+        <tk:PullToRefreshIndicator />
+      </tk:PullToRefreshListView.RefreshIndicatorContent>
+      <ListView.ItemTemplate>
+        <DataTemplate xmlns:c="using:ExClient.Galleries"
+                      xmlns:controls="using:ExViewer.Controls"
+                      x:DataType="c:Gallery">
+          <controls:GalleryViewer Gallery="{x:Bind}"
+                                  ContinuumNavigationTransitionInfo.IsExitElement="True" />
         </DataTemplate>
-        <cov:ObjectToBooleanConverter x:Key="SelectionConverter"
-                                      IfNeither="true">
-            <cov:ObjectToBooleanConverter.ValuesForFalse>
-                <x:Int32>-1</x:Int32>
-            </cov:ObjectToBooleanConverter.ValuesForFalse>
-        </cov:ObjectToBooleanConverter>
-    </controls:MyPage.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <tk:PullToRefreshListView x:Name="lv"
-                                  Grid.Row="1"
-                                  RefreshRequested="lv_RefreshRequested"
-                                  Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                                  Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
-                                  ItemsSource="{x:Bind VM.SearchResult, Mode=OneWay}"
-                                  ContinuumNavigationTransitionInfo.ExitElementContainer="True"
-                                  Style="{StaticResource GalleryListViewStyle}"
-                                  ItemClick="lv_ItemClick"
-                                  ContextRequested="lv_ContextRequested"
-                                  ContextCanceled="lv_ContextCanceled">
-            <tk:PullToRefreshListView.RefreshIndicatorContent>
-                <tk:PullToRefreshIndicator />
-            </tk:PullToRefreshListView.RefreshIndicatorContent>
-            <ListView.ItemTemplate>
-                <DataTemplate xmlns:c="using:ExClient.Galleries"
-                              xmlns:controls="using:ExViewer.Controls"
-                              x:DataType="c:Gallery">
-                    <controls:GalleryViewer Gallery="{x:Bind}"
-                                            ContinuumNavigationTransitionInfo.IsExitElement="True" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <ListView.Header>
-                <TextBlock x:Uid="Views/FavoritesPage/EmptyTextBlock"
-                           HorizontalAlignment="Center"
-                           Margin="12"
-                           Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                           Text="No hits found" />
-            </ListView.Header>
-            <ListView.Footer>
-                <TextBlock x:Uid="Views/FavoritesPage/LoadingMoreTextBlock"
-                           HorizontalAlignment="Center"
-                           Margin="12"
-                           Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                           Text="Loading more galleries..." />
-            </ListView.Footer>
-        </tk:PullToRefreshListView>
-        <Grid x:Name="gdTopRoot"
-              Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-              Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}">
+      </ListView.ItemTemplate>
+      <ListView.Header>
+        <TextBlock x:Uid="Views/FavoritesPage/EmptyTextBlock"
+                   HorizontalAlignment="Center"
+                   Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                   Text="No hits found" />
+      </ListView.Header>
+      <ListView.Footer>
+        <TextBlock x:Uid="Views/FavoritesPage/LoadingMoreTextBlock"
+                   HorizontalAlignment="Center"
+                   Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind VM.SearchResult.HasMoreItems, FallbackValue=Visible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                   Text="Loading more galleries..." />
+      </ListView.Footer>
+    </tk:PullToRefreshListView>
+    <Grid x:Name="gdTopRoot"
+          Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+          Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Name="cdSplitViewPlaceholder"
+                          Width="0" />
+        <ColumnDefinition MaxWidth="200" />
+        <ColumnDefinition Width="2*" />
+      </Grid.ColumnDefinitions>
+      <ComboBox x:Name="cbCategory"
+                Grid.Column="1"
+                Margin="8,8,0,8"
+                Style="{StaticResource NoDropDownGlyphComboBoxStyle}"
+                SelectedItem="{x:Bind VM.Category, Mode=TwoWay}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
+      <AutoSuggestBox x:Uid="Views/FavoritesPage/AutoSuggestBox"
+                      x:Name="asb"
+                      QueryIcon="Find"
+                      Style="{StaticResource SearchAutoSuggestBoxStyle}"
+                      Grid.Column="2"
+                      Margin="8"
+                      Text="{x:Bind VM.Keyword, Mode=TwoWay}"
+                      PlaceholderText="Search..."
+                      controls:TagSuggestionService.IsEnabled="True"
+                      controls:TagSuggestionService.InputScope="Search"
+                      controls:TagSuggestionService.SubmitCommand="{x:Bind submitSearchCmd}"
+                      VerticalAlignment="Stretch" />
+      <CommandBar x:Name="cbActions"
+                  x:DeferLoadStrategy="Lazy"
+                  Visibility="Collapsed"
+                  Grid.ColumnSpan="3"
+                  Opening="cbActions_Opening"
+                  Closed="cbActions_Closed"
+                  HorizontalContentAlignment="Stretch"
+                  IsDynamicOverflowEnabled="False"
+                  ClosedDisplayMode="Compact">
+        <CommandBar.Content>
+          <Grid x:Name="gdCbContent">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="cdSplitViewPlaceholder"
-                                  Width="0" />
-                <ColumnDefinition MaxWidth="200" />
-                <ColumnDefinition Width="2*" />
+              <ColumnDefinition x:Name="cdSplitViewPlaceholder2"
+                                Width="{x:Bind cdSplitViewPlaceholder.Width, Mode=OneWay}" />
+              <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <ComboBox x:Name="cbCategory"
+            <ComboBox x:Name="cbCategory2"
+                      Margin="8"
                       Grid.Column="1"
-                      Margin="8,8,0,8"
-                      Style="{StaticResource NoDropDownGlyphComboBoxStyle}"
-                      SelectedItem="{x:Bind VM.Category, Mode=TwoWay}"
+                      Grid.ColumnSpan="1000"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
                       ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
-            <AutoSuggestBox x:Uid="Views/FavoritesPage/AutoSuggestBox"
-                            x:Name="asb"
-                            QueryIcon="Find"
-                            Style="{StaticResource SearchAutoSuggestBoxStyle}"
-                            Grid.Column="2"
-                            Margin="8"
-                            Text="{x:Bind VM.Keyword, Mode=TwoWay}"
-                            PlaceholderText="Search..."
-                            controls:TagSuggestionService.IsEnabled="True"
-                            controls:TagSuggestionService.SubmitCommand="{x:Bind submitSearchCmd}"
-                            VerticalAlignment="Stretch" />
-            <CommandBar x:Name="cbActions"
-                        x:DeferLoadStrategy="Lazy"
-                        Visibility="Collapsed"
-                        Grid.ColumnSpan="3"
-                        Opening="cbActions_Opening"
-                        Closed="cbActions_Closed"
-                        HorizontalContentAlignment="Stretch"
-                        IsDynamicOverflowEnabled="False"
-                        ClosedDisplayMode="Compact">
-                <CommandBar.Content>
-                    <Grid x:Name="gdCbContent">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition x:Name="cdSplitViewPlaceholder2"
-                                              Width="{x:Bind cdSplitViewPlaceholder.Width, Mode=OneWay}" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <ComboBox x:Name="cbCategory2"
-                                  Margin="8"
-                                  Grid.Column="1"
-                                  Grid.ColumnSpan="1000"
-                                  HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Stretch"
-                                  ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
-                    </Grid>
-                </CommandBar.Content>
-                <CommandBar.PrimaryCommands>
-                    <AppBarButton x:Name="abbApply"
-                                  x:Uid="Views/FavoritesPage/ApplyAppBarButton"
-                                  Icon="Send"
-                                  Label="Apply"
-                                  ToolTipService.ToolTip="{x:Bind abbApply.Label}"
-                                  IsEnabled="{x:Bind lv.SelectedIndex, Converter={StaticResource SelectionConverter}, Mode=OneWay}"
-                                  Click="abbApply_Click" />
-                </CommandBar.PrimaryCommands>
-                <CommandBar.SecondaryCommands>
-                    <AppBarButton x:Uid="Views/FavoritesPage/SelectAllAppBarButton"
-                                  Icon="SelectAll"
-                                  Label="Select all"
-                                  Click="abbAll_Click" />
-                    <AppBarButton x:Uid="Views/FavoritesPage/ClearSelectionAppBarButton"
-                                  Icon="ClearSelection"
-                                  Label="Clear selection"
-                                  Click="abbClear_Click" />
-                </CommandBar.SecondaryCommands>
-            </CommandBar>
-        </Grid>
+          </Grid>
+        </CommandBar.Content>
+        <CommandBar.PrimaryCommands>
+          <AppBarButton x:Name="abbApply"
+                        x:Uid="Views/FavoritesPage/ApplyAppBarButton"
+                        Icon="Send"
+                        Label="Apply"
+                        ToolTipService.ToolTip="{x:Bind abbApply.Label}"
+                        IsEnabled="{x:Bind lv.SelectedIndex, Converter={StaticResource SelectionConverter}, Mode=OneWay}"
+                        Click="abbApply_Click" />
+        </CommandBar.PrimaryCommands>
+        <CommandBar.SecondaryCommands>
+          <AppBarButton x:Uid="Views/FavoritesPage/SelectAllAppBarButton"
+                        Icon="SelectAll"
+                        Label="Select all"
+                        Click="abbAll_Click" />
+          <AppBarButton x:Uid="Views/FavoritesPage/ClearSelectionAppBarButton"
+                        Icon="ClearSelection"
+                        Label="Clear selection"
+                        Click="abbClear_Click" />
+        </CommandBar.SecondaryCommands>
+      </CommandBar>
     </Grid>
+  </Grid>
 </controls:MyPage>

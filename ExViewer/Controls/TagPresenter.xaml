@@ -56,7 +56,7 @@
       <TextBlock Style="{StaticResource TagTextBlockStyle}"
                  DataContextChanged="tbContent_DataContextChanged"
                  FontWeight="{x:Bind State, Mode=OneWay, Converter={StaticResource TagStateToFontWeightConverter}}"
-                 Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource TagStateToBrushConverter}}"/>
+                 Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource TagStateToBrushConverter}}" />
     </DataTemplate>
     <DataTemplate x:Key="TagGroupTemplate"
                   x:DataType="tagging:NamespaceTagCollection">
@@ -132,9 +132,9 @@
                     QueryIcon="Tag"
                     PlaceholderText="Enter new tags, separated with comma"
                     Loaded="asbNewTags_Loaded"
-                    TextBoxStyle="{StaticResource AutoSuggestBoxTextBoxStyle}"
                     Style="{StaticResource SearchAutoSuggestBoxStyle}"
                     LostFocus="asbNewTags_LostFocus"
+                    local:TagSuggestionService.InputScope="AlphanumericHalfWidth"
                     local:TagSuggestionService.IsEnabled="True"
                     local:TagSuggestionService.Separator=","
                     local:TagSuggestionService.UseHistory="False"

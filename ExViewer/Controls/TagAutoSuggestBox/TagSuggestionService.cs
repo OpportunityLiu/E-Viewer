@@ -11,11 +11,55 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace ExViewer.Controls
 {
     public static class TagSuggestionService
     {
+
+
+        public static InputScope GetInputScope(DependencyObject obj)
+        {
+            return (InputScope)obj.GetValue(InputScopeProperty);
+        }
+
+        public static void SetInputScope(DependencyObject obj, InputScope value)
+        {
+            obj.SetValue(InputScopeProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for InputScope.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InputScopeProperty =
+            DependencyProperty.RegisterAttached("InputScope", typeof(InputScope), typeof(AutoSuggestBox), new PropertyMetadata(null, InputScopePropertyChanged));
+
+        private static async void InputScopePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var sender = (AutoSuggestBox)d;
+            var tb = default(TextBox);
+            tb = sender.Descendants<TextBox>().FirstOrDefault();
+            if (tb != null)
+            {
+                tb.InputScope = (InputScope)e.NewValue;
+                return;
+            }
+            await sender.Dispatcher.Yield();
+            tb = sender.Descendants<TextBox>().FirstOrDefault();
+            if (tb != null)
+            {
+                tb.InputScope = (InputScope)e.NewValue;
+                return;
+            }
+            await sender.Dispatcher.YieldIdle();
+            tb = sender.Descendants<TextBox>().FirstOrDefault();
+            if (tb != null)
+            {
+                tb.InputScope = (InputScope)e.NewValue;
+                return;
+            }
+        }
+
         public static bool GetIsEnabled(DependencyObject obj)
         {
             return (bool)obj.GetValue(IsEnabledProperty);
