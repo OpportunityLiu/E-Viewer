@@ -106,7 +106,7 @@
                         PlaceholderText="Search..."
                         controls:TagSuggestionService.IsEnabled="True"
                         controls:TagSuggestionService.InputScope="Search"
-                        controls:TagSuggestionService.SubmitCommand="{x:Bind submitSearchCmd}" />
+                        controls:TagSuggestionService.SubmitCommand="{x:Bind VM.Search, Mode=OneWay}" />
         <ScrollViewer x:Name="sv_AdvancedSearch"
                       Grid.Row="1"
                       Grid.ColumnSpan="2"

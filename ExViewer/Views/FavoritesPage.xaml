@@ -106,7 +106,7 @@
                       PlaceholderText="Search..."
                       controls:TagSuggestionService.IsEnabled="True"
                       controls:TagSuggestionService.InputScope="Search"
-                      controls:TagSuggestionService.SubmitCommand="{x:Bind submitSearchCmd}"
+                      controls:TagSuggestionService.SubmitCommand="{x:Bind VM.Search, Mode=OneWay}"
                       VerticalAlignment="Stretch" />
       <CommandBar x:Name="cbActions"
                   x:DeferLoadStrategy="Lazy"

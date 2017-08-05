@@ -25,15 +25,6 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
             this.VisibleBoundHandledByDesign = true;
-            this.submitSearchCmd = new Opportunity.MvvmUniverse.Commands.Command<string>(submitSearch);
-        }
-
-        private Opportunity.MvvmUniverse.Commands.Command<string> submitSearchCmd;
-
-        private void submitSearch(string text)
-        {
-            CloseAll();
-            this.VM.Search.Execute(text);
         }
 
         private Button _btnExpandButton;
@@ -46,6 +37,7 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             this.VM = SearchVM.GetVM(e.Parameter?.ToString());
             this.VM.SetQueryWithSearchResult();
+            this.VM.Search.Executed += this.Search_Executed;
             await Dispatcher.YieldIdle();
             if (e.NavigationMode == NavigationMode.New || this.VM.SelectedGallery == null)
             {
@@ -58,6 +50,11 @@ namespace ExViewer.Views
                 if (!await ViewHelper.ScrollAndFocus(this.lv, this.VM.SelectedGallery))
                     this.btnExpandButton?.Focus(FocusState.Programmatic);
             }
+        }
+
+        private void Search_Executed(System.Windows.Input.ICommand sender, Opportunity.MvvmUniverse.Commands.CommandExecutedEventArgs e)
+        {
+            CloseAll();
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
