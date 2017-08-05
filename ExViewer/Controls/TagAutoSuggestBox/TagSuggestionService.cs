@@ -18,8 +18,6 @@ namespace ExViewer.Controls
 {
     public static class TagSuggestionService
     {
-
-
         public static InputScope GetInputScope(DependencyObject obj)
         {
             return (InputScope)obj.GetValue(InputScopeProperty);

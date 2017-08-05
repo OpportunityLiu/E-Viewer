@@ -35,15 +35,6 @@ namespace ExViewer.Views
             };
             l.AddRange(Client.Current.Favorites);
             this.cbCategory.ItemsSource = l;
-            this.submitSearchCmd = new Opportunity.MvvmUniverse.Commands.Command<string>(submitSearch);
-        }
-
-        private Opportunity.MvvmUniverse.Commands.Command<string> submitSearchCmd;
-
-        private void submitSearch(string text)
-        {
-            CloseAll();
-            this.VM.Search.Execute(text);
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -54,6 +45,7 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
             this.VM.SetQueryWithSearchResult();
+            this.VM.Search.Executed += this.Search_Executed;
             await Dispatcher.YieldIdle();
             if (e.NavigationMode == NavigationMode.New || this.VM.SelectedGallery == null)
             {
@@ -66,6 +58,11 @@ namespace ExViewer.Views
                 if (!await ViewHelper.ScrollAndFocus(this.lv, this.VM.SelectedGallery))
                     this.cbCategory.Focus(FocusState.Programmatic);
             }
+        }
+
+        private void Search_Executed(System.Windows.Input.ICommand sender, Opportunity.MvvmUniverse.Commands.CommandExecutedEventArgs e)
+        {
+            CloseAll();
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
