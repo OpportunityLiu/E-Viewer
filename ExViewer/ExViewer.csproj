@@ -204,6 +204,9 @@
       <DependentUpon>FileSearchDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\IHasAppBar.cs" />
+    <Compile Include="Views\InfoPage.xaml.cs">
+      <DependentUpon>InfoPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PopularPage.xaml.cs">
       <DependentUpon>PopularPage.xaml</DependentUpon>
     </Compile>
@@ -433,6 +436,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FileSearchDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\InfoPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

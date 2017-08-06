@@ -19,7 +19,7 @@ namespace ExClient.Tagging
 {
     [DebuggerDisplay(@"\{{data.Length} tags in {keys.Length} namespaces\}")]
     public sealed class TagCollection
-        : ObservableCollectionBase, IReadOnlyList<NamespaceTagCollection>, IList
+        : ObservableCollectionBase<NamespaceTagCollection>, IReadOnlyList<NamespaceTagCollection>, IList
     {
         private static readonly Namespace[] staticKeys = new[]
         {
