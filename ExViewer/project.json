@@ -9,7 +9,7 @@
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.4",
     "Microsoft.Toolkit.Uwp.UI.Controls": "1.5.1",
     "Opportunity.Converters": "1.2.2",
-    "Opportunity.MvvmUniverse": "0.3.3",
+    "Opportunity.MvvmUniverse": "0.3.4",
     "Opportunity.ResourceGenerator": "1.1.5"
   },
   "frameworks": {
