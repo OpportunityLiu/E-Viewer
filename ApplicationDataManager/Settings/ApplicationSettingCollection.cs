@@ -44,9 +44,9 @@ namespace ApplicationDataManager.Settings
         {
             try
             {
-                if(container.TryGetValue(key, out var v))
+                if (container.TryGetValue(key, out var v))
                 {
-                    if(@default is Enum)
+                    if (@default is Enum)
                         return (T)Enum.Parse(typeof(T), v.ToString());
                     return (T)v;
                 }
@@ -55,21 +55,21 @@ namespace ApplicationDataManager.Settings
             return @default;
         }
 
-        private bool hasValue(IPropertySet container, string key) 
+        private bool hasValue(IPropertySet container, string key)
             => container.ContainsKey(key);
 
         private void set<T>(IPropertySet container, T value, string key, bool forceRaiseEvent)
         {
-            if(!forceRaiseEvent && hasValue(container, key) && Equals(get(container, value, key), value))
+            if (!forceRaiseEvent && hasValue(container, key) && Equals(get(container, value, key), value))
                 return;
-            if(value is Enum)
+            if (value is Enum)
                 container[key] = value.ToString();
             else
                 container[key] = value;
-            RaisePropertyChanged(key);
+            OnPropertyChanged(key);
         }
 
-        protected T GetLocal<T>([CallerMemberName]string key = null) 
+        protected T GetLocal<T>([CallerMemberName]string key = null)
             => GetLocal(default(T), key);
 
         protected T GetLocal<T>(T @default, [CallerMemberName]string key = null)
@@ -78,19 +78,19 @@ namespace ApplicationDataManager.Settings
         protected void SetLocal<T>(T value, [CallerMemberName]string key = null)
             => set(this.localStorage, value, key, false);
 
-        protected void ForceSetLocal<T>(T value, [CallerMemberName]string key = null) 
+        protected void ForceSetLocal<T>(T value, [CallerMemberName]string key = null)
             => set(this.localStorage, value, key, true);
 
-        protected T GetRoaming<T>(string key) 
+        protected T GetRoaming<T>(string key)
             => GetRoaming(default(T), key);
 
         protected T GetRoaming<T>(T @default, [CallerMemberName]string key = null)
             => get(this.roamingStorage, @default, key);
 
-        protected void SetRoaming<T>(T value, [CallerMemberName]string key = null) 
+        protected void SetRoaming<T>(T value, [CallerMemberName]string key = null)
             => set(this.roamingStorage, value, key, false);
 
-        protected void ForceSetRoaming<T>(T value, [CallerMemberName]string key = null) 
+        protected void ForceSetRoaming<T>(T value, [CallerMemberName]string key = null)
             => set(this.roamingStorage, value, key, true);
     }
 }

@@ -3,10 +3,10 @@
     "HtmlAgilityPack": "1.5.1",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.1.2",
     "Microsoft.EntityFrameworkCore.Tools": "1.1.1",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.4"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0"
   },
   "frameworks": {
-    "uap10.0": {}
+    "uap10.0.14393": {}
   },
   "runtimes": {
     "win10-arm": {},

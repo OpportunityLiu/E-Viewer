@@ -99,8 +99,8 @@ namespace ExClient.Tagging
             this.Keys = keys;
             this.Offset = offset;
             this.Version++;
-            RaiseCollectionReset();
-            RaisePropertyChanged(nameof(Count), nameof(Items), "Groups");
+            OnCollectionReset();
+            OnPropertyChanged(nameof(Count), nameof(Items), "Groups");
         }
 
         internal GalleryTag[] Data;

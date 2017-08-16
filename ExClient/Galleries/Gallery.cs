@@ -320,7 +320,7 @@ namespace ExClient.Galleries
                             img2.Dispose();
                         }
                         this.thumbImage.SetTarget(r);
-                        RaisePropertyChanged(nameof(Thumb));
+                        OnPropertyChanged(nameof(Thumb));
                     }
                     finally
                     {

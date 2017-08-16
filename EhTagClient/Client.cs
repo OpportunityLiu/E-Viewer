@@ -23,9 +23,9 @@ namespace EhTagClient
 
         private const string LAST_UPDATE = "EhTagClient.LastUpdate";
 
-        private static readonly Regex reg = new Regex(@"<a href=""https://e-hentai\.org/tools\.php\?act=taggroup&amp;mastertag=(\d+)"" style=""color:black"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
+        private static readonly Regex reg = new Regex(@"<a href=""https://e-hentai\.org/tools\.php\?act=taggroup&amp;mastertag=(\d+)"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
 
-        private static readonly Uri DbUri = new Uri("https://e-hentai.org/tools.php?act=taggroup");
+        private static readonly string DbUri = "https://e-hentai.org/tools.php?act=taggroup&show={0}";
 
         public static DateTimeOffset LastUpdate
         {
@@ -51,9 +51,21 @@ namespace EhTagClient
                             c.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
                             c.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
                             using (var client = new HttpClient(c))
+                            using (var db = new TagDb())
                             {
-                                var r = await client.GetStringAsync(DbUri);
-                                await updateDbAsync(r, token);
+                                var htmls = new string[9];
+                                for (var i = 0; i < 9; i++)
+                                {
+                                    var uri = new Uri(string.Format(DbUri, i));
+                                    htmls[i] = await client.GetStringAsync(uri);
+                                }
+                                db.TagTable.RemoveRange(db.TagTable);
+                                await db.SaveChangesAsync(token);
+                                foreach (var item in htmls)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    await updateDbAsync(db, item, token);
+                                }
                             }
                         }
                         LastUpdate = DateTimeOffset.Now;
@@ -68,10 +80,9 @@ namespace EhTagClient
 
         public static DataBase CreateDatabase() => new DataBase();
 
-        private static async Task updateDbAsync(string s, CancellationToken token)
+        private static async Task updateDbAsync(TagDb db, string html, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
-            var matches = reg.Matches(s);
+            var matches = reg.Matches(html);
             var toAdd = new List<TagRecord>(matches.Count);
             foreach (var item in matches.Cast<Match>())
             {
@@ -81,14 +92,8 @@ namespace EhTagClient
                 var tagrecord = new TagRecord { TagConetnt = tag.Content, TagNamespace = tag.Namespace, TagId = tagid };
                 toAdd.Add(tagrecord);
             }
-            token.ThrowIfCancellationRequested();
-            using (var db = new TagDb())
-            {
-                db.TagTable.RemoveRange(db.TagTable);
-                await db.SaveChangesAsync();
-                db.TagTable.AddRange(toAdd);
-                await db.SaveChangesAsync();
-            }
+            await db.TagTable.AddRangeAsync(toAdd, token);
+            await db.SaveChangesAsync(token);
         }
     }
 }
