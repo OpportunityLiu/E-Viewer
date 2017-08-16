@@ -18,16 +18,16 @@ namespace ExClient.Settings
 
         public static IEnumerable<ExcludedLanguage> FromString(string value)
         {
-            foreach(var item in (value ?? "").Split(", ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+            foreach (var item in (value ?? "").Split(", ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
-                if(Enum.TryParse(item, out ExcludedLanguage r))
+                if (Enum.TryParse(item, out ExcludedLanguage r))
                     yield return r;
             }
         }
 
         internal override string GetCookieContent()
         {
-            if(this.items.Count == 0)
+            if (this.items.Count == 0)
                 return null;
             return $"xl_{string.Join("x", this.items)}";
         }
@@ -39,36 +39,36 @@ namespace ExClient.Settings
 
         public void AddRange(IEnumerable<ExcludedLanguage> items)
         {
-            foreach(var item in items)
+            foreach (var item in items)
             {
-                if(!item.IsDefined())
+                if (!item.IsDefined())
                     throw new ArgumentOutOfRangeException(nameof(item));
                 this.items.Add((ushort)item);
             }
             ApplyChanges();
-            RaisePropertyChanged(nameof(Count));
+            OnPropertyChanged(nameof(Count));
         }
 
         private HashSet<ushort> items = new HashSet<ushort>();
 
         public void Add(ExcludedLanguage item)
         {
-            if(!item.IsDefined())
+            if (!item.IsDefined())
                 throw new ArgumentOutOfRangeException(nameof(item));
-            if(this.items.Add((ushort)item))
+            if (this.items.Add((ushort)item))
             {
                 ApplyChanges();
-                RaisePropertyChanged(nameof(Count));
+                OnPropertyChanged(nameof(Count));
             }
         }
 
         public void Clear()
         {
-            if(this.items.Count == 0)
+            if (this.items.Count == 0)
                 return;
             this.items.Clear();
             ApplyChanges();
-            RaisePropertyChanged(nameof(Count));
+            OnPropertyChanged(nameof(Count));
         }
 
         public bool Contains(ExcludedLanguage item) => this.items.Contains((ushort)item);
@@ -76,9 +76,9 @@ namespace ExClient.Settings
         public void CopyTo(ExcludedLanguage[] array, int arrayIndex)
         {
             var i = arrayIndex;
-            foreach(var item in this)
+            foreach (var item in this)
             {
-                if(i >= array.Length)
+                if (i >= array.Length)
                     break;
                 array[i] = item;
                 i++;
@@ -88,10 +88,10 @@ namespace ExClient.Settings
         public bool Remove(ExcludedLanguage item)
         {
             var r = this.items.Remove((ushort)item);
-            if(r)
+            if (r)
             {
                 ApplyChanges();
-                RaisePropertyChanged(nameof(Count));
+                OnPropertyChanged(nameof(Count));
             }
             return r;
         }

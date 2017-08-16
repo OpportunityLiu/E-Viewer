@@ -93,10 +93,7 @@ namespace ExViewer.Views
             }
 
             private static double tbtPaneOpacity = 1;
-            private static double TbtPaneOpacity
-            {
-                get => SplitViewButtonPlaceholderVisibility ? tbtPaneOpacity : 1;
-            }
+            private static double TbtPaneOpacity => SplitViewButtonPlaceholderVisibility ? tbtPaneOpacity : 1;
 
             /// <summary>
             /// 

@@ -251,7 +251,7 @@ namespace ExViewer.ViewModels
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(GalleryImage.OriginalLoaded))
-                this.LoadOriginal.RaiseCanExecuteChanged();
+                this.LoadOriginal.OnCanExecuteChanged();
         }
 
         private GalleryVM(Gallery gallery)
@@ -286,8 +286,8 @@ namespace ExViewer.ViewModels
                 Set(ref this.gallery, value);
                 if (this.gallery != null)
                     this.gallery.LoadMoreItemsException += this.Gallery_LoadMoreItemsException;
-                this.Save.RaiseCanExecuteChanged();
-                this.Share.RaiseCanExecuteChanged();
+                this.Save.OnCanExecuteChanged();
+                this.Share.OnCanExecuteChanged();
                 this.Torrents = null;
             }
         }
@@ -340,7 +340,7 @@ namespace ExViewer.ViewModels
             set
             {
                 Set(ref this.saveStatus, value);
-                this.Save.RaiseCanExecuteChanged();
+                this.Save.OnCanExecuteChanged();
             }
         }
 
@@ -450,11 +450,7 @@ namespace ExViewer.ViewModels
             private set
             {
                 this.torrents = value;
-                DispatcherHelper.BeginInvokeOnUIThread(() =>
-                {
-                    RaisePropertyChanged(nameof(Torrents));
-                    RaisePropertyChanged(nameof(TorrentCount));
-                });
+                OnPropertyChanged(nameof(Torrents), nameof(TorrentCount));
             }
         }
 

@@ -161,11 +161,11 @@ namespace EhTagTranslatorClient
                 using (var db = new TranslateDb())
                 {
                     db.Table.RemoveRange(db.Table);
-                    await db.SaveChangesAsync();
+                    await db.SaveChangesAsync(token);
                     foreach (var item in mergedCache)
                     {
                         db.Table.AddRange(item.Values);
-                        await db.SaveChangesAsync();
+                        await db.SaveChangesAsync(token);
                     }
                 }
                 LastUpdate = DateTimeOffset.Now;

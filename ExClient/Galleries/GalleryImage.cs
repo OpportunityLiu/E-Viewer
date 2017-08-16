@@ -107,7 +107,7 @@ namespace ExClient.Galleries
             {
                 var loadPageUri = default(Uri);
                 if (this.failToken != null)
-                    loadPageUri = new Uri(this.PageUri, $"?{failToken}");
+                    loadPageUri = new Uri(this.PageUri, $"?{this.failToken}");
                 else
                     loadPageUri = this.PageUri;
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri);
@@ -183,7 +183,7 @@ namespace ExClient.Galleries
                 }
                 this.thumb.SetTarget(img);
                 if (img != null)
-                    RaisePropertyChanged(nameof(Thumb));
+                    OnPropertyChanged(nameof(Thumb));
             });
         }
 
