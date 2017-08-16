@@ -21,7 +21,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Galleries
 {
-    [System.Diagnostics.DebuggerDisplay(@"\{PageId = {PageId} State = {State} File = {ImageFile?.Name}\}")]
+    [System.Diagnostics.DebuggerDisplay(@"\{PageID = {PageID} State = {State} File = {ImageFile?.Name}\}")]
     public class GalleryImage : ObservableObject
     {
         static GalleryImage()
@@ -90,10 +90,10 @@ namespace ExClient.Galleries
             });
         }
 
-        internal GalleryImage(Gallery owner, int pageId, ulong imageKey, Uri thumb)
+        internal GalleryImage(Gallery owner, int pageID, ulong imageKey, Uri thumb)
         {
             this.Owner = owner;
-            this.PageId = pageId;
+            this.PageID = pageID;
             this.ImageKey = imageKey;
             this.thumbUri = thumb;
         }
@@ -107,7 +107,7 @@ namespace ExClient.Galleries
             {
                 var loadPageUri = default(Uri);
                 if (this.failToken != null)
-                    loadPageUri = new Uri(this.PageUri, $"?{failToken}");
+                    loadPageUri = new Uri(this.PageUri, $"?{this.failToken}");
                 else
                     loadPageUri = this.PageUri;
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri);
@@ -183,7 +183,7 @@ namespace ExClient.Galleries
                 }
                 this.thumb.SetTarget(img);
                 if (img != null)
-                    RaisePropertyChanged(nameof(Thumb));
+                    OnPropertyChanged(nameof(Thumb));
             });
         }
 
@@ -201,11 +201,11 @@ namespace ExClient.Galleries
         public Gallery Owner { get; }
 
         /// <summary>
-        /// 1-based Id for image.
+        /// 1-based ID for image.
         /// </summary>
-        public int PageId { get; }
+        public int PageID { get; }
 
-        public Uri PageUri => new Uri(Client.Current.Uris.RootUri, $"s/{ImageKey.ToTokenString()}/{Owner.Id}-{PageId}");
+        public Uri PageUri => new Uri(Client.Current.Uris.RootUri, $"s/{ImageKey.ToTokenString()}/{Owner.ID}-{PageID}");
 
         public ulong ImageKey { get; }
 
@@ -275,7 +275,7 @@ namespace ExClient.Galleries
                                 this.ImageFile = file;
                             }
                             var giModel = db.GalleryImageSet
-                                .SingleOrDefault(model => model.GalleryId == this.Owner.Id && model.PageId == this.PageId);
+                                .SingleOrDefault(model => model.GalleryId == this.Owner.ID && model.PageId == this.PageID);
                             if (giModel == null)
                             {
                                 db.GalleryImageSet.Add(new GalleryImageModel().Update(this));
@@ -323,7 +323,7 @@ namespace ExClient.Galleries
                         this.ImageFile = await folder.SaveFileAsync($"{this.imageHash}{ext}", CreationCollisionOption.ReplaceExisting, buffer);
                         var myModel = db.GalleryImageSet
                             .Include(model => model.Image)
-                            .SingleOrDefault(model => model.GalleryId == this.Owner.Id && model.PageId == this.PageId);
+                            .SingleOrDefault(model => model.GalleryId == this.Owner.ID && model.PageId == this.PageID);
                         imageModel?.Update(this);
                         if (myModel == null)
                         {

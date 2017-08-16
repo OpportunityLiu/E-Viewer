@@ -19,6 +19,7 @@ using System.Runtime.CompilerServices;
 using Windows.ApplicationModel.Core;
 using Opportunity.MvvmUniverse;
 using Windows.UI;
+using ExClient.Status;
 
 namespace ExViewer.Views
 {
@@ -93,10 +94,7 @@ namespace ExViewer.Views
             }
 
             private static double tbtPaneOpacity = 1;
-            private static double TbtPaneOpacity
-            {
-                get => SplitViewButtonPlaceholderVisibility ? tbtPaneOpacity : 1;
-            }
+            private static double TbtPaneOpacity => SplitViewButtonPlaceholderVisibility ? tbtPaneOpacity : 1;
 
             /// <summary>
             /// 

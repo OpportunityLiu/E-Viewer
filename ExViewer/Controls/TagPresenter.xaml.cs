@@ -212,7 +212,7 @@ namespace ExViewer.Controls
             if (startToTag)
             {
                 if (this.asbNewTags == null)
-                    FindName(nameof(asbNewTags));
+                    FindName(nameof(this.asbNewTags));
                 this.asbNewTags.Visibility = Visibility.Visible;
                 this.btnStartNew.Visibility = Visibility.Collapsed;
             }

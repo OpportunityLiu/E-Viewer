@@ -9,7 +9,7 @@ using Windows.Storage;
 using static ExClient.Client;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
-namespace ExClient
+namespace ExClient.Status
 {
     public class UserInfo
     {
@@ -77,7 +77,7 @@ namespace ExClient
         }
 
         private UserInfo() { }
-        
+
         [JsonProperty]
         public string DisplayName { get; private set; }
 

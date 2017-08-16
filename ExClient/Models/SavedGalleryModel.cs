@@ -7,7 +7,7 @@ namespace ExClient.Models
     {
         public SavedGalleryModel Update(Gallery gallery)
         {
-            GalleryId = gallery.Id;
+            GalleryId = gallery.ID;
             Saved = DateTimeOffset.UtcNow;
             return this;
         }
@@ -20,14 +20,8 @@ namespace ExClient.Models
             set => this.saved = value.ToUnixTimeMilliseconds();
         }
 
-        public GalleryModel Gallery
-        {
-            get; set;
-        }
+        public GalleryModel Gallery { get; set; }
 
-        public long GalleryId
-        {
-            get; set;
-        }
+        public long GalleryId { get; set; }
     }
 }

@@ -49,7 +49,7 @@ namespace ExClient.Api
             {
                 var v = (GalleryInfo)value;
                 writer.WriteStartArray();
-                writer.WriteValue(v.Id);
+                writer.WriteValue(v.ID);
                 writer.WriteValue(v.Token.ToTokenString());
                 writer.WriteEndArray();
             }
@@ -115,7 +115,7 @@ namespace ExClient.Api
 
         public GalleryInfo(long id, ulong token)
         {
-            this.Id = id;
+            this.ID = id;
             this.Token = token;
         }
 
@@ -129,7 +129,7 @@ namespace ExClient.Api
             });
         }
 
-        public long Id
+        public long ID
         {
             get;
         }
@@ -141,21 +141,19 @@ namespace ExClient.Api
 
         public bool Equals(GalleryInfo other)
         {
-            return this.Id == other.Id && this.Token == other.Token;
+            return this.ID == other.ID && this.Token == other.Token;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null || typeof(GalleryInfo) != obj.GetType())
-            {
-                return false;
-            }
-            return Equals((GalleryInfo)obj);
+            if (obj is GalleryInfo info)
+                return Equals(info);
+            return false;
         }
 
         public override int GetHashCode()
         {
-            return this.Id.GetHashCode() ^ this.Token.GetHashCode();
+            return this.ID.GetHashCode() ^ this.Token.GetHashCode();
         }
     }
 }

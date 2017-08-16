@@ -155,7 +155,7 @@ namespace ExViewer
             var g = gVM.Gallery;
             if (g == null)
                 return;
-            sb.AppendLine($"Gallery: Type={g.GetType()}, Id={g.Id}, Token={g.Token:x10}");
+            sb.AppendLine($"Gallery: Type={g.GetType()}, ID={g.ID}, Token={g.Token:x10}");
         }
 
         private static void AddtionalInfo(StringBuilder sb, PopularVM VM)

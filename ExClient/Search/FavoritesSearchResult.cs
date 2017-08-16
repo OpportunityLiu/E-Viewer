@@ -107,7 +107,7 @@ namespace ExClient.Search
                     {
                         for (var i = range.FirstIndex; i <= range.LastIndex; i++)
                         {
-                            yield return new KeyValuePair<string, string>("modifygids[]", this[i].Id.ToString());
+                            yield return new KeyValuePair<string, string>("modifygids[]", this[i].ID.ToString());
                         }
                     }
                 }

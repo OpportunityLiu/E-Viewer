@@ -19,9 +19,9 @@ namespace ExClient.Settings
             get => ip;
             set
             {
-                if(string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    if(Set(nameof(AddressAndPort), ref this.ip, null))
+                    if (Set(nameof(AddressAndPort), ref this.ip, null))
                         ApplyChanges();
                     return;
                 }
@@ -30,7 +30,7 @@ namespace ExClient.Settings
                     var ipv4 = value.Split(dotChars).Select(s => byte.Parse("0" + s)).ToArray();
                     Set(nameof(AddressAndPort), ref this.ip, $"{ipv4[0]}.{ipv4[1]}.{ipv4[2]}.{ipv4[3]}");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new ArgumentException(LocalizedStrings.Resources.OnlyIpv4, nameof(value), ex);
                 }
@@ -45,7 +45,7 @@ namespace ExClient.Settings
             get => port;
             set
             {
-                if(Set(nameof(AddressAndPort), ref this.port, value))
+                if (Set(nameof(AddressAndPort), ref this.port, value))
                     ApplyChanges();
             }
         }
@@ -54,17 +54,17 @@ namespace ExClient.Settings
         {
             get
             {
-                if(string.IsNullOrEmpty(this.ip))
+                if (string.IsNullOrEmpty(this.ip))
                     return null;
-                return $"{ip}:{port}";
+                return $"{this.ip}:{this.port}";
             }
             set
             {
-                if(string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     this.port = 80;
                     this.ip = null;
-                    RaisePropertyChanged(nameof(Port), nameof(IPAddress), nameof(AddressAndPort));
+                    OnPropertyChanged(nameof(Port), nameof(IPAddress), nameof(AddressAndPort));
                     ApplyChanges();
                     return;
                 }
@@ -74,7 +74,7 @@ namespace ExClient.Settings
                     this.port = uint.Parse(ss[1]);
                     IPAddress = ss[0];
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     ApplyChanges();
                     throw new ArgumentException(LocalizedStrings.Resources.OnlyIpv4, nameof(value), ex);
@@ -85,7 +85,7 @@ namespace ExClient.Settings
         internal override string GetCookieContent()
         {
             var ap = AddressAndPort;
-            if(ap == null)
+            if (ap == null)
                 return null;
             return $"hh_{ap}";
         }

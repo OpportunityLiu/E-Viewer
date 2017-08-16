@@ -26,7 +26,7 @@ namespace ExViewer.Controls
         public ExcludedLanguagesSelector()
         {
             this.InitializeComponent();
-            foreach(var item in this.filters)
+            foreach (var item in this.filters)
             {
                 item.PropertyChanged += this.filter_PropertyChanged;
             }
@@ -69,20 +69,20 @@ namespace ExViewer.Controls
         {
             var oldS = e.OldValue.ToString();
             var newS = e.NewValue.ToString();
-            if(string.Equals(oldS, newS))
+            if (string.Equals(oldS, newS))
                 return;
             var el = ExcludedLanguagesSettingProvider.FromString(newS).OrderByDescending(k => k).ToList();
             var s = (ExcludedLanguagesSelector)sender;
             s.changing = true;
             var fs = s.filters;
             ushort offset = 0;
-            foreach(var item in fs)
+            foreach (var item in fs)
             {
-                if(el.Count == 0)
+                if (el.Count == 0)
                     break;
                 var lan = item.Language;
                 var last = el[el.Count - 1];
-                if(lan + offset == last)
+                if (lan + offset == last)
                 {
                     el.RemoveAt(el.Count - 1);
                     item.Original = true;
@@ -93,13 +93,13 @@ namespace ExViewer.Controls
                 }
             }
             offset = 1024;
-            foreach(var item in fs)
+            foreach (var item in fs)
             {
-                if(el.Count == 0)
+                if (el.Count == 0)
                     break;
                 var lan = item.Language;
                 var last = el[el.Count - 1];
-                if(lan + offset == last)
+                if (lan + offset == last)
                 {
                     el.RemoveAt(el.Count - 1);
                     item.Translated = true;
@@ -110,13 +110,13 @@ namespace ExViewer.Controls
                 }
             }
             offset = 2048;
-            foreach(var item in fs)
+            foreach (var item in fs)
             {
-                if(el.Count == 0)
+                if (el.Count == 0)
                     break;
                 var lan = item.Language;
                 var last = el[el.Count - 1];
-                if(lan + offset == last)
+                if (lan + offset == last)
                 {
                     el.RemoveAt(el.Count - 1);
                     item.Rewrite = true;
@@ -133,18 +133,18 @@ namespace ExViewer.Controls
 
         private void filter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(this.changing)
+            if (this.changing)
                 return;
-            if(e.PropertyName == nameof(ExcludedLanguageFilter.All))
+            if (e.PropertyName == nameof(ExcludedLanguageFilter.All))
                 return;
             var r = new List<ExcludedLanguage>();
-            foreach(var item in this.filters)
+            foreach (var item in this.filters)
             {
-                if(item.Original)
+                if (item.Original)
                     r.Add(item.Language);
-                if(item.Translated)
+                if (item.Translated)
                     r.Add(item.Language + 1024);
-                if(item.Rewrite)
+                if (item.Rewrite)
                     r.Add(item.Language + 2048);
             }
             this.ExcludedLanguages = ExcludedLanguagesSettingProvider.ToString(r);
@@ -208,8 +208,8 @@ namespace ExViewer.Controls
         private void setValue(bool value, ref bool field, [CallerMemberName]string propName = null)
         {
             var oldAll = this.All;
-            if(Set(ref field, value, propName) && oldAll != this.All)
-                RaisePropertyChanged(nameof(All));
+            if (Set(ref field, value, propName) && oldAll != this.All)
+                OnPropertyChanged(nameof(All));
         }
 
         public bool All
@@ -217,12 +217,12 @@ namespace ExViewer.Controls
             get => this.original && this.translated && this.rewrite;
             set
             {
-                if(value == this.All)
+                if (value == this.All)
                     return;
                 this.original = value;
                 this.translated = value;
                 this.rewrite = value;
-                RaisePropertyChanged(default(string));
+                OnPropertyChanged(default(string));
             }
         }
     }
