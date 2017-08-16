@@ -8,14 +8,12 @@ namespace ExClient.Api
     {
         public override string Method => "gtoken";
 
-        public IEnumerable<ImageInfo> pagelist
-        {
-            get;
-        }
+        [JsonProperty("pagelist")]
+        public IEnumerable<ImageInfo> PageList { get; }
 
         public GalleryTokenRequest(IEnumerable<ImageInfo> pageList)
         {
-            this.pagelist = pageList;
+            this.PageList = pageList;
         }
     }
 

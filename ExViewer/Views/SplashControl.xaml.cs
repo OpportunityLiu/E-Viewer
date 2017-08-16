@@ -4,6 +4,7 @@ using ExViewer.Settings;
 using ExViewer.ViewModels;
 using JYAnalyticsUniversal;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.Security.Credentials.UI;
@@ -51,7 +52,7 @@ namespace ExViewer.Views
 
         private void ShowPic_Completed(object sender, object e)
         {
-            FindName(nameof(pr));
+            FindName(nameof(this.pr));
         }
 
         private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)

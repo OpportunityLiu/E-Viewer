@@ -10,7 +10,7 @@ namespace ExClient.Api
             : base(comment.Owner.Owner)
         {
             var gallery = comment.Owner.Owner;
-            this.Id = comment.Id;
+            this.Id = comment.ID;
         }
 
         [JsonProperty("comment_id")]
@@ -46,7 +46,7 @@ namespace ExClient.Api
     internal class CommentResponse : ApiResponse
     {
         [JsonProperty("comment_id")]
-        public int Id { get; set; }
+        public int ID { get; set; }
 
     }
 

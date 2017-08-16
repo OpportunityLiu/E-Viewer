@@ -21,7 +21,7 @@ namespace ExViewer.ViewModels
             this.Open = new Command<Gallery>(g =>
             {
                 GalleryVM.GetVM(g);
-                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.Id);
+                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
             }, g => g != null);
         }
 

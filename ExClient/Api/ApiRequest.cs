@@ -10,19 +10,19 @@ namespace ExClient.Api
         [JsonProperty("method")]
         public abstract string Method { get; }
 
-        private static long uid;
-        private static string key;
+        private static long userID;
+        private static string apiKey;
 
         [JsonProperty("apiuid", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public long ApiUid => uid;
+        public long ApiUid => userID;
 
         [JsonProperty("apikey", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string ApiKey => key;
+        public string ApiKey => apiKey;
 
-        public static void UpdateToken(long uid, string key)
+        public static void UpdateToken(long userID, string apiKey)
         {
-            ApiRequest.uid = uid;
-            ApiRequest.key = key;
+            ApiRequest.userID = userID;
+            ApiRequest.apiKey = apiKey;
         }
 
         private static Regex regUid = new Regex(@"var\s+apiuid\s*=\s*(\d+)", RegexOptions.Compiled);
@@ -32,10 +32,10 @@ namespace ExClient.Api
         {
             var mUid = regUid.Match(html);
             if (mUid.Success)
-                uid = long.Parse(mUid.Groups[1].Value);
+                userID = long.Parse(mUid.Groups[1].Value);
             var mKey = regKey.Match(html);
             if (mKey.Success)
-                key = mKey.Groups[1].Value;
+                apiKey = mKey.Groups[1].Value;
         }
     }
 
@@ -43,12 +43,12 @@ namespace ExClient.Api
     {
         public GalleryRequest(Gallery gallery)
         {
-            this.GalleryId = gallery.Id;
+            this.GalleryID = gallery.ID;
             this.GalleryToken = gallery.Token.ToTokenString();
         }
 
         [JsonProperty("gid")]
-        public long GalleryId { get; }
+        public long GalleryID { get; }
 
         [JsonProperty("token")]
         public string GalleryToken { get; }

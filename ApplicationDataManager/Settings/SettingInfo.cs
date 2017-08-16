@@ -40,13 +40,13 @@ namespace ApplicationDataManager.Settings
             this.ValueRepresent = info.GetCustomAttribute<ValueRepresentAttribute>();
 
             var pType = info.PropertyType;
-            if(this.ValueRepresent == null)
+            if (this.ValueRepresent == null)
             {
-                if(!typeDic.TryGetValue(pType, out this.type))
+                if (!typeDic.TryGetValue(pType, out this.type))
                 {
-                    if(pType == typeof(bool))
+                    if (pType == typeof(bool))
                         this.ValueRepresent = ToggleSwitchRepresentAttribute.Default;
-                    else if(pType.GetTypeInfo().IsEnum)
+                    else if (pType.GetTypeInfo().IsEnum)
                         this.ValueRepresent = EnumRepresentAttribute.Default;
                     else
                         throw new InvalidOperationException($"Unsupported property type: {{{pType}}}");
@@ -60,8 +60,8 @@ namespace ApplicationDataManager.Settings
 
         private void settingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == this.Name)
-                RaisePropertyChanged(nameof(Value));
+            if (e.PropertyName == this.Name)
+                OnPropertyChanged(nameof(Value));
         }
 
         internal PropertyInfo PropertyInfo { get; }
@@ -87,7 +87,7 @@ namespace ApplicationDataManager.Settings
             get => this.PropertyInfo.GetValue(this.settingCollection);
             set
             {
-                if(value == null)
+                if (value == null)
                     return;
                 this.PropertyInfo.SetValue(this.settingCollection, value);
             }

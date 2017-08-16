@@ -46,18 +46,18 @@ namespace ExViewer.ViewModels
         {
             public bool Equals(GalleryInfo x, GalleryInfo y)
             {
-                return x.Id == y.Id;
+                return x.ID == y.ID;
             }
 
             public int GetHashCode(GalleryInfo obj)
             {
-                return obj.Id.GetHashCode();
+                return obj.ID.GetHashCode();
             }
         }
 
         public static GalleryVM GetVM(Gallery gallery)
         {
-            var gi = new GalleryInfo(gallery.Id, gallery.Token);
+            var gi = new GalleryInfo(gallery.ID, gallery.Token);
             if (Cache.TryGet(gi, out var vm))
             {
                 vm.Gallery = gallery;
@@ -192,8 +192,8 @@ namespace ExViewer.ViewModels
             });
             this.OpenImage = new Command<GalleryImage>(image =>
             {
-                this.CurrentIndex = image.PageId - 1;
-                RootControl.RootController.Frame.Navigate(typeof(ImagePage), this.gallery.Id);
+                this.CurrentIndex = image.PageID - 1;
+                RootControl.RootController.Frame.Navigate(typeof(ImagePage), this.gallery.ID);
             });
             this.LoadOriginal = new Command<GalleryImage>(async image =>
             {
@@ -244,17 +244,17 @@ namespace ExViewer.ViewModels
                     RootControl.RootController.TrackAsyncAction(load, async (s, e) =>
                     {
                         await DispatcherHelper.YieldIdle();
-                        RootControl.RootController.Frame.Navigate(typeof(GalleryPage), info.Id);
+                        RootControl.RootController.Frame.Navigate(typeof(GalleryPage), info.ID);
                     });
                 else
-                    RootControl.RootController.Frame.Navigate(typeof(GalleryPage), info.Id);
+                    RootControl.RootController.Frame.Navigate(typeof(GalleryPage), info.ID);
             }, c => c != null && c.DescendantsInfo.Count != 0);
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(GalleryImage.OriginalLoaded))
-                this.LoadOriginal.RaiseCanExecuteChanged();
+                this.LoadOriginal.OnCanExecuteChanged();
         }
 
         private GalleryVM(Gallery gallery)
@@ -289,8 +289,8 @@ namespace ExViewer.ViewModels
                 Set(ref this.gallery, value);
                 if (this.gallery != null)
                     this.gallery.LoadMoreItemsException += this.Gallery_LoadMoreItemsException;
-                this.Save.RaiseCanExecuteChanged();
-                this.Share.RaiseCanExecuteChanged();
+                this.Save.OnCanExecuteChanged();
+                this.Share.OnCanExecuteChanged();
                 this.Torrents = null;
             }
         }
@@ -343,7 +343,7 @@ namespace ExViewer.ViewModels
             set
             {
                 Set(ref this.saveStatus, value);
-                this.Save.RaiseCanExecuteChanged();
+                this.Save.OnCanExecuteChanged();
             }
         }
 
@@ -453,11 +453,7 @@ namespace ExViewer.ViewModels
             private set
             {
                 this.torrents = value;
-                DispatcherHelper.BeginInvokeOnUIThread(() =>
-                {
-                    RaisePropertyChanged(nameof(Torrents));
-                    RaisePropertyChanged(nameof(TorrentCount));
-                });
+                OnPropertyChanged(nameof(Torrents), nameof(TorrentCount));
             }
         }
 
