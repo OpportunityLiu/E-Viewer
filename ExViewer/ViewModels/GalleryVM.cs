@@ -117,16 +117,19 @@ namespace ExViewer.ViewModels
                         data.Properties.Description = gallery.GetSecondaryTitle();
                         if (image == null)
                         {
-                            var ms = new InMemoryRandomAccessStream();
-                            var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
-                            encoder.SetSoftwareBitmap(gallery.Thumb);
-                            await encoder.FlushAsync();
-                            data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
-                            var firstImage = gallery.FirstOrDefault()?.ImageFile;
-                            if (firstImage != null)
-                                data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
-                            else
-                                data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
+                            if (gallery.Thumb != null)
+                            {
+                                var ms = new InMemoryRandomAccessStream();
+                                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
+                                encoder.SetSoftwareBitmap(gallery.Thumb);
+                                await encoder.FlushAsync();
+                                data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
+                                var firstImage = gallery.FirstOrDefault()?.ImageFile;
+                                if (firstImage != null)
+                                    data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
+                                else
+                                    data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
+                            }
                             data.Properties.ContentSourceWebLink = gallery.GalleryUri;
                             data.SetWebLink(gallery.GalleryUri);
                             data.SetText(gallery.GalleryUri.ToString());
