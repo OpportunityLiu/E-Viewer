@@ -1,5 +1,6 @@
 ﻿using ExClient.Internal;
 using ExClient.Settings;
+using ExClient.Status;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 
@@ -35,5 +36,8 @@ namespace ExClient
 
         private readonly UserStatus userStatus = new UserStatus();
         public UserStatus UserStatus => NeedLogOn ? null : this.userStatus;
+
+        private readonly TaggingStatistics taggingStatistics = new TaggingStatistics();
+        public TaggingStatistics TaggingStatistics => NeedLogOn ? null : this.taggingStatistics;
     }
 }

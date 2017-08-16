@@ -75,7 +75,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var response = await post(gallery.Id, gallery.Token, note);
+                var response = await post(gallery.ID, gallery.Token, note);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var match = favNoteMatcher.Match(responseContent, 1300);
                 if(match.Success)
@@ -96,7 +96,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var response = await post(gallery.Id, gallery.Token, note);
+                var response = await post(gallery.ID, gallery.Token, note);
             });
         }
 

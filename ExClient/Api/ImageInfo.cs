@@ -26,9 +26,9 @@ namespace ExClient.Api
             {
                 var v = (ImageInfo)value;
                 writer.WriteStartArray();
-                writer.WriteValue(v.GalleryId);
+                writer.WriteValue(v.GalleryID);
                 writer.WriteValue(v.ImageToken.ToTokenString());
-                writer.WriteValue(v.PageId);
+                writer.WriteValue(v.PageID);
                 writer.WriteEndArray();
             }
         }
@@ -39,10 +39,10 @@ namespace ExClient.Api
             {
                 var sp = data.Paths[2].Split('-');
                 if ((sp.Length == 2)
-                    && long.TryParse(sp[0], out var gId)
-                    && int.TryParse(sp[1], out var pId))
+                    && long.TryParse(sp[0], out var gID)
+                    && int.TryParse(sp[1], out var pID))
                 {
-                    info = new ImageInfo(gId, data.Paths[1].Substring(0, 10).ToToken(), pId);
+                    info = new ImageInfo(gID, data.Paths[1].Substring(0, 10).ToToken(), pID);
                     return true;
                 }
             }
@@ -66,11 +66,11 @@ namespace ExClient.Api
             throw new FormatException();
         }
 
-        public ImageInfo(long galleryId, ulong imageToken, int pageId)
+        public ImageInfo(long galleryID, ulong imageToken, int pageID)
         {
-            this.GalleryId = galleryId;
+            this.GalleryID = galleryID;
             this.ImageToken = imageToken;
-            this.PageId = pageId;
+            this.PageID = pageID;
         }
 
         public IAsyncOperation<GalleryInfo> FetchGalleryInfoAsync()
@@ -83,29 +83,27 @@ namespace ExClient.Api
             });
         }
 
-        public long GalleryId { get; }
-        public int PageId { get; }
+        public long GalleryID { get; }
+        public int PageID { get; }
         public ulong ImageToken { get; }
 
         public bool Equals(ImageInfo other)
         {
-            return this.GalleryId == other.GalleryId
+            return this.GalleryID == other.GalleryID
                 && this.ImageToken == other.ImageToken
-                && this.PageId == other.PageId;
+                && this.PageID == other.PageID;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null || typeof(GalleryInfo) != obj.GetType())
-            {
-                return false;
-            }
-            return Equals((ImageInfo)obj);
+            if (obj is ImageInfo info)
+                return Equals(info);
+            return false;
         }
 
         public override int GetHashCode()
         {
-            return this.GalleryId.GetHashCode() ^ this.ImageToken.GetHashCode() ^ this.PageId.GetHashCode();
+            return this.GalleryID.GetHashCode() ^ this.ImageToken.GetHashCode() ^ this.PageID.GetHashCode();
         }
     }
 }

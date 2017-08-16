@@ -91,7 +91,7 @@ namespace ExClient.Galleries
             using (var db = new GalleryDb())
             {
                 db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                var gid = this.Id;
+                var gid = this.ID;
                 var models = db.GalleryImageSet
                     .Include(gi => gi.Image)
                     .Where(gi => gi.GalleryId == gid);
@@ -144,7 +144,7 @@ namespace ExClient.Galleries
 
         internal IAsyncAction LoadImageAsync(GalleryImagePlaceHolder image)
         {
-            var pageIndex = MathHelper.GetPageIndexOfRecord(PageSize, image.PageId - 1);
+            var pageIndex = MathHelper.GetPageIndexOfRecord(PageSize, image.PageID - 1);
             var lpAc = this.loadingPageArray[pageIndex];
             if (lpAc != null && lpAc.Status == AsyncStatus.Started)
                 return lpAc;
@@ -225,7 +225,7 @@ namespace ExClient.Galleries
                 using (var db = new GalleryDb())
                 {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                    var gId = this.Id;
+                    var gId = this.ID;
                     var imageModel = db.GalleryImageSet
                         .Include(gi => gi.Image)
                         .Where(gi => gi.GalleryId == gId)

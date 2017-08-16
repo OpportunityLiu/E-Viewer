@@ -27,7 +27,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 namespace ExClient.Galleries
 {
     [JsonObject]
-    [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count} RecordCount = {RecordCount}\}")]
+    [System.Diagnostics.DebuggerDisplay(@"\{ID = {ID} Count = {Count} RecordCount = {RecordCount}\}")]
     public class Gallery : IncrementalLoadingCollection<GalleryImage>
     {
         internal static readonly int PageSize = 20;
@@ -134,7 +134,7 @@ namespace ExClient.Galleries
                 await Task.WhenAll(loadTasks);
                 using (var db = new GalleryDb())
                 {
-                    var gid = this.Id;
+                    var gid = this.ID;
                     var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == gid);
                     if (myModel == null)
                     {
@@ -151,10 +151,10 @@ namespace ExClient.Galleries
 
         private Gallery(long id, ulong token)
         {
-            this.Id = id;
+            this.ID = id;
             this.Token = token;
             this.Comments = new CommentCollection(this);
-            this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{Id.ToString()}/{Token.ToTokenString()}/");
+            this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{ID.ToString()}/{Token.ToTokenString()}/");
         }
 
         internal Gallery(GalleryModel model)
@@ -247,7 +247,7 @@ namespace ExClient.Galleries
             {
                 using (var db = new GalleryDb())
                 {
-                    var gid = this.Id;
+                    var gid = this.ID;
                     var myModel = db.GallerySet.SingleOrDefault(model => model.GalleryModelId == gid);
                     if (myModel == null)
                     {
@@ -286,7 +286,7 @@ namespace ExClient.Galleries
 
         #region MetaData
 
-        public long Id { get; }
+        public long ID { get; }
 
         public bool Available { get; protected set; }
 
@@ -449,7 +449,7 @@ namespace ExClient.Galleries
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                     foreach (var page in pics)
                     {
-                        var gId = this.Id;
+                        var gId = this.ID;
                         var pId = page.pageId;
                         var imageModel = db.GalleryImageSet
                             .Include(gi => gi.Image)
@@ -479,7 +479,7 @@ namespace ExClient.Galleries
         {
             return Run(async token =>
             {
-                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={this.Id}&t={this.Token.ToTokenString()}&act=addfav", UriKind.Relative));
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={this.ID}&t={this.Token.ToTokenString()}&act=addfav", UriKind.Relative));
                 var favdel = doc.GetElementbyId("favdel");
                 if (favdel != null)
                 {
@@ -510,7 +510,7 @@ namespace ExClient.Galleries
         {
             return Task.Run(async () =>
             {
-                var gid = this.Id;
+                var gid = this.ID;
                 using (var db = new GalleryDb())
                 {
                     var toDelete = db.GalleryImageSet
