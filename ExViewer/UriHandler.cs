@@ -54,10 +54,10 @@ namespace ExViewer
                     {
                     case GalleryLaunchResult g:
                         var page = RootControl.RootController.Frame.Content;
-                        if (!(page is GalleryPage gPage && gPage.VM.Gallery.Id == g.GalleryInfo.Id))
+                        if (!(page is GalleryPage gPage && gPage.VM.Gallery.ID == g.GalleryInfo.ID))
                         {
                             await GalleryVM.GetVMAsync(g.GalleryInfo);
-                            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.GalleryInfo.Id);
+                            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.GalleryInfo.ID);
                             await Task.Delay(500);
                         }
                         switch (g.Status)
@@ -66,7 +66,7 @@ namespace ExViewer
                             (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
                             break;
                         case GalleryLaunchStatus.Image:
-                            RootControl.RootController.Frame.Navigate(typeof(ImagePage), g.GalleryInfo.Id);
+                            RootControl.RootController.Frame.Navigate(typeof(ImagePage), g.GalleryInfo.ID);
                             await Task.Delay(500);
                             (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
                             break;

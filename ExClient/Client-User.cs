@@ -1,4 +1,5 @@
 ﻿using ExClient.Internal;
+using ExClient.Status;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;

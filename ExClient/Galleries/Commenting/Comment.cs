@@ -38,7 +38,7 @@ namespace ExClient.Galleries.Commenting
             this.Owner = owner;
             var culture = System.Globalization.CultureInfo.InvariantCulture;
             var document = commentNode.OwnerDocument;
-            this.Id = id;
+            this.ID = id;
 
             var contentHtml = document.GetElementbyId($"comment_{id}").OuterHtml.Replace("://forums.exhentai.org", "://forums.e-hentai.org");
             this.Content = HtmlNode.CreateNode(contentHtml);
@@ -100,11 +100,11 @@ namespace ExClient.Galleries.Commenting
 
         public CommentCollection Owner { get; }
 
-        public int Id { get; }
+        public int ID { get; }
 
         public string Author { get; }
 
-        public bool IsUploaderComment => this.Id == 0;
+        public bool IsUploaderComment => this.ID == 0;
 
         public DateTimeOffset Posted { get; }
 
@@ -154,7 +154,7 @@ namespace ExClient.Galleries.Commenting
             return AsyncInfo.Run(async token =>
             {
                 var r = await request.GetResponseAsync();
-                if (this.Id != r.Id)
+                if (this.ID != r.ID)
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
                 switch (r.Vote)
                 {

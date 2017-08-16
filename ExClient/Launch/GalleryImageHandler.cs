@@ -18,7 +18,7 @@ namespace ExClient.Launch
             return Run(async token =>
             {
                 var gInfo = await info.FetchGalleryInfoAsync();
-                return (LaunchResult)new GalleryLaunchResult(gInfo, info.PageId, GalleryLaunchStatus.Image);
+                return (LaunchResult)new GalleryLaunchResult(gInfo, info.PageID, GalleryLaunchStatus.Image);
             });
         }
     }

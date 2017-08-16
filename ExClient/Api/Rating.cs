@@ -36,5 +36,4 @@ namespace ExClient.Api
         //[JsonProperty("rating_cls")]
         //public string RatingClass { get; set; }
     }
-
 }

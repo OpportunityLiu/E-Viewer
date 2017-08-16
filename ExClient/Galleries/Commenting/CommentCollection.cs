@@ -75,7 +75,7 @@ namespace ExClient.Galleries.Commenting
                     {
                         var o = oi < this.Count ? this[oi] : null;
                         var n = newValues[ni];
-                        if (o?.Id == n.Id)
+                        if (o?.ID == n.ID)
                         {
                             pairsO.Add(o);
                             pairsN.Add(n);
@@ -142,7 +142,7 @@ namespace ExClient.Galleries.Commenting
                     yield return new KeyValuePair<string, string>("commenttext", content);
                     if (editable != null && editable.Status == CommentStatus.Editable)
                     {
-                        yield return new KeyValuePair<string, string>("edit_comment", editable.Id.ToString());
+                        yield return new KeyValuePair<string, string>("edit_comment", editable.ID.ToString());
                         yield return new KeyValuePair<string, string>("postcomment", "Edit Comment");
                     }
                     else

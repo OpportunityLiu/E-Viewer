@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Opportunity.MvvmUniverse.Views;
 using Opportunity.MvvmUniverse.Collections;
+using ExClient.Status;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 

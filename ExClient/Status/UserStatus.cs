@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 
-namespace ExClient
+namespace ExClient.Status
 {
     public class UserStatus : ObservableObject
     {
