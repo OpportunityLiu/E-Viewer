@@ -1,6 +1,12 @@
 ﻿{
   "dependencies": {
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0",
+    "Microsoft.Win32.Primitives": "4.3.0",
+    "System.Diagnostics.Contracts": "4.3.0",
+    "System.Net.NameResolution": "4.3.0",
+    "System.Runtime.WindowsRuntime.UI.Xaml": "4.3.0",
+    "System.Threading.Overlapped": "4.3.0",
+    "System.ValueTuple": "4.4.0"
   },
   "frameworks": {
     "uap10.0.14393": {}
