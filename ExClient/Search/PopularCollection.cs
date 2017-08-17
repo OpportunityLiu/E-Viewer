@@ -33,7 +33,7 @@ namespace ExClient.Search
             OnPropertyChanged(nameof(HasMoreItems));
         }
 
-        public override bool HasMoreItems => Count != 0;
+        public override bool HasMoreItems => Count == 0;
 
         private void handleAdditionalInfo(HtmlNode trNode, Gallery gallery)
         {

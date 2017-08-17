@@ -50,14 +50,15 @@ namespace ExViewer.Controls
         /// <inheritdoc />
         protected override Size MeasureOverride(Size availableSize)
         {
+            var orientation = Orientation;
             var totalMeasure = UvMeasure.Zero;
-            var parentMeasure = new UvMeasure(Orientation, availableSize.Width, availableSize.Height);
+            var parentMeasure = new UvMeasure(orientation, availableSize.Width, availableSize.Height);
             var lineMeasure = UvMeasure.Zero;
             foreach (var child in Children)
             {
                 child.Measure(availableSize);
 
-                var currentMeasure = new UvMeasure(Orientation, child.DesiredSize.Width, child.DesiredSize.Height);
+                var currentMeasure = new UvMeasure(orientation, child.DesiredSize.Width, child.DesiredSize.Height);
 
                 if (parentMeasure.U > currentMeasure.U + lineMeasure.U)
                 {
@@ -101,19 +102,20 @@ namespace ExViewer.Controls
 
             totalMeasure.U = Math.Ceiling(totalMeasure.U);
 
-            return Orientation == Orientation.Horizontal ? new Size(totalMeasure.U, totalMeasure.V) : new Size(totalMeasure.V, totalMeasure.U);
+            return orientation == Orientation.Horizontal ? new Size(totalMeasure.U, totalMeasure.V) : new Size(totalMeasure.V, totalMeasure.U);
         }
 
         /// <inheritdoc />
         protected override Size ArrangeOverride(Size finalSize)
         {
-            var parentMeasure = new UvMeasure(Orientation, finalSize.Width, finalSize.Height);
+            var orientation = Orientation;
+            var parentMeasure = new UvMeasure(orientation, finalSize.Width, finalSize.Height);
             var position = UvMeasure.Zero;
 
             double currentV = 0;
             foreach (var child in Children)
             {
-                var desiredMeasure = new UvMeasure(Orientation, child.DesiredSize.Width, child.DesiredSize.Height);
+                var desiredMeasure = new UvMeasure(orientation, child.DesiredSize.Width, child.DesiredSize.Height);
                 if ((desiredMeasure.U + position.U) > parentMeasure.U)
                 {
                     // next row!
@@ -123,7 +125,7 @@ namespace ExViewer.Controls
                 }
 
                 // Place the item
-                if (Orientation == Orientation.Horizontal)
+                if (orientation == Orientation.Horizontal)
                 {
                     child.Arrange(new Rect(position.U, position.V, child.DesiredSize.Width, child.DesiredSize.Height));
                 }
