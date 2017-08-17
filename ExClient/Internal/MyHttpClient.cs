@@ -141,12 +141,12 @@ namespace ExClient.Internal
                     var title = doc.DocumentNode.Element("html").Element("head").Element("title");
                     if (title == null)
                         break;
-                    if (!HtmlEntity.DeEntitize(title.InnerText).StartsWith("Gallery Not Available - "))
+                    if (!title.InnerText.DeEntitize().StartsWith("Gallery Not Available - "))
                         break;
                     var error = doc.DocumentNode.Element("html").Element("body")?.Element("div")?.Element("p");
                     if (error == null)
                         break;
-                    var msg = HtmlEntity.DeEntitize(error.InnerText);
+                    var msg = error.InnerText.DeEntitize();
                     switch (msg)
                     {
                     case "This gallery has been removed or is unavailable.":

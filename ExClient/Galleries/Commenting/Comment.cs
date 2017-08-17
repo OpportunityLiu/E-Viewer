@@ -84,7 +84,7 @@ namespace ExClient.Galleries.Commenting
                 var node = HtmlNode.CreateNode(this.Content.OuterHtml);
                 foreach (var item in node.Descendants("#text"))
                 {
-                    var data = HtmlEntity.DeEntitize(item.InnerHtml);
+                    var data = item.InnerHtml.DeEntitize();
                     var uri = $"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8"
                         + $"&sl=auto&tl={targetLangCode}&q={Uri.EscapeDataString(data)}";
                     var transRetHtml = await transClient.GetStringAsync(new Uri(uri));
@@ -186,7 +186,7 @@ namespace ExClient.Galleries.Commenting
                 var textArea = doc.Descendants("textarea").FirstOrDefault();
                 if (textArea == null)
                     return "";
-                return HtmlEntity.DeEntitize(textArea.InnerText);
+                return textArea.InnerText.DeEntitize();
             });
         }
 

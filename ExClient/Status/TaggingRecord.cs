@@ -24,13 +24,13 @@ namespace ExClient.Status
         internal TaggingRecord(HtmlNode trNode)
         {
             var td = trNode.Elements("td").ToList();
-            Tag = Tag.Parse(HtmlEntity.DeEntitize(td[0].InnerText));
-            Score = int.Parse(HtmlEntity.DeEntitize(td[1].InnerText));
-            GalleryID = long.Parse(HtmlEntity.DeEntitize(td[2].InnerText));
-            Timestamp = DateTimeOffset.Parse(HtmlEntity.DeEntitize(td[3].InnerText), null, System.Globalization.DateTimeStyles.AssumeUniversal);
-            UsageCount = long.Parse(HtmlEntity.DeEntitize(td[4].InnerText));
-            IsBlocked = HtmlEntity.DeEntitize(td[5].InnerText) == "B";
-            IsSlaved = HtmlEntity.DeEntitize(td[6].InnerText) == "S";
+            Tag = Tag.Parse(td[0].InnerText.DeEntitize());
+            Score = int.Parse(td[1].InnerText.DeEntitize());
+            GalleryID = long.Parse(td[2].InnerText.DeEntitize());
+            Timestamp = DateTimeOffset.Parse(td[3].InnerText.DeEntitize(), null, System.Globalization.DateTimeStyles.AssumeUniversal);
+            UsageCount = long.Parse(td[4].InnerText.DeEntitize());
+            IsBlocked = td[5].InnerText.DeEntitize() == "B";
+            IsSlaved = td[6].InnerText.DeEntitize() == "S";
         }
     }
 }

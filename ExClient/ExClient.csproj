@@ -222,7 +222,7 @@
     <Compile Include="Status\TaggingRecord.cs" />
     <Compile Include="Status\TaggingStatistics.cs" />
     <Compile Include="Tagging\TagState.cs" />
-    <Compile Include="TopList.cs" />
+    <Compile Include="Status\TopList.cs" />
     <Compile Include="Status\UserInfo.cs" />
     <Compile Include="Status\UserStatus.cs" />
     <Content Include="Properties\ExClient.rd.xml" />

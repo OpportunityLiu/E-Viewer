@@ -17,7 +17,7 @@ namespace ExClient.Status
 
         private static int deEntitizeAndParse(HtmlNode node)
         {
-            return int.Parse(HtmlEntity.DeEntitize(node.InnerText));
+            return int.Parse(node.InnerText.DeEntitize());
         }
 
         private void analyzeTopList(HtmlNode toplistsDiv)
@@ -28,6 +28,7 @@ namespace ExClient.Status
                 this.topLists.Clear();
                 return;
             }
+            var newList = new List<TopListItem>();
             var toremove = new List<int>(Enumerable.Range(0, this.topLists.Count));
             foreach (var toplistRecord in table.Elements("tr"))
             {
@@ -35,33 +36,14 @@ namespace ExClient.Status
                 var listNode = toplistRecord.Descendants("a").FirstOrDefault();
                 if (rankNode == null || listNode == null)
                     continue;
-                if (!int.TryParse(HtmlEntity.DeEntitize(rankNode.InnerText).TrimStart('#'), out var rank))
+                if (!int.TryParse(rankNode.InnerText.DeEntitize().TrimStart('#'), out var rank))
                     continue;
-                var link = new Uri(HtmlEntity.DeEntitize(listNode.GetAttributeValue("href", "")));
+                var link = new Uri(listNode.GetAttributeValue("href", "").DeEntitize());
                 if (!int.TryParse(link.Query.Split('=').Last(), out var listID))
                     continue;
-                var item = new TopListItem(rank, (TopListName)listID);
-                var replaced = false;
-                for (var i = 0; i < this.topLists.Count; i++)
-                {
-                    if (this.topLists[i].Name == item.Name)
-                    {
-                        this.topLists[i] = item;
-                        replaced = true;
-                        toremove.Remove(i);
-                        break;
-                    }
-                }
-                if (!replaced)
-                {
-                    this.topLists.Add(item);
-                }
+                newList.Add(new TopListItem(rank, (TopListName)listID));
             }
-
-            for (var i = toremove.Count - 1; i >= 0; i--)
-            {
-                this.topLists.RemoveAt(i);
-            }
+            this.topLists.Update(newList);
         }
 
         private void analyzeImageLimit(HtmlNode imageLimitDiv)
@@ -78,7 +60,7 @@ namespace ExClient.Status
             this.ModerationPower = deEntitizeAndParse(modPowerDiv.Descendants("div").Last());
             var values = modPowerDiv.Descendants("td")
                 .Where(n => n.GetAttributeValue("style", "") == "font-weight:bold")
-                .Select(n => HtmlEntity.DeEntitize(n.InnerText))
+                .Select(n => n.InnerText.DeEntitize())
                 .Where(s => !string.IsNullOrWhiteSpace(s) && s[0] != '=')
                 .Select(double.Parse)
                 .ToList();

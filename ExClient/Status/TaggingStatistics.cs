@@ -34,10 +34,11 @@ namespace ExClient.Status
                 var uid = Client.Current.UserID;
                 if (uid < 0)
                     throw new InvalidOperationException("Hasn't log in");
+                this.records.Clear();
                 var page = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"https://e-hentai.org/tools.php?act=taglist&uid={uid}"));
                 var body = page.DocumentNode.Element("html").Element("body");
 
-                var overall = HtmlEntity.DeEntitize(body.Element("div").Elements("div").Last().InnerText);
+                var overall = body.Element("div").Elements("div").Last().InnerText.DeEntitize();
                 var match = regex.Match(overall);
                 if (match.Success)
                 {
@@ -49,7 +50,6 @@ namespace ExClient.Status
                 }
 
                 var table = body.Element("table");
-                this.records.Clear();
                 if (table != null)
                 {
                     this.records.AddRange(table.Elements("tr").Skip(1).Select(t => new TaggingRecord(t)));

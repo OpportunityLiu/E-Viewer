@@ -16,7 +16,7 @@ namespace ExClient.Galleries.Metadata
             var gdd = doc.GetElementbyId("gdd");
             var parentNode = gdd.FirstChild.ChildNodes[1].Descendants("a").FirstOrDefault();
             if (parentNode != null)
-                this.ParentInfo = GalleryInfo.Parse(new Uri(HtmlEntity.DeEntitize(parentNode.GetAttributeValue("href", ""))));
+                this.ParentInfo = GalleryInfo.Parse(new Uri(parentNode.GetAttributeValue("href", "").DeEntitize()));
             var descendantsNode = doc.GetElementbyId("gnd");
             if (descendantsNode != null)
             {
@@ -26,8 +26,8 @@ namespace ExClient.Galleries.Metadata
                 {
                     var aNode = descendantsNode.ChildNodes[i * 3 + 1];
                     var textNode = descendantsNode.ChildNodes[i * 3 + 2];
-                    var link = new Uri(HtmlEntity.DeEntitize(aNode.GetAttributeValue("href", "")));
-                    var dto = DateTimeOffset.ParseExact(textNode.InnerText, "', added' yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+                    var link = new Uri(aNode.GetAttributeValue("href", "").DeEntitize());
+                    var dto = DateTimeOffset.ParseExact(textNode.InnerText.DeEntitize(), "', added' yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                     descendants[i] = (dto, GalleryInfo.Parse(link));
                 }
                 this.DescendantsInfo = descendants;
