@@ -149,7 +149,7 @@ namespace ExViewer.Controls
         [System.Diagnostics.DebuggerDisplay("U = {U} V = {V}")]
         private struct UvMeasure
         {
-            internal static readonly UvMeasure Zero = default(UvMeasure);
+            internal static readonly UvMeasure Zero = default;
 
             internal double U { get; set; }
 
