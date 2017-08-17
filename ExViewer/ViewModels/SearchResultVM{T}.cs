@@ -56,7 +56,7 @@ namespace ExViewer.ViewModels
             protected set => Set(ref this.selectedGallery, value);
         }
 
-        private void SearchResult_LoadMoreItemsException(IncrementalLoadingCollection<Gallery> sender, LoadMoreItemsExceptionEventArgs args)
+        private void SearchResult_LoadMoreItemsException(IncrementalLoadingList<Gallery> sender, LoadMoreItemsExceptionEventArgs args)
         {
             if (!RootControl.RootController.Available)
                 return;

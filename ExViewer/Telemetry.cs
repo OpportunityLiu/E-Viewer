@@ -163,7 +163,7 @@ namespace ExViewer
             var c = VM.Galleries;
             if (c == null)
                 return;
-            sb.AppendLine($"PopularCollection: Type={c.GetType()}, RecordCount={c.RecordCount}");
+            sb.AppendLine($"PopularCollection: Type={c.GetType()}, Count={c.Count}");
         }
     }
 }

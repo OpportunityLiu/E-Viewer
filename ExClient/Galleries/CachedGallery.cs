@@ -17,9 +17,9 @@ namespace ExClient.Galleries
     {
         private sealed class CachedGalleryList : GalleryList<CachedGallery, GalleryModel>
         {
-            public static IAsyncOperation<ObservableCollection<Gallery>> LoadList()
+            public static IAsyncOperation<ObservableList<Gallery>> LoadList()
             {
-                return Task.Run<ObservableCollection<Gallery>>(() =>
+                return Task.Run<ObservableList<Gallery>>(() =>
                 {
                     using (var db = new GalleryDb())
                     {
@@ -45,7 +45,7 @@ namespace ExClient.Galleries
             }
         }
 
-        public static IAsyncOperation<ObservableCollection<Gallery>> LoadCachedGalleriesAsync()
+        public static IAsyncOperation<ObservableList<Gallery>> LoadCachedGalleriesAsync()
         {
             return CachedGalleryList.LoadList();
         }
@@ -102,7 +102,7 @@ namespace ExClient.Galleries
             }
         }
 
-        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IEnumerable<GalleryImage>> LoadPageAsync(int pageIndex)
         {
             return Run(async token =>
             {
@@ -117,9 +117,9 @@ namespace ExClient.Galleries
             });
         }
 
-        protected IAsyncOperation<IList<GalleryImage>> LoadPageLocalilyAsync(int pageIndex)
+        protected IAsyncOperation<IEnumerable<GalleryImage>> LoadPageLocalilyAsync(int pageIndex)
         {
-            return Task.Run<IList<GalleryImage>>(async () =>
+            return Task.Run<IEnumerable<GalleryImage>>(async () =>
             {
                 this.LoadImageModels();
                 var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
@@ -150,7 +150,7 @@ namespace ExClient.Galleries
                 return lpAc;
             return this.loadingPageArray[pageIndex] = Run(async token =>
             {
-                var images = await base.LoadPageAsync(pageIndex);
+                var images = (IList<GalleryImage>)await base.LoadPageAsync(pageIndex);
                 var offset = MathHelper.GetStartIndexOfPage(PageSize, pageIndex);
                 for (var i = 0; i < images.Count; i++)
                 {

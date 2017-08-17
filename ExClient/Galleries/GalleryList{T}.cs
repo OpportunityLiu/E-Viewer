@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Data;
 
 namespace ExClient.Galleries
 {
-    internal abstract class GalleryList<TGallery, TModel> : ObservableCollection<Gallery>, IItemsRangeInfo
+    internal abstract class GalleryList<TGallery, TModel> : ObservableList<Gallery>, IItemsRangeInfo
          where TGallery : Gallery
     {
         public bool IsEmpty => this.Count == 0;

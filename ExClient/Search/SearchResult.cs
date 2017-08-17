@@ -13,7 +13,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Search
 {
-    public abstract class SearchResult : IncrementalLoadingCollection<Gallery>
+    public abstract class SearchResult : PagingList<Gallery>
     {
         public abstract Uri SearchUri { get; }
 
@@ -81,7 +81,7 @@ namespace ExClient.Search
 
         protected virtual void LoadPageOverride(HtmlDocument doc) { }
 
-        private async Task<IList<Gallery>> loadPage(HtmlDocument doc)
+        private async Task<IEnumerable<Gallery>> loadPage(HtmlDocument doc)
         {
             var table = doc.DocumentNode.Descendants("table").Single(node => node.GetAttributeValue("class", "") == "itg");
             var gInfoList = new List<GalleryInfo>(25);
@@ -103,7 +103,7 @@ namespace ExClient.Search
             return galleries;
         }
 
-        protected sealed override IAsyncOperation<IList<Gallery>> LoadPageAsync(int pageIndex)
+        protected sealed override IAsyncOperation<IEnumerable<Gallery>> LoadPageAsync(int pageIndex)
         {
             return Run(async token =>
             {

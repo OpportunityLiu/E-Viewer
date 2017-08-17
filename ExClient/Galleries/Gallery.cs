@@ -28,7 +28,7 @@ namespace ExClient.Galleries
 {
     [JsonObject]
     [System.Diagnostics.DebuggerDisplay(@"\{ID = {ID} Count = {Count} RecordCount = {RecordCount}\}")]
-    public class Gallery : IncrementalLoadingCollection<GalleryImage>
+    public class Gallery : PagingList<GalleryImage>
     {
         internal static readonly int PageSize = 20;
 
@@ -396,9 +396,9 @@ namespace ExClient.Galleries
             this.FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
         }
 
-        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IEnumerable<GalleryImage>> LoadPageAsync(int pageIndex)
         {
-            return Task.Run<IList<GalleryImage>>(async () =>
+            return Task.Run<IEnumerable<GalleryImage>>(async () =>
             {
                 var needLoadComments = !this.Comments.IsLoaded;
                 var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");

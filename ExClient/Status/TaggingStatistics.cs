@@ -22,8 +22,8 @@ namespace ExClient.Status
         public double VotedAccuracy { get; set; }
         public int VotedCount { get; set; }
 
-        private readonly ObservableCollection<TaggingRecord> records = new ObservableCollection<TaggingRecord>();
-        public ObservableCollectionView<TaggingRecord> Records => this.records.AsReadOnly();
+        private readonly ObservableList<TaggingRecord> records = new ObservableList<TaggingRecord>();
+        public ObservableListView<TaggingRecord> Records => this.records.AsReadOnly();
 
         private static readonly Regex regex = new Regex(@"Tags:\s*(\d+)\s*\(\d+\s*recent\)\s*Started Accuracy\s*=\s*(\S+)\s*of\s*(\d+)\s*Voted Accuracy\s*=\s*(\S+)\s*of\s*(\d+)", RegexOptions.Compiled);
 

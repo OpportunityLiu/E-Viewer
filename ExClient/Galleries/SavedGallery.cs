@@ -16,9 +16,9 @@ namespace ExClient.Galleries
     {
         private sealed class SavedGalleryList : GalleryList<SavedGallery, GalleryModel>
         {
-            public static IAsyncOperation<ObservableCollection<Gallery>> LoadList()
+            public static IAsyncOperation<ObservableList<Gallery>> LoadList()
             {
-                return Task.Run<ObservableCollection<Gallery>>(() =>
+                return Task.Run<ObservableList<Gallery>>(() =>
                 {
                     using (var db = new GalleryDb())
                     {
@@ -44,7 +44,7 @@ namespace ExClient.Galleries
             }
         }
 
-        public static IAsyncOperation<ObservableCollection<Gallery>> LoadSavedGalleriesAsync()
+        public static IAsyncOperation<ObservableList<Gallery>> LoadSavedGalleriesAsync()
         {
             return SavedGalleryList.LoadList();
         }
@@ -84,7 +84,7 @@ namespace ExClient.Galleries
             return AsyncWrapper.CreateCompleted();
         }
 
-        protected override IAsyncOperation<IList<GalleryImage>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IEnumerable<GalleryImage>> LoadPageAsync(int pageIndex)
         {
             if (this.Comments.IsLoaded)
                 return LoadPageLocalilyAsync(pageIndex);

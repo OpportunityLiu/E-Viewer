@@ -30,9 +30,9 @@ namespace ExViewer.ViewModels
             }, g => g != null);
         }
 
-        private ObservableCollection<Gallery> galleries;
+        private ObservableList<Gallery> galleries;
 
-        public ObservableCollection<Gallery> Galleries
+        public ObservableList<Gallery> Galleries
         {
             get => this.galleries;
             protected set => Set(ref this.galleries, value);

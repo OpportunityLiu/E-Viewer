@@ -5,7 +5,7 @@
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0",
     "Microsoft.Win32.Primitives": "4.3.0",
     "Newtonsoft.Json": "10.0.3",
-    "Opportunity.MvvmUniverse": "0.3.7",
+    "Opportunity.MvvmUniverse": "0.4.0",
     "System.Diagnostics.Contracts": "4.3.0",
     "System.Net.NameResolution": "4.3.0",
     "System.Runtime.WindowsRuntime.UI.Xaml": "4.3.0",
