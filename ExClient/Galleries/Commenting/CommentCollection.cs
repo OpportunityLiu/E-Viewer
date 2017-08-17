@@ -54,67 +54,27 @@ namespace ExClient.Galleries.Commenting
             });
         }
 
+        private class CommentEqualityComparer : IEqualityComparer<Comment>
+        {
+            public bool Equals(Comment x, Comment y) => x?.ID == y?.ID;
+
+            public int GetHashCode(Comment obj) => obj == null ? 0 : obj.ID.GetHashCode();
+
+            public static CommentEqualityComparer Current { get; } = new CommentEqualityComparer();
+        }
+
         internal void AnalyzeDocument(HtmlDocument doc)
         {
             lock (this.syncroot)
             {
                 var newValues = Comment.AnalyzeDocument(this, doc).ToList();
-                var count = 0;
-                if (this.Count == 0)
+                this.Update(newValues, CommentEqualityComparer.Current, (o, n) =>
                 {
-                    foreach (var item in newValues)
-                    {
-                        this.Add(item);
-                    }
-                    count = newValues.Count;
-                }
-                else
-                {
-                    var pairsO = new List<Comment>();
-                    var pairsN = new List<Comment>();
-                    for (int oi = 0, ni = 0; ni < newValues.Count; ni++)
-                    {
-                        var o = oi < this.Count ? this[oi] : null;
-                        var n = newValues[ni];
-                        if (o?.ID == n.ID)
-                        {
-                            pairsO.Add(o);
-                            pairsN.Add(n);
-                            o.Score = n.Score;
-                            o.Status = n.Status;
-                            o.Edited = n.Edited;
-                            o.Content = n.Content;
-                            oi++;
-                        }
-                        else
-                        {
-                            pairsO.Add(null);
-                            pairsN.Add(n);
-                        }
-                    }
-                    for (var i = 0; i < this.Count;)
-                    {
-                        if (!pairsO.Contains(this[i]))
-                        {
-                            this.RemoveAt(i);
-                            count--;
-                        }
-                        else
-                        {
-                            i++;
-                        }
-                    }
-                    for (var i = 0; i < pairsN.Count; i++)
-                    {
-                        var o = pairsO[i];
-                        var n = pairsN[i];
-                        if (o == null)
-                        {
-                            this.Insert(i, n);
-                            count++;
-                        }
-                    }
-                }
+                    o.Score = n.Score;
+                    o.Status = n.Status;
+                    o.Edited = n.Edited;
+                    o.Content = n.Content;
+                });
                 this.IsLoaded = true;
             }
         }
