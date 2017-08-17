@@ -289,7 +289,7 @@ namespace ExViewer.Controls
                 }
                 else
                 {
-                    lastterm = default(string);
+                    lastterm = null;
                     previous = input;
                 }
             }
