@@ -138,8 +138,8 @@ namespace ExClient.Status
         #endregion
 
         #region TopList
-        private ObservableCollection<TopListItem> topLists = new ObservableCollection<TopListItem>();
-        public IReadOnlyList<TopListItem> TopLists => this.topLists.AsReadOnly();
+        private ObservableList<TopListItem> topLists = new ObservableList<TopListItem>();
+        public ObservableListView<TopListItem> TopLists => this.topLists.AsReadOnly();
         #endregion
 
         #region Moderation Power

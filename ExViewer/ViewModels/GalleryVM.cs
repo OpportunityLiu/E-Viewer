@@ -295,7 +295,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        private void Gallery_LoadMoreItemsException(IncrementalLoadingCollection<GalleryImage> sender, LoadMoreItemsExceptionEventArgs args)
+        private void Gallery_LoadMoreItemsException(IncrementalLoadingList<GalleryImage> sender, LoadMoreItemsExceptionEventArgs args)
         {
             RootControl.RootController.SendToast(args.Exception, typeof(GalleryPage));
             args.Handled = true;

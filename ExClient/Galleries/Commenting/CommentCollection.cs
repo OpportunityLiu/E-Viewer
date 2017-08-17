@@ -10,7 +10,7 @@ using Windows.Web.Http;
 
 namespace ExClient.Galleries.Commenting
 {
-    public sealed class CommentCollection : ObservableCollection<Comment>
+    public sealed class CommentCollection : ObservableList<Comment>
     {
         public CommentCollection(Gallery owner)
         {
@@ -31,12 +31,12 @@ namespace ExClient.Galleries.Commenting
 
         private readonly object syncroot = new object();
 
-        public IAsyncOperation<int> FetchAsync()
+        public IAsyncAction FetchAsync()
         {
             return fetchAsync(true);
         }
 
-        private IAsyncOperation<int> fetchAsync(bool reload)
+        private IAsyncAction fetchAsync(bool reload)
         {
             return AsyncInfo.Run(async token =>
             {
@@ -49,11 +49,12 @@ namespace ExClient.Galleries.Commenting
                 token.Register(get.Cancel);
                 var document = await get;
                 Api.ApiRequest.UpdateToken(document.DocumentNode.OuterHtml);
-                return AnalyzeDocument(document);
+                AnalyzeDocument(document);
+                return;
             });
         }
 
-        internal int AnalyzeDocument(HtmlDocument doc)
+        internal void AnalyzeDocument(HtmlDocument doc)
         {
             lock (this.syncroot)
             {
@@ -115,7 +116,6 @@ namespace ExClient.Galleries.Commenting
                     }
                 }
                 this.IsLoaded = true;
-                return count;
             }
         }
 

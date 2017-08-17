@@ -138,7 +138,7 @@ namespace ExClient.Tagging
         }
 
         [IndexerName("Groups")]
-        public RangedCollectionView<GalleryTag> this[Namespace key]
+        public RangedListView<GalleryTag> this[Namespace key]
         {
             get
             {
@@ -153,22 +153,22 @@ namespace ExClient.Tagging
             }
         }
 
-        private RangedCollectionView<GalleryTag> getValue(Namespace key)
+        private RangedListView<GalleryTag> getValue(Namespace key)
         {
             var i = getIndexOfKey(key);
             if (i < 0)
             {
                 if (key.IsDefined())
-                    return RangedCollectionView<GalleryTag>.Empty;
+                    return RangedListView<GalleryTag>.Empty;
                 else
                     throw new ArgumentOutOfRangeException(nameof(key));
             }
             return getValue(i);
         }
 
-        private RangedCollectionView<GalleryTag> getValue(int index)
+        private RangedListView<GalleryTag> getValue(int index)
         {
-            return new RangedCollectionView<GalleryTag>(this.Data, this.Offset[index], this.Offset[index + 1] - this.Offset[index]);
+            return new RangedListView<GalleryTag>(this.Data, this.Offset[index], this.Offset[index + 1] - this.Offset[index]);
         }
 
         public IAsyncAction VoteAsync(Tag tag, VoteState command)

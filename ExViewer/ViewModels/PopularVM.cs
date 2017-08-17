@@ -17,7 +17,7 @@ namespace ExViewer.ViewModels
     {
         public PopularVM()
         {
-            this.Refresh = new Command(() => this.Galleries.Reset());
+            this.Refresh = new Command(() => this.Galleries.Clear());
             this.Open = new Command<Gallery>(g =>
             {
                 GalleryVM.GetVM(g);

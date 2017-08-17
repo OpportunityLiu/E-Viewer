@@ -11,19 +11,29 @@ using Windows.Foundation;
 
 namespace ExClient.Search
 {
-    public sealed class PopularCollection : IncrementalLoadingCollection<Gallery>
+    public sealed class PopularCollection : IncrementalLoadingList<Gallery>
     {
-        public PopularCollection()
+        public PopularCollection() { }
+
+        protected override void ClearItems()
         {
-            Reset();
+            base.ClearItems();
+            OnPropertyChanged(nameof(HasMoreItems));
         }
 
-        public void Reset()
+        protected override void InsertItems(int index, IReadOnlyList<Gallery> items)
         {
-            this.ResetAll();
-            this.RecordCount = -1;
-            this.PageCount = 1;
+            base.InsertItems(index, items);
+            OnPropertyChanged(nameof(HasMoreItems));
         }
+
+        protected override void RemoveItems(int index, int count)
+        {
+            base.RemoveItems(index, count);
+            OnPropertyChanged(nameof(HasMoreItems));
+        }
+
+        public override bool HasMoreItems => Count != 0;
 
         private void handleAdditionalInfo(HtmlNode trNode, Gallery gallery)
         {
@@ -32,9 +42,9 @@ namespace ExClient.Search
             gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(favNode);
         }
 
-        protected override IAsyncOperation<IList<Gallery>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<IEnumerable<Gallery>> LoadMoreItemsImplementAsync(int count)
         {
-            return AsyncInfo.Run(async token =>
+            return AsyncInfo.Run<IEnumerable<Gallery>>(async token =>
             {
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(UriProvider.Eh.RootUri);
                 var pp = doc.GetElementbyId("pp");
@@ -46,7 +56,6 @@ namespace ExClient.Search
                     var link = HtmlEntity.DeEntitize(n.Descendants("a").First().GetAttributeValue("href", ""));
                     return GalleryInfo.Parse(new Uri(link));
                 }).ToList();
-                this.RecordCount = ginfo.Count;
                 var galleries = await Gallery.FetchGalleriesAsync(ginfo);
                 for (var i = 0; i < ginfo.Count; i++)
                 {
