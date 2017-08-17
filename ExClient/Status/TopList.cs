@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExClient
+namespace ExClient.Status
 {
     public struct TopListItem : IEquatable<TopListItem>
     {

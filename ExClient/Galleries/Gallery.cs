@@ -199,12 +199,12 @@ namespace ExClient.Galleries
                 throw new Exception(error);
             }
             this.Available = !expunged;
-            this.Title = HtmlEntity.DeEntitize(title);
-            this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
+            this.Title = title.DeEntitize();
+            this.TitleJpn = title_jpn.DeEntitize();
             if (!categoriesForRestApi.TryGetValue(category, out var ca))
                 ca = Category.Unspecified;
             this.Category = ca;
-            this.Uploader = HtmlEntity.DeEntitize(uploader);
+            this.Uploader = uploader.DeEntitize();
             this.Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture));
             this.RecordCount = int.Parse(filecount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
             this.FileSize = filesize;
@@ -434,8 +434,8 @@ namespace ExClient.Galleries
                 var pics = from node in html.GetElementbyId("gdt").Descendants("div")
                            where node.GetAttributeValue("class", null) == "gdtl"
                            let nodeA = node.Descendants("a").Single()
-                           let thumb = HtmlEntity.DeEntitize(nodeA.Descendants("img").Single().GetAttributeValue("src", null))
-                           let match = imgLinkMatcher.Match(HtmlEntity.DeEntitize(nodeA.GetAttributeValue("href", "")))
+                           let thumb = nodeA.Descendants("img").Single().GetAttributeValue("src", null).DeEntitize()
+                           let match = imgLinkMatcher.Match(nodeA.GetAttributeValue("href", "").DeEntitize())
                            where match.Success && thumb != null
                            select new
                            {
@@ -488,14 +488,14 @@ namespace ExClient.Galleries
                     {
                         var favNode = doc.GetElementbyId($"fav{i}");
                         var favNameNode = favNode.ParentNode.ParentNode.Elements("div").Skip(2).First();
-                        Client.Current.Favorites[i].Name = HtmlEntity.DeEntitize(favNameNode.InnerText);
+                        Client.Current.Favorites[i].Name = favNameNode.InnerText.DeEntitize();
                         if (!favSet && favNode.GetAttributeValue("checked", null) == "checked")
                         {
                             this.FavoriteCategory = Client.Current.Favorites[i];
                             favSet = true;
                         }
                     }
-                    this.FavoriteNote = HtmlEntity.DeEntitize(doc.DocumentNode.Descendants("textarea").First().InnerText);
+                    this.FavoriteNote = doc.DocumentNode.Descendants("textarea").First().InnerText.DeEntitize();
                 }
                 else
                 {

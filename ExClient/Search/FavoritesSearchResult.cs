@@ -47,7 +47,7 @@ namespace ExClient.Search
         {
             base.HandleAdditionalInfo(trNode, gallery);
             var favNode = trNode.ChildNodes[2].LastChild;
-            var favNote = HtmlEntity.DeEntitize(favNode.InnerText);
+            var favNote = favNode.InnerText.DeEntitize();
             if (favNote.StartsWith("Note: "))
                 gallery.FavoriteNote = favNote.Substring(6);
             else

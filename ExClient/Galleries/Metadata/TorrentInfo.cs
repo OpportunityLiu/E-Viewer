@@ -36,7 +36,7 @@ namespace ExClient.Galleries.Metadata
                                 Peers = int.Parse(reg.Groups[4].Value),
                                 Downloads = int.Parse(reg.Groups[5].Value),
                                 Uploader = reg.Groups[6].Value.DeEntitize(),
-                                TorrentUri = link == null ? null : new Uri(HtmlEntity.DeEntitize(link.GetAttributeValue("href", "")))
+                                TorrentUri = link == null ? null : new Uri(link.GetAttributeValue("href", "").DeEntitize())
                             };
                 return nodes.ToList().AsReadOnly();
             }).AsAsyncOperation();

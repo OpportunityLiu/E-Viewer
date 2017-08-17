@@ -83,12 +83,12 @@ namespace ExClient.Galleries.Metadata
 
         public override string ToString()
         {
+            if (this.Names.Count == 0) // 0.9% cases
+                return LocalizedStrings.Language.Names.NotApplicable;
             string name;
-            if (this.Names.Count == 0)
-                name = LocalizedStrings.Language.Names.NotApplicable;
-            else if (this.Names.Count == 1)
+            if (this.Names.Count == 1) // 99% cases
                 name = this.Names[0].ToFriendlyNameString();
-            else
+            else // 0.1% cases
                 name = string.Join(", ", this.Names.Select(LanguageNameExtension.ToFriendlyNameString));
             switch (Modifier)
             {

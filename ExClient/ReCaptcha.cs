@@ -25,8 +25,8 @@ namespace ExClient
                     var h = await g;
                     var html = new HtmlDocument();
                     html.LoadHtml(h);
-                    var cf = HtmlEntity.DeEntitize(html.GetElementbyId("recaptcha_challenge_field").GetAttributeValue("value", ""));
-                    var imgUri = HtmlEntity.DeEntitize(html.DocumentNode.Descendants("img").Single().GetAttributeValue("src", ""));
+                    var cf = html.GetElementbyId("recaptcha_challenge_field").GetAttributeValue("value", "").DeEntitize();
+                    var imgUri = html.DocumentNode.Descendants("img").Single().GetAttributeValue("src", "").DeEntitize();
                     return new ReCaptcha(cf, imgUri);
                 }
             });

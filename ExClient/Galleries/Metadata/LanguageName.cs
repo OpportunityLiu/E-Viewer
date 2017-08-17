@@ -76,6 +76,6 @@
         Ukrainian,
         /// <summary>越南语</summary>
         Vietnamese,
-        Other = ushort.MaxValue
+        Other = int.MaxValue
     }
 }
