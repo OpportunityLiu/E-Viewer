@@ -285,14 +285,14 @@ namespace ExViewer.Controls
             }
         }
 
-        private static readonly Brush normalBrush = (Brush)Application.Current.Resources["NormalCommentBrush"];
-        private static readonly Brush slaveBrush = (Brush)Application.Current.Resources["SlaveCommentBrush"];
+        private static readonly Brush normalBrush = (Brush)Application.Current.Resources["NormalTagBrush"];
+        private static readonly Brush slaveBrush = (Brush)Application.Current.Resources["SlaveTagBrush"];
 
-        private static readonly Brush upBrush = (Brush)Application.Current.Resources["VoteUpCommentBrush"];
-        private static readonly Brush upSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteUpCommentBrush"];
+        private static readonly Brush upBrush = (Brush)Application.Current.Resources["VoteUpTagBrush"];
+        private static readonly Brush upSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteUpTagBrush"];
 
-        private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownCommentBrush"];
-        private static readonly Brush downSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteDownCommentBrush"];
+        private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownTagBrush"];
+        private static readonly Brush downSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteDownTagBrush"];
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
