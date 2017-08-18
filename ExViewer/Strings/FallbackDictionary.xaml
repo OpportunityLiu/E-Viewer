@@ -4,12 +4,12 @@
   <!--  Override key-value pairs in this dictionary for language specific properties.  -->
   <x:String x:Key="GuestUserNameString">Guest</x:String>
 
-  <SolidColorBrush x:Key="VoteUpCommentBrush">#00cc30</SolidColorBrush>
-  <SolidColorBrush x:Key="SlaveVoteUpCommentBrush">#9900cc30</SolidColorBrush>
-  <SolidColorBrush x:Key="VoteDownCommentBrush">#FF3333</SolidColorBrush>
-  <SolidColorBrush x:Key="SlaveVoteDownCommentBrush">#99FF3333</SolidColorBrush>
-  <SolidColorBrush x:Key="SlaveCommentBrush"
+  <SolidColorBrush x:Key="VoteUpTagBrush">#00cc30</SolidColorBrush>
+  <SolidColorBrush x:Key="SlaveVoteUpTagBrush">#9900cc30</SolidColorBrush>
+  <SolidColorBrush x:Key="VoteDownTagBrush">#FF3333</SolidColorBrush>
+  <SolidColorBrush x:Key="SlaveVoteDownTagBrush">#99FF3333</SolidColorBrush>
+  <SolidColorBrush x:Key="SlaveTagBrush"
                    Color="{ThemeResource SystemBaseMediumColor}" />
-  <SolidColorBrush x:Key="NormalCommentBrush"
+  <SolidColorBrush x:Key="NormalTagBrush"
                    Color="{ThemeResource SystemBaseHighColor}" />
 </ResourceDictionary>
