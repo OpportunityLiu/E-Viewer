@@ -117,6 +117,9 @@ namespace ExViewer.ViewModels
                         data.Properties.Description = gallery.GetSecondaryTitle();
                         if (image == null)
                         {
+                            data.Properties.ContentSourceWebLink = gallery.GalleryUri;
+                            data.SetWebLink(gallery.GalleryUri);
+                            data.SetText(gallery.GalleryUri.ToString());
                             if (gallery.Thumb != null)
                             {
                                 var ms = new InMemoryRandomAccessStream();
@@ -130,23 +133,70 @@ namespace ExViewer.ViewModels
                                 else
                                     data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
                             }
-                            data.Properties.ContentSourceWebLink = gallery.GalleryUri;
-                            data.SetWebLink(gallery.GalleryUri);
-                            data.SetText(gallery.GalleryUri.ToString());
+                            var imageFiles = gallery
+                                .Where(i => i.ImageFile != null)
+                                .Select(i => new { i.ImageFile, Name = $"{i.PageID}{i.ImageFile.FileType}" })
+                                .Where(f => f.ImageFile != null)
+                                .ToList();
+                            if (imageFiles.Count == 0)
+                                return;
+                            data.RequestedOperation = DataPackageOperation.Move;
+                            if (gallery is SavedGallery)
+                                while (gallery.HasMoreItems)
+                                    await gallery.LoadMoreItemsAsync(20);
+                            foreach (var item in imageFiles.Select(f => f.ImageFile.FileType).Distinct())
+                            {
+                                data.Properties.FileTypes.Add(item);
+                            }
+                            var folderName = StorageHelper.ToValidFileName(gallery.GetDisplayTitle());
+                            data.SetDataProvider(StandardDataFormats.StorageItems, async req =>
+                            {
+                                var def = req.GetDeferral();
+                                try
+                                {
+                                    var tempFolder = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync("DataRequested", CreationCollisionOption.OpenIfExists);
+                                    var dataFolder = await tempFolder.CreateFolderAsync(folderName, CreationCollisionOption.ReplaceExisting);
+                                    var targetList = new List<IStorageFile>();
+                                    foreach (var item in imageFiles)
+                                    {
+                                        targetList.Add(await item.ImageFile.CopyAsync(dataFolder, item.Name, NameCollisionOption.ReplaceExisting));
+                                    }
+                                    req.SetData(Enumerable.Repeat(dataFolder, 1));
+                                }
+                                finally
+                                {
+                                    def.Complete();
+                                }
+                            });
                         }
                         else
                         {
-                            data.RequestedOperation = DataPackageOperation.Copy;
-                            if (image.ImageFile != null)
-                            {
-                                var view = RandomAccessStreamReference.CreateFromFile(image.ImageFile);
-                                data.SetBitmap(view);
-                                data.Properties.Thumbnail = image.ImageFile;
-                                data.SetStorageItems(Enumerable.Repeat(image.ImageFile, 1), true);
-                            }
                             data.Properties.ContentSourceWebLink = image.PageUri;
                             data.SetWebLink(image.PageUri);
                             data.SetText(image.PageUri.ToString());
+                            var imageFile = image.ImageFile;
+                            if (imageFile == null)
+                                return;
+                            var view = RandomAccessStreamReference.CreateFromFile(imageFile);
+                            data.SetBitmap(view);
+                            data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem));
+                            data.Properties.FileTypes.Add(imageFile.FileType);
+                            data.RequestedOperation = DataPackageOperation.Move;
+                            var fileName = $"{image.PageID}{imageFile.FileType}";
+                            data.SetDataProvider(StandardDataFormats.StorageItems, async req =>
+                            {
+                                var def = req.GetDeferral();
+                                try
+                                {
+                                    var tempFolder = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync("DataRequested", CreationCollisionOption.OpenIfExists);
+                                    var tempFile = await imageFile.CopyAsync(tempFolder, fileName, NameCollisionOption.ReplaceExisting);
+                                    req.SetData(Enumerable.Repeat(tempFile, 1));
+                                }
+                                finally
+                                {
+                                    def.Complete();
+                                }
+                            });
                         }
                     }
                     finally
