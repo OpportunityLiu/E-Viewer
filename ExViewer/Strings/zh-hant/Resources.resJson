@@ -258,7 +258,8 @@
       "SearchSplitViewTab/Content": "搜尋",
       "SearchSplitViewTab/ToolTipService/ToolTip": "搜尋",
       "SettingsSplitViewTab/Content": "設定",
-      "SettingsSplitViewTab/ToolTipService/ToolTip": "設定"
+      "SettingsSplitViewTab/ToolTipService/ToolTip": "設定",
+      "UserInfoButton/ToolTipService/ToolTip": "使用者資訊"
     },
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "刪除全部",
