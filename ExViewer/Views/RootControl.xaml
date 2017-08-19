@@ -202,7 +202,17 @@
                             IsEnabled="{x:Bind sv_root.IsPaneOpen, Mode=OneWay}"
                             ToolTipService.ToolTip="Change user"
                             Style="{StaticResource NavigationBackButtonSmallStyle}" />
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+          <!--<Button x:Uid="Views/RootControl/UserInfoButton"
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            x:Name="btn_UserInfo"
+                            AccessKey="I"
+                            Content="&#xE783;"
+                            Click="btn_UserInfo_Click"
+                            IsEnabled="{x:Bind sv_root.IsPaneOpen, Mode=OneWay}"
+                            ToolTipService.ToolTip="User info"
+                            Style="{StaticResource NavigationBackButtonSmallStyle}" />-->
+          <ScrollViewer VerticalScrollBarVisibility="Auto"
                                   VerticalScrollMode="Auto"
                                   HorizontalScrollMode="Disabled"
                                   Grid.Row="3"

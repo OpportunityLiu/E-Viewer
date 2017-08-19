@@ -180,11 +180,16 @@ namespace ExViewer.Views
             this.fm_inner.Navigate(this.tabs[s]);
             RootController.SwitchSplitView(false);
         }
-
         private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)
         {
             await RootController.RequestLogOn();
         }
+
+        //private void btn_UserInfo_Click(object sender, RoutedEventArgs e)
+        //{
+        //    this.fm_inner.Navigate(typeof(InfoPage));
+        //    RootController.SwitchSplitView(false);
+        //}
 
         private void tbtPaneBindBack(bool? value)
         {

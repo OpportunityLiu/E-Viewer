@@ -3,6 +3,8 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:local="using:ExViewer.Views"
                  xmlns:controls="using:ExViewer.Controls"
+                 Loading="page_Loading"
+                 NavigationCacheMode="Enabled"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  mc:Ignorable="d">
@@ -13,6 +15,62 @@
       </NavigationThemeTransition>
     </TransitionCollection>
   </controls:MyPage.Transitions>
+  <controls:MyPage.Resources>
+    <Style x:Key="InfoPageHyperLinkButtonStyle"
+           TargetType="HyperlinkButton"
+           BasedOn="{StaticResource TextBlockButtonStyle}">
+      <Setter Property="Padding"
+              Value="0" />
+      <Setter Property="Margin"
+              Value="4,4,4,0" />
+    </Style>
+    <Style x:Key="InfoPageSubtitleTextBlockStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource SubtitleTextBlockStyle}">
+      <Setter Property="Margin"
+              Value="8,8,8,4" />
+    </Style>
+    <Style x:Key="InfoPageBodyTextBlockStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource BodyTextBlockStyle}">
+      <Setter Property="Margin"
+              Value="8,4" />
+    </Style>
+    <Style x:Key="InfoPageBaseTextBlockStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource BaseTextBlockStyle}">
+      <Setter Property="Margin"
+              Value="8,4" />
+    </Style>
+    <Style x:Key="InfoPageSubheaderTextBlockStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource BaseTextBlockStyle}">
+      <Setter Property="Margin"
+              Value="8,8,8,4" />
+    </Style>
+    <Style x:Key="InfoPageCaptionTextBlockStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource CaptionTextBlockStyle}">
+      <Setter Property="Margin"
+              Value="8,4" />
+    </Style>
+    <Style x:Key="InfoPageCaptionButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource TextBlockButtonStyle}">
+      <Setter Property="Padding"
+              Value="0" />
+      <Setter Property="Margin"
+              Value="8,4" />
+      <Setter Property="ContentTemplate">
+        <Setter.Value>
+          <DataTemplate>
+            <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+                       Text="{Binding}" />
+          </DataTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </controls:MyPage.Resources>
   <Pivot x:Name="pv_root"
          BorderThickness="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
          BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
@@ -21,8 +79,10 @@
               Height="48"
               Width="0" />
     </Pivot.LeftHeader>
-    <PivotItem Header="Common">
-      <StackPanel></StackPanel>
+    <PivotItem Header="Overview">
+      <StackPanel>
+        <TextBlock Style="{StaticResource InfoPageSubtitleTextBlockStyle}" Text="Image Limits"/>
+      </StackPanel>
     </PivotItem>
   </Pivot>
 </controls:MyPage>

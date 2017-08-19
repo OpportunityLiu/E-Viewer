@@ -258,7 +258,8 @@
       "SearchSplitViewTab/Content": "Search",
       "SearchSplitViewTab/ToolTipService/ToolTip": "Search",
       "SettingsSplitViewTab/Content": "Settings",
-      "SettingsSplitViewTab/ToolTipService/ToolTip": "Settings"
+      "SettingsSplitViewTab/ToolTipService/ToolTip": "Settings",
+      "UserInfoButton/ToolTipService/ToolTip": "User info"
     },
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "Delete all",

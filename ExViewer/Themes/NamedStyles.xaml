@@ -313,6 +313,18 @@
             Value="4,0" />
   </Style>
 
+  <Style x:Key="SearchAutoSuggestBoxItemIconElementStyle"
+         TargetType="IconElement">
+    <Setter Property="Margin"
+            Value="8,0" />
+    <Setter Property="VerticalAlignment"
+            Value="Center"/>
+    <Setter Property="Grid.RowSpan"
+            Value="2"/>
+    <Setter Property="Foreground"
+            Value="{ThemeResource SystemControlPageTextBaseHighBrush}"/>
+  </Style>
+
   <DataTemplate x:Key="SearchHistoryTemplate">
     <Grid>
       <Grid.ColumnDefinitions>
@@ -330,13 +342,8 @@
                  Style="{StaticResource SuggestionCaptionTextBlockStyle}"
                  Grid.Row="1"
                  Grid.Column="1" />
-      <Path Fill="{ThemeResource SystemControlPageTextBaseHighBrush}"
-            StrokeThickness="0"
-            Stretch="Uniform"
-            Grid.RowSpan="2"
-            VerticalAlignment="Center"
-            Margin="8,0"
-            Data="M-12,-9 L-12,-3 L-6,-3 L-6,-4.5 L-10.5,-4.5 L-10.5,-9 Z                                       M-10.5,-5.809                                        A12,12,0,1,1,-11.55,3.255                                       L-10.106,2.848                                       A10.5,10.5,0,1,0,-9.487,-4.5                                       L-10.5,-4.5 Z                                       M-0.75,-6                                       L0.75,-6 L0.75,-0.311                                       L4.95,3.889 L3.889,4.95                                       L-0.75,0.311" />
+      <FontIcon Style="{StaticResource SearchAutoSuggestBoxItemIconElementStyle}"
+                Glyph="&#xECC5;" />
     </Grid>
   </DataTemplate>
   <DataTemplate x:Key="EhTagTemplate">
@@ -367,13 +374,8 @@
                                    TextBlockStyle="{StaticResource SuggestionCaptionTextBlockStyle}"
                                    Grid.Row="1"
                                    Grid.Column="2" />
-      <Path Fill="{ThemeResource SystemControlPageTextBaseHighBrush}"
-            StrokeThickness="0"
-            Stretch="Uniform"
-            Grid.RowSpan="2"
-            VerticalAlignment="Center"
-            Margin="8,0"
-            Data="M19.5,8.30859 L19.5,12 L13.0781,18.4219 C13.5781,18.7734 14.1211,19.041 14.707,19.2246 C15.293,19.4082 15.8906,19.5 16.5,19.5 C17.3281,19.5 18.1055,19.3418 18.832,19.0254 C19.5586,18.709 20.1934,18.2793 20.7363,17.7363 C21.2793,17.1934 21.709,16.5586 22.0254,15.832 C22.3418,15.1055 22.5,14.3281 22.5,13.5 C22.5,12.9688 22.4297,12.4492 22.2891,11.9414 C22.1484,11.4336 21.9492,10.9551 21.6914,10.5059 C21.4336,10.0566 21.1191,9.64453 20.748,9.26953 C20.377,8.89453 19.9609,8.57422 19.5,8.30859 z M11.1211,4.5 L2.12109,13.5 L9,20.3789 L18,11.3789 L18,7.6875 C17.8594,7.65625 17.6875,7.63477 17.4844,7.62305 C17.2812,7.61133 17.0684,7.59961 16.8457,7.58789 C16.623,7.57617 16.4023,7.55859 16.1836,7.53516 C15.9648,7.51172 15.7676,7.4707 15.5918,7.41211 C15.416,7.35352 15.2734,7.27344 15.1641,7.17188 C15.0547,7.07031 15,6.92969 15,6.75 C15,6.54688 15.0742,6.37109 15.2227,6.22266 C15.3711,6.07422 15.5469,6 15.75,6 C16.1328,6 16.5098,6.00391 16.8809,6.01172 C17.252,6.01953 17.625,6.06641 18,6.15234 L18,4.5 z M10.5,3 L19.5,3 L19.5,6.62109 C20.1875,6.92578 20.8086,7.31445 21.3633,7.78711 C21.918,8.25977 22.3906,8.79492 22.7812,9.39258 C23.1719,9.99024 23.4727,10.6367 23.6836,11.332 C23.8945,12.0273 24,12.75 24,13.5 C24,14.5391 23.8047,15.5137 23.4141,16.4238 C23.0234,17.334 22.4883,18.1289 21.8086,18.8086 C21.1289,19.4883 20.334,20.0234 19.4238,20.4141 C18.5137,20.8047 17.5391,21 16.5,21 C15.6875,21 14.8965,20.873 14.127,20.6191 C13.3574,20.3652 12.6484,19.9922 12,19.5 L9,22.5 L0,13.5 z" />
+      <FontIcon Style="{StaticResource SearchAutoSuggestBoxItemIconElementStyle}"
+                Glyph="&#xE8EC;" />
     </Grid>
   </DataTemplate>
   <controls:DataTemplateSelector x:Key="SearchAutoSuggestBoxItemTemplateSelector"
