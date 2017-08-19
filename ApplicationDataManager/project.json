@@ -2,7 +2,7 @@
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0",
     "Microsoft.Win32.Primitives": "4.3.0",
-    "Opportunity.MvvmUniverse": "0.4.2",
+    "Opportunity.MvvmUniverse": "0.4.3",
     "Opportunity.ResourceGenerator": "1.1.5",
     "System.Diagnostics.Contracts": "4.3.0",
     "System.Net.NameResolution": "4.3.0",
