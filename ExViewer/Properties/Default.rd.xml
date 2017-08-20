@@ -21,8 +21,8 @@
       the application package. The asterisks are not wildcards.
     -->
     <Assembly Name="*Application*" Dynamic="Required All"/>
-    
-    <Type Name="System.Collections.Generic.IEnumerable{Windows.Storage.IStorageItem}">
+
+    <Type Name="System.Collections.Generic.IEnumerable{Windows.Storage.IStorageItem}" Dynamic="Required All">
       <Subtypes Dynamic="Required All" />
     </Type>
 

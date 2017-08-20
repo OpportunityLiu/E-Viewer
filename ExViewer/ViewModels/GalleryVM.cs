@@ -24,6 +24,7 @@ using ExClient.Tagging;
 using ExClient.Galleries;
 using ExClient.Galleries.Metadata;
 using Windows.Storage.AccessCache;
+using ExViewer.Helpers;
 
 namespace ExViewer.ViewModels
 {
@@ -133,6 +134,9 @@ namespace ExViewer.ViewModels
                                 else
                                     data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
                             }
+                            if (gallery is SavedGallery)
+                                while (gallery.HasMoreItems)
+                                    await gallery.LoadMoreItemsAsync(20);
                             var imageFiles = gallery
                                 .Where(i => i.ImageFile != null)
                                 .Select(i => new { i.ImageFile, Name = $"{i.PageID}{i.ImageFile.FileType}" })
@@ -140,34 +144,7 @@ namespace ExViewer.ViewModels
                                 .ToList();
                             if (imageFiles.Count == 0)
                                 return;
-                            data.RequestedOperation = DataPackageOperation.Move;
-                            if (gallery is SavedGallery)
-                                while (gallery.HasMoreItems)
-                                    await gallery.LoadMoreItemsAsync(20);
-                            foreach (var item in imageFiles.Select(f => f.ImageFile.FileType).Distinct())
-                            {
-                                data.Properties.FileTypes.Add(item);
-                            }
-                            var folderName = StorageHelper.ToValidFileName(gallery.GetDisplayTitle());
-                            data.SetDataProvider(StandardDataFormats.StorageItems, async req =>
-                            {
-                                var def = req.GetDeferral();
-                                try
-                                {
-                                    var tempFolder = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync("DataRequested", CreationCollisionOption.OpenIfExists);
-                                    var dataFolder = await tempFolder.CreateFolderAsync(folderName, CreationCollisionOption.ReplaceExisting);
-                                    var targetList = new List<IStorageFile>();
-                                    foreach (var item in imageFiles)
-                                    {
-                                        targetList.Add(await item.ImageFile.CopyAsync(dataFolder, item.Name, NameCollisionOption.ReplaceExisting));
-                                    }
-                                    req.SetData(Enumerable.Repeat(dataFolder, 1));
-                                }
-                                finally
-                                {
-                                    def.Complete();
-                                }
-                            });
+                            data.SetFolderProvider(imageFiles.Select(f => f.ImageFile), imageFiles.Select(f => f.Name), gallery.GetDisplayTitle());
                         }
                         else
                         {
@@ -180,23 +157,8 @@ namespace ExViewer.ViewModels
                             var view = RandomAccessStreamReference.CreateFromFile(imageFile);
                             data.SetBitmap(view);
                             data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem));
-                            data.Properties.FileTypes.Add(imageFile.FileType);
-                            data.RequestedOperation = DataPackageOperation.Move;
                             var fileName = $"{image.PageID}{imageFile.FileType}";
-                            data.SetDataProvider(StandardDataFormats.StorageItems, async req =>
-                            {
-                                var def = req.GetDeferral();
-                                try
-                                {
-                                    var tempFolder = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync("DataRequested", CreationCollisionOption.OpenIfExists);
-                                    var tempFile = await imageFile.CopyAsync(tempFolder, fileName, NameCollisionOption.ReplaceExisting);
-                                    req.SetData(Enumerable.Repeat(tempFile, 1));
-                                }
-                                finally
-                                {
-                                    def.Complete();
-                                }
-                            });
+                            data.SetFileProvider(imageFile, fileName);
                         }
                     }
                     finally
