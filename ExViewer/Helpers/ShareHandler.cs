@@ -17,6 +17,7 @@ using Windows.System;
 using Windows.System.UserProfile;
 using Windows.UI;
 using Windows.UI.Core;
+using System.Collections;
 
 namespace ExViewer.Helpers
 {
@@ -30,6 +31,85 @@ namespace ExViewer.Helpers
                 return;
             new ShareHandlerStorage(handler);
             DataTransferManager.ShowShareUI();
+        }
+
+        private static void PrepareFileShare(DataPackage package, List<IStorageFile> files)
+        {
+            package.RequestedOperation = DataPackageOperation.Move;
+            foreach (var item in files.Select(f => f.FileType).Distinct())
+            {
+                if (item != null)
+                    package.Properties.FileTypes.Add(item);
+            }
+        }
+
+        public static void SetFileProvider(this DataPackage package, IStorageFile file, string fileName)
+        {
+            if (file == null)
+                throw new ArgumentNullException(nameof(file));
+            fileName = StorageHelper.ToValidFileName(fileName);
+            var fileList = new List<IStorageFile> { file };
+            PrepareFileShare(package, fileList);
+            package.SetDataProvider(StandardDataFormats.StorageItems, async req =>
+            {
+                var def = req.GetDeferral();
+                try
+                {
+                    var tempFolder = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync("DataRequested", CreationCollisionOption.OpenIfExists);
+                    var tempFile = await file.CopyAsync(tempFolder, fileName, NameCollisionOption.ReplaceExisting);
+                    req.SetData(new StorageItemContainer(tempFile));
+                }
+                finally
+                {
+                    def.Complete();
+                }
+            });
+        }
+
+        public static void SetFolderProvider(this DataPackage package, IEnumerable<IStorageFile> files, IEnumerable<string> fileNames, string folderName)
+        {
+            folderName = StorageHelper.ToValidFileName(folderName);
+            var fileList = files.ToList();
+            var nameList = fileNames.Select(StorageHelper.ToValidFileName).ToList();
+            if (fileList.Count != nameList.Count)
+                throw new ArgumentException("files count != fileNames count");
+            PrepareFileShare(package, fileList);
+            package.SetDataProvider(StandardDataFormats.StorageItems, async req =>
+            {
+                var def = req.GetDeferral();
+                try
+                {
+                    var tempFolder = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync("DataRequested", CreationCollisionOption.OpenIfExists);
+                    var dataFolder = await tempFolder.CreateFolderAsync(folderName, CreationCollisionOption.ReplaceExisting);
+                    var targetList = new List<IStorageFile>();
+                    for (var i = 0; i < fileList.Count; i++)
+                    {
+                        targetList.Add(await fileList[i].CopyAsync(dataFolder, nameList[i], NameCollisionOption.GenerateUniqueName));
+                    }
+                    req.SetData(new StorageItemContainer(dataFolder));
+                }
+                finally
+                {
+                    def.Complete();
+                }
+            });
+        }
+
+        private class StorageItemContainer : IEnumerable<IStorageItem>
+        {
+            private readonly IStorageItem item;
+
+            public StorageItemContainer(IStorageItem item)
+            {
+                this.item = item;
+            }
+
+            public IEnumerator<IStorageItem> GetEnumerator()
+            {
+                yield return this.item;
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
         private class ShareHandlerStorage
