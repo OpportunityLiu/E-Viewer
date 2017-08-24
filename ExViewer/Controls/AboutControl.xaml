@@ -78,12 +78,13 @@
     </Style>
   </UserControl.Resources>
   <StackPanel>
-    <FlipView x:Name="fv_Banners" 
+    <FlipView x:Name="fv_Banners"
               Margin="-12,-8"
-              Height="93">
+              Height="40"
+              SelectionChanged="fv_Banners_SelectionChanged">
       <FlipView.Background>
-        <ImageBrush ImageSource="ms-appx:///Assets/SplashScreen.png"
-                    Stretch="UniformToFill" />
+        <ImageBrush ImageSource="ms-appx:///BannerProvider/Images/Background.png"
+                    Stretch="Fill" />
       </FlipView.Background>
       <FlipView.ItemTemplate>
         <DataTemplate xmlns:storage="using:Windows.Storage"

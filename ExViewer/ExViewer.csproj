@@ -259,6 +259,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-400.png" />
     <Content Include="Images\CopyToClipboard.scale-100.png" />
     <Content Include="Images\CopyToClipboard.scale-200.png" />
     <Content Include="Images\CopyToClipboard.scale-400.png" />
@@ -271,7 +274,6 @@
     <Content Include="Images\Light\ImageLoading.scale-100.png" />
     <Content Include="Images\Light\ImageLoading.scale-200.png" />
     <Content Include="Images\Light\ImageLoading.scale-400.png" />
-    <Content Include="Assets\SplashScreen.scale-100.png" />
     <Content Include="Images\Dark\ImageLoading.scale-100.png" />
     <Content Include="Images\Dark\ImageLoading.scale-200.png" />
     <Content Include="Images\Dark\ImageLoading.scale-400.png" />
@@ -287,7 +289,6 @@
     <Content Include="Assets\Small.scale-100.png" />
     <Content Include="Assets\Small.scale-200.png" />
     <Content Include="Assets\Small.scale-400.png" />
-    <Content Include="Assets\SplashScreen.scale-400.png" />
     <Content Include="Assets\Store.scale-100.png" />
     <Content Include="Assets\Store.scale-200.png" />
     <Content Include="Assets\Store.scale-400.png" />
@@ -314,7 +315,6 @@
     <Content Include="Images\MicrosoftEdge.scale-400.png" />
     <Content Include="Images\MicrosoftEdge.scale-100.png" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\SplashScreen.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

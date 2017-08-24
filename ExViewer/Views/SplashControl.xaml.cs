@@ -75,9 +75,8 @@ namespace ExViewer.Views
             this.img_splash.Width = l.Width;
             this.img_splash.Height = l.Height;
 
-            this.img_pic.Margin = new Thickness(l.Left, l.Top, l.Left, l.Top);
-            this.img_pic.Width = l.Width;
-            this.img_pic.Height = l.Height;
+            this.img_pic.Height = l.Height / 300 * 136;
+            this.img_pic.Width = l.Height / 300 * 770;
         }
 
         private RootControl rootControl;

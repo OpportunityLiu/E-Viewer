@@ -10,6 +10,7 @@
       <DoubleAnimation Storyboard.TargetName="img_pic"
                        Storyboard.TargetProperty="(UIElement.Opacity)"
                        To="1"
+                       BeginTime="0:0:0.5"
                        Duration="0:0:0.7">
         <DoubleAnimation.EasingFunction>
           <CircleEase EasingMode="EaseIn" />
@@ -48,6 +49,7 @@
              Grid.RowSpan="2"
              HorizontalAlignment="Center"
              VerticalAlignment="Center"
+             Stretch="Fill"
              ImageFailed="img_pic_ImageFailed"
              ImageOpened="img_pic_ImageOpened"
              Opacity="0">
