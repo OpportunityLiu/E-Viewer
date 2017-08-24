@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Linq;
+using Windows.Foundation;
 
 namespace ExClient.HentaiVerse
 {
@@ -14,6 +15,11 @@ namespace ExClient.HentaiVerse
 
         public static bool IsEnabled { get; set; } = false;
 
+        private static Uri newsUri = new Uri("https://e-hentai.org/news.php");
+
+        public static IAsyncAction FetchAsync()
+            => Client.Current.HttpClient.GetDocumentAsync(newsUri).AsTask().AsAsyncAction();
+
         internal static void AnalyzePage(HtmlDocument doc)
         {
             var eventPane = doc.GetElementbyId("eventpane");
@@ -26,10 +32,7 @@ namespace ExClient.HentaiVerse
             if (a != null)
             {
                 var uri = a.GetAttributeValue("href", "").DeEntitize();
-                var ev = MonsterEncountered;
-                if (ev == null)
-                    return;
-                ev(Client.Current, new MonsterEncounteredEventArgs(new Uri(uri)));
+                MonsterEncountered?.Invoke(Client.Current, new MonsterEncounteredEventArgs(new Uri(uri)));
             }
         }
     }
