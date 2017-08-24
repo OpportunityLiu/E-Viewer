@@ -4,11 +4,11 @@ namespace ExClient.Galleries.Commenting
 {
     public enum CommentStatus
     {
-        None,
-        Votable,
-        VotedUp,
-        VotedDown,
-        Editable
+        None = 0b0000,
+        Votable = 0b0001,
+        VotedUp = 0b0011,
+        VotedDown = 0b0101,
+        Editable = 0b1000
     }
 
     public static class CommentStatusExtension

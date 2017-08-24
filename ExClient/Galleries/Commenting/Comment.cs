@@ -137,9 +137,7 @@ namespace ExClient.Galleries.Commenting
             internal set => Set(ref this.score, value);
         }
 
-        public bool CanVote => this.status == CommentStatus.Votable
-            || this.status == CommentStatus.VotedUp
-            || this.status == CommentStatus.VotedDown;
+        public bool CanVote => (this.status & CommentStatus.Votable) == CommentStatus.Votable;
 
         public IAsyncAction VoteAsync(VoteState command)
         {

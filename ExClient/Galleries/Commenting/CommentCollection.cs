@@ -54,21 +54,12 @@ namespace ExClient.Galleries.Commenting
             });
         }
 
-        private class CommentEqualityComparer : IEqualityComparer<Comment>
-        {
-            public bool Equals(Comment x, Comment y) => x?.ID == y?.ID;
-
-            public int GetHashCode(Comment obj) => obj == null ? 0 : obj.ID.GetHashCode();
-
-            public static CommentEqualityComparer Current { get; } = new CommentEqualityComparer();
-        }
-
         internal void AnalyzeDocument(HtmlDocument doc)
         {
             lock (this.syncroot)
             {
                 var newValues = Comment.AnalyzeDocument(this, doc).ToList();
-                this.Update(newValues, CommentEqualityComparer.Current, (o, n) =>
+                this.Update(newValues, (x, y) => x.ID - y.ID, (o, n) =>
                 {
                     o.Score = n.Score;
                     o.Status = n.Status;
