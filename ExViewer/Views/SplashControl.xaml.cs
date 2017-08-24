@@ -237,6 +237,14 @@ namespace ExViewer.Views
                 {
                     //Ignore exceptions here.
                 }
+            try
+            {
+                await ExClient.HentaiVerse.HentaiVerseInfo.FetchAsync();
+            }
+            catch (Exception)
+            {
+                //Ignore exceptions here.
+            }
         }
 
         private async Task verify()
