@@ -3,8 +3,10 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using Windows.ApplicationModel;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.Foundation;
 
 namespace ExViewer.Controls
 {
@@ -27,6 +29,22 @@ namespace ExViewer.Controls
             this.tb_AppDescription.Text = Package.Current.Description;
             this.refreshTimer.Tick += RefreshTimer_Tick;
             this.hlbHV.NavigateUri = ExClient.HentaiVerse.HentaiVerseInfo.LogOnUri;
+            init();
+        }
+
+        private async void init()
+        {
+            var source = await BannerProvider.Provider.GetBannersAsync();
+            if (source.Count == 0)
+                source = new[] { await StorageFile.GetFileFromApplicationUriAsync(BannerProvider.Provider.DefaultBanner) };
+            this.fv_Banners.ItemsSource = source;
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            var margin = this.fv_Banners.Margin;
+            this.fv_Banners.Height = (availableSize.Width - margin.Left - margin.Right) / 620 * 110;
+            return base.MeasureOverride(availableSize);
         }
 
         private void RefreshTimer_Tick(object sender, object e)
