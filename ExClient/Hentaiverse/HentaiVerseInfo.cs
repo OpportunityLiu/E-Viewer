@@ -29,7 +29,7 @@ namespace ExClient.HentaiVerse
             if (div1 == null)
                 return;
             var a = eventPane.Descendants("a").FirstOrDefault();
-            if (a != null)
+            if (a != null && MonsterEncountered != null)
             {
                 var uri = a.GetAttributeValue("href", "").DeEntitize();
                 MonsterEncountered?.Invoke(Client.Current, new MonsterEncounteredEventArgs(new Uri(uri)));
