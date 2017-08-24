@@ -123,9 +123,12 @@
     <EmbeddedResource Include="Properties\BannerProvider.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\DefaultBanner.scale-100.png" />
-    <Content Include="Images\DefaultBanner.scale-200.png" />
-    <Content Include="Images\DefaultBanner.scale-400.png" />
+    <Content Include="Images\Background.scale-100.png" />
+    <Content Include="Images\Background.scale-200.png" />
+    <Content Include="Images\Background.scale-400.png" />
+    <Content Include="Images\Default.scale-100.png" />
+    <Content Include="Images\Default.scale-200.png" />
+    <Content Include="Images\Default.scale-400.png" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
