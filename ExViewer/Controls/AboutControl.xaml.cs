@@ -37,9 +37,11 @@ namespace ExViewer.Controls
         private async void init()
         {
             var source = await BannerProvider.Provider.GetBannersAsync();
-            if (source.Count == 0)
+            if (source == null)
                 source = new[] { await StorageFile.GetFileFromApplicationUriAsync(BannerProvider.Provider.DefaultBanner) };
-            source.Add(source[0]);
+            else if (source.Count > 2)
+                // 循环滚动
+                source.Add(source[0]);
             this.fv_Banners.ItemsSource = source;
         }
 
