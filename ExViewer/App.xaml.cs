@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Microsoft.Azure.Mobile;
 using System.Collections.Generic;
 using Microsoft.Azure.Mobile.Analytics;
+using Microsoft.Azure.Mobile.Crashes;
 #if !DEBUG
 using Microsoft.HockeyApp;
 #endif
@@ -73,7 +74,7 @@ namespace ExViewer
             {
                 var region = new Windows.Globalization.GeographicRegion();
                 MobileCenter.SetCountryCode(region.CodeTwoLetter);
-                MobileCenter.Start("4b9c5e4f-ebf5-46ed-9ee8-72e5de8e0236", typeof(Analytics)/*, typeof(Crashes)*/);
+                MobileCenter.Start("4b9c5e4f-ebf5-46ed-9ee8-72e5de8e0236", typeof(Analytics), typeof(Crashes));
             }
 #endif
             if (!Opportunity.MvvmUniverse.DispatcherHelper.Initialized)

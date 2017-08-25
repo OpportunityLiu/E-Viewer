@@ -1,7 +1,9 @@
 ﻿using HtmlAgilityPack;
+using Opportunity.MvvmUniverse.AsyncHelpers;
 using System;
 using System.Linq;
 using Windows.Foundation;
+using Windows.Web.Http;
 
 namespace ExClient.HentaiVerse
 {
@@ -17,8 +19,8 @@ namespace ExClient.HentaiVerse
 
         private static Uri newsUri = new Uri("https://e-hentai.org/news.php");
 
-        public static IAsyncAction FetchAsync()
-            => Client.Current.HttpClient.GetDocumentAsync(newsUri).AsTask().AsAsyncAction();
+        public static IAsyncActionWithProgress<HttpProgress> FetchAsync()
+            => Client.Current.HttpClient.GetDocumentAsync(newsUri).AsAsyncAction();
 
         internal static void AnalyzePage(HtmlDocument doc)
         {
