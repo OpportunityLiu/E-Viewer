@@ -83,9 +83,11 @@ namespace ExClient.Galleries.Commenting
             content = content.Replace("\r\n", "\n").Replace('\r', '\n');
             if (string.IsNullOrEmpty(content))
                 throw new ArgumentException(LocalizedStrings.Resources.EmptyComment);
-            var length = encoding.GetByteCount(content);
-            if (length < 10)
-                throw new ArgumentException(LocalizedStrings.Resources.ShortComment);
+            if (content.Length < 10)
+            {
+                if (encoding.GetByteCount(content) < 10)
+                    throw new ArgumentException(LocalizedStrings.Resources.ShortComment);
+            }
             return AsyncInfo.Run(async token =>
             {
                 IEnumerable<KeyValuePair<string, string>> getData()

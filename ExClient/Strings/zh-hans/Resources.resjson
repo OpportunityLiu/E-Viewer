@@ -26,6 +26,7 @@
   "TagNoVotePremition": "不能为此标签投票。",
   "TagsTooLong": "添加标签的总长度不能超过 200 个字符。",
   "TagVetoedForGallery": "此画廊中的标签“{0}”已经被否决，这是一个错误的标签。请查阅维基。",
+  "TagVoteCollectionEmpty": "没有要添加的标签。",
   "UnsupportedFile": "上传的文件已损坏或不受支持。",
   "UnsupportedMonotone": "上传的文件是单色图，仅支持精确搜索。",
   "VoteOutOfRange": "投票必须为 -1 或 1。",

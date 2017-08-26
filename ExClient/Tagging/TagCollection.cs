@@ -198,6 +198,7 @@ namespace ExClient.Tagging
         private static Regex tagInBlackList = new Regex(@"The tag (.+?) cannot be used");
         private static Regex tagVetoed = new Regex(@"The tag (.+?) has been vetoed on this gallery");
         private static Regex tagCantVote = new Regex(@"Cannot vote for tag");
+        private static Regex tagsEmpty = new Regex(@"No tags to add\.");
 
         private static void myCheckResponse(TagResponse r)
         {
@@ -245,6 +246,8 @@ namespace ExClient.Tagging
             }
             if (tagCantVote.IsMatch(r.Error))
                 throw new InvalidOperationException(LocalizedStrings.Resources.TagNoVotePremition);
+            if (tagsEmpty.IsMatch(r.Error))
+                throw new InvalidOperationException(LocalizedStrings.Resources.TagVoteCollectionEmpty);
             r.CheckResponse();
         }
 

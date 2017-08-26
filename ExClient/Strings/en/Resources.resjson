@@ -26,6 +26,7 @@
   "TagNoVotePremition": "Cannot vote for tag.",
   "TagsTooLong": "The field to add tags has an input cap of 200 characters.",
   "TagVetoedForGallery": "The tag \"{0}\" has been vetoed on this gallery; it is an incorrect tag. Please read the wiki.",
+  "TagVoteCollectionEmpty": "No tags to add.",
   "UnsupportedFile": "The uploaded file was corrupted or unsupported.",
   "UnsupportedMonotone": "The uploaded file was detected as monotone. Only exact file matches are displayed.",
   "VoteOutOfRange": "Vote must be -1 or 1.",
