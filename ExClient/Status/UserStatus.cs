@@ -93,8 +93,8 @@ namespace ExClient.Status
 
         #region Image Limits
         private int imageUsage;
-        private int imageUsageLimit;
-        private int imageUsageRegenerateRatePerMinute;
+        private int imageUsageLimit = 5000;
+        private int imageUsageRegenerateRatePerMinute = 3;
         private int imageUsageResetCost;
         public int ImageUsage
         {
@@ -115,7 +115,8 @@ namespace ExClient.Status
 
         public IAsyncAction ResetImageUsageAsync()
         {
-            throw null;
+            // TODO:
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -125,8 +126,8 @@ namespace ExClient.Status
         #endregion
 
         #region Moderation Power
-        private double moderationPower;
-        private double moderationPowerBase;
+        private double moderationPower = 1;
+        private double moderationPowerBase = 1;
         private double moderationPowerAwards;
         private double moderationPowerTagging;
         private double moderationPowerLevel;

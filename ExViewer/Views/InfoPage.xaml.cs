@@ -1,4 +1,5 @@
 ﻿using ExViewer.Controls;
+using ExViewer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +28,21 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
             this.VisibleBoundHandledByDesign = true;
+            this.VM = new InfoVM();
+            this.VM.RefreshStatus.Execute();
         }
+
+        public InfoVM VM
+        {
+            get => (InfoVM)GetValue(VMProperty);
+            set => SetValue(VMProperty, value);
+        }
+
+        /// <summary>
+        /// Indentify <see cref="VM"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty VMProperty =
+            DependencyProperty.Register(nameof(VM), typeof(InfoVM), typeof(InfoPage), new PropertyMetadata(null));
 
         private void page_Loading(FrameworkElement sender, object args)
         {

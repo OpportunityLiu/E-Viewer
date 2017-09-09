@@ -229,6 +229,9 @@
       "SearchAppBarButton/Label": "Show all galleries with this file",
       "ShareAppBarButton/Label": "Share"
     },
+    "InfoPage": {
+      "RegenerateFormatString": "-{0}/min"
+    },
     "LogOnDialog": {
       "ContentDialog/PrimaryButtonText": "OK",
       "NoPassword": "Please enter your password.",

@@ -79,9 +79,45 @@
               Height="48"
               Width="0" />
     </Pivot.LeftHeader>
+    <Pivot.RightHeader>
+      <CommandBar DefaultLabelPosition="Right">
+        <AppBarButton Label="Refresh"
+                      Icon="Refresh" 
+                      Command="{x:Bind VM.RefreshStatus}"/>
+      </CommandBar>
+    </Pivot.RightHeader>
     <PivotItem Header="Overview">
       <StackPanel>
-        <TextBlock Style="{StaticResource InfoPageSubtitleTextBlockStyle}" Text="Image Limits"/>
+        <TextBlock Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+                   Text="Image Limits" />
+        <Grid Padding="8,4">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+                     Text="{x:Bind VM.Status.ImageUsage, Mode=OneWay}" />
+          <TextBlock Grid.Column="1"
+                     Style="{StaticResource CaptionTextBlockStyle}"
+                     Text="/" />
+          <TextBlock Grid.Column="2"
+                     Style="{StaticResource CaptionTextBlockStyle}"
+                     Text="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay}" />
+          <TextBlock Grid.Column="3"
+                     Style="{StaticResource CaptionTextBlockStyle}"
+                     HorizontalAlignment="Right"
+                     Text="{x:Bind VM.Status.ImageUsageRegenerateRatePerMinute, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/RegenerateFormatString'}" />
+          <ProgressBar Grid.Row="1"
+                       Grid.ColumnSpan="999"
+                       Value="{x:Bind VM.Status.ImageUsage, Mode=OneWay, Converter={StaticResource DefaultConverter}}"
+                       Maximum="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
+        </Grid>
       </StackPanel>
     </PivotItem>
   </Pivot>

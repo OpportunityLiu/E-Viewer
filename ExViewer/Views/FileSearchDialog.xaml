@@ -6,6 +6,7 @@
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           xmlns:controls="using:ExViewer.Controls"
+                          xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
                           mc:Ignorable="d"
                           Loading="MyContentDialog_Loading"
                           Loaded="MyContentDialog_Loaded"
@@ -48,7 +49,7 @@
                 Margin="4"
                 Content="Browse..."
                 Click="btnBrowse_Click" />
-        <controls:WrapPanel Grid.Row="1"
+        <tk:WrapPanel Grid.Row="1"
                             Grid.ColumnSpan="2"
                             Margin="4">
             <CheckBox x:Name="cbSimilar"
@@ -63,6 +64,6 @@
                       x:Uid="Views/FileSearchDialog/ExpungedCheckBox"
                       Style="{StaticResource CheckBoxStyle}"
                       Content="Show expunged galleries" />
-        </controls:WrapPanel>
+        </tk:WrapPanel>
     </Grid>
 </controls:MyContentDialog>

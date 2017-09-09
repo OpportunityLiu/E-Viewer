@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:tagging="using:ExClient.Tagging"
              mc:Ignorable="d"
+             xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
              d:DesignHeight="200"
              d:DesignWidth="700">
   <UserControl.Resources>
@@ -88,7 +89,7 @@
           </GridView.ItemContainerStyle>
           <GridView.ItemsPanel>
             <ItemsPanelTemplate>
-              <local:WrapPanel />
+              <tk:WrapPanel />
             </ItemsPanelTemplate>
           </GridView.ItemsPanel>
           <GridView.ItemContainerTransitions>

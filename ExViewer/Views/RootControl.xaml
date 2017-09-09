@@ -12,147 +12,147 @@
              Loading="Control_Loading"
              Loaded="Control_Loaded"
              Unloaded="Control_Unloaded">
-    <UserControl.Resources>
-        <Storyboard x:Key="ShowDisablePanel">
-            <DoubleAnimation Duration="0:0:0.5"
+  <UserControl.Resources>
+    <Storyboard x:Key="ShowDisablePanel">
+      <DoubleAnimation Duration="0:0:0.5"
                              To="1"
                              Storyboard.TargetName="rp_Disable"
                              Storyboard.TargetProperty="(UIElement.Opacity)">
-                <DoubleAnimation.EasingFunction>
-                    <PowerEase />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
-        <Storyboard x:Key="HideDisablePanel">
-            <DoubleAnimation Duration="0:0:0.5"
+        <DoubleAnimation.EasingFunction>
+          <PowerEase />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+    </Storyboard>
+    <Storyboard x:Key="HideDisablePanel">
+      <DoubleAnimation Duration="0:0:0.5"
                              To="0"
                              Storyboard.TargetName="rp_Disable"
                              Storyboard.TargetProperty="(UIElement.Opacity)">
-                <DoubleAnimation.EasingFunction>
-                    <PowerEase EasingMode="EaseOut" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
-        <Storyboard x:Key="PlayToastPanel">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="bd_Toast"
+        <DoubleAnimation.EasingFunction>
+          <PowerEase EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+    </Storyboard>
+    <Storyboard x:Key="PlayToastPanel">
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetName="bd_Toast"
                                            Storyboard.TargetProperty="(UIElement.Opacity)"
                                            Duration="0:0:5">
-                <LinearDoubleKeyFrame KeyTime="0:0:0"
+        <LinearDoubleKeyFrame KeyTime="0:0:0"
                                       Value="1" />
-                <LinearDoubleKeyFrame KeyTime="0:0:3"
+        <LinearDoubleKeyFrame KeyTime="0:0:3"
                                       Value="1" />
-                <EasingDoubleKeyFrame KeyTime="0:0:5"
+        <EasingDoubleKeyFrame KeyTime="0:0:5"
                                       Value="0">
-                    <EasingDoubleKeyFrame.EasingFunction>
-                        <CubicEase EasingMode="EaseOut" />
-                    </EasingDoubleKeyFrame.EasingFunction>
-                </EasingDoubleKeyFrame>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="OpenSplitViewPane">
-            <DoubleAnimation Duration="0:0:0.12"
+          <EasingDoubleKeyFrame.EasingFunction>
+            <CubicEase EasingMode="EaseOut" />
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+    <Storyboard x:Key="OpenSplitViewPane">
+      <DoubleAnimation Duration="0:0:0.12"
                              To="1"
                              Storyboard.TargetProperty="(UIElement.Opacity)"
                              Storyboard.TargetName="tbtPane"
                              d:IsOptimized="True">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Duration="0:0:0.12"
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Duration="0:0:0.12"
                              To="1"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                              Storyboard.TargetName="gd_Avatar">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Duration="0:0:0.12"
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Duration="0:0:0.12"
                              To="1"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
                              Storyboard.TargetName="gd_Avatar">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Duration="0:0:0.12"
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Duration="0:0:0.12"
                              To="0"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
                              Storyboard.TargetName="gd_Avatar">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Duration="0:0:0.12"
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Duration="0:0:0.12"
                              To="1"
                              Storyboard.TargetProperty="(UIElement.Opacity)"
                              Storyboard.TargetName="bdPaneHeader"
                              d:IsOptimized="True" />
-        </Storyboard>
-        <Storyboard x:Key="CloseSplitViewPane">
-            <DoubleAnimation Duration="0:0:0.12"
+    </Storyboard>
+    <Storyboard x:Key="CloseSplitViewPane">
+      <DoubleAnimation Duration="0:0:0.12"
                              x:Name="CloseSplitViewPaneBtnPane"
                              Storyboard.TargetProperty="(UIElement.Opacity)"
                              Storyboard.TargetName="tbtPane"
                              d:IsOptimized="True">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Duration="0:0:0.12"
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Duration="0:0:0.12"
                              Storyboard.TargetProperty="(UIElement.Opacity)"
                              Storyboard.TargetName="bdPaneHeader" />
-            <DoubleAnimation Duration="0:0:0.12"
+      <DoubleAnimation Duration="0:0:0.12"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)"
                              Storyboard.TargetName="gd_Avatar">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Duration="0:0:0.12"
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Duration="0:0:0.12"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)"
                              Storyboard.TargetName="gd_Avatar">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Duration="0:0:0.12"
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Duration="0:0:0.12"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
                              Storyboard.TargetName="gd_Avatar">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut" />
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
-    </UserControl.Resources>
-    <Grid x:Name="gdRoot"
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+    </Storyboard>
+  </UserControl.Resources>
+  <Grid x:Name="gdRoot"
           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <SplitView x:Name="sv_root"
+    <SplitView x:Name="sv_root"
                    IsTabStop="False"
                    LightDismissOverlayMode="On"
                    OpenPaneLength="{x:Bind getPaneLength(VisibleBoundsThickness, 320), Mode=OneWay}"
                    CompactPaneLength="{x:Bind getPaneLength(VisibleBoundsThickness, 48), Mode=OneWay}">
-            <SplitView.Pane>
-                <Grid Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x0,x1'}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="48" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Border x:Name="bdPaneHeader"
+      <SplitView.Pane>
+        <Grid Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x0,x1'}">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <Border x:Name="bdPaneHeader"
                             Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x-1,x0,x0'}"
                             Opacity="0.2"
                             Background="{ThemeResource UserBackgroundThemeBrush}"
                             Grid.RowSpan="3"
                             Grid.ColumnSpan="4" />
-                    <Grid x:Name="gd_Avatar"
+          <Grid x:Name="gd_Avatar"
                           Grid.Row="1"
                           Grid.ColumnSpan="999"
                           Width="80"
@@ -160,31 +160,31 @@
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           RenderTransformOrigin="0.5,0.5">
-                        <Grid.RenderTransform>
-                            <CompositeTransform ScaleX="0.5"
+            <Grid.RenderTransform>
+              <CompositeTransform ScaleX="0.5"
                                                 ScaleY="0.5"
                                                 TranslateX="-136" />
-                        </Grid.RenderTransform>
-                        <Ellipse x:Name="eps_Default"
+            </Grid.RenderTransform>
+            <Ellipse x:Name="eps_Default"
                                  Stretch="UniformToFill">
-                            <Ellipse.Fill>
-                                <ImageBrush Stretch="Uniform"
+              <Ellipse.Fill>
+                <ImageBrush Stretch="Uniform"
                                             ImageSource="ms-appx:///Images/DefaultUser.png" />
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <Ellipse x:Name="eps_Avatar"
+              </Ellipse.Fill>
+            </Ellipse>
+            <Ellipse x:Name="eps_Avatar"
                                  Stretch="UniformToFill"
                                  Visibility="{x:Bind UserInfo, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}">
-                            <Ellipse.Fill>
-                                <ImageBrush Stretch="Uniform">
-                                    <ImageBrush.ImageSource>
-                                        <BitmapImage UriSource="{x:Bind UserInfo.Avatar, Mode=OneWay, TargetNullValue='ms-appx:///Images/DefaultUser.png'}" />
-                                    </ImageBrush.ImageSource>
-                                </ImageBrush>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                    </Grid>
-                    <TextBlock Grid.Row="2"
+              <Ellipse.Fill>
+                <ImageBrush Stretch="Uniform">
+                  <ImageBrush.ImageSource>
+                    <BitmapImage UriSource="{x:Bind UserInfo.Avatar, Mode=OneWay, TargetNullValue='ms-appx:///Images/DefaultUser.png'}" />
+                  </ImageBrush.ImageSource>
+                </ImageBrush>
+              </Ellipse.Fill>
+            </Ellipse>
+          </Grid>
+          <TextBlock Grid.Row="2"
                                Grid.Column="1"
                                Margin="8"
                                MaxWidth="200"
@@ -192,85 +192,85 @@
                                Text="{x:Bind UserInfo.DisplayName, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center" />
-                    <Button x:Uid="Views/RootControl/ChangeUserButton"
-                            Grid.Row="2"
-                            Grid.Column="2"
-                            x:Name="btn_ChangeUser"
-                            AccessKey="U"
-                            Content="&#xE895;"
-                            Click="btn_ChangeUser_Click"
-                            IsEnabled="{x:Bind sv_root.IsPaneOpen, Mode=OneWay}"
-                            ToolTipService.ToolTip="Change user"
-                            Style="{StaticResource NavigationBackButtonSmallStyle}" />
-          <!--<Button x:Uid="Views/RootControl/UserInfoButton"
-                            Grid.Row="2"
-                            Grid.Column="2"
-                            x:Name="btn_UserInfo"
-                            AccessKey="I"
-                            Content="&#xE783;"
-                            Click="btn_UserInfo_Click"
-                            IsEnabled="{x:Bind sv_root.IsPaneOpen, Mode=OneWay}"
-                            ToolTipService.ToolTip="User info"
-                            Style="{StaticResource NavigationBackButtonSmallStyle}" />-->
+          <!--<Button x:Uid="Views/RootControl/ChangeUserButton"
+                      Grid.Row="2"
+                      Grid.Column="2"
+                      x:Name="btn_ChangeUser"
+                      AccessKey="U"
+                      Content="&#xE895;"
+                      Click="btn_ChangeUser_Click"
+                      IsEnabled="{x:Bind sv_root.IsPaneOpen, Mode=OneWay}"
+                      ToolTipService.ToolTip="Change user"
+                      Style="{StaticResource NavigationBackButtonSmallStyle}" />-->
+          <Button x:Uid="Views/RootControl/UserInfoButton"
+                  Grid.Row="2"
+                  Grid.Column="2"
+                  x:Name="btn_UserInfo"
+                  AccessKey="I"
+                  Content="&#xE783;"
+                  Click="btn_UserInfo_Click"
+                  IsEnabled="{x:Bind sv_root.IsPaneOpen, Mode=OneWay}"
+                  ToolTipService.ToolTip="User info"
+                  Style="{StaticResource NavigationBackButtonSmallStyle}" />
           <ScrollViewer VerticalScrollBarVisibility="Auto"
                                   VerticalScrollMode="Auto"
                                   HorizontalScrollMode="Disabled"
                                   Grid.Row="3"
                                   Grid.ColumnSpan="4">
-                        <ListView x:Name="lv_Pane"
+            <ListView x:Name="lv_Pane"
                                   Style="{StaticResource StackPanelListViewStyle}">
-                            <ListView.Transitions>
-                                <TransitionCollection />
-                            </ListView.Transitions>
-                            <controls:SplitViewTab x:Uid="Views/RootControl/SearchSplitViewTab"
+              <ListView.Transitions>
+                <TransitionCollection />
+              </ListView.Transitions>
+              <controls:SplitViewTab x:Uid="Views/RootControl/SearchSplitViewTab"
                                                    x:Name="svt_Search"
                                                    Content="Search"
                                                    Click="svt_Click"
                                                    AccessKey="S"
-                                                   XYFocusUp="{x:Bind btn_ChangeUser}">
-                                <controls:SplitViewTab.Icon>
-                                    <FontIcon Glyph="&#xE7C5;"
+                                                   XYFocusUp="{x:Bind btn_UserInfo}">
+                <controls:SplitViewTab.Icon>
+                  <FontIcon Glyph="&#xE7C5;"
                                               FontSize="16" />
-                                </controls:SplitViewTab.Icon>
-                            </controls:SplitViewTab>
-                            <controls:SplitViewTab x:Uid="Views/RootControl/FavoritesSplitViewTab"
+                </controls:SplitViewTab.Icon>
+              </controls:SplitViewTab>
+              <controls:SplitViewTab x:Uid="Views/RootControl/FavoritesSplitViewTab"
                                                    x:Name="svt_Favorites"
                                                    Content="Favorites"
                                                    Click="svt_Click"
                                                    AccessKey="F">
-                                <controls:SplitViewTab.Icon>
-                                    <FontIcon Glyph="&#xE728;"
+                <controls:SplitViewTab.Icon>
+                  <FontIcon Glyph="&#xE728;"
                                               FontSize="16" />
-                                </controls:SplitViewTab.Icon>
-                            </controls:SplitViewTab>
-                            <controls:SplitViewTab x:Uid="Views/RootControl/PopularSplitViewTab"
+                </controls:SplitViewTab.Icon>
+              </controls:SplitViewTab>
+              <controls:SplitViewTab x:Uid="Views/RootControl/PopularSplitViewTab"
                                                    x:Name="svt_Popular"
                                                    Content="Popular"
                                                    Click="svt_Click"
                                                    AccessKey="H">
-                                <controls:SplitViewTab.Icon>
-                                    <PathIcon Data="M9,10 L9,19 L11,19 L11,21.2891 L13.28906,19 L23,19 L23,10 z M8,9 L24,9 L24,20 L13.71094,20 L10,23.7109 L10,20 L8,20 z M13,14 h2 l1,-2.2 l1,2.2 h2 l-1.5,1.4 l0.4,2.2 l-1.9,-1 l-1.9,1 l0.4,-2.2z"
+                <controls:SplitViewTab.Icon>
+                  <PathIcon Data="M9,10 L9,19 L11,19 L11,21.2891 L13.28906,19 L23,19 L23,10 z M8,9 L24,9 L24,20 L13.71094,20 L10,23.7109 L10,20 L8,20 z M13,14 h2 l1,-2.2 l1,2.2 h2 l-1.5,1.4 l0.4,2.2 l-1.9,-1 l-1.9,1 l0.4,-2.2z"
                                               Width="32"
                                               Height="32" />
-                                </controls:SplitViewTab.Icon>
-                            </controls:SplitViewTab>
-                            <controls:SplitViewTab x:Uid="Views/RootControl/SavedSplitViewTab"
+                </controls:SplitViewTab.Icon>
+              </controls:SplitViewTab>
+              <controls:SplitViewTab x:Uid="Views/RootControl/SavedSplitViewTab"
                                                    x:Name="svt_Saved"
                                                    Content="Saved galleries"
                                                    Click="svt_Click"
                                                    AccessKey="G">
-                                <controls:SplitViewTab.Icon>
-                                    <FontIcon Glyph="&#xE8B7;"
+                <controls:SplitViewTab.Icon>
+                  <FontIcon Glyph="&#xE8B7;"
                                               FontSize="16" />
-                                </controls:SplitViewTab.Icon>
-                            </controls:SplitViewTab>
-                            <controls:SplitViewTab x:Uid="Views/RootControl/CachedSplitViewTab"
+                </controls:SplitViewTab.Icon>
+              </controls:SplitViewTab>
+              <controls:SplitViewTab x:Uid="Views/RootControl/CachedSplitViewTab"
                                                    x:Name="svt_Cached"
                                                    Content="Cached galleries"
                                                    Click="svt_Click"
                                                    AccessKey="C">
-                                <controls:SplitViewTab.Icon>
-                                    <PathIcon Data="F1M10,8 l12,0 v1 h-1 v3 a5,5,0,0,1,-10,0 v-3h1v3a4,4,0,0,0,8,0v-3h-10z
+                <controls:SplitViewTab.Icon>
+                  <PathIcon Data="F1M10,8 l12,0 v1 h-1 v3 a5,5,0,0,1,-10,0 v-3h1v3a4,4,0,0,0,8,0v-3h-10z
               m2,3h8v1h-8z
               M10,24h12v-1h-12z
               m1,0v-3a5,5,0,0,1,10,0v3h-1v-3a4,4,0,0,0,-8,0v3z
@@ -278,37 +278,37 @@
               l1.414,0l2.586,-2.586l2.586,2.586z"
                                               Width="32"
                                               Height="32" />
-                                </controls:SplitViewTab.Icon>
-                            </controls:SplitViewTab>
-                            <Grid MinHeight="48" />
-                            <ListView.Footer>
-                                <controls:SplitViewTab x:Uid="Views/RootControl/SettingsSplitViewTab"
+                </controls:SplitViewTab.Icon>
+              </controls:SplitViewTab>
+              <Grid MinHeight="48" />
+              <ListView.Footer>
+                <controls:SplitViewTab x:Uid="Views/RootControl/SettingsSplitViewTab"
                                                        x:Name="svt_Settings"
                                                        Content="Settings"
                                                        Click="svt_Click"
                                                        AccessKey="E">
-                                    <controls:SplitViewTab.Icon>
-                                        <FontIcon Glyph="&#xE713;"
+                  <controls:SplitViewTab.Icon>
+                    <FontIcon Glyph="&#xE713;"
                                                   FontSize="16" />
-                                    </controls:SplitViewTab.Icon>
-                                </controls:SplitViewTab>
-                            </ListView.Footer>
-                        </ListView>
-                    </ScrollViewer>
-                </Grid>
-            </SplitView.Pane>
-            <Frame x:Name="fm_inner"
+                  </controls:SplitViewTab.Icon>
+                </controls:SplitViewTab>
+              </ListView.Footer>
+            </ListView>
+          </ScrollViewer>
+        </Grid>
+      </SplitView.Pane>
+      <Frame x:Name="fm_inner"
                    Navigating="fm_inner_Navigating"
                    Navigated="fm_inner_Navigated" />
-        </SplitView>
-        <ToggleButton x:Name="tbtPane"
+    </SplitView>
+    <ToggleButton x:Name="tbtPane"
                       x:Uid="Views/RootControl/PaneButton"
                       Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay}"
                       Style="{StaticResource SplitViewToggleButtonStyle}"
                       IsChecked="{x:Bind tbtPaneBind(sv_root.IsPaneOpen), BindBack=tbtPaneBindBack, Mode=TwoWay}"
                       IsTabStop="False"
                       AccessKey="P" />
-        <Border x:Name="bd_Toast"
+    <Border x:Name="bd_Toast"
                 x:DeferLoadStrategy="Lazy"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Bottom"
@@ -316,34 +316,34 @@
                 IsHitTestVisible="False"
                 Visibility="Collapsed"
                 Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0,x1,x1'}">
-            <Border.Background>
-                <SolidColorBrush Color="{ThemeResource SystemChromeMediumLowColor}"
+      <Border.Background>
+        <SolidColorBrush Color="{ThemeResource SystemChromeMediumLowColor}"
                                  Opacity="0.75" />
-            </Border.Background>
-            <TextBlock x:Name="tb_Toast"
+      </Border.Background>
+      <TextBlock x:Name="tb_Toast"
                        Margin="16,8"
                        TextWrapping="WrapWholeWords"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center" />
-        </Border>
-        <RelativePanel x:Name="rp_Disable"
+    </Border>
+    <RelativePanel x:Name="rp_Disable"
                        x:DeferLoadStrategy="Lazy"
                        Opacity="0"
                        Visibility="Collapsed"
                        Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}"
                        Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay}">
-            <TextBlock x:Name="tb_DisableInfo"
+      <TextBlock x:Name="tb_DisableInfo"
                        x:Uid="Views/RootControl/DisableInfoTextBlock"
                        Text="Operation in progress, plaese wait..."
                        RelativePanel.AlignVerticalCenterWithPanel="True"
                        RelativePanel.AlignHorizontalCenterWithPanel="True" />
-            <ProgressBar x:Name="pb_Disable"
+      <ProgressBar x:Name="pb_Disable"
                          RelativePanel.AlignLeftWithPanel="True"
                          RelativePanel.AlignRightWithPanel="True"
                          RelativePanel.Below="tb_DisableInfo"
                          Maximum="1"
                          SmallChange="0.001"
                          LargeChange="0.01" />
-        </RelativePanel>
-    </Grid>
+    </RelativePanel>
+  </Grid>
 </UserControl>
