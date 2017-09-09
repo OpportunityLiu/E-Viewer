@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft.Toolkit.Uwp.UI.Controls
 {
@@ -20,7 +21,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
         private void PullToRefreshIndicator_Loading(FrameworkElement sender, object args)
         {
             var s = (PullToRefreshIndicator)sender;
-            var pv = s.FindVisualAscendant<PullToRefreshListView>();
+            var pv = s.Ancestors<PullToRefreshListView>().First();
             s.parent = pv;
         }
 
@@ -31,10 +32,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
             get => this.p;
             set
             {
-                if(this.p != null)
+                if (this.p != null)
                     this.p.PullProgressChanged -= this.Parent_PullProgressChanged;
                 this.p = value;
-                if(this.p != null)
+                if (this.p != null)
                     this.p.PullProgressChanged += this.Parent_PullProgressChanged;
                 this.ClearValue(PullProgressProperty);
             }
@@ -68,7 +69,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
         private static void PullProgressChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var s = (PullToRefreshIndicator)sender;
-            if((double)e.NewValue == 1.0)
+            if ((double)e.NewValue == 1.0)
                 VisualStateManager.GoToState(s, "Actived", true);
             else
                 VisualStateManager.GoToState(s, "Normal", true);

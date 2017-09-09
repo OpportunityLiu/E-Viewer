@@ -5,7 +5,6 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
-                 xmlns:wp="using:Microsoft.Toolkit.Uwp.UI.Controls.WrapPanel"
                  mc:Ignorable="d"
                  Loading="root_Loading"
                  Unloaded="root_Unloaded"
@@ -133,7 +132,7 @@
                       HorizontalAlignment="Center">
               <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <wp:WrapPanel Orientation="Horizontal" />
+                  <tk:WrapPanel Orientation="Horizontal" />
                 </ItemsPanelTemplate>
               </ListView.ItemsPanel>
               <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
@@ -200,7 +199,7 @@
                            HorizontalAlignment="Stretch"
                            TextWrapping="WrapWholeWords"
                            Margin="8" />
-                <controls:WrapPanel HorizontalAlignment="Stretch"
+                <tk:WrapPanel HorizontalAlignment="Stretch"
                                     Margin="12,0">
                   <TextBlock x:Uid="Views/SearchPage/SearchSimilarTextBlock"
                              Text="• Similarity scan enabled"
@@ -218,7 +217,7 @@
                              Text="• Expunged shown"
                              Style="{StaticResource FileSearchOptionStyle}"
                              Visibility="{x:Bind VM.FileSearch.SearchExpunged, Mode=OneWay}" />
-                </controls:WrapPanel>
+                </tk:WrapPanel>
               </StackPanel>
             </StackPanel>
           </StackPanel>

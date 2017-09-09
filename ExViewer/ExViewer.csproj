@@ -134,7 +134,6 @@
     <Compile Include="Controls\TagPresenter.xaml.cs">
       <DependentUpon>TagPresenter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\WrapPanel.cs" />
     <Compile Include="Helpers\AccountManager.cs" />
     <Compile Include="Converters\FormatStringConverter.cs" />
     <Compile Include="Helpers\ApiInfo.cs" />
@@ -186,6 +185,7 @@
     <Compile Include="ViewModels\FavoritesVM.cs" />
     <Compile Include="ViewModels\GalleryListVM{T}.cs" />
     <Compile Include="Controls\TagAutoSuggestBox\ITagRecord.cs" />
+    <Compile Include="ViewModels\InfoVM.cs" />
     <Compile Include="ViewModels\PopularVM.cs" />
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
