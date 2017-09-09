@@ -20,16 +20,16 @@ namespace ExClient.Status
             return int.Parse(node.InnerText.DeEntitize());
         }
 
-        private void analyzeTopList(HtmlNode toplistsDiv)
+        private void analyzeToplists(HtmlNode toplistsDiv)
         {
             var table = toplistsDiv.Element("table").Descendants("table").FirstOrDefault();
             if (table == null)
             {
-                this.topLists.Clear();
+                this.toplists.Clear();
                 return;
             }
-            var newList = new List<TopListItem>();
-            var toremove = new List<int>(Enumerable.Range(0, this.topLists.Count));
+            var newList = new List<ToplistItem>();
+            var toremove = new List<int>(Enumerable.Range(0, this.toplists.Count));
             foreach (var toplistRecord in table.Elements("tr"))
             {
                 var rankNode = toplistRecord.Descendants("strong").FirstOrDefault();
@@ -41,9 +41,9 @@ namespace ExClient.Status
                 var link = new Uri(listNode.GetAttributeValue("href", "").DeEntitize());
                 if (!int.TryParse(link.Query.Split('=').Last(), out var listID))
                     continue;
-                newList.Add(new TopListItem(rank, (TopListName)listID));
+                newList.Add(new ToplistItem(rank, (ToplistName)listID));
             }
-            this.topLists.Update(newList);
+            this.toplists.Update(newList);
         }
 
         private void analyzeImageLimit(HtmlNode imageLimitDiv)
@@ -86,7 +86,7 @@ namespace ExClient.Status
                 analyzeImageLimit(contentDivs[0]);
                 var ehTrackerDiv = contentDivs[1];
                 var totalGPGainedDiv = contentDivs[2];
-                analyzeTopList(contentDivs[3]);
+                analyzeToplists(contentDivs[3]);
                 analyzeModPower(contentDivs[4]);
             });
         }
@@ -120,9 +120,9 @@ namespace ExClient.Status
         }
         #endregion
 
-        #region TopList
-        private ObservableList<TopListItem> topLists = new ObservableList<TopListItem>();
-        public ObservableListView<TopListItem> TopLists => this.topLists.AsReadOnly();
+        #region Toplist
+        private ObservableList<ToplistItem> toplists = new ObservableList<ToplistItem>();
+        public ObservableListView<ToplistItem> Toplists => this.toplists.AsReadOnly();
         #endregion
 
         #region Moderation Power

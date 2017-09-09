@@ -1,29 +1,14 @@
-﻿using System;
+﻿using ExClient.Status;
+using Opportunity.MvvmUniverse.Views;
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Diagnostics;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.Data.Json;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Media.Imaging;
-using ExClient;
-using Windows.ApplicationModel.Activation;
-using Windows.UI.ViewManagement;
-using ExViewer.ViewModels;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Opportunity.MvvmUniverse.Views;
-using Opportunity.MvvmUniverse.Collections;
-using ExClient.Status;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
@@ -180,14 +165,11 @@ namespace ExViewer.Views
             this.fm_inner.Navigate(this.tabs[s]);
             RootController.SwitchSplitView(false);
         }
-        //private async void btn_ChangeUser_Click(object sender, RoutedEventArgs e)
-        //{
-        //    await RootController.RequestLogOn();
-        //}
 
         private void btn_UserInfo_Click(object sender, RoutedEventArgs e)
         {
-            this.fm_inner.Navigate(typeof(InfoPage));
+            if (!(this.fm_inner.Content is InfoPage))
+                this.fm_inner.Navigate(typeof(InfoPage));
             RootController.SwitchSplitView(false);
         }
 
@@ -207,12 +189,12 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.OriginalKey)
             {
-            case Windows.System.VirtualKey.GamepadView:
-                RootController.SwitchSplitView(null);
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case Windows.System.VirtualKey.GamepadView:
+                    RootController.SwitchSplitView(null);
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 #if DEBUG_BOUNDS

@@ -2,25 +2,25 @@
 
 namespace ExClient.Status
 {
-    public struct TopListItem : IEquatable<TopListItem>
+    public struct ToplistItem : IEquatable<ToplistItem>
     {
-        internal TopListItem(int rank, TopListName name)
+        internal ToplistItem(int rank, ToplistName name)
         {
             this.Rank = rank;
             this.Name = name;
         }
 
         public int Rank { get; }
-        public TopListName Name { get; }
+        public ToplistName Name { get; }
 
-        public bool Equals(TopListItem other)
+        public bool Equals(ToplistItem other)
         {
             return this.Name == other.Name && this.Rank == other.Rank;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is TopListItem t)
+            if (obj is ToplistItem t)
                 return this.Equals(t);
             return false;
         }
@@ -31,7 +31,7 @@ namespace ExClient.Status
         }
     }
 
-    public enum TopListName
+    public enum ToplistName
     {
         GalleriesAllTime = 11,
         GalleriesPastYear = 12,
@@ -69,9 +69,9 @@ namespace ExClient.Status
         RatingAndReviewingYesterday = 75,
     }
 
-    public static class TopListNameExtension
+    public static class ToplistNameExtension
     {
-        public static Uri Uri(this TopListName topList)
+        public static Uri Uri(this ToplistName topList)
         {
             if (!topList.IsDefined())
                 return null;
