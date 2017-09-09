@@ -229,6 +229,18 @@
       "SearchAppBarButton/Label": "顯示所有包含此檔案的畫廊",
       "ShareAppBarButton/Label": "共享"
     },
+    "InfoPage": {
+      "ChangeUserAppBarButton/Label": "更換使用者",
+      "ImageLimitsHeaderTextBlock/Text": "流量限制",
+      "ImageLimitsSeparatorTextBlock/Text": "/",
+      "MoreButton/Content": "更多資訊…",
+      "NoToplistsTextBlock/Text": "你現在不在排行榜上…",
+      "OverviewPivotItem/Header": "總覽",
+      "RefreshAppBarButton/Label": "重新整理",
+      "RegenerateFormatString": "-{0}/分鐘",
+      "ToplistItemRankFormatString": "#{0}",
+      "ToplistsHeaderTextBlock/Text": "排行榜"
+    },
     "LogOnDialog": {
       "ContentDialog/PrimaryButtonText": "確定",
       "NoPassword": "請輸入密碼。",
@@ -247,7 +259,6 @@
     "RootControl": {
       "CachedSplitViewTab/Content": "快取的畫廊",
       "CachedSplitViewTab/ToolTipService/ToolTip": "快取的畫廊",
-      "ChangeUserButton/ToolTipService/ToolTip": "更換使用者",
       "DisableInfoTextBlock/Text": "少女祈禱中…",
       "FavoritesSplitViewTab/Content": "收藏",
       "FavoritesSplitViewTab/ToolTipService/ToolTip": "收藏",

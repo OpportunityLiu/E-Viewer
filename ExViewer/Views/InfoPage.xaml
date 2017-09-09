@@ -80,15 +80,24 @@
               Width="0" />
     </Pivot.LeftHeader>
     <Pivot.RightHeader>
-      <CommandBar DefaultLabelPosition="Right">
-        <AppBarButton Label="Refresh"
-                      Icon="Refresh" 
-                      Command="{x:Bind VM.RefreshStatus}"/>
+      <CommandBar x:Name="cb">
+        <AppBarButton x:Uid="Views/InfoPage/RefreshAppBarButton"
+                      Label="Refresh"
+                      Icon="Refresh"
+                      Command="{x:Bind VM.RefreshStatus}" />
+        <CommandBar.SecondaryCommands>
+          <AppBarButton x:Uid="Views/InfoPage/ChangeUserAppBarButton"
+                        Label="Change user"
+                        Icon="OtherUser"
+                        Click="abbChangeUser_Click" />
+        </CommandBar.SecondaryCommands>
       </CommandBar>
     </Pivot.RightHeader>
-    <PivotItem Header="Overview">
+    <PivotItem x:Uid="Views/InfoPage/OverviewPivotItem"
+               Header="OVERVIEW">
       <StackPanel>
-        <TextBlock Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+        <TextBlock x:Uid="Views/InfoPage/ImageLimitsHeaderTextBlock"
+                   Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
                    Text="Image Limits" />
         <Grid Padding="8,4">
           <Grid.ColumnDefinitions>
@@ -103,7 +112,8 @@
           </Grid.RowDefinitions>
           <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
                      Text="{x:Bind VM.Status.ImageUsage, Mode=OneWay}" />
-          <TextBlock Grid.Column="1"
+          <TextBlock x:Uid="Views/InfoPage/ImageLimitsSeparatorTextBlock"
+                     Grid.Column="1"
                      Style="{StaticResource CaptionTextBlockStyle}"
                      Text="/" />
           <TextBlock Grid.Column="2"
@@ -118,7 +128,122 @@
                        Value="{x:Bind VM.Status.ImageUsage, Mode=OneWay, Converter={StaticResource DefaultConverter}}"
                        Maximum="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
         </Grid>
+        <TextBlock x:Uid="Views/InfoPage/ToplistsHeaderTextBlock"
+                   Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+                   Text="Toplists" />
+        <ListView x:Name="lv"
+                  Margin="8,0"
+                  SelectionMode="None"
+                  ItemsSource="{x:Bind VM.Status.Toplists, Mode=OneWay}"
+                  ItemContainerStyle="{StaticResource ListViewItemStyle}">
+          <ListView.ItemTemplate>
+            <DataTemplate xmlns:s="using:ExClient.Status"
+                          xmlns:controls="using:ExViewer.Controls"
+                          x:DataType="s:ToplistItem">
+              <HyperlinkButton HorizontalAlignment="Stretch"
+                               HorizontalContentAlignment="Stretch"
+                               NavigateUri="{x:Bind s:ToplistNameExtension.Uri(Name)}">
+                <Grid Background="Transparent">
+                  <TextBlock Text="{x:Bind Name}"
+                             HorizontalAlignment="Left" />
+                  <TextBlock Text="{x:Bind Rank, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/ToplistItemRankFormatString'}"
+                             HorizontalAlignment="Right" />
+                </Grid>
+              </HyperlinkButton>
+            </DataTemplate>
+          </ListView.ItemTemplate>
+          <ListView.Header>
+            <TextBlock x:Uid="Views/InfoPage/NoToplistsTextBlock"
+                       HorizontalAlignment="Center"
+                       Margin="4"
+                       Style="{StaticResource BaseTextBlockStyle}"
+                       Visibility="{x:Bind VM.Status.Toplists.Count, FallbackValue=Collapsed, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
+                       Text="You are currently not featured on any toplists..." />
+          </ListView.Header>
+        </ListView>
+        <HyperlinkButton x:Uid="Views/InfoPage/MoreButton"
+                         Margin="8"
+                         Content="More info..."
+                         Style="{StaticResource TextBlockButtonStyle}"
+                         NavigateUri="https://e-hentai.org/home.php"
+                         HorizontalAlignment="Right" />
       </StackPanel>
     </PivotItem>
+    <!--<PivotItem Header="TAGGING">
+      <StackPanel>
+        <TextBlock x:Uid="Views/InfoPage/ImageLimitsHeaderTextBlock"
+                   Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+                   Text="Image Limits" />
+        <Grid Padding="8,4">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+                     Text="{x:Bind VM.Status.ImageUsage, Mode=OneWay}" />
+          <TextBlock x:Uid="Views/InfoPage/ImageLimitsSeparatorTextBlock"
+                     Grid.Column="1"
+                     Style="{StaticResource CaptionTextBlockStyle}"
+                     Text="/" />
+          <TextBlock Grid.Column="2"
+                     Style="{StaticResource CaptionTextBlockStyle}"
+                     Text="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay}" />
+          <TextBlock Grid.Column="3"
+                     Style="{StaticResource CaptionTextBlockStyle}"
+                     HorizontalAlignment="Right"
+                     Text="{x:Bind VM.Status.ImageUsageRegenerateRatePerMinute, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/RegenerateFormatString'}" />
+          <ProgressBar Grid.Row="1"
+                       Grid.ColumnSpan="999"
+                       Value="{x:Bind VM.Status.ImageUsage, Mode=OneWay, Converter={StaticResource DefaultConverter}}"
+                       Maximum="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
+        </Grid>
+        <TextBlock x:Uid="Views/InfoPage/ToplistsHeaderTextBlock"
+                   Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+                   Text="Toplists" />
+        <ListView x:Name="lv"
+                  Margin="8,0"
+                  SelectionMode="None"
+                  ItemsSource="{x:Bind VM.Status.Toplists, Mode=OneWay}"
+                  ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                  ItemClick="lv_ItemClick">
+          <ListView.ItemTemplate>
+            <DataTemplate xmlns:s="using:ExClient.Status"
+                          xmlns:controls="using:ExViewer.Controls"
+                          x:DataType="s:ToplistItem">
+              <HyperlinkButton HorizontalAlignment="Stretch"
+                               HorizontalContentAlignment="Stretch"
+                               NavigateUri="{x:Bind s:ToplistNameExtension.Uri(Name)}">
+                <Grid Background="Transparent">
+                  <TextBlock Text="{x:Bind Name}"
+                             HorizontalAlignment="Left" />
+                  <TextBlock Text="{x:Bind Rank, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/ToplistItemRankFormatString'}"
+                             HorizontalAlignment="Right" />
+                </Grid>
+              </HyperlinkButton>
+            </DataTemplate>
+          </ListView.ItemTemplate>
+          <ListView.Header>
+            <TextBlock x:Uid="Views/InfoPage/NoToplistsTextBlock"
+                       HorizontalAlignment="Center"
+                       Margin="4"
+                       Style="{StaticResource BaseTextBlockStyle}"
+                       Visibility="{x:Bind VM.Status.Toplists.Count, FallbackValue=Collapsed, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
+                       Text="You are currently not featured on any toplists..." />
+          </ListView.Header>
+        </ListView>
+        <HyperlinkButton x:Uid="Views/InfoPage/MoreButton"
+                         Margin="8"
+                         Content="More info..."
+                         Style="{StaticResource TextBlockButtonStyle}"
+                         NavigateUri="https://e-hentai.org/home.php"
+                         HorizontalAlignment="Right" />
+      </StackPanel>
+    </PivotItem>-->
   </Pivot>
 </controls:MyPage>

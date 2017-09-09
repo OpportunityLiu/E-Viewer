@@ -230,7 +230,16 @@
       "ShareAppBarButton/Label": "Share"
     },
     "InfoPage": {
-      "RegenerateFormatString": "-{0}/min"
+      "ChangeUserAppBarButton/Label": "Change user",
+      "ImageLimitsHeaderTextBlock/Text": "Image Limits",
+      "ImageLimitsSeparatorTextBlock/Text": "/",
+      "MoreButton/Content": "More info…",
+      "NoToplistsTextBlock/Text": "You are currently not featured on any toplists…",
+      "OverviewPivotItem/Header": "OVERVIEW",
+      "RefreshAppBarButton/Label": "Refresh",
+      "RegenerateFormatString": "-{0}/min",
+      "ToplistItemRankFormatString": "#{0}",
+      "ToplistsHeaderTextBlock/Text": "Toplists"
     },
     "LogOnDialog": {
       "ContentDialog/PrimaryButtonText": "OK",
@@ -250,7 +259,6 @@
     "RootControl": {
       "CachedSplitViewTab/Content": "Cached galleries",
       "CachedSplitViewTab/ToolTipService/ToolTip": "Cached galleries",
-      "ChangeUserButton/ToolTipService/ToolTip": "Change user",
       "DisableInfoTextBlock/Text": "Operation in progress, plaese wait...",
       "FavoritesSplitViewTab/Content": "Favorites",
       "FavoritesSplitViewTab/ToolTipService/ToolTip": "Favorites",

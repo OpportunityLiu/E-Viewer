@@ -11,7 +11,7 @@
     "Microsoft.Toolkit.Uwp.UI.Controls": "2.0.0",
     "Microsoft.Win32.Primitives": "4.3.0",
     "Opportunity.Converters": "1.2.3",
-    "Opportunity.MvvmUniverse": "0.4.6",
+    "Opportunity.MvvmUniverse": "0.4.7",
     "Opportunity.ResourceGenerator": "1.1.7",
     "System.Diagnostics.Contracts": "4.3.0",
     "System.Net.NameResolution": "4.3.0",
