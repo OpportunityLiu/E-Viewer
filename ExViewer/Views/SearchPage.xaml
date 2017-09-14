@@ -126,7 +126,7 @@
                           HorizontalAlignment="Center" />
             <ListView x:Name="lv_AdvancedSearch"
                       Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                      Padding="24,0,0,8"
+                      Margin="24,0,0,8"
                       Style="{StaticResource StackPanelListViewStyle}"
                       MaxWidth="800"
                       HorizontalAlignment="Center">
