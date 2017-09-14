@@ -164,6 +164,10 @@
                         Content="Search downvoted tags"
                         Style="{StaticResource AdvancedSearchOptionStyle}"
                         IsChecked="{x:Bind VM.AdvancedSearch.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <CheckBox x:Uid="Views/SearchPage/SkipMasterTagsCheckBox"
+                        Content="Skip master tags"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.SkipMasterTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
               <CheckBox x:Uid="Views/SearchPage/ShowExpungedCheckBox"
                         Content="Show expunged galleries"
                         Style="{StaticResource AdvancedSearchOptionStyle}"

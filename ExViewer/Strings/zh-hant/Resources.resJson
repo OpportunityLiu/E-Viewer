@@ -298,6 +298,7 @@
       "SearchExpungedTextBlock/Text": "• 顯示已失效的畫廊",
       "SearchSimilarTextBlock/Text": "• 搜尋相似內容",
       "ShowExpungedCheckBox/Content": "搜尋已失效的畫廊",
+      "SkipMasterTagsCheckBox/Content": "忽略主標籤",
       "TagsCheckBox/Content": "搜尋畫廊標籤",
       "TorrentNamesCheckBox/Content": "搜尋種子檔名"
     },
