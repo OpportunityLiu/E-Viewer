@@ -13,6 +13,7 @@ namespace ExClient.Search
         {
             var adv = new AdvancedSearchOptions(this.advSearchData);
             return $"&advsearch=1" +
+                $"{(adv.SkipMasterTags ? "&skip_mastertags=1" : "")}" +
                 $"{(adv.SearchName ? "&f_sname=1" : "")}" +
                 $"{(adv.SearchTags ? "&f_stags=1" : "")}" +
                 $"{(adv.SearchDescription ? "&f_sdesc=1" : "")}" +
@@ -34,7 +35,7 @@ namespace ExClient.Search
                 : new Uri(base.SearchUri.OriginalString + getQueryString());
         }
 
-        private readonly ushort advSearchData;
+        private readonly ulong advSearchData;
 
         public AdvancedSearchOptions AdvancedSearch => new AdvancedSearchOptions(this.advSearchData);
 

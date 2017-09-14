@@ -17,7 +17,8 @@ namespace ExClient.Search
             bool searchDownvotedTags = false,
             bool showExpungedGalleries = false,
             bool searchMinimumRating = false,
-            int minimumRating = 2)
+            int minimumRating = 2,
+            bool skipMasterTags = false)
         {
             this.SearchName = searchName;
             this.SearchTags = searchTags;
@@ -29,16 +30,17 @@ namespace ExClient.Search
             this.ShowExpungedGalleries = showExpungedGalleries;
             this.SearchMinimumRating = searchMinimumRating;
             this.MinimumRating = minimumRating;
+            this.SkipMasterTags = skipMasterTags;
         }
 
-        public AdvancedSearchOptions(ushort data)
+        internal AdvancedSearchOptions(ulong data)
         {
             this.data = data;
         }
 
-        private ushort data;
+        private ulong data;
 
-        internal ushort Data => this.data;
+        internal ulong Data => this.data;
 
         private bool getData(int pos)
         {
@@ -129,10 +131,17 @@ namespace ExClient.Search
             set => setData(8, value);
         }
 
+        //skip_mastertags
+        public bool SkipMasterTags
+        {
+            get => getData(9);
+            set => setData(9, value);
+        }
+
         //f_srdd
         public int MinimumRating
         {
-            get => (this.data & 3) + 2;
+            get => (int)(this.data & 0b11UL) + 2;
             set
             {
                 if (value > 5)
@@ -142,8 +151,8 @@ namespace ExClient.Search
                 value -= 2;
                 unchecked
                 {
-                    this.data &= (ushort)~3;
-                    this.data |= (ushort)value;
+                    this.data &= ~0b11UL;
+                    this.data |= (uint)value;
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ExClient.Launch
 {
@@ -21,6 +22,7 @@ namespace ExClient.Launch
             value = Uri.UnescapeDataString(value);
             return Unescape(value);
         }
+
         public static bool QueryValueAsBoolean(this string value)
         {
             return value != "0" && value != "";
@@ -28,18 +30,32 @@ namespace ExClient.Launch
 
         public static int QueryValueAsInt32(this string value)
         {
-            if(int.TryParse(value, out var r))
+            if (int.TryParse(value, out var r))
                 return r;
             value = value.Trim();
             var i = 0;
-            for(; i < value.Length; i++)
+            for (; i < value.Length; i++)
             {
-                if(value[i] < '0' || value[i] > '9')
+                if (value[i] < '0' || value[i] > '9')
                     break;
             }
-            if(int.TryParse(value.Substring(0, i), out r))
+            if (int.TryParse(value.Substring(0, i), out r))
                 return r;
             return 0;
+        }
+
+        public static int GetInt32(this IReadOnlyDictionary<string, string> query, string key)
+        {
+            if (query.TryGetValue(key, out var value))
+                return value.QueryValueAsInt32();
+            return 0;
+        }
+
+        public static bool GetBoolean(this IReadOnlyDictionary<string, string> query, string key)
+        {
+            if (query.TryGetValue(key, out var value))
+                return value.QueryValueAsBoolean();
+            return false;
         }
     }
 }
