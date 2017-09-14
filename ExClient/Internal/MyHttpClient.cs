@@ -2,6 +2,7 @@
 using HtmlAgilityPack;
 using System;
 using System.IO;
+using System.Linq;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
@@ -16,6 +17,14 @@ namespace ExClient.Internal
      * */
     internal class MyHttpClient : IDisposable
     {
+        private const string IP_BANNED_OF_PAGE_LOAD = "Your IP address has been temporarily banned for excessive pageloads";
+
+        private void checkIPBanStatus(string responseString)
+        {
+            if (responseString.StartsWith(IP_BANNED_OF_PAGE_LOAD))
+                throw new InvalidOperationException(LocalizedStrings.Resources.IPBannedOfPageLoad);
+        }
+
         public MyHttpClient(Client owner, HttpClient inner)
         {
             this.inner = inner;
@@ -116,7 +125,9 @@ namespace ExClient.Internal
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
-                return await response.Content.ReadAsStringAsync();
+                var str = await response.Content.ReadAsStringAsync();
+                checkIPBanStatus(str);
+                return str;
             });
         }
 
@@ -125,7 +136,7 @@ namespace ExClient.Internal
             reformUri(ref uri);
             return Run<HtmlDocument, HttpProgress>(async (token, progress) =>
             {
-                var request = GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, false);
+                var request = this.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, false);
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var doc = new HtmlDocument();
@@ -134,16 +145,19 @@ namespace ExClient.Internal
                 {
                     doc.Load(stream);
                 }
+                var rootNode = doc.DocumentNode;
+                if (rootNode.ChildNodes.Count == 1 && rootNode.FirstChild.NodeType == HtmlNodeType.Text)
+                    this.checkIPBanStatus(rootNode.FirstChild.InnerText);
                 do
                 {
                     if (response.StatusCode != HttpStatusCode.NotFound)
                         break;
-                    var title = doc.DocumentNode.Element("html").Element("head").Element("title");
+                    var title = rootNode.Element("html").Element("head").Element("title");
                     if (title == null)
                         break;
                     if (!title.InnerText.DeEntitize().StartsWith("Gallery Not Available - "))
                         break;
-                    var error = doc.DocumentNode.Element("html").Element("body")?.Element("div")?.Element("p");
+                    var error = rootNode.Element("html").Element("body")?.Element("div")?.Element("p");
                     if (error == null)
                         break;
                     var msg = error.InnerText.DeEntitize();
@@ -180,7 +194,9 @@ namespace ExClient.Internal
                 op.Progress = (sender, value) => progress.Report(value);
                 var res = await op;
                 res.EnsureSuccessStatusCode();
-                return await res.Content.ReadAsStringAsync();
+                var str = await res.Content.ReadAsStringAsync();
+                checkIPBanStatus(str);
+                return str;
             });
         }
 
