@@ -9,6 +9,7 @@
   "GalleryRemoved": "此画廊已移除或失效。",
   "GalleryReviewing": "此画廊正在审查中，请稍后再试。",
   "InvalidNamespace": "无效的标签命名空间。",
+  "IPBannedOfPageLoad": "由于过多的页面加载，您的 IP 地址已被暂时禁止，这表示您正在使用自动镜像/收集软件。",
   "OnlyIpv4": "仅支持 IPv4 地址。",
   "RemoveFromFavorites": "从收藏中移除",
   "SadPanda": "从 ExHentai 返回了熊猫图，这可能意味着当前用户没有访问 ExHentai 的权限。",
