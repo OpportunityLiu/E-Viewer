@@ -142,6 +142,7 @@
     <Compile Include="Galleries\Rating\Score.cs" />
     <Compile Include="Hentaiverse\HentaiVerseInfo.cs" />
     <Compile Include="Hentaiverse\MonsterEncounteredEventArgs.cs" />
+    <Compile Include="Launch\SearchHandlerBase.cs" />
     <Compile Include="Migrations\20170612052132_NewMig.cs" />
     <Compile Include="Migrations\20170612052132_NewMig.designer.cs">
       <DependentUpon>20170612052132_NewMig.cs</DependentUpon>

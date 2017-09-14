@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace ExClient.Launch
 {
-    internal sealed class SearchUploaderAndTagHandler : UriHandler
+    internal sealed class SearchUploaderAndTagHandler : SearchHandlerBase
     {
         private static readonly char[] trim = new[] { '$' };
 
@@ -27,13 +27,15 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             var v = data.Paths[1].Unescape2().Trim();
+            var category = GetCategory(data);
+            var advanced = GetAdvancedSearchOptions(data);
             switch (data.Path0)
             {
             case "tag":
-                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search()));
+                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search(category, advanced)));
             case "uploader":
                 var uploader = v.IndexOf(' ') >= 0 ? $"uploader:\"{v}\"" : $"uploader:{v}";
-                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(uploader)));
+                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(uploader, category, advanced)));
             }
             return AsyncWrapper.CreateError<LaunchResult>(new NotSupportedException("Unsupported uri."));
         }
