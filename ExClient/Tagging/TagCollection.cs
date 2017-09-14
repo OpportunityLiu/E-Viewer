@@ -194,7 +194,7 @@ namespace ExClient.Tagging
         // Here are mostly used ones.
         private static Regex tagNotValid = new Regex(@"The tag (.+?) is not currently valid");
         private static Regex tagNeedNs = new Regex(@"The tag ""(.+?)"" is not allowed\. Use (.+)");
-        private static string[] tagNeedNsSplit = new[] { "or", ",", " " };
+        private static string[] tagNeedNsSplit = new[] { "or", "," };
         private static Regex tagInBlackList = new Regex(@"The tag (.+?) cannot be used");
         private static Regex tagVetoed = new Regex(@"The tag (.+?) has been vetoed on this gallery");
         private static Regex tagCantVote = new Regex(@"Cannot vote for tag");
@@ -213,6 +213,8 @@ namespace ExClient.Tagging
             if (needNsMatch.Success)
             {
                 var ns = needNsMatch.Groups[2].Value.Split(tagNeedNsSplit, StringSplitOptions.RemoveEmptyEntries);
+                for (var i = 0; i < ns.Length; i++)
+                    ns[i] = ns[i].Trim();
                 var tag = needNsMatch.Groups[1].Value;
                 switch (ns.Length)
                 {
@@ -289,7 +291,7 @@ namespace ExClient.Tagging
                         state |= TagState.HighPower; break;
                     case "gtw":
                         state |= TagState.LowPower; break;
-                    case "gtl":
+                    //case "gtl":
                     default:
                         state |= TagState.NormalPower; break;
                     }
@@ -298,7 +300,7 @@ namespace ExClient.Tagging
                     case "opacity:0.4":
                         state |= TagState.Slave;
                         break;
-                    case "opacity:1.0":
+                    //case "opacity:1.0":
                     default:
                         break;
                     }
