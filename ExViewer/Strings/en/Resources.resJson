@@ -298,6 +298,7 @@
       "SearchExpungedTextBlock/Text": "• Show expunged galleries",
       "SearchSimilarTextBlock/Text": "• Enable similarity scan",
       "ShowExpungedCheckBox/Content": "Show expunged galleries",
+      "SkipMasterTagsCheckBox/Content": "Skip master tags",
       "TagsCheckBox/Content": "Search gallery tags",
       "TorrentNamesCheckBox/Content": "Search torrent filenames"
     },
