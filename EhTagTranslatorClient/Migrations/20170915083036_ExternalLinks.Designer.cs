@@ -9,9 +9,10 @@ using ExClient.Tagging;
 namespace EhTagTranslatorClient.Migrations
 {
     [DbContext(typeof(TranslateDb))]
-    partial class TranslateDbModelSnapshot : ModelSnapshot
+    [Migration("20170915083036_ExternalLinks")]
+    partial class ExternalLinks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2");

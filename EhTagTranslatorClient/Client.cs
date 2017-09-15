@@ -61,7 +61,7 @@ namespace EhTagTranslatorClient
             private set => ApplicationData.Current.LocalSettings.Values[LAST_COMMIT] = value;
         }
 
-        private static readonly Uri wikiDbRootUri = new Uri("https://raw.githubusercontent.com/wiki/Mapaler/EhTagTranslator/tags/");
+        private static readonly Uri wikiDbRootUri = new Uri("https://raw.githubusercontent.com/wiki/Mapaler/EhTagTranslator/database/");
 
         private static readonly Uri stateUri = new Uri("https://github.com/Mapaler/EhTagTranslator/wiki/_history");
 

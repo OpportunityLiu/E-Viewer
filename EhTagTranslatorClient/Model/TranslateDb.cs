@@ -6,7 +6,7 @@ namespace EhTagTranslatorClient.Model
     {
         public static void Migrate()
         {
-            using(var db = new TranslateDb())
+            using (var db = new TranslateDb())
             {
                 db.Database.Migrate();
             }
@@ -29,6 +29,8 @@ namespace EhTagTranslatorClient.Model
             modelBuilder.Entity<Record>()
                 .Property(r => r.Original)
                 .ValueGeneratedNever();
+            modelBuilder.Entity<Record>()
+                .Ignore(r => r.ExternalLinks);
         }
     }
 }
