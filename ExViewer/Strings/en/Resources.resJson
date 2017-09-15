@@ -79,6 +79,11 @@
       "TagVoteDownMenuFlyoutItem/Text": "Vote down",
       "TagVoteUpMenuFlyoutItem/Text": "Vote up",
       "TagWithdrawVoteMenuFlyoutItem/Text": "Withdraw vote"
+    },
+    "TaggingRecordPresenter": {
+      "BlockedAndSlavedIndicator": "B S",
+      "BlockedIndicator": "B",
+      "SlavedIndicator": "S"
     }
   },
   "Database": {
@@ -236,9 +241,11 @@
       "MoreButton/Content": "More info…",
       "NoTaggingHistoryTextBlock/Text": "There are no tagging records recently",
       "NoToplistsTextBlock/Text": "You are currently not featured on any toplists",
+      "OpenGalleryMenuFlyoutItem/Text": "Open gallery",
       "OverviewPivotItem/Header": "OVERVIEW",
       "RefreshAppBarButton/Label": "Refresh",
       "RegenerateFormatString": "-{0}/min",
+      "SearchTagMenuFlyoutItem/Text": "Show galleries with this tag",
       "TaggingCountFormatString": "{0} tag(s)",
       "TaggingHistoryHeaderTextBlock/Text": "History",
       "TaggingPercentFormatString": "{0:P}",

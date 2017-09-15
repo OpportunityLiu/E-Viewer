@@ -72,9 +72,11 @@
       </Setter>
     </Style>
     <MenuFlyout x:Name="mfTaggingRecord">
-      <MenuFlyoutItem Command="{x:Bind VM.OpenGallery}"
+      <MenuFlyoutItem x:Uid="Views/InfoPage/OpenGalleryMenuFlyoutItem"
+                      Command="{x:Bind VM.OpenGallery}"
                       Text="Open gallery" />
-      <MenuFlyoutItem Command="{x:Bind VM.SearchTag}"
+      <MenuFlyoutItem x:Uid="Views/InfoPage/SearchTagMenuFlyoutItem"
+                      Command="{x:Bind VM.SearchTag}"
                       Text="Show galleries with this tag" />
     </MenuFlyout>
   </controls:MyPage.Resources>
