@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace ExClient.Launch
 {
-    internal sealed class SearchCategoryHandler : UriHandler
+    internal sealed class SearchCategoryHandler : SearchHandlerBase
     {
         private static Dictionary<string, Category> categoryDic = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
@@ -29,7 +29,9 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             var category = categoryDic[data.Path0];
-            return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search("", category)));
+            var keyword = GetKeyword(data);
+            var advanced = GetAdvancedSearchOptions(data);
+            return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
         }
     }
 }

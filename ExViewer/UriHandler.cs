@@ -80,11 +80,11 @@ namespace ExViewer
                         {
                         case CategorySearchResult ksr:
                             var vm = SearchVM.GetVM(ksr);
-                            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery);
+                            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
                             return;
                         case FavoritesSearchResult fsr:
                             var fvm = FavoritesVM.GetVM(fsr);
-                            RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), fvm.SearchQuery);
+                            RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), fvm.SearchQuery.ToString());
                             return;
                         }
                         throw new InvalidOperationException();

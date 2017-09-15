@@ -9,11 +9,6 @@ namespace ExClient.Launch
 {
     internal class SearchHandler : SearchHandlerBase
     {
-        protected static string UnescapeKeyword(string query)
-        {
-            return query.Replace("+", "").Replace("&", "");
-        }
-
         public override bool CanHandle(UriHandlerData data)
         {
             return data.Paths.Count == 0;
@@ -29,7 +24,7 @@ namespace ExClient.Launch
 
         private CategorySearchResult handleSearch(UriHandlerData data)
         {
-            var keyword = UnescapeKeyword(data.Queries.GetValueOrDefault("f_search", ""));
+            var keyword = GetKeyword(data);
             var category = GetCategory(data);
             var advanced = GetAdvancedSearchOptions(data);
             return Client.Current.Search(keyword, category, advanced);

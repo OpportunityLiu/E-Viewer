@@ -131,6 +131,9 @@
     <Compile Include="Controls\MyPage.cs" />
     <Compile Include="Controls\PullToRefreshIndicator.cs" />
     <Compile Include="Controls\TagAutoSuggestBox\TagSuggestionService.cs" />
+    <Compile Include="Controls\TaggingRecordPresenter.xaml.cs">
+      <DependentUpon>TaggingRecordPresenter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TagPresenter.xaml.cs">
       <DependentUpon>TagPresenter.xaml</DependentUpon>
     </Compile>
@@ -252,6 +255,7 @@
     <Compile Include="Views\UpdateDialog.xaml.cs">
       <DependentUpon>UpdateDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VisualTreeHelperExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -351,6 +355,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ImagePresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TaggingRecordPresenter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

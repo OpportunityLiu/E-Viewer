@@ -7,6 +7,7 @@
                  NavigationCacheMode="Enabled"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
                  mc:Ignorable="d">
   <controls:MyPage.Transitions>
     <TransitionCollection>
@@ -70,10 +71,17 @@
         </Setter.Value>
       </Setter>
     </Style>
+    <MenuFlyout x:Name="mfTaggingRecord">
+      <MenuFlyoutItem Command="{x:Bind VM.OpenGallery}"
+                      Text="Open gallery" />
+      <MenuFlyoutItem Command="{x:Bind VM.SearchTag}"
+                      Text="Show galleries with this tag" />
+    </MenuFlyout>
   </controls:MyPage.Resources>
   <Pivot x:Name="pv_root"
          BorderThickness="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
-         BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+         BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+         SelectionChanged="pv_root_SelectionChanged">
     <Pivot.LeftHeader>
       <Border x:Name="bdSplitViewPlaceholder"
               Height="48"
@@ -81,7 +89,8 @@
     </Pivot.LeftHeader>
     <Pivot.RightHeader>
       <CommandBar x:Name="cb">
-        <AppBarButton x:Uid="Views/InfoPage/RefreshAppBarButton"
+        <AppBarButton x:Name="abbRefresh"
+                      x:Uid="Views/InfoPage/RefreshAppBarButton"
                       Label="Refresh"
                       Icon="Refresh"
                       Command="{x:Bind VM.RefreshStatus}" />
@@ -95,155 +104,170 @@
     </Pivot.RightHeader>
     <PivotItem x:Uid="Views/InfoPage/OverviewPivotItem"
                Header="OVERVIEW">
-      <StackPanel>
-        <TextBlock x:Uid="Views/InfoPage/ImageLimitsHeaderTextBlock"
-                   Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
-                   Text="Image Limits" />
-        <Grid Padding="8,4">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-          </Grid.RowDefinitions>
-          <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
-                     Text="{x:Bind VM.Status.ImageUsage, Mode=OneWay}" />
-          <TextBlock x:Uid="Views/InfoPage/ImageLimitsSeparatorTextBlock"
-                     Grid.Column="1"
-                     Style="{StaticResource CaptionTextBlockStyle}"
-                     Text="/" />
-          <TextBlock Grid.Column="2"
-                     Style="{StaticResource CaptionTextBlockStyle}"
-                     Text="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay}" />
-          <TextBlock Grid.Column="3"
-                     Style="{StaticResource CaptionTextBlockStyle}"
-                     HorizontalAlignment="Right"
-                     Text="{x:Bind VM.Status.ImageUsageRegenerateRatePerMinute, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/RegenerateFormatString'}" />
-          <ProgressBar Grid.Row="1"
-                       Grid.ColumnSpan="999"
-                       Value="{x:Bind VM.Status.ImageUsage, Mode=OneWay, Converter={StaticResource DefaultConverter}}"
-                       Maximum="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
-        </Grid>
-        <TextBlock x:Uid="Views/InfoPage/ToplistsHeaderTextBlock"
-                   Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
-                   Text="Toplists" />
-        <ListView x:Name="lv"
-                  Margin="8,0"
-                  SelectionMode="None"
-                  ItemsSource="{x:Bind VM.Status.Toplists, Mode=OneWay}"
-                  ItemContainerStyle="{StaticResource ListViewItemStyle}">
-          <ListView.ItemTemplate>
-            <DataTemplate xmlns:s="using:ExClient.Status"
-                          xmlns:controls="using:ExViewer.Controls"
-                          x:DataType="s:ToplistItem">
-              <HyperlinkButton HorizontalAlignment="Stretch"
-                               HorizontalContentAlignment="Stretch"
-                               NavigateUri="{x:Bind s:ToplistNameExtension.Uri(Name)}">
-                <Grid Background="Transparent">
-                  <TextBlock Text="{x:Bind Name}"
-                             HorizontalAlignment="Left" />
-                  <TextBlock Text="{x:Bind Rank, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/ToplistItemRankFormatString'}"
-                             HorizontalAlignment="Right" />
-                </Grid>
-              </HyperlinkButton>
-            </DataTemplate>
-          </ListView.ItemTemplate>
-          <ListView.Header>
+      <ListView SelectionMode="None"
+                ItemsSource="{x:Bind VM.Status.Toplists, Mode=OneWay}"
+                ItemContainerStyle="{StaticResource ListViewItemStyle}">
+        <ListView.ItemTemplate>
+          <DataTemplate xmlns:s="using:ExClient.Status"
+                        xmlns:controls="using:ExViewer.Controls"
+                        x:DataType="s:ToplistItem">
+            <HyperlinkButton Margin="8,0"
+                             HorizontalAlignment="Stretch"
+                             HorizontalContentAlignment="Stretch"
+                             NavigateUri="{x:Bind s:ToplistNameExtension.Uri(Name)}">
+              <Grid Background="Transparent">
+                <TextBlock Text="{x:Bind Name}"
+                           HorizontalAlignment="Left" />
+                <TextBlock Text="{x:Bind Rank, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/ToplistItemRankFormatString'}"
+                           HorizontalAlignment="Right" />
+              </Grid>
+            </HyperlinkButton>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.Header>
+          <StackPanel>
+            <TextBlock x:Uid="Views/InfoPage/ImageLimitsHeaderTextBlock"
+                       Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+                       Text="Image Limits" />
+            <Grid Padding="8,4">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+                         Text="{x:Bind VM.Status.ImageUsage, Mode=OneWay}" />
+              <TextBlock x:Uid="Views/InfoPage/ImageLimitsSeparatorTextBlock"
+                         Grid.Column="1"
+                         Style="{StaticResource CaptionTextBlockStyle}"
+                         Text="/" />
+              <TextBlock Grid.Column="2"
+                         Style="{StaticResource CaptionTextBlockStyle}"
+                         Text="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay}" />
+              <TextBlock Grid.Column="3"
+                         Style="{StaticResource CaptionTextBlockStyle}"
+                         HorizontalAlignment="Right"
+                         Text="{x:Bind VM.Status.ImageUsageRegenerateRatePerMinute, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/RegenerateFormatString'}" />
+              <ProgressBar Grid.Row="1"
+                           Grid.ColumnSpan="999"
+                           Value="{x:Bind VM.Status.ImageUsage, Mode=OneWay, Converter={StaticResource DefaultConverter}}"
+                           Maximum="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
+            </Grid>
+            <TextBlock x:Uid="Views/InfoPage/ToplistsHeaderTextBlock"
+                       Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+                       Text="Toplists" />
             <TextBlock x:Uid="Views/InfoPage/NoToplistsTextBlock"
                        HorizontalAlignment="Center"
                        Margin="4"
                        Style="{StaticResource BaseTextBlockStyle}"
                        Visibility="{x:Bind VM.Status.Toplists.Count, FallbackValue=Collapsed, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
                        Text="You are currently not featured on any toplists..." />
-          </ListView.Header>
-        </ListView>
-        <HyperlinkButton x:Uid="Views/InfoPage/MoreButton"
-                         Margin="8"
-                         Content="More info..."
-                         Style="{StaticResource TextBlockButtonStyle}"
-                         NavigateUri="https://e-hentai.org/home.php"
-                         HorizontalAlignment="Right" />
-      </StackPanel>
+          </StackPanel>
+        </ListView.Header>
+        <ListView.Footer>
+          <HyperlinkButton x:Uid="Views/InfoPage/MoreButton"
+                           Margin="8"
+                           Content="More info..."
+                           Style="{StaticResource TextBlockButtonStyle}"
+                           NavigateUri="https://e-hentai.org/home.php"
+                           HorizontalAlignment="Right" />
+        </ListView.Footer>
+      </ListView>
     </PivotItem>
-    <!--<PivotItem Header="TAGGING">
-      <StackPanel>
-        <TextBlock x:Uid="Views/InfoPage/ImageLimitsHeaderTextBlock"
-                   Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
-                   Text="Image Limits" />
-        <Grid Padding="8,4">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-          </Grid.RowDefinitions>
-          <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
-                     Text="{x:Bind VM.Status.ImageUsage, Mode=OneWay}" />
-          <TextBlock x:Uid="Views/InfoPage/ImageLimitsSeparatorTextBlock"
-                     Grid.Column="1"
-                     Style="{StaticResource CaptionTextBlockStyle}"
-                     Text="/" />
-          <TextBlock Grid.Column="2"
-                     Style="{StaticResource CaptionTextBlockStyle}"
-                     Text="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay}" />
-          <TextBlock Grid.Column="3"
-                     Style="{StaticResource CaptionTextBlockStyle}"
-                     HorizontalAlignment="Right"
-                     Text="{x:Bind VM.Status.ImageUsageRegenerateRatePerMinute, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/RegenerateFormatString'}" />
-          <ProgressBar Grid.Row="1"
-                       Grid.ColumnSpan="999"
-                       Value="{x:Bind VM.Status.ImageUsage, Mode=OneWay, Converter={StaticResource DefaultConverter}}"
-                       Maximum="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
-        </Grid>
-        <TextBlock x:Uid="Views/InfoPage/ToplistsHeaderTextBlock"
-                   Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
-                   Text="Toplists" />
-        <ListView x:Name="lv"
-                  Margin="8,0"
-                  SelectionMode="None"
-                  ItemsSource="{x:Bind VM.Status.Toplists, Mode=OneWay}"
-                  ItemContainerStyle="{StaticResource ListViewItemStyle}"
-                  ItemClick="lv_ItemClick">
-          <ListView.ItemTemplate>
-            <DataTemplate xmlns:s="using:ExClient.Status"
-                          xmlns:controls="using:ExViewer.Controls"
-                          x:DataType="s:ToplistItem">
-              <HyperlinkButton HorizontalAlignment="Stretch"
-                               HorizontalContentAlignment="Stretch"
-                               NavigateUri="{x:Bind s:ToplistNameExtension.Uri(Name)}">
-                <Grid Background="Transparent">
-                  <TextBlock Text="{x:Bind Name}"
-                             HorizontalAlignment="Left" />
-                  <TextBlock Text="{x:Bind Rank, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/ToplistItemRankFormatString'}"
-                             HorizontalAlignment="Right" />
-                </Grid>
-              </HyperlinkButton>
-            </DataTemplate>
-          </ListView.ItemTemplate>
-          <ListView.Header>
-            <TextBlock x:Uid="Views/InfoPage/NoToplistsTextBlock"
-                       HorizontalAlignment="Center"
-                       Margin="4"
-                       Style="{StaticResource BaseTextBlockStyle}"
-                       Visibility="{x:Bind VM.Status.Toplists.Count, FallbackValue=Collapsed, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
-                       Text="You are currently not featured on any toplists..." />
-          </ListView.Header>
-        </ListView>
-        <HyperlinkButton x:Uid="Views/InfoPage/MoreButton"
-                         Margin="8"
-                         Content="More info..."
-                         Style="{StaticResource TextBlockButtonStyle}"
-                         NavigateUri="https://e-hentai.org/home.php"
-                         HorizontalAlignment="Right" />
-      </StackPanel>
-    </PivotItem>-->
+    <PivotItem x:Uid="Views/InfoPage/TaggingPivotItem"
+               Header="TAGGING">
+      <ListView x:Name="lvTagging"
+                SelectionMode="None"
+                IsItemClickEnabled="True"
+                ItemsSource="{x:Bind VM.TaggingStatistics.Records, Mode=OneWay}"
+                ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                ItemClick="lvTagging_ItemClick">
+        <ListView.ItemTemplate>
+          <DataTemplate xmlns:s="using:ExClient.Status"
+                        xmlns:controls="using:ExViewer.Controls"
+                        x:DataType="s:TaggingRecord">
+            <controls:TaggingRecordPresenter Margin="8,2"
+                                             HorizontalAlignment="Stretch"
+                                             HorizontalContentAlignment="Stretch"
+                                             Record="{x:Bind}" />
+          </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.Header>
+          <tk:ScrollHeader TargetListViewBase="{x:Bind lvTagging}"
+                           Mode="QuickReturn">
+            <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+              <TextBlock x:Uid="Views/InfoPage/TaggingStaticsHeaderTextBlock"
+                         Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+                         Text="Statistics" />
+              <Grid Padding="8,4">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Uid="Views/InfoPage/TaggingStartedHeaderTextBlock"
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource InfoPageBodyTextBlockStyle}"
+                           Text="Started Accuracy" />
+                <TextBlock x:Uid="Views/InfoPage/TaggingVotedHeaderTextBlock"
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource InfoPageBodyTextBlockStyle}"
+                           Text="Voted Accuracy" />
+                <tk:RadialProgressBar Grid.Row="1"
+                                      HorizontalAlignment="Center"
+                                      Width="60"
+                                      Height="60"
+                                      Value="{x:Bind percent(VM.TaggingStatistics.StartedAccuracy), Mode=OneWay}" />
+                <tk:RadialProgressBar Grid.Row="1"
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Center"
+                                      Width="60"
+                                      Height="60"
+                                      Value="{x:Bind percent(VM.TaggingStatistics.VotedAccuracy), Mode=OneWay}" />
+                <TextBlock Grid.Row="1"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Text="{x:Bind VM.TaggingStatistics.StartedAccuracy, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/TaggingPercentFormatString'}" />
+                <TextBlock Grid.Row="1"
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Text="{x:Bind VM.TaggingStatistics.VotedAccuracy, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/TaggingPercentFormatString'}" />
+                <TextBlock Grid.Row="2"
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource InfoPageCaptionTextBlockStyle}"
+                           Text="{x:Bind VM.TaggingStatistics.StartedCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/TaggingCountFormatString'}" />
+                <TextBlock Grid.Row="2"
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource InfoPageCaptionTextBlockStyle}"
+                           Text="{x:Bind VM.TaggingStatistics.VotedCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/TaggingCountFormatString'}" />
+              </Grid>
+              <TextBlock x:Uid="Views/InfoPage/TaggingHistoryHeaderTextBlock"
+                         Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+                         Text="History" />
+              <TextBlock x:Uid="Views/InfoPage/NoTaggingHistoryTextBlock"
+                         HorizontalAlignment="Center"
+                         Margin="4"
+                         Style="{StaticResource BaseTextBlockStyle}"
+                         Visibility="{x:Bind VM.TaggingStatistics.Records.Count, FallbackValue=Collapsed, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
+                         Text="There are no tagging records recently." />
+            </StackPanel>
+          </tk:ScrollHeader>
+        </ListView.Header>
+      </ListView>
+    </PivotItem>
   </Pivot>
 </controls:MyPage>

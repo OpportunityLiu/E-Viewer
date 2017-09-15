@@ -78,6 +78,7 @@ namespace ExClient.Status
         {
             return AsyncInfo.Run(async token =>
             {
+                this.toplists.Clear();
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(infoUri);
                 var contentDivs = doc.DocumentNode
                     .Element("html").Element("body").Element("div").Elements("div")

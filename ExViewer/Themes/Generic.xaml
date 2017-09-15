@@ -448,26 +448,26 @@
         </Setter>
     </Style>
 
-    <Style TargetType="controls:FavoriteCategoryPresenter">
-        <Setter Property="HorizontalAlignment"
-                Value="Left" />
-        <Setter Property="VerticalAlignment"
-                Value="Center" />
-        <Setter Property="IsTabStop"
-                Value="False" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="controls:FavoriteCategoryPresenter">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="Icon"
-                                   Foreground="{TemplateBinding BorderBrush}"
-                                   Text="&#x2BC1;" />
-                        <TextBlock x:Name="Label" 
-                                   x:DeferLoadStrategy="Lazy"
-                                   Margin="4,0,0,0"/>
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+  <Style TargetType="controls:FavoriteCategoryPresenter">
+    <Setter Property="HorizontalAlignment"
+            Value="Left" />
+    <Setter Property="VerticalAlignment"
+            Value="Center" />
+    <Setter Property="IsTabStop"
+            Value="False" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:FavoriteCategoryPresenter">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock x:Name="Icon"
+                       Foreground="{TemplateBinding BorderBrush}"
+                       Text="&#x2BC1;" />
+            <TextBlock x:Name="Label"
+                       x:DeferLoadStrategy="Lazy"
+                       Margin="4,0,0,0" />
+          </StackPanel>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>
