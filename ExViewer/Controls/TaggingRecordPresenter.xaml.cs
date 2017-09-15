@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ExClient.Status;
+using ExClient.Tagging;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -25,6 +26,7 @@ namespace ExViewer.Controls
             this.InitializeComponent();
         }
 
+
         public TaggingRecord Record
         {
             get => (TaggingRecord)GetValue(RecordProperty);
@@ -35,6 +37,54 @@ namespace ExViewer.Controls
         /// Indentify <see cref="Record"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty RecordProperty =
-            DependencyProperty.Register(nameof(Record), typeof(TaggingRecord), typeof(TaggingRecordPresenter), new PropertyMetadata(default(TaggingRecord)));
+            DependencyProperty.Register(nameof(Record), typeof(TaggingRecord), typeof(TaggingRecordPresenter), new PropertyMetadata(default(TaggingRecord), RecordPropertyChanged));
+
+        private static void RecordPropertyChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        {
+            var oldValue = (TaggingRecord)e.OldValue;
+            var newValue = (TaggingRecord)e.NewValue;
+            if (oldValue.IsBlocked == newValue.IsBlocked
+                && oldValue.IsSlaved == newValue.IsSlaved
+                && oldValue.Tag == newValue.Tag
+                && oldValue.Score == newValue.Score)
+                return;
+            var sender = (TaggingRecordPresenter)dp;
+            var dc = newValue.Tag.GetDisplayContentAsync();
+            if (dc.Status == AsyncStatus.Completed)
+            {
+                sender.tbTag.Text = dc.GetResults();
+            }
+            else
+            {
+                sender.tbTag.Text = newValue.Tag.Content;
+                dc.Completed = (IAsyncOperation<string> op, AsyncStatus asyncStatus) =>
+                {
+                    if (asyncStatus != AsyncStatus.Completed)
+                        return;
+                    var dispValue = op.GetResults();
+                    Opportunity.MvvmUniverse.DispatcherHelper.BeginInvokeOnUIThread(() =>
+                    {
+                        sender.tbTag.Text = dispValue;
+                    });
+                };
+            }
+            if (newValue.Score > 0)
+                sender.tbTag.Foreground = upBrush;
+            else if (newValue.Score < 0)
+                sender.tbTag.Foreground = downBrush;
+            else
+                sender.tbTag.ClearValue(TextBlock.ForegroundProperty);
+            var indicators = "";
+            if (newValue.IsBlocked && newValue.IsSlaved)
+                indicators = Strings.Resources.Controls.TaggingRecordPresenter.BlockedAndSlavedIndicator;
+            else if (newValue.IsBlocked)
+                indicators = Strings.Resources.Controls.TaggingRecordPresenter.BlockedIndicator;
+            else if (newValue.IsSlaved)
+                indicators = Strings.Resources.Controls.TaggingRecordPresenter.SlavedIndicator;
+            sender.tbStatus.Text = indicators;
+        }
+
+        private static readonly Brush upBrush = (Brush)Application.Current.Resources["VoteUpTagBrush"];
+        private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownTagBrush"];
     }
 }

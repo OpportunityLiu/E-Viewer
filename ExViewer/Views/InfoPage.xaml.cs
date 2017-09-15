@@ -79,6 +79,8 @@ namespace ExViewer.Views
         private async void abbChangeUser_Click(object sender, RoutedEventArgs e)
         {
             await RootControl.RootController.RequestLogOn();
+            this.VM.RefreshStatus.Execute();
+            this.VM.RefreshTaggingStatistics.Execute();
         }
 
         public void CloseAll()

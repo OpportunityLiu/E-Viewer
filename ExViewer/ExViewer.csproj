@@ -255,7 +255,6 @@
     <Compile Include="Views\UpdateDialog.xaml.cs">
       <DependentUpon>UpdateDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VisualTreeHelperExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

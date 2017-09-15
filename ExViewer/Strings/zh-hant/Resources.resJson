@@ -68,6 +68,11 @@
       "PullTextBlock/Text": "下拉重新整理",
       "ReleaseTextBlock/Text": "釋放重新整理"
     },
+    "TaggingRecordPresenter": {
+      "BlockedAndSlavedIndicator": "B S",
+      "BlockedIndicator": "B",
+      "SlavedIndicator": "S"
+    },
     "TagPresenter": {
       "AddNewTagsAutoSuggestBox/PlaceholderText": "輸入新標籤，逗號分隔",
       "AddNewTagsButton/Content": "新增標籤",
@@ -236,9 +241,11 @@
       "MoreButton/Content": "更多資訊…",
       "NoTaggingHistoryTextBlock/Text": "最近一段時間內沒有記錄",
       "NoToplistsTextBlock/Text": "你現在不在排行榜上",
+      "OpenGalleryMenuFlyoutItem/Text": "開啟畫廊",
       "OverviewPivotItem/Header": "總覽",
       "RefreshAppBarButton/Label": "重新整理",
       "RegenerateFormatString": "-{0}/分鐘",
+      "SearchTagMenuFlyoutItem/Text": "搜尋含有此標籤的畫廊",
       "TaggingCountFormatString": "{0} 個標籤",
       "TaggingHistoryHeaderTextBlock/Text": "歷史",
       "TaggingPercentFormatString": "{0:P}",
