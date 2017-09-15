@@ -126,6 +126,10 @@
     <Compile Include="Migrations\20170326090536_Migration2.designer.cs">
       <DependentUpon>20170326090536_Migration2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170915083036_ExternalLinks.cs" />
+    <Compile Include="Migrations\20170915083036_ExternalLinks.designer.cs">
+      <DependentUpon>20170915083036_ExternalLinks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\TranslateDbModelSnapshot.cs" />
     <Compile Include="Model\TranslateDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
