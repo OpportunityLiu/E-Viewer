@@ -16,11 +16,11 @@ namespace ExClient.Status
     {
         internal TaggingStatistics() { }
 
-        public int Count { get; set; }
-        public double StartedAccuracy { get; set; }
-        public int StartedCount { get; set; }
-        public double VotedAccuracy { get; set; }
-        public int VotedCount { get; set; }
+        public int Count { get; set; } = 0;
+        public double StartedAccuracy { get; set; } = double.NaN;
+        public int StartedCount { get; set; } = 0;
+        public double VotedAccuracy { get; set; } = double.NaN;
+        public int VotedCount { get; set; } = 0;
 
         private readonly ObservableList<TaggingRecord> records = new ObservableList<TaggingRecord>();
         public ObservableListView<TaggingRecord> Records => this.records.AsReadOnly();

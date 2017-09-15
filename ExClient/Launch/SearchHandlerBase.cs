@@ -9,7 +9,12 @@ namespace ExClient.Launch
 {
     internal abstract class SearchHandlerBase : UriHandler
     {
-        protected AdvancedSearchOptions GetAdvancedSearchOptions(UriHandlerData data)
+        protected static string UnescapeKeyword(string query)
+        {
+            return query.Replace("+", "").Replace("&", "");
+        }
+
+        protected static AdvancedSearchOptions GetAdvancedSearchOptions(UriHandlerData data)
         {
             var advanced = new AdvancedSearchOptions();
             foreach (var item in data.Queries)
@@ -55,7 +60,7 @@ namespace ExClient.Launch
             return advanced;
         }
 
-        protected Category GetCategory(UriHandlerData data)
+        protected static Category GetCategory(UriHandlerData data)
         {
             var category = Category.Unspecified;
             foreach (var item in data.Queries)
@@ -96,6 +101,11 @@ namespace ExClient.Launch
                 }
             }
             return category;
+        }
+
+        protected static string GetKeyword(UriHandlerData data)
+        {
+            return UnescapeKeyword(data.Queries.GetValueOrDefault("f_search", ""));
         }
     }
 }
