@@ -29,7 +29,7 @@ namespace ExClient.Status
 
         public IAsyncAction RefreshAsync()
         {
-            return AsyncInfo.Run(async token =>
+            return AsyncInfo.Run(async token => await Task.Run(async () =>
             {
                 var uid = Client.Current.UserID;
                 if (uid < 0)
@@ -55,7 +55,7 @@ namespace ExClient.Status
                     this.records.AddRange(table.Elements("tr").Skip(1).Select(t => new TaggingRecord(t)));
                 }
                 OnPropertyChanged(default(string));
-            });
+            }, token));
         }
 
         private static double parsePercetage(string str)
