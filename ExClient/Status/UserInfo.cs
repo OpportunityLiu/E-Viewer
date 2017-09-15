@@ -17,7 +17,7 @@ namespace ExClient.Status
         {
             if (userID <= 0)
                 throw new ArgumentOutOfRangeException(nameof(userID));
-            return Task.Run(async () =>
+            return Run(async token => await Task.Run(async () =>
             {
                 var document = await Current.HttpClient.GetDocumentAsync(new Uri(ForumsUri, $"index.php?showuser={userID}"));
                 var profileName = document.GetElementbyId("profilename");
@@ -29,10 +29,10 @@ namespace ExClient.Status
                 var avatar = profiles[1].Descendants("img").FirstOrDefault();
                 var groupAndJoin = profiles[4];
                 if (!DateTimeOffset.TryParseExact(groupAndJoin.LastChild.InnerText,
-    "'Joined:' d-MMMM yy",
-    CultureInfo.InvariantCulture,
-    DateTimeStyles.AssumeUniversal | DateTimeStyles.AllowWhiteSpaces,
-    out var register))
+                        "'Joined:' d-MMMM yy",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.AssumeUniversal | DateTimeStyles.AllowWhiteSpaces,
+                        out var register))
                 {
                     if (groupAndJoin.LastChild.InnerText.Contains("Today"))
                         register = DateTimeOffset.UtcNow;
@@ -48,7 +48,7 @@ namespace ExClient.Status
                     MemberGroup = groupAndJoin.FirstChild.InnerText.Trim().Substring(14).DeEntitize(),
                     RegisterDate = register
                 };
-            }).AsAsyncOperation();
+            }, token));
         }
 
         public IAsyncAction SaveToCache()

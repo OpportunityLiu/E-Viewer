@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 
 namespace ExClient.Status
@@ -76,7 +77,7 @@ namespace ExClient.Status
 
         public IAsyncAction RefreshAsync()
         {
-            return AsyncInfo.Run(async token =>
+            return AsyncInfo.Run(async token => await Task.Run(async () =>
             {
                 this.toplists.Clear();
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(infoUri);
@@ -89,7 +90,7 @@ namespace ExClient.Status
                 var totalGPGainedDiv = contentDivs[2];
                 analyzeToplists(contentDivs[3]);
                 analyzeModPower(contentDivs[4]);
-            });
+            }, token));
         }
 
         #region Image Limits
