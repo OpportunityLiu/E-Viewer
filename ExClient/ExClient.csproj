@@ -121,6 +121,8 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-hant\Toplist.resjson" />
+    <PRIResource Include="Strings\zh-hans\Toplist.resjson" />
     <PRIResource Include="Strings\zh-hant\Resources.resjson" />
     <PRIResource Include="Strings\zh-hant\Namespace.resjson" />
     <PRIResource Include="Strings\zh-hant\Language.resjson" />
@@ -239,6 +241,7 @@
     <PRIResource Include="Strings\en\Category.resjson" />
     <PRIResource Include="Strings\en\Resources.resjson" />
     <PRIResource Include="Strings\en\Language.resjson" />
+    <PRIResource Include="Strings\en\Toplist.resjson" />
     <None Include="Strings\LocalizedStrings.resgenconfig" />
   </ItemGroup>
   <ItemGroup>
