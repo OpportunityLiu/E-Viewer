@@ -78,7 +78,7 @@ namespace ExClient.Status
             return new Uri(Internal.UriProvider.Eh.RootUri, $"toplist.php?tl={(int)topList}");
         }
 
-        public static string ToDisplayString(this ToplistName topList)
+        public static string ToFriendlyNameString(this ToplistName topList)
         {
             return topList.ToFriendlyNameString(LocalizedStrings.Toplist.GetValue);
         }

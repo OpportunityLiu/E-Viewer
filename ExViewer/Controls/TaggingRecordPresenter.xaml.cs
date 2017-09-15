@@ -52,11 +52,11 @@ namespace ExViewer.Controls
             var dc = newValue.Tag.GetDisplayContentAsync();
             if (dc.Status == AsyncStatus.Completed)
             {
-                sender.tbTag.Text = dc.GetResults();
+                sender.tbTag.Text = $"{newValue.Tag.Namespace.ToFriendlyNameString()}: {dc.GetResults()}";
             }
             else
             {
-                sender.tbTag.Text = newValue.Tag.Content;
+                sender.tbTag.Text = $"{newValue.Tag.Namespace.ToFriendlyNameString()}: {newValue.Tag.Content}";
                 dc.Completed = (IAsyncOperation<string> op, AsyncStatus asyncStatus) =>
                 {
                     if (asyncStatus != AsyncStatus.Completed)
@@ -64,7 +64,7 @@ namespace ExViewer.Controls
                     var dispValue = op.GetResults();
                     Opportunity.MvvmUniverse.DispatcherHelper.BeginInvokeOnUIThread(() =>
                     {
-                        sender.tbTag.Text = dispValue;
+                        sender.tbTag.Text = $"{newValue.Tag.Namespace.ToFriendlyNameString()}: {dispValue}";
                     });
                 };
             }

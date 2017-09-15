@@ -118,7 +118,7 @@
                              HorizontalContentAlignment="Stretch"
                              NavigateUri="{x:Bind s:ToplistNameExtension.Uri(Name)}">
               <Grid Background="Transparent">
-                <TextBlock Text="{x:Bind s:ToplistNameExtension.ToDisplayString(Name)}"
+                <TextBlock Text="{x:Bind s:ToplistNameExtension.ToFriendlyNameString(Name)}"
                            HorizontalAlignment="Left" />
                 <TextBlock Text="{x:Bind Rank, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/ToplistItemRankFormatString'}"
                            HorizontalAlignment="Right" />
