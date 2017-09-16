@@ -405,7 +405,7 @@ namespace ExViewer.Controls
         private static readonly Regex linkDetector = new Regex(
             @"
 (
-  (?<explict>[a-zA-z][-a-zA-Z0-9]*://[^\s]*)
+  (?<explict>[a-zA-z][-a-zA-Z0-9]*:(//|\?)[^\s]*)
 |
   (?<implict>
     (?<=\s|^)
