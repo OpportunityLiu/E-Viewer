@@ -1,5 +1,5 @@
 ﻿using ExClient.Api;
-using Opportunity.MvvmUniverse.AsyncHelpers;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using Windows.Foundation;
 
 namespace ExClient.Launch

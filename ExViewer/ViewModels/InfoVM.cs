@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Opportunity.MvvmUniverse.Commands;
 using ExViewer.Views;
 using ExClient.Search;
-using Opportunity.MvvmUniverse.AsyncHelpers;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 
 namespace ExViewer.ViewModels
 {

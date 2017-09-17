@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
-using Opportunity.MvvmUniverse.AsyncHelpers;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
 using System.Linq;
 using Windows.Foundation;

@@ -3,7 +3,7 @@ using ExClient.Models;
 using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
 using Opportunity.MvvmUniverse;
-using Opportunity.MvvmUniverse.AsyncHelpers;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
 using System.IO;
 using System.Linq;

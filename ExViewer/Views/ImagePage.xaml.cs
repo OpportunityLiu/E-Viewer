@@ -125,6 +125,8 @@ namespace ExViewer.Views
             this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
 
             var index = this.VM.CurrentIndex;
+            if (index < 0)
+                index = 0;
             this.fv.SelectedIndex = index;
             if (unchecked((uint)index < (uint)this.VM.Gallery.Count))
             {

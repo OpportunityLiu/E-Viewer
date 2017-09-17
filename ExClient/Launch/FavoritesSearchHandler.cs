@@ -1,4 +1,4 @@
-﻿using Opportunity.MvvmUniverse.AsyncHelpers;
+﻿using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
 using Windows.Foundation;
 
@@ -16,15 +16,15 @@ namespace ExClient.Launch
             var keyword = "";
             var category = (FavoriteCategory)null;
             var ap = false;
-            foreach(var item in data.Queries)
+            foreach (var item in data.Queries)
             {
-                switch(item.Key)
+                switch (item.Key)
                 {
                 case "f_apply":
                     ap = item.Value.QueryValueAsBoolean();
                     break;
                 case "favcat":
-                    if(item.Value != "all")
+                    if (item.Value != "all")
                     {
                         var index = item.Value.QueryValueAsInt32();
                         index = Math.Max(0, index);
@@ -37,7 +37,7 @@ namespace ExClient.Launch
                     break;
                 }
             }
-            if(!ap)
+            if (!ap)
                 return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Favorites.Search("", category)));
             else
                 return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Favorites.Search(keyword, category)));

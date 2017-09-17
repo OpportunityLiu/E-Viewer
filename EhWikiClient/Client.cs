@@ -1,5 +1,6 @@
 ﻿using EhWikiClient.Models;
 using Microsoft.EntityFrameworkCore;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,21 +24,21 @@ namespace EhWikiClient
         public static Record Get(string title)
         {
             var task = GetAsync(title);
-            if(task.Status == AsyncStatus.Completed)
+            if (task.Status == AsyncStatus.Completed)
                 return task.GetResults();
             return null;
         }
 
         public static IAsyncOperation<Record> GetAsync(string title)
         {
-            using(var db = new WikiDb())
+            using (var db = new WikiDb())
             {
                 var record = db.Table.AsNoTracking().SingleOrDefault(r => r.Title == title);
-                if(record != null && record.IsValid)
-                    return Opportunity.MvvmUniverse.AsyncHelpers.AsyncWrapper.CreateCompleted(record);
-                if(record == null || record.LastUpdate.AddDays(7) < DateTimeOffset.Now)
+                if (record != null && record.IsValid)
+                    return AsyncWrapper.CreateCompleted(record);
+                if (record == null || record.LastUpdate.AddDays(7) < DateTimeOffset.Now)
                     return FetchAsync(title);
-                return Opportunity.MvvmUniverse.AsyncHelpers.AsyncWrapper.CreateCompleted(default(Record));
+                return AsyncWrapper.CreateCompleted(default(Record));
             }
         }
 
@@ -64,10 +65,10 @@ namespace EhWikiClient
                 var resStr = await res.Content.ReadAsStringAsync();
                 var record = Record.Load(resStr);
                 record.Title = title;
-                using(var db = new WikiDb())
+                using (var db = new WikiDb())
                 {
                     var oldrecord = db.Table.SingleOrDefault(r => r.Title == title);
-                    if(oldrecord == null)
+                    if (oldrecord == null)
                         db.Table.Add(record);
                     else
                     {

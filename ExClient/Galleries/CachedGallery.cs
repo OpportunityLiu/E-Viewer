@@ -1,6 +1,6 @@
 ﻿using ExClient.Models;
 using Microsoft.EntityFrameworkCore;
-using Opportunity.MvvmUniverse.AsyncHelpers;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
