@@ -22,6 +22,8 @@
            TargetType="CheckBox">
       <Setter Property="Margin"
               Value="0,0,24,0" />
+      <Setter Property="MinWidth"
+              Value="0" />
     </Style>
     <Style x:Name="FileSearchOptionStyle"
            TargetType="TextBlock">
@@ -126,7 +128,7 @@
                           HorizontalAlignment="Center" />
             <ListView x:Name="lv_AdvancedSearch"
                       Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                      Margin="24,0,0,8"
+                      Margin="20,0,-20,12"
                       Style="{StaticResource StackPanelListViewStyle}"
                       MaxWidth="800"
                       HorizontalAlignment="Center">
