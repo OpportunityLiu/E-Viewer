@@ -2,13 +2,14 @@
 {
     public struct SaveGalleryProgress
     {
-        internal int ImageLoadedInternal;
-
-        public int ImageLoaded => this.ImageLoadedInternal;
-
-        public int ImageCount
+        internal SaveGalleryProgress(int imageLoaded, int imageCount)
         {
-            get; internal set;
+            this.ImageCount = imageCount;
+            this.ImageLoaded = imageLoaded;
         }
+
+        public int ImageLoaded { get; }
+
+        public int ImageCount { get; }
     }
 }
