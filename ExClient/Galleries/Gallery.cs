@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
 using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -106,14 +107,9 @@ namespace ExClient.Galleries
         {
             return Run<SaveGalleryProgress>(async (token, progress) =>
             {
-                var toReport = new SaveGalleryProgress
-                {
-                    ImageCount = this.RecordCount,
-                    ImageLoadedInternal = -1
-                };
                 if (this.HasMoreItems)
                 {
-                    progress.Report(toReport);
+                    progress.Report(new SaveGalleryProgress(-1, this.RecordCount));
                     while (this.HasMoreItems)
                     {
                         await this.LoadMoreItemsAsync((uint)PageSize);
@@ -121,17 +117,30 @@ namespace ExClient.Galleries
                     }
                 }
 
-                toReport.ImageLoadedInternal = 0;
-                progress.Report(toReport);
+                await Task.Delay(0).ConfigureAwait(false);
+                var loadedCount = 0;
+                progress.Report(new SaveGalleryProgress(loadedCount, this.RecordCount));
 
-                var loadTasks = this.Select(image => Task.Run(async () =>
+                using (var semaphore = new SemaphoreSlim(16, 16))
                 {
-                    token.ThrowIfCancellationRequested();
-                    await image.LoadImageAsync(false, strategy, true);
-                    Interlocked.Increment(ref toReport.ImageLoadedInternal);
-                    progress.Report(toReport);
-                }));
-                await Task.WhenAll(loadTasks);
+                    var loadTasks = this.Select(image => Task.Run(async () =>
+                    {
+                        await semaphore.WaitAsync();
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await image.LoadImageAsync(false, strategy, true);
+                            Interlocked.Increment(ref loadedCount);
+                            progress.Report(new SaveGalleryProgress(loadedCount, this.RecordCount));
+                        }
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    })).ToArray();
+                    await Task.WhenAll(loadTasks).ConfigureAwait(false);
+                }
+
                 using (var db = new GalleryDb())
                 {
                     var gid = this.ID;

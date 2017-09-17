@@ -175,11 +175,7 @@ namespace ExClient.Galleries
         {
             return Run<SaveGalleryProgress>(async (token, progress) =>
             {
-                var toReport = new SaveGalleryProgress
-                {
-                    ImageCount = this.RecordCount,
-                    ImageLoadedInternal = -1
-                };
+                var toReport = new SaveGalleryProgress(-1, this.RecordCount);
                 progress.Report(toReport);
                 while (this.HasMoreItems)
                 {
