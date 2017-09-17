@@ -2,48 +2,58 @@
                         xmlns:uwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:c="using:Opportunity.Converters"
+                        xmlns:t="using:Opportunity.Converters.Typed"
                         xmlns:local="using:ExViewer.Views">
-  <c:SoftwareBitmapToImageSourceConverter x:Key="SoftwareBitmapToImageSourceConverter" />
-  <c:ThicknessConverter x:Key="ThicknessConverter" />
-  <c:IRandomAccessStreamReferenceToImageSourceConverter x:Key="FileConverter" />
+  <t:SoftwareBitmapToImageSourceConverter x:Key="SoftwareBitmapToImageSourceConverter" />
+  <t:ThicknessConverter x:Key="ThicknessConverter" />
+  <t:IRandomAccessStreamReferenceToBitmapImageConverter x:Key="FileConverter" />
   <FormatStringConverter x:Key="StringConverter" />
-  <c:BooleanToVisibilityConverter x:Key="TrueToVisibleConverter"
+  <t:BooleanToVisibilityConverter x:Key="TrueToVisibleConverter"
                                   TrueForVisible="True" />
-  <c:BooleanToVisibilityConverter x:Key="FalseToVisibleConverter"
+  <t:BooleanToVisibilityConverter x:Key="FalseToVisibleConverter"
                                   TrueForVisible="False" />
-  <c:NullTestConverter x:Key="NullToTrueConverter"
+  <t:NullTestConverter x:Key="NullToTrueConverter"
                        IfNull="True" />
-  <c:NullTestConverter x:Key="NullToFalseConverter"
+  <t:NullTestConverter x:Key="NullToFalseConverter"
                        IfNull="False" />
-  <c:NullTestConverter x:Key="NullToVisibleConverter"
-                       IfNull="True"
-                       NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
-  <c:NullTestConverter x:Key="NullToCollapsedConverter"
-                       IfNull="False"
-                       NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
   <!--Code to initalize this converter is at App.xaml.cs-->
   <!--Add string.Empty to ValuesForFalse-->
-  <c:StringToBooleanConverter x:Key="EmptyStringToFalseConverter"
+  <t:StringToBooleanConverter x:Key="EmptyStringToFalseConverter"
                               IfNeither="True" />
-  <c:StringToBooleanConverter x:Key="EmptyStringToCollapsedConverter"
-                              IfNeither="True"
-                              NextConverter="{uwp:StaticResource TrueToVisibleConverter}" />
+  <c:ChainConverter x:Key="EmptyStringToCollapsedConverter">
+    <c:ConverterReference Converter="{uwp:StaticResource EmptyStringToFalseConverter}" />
+    <c:ConverterReference Converter="{uwp:StaticResource TrueToVisibleConverter}" />
+  </c:ChainConverter>
   <c:EmptyConverter x:Key="EmptyConverter" />
   <c:SystemConverter x:Key="DefaultConverter" />
-  <c:Int32ToBooleanConverter x:Key="ZeroToVisibleConverter"
-                             NextConverter="{uwp:StaticResource TrueToVisibleConverter}">
-    <c:Int32ToBooleanConverter.ValuesForTrue>
-      <x:Int32>0</x:Int32>
-    </c:Int32ToBooleanConverter.ValuesForTrue>
-  </c:Int32ToBooleanConverter>
-  <c:Int32OffsetConverter x:Key="IndexToStringConverter"
-                          Offset="1"
-                          NextConverter="{uwp:StaticResource DefaultConverter}" />
-  <c:DateTimeOffsetToStringConverter x:Key="DateTimeOffsetToStringConverter"
-                                     NextConverter="{uwp:StaticResource StringConverter}" />
-  <c:ByteSizeToStringConverter x:Key="SizeConverter"
+  <c:ChainConverter x:Key="IndexToStringConverter">
+    <t:Int32OffsetConverter Offset="1" />
+    <c:ConverterReference Converter="{uwp:StaticResource StringConverter}" />
+  </c:ChainConverter>
+  <t:ByteSizeToStringConverter x:Key="SizeConverter"
                                UnitPrefix="Binary" />
-  <c:LogicalNotConverter x:Key="LogicalNotConverter" />
+  <t:LogicalNotConverter x:Key="LogicalNotConverter" />
+
+  <c:ChainConverter x:Key="NullToVisibleConverter">
+    <c:ConverterReference Converter="{uwp:StaticResource NullToTrueConverter}" />
+    <c:ConverterReference Converter="{uwp:StaticResource TrueToVisibleConverter}" />
+  </c:ChainConverter>
+  <c:ChainConverter x:Key="NullToCollapsedConverter">
+    <c:ConverterReference Converter="{uwp:StaticResource NullToFalseConverter}" />
+    <c:ConverterReference Converter="{uwp:StaticResource TrueToVisibleConverter}" />
+  </c:ChainConverter>
+  <c:ChainConverter x:Key="ZeroToVisibleConverter">
+    <t:Int32ToBooleanConverter>
+      <t:Int32ToBooleanConverter.ValuesForTrue>
+        <x:Int32>0</x:Int32>
+      </t:Int32ToBooleanConverter.ValuesForTrue>
+    </t:Int32ToBooleanConverter>
+    <c:ConverterReference Converter="{uwp:StaticResource TrueToVisibleConverter}" />
+  </c:ChainConverter>
+  <c:ChainConverter x:Key="DateTimeOffsetToStringConverter">
+    <t:DateTimeOffsetToStringConverter />
+    <c:ConverterReference Converter="{uwp:StaticResource StringConverter}" />
+  </c:ChainConverter>
 
   <local:RateStringConverter x:Key="RateStringConverter" />
   <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />

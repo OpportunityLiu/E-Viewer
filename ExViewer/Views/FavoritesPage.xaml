@@ -8,7 +8,8 @@
                  xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
                  xmlns:vm="using:ExViewer.ViewModels"
                  xmlns:db="using:ExViewer.Database"
-                 xmlns:cov="using:Opportunity.Converters"
+                 xmlns:con="using:Opportunity.Converters"
+                 xmlns:tcon="using:Opportunity.Converters.Typed"
                  Loading="root_Loading"
                  Unloaded="root_Unloaded"
                  mc:Ignorable="d"
@@ -28,12 +29,12 @@
       <controls:FavoriteCategoryPresenter Category="{x:Bind}"
                                           IsLabelVisible="True" />
     </DataTemplate>
-    <cov:ObjectToBooleanConverter x:Key="SelectionConverter"
-                                  IfNeither="true">
-      <cov:ObjectToBooleanConverter.ValuesForFalse>
+    <tcon:ObjectToBooleanConverter x:Key="SelectionConverter"
+                                   IfNeither="true">
+      <tcon:ObjectToBooleanConverter.ValuesForFalse>
         <x:Int32>-1</x:Int32>
-      </cov:ObjectToBooleanConverter.ValuesForFalse>
-    </cov:ObjectToBooleanConverter>
+      </tcon:ObjectToBooleanConverter.ValuesForFalse>
+    </tcon:ObjectToBooleanConverter>
   </controls:MyPage.Resources>
   <Grid>
     <Grid.RowDefinitions>

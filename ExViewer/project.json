@@ -10,7 +10,7 @@
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0",
     "Microsoft.Toolkit.Uwp.UI.Controls": "2.0.0",
     "Microsoft.Win32.Primitives": "4.3.0",
-    "Opportunity.Converters": "1.3.0",
+    "Opportunity.Converters": "2.0.3",
     "Opportunity.Helpers.Universal": "1.1.3",
     "Opportunity.MvvmUniverse": "1.0.0",
     "Opportunity.ResourceGenerator": "1.2.0",
