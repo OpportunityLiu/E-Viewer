@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace ExViewer.Converters
 {
-    [Windows.UI.Xaml.Markup.ContentProperty(Name = nameof(NextConverter))]
-    public class FormatStringConverter : ChainConverter<object, string>
+    public sealed class FormatStringConverter : ValueConverter<object, string>
     {
-        protected override string ConvertImpl(object value, object parameter, string language)
+        public override string Convert(object value, object parameter, string language)
         {
             var format = (string)null;
             if (parameter == null)
@@ -25,7 +24,7 @@ namespace ExViewer.Converters
             return string.Format(CultureInfo.CurrentCulture, format, value);
         }
 
-        protected override object ConvertBackImpl(string value, object parameter, string language)
+        public override object ConvertBack(string value, object parameter, string language)
         {
             return value;
         }

@@ -8,13 +8,13 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:local="using:ExViewer.Views"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:wp="using:Microsoft.Toolkit.Uwp.UI.Controls.WrapPanel"
+                 xmlns:con="using:Opportunity.Converters"
+                 xmlns:tcon="using:Opportunity.Converters.Typed"
                  x:Name="page"
                  Loading="page_Loading"
                  Unloaded="page_Unloaded"
                  NavigationCacheMode="Enabled"
                  SizeChanged="page_SizeChanged"
-                 xmlns:con="using:Opportunity.Converters"
                  mc:Ignorable="d">
   <controls:MyPage.Transitions>
     <TransitionCollection>
@@ -24,23 +24,26 @@
     </TransitionCollection>
   </controls:MyPage.Transitions>
   <controls:MyPage.Resources>
-    <con:ObjectToBooleanConverter x:Key="ConAddComment"
-                                  IfNeither="False"
-                                  NextConverter="{StaticResource TrueToVisibleConverter}">
-      <con:ObjectToBooleanConverter.ValuesForTrue>
-        <x:Int32>1</x:Int32>
-      </con:ObjectToBooleanConverter.ValuesForTrue>
-    </con:ObjectToBooleanConverter>
-    <con:NumberToBooleanConverter x:Key="SaveProgressToIsIndeterminateConverter"
-                                  RangeStart="0"
-                                  IncludeStart="True"
-                                  RangeEnd="100"
-                                  IncludeEnd="True"
-                                  InRangeResult="False" />
-    <con:EnumToBooleanConverter x:Key="OperationStateToVisibilityConverter"
-                                NextConverter="{StaticResource FalseToVisibleConverter}">
-      <VM:OperationState>NotStarted</VM:OperationState>
-    </con:EnumToBooleanConverter>
+    <con:ChainConverter x:Key="ConAddComment">
+      <tcon:ObjectToBooleanConverter IfNeither="False">
+        <tcon:ObjectToBooleanConverter.ValuesForTrue>
+          <x:Int32>1</x:Int32>
+        </tcon:ObjectToBooleanConverter.ValuesForTrue>
+      </tcon:ObjectToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
+    </con:ChainConverter>
+    <tcon:NumberToBooleanConverter x:Key="SaveProgressToIsIndeterminateConverter"
+                                   RangeStart="0"
+                                   IncludeStart="True"
+                                   RangeEnd="100"
+                                   IncludeEnd="True"
+                                   InRangeResult="False" />
+    <con:ChainConverter x:Key="OperationStateToVisibilityConverter">
+      <tcon:EnumToBooleanConverter>
+        <VM:OperationState>NotStarted</VM:OperationState>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource FalseToVisibleConverter}" />
+    </con:ChainConverter>
 
     <Style x:Key="TorrentNameTextBlockStyle"
            TargetType="TextBlock">
