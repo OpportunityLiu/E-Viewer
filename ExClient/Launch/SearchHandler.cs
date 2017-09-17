@@ -1,5 +1,5 @@
 ﻿using ExClient.Search;
-using Opportunity.MvvmUniverse.AsyncHelpers;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

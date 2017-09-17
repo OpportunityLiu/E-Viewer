@@ -207,7 +207,6 @@
     <Compile Include="Category.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Helpers\ConnectionHelper.cs" />
-    <Compile Include="Helpers\DictionaryExtention.cs" />
     <Compile Include="Galleries\GalleryImage.cs" />
     <Compile Include="Galleries\SaveGalleryProgress.cs" />
     <Compile Include="Settings\ExcludedLanguagesSettingProvider.cs" />

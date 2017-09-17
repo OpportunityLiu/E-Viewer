@@ -1,5 +1,5 @@
 ﻿using ExClient.Tagging;
-using Opportunity.MvvmUniverse.AsyncHelpers;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
 using Windows.Foundation;
 
