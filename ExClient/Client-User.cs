@@ -26,6 +26,7 @@ namespace ExClient
             public const string PassHash = "ipb_pass_hash";
             public const string S = "s";
             public const string NeverWarn = "nw";
+            public const string HathPerks = "hath_perks";
         }
 
         public void ResetExCookie()
