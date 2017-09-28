@@ -107,6 +107,8 @@
     <PivotItem x:Uid="Views/InfoPage/OverviewPivotItem"
                Header="OVERVIEW">
       <ListView SelectionMode="None"
+                Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                 ItemsSource="{x:Bind VM.Status.Toplists, Mode=OneWay}"
                 ItemContainerStyle="{StaticResource ListViewItemStyle}">
         <ListView.ItemTemplate>
@@ -184,6 +186,8 @@
     <PivotItem x:Uid="Views/InfoPage/TaggingPivotItem"
                Header="TAGGING">
       <ListView x:Name="lvTagging"
+                Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                 SelectionMode="None"
                 IsItemClickEnabled="True"
                 ItemsSource="{x:Bind VM.TaggingStatistics.Records, Mode=OneWay}"
