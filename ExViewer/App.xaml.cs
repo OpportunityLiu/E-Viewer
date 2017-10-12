@@ -43,7 +43,7 @@ namespace ExViewer
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
         }
 
-        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             RootControl.RootController.SendToast(e.Exception, null);
             e.Handled = true;
