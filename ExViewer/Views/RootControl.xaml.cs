@@ -8,6 +8,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
@@ -183,18 +184,23 @@ namespace ExViewer.Views
             return value;
         }
 
+        private AcrylicBackgroundSource abPaneBackgroundBind(bool value)
+        {
+            return value ? AcrylicBackgroundSource.Backdrop : AcrylicBackgroundSource.HostBackdrop;
+        }
+
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             base.OnKeyUp(e);
             e.Handled = true;
             switch (e.OriginalKey)
             {
-                case Windows.System.VirtualKey.GamepadView:
-                    RootController.SwitchSplitView(null);
-                    break;
-                default:
-                    e.Handled = false;
-                    break;
+            case Windows.System.VirtualKey.GamepadView:
+                RootController.SwitchSplitView(null);
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 #if DEBUG_BOUNDS

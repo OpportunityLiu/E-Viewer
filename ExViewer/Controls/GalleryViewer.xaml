@@ -44,8 +44,7 @@
       <ColumnDefinition Width="2*" />
     </Grid.ColumnDefinitions>
     <local:CoverPresenter x:Name="Cover"
-                          Source="{x:Bind Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}"
-                          Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}" />
+                          Source="{x:Bind Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}" />
     <local:FavoriteCategoryPresenter x:Name="fcpFavorite"
                                      Margin="-2"
                                      HorizontalAlignment="Right"
