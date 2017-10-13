@@ -14,6 +14,7 @@
                     Placement="Bottom">
             <MenuFlyoutItem x:Uid="Views/CachedPage/DeleteMenuFlyout"
                             x:Name="mfi_DeleteGallery"
+                            Icon="Delete"
                             Text="Delete"
                             Command="{x:Bind VM.Delete, Mode=OneWay}" />
         </MenuFlyout>

@@ -74,9 +74,11 @@
     <MenuFlyout x:Name="mfTaggingRecord">
       <MenuFlyoutItem x:Uid="Views/InfoPage/OpenGalleryMenuFlyoutItem"
                       Command="{x:Bind VM.OpenGallery}"
+                      Icon="PreviewLink"
                       Text="Open gallery" />
       <MenuFlyoutItem x:Uid="Views/InfoPage/SearchTagMenuFlyoutItem"
                       Command="{x:Bind VM.SearchTag}"
+                      Icon="Find"
                       Text="Show galleries with this tag" />
     </MenuFlyout>
   </controls:MyPage.Resources>
@@ -206,7 +208,9 @@
         <ListView.Header>
           <tk:ScrollHeader TargetListViewBase="{x:Bind lvTagging}"
                            Mode="QuickReturn">
-            <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                        Margin="-4"
+                        Padding="4">
               <TextBlock x:Uid="Views/InfoPage/TaggingStaticsHeaderTextBlock"
                          Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
                          Text="Statistics" />

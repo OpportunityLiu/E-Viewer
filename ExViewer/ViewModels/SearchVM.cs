@@ -12,6 +12,7 @@ using System.Linq;
 using Opportunity.MvvmUniverse.Commands;
 using ExClient.Search;
 using ExClient.Galleries;
+using Opportunity.MvvmUniverse.Collections;
 
 namespace ExViewer.ViewModels
 {

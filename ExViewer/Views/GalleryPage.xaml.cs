@@ -190,12 +190,14 @@ namespace ExViewer.Views
             if (reset)
             {
                 this.pv.Focus(FocusState.Programmatic);
+                await Task.Delay(50);
                 this.pv.SelectedIndex = 0;
             }
             else if (restore)
             {
                 if (restoreElement == null)
                     restoreElement = (Control)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
+                await Dispatcher.YieldIdle();
                 restoreElement?.Focus(FocusState.Programmatic);
             }
         }
