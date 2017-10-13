@@ -134,25 +134,30 @@
                     Placement="Bottom">
           <MenuFlyoutItem x:Name="VoteUp"
                           x:Uid="Controls/CommentViewer/VoteUpMenuFlyoutItem"
+                          Icon="Like"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConUp}}"
                           Click="VoteUp_Click"
                           Text="Vote up" />
           <MenuFlyoutItem x:Name="WithdrawVote"
+                          Icon="Undo"
                           x:Uid="Controls/CommentViewer/WithdrawVoteMenuFlyoutItem"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConWithdraw}}"
                           Click="WithdrawVote_Click"
                           Text="Withdraw vote" />
           <MenuFlyoutItem x:Name="VoteDown"
                           x:Uid="Controls/CommentViewer/VoteDownMenuFlyoutItem"
+                          Icon="Dislike"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConDown}}"
                           Click="VoteDown_Click"
                           Text="Vote down" />
           <MenuFlyoutItem x:Name="Edit"
+                          Icon="Edit"
                           x:Uid="Controls/CommentViewer/EditMenuFlyoutItem"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConEdit}}"
                           Text="Edit"
                           Click="Edit_Click" />
           <MenuFlyoutItem x:Name="Reply"
+                          Icon="LeaveChat"
                           x:Uid="Controls/CommentViewer/ReplyMenuFlyoutItem"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConReply}}"
                           Text="Reply"
@@ -162,7 +167,11 @@
                           x:Uid="Controls/CommentViewer/TranslateMenuFlyoutItem"
                           Text="Translate to English"
                           IsEnabled="{x:Bind TranslatedContent, Mode=OneWay, Converter={StaticResource NullToTrueConverter}}"
-                          Click="Translate_Click" />
+                          Click="Translate_Click">
+            <MenuFlyoutItem.Icon>
+              <FontIcon Glyph="&#xE8C1;" />
+            </MenuFlyoutItem.Icon>
+          </MenuFlyoutItem>
         </MenuFlyout>
       </Button.Flyout>
     </Button>

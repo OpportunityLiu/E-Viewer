@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ExClient.Models
@@ -21,11 +22,10 @@ namespace ExClient.Models
                 .ConfigureWarnings(warnings => warnings
                     .Throw(
                         RelationalEventId.QueryClientEvaluationWarning,
-                        RelationalEventId.PossibleUnintendedUseOfEqualsWarning,
+                        RelationalEventId.QueryPossibleUnintendedUseOfEqualsWarning,
                         RelationalEventId.AmbientTransactionWarning)
                     .Throw(
                         CoreEventId.IncludeIgnoredWarning,
-                        CoreEventId.ModelValidationWarning,
                         CoreEventId.SensitiveDataLoggingEnabledWarning));
 #endif
         }
@@ -76,12 +76,12 @@ namespace ExClient.Models
             modelBuilder.Entity<GalleryImageModel>()
                 .HasOne(gi => gi.Gallery)
                 .WithMany(g => g.Images)
-                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey(gi => gi.GalleryId);
             modelBuilder.Entity<GalleryImageModel>()
                 .HasOne(gi => gi.Image)
                 .WithMany(i => i.UsingBy)
-                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey("Data0", "Data1", "Data2");
         }
 
