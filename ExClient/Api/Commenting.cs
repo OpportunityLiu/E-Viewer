@@ -4,7 +4,8 @@ using System;
 
 namespace ExClient.Api
 {
-    internal abstract class CommentRequest : GalleryRequest
+    internal abstract class CommentRequest<TResponse> : GalleryRequest<TResponse>
+        where TResponse : CommentResponse
     {
         public CommentRequest(Comment comment)
             : base(comment.Owner.Owner)
@@ -17,7 +18,7 @@ namespace ExClient.Api
         public int Id { get; }
     }
 
-    internal sealed class CommentVoteRequest : CommentRequest, IRequestOf<CommentVoteRequest, CommentVoteResponse>
+    internal sealed class CommentVoteRequest : CommentRequest<CommentVoteResponse>
     {
         public CommentVoteRequest(Comment comment, VoteState vote)
             : base(comment)
@@ -33,7 +34,7 @@ namespace ExClient.Api
         public VoteState Vote { get; }
     }
 
-    internal sealed class CommentEditRequest : CommentRequest, IRequestOf<CommentEditRequest, CommentEditResponse>
+    internal sealed class CommentEditRequest : CommentRequest<CommentEditResponse>
     {
         public CommentEditRequest(Comment comment)
             : base(comment)
@@ -50,7 +51,7 @@ namespace ExClient.Api
 
     }
 
-    internal sealed class CommentVoteResponse : CommentResponse, IResponseOf<CommentVoteRequest, CommentVoteResponse>
+    internal sealed class CommentVoteResponse : CommentResponse
     {
         [JsonProperty("comment_score")]
         public int Score { get; set; }
@@ -58,7 +59,7 @@ namespace ExClient.Api
         public VoteState Vote { get; set; }
     }
 
-    internal sealed class CommentEditResponse : CommentResponse, IResponseOf<CommentEditRequest, CommentEditResponse>
+    internal sealed class CommentEditResponse : CommentResponse
     {
         [JsonProperty("editable_comment")]
         public string Editable { get; set; }

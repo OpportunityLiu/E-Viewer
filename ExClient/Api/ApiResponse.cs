@@ -15,8 +15,11 @@ namespace ExClient.Api
         {
             if (LogIn != null)
                 throw new InvalidOperationException("Need login");
+            CheckResponseOverride();
             if (Error != null)
                 throw new Exception(Error);
         }
+
+        public virtual void CheckResponseOverride() { }
     }
 }
