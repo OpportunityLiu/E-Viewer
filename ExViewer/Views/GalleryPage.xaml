@@ -291,11 +291,12 @@
                         HorizontalAlignment="Left"
                         Orientation="Horizontal">
               <controls:CategoryTag Margin="6,4"
+                                    VerticalAlignment="Center"
                                     Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
-              <TextBlock Margin="6,4"
-                         VerticalAlignment="Center"
-                         FontFamily="Segoe MDL2 Assets"
-                         Text="{x:Bind VM.Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}" />
+              <RatingControl Margin="6,4,6,0"
+                             IsReadOnly="True"
+                             VerticalAlignment="Center"
+                             PlaceholderValue="{x:Bind VM.Gallery.Rating, Mode=OneWay}" />
             </StackPanel>
             <controls:TagPresenter x:Name="tpTags"
                                    Grid.Row="1"

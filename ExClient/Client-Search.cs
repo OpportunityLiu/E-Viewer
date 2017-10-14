@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.Web.Http;
 
 namespace ExClient
 {
@@ -22,24 +23,24 @@ namespace ExClient
             return Search(keyword, Category.Unspecified);
         }
 
-        public IAsyncOperation<FileSearchResult> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
+        public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
         {
             return FileSearchResult.SearchAsync(keyword, category, file, searchSimilar, onlyCovers, searchExpunged);
         }
 
-        public IAsyncOperation<FileSearchResult> SearchAsync(string keyword, Category category, StorageFile file)
+        public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(string keyword, Category category, StorageFile file)
         {
             return SearchAsync(keyword, category, file, true, false, false);
         }
 
-        public IAsyncOperation<FileSearchResult> SearchAsync(StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
+        public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
         {
-            return FileSearchResult.SearchAsync(null, default(Category), file, searchSimilar, onlyCovers, searchExpunged);
+            return FileSearchResult.SearchAsync(null, default, file, searchSimilar, onlyCovers, searchExpunged);
         }
 
-        public IAsyncOperation<FileSearchResult> SearchAsync(StorageFile file)
+        public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(StorageFile file)
         {
-            return SearchAsync(null, default(Category), file);
+            return SearchAsync(null, default, file);
         }
 
         public FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName, bool onlyCovers, bool searchExpunged)
@@ -59,7 +60,7 @@ namespace ExClient
 
         public FileSearchResult Search(IEnumerable<SHA1Value> fileHashes, string fileName)
         {
-            return Search(null, default(Category), fileHashes, fileName);
+            return Search(null, default, fileHashes, fileName);
         }
 
         public FileSearchResult Search(IEnumerable<SHA1Value> fileHashes)

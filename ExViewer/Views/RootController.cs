@@ -430,10 +430,14 @@ namespace ExViewer.Views
                 root.FindName(nameof(root.rp_Disable));
                 root.sv_root.IsEnabled = false;
                 root.rp_Disable.Visibility = Visibility.Visible;
-                var indeterminate = !progress.HasValue || double.IsNaN(progress.Value);
-                root.pb_Disable.IsIndeterminate = indeterminate;
-                if (!indeterminate)
-                    root.pb_Disable.Value = progress.Value;
+                var indeterminate = !progress.HasValue;
+                var keep = double.IsNaN(progress.GetValueOrDefault());
+                if (!keep)
+                {
+                    root.pb_Disable.IsIndeterminate = indeterminate;
+                    if (!indeterminate)
+                        root.pb_Disable.Value = progress.Value;
+                }
 
                 HideDisablePanel.Stop();
                 ShowDisablePanel.Begin();

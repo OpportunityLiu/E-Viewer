@@ -14,6 +14,8 @@ namespace ExViewer.Controls
     {
         private void VisibleBoundsThicknessPropertyChangedCallback(DependencyObject d, DependencyProperty p)
         {
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+                return;
             var t = RootControl.RootController.Parent.ContentVisibleBoundsThickness;
             this.SetValue(VisibleBoundsThicknessProperty, t);
             this.VisibleBoundsThicknessChanged(t);
@@ -29,12 +31,16 @@ namespace ExViewer.Controls
 
         private void MyPage_Loading(FrameworkElement sender, object args)
         {
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+                return;
             this.VisibleBoundsThicknessPropertyChangedCallback(RootControl.RootController.Parent, RootControl.VisibleBoundsThicknessProperty);
             this.rootControlVisibleBoundsCallbackId = RootControl.RootController.Parent.RegisterPropertyChangedCallback(RootControl.VisibleBoundsThicknessProperty, VisibleBoundsThicknessPropertyChangedCallback);
         }
 
         private void MyPage_Unloaded(object sender, RoutedEventArgs e)
         {
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+                return;
             RootControl.RootController.Parent.UnregisterPropertyChangedCallback(RootControl.VisibleBoundsThicknessProperty, this.rootControlVisibleBoundsCallbackId);
         }
 
