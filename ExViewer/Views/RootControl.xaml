@@ -342,5 +342,6 @@
                    SmallChange="0.001"
                    LargeChange="0.01" />
     </RelativePanel>
+    
   </Grid>
 </UserControl>
