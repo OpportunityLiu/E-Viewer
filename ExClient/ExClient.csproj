@@ -133,7 +133,6 @@
     <PRIResource Include="Strings\zh-hans\Namespace.resjson" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\ApiContracts.cs" />
     <Compile Include="Api\Rating.cs" />
     <Compile Include="Api\Tagging.cs" />
     <Compile Include="Api\VoteState.cs" />

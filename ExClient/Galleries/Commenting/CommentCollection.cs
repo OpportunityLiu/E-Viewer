@@ -48,7 +48,7 @@ namespace ExClient.Galleries.Commenting
                 var get = Client.Current.HttpClient.GetDocumentAsync(new Uri(this.Owner.GalleryUri, "?hc=1"));
                 token.Register(get.Cancel);
                 var document = await get;
-                Api.ApiRequest.UpdateToken(document.DocumentNode.OuterHtml);
+                Api.ApiToken.Update(document.DocumentNode.OuterHtml);
                 AnalyzeDocument(document);
                 return;
             });

@@ -411,7 +411,7 @@ namespace ExClient.Galleries
                 var needLoadComments = !this.Comments.IsLoaded;
                 var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
                 var html = await Client.Current.HttpClient.GetDocumentAsync(uri);
-                ApiRequest.UpdateToken(html.DocumentNode.OuterHtml);
+                ApiToken.Update(html.DocumentNode.OuterHtml);
                 updateFavoriteInfo(html);
                 if (needLoadComments)
                 {
