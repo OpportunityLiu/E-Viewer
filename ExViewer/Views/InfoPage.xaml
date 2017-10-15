@@ -112,7 +112,7 @@
                 Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
                 Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                 ItemsSource="{x:Bind VM.Status.Toplists, Mode=OneWay}"
-                ItemContainerStyle="{StaticResource ListViewItemStyle}">
+                ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}">
         <ListView.ItemTemplate>
           <DataTemplate xmlns:s="using:ExClient.Status"
                         xmlns:controls="using:ExViewer.Controls"
