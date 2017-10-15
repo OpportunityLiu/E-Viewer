@@ -47,7 +47,7 @@ namespace ExClient.Api
         private static Regex tagCantVote = new Regex(@"Cannot vote for tag");
         private static Regex tagsEmpty = new Regex(@"No tags to add\.");
 
-        public override void CheckResponseOverride()
+        protected override void CheckResponseOverride(ApiRequest request)
         {
             if (Error == null)
                 return;

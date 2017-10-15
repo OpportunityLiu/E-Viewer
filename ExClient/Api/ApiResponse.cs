@@ -11,15 +11,15 @@ namespace ExClient.Api
         [JsonProperty("login")]
         public string LogIn { get; set; }
 
-        public void CheckResponse()
+        public void CheckResponse(ApiRequest request)
         {
             if (LogIn != null)
                 throw new InvalidOperationException("Need login");
-            CheckResponseOverride();
+            CheckResponseOverride(request);
             if (Error != null)
                 throw new Exception(Error);
         }
 
-        public virtual void CheckResponseOverride() { }
+        protected virtual void CheckResponseOverride(ApiRequest request) { }
     }
 }

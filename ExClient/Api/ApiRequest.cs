@@ -33,8 +33,7 @@ namespace ExClient.Api
         }
     }
 
-    internal abstract class ApiRequest<TResponse>
-        where TResponse : ApiResponse
+    internal abstract class ApiRequest
     {
         [JsonProperty("method")]
         public abstract string Method { get; }
@@ -44,7 +43,11 @@ namespace ExClient.Api
 
         [JsonProperty("apikey", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string ApiKey => ApiToken.ApiKey;
+    }
 
+    internal abstract class ApiRequest<TResponse> : ApiRequest
+        where TResponse : ApiResponse
+    {
         public IAsyncOperation<TResponse> GetResponseAsync()
         {
             return AsyncInfo.Run(async token =>
@@ -54,7 +57,7 @@ namespace ExClient.Api
                 token.Register(req.Cancel);
                 var res = await req;
                 var resobj = JsonConvert.DeserializeObject<TResponse>(res);
-                resobj.CheckResponse();
+                resobj.CheckResponse(this);
                 return resobj;
             });
         }
