@@ -102,10 +102,10 @@ namespace ExViewer.ViewModels
             {
                 var q = JsonConvert.DeserializeObject<SearchResultData>(parameter);
                 this.keyword = q.Keyword;
-                if (q.CategoryIndex > 0)
-                    this.category = Client.Current.Favorites[q.CategoryIndex];
-                else
+                if (q.CategoryIndex < 0 || q.CategoryIndex >= Client.Current.Favorites.Count)
                     this.category = FavoriteCategory.All;
+                else
+                    this.category = Client.Current.Favorites[q.CategoryIndex];
             }
             this.SearchResult = Client.Current.Favorites.Search(this.keyword, this.category);
         }
