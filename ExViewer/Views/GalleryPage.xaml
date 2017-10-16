@@ -53,10 +53,14 @@
               Value="WrapWholeWords" />
     </Style>
     <Style x:Key="DownloadButtonStyle"
-           BasedOn="{StaticResource NavigationBackButtonSmallStyle}"
+           BasedOn="{StaticResource ButtonRevealStyle}"
            TargetType="Button">
       <Setter Property="Content"
               Value="&#xE896;" />
+      <Setter Property="FontSize"
+              Value="20" />
+      <Setter Property="FontFamily"
+              Value="{ThemeResource SymbolThemeFontFamily}" />
       <Setter Property="Height"
               Value="Auto" />
       <Setter Property="MinHeight"

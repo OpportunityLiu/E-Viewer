@@ -126,7 +126,7 @@
     </Storyboard>
     <AcrylicBrush x:Key="PaneBackgroundBrush"
                   x:Name="abPaneBackground"
-                  BackgroundSource="{x:Bind abPaneBackgroundBind(sv_root.IsPaneOpen), Mode=OneWay}"
+                  BackgroundSource="{x:Bind abPaneBackgroundBind(sv_root.IsPaneOpen, sv_root.DisplayMode), Mode=OneWay}"
                   TintColor="{ThemeResource SystemChromeAltHighColor}"
                   TintOpacity="0.6"
                   FallbackColor="{ThemeResource SystemChromeMediumColor}" />
