@@ -120,7 +120,7 @@
                Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}, FallbackValue=Collapsed}" />
     <Button x:Name="Actions"
             x:Uid="Controls/CommentViewer/ActionsButton"
-            Style="{StaticResource EllipsisButton}"
+            Style="{StaticResource EllipsisButtonRevealStyle}"
             RelativePanel.AlignTopWith="Author"
             RelativePanel.AlignBottomWith="Header"
             RelativePanel.AlignRightWithPanel="True"

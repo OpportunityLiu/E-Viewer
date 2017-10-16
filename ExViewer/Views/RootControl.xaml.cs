@@ -184,8 +184,10 @@ namespace ExViewer.Views
             return value;
         }
 
-        private AcrylicBackgroundSource abPaneBackgroundBind(bool value)
+        private AcrylicBackgroundSource abPaneBackgroundBind(bool value, SplitViewDisplayMode mode)
         {
+            if (mode == SplitViewDisplayMode.Overlay)
+                return AcrylicBackgroundSource.Backdrop;
             return value ? AcrylicBackgroundSource.Backdrop : AcrylicBackgroundSource.HostBackdrop;
         }
 
