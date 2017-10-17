@@ -38,6 +38,8 @@
               Value="Auto" />
       <Setter Property="Padding"
               Value="0" />
+      <Setter Property="IsTabStop"
+              Value="False" />
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="RatingControl">
@@ -45,7 +47,6 @@
 
               <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CommonStates">
-
                   <VisualState x:Name="Disabled">
                     <VisualState.Setters>
                       <Setter Target="ForegroundContentPresenter.Foreground"
@@ -161,7 +162,8 @@
                  TextTrimming="CharacterEllipsis"
                  Margin="0,0,0,8">
                 <ToolTipService.ToolTip>
-                    <ToolTip x:Name="TitleToolTop">
+                    <ToolTip x:Name="TitleToolTop"
+                             IsEnabled="{x:Bind TitleTextBlock.IsTextTrimmed, Mode=OneWay}">
                         <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                    TextWrapping="WrapWholeWords" />
                     </ToolTip>
