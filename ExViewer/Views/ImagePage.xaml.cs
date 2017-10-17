@@ -181,7 +181,9 @@ namespace ExViewer.Views
                 VM.CurrentIndex = index;
             else
                 VM.CurrentIndex = VM.Gallery.Count - 1;
-            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ImageAnimation", this.fv.ContainerFromIndex(index).Descendants<Image>().First());
+            var container = this.fv.ContainerFromIndex(index);
+            if (container != null)
+                ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ImageAnimation", container.Descendants<Image>().First());
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
