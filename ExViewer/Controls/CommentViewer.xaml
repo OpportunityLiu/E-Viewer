@@ -4,9 +4,10 @@
              xmlns:local="using:ExViewer.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
              xmlns:con="using:Opportunity.Converters"
+             xmlns:tcon="using:Opportunity.Converters.Typed"
              xmlns:commenting="using:ExClient.Galleries.Commenting"
+             mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="600"
              HorizontalContentAlignment="Stretch"
@@ -16,7 +17,66 @@
              IsTabStop="True"
              FocusEngaged="UserControl_FocusEngaged">
   <UserControl.Resources>
-    <ResourceDictionary Source="CommentViewerResourceDictionary.xaml" />
+    <Style x:Key="HeaderRectangleStyle"
+           TargetType="Rectangle">
+      <Setter Property="Fill"
+              Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+      <Setter Property="StrokeThickness"
+              Value="0" />
+    </Style>
+    <Style x:Key="CommentHeaderTextBlockStyle"
+           TargetType="TextBlock">
+      <Setter Property="FontSize"
+              Value="14" />
+      <Setter Property="FontWeight"
+              Value="Medium" />
+      <Setter Property="Margin"
+              Value="8,0" />
+    </Style>
+    <con:ChainConverter x:Key="ConUp">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>VotedDown</commenting:CommentStatus>
+        <commenting:CommentStatus>Votable</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ConWithdraw">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>VotedUp</commenting:CommentStatus>
+        <commenting:CommentStatus>VotedDown</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ConDown">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>VotedUp</commenting:CommentStatus>
+        <commenting:CommentStatus>Votable</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ConEdit">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>Editable</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ConReply">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>Editable</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource FalseToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ContentOpacity">
+      <con:ConverterReference Converter="{StaticResource NullToTrueConverter}" />
+      <tcon:BooleanToObjectConverter>
+        <tcon:BooleanToObjectConverter.ValueForTrue>
+          <x:Double>1</x:Double>
+        </tcon:BooleanToObjectConverter.ValueForTrue>
+        <tcon:BooleanToObjectConverter.ValueForFalse>
+          <x:Double>0.6</x:Double>
+        </tcon:BooleanToObjectConverter.ValueForFalse>
+      </tcon:BooleanToObjectConverter>
+    </con:ChainConverter>
   </UserControl.Resources>
   <RelativePanel x:Name="LayoutRoot"
                  Background="{x:Bind Background, Mode=OneWay}"
