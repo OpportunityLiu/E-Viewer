@@ -79,9 +79,11 @@ namespace ExViewer.Views
 
         private async void abbChangeUser_Click(object sender, RoutedEventArgs e)
         {
-            await RootControl.RootController.RequestLogOn();
-            this.VM.RefreshStatus.Execute();
-            this.VM.RefreshTaggingStatistics.Execute();
+            if (await RootControl.RootController.RequestLogOn())
+            {
+                this.VM.RefreshStatus.Execute();
+                this.VM.RefreshTaggingStatistics.Execute();
+            }
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)

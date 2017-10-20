@@ -11,7 +11,7 @@
                           PrimaryButtonText="OK"
                           PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
                           SecondaryButtonText="Cancel"
-                          IsPrimaryButtonEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}">
+                          IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}">
   <ContentControl.Resources>
     <Style x:Key="ToolBarAppBarButtonStyle"
            TargetType="AppBarButton">
