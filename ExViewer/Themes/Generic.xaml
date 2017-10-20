@@ -759,8 +759,8 @@
                                       FontFamily="XamlAutoFontFamily"
                                       FontWeight="Normal"
                                       Foreground="{TemplateBinding Foreground}"
-                                      HorizontalAlignment="Left"
-                                      VerticalAlignment="Top"
+                                      HorizontalContentAlignment="Stretch"
+                                      VerticalContentAlignment="Stretch"
                                       IsTabStop="False">
                         <ContentControl.Template>
                           <ControlTemplate TargetType="ContentControl">
@@ -776,6 +776,8 @@
                         </ContentControl.Template>
                       </ContentControl>
                       <ContentPresenter x:Name="Content"
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Stretch"
                                         ContentTemplate="{TemplateBinding ContentTemplate}"
                                         Content="{TemplateBinding Content}"
                                         FontSize="{ThemeResource ControlContentThemeFontSize}"

@@ -10,10 +10,8 @@
                           Title="ADD TO FAVORITES"
                           PrimaryButtonText="OK"
                           SecondaryButtonText="Cancel"
-                          IsPrimaryButtonEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
+                          IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
                           PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-                          HorizontalContentAlignment="Stretch"
-                          VerticalContentAlignment="Stretch"
                           Loading="MyContentDialog_Loading">
   <Grid>
     <Grid.RowDefinitions>
