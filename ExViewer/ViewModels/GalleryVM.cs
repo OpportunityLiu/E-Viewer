@@ -230,6 +230,7 @@ namespace ExViewer.ViewModels
                     else
                         await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), true);
                 }
+                catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
                     RootControl.RootController.SendToast(ex, typeof(ImagePage));
