@@ -35,7 +35,7 @@
     <Style x:Key="CompactRatingStyle"
            TargetType="RatingControl">
       <Setter Property="Height"
-              Value="Auto" />
+              Value="24" />
       <Setter Property="Padding"
               Value="0" />
       <Setter Property="IsTabStop"
@@ -176,17 +176,9 @@
                  RelativePanel.Above="Rating"
                  Text="{x:Bind Gallery.Language, Mode=OneWay, Converter={StaticResource StringConverter}}"
                  Style="{StaticResource DetailTextBlockStyle}" />
-      <!--<TextBlock x:Name="Rating"
-                 Padding="0,2.5"
-                 RelativePanel.AlignBottomWithPanel="True"
-                 Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
-                 Style="{StaticResource DetailTextBlockStyle}"
-                 TextTrimming="None"
-                 FontFamily="Segoe MDL2 Assets" />-->
       <RatingControl x:Name="Rating"
-                     Height="24"
+                     Style="{StaticResource CompactRatingStyle}"
                      IsReadOnly="True"
-                     Padding="0"
                      RelativePanel.AlignBottomWithPanel="True"
                      PlaceholderValue="{x:Bind Gallery.Rating, Mode=OneWay}"
                      Margin="0,-4,0,0" />
