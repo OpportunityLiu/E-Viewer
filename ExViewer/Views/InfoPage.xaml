@@ -97,6 +97,7 @@
                       x:Uid="Views/InfoPage/RefreshAppBarButton"
                       Label="Refresh"
                       Icon="Refresh"
+                      ToolTipService.ToolTip="{x:Bind abbRefresh.Label}"
                       Command="{x:Bind VM.RefreshStatus}" />
         <CommandBar.SecondaryCommands>
           <AppBarButton x:Uid="Views/InfoPage/ChangeUserAppBarButton"
