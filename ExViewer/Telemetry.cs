@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
 using ExClient.Search;
 using ExClient.Galleries;
+using Opportunity.MvvmUniverse;
 
 namespace ExViewer
 {
@@ -46,33 +47,36 @@ namespace ExViewer
             sb.AppendLine();
             sb.AppendLine("--------Other Info--------");
             sb.AppendLine($"Page: {RootControl.RootController.CurrentPageName}");
-            var page = RootControl.RootController.Frame?.Content;
-            switch (page)
+            DispatcherHelper.RunAsyncOnUIThread(() =>
             {
-            case GalleryPage gp:
-                AddtionalInfo(sb, gp);
-                break;
-            case ImagePage ip:
-                AddtionalInfo(sb, ip);
-                break;
-            case SearchPage sp:
-                AddtionalInfo(sb, sp);
-                break;
-            case FavoritesPage fp:
-                AddtionalInfo(sb, fp);
-                break;
-            case PopularPage pp:
-                AddtionalInfo(sb, pp);
-                break;
-            case CachedPage cp:
-                AddtionalInfo(sb, cp);
-                break;
-            case SavedPage svp:
-                AddtionalInfo(sb, svp);
-                break;
-            default:
-                break;
-            }
+                var page = RootControl.RootController.Frame?.Content;
+                switch (page)
+                {
+                case GalleryPage gp:
+                    AddtionalInfo(sb, gp);
+                    break;
+                case ImagePage ip:
+                    AddtionalInfo(sb, ip);
+                    break;
+                case SearchPage sp:
+                    AddtionalInfo(sb, sp);
+                    break;
+                case FavoritesPage fp:
+                    AddtionalInfo(sb, fp);
+                    break;
+                case PopularPage pp:
+                    AddtionalInfo(sb, pp);
+                    break;
+                case CachedPage cp:
+                    AddtionalInfo(sb, cp);
+                    break;
+                case SavedPage svp:
+                    AddtionalInfo(sb, svp);
+                    break;
+                default:
+                    break;
+                }
+            }).AsTask().Wait();
             return sb.ToString();
         }
 

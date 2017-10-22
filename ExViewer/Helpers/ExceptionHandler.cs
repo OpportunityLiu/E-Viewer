@@ -28,7 +28,7 @@ namespace ExViewer
             var localizedMsg = Strings.Exceptions.GetValue(ex.HResult.ToString("X8"));
             if (!string.IsNullOrEmpty(localizedMsg))
                 return localizedMsg;
-            var msg = (ex.Message ?? $"Error: {ex.HResult:X8)}").TrimStart();
+            var msg = (ex.Message ?? $"Error: {ex.HResult:X8}").TrimStart();
             foreach (var prefix in prefixes)
             {
                 if (msg.StartsWith(prefix))

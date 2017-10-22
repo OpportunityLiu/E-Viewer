@@ -45,7 +45,14 @@ namespace ExViewer
 
         private void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
-            RootControl.RootController.SendToast(e.Exception, null);
+            switch (e.Exception)
+            {
+            case OperationCanceledException _:
+                break;
+            default:
+                RootControl.RootController.SendToast(e.Exception, null);
+                break;
+            }
             e.Handled = true;
         }
 
