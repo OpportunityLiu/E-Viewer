@@ -9,90 +9,90 @@
                  NavigationCacheMode="Enabled"
                  x:Name="page"
                  mc:Ignorable="d">
-    <controls:MyPage.Resources>
-        <MenuFlyout x:Name="mf_Gallery"
-                    Placement="Bottom">
-            <MenuFlyoutItem x:Uid="Views/CachedPage/DeleteMenuFlyout"
-                            x:Name="mfi_DeleteGallery"
-                            Icon="Delete"
-                            Text="Delete"
-                            Command="{x:Bind VM.Delete, Mode=OneWay}" />
-        </MenuFlyout>
-    </controls:MyPage.Resources>
-    <controls:MyPage.Transitions>
-        <TransitionCollection>
-            <NavigationThemeTransition>
-                <DrillInNavigationTransitionInfo />
-            </NavigationThemeTransition>
-        </TransitionCollection>
-    </controls:MyPage.Transitions>
+  <controls:MyPage.Resources>
+    <MenuFlyout x:Name="mf_Gallery"
+                Placement="Bottom">
+      <MenuFlyoutItem x:Uid="Views/CachedPage/DeleteMenuFlyout"
+                      x:Name="mfi_DeleteGallery"
+                      Icon="Delete"
+                      Text="Delete"
+                      Command="{x:Bind VM.Delete, Mode=OneWay}" />
+    </MenuFlyout>
+  </controls:MyPage.Resources>
+  <controls:MyPage.Transitions>
+    <TransitionCollection>
+      <NavigationThemeTransition>
+        <DrillInNavigationTransitionInfo />
+      </NavigationThemeTransition>
+    </TransitionCollection>
+  </controls:MyPage.Transitions>
 
-    <RelativePanel>
-        <tk:PullToRefreshListView x:Name="lv"
-                                  Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                                  Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
-                                  RefreshCommand="{x:Bind VM.Refresh}"
-                                  RelativePanel.AlignBottomWithPanel="True"
-                                  RelativePanel.AlignLeftWithPanel="True"
-                                  RelativePanel.AlignRightWithPanel="True"
-                                  RelativePanel.Below="cb_top"
-                                  ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
-                                  Style="{StaticResource GalleryListViewStyle}"
-                                  ItemClick="lv_ItemClick"
-                                  ContextRequested="lv_ContextRequested"
-                                  ContextCanceled="lv_ContextCanceled">
-            <tk:PullToRefreshListView.RefreshIndicatorContent>
-                <tk:PullToRefreshIndicator />
-            </tk:PullToRefreshListView.RefreshIndicatorContent>
-            <tk:PullToRefreshListView.ItemTemplate>
-                <DataTemplate xmlns:c="using:ExClient.Galleries"
-                              xmlns:controls="using:ExViewer.Controls"
-                              x:DataType="c:Gallery">
-                    <controls:GalleryViewer x:Name="gv_Gallery"
-                                            Gallery="{x:Bind}" />
-                </DataTemplate>
-            </tk:PullToRefreshListView.ItemTemplate>
-            <tk:PullToRefreshListView.Footer>
-                <TextBlock x:Uid="Views/CachedPage/LoadingMoreTextBlock"
-                           HorizontalAlignment="Center"
-                           Margin="12"
-                           Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.Galleries, FallbackValue=Visible, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
-                           Text="Loading more galleries..." />
-            </tk:PullToRefreshListView.Footer>
-            <tk:PullToRefreshListView.Header>
-                <TextBlock x:Uid="Views/CachedPage/EmptyTextBlock"
-                           HorizontalAlignment="Center"
-                           Margin="12"
-                           Style="{StaticResource BaseTextBlockStyle}"
-                           Visibility="{x:Bind VM.Galleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
-                           Text="No cached galleries" />
-            </tk:PullToRefreshListView.Header>
-        </tk:PullToRefreshListView>
-        <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
-                Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,48,x1,x0'}"
+  <RelativePanel>
+    <tk:PullToRefreshListView x:Name="lv"
+                              Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                              Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                              RefreshCommand="{x:Bind VM.Refresh}"
+                              RelativePanel.AlignBottomWithPanel="True"
+                              RelativePanel.AlignLeftWithPanel="True"
+                              RelativePanel.AlignRightWithPanel="True"
+                              RelativePanel.Below="cb_top"
+                              ItemsSource="{x:Bind VM.Galleries, Mode=OneWay}"
+                              Style="{StaticResource GalleryListViewStyle}"
+                              ItemClick="lv_ItemClick"
+                              ContextRequested="lv_ContextRequested"
+                              ContextCanceled="lv_ContextCanceled">
+      <tk:PullToRefreshListView.RefreshIndicatorContent>
+        <tk:PullToRefreshIndicator />
+      </tk:PullToRefreshListView.RefreshIndicatorContent>
+      <tk:PullToRefreshListView.ItemTemplate>
+        <DataTemplate xmlns:c="using:ExClient.Galleries"
+                      xmlns:controls="using:ExViewer.Controls"
+                      x:DataType="c:Gallery">
+          <controls:GalleryViewer x:Name="gv_Gallery"
+                                    Gallery="{x:Bind}" />
+        </DataTemplate>
+      </tk:PullToRefreshListView.ItemTemplate>
+      <tk:PullToRefreshListView.Footer>
+        <TextBlock x:Uid="Views/CachedPage/LoadingMoreTextBlock"
+                   HorizontalAlignment="Center"
+                   Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind VM.Galleries, FallbackValue=Visible, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
+                   Text="Loading more galleries..." />
+      </tk:PullToRefreshListView.Footer>
+      <tk:PullToRefreshListView.Header>
+        <TextBlock x:Uid="Views/CachedPage/EmptyTextBlock"
+                   HorizontalAlignment="Center"
+                   Margin="12"
+                   Style="{StaticResource BaseTextBlockStyle}"
+                   Visibility="{x:Bind VM.Galleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
+                   Text="No cached galleries" />
+      </tk:PullToRefreshListView.Header>
+    </tk:PullToRefreshListView>
+    <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
+            Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,48,x1,x0'}"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True" />
+    <CommandBar x:Name="cb_top"
+                Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
                 RelativePanel.AlignLeftWithPanel="True"
-                RelativePanel.AlignRightWithPanel="True" />
-        <CommandBar x:Name="cb_top"
-                    Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
-                    RelativePanel.AlignLeftWithPanel="True"
-                    RelativePanel.AlignRightWithPanel="True"
-                    HorizontalContentAlignment="Stretch">
-            <CommandBar.PrimaryCommands>
-                <AppBarButton x:Uid="Views/CachedPage/RefreshAppBarButton"
-                              x:Name="abb_Refresh"
-                              Command="{x:Bind VM.Refresh}"
-                              ToolTipService.ToolTip="{x:Bind abb_Refresh.Label}"
-                              Icon="Refresh"
-                              Label="Refresh" />
-            </CommandBar.PrimaryCommands>
-            <CommandBar.SecondaryCommands>
-                <AppBarButton x:Uid="Views/CachedPage/DeleteAllAppBarButton"
-                              x:Name="abb_DeleteAll"
-                              Click="abb_DeleteAll_Click"
-                              Icon="Delete"
-                              Label="Delete all" />
-            </CommandBar.SecondaryCommands>
-        </CommandBar>
-    </RelativePanel>
+                RelativePanel.AlignRightWithPanel="True"
+                HorizontalContentAlignment="Stretch">
+      <CommandBar.PrimaryCommands>
+        <AppBarButton x:Uid="Views/CachedPage/RefreshAppBarButton"
+                      x:Name="abb_Refresh"
+                      Command="{x:Bind VM.Refresh}"
+                      ToolTipService.ToolTip="{x:Bind abb_Refresh.Label}"
+                      Icon="Refresh"
+                      Label="Refresh" />
+      </CommandBar.PrimaryCommands>
+      <CommandBar.SecondaryCommands>
+        <AppBarButton x:Uid="Views/CachedPage/DeleteAllAppBarButton"
+                      x:Name="abb_DeleteAll"
+                      Click="abb_DeleteAll_Click"
+                      Icon="Delete"
+                      Label="Delete all" />
+      </CommandBar.SecondaryCommands>
+    </CommandBar>
+  </RelativePanel>
 </controls:MyPage>

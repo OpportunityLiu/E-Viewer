@@ -180,7 +180,7 @@
                      Style="{StaticResource CompactRatingStyle}"
                      IsReadOnly="True"
                      RelativePanel.AlignBottomWithPanel="True"
-                     PlaceholderValue="{x:Bind Gallery.Rating, Mode=OneWay}"
+                     PlaceholderValue="{x:Bind Gallery.Rating.AverageScore, Mode=OneWay}"
                      Margin="0,-4,0,0" />
       <TextBlock x:Name="tbCount"
                  RelativePanel.AlignVerticalCenterWith="CategoryTag"

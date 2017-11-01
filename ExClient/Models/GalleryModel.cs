@@ -20,7 +20,7 @@ namespace ExClient.Models
             this.Posted = toCache.Posted;
             this.FileSize = toCache.FileSize;
             this.Expunged = toCache.Expunged;
-            this.Rating = toCache.Rating;
+            this.Rating = toCache.Rating.AverageScore;
             if (toCache.Tags == null || toCache.Tags.Items.Count == 0)
                 this.Tags = "[]";
             else

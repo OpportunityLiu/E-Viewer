@@ -161,6 +161,7 @@ namespace ExClient.Galleries
         {
             this.ID = id;
             this.Token = token;
+            this.Rating = new RatingStatus(this);
             this.Comments = new CommentCollection(this);
             this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{ID.ToString()}/{Token.ToTokenString()}/");
         }
@@ -176,7 +177,7 @@ namespace ExClient.Galleries
             this.Posted = model.Posted;
             this.FileSize = model.FileSize;
             this.Expunged = model.Expunged;
-            this.rating = model.Rating;
+            this.Rating.AverageScore = model.Rating;
             this.Tags = new TagCollection(this, JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)));
             this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
@@ -217,7 +218,7 @@ namespace ExClient.Galleries
             this.RecordCount = int.Parse(filecount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
             this.FileSize = filesize;
             this.Expunged = expunged;
-            this.rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
+            this.Rating.AverageScore = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
             this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
             this.Tags = new TagCollection(this, tags.Select(tag => Tag.Parse(tag)));
             this.ThumbUri = new Uri(thumb);
@@ -325,7 +326,6 @@ namespace ExClient.Galleries
             }
         }
 
-
         public Uri ThumbUri { get; }
 
         public string Uploader { get; }
@@ -336,19 +336,7 @@ namespace ExClient.Galleries
 
         public bool Expunged { get; }
 
-        private double rating;
-        public double Rating { get => this.rating; protected set => Set(ref this.rating, value); }
-
-        public IAsyncAction RatingAsync(Score rating)
-        {
-            return Run(async token =>
-            {
-                var r = RatingHelper.RatingAsync(this, rating);
-                token.Register(r.Cancel);
-                var result = await r;
-                this.Rating = result.AverageRating;
-            });
-        }
+        public RatingStatus Rating { get; }
 
         public int TorrentCount { get; }
 
@@ -403,6 +391,7 @@ namespace ExClient.Galleries
                 {
                     this.Comments.AnalyzeDocument(html);
                 }
+                this.Rating.AnalyzeDocument(html);
                 if (this.Revisions == null)
                     this.Revisions = new RevisionCollection(this, html);
                 this.Tags.Update(html);

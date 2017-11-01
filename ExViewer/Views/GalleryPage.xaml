@@ -300,7 +300,7 @@
               <RatingControl Margin="6,4,6,0"
                              IsReadOnly="True"
                              VerticalAlignment="Center"
-                             PlaceholderValue="{x:Bind VM.Gallery.Rating, Mode=OneWay}" />
+                             PlaceholderValue="{x:Bind VM.Gallery.Rating.AverageScore, Mode=OneWay}" />
             </StackPanel>
             <controls:TagPresenter x:Name="tpTags"
                                    Grid.Row="1"

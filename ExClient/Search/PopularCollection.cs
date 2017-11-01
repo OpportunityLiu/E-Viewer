@@ -40,6 +40,7 @@ namespace ExClient.Search
             var infoNode = trNode.ChildNodes[2].LastChild.FirstChild;
             var favNode = infoNode.ChildNodes.FirstOrDefault(n => n.Id.StartsWith("favicon"));
             gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(favNode);
+            gallery.Rating.AnalyzeNode(trNode.ChildNodes[2].ChildNodes[2]);
         }
 
         protected override IAsyncOperation<IEnumerable<Gallery>> LoadMoreItemsImplementAsync(int count)

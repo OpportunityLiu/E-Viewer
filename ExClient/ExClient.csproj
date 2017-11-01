@@ -139,7 +139,7 @@
     <Compile Include="Galleries\Metadata\LanguageModifier.cs" />
     <Compile Include="Galleries\Metadata\LanguageName.cs" />
     <Compile Include="Galleries\Metadata\LanguageNameExtension.cs" />
-    <Compile Include="Galleries\Rating\RatingHelper.cs" />
+    <Compile Include="Galleries\Rating\RatingStatus.cs" />
     <Compile Include="Galleries\Rating\Score.cs" />
     <Compile Include="Hentaiverse\HentaiVerseInfo.cs" />
     <Compile Include="Hentaiverse\MonsterEncounteredEventArgs.cs" />
