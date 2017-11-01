@@ -220,22 +220,8 @@ namespace ExClient.Galleries
             this.rating = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
             this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
             this.Tags = new TagCollection(this, tags.Select(tag => Tag.Parse(tag)));
-            this.ThumbUri = toEhCoverUri(thumb);
+            this.ThumbUri = new Uri(thumb);
             this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
-        }
-
-        private static readonly Regex imageUriRegex = new Regex(@"^(?<scheme>[a-zA-Z][.a-zA-Z0-9+-]*)://(?<domain>((\w+\.)?ehgt\.org(/t)?)|(exhentai\.org/t)|((\d{1,3}\.){3}\d{1,3}))/(?<body>.+)(?<tail>_(l|250))\.(?<ext>\w+)$", RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
-
-        // from gtX.eght.org//_l.jpg
-        // to   exhentai.org/t//_250.jpg
-        private static Uri toEhCoverUri(string uri)
-        {
-            return new Uri(imageUriRegex.Replace(uri, @"${scheme}://ehgt.org/${body}_250.${ext}"));
-        }
-
-        private static Uri toEhUri(string uri)
-        {
-            return new Uri(imageUriRegex.Replace(uri, @"${scheme}://ehgt.org/${body}_l.${ext}"));
         }
 
         private static HttpClient coverClient { get; } = new HttpClient();
@@ -406,7 +392,7 @@ namespace ExClient.Galleries
 
         protected override IAsyncOperation<IEnumerable<GalleryImage>> LoadPageAsync(int pageIndex)
         {
-            return Task.Run<IEnumerable<GalleryImage>>(async () =>
+            return Run(token => Task.Run<IEnumerable<GalleryImage>>(async () =>
             {
                 var needLoadComments = !this.Comments.IsLoaded;
                 var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
@@ -449,7 +435,7 @@ namespace ExClient.Galleries
                            {
                                pageId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer),
                                imageKey = match.Groups[1].Value.ToToken(),
-                               thumbUri = toEhUri(thumb)
+                               thumbUri = new Uri(thumb)
                            };
                 var toAdd = new List<GalleryImage>(PageSize);
                 using (var db = new GalleryDb())
@@ -473,7 +459,7 @@ namespace ExClient.Galleries
                     }
                 }
                 return toAdd;
-            }).AsAsyncOperation();
+            }, token));
         }
 
         public IAsyncOperation<ReadOnlyCollection<TorrentInfo>> FetchTorrnetsAsync()
