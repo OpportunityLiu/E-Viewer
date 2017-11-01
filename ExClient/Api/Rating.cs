@@ -28,12 +28,12 @@ namespace ExClient.Api
     internal class RatingResponse : ApiResponse
     {
         [JsonProperty("rating_avg")]
-        public double AverageRating { get; set; }
+        public double AverageScore { get; set; }
         [JsonProperty("rating_usr")]
-        public double UserRating { get; set; }
+        public double UserScore { get; set; }
         [JsonProperty("rating_cnt")]
         public int RatingCount { get; set; }
-        //[JsonProperty("rating_cls")]
-        //public string RatingClass { get; set; }
+        [JsonProperty("rating_cls")]
+        public string RatingImageClass { get; set; }
     }
 }

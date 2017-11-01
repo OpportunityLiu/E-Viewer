@@ -1,5 +1,6 @@
 ﻿using ExClient;
 using ExClient.Galleries;
+using ExClient.Galleries.Rating;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -52,5 +53,13 @@ namespace ExViewer.Controls
             this.Cover.Height = leftWidth * 1.41428;
             return base.MeasureOverride(availableSize);
         }
+
+        // RatingControl does not support decimal Value but do support decimal PlaceholderValue
+        //private double toValue(Score? rating)
+        //{
+        //    if (rating is Score s)
+        //        return s.ToDouble();
+        //    return double.NaN;
+        //}
     }
 }
