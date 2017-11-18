@@ -625,16 +625,16 @@
       <Version>4.1.6</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.6.1</Version>
+      <Version>1.6.5</Version>
     </PackageReference>
     <PackageReference Include="JyAnalytics">
       <Version>1.0.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Azure.Mobile.Analytics">
-      <Version>0.16.0</Version>
+      <Version>0.17.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Azure.Mobile.Crashes">
-      <Version>0.16.0</Version>
+      <Version>0.17.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite">
       <Version>1.1.3</Version>
