@@ -27,10 +27,10 @@ namespace EhTagTranslatorClient
 \]
 \(
   (?:\s*?
-    (?<url>\S+?)
+    (?<url>\S+)
     \s*?
     (
-      ""(?<title>.*?)""\s*?
+      ""(?<title>.*)""\s*?
     |
     )
   )
