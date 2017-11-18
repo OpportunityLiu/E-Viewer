@@ -122,10 +122,10 @@ namespace EhTagTranslatorClient
 
         public string ExternalLinksRaw { get; internal set; }
 
-        public MarkdownText ExternalLinks => new MarkdownText(ExternalLinksRaw);
+        public IEnumerable<MarkdownLink> ExternalLinks => new MarkdownText(ExternalLinksRaw).Tokens.OfType<MarkdownLink>();
 
         public Namespace Namespace { get; internal set; }
 
-        public Tag AsTag() => new Tag(this.Namespace, this.Original);
+        public Tag ToTag() => new Tag(this.Namespace, this.Original);
     }
 }

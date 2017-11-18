@@ -109,7 +109,7 @@ namespace ExViewer.Controls.TagSuggestion
                     score = Math.Max(score, highlight.Length * 65536 / tag.TranslatedStr.Length);
             }
             score *= nsFactor[tag.Namespace];
-            return new TagRecord(highlight, tag.AsTag(), score);
+            return new TagRecord(highlight, tag.ToTag(), score);
         }
 
         private static TagRecord<Tag> getRecord(EhTagClient.TagRecord tag, string highlight)

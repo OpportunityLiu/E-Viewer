@@ -28,19 +28,6 @@
   </Page.Transitions>
 
   <RelativePanel>
-    <VisualStateManager.VisualStateGroups>
-      <VisualStateGroup>
-        <VisualState>
-          <VisualState.StateTriggers>
-            <local:DeviceTrigger ActiveType="Windows.Desktop" />
-          </VisualState.StateTriggers>
-          <VisualState.Setters>
-            <Setter Target="lv.CanDragItems"
-                    Value="True" />
-          </VisualState.Setters>
-        </VisualState>
-      </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
     <tk:PullToRefreshListView x:Name="lv"
                               RefreshCommand="{x:Bind VM.Refresh}"
                               RelativePanel.AlignBottomWithPanel="True"
