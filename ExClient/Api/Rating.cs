@@ -9,7 +9,7 @@ using ExClient.Galleries.Rating;
 
 namespace ExClient.Api
 {
-    internal class RatingRequest : GalleryRequest, IRequestOf<RatingRequest, RatingResponse>
+    internal class RatingRequest : GalleryRequest<RatingResponse>
     {
         public RatingRequest(Gallery gallery, Score rating)
             : base(gallery)
@@ -25,15 +25,15 @@ namespace ExClient.Api
         public Score Rating { get; }
     }
 
-    internal class RatingResponse : ApiResponse, IResponseOf<RatingRequest, RatingResponse>
+    internal class RatingResponse : ApiResponse
     {
         [JsonProperty("rating_avg")]
-        public double AverageRating { get; set; }
+        public double AverageScore { get; set; }
         [JsonProperty("rating_usr")]
-        public double UserRating { get; set; }
+        public double UserScore { get; set; }
         [JsonProperty("rating_cnt")]
         public int RatingCount { get; set; }
-        //[JsonProperty("rating_cls")]
-        //public string RatingClass { get; set; }
+        [JsonProperty("rating_cls")]
+        public string RatingImageClass { get; set; }
     }
 }

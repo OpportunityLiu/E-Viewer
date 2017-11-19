@@ -15,13 +15,13 @@ namespace ExClient.Search
 
         private static Uri fileSearchUri => Client.Current.Host == HostType.Ehentai ? fileSearchUriEh : fileSearchUriEx;
 
-        internal static IAsyncOperation<FileSearchResult> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
+        internal static IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
         {
             if (file == null)
                 throw new ArgumentNullException(nameof(file));
             if (searchSimilar)
             {
-                return AsyncInfo.Run(async token =>
+                return AsyncInfo.Run<FileSearchResult, HttpProgress>(async (token, progress) =>
                 {
                     var read = FileIO.ReadBufferAsync(file);
                     HttpStringContent contentOf(bool v) => new HttpStringContent(v ? "1" : "0");
@@ -34,7 +34,9 @@ namespace ExClient.Search
                     var buf = await read;
                     data.Add(new HttpBufferContent(buf), "sfile", file.Name);
                     await data.BufferAllAsync();
-                    var r = await Client.Current.HttpClient.PostAsync(fileSearchUri, data);
+                    var post = Client.Current.HttpClient.PostAsync(fileSearchUri, data);
+                    post.Progress = (s, p) => progress.Report(p);
+                    var r = await post;
                     var uri = r.RequestMessage.RequestUri;
                     var query = uri.Query.Split("?&".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     var hashstr = query.Single(s => s.StartsWith("f_shash=")).Substring(8).Split(';');
@@ -55,7 +57,7 @@ namespace ExClient.Search
             }
             else
             {
-                return AsyncInfo.Run(async token =>
+                return AsyncInfo.Run<FileSearchResult, HttpProgress>(async (token, progress) =>
                 {
                     var hash = await SHA1Value.ComputeAsync(file);
                     return new FileSearchResult(keyword, category, Enumerable.Repeat(hash, 1), file.Name, false, onlyCovers, searchExpunged);

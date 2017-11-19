@@ -74,9 +74,11 @@
     <MenuFlyout x:Name="mfTaggingRecord">
       <MenuFlyoutItem x:Uid="Views/InfoPage/OpenGalleryMenuFlyoutItem"
                       Command="{x:Bind VM.OpenGallery}"
+                      Icon="PreviewLink"
                       Text="Open gallery" />
       <MenuFlyoutItem x:Uid="Views/InfoPage/SearchTagMenuFlyoutItem"
                       Command="{x:Bind VM.SearchTag}"
+                      Icon="Find"
                       Text="Show galleries with this tag" />
     </MenuFlyout>
   </controls:MyPage.Resources>
@@ -95,6 +97,7 @@
                       x:Uid="Views/InfoPage/RefreshAppBarButton"
                       Label="Refresh"
                       Icon="Refresh"
+                      ToolTipService.ToolTip="{x:Bind abbRefresh.Label}"
                       Command="{x:Bind VM.RefreshStatus}" />
         <CommandBar.SecondaryCommands>
           <AppBarButton x:Uid="Views/InfoPage/ChangeUserAppBarButton"
@@ -110,7 +113,7 @@
                 Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
                 Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                 ItemsSource="{x:Bind VM.Status.Toplists, Mode=OneWay}"
-                ItemContainerStyle="{StaticResource ListViewItemStyle}">
+                ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}">
         <ListView.ItemTemplate>
           <DataTemplate xmlns:s="using:ExClient.Status"
                         xmlns:controls="using:ExViewer.Controls"
@@ -206,7 +209,9 @@
         <ListView.Header>
           <tk:ScrollHeader TargetListViewBase="{x:Bind lvTagging}"
                            Mode="QuickReturn">
-            <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                        Margin="-4"
+                        Padding="4">
               <TextBlock x:Uid="Views/InfoPage/TaggingStaticsHeaderTextBlock"
                          Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
                          Text="Statistics" />

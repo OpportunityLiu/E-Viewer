@@ -126,17 +126,14 @@
                           OffContent="Show advanced options"
                           OnContent="Hide advanced options"
                           HorizontalAlignment="Center" />
-            <ListView x:Name="lv_AdvancedSearch"
-                      Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                      Margin="20,0,-20,12"
-                      Style="{StaticResource StackPanelListViewStyle}"
-                      MaxWidth="800"
-                      HorizontalAlignment="Center">
-              <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                  <tk:WrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-              </ListView.ItemsPanel>
+            <tk:WrapPanel x:Name="wp_AdvancedSearch"
+                          TabFocusNavigation="Once"
+                          Orientation="Horizontal"
+                          XYFocusKeyboardNavigation="Enabled"
+                          Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                          Margin="20,0,-20,12"
+                          MaxWidth="800"
+                          HorizontalAlignment="Center">
               <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
                         XYFocusUp="{x:Bind ts_Advanced}"
                         Content="Search gallery name"
@@ -189,7 +186,7 @@
                   <x:Int32>5</x:Int32>
                 </ComboBox>
               </StackPanel>
-            </ListView>
+            </tk:WrapPanel>
             <StackPanel HorizontalAlignment="Stretch"
                         Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
                         Padding="0,0,0,12">
@@ -206,7 +203,7 @@
                            TextWrapping="WrapWholeWords"
                            Margin="8" />
                 <tk:WrapPanel HorizontalAlignment="Stretch"
-                                    Margin="12,0">
+                              Margin="12,0">
                   <TextBlock x:Uid="Views/SearchPage/SearchSimilarTextBlock"
                              Text="• Similarity scan enabled"
                              Style="{StaticResource FileSearchOptionStyle}"

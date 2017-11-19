@@ -105,7 +105,7 @@ namespace ExClient.Launch
 
         protected static string GetKeyword(UriHandlerData data)
         {
-            return UnescapeKeyword(data.Queries.GetValueOrDefault("f_search", ""));
+            return UnescapeKeyword(DictionaryExtention.GetValueOrDefault(data.Queries, "f_search", ""));
         }
     }
 }

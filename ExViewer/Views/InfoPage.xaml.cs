@@ -4,6 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
 
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
@@ -78,9 +79,31 @@ namespace ExViewer.Views
 
         private async void abbChangeUser_Click(object sender, RoutedEventArgs e)
         {
-            await RootControl.RootController.RequestLogOn();
-            this.VM.RefreshStatus.Execute();
-            this.VM.RefreshTaggingStatistics.Execute();
+            if (await RootControl.RootController.RequestLogOn())
+            {
+                this.VM.RefreshStatus.Execute();
+                this.VM.RefreshTaggingStatistics.Execute();
+            }
+        }
+
+        protected override void OnKeyUp(KeyRoutedEventArgs e)
+        {
+            base.OnKeyUp(e);
+            e.Handled = true;
+            switch (e.Key)
+            {
+            case Windows.System.VirtualKey.GamepadY:
+                e.Handled = false;
+                break;
+            case Windows.System.VirtualKey.GamepadMenu:
+            case Windows.System.VirtualKey.Application:
+                this.cb.IsOpen = true;
+                this.cb.Focus(FocusState.Programmatic);
+                break;
+            default:
+                e.Handled = false;
+                break;
+            }
         }
 
         public void CloseAll()

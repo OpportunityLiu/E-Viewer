@@ -11,19 +11,21 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="400">
-  <Grid Background="{x:Bind Background, Mode=OneWay}">
+  <UserControl.Resources>
+    <AcrylicBrush x:Key="ImageBackgroundBrush"
+                  BackgroundSource="Backdrop"
+                  FallbackColor="{ThemeResource SystemBaseMediumColor}"
+                  TintColor="Transparent"
+                  TintOpacity="0" />
+  </UserControl.Resources>
+  <Grid>
     <Image x:Name="BackgroundImage"
            x:DeferLoadStrategy="Lazy"
            Source="{x:Bind Source, Mode=OneWay}"
-           Stretch="UniformToFill">
-      <interactivity:Interaction.Behaviors>
-        <behaviors:Blur Value="10"
-                        Duration="0"
-                        Delay="0"
-                        AutomaticallyStart="True" />
-      </interactivity:Interaction.Behaviors>
-    </Image>
-    <Image x:Name="ForegroundImage"
-           Source="{x:Bind Source, Mode=OneWay}" />
+           Stretch="UniformToFill" />
+    <Grid Background="{StaticResource ImageBackgroundBrush}">
+      <Image x:Name="ForegroundImage"
+             Source="{x:Bind Source, Mode=OneWay}" />
+    </Grid>
   </Grid>
 </UserControl>

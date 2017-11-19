@@ -6,12 +6,12 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Microsoft.Azure.Mobile;
 using System.Collections.Generic;
-using Microsoft.Azure.Mobile.Analytics;
-using Microsoft.Azure.Mobile.Crashes;
+using Microsoft.AppCenter.Analytics;
 #if !DEBUG
 using Microsoft.HockeyApp;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Crashes;
 #endif
 
 namespace ExViewer
@@ -43,9 +43,16 @@ namespace ExViewer
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
         }
 
-        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
-            RootControl.RootController.SendToast(e.Exception, null);
+            switch (e.Exception)
+            {
+            case OperationCanceledException _:
+                break;
+            default:
+                RootControl.RootController.SendToast(e.Exception, null);
+                break;
+            }
             e.Handled = true;
         }
 
@@ -70,11 +77,11 @@ namespace ExViewer
         private async void lanunchCore(IActivatedEventArgs e, bool prelaunchActivated)
         {
 #if !DEBUG
-            if (!MobileCenter.Configured)
+            if (!AppCenter.Configured)
             {
                 var region = new Windows.Globalization.GeographicRegion();
-                MobileCenter.SetCountryCode(region.CodeTwoLetter);
-                MobileCenter.Start("4b9c5e4f-ebf5-46ed-9ee8-72e5de8e0236", typeof(Analytics), typeof(Crashes));
+                AppCenter.SetCountryCode(region.CodeTwoLetter);
+                AppCenter.Start("4b9c5e4f-ebf5-46ed-9ee8-72e5de8e0236", typeof(Analytics), typeof(Crashes));
             }
 #endif
             if (!Opportunity.MvvmUniverse.DispatcherHelper.Initialized)
