@@ -77,6 +77,7 @@ namespace ExClient.Search
             var attributeNode = infoNode.ChildNodes[1]; //class = it3
             var favNode = attributeNode.ChildNodes.FirstOrDefault(n => n.Id.StartsWith("favicon"));
             gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(favNode);
+            gallery.Rating.AnalyzeNode(infoNode.LastChild.FirstChild);
         }
 
         protected virtual void LoadPageOverride(HtmlDocument doc) { }

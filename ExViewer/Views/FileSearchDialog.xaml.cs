@@ -63,7 +63,7 @@ namespace ExViewer.Views
             var search = ExClient.Client.Current.SearchAsync(this.SearchFile, this.cbSimilar.IsChecked ?? true, this.cbCover.IsChecked ?? false, this.cbExp.IsChecked ?? false);
             this.SearchFile = null;
             await this.Dispatcher.YieldIdle();
-            RootControl.RootController.TrackAsyncAction(search, (s, e) =>
+            RootControl.RootController.TrackAsyncAction(search, p => double.NaN, (s, e) =>
             {
                 switch (e)
                 {

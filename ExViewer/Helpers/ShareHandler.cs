@@ -166,12 +166,9 @@ namespace ExViewer.Helpers
                     , async operation =>
                     {
                         var uri = await operation.Data.GetWebLinkAsync();
-                        await Task.Delay(250);
-                        DispatcherHelper.BeginInvokeOnUIThread(async () =>
-                        {
-                            await Launcher.LaunchUriAsync(uri, new LauncherOptions { IgnoreAppUriHandlers = true });
-                            operation.ReportCompleted();
-                        });
+                        await DispatcherHelper.YieldIdle();
+                        await Launcher.LaunchUriAsync(uri, new LauncherOptions { IgnoreAppUriHandlers = true });
+                        operation.ReportCompleted();
                     });
             public ShareProvider CopyProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.CopyToClipboard
@@ -181,13 +178,10 @@ namespace ExViewer.Helpers
                     {
                         var data = operation.Data;
                         var pac = await DataProviderProxy.CreateAsync(data);
-                        await Task.Delay(1000);
-                        DispatcherHelper.BeginInvokeOnUIThread(() =>
-                        {
-                            Clipboard.SetContent(pac.View);
-                            RootControl.RootController.SendToast(Strings.Resources.Sharing.CopyedToClipboard, null);
-                            operation.ReportCompleted();
-                        });
+                        await DispatcherHelper.YieldIdle();
+                        Clipboard.SetContent(pac.View);
+                        RootControl.RootController.SendToast(Strings.Resources.Sharing.CopyedToClipboard, null);
+                        operation.ReportCompleted();
                     });
             public ShareProvider SetWallpaperProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.SetWallpaper
@@ -210,17 +204,15 @@ namespace ExViewer.Helpers
                             return;
                         // Only files in localfolder can be set as background.
                         file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"Img_{file.Name}", NameCollisionOption.ReplaceExisting);
-                        DispatcherHelper.BeginInvokeOnUIThread(async () =>
-                        {
-                            var succeeded = await User​Profile​Personalization​Settings.Current.TrySetWallpaperImageAsync(file);
-                            if (succeeded)
-                                RootControl.RootController.SendToast(Strings.Resources.Sharing.SetWallpaperSucceeded, null);
-                            else
-                                RootControl.RootController.SendToast(Strings.Resources.Sharing.SetWallpaperFailed, null);
-                            await Task.Delay(10000);
-                            await file.DeleteAsync();
-                            operation.ReportCompleted();
-                        });
+                        await DispatcherHelper.YieldIdle();
+                        var succeeded = await User​Profile​Personalization​Settings.Current.TrySetWallpaperImageAsync(file);
+                        if (succeeded)
+                            RootControl.RootController.SendToast(Strings.Resources.Sharing.SetWallpaperSucceeded, null);
+                        else
+                            RootControl.RootController.SendToast(Strings.Resources.Sharing.SetWallpaperFailed, null);
+                        await Task.Delay(10000).ConfigureAwait(false);
+                        await file.DeleteAsync();
+                        operation.ReportCompleted();
                     });
 
             private class DataProviderProxy

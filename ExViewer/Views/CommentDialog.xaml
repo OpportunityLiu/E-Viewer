@@ -11,25 +11,103 @@
                           PrimaryButtonText="OK"
                           PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
                           SecondaryButtonText="Cancel"
-                          IsPrimaryButtonEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
-                          VerticalContentAlignment="Stretch"
-                          HorizontalContentAlignment="Stretch">
+                          IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}">
   <ContentControl.Resources>
-    <Style x:Key="AppBarButtonStyle"
+    <Style x:Key="ToolBarAppBarButtonStyle"
            TargetType="AppBarButton">
       <Setter Property="LabelPosition"
               Value="Collapsed" />
+      <Setter Property="Height"
+              Value="48" />
       <Setter Property="Width"
               Value="Auto" />
       <Setter Property="MinWidth"
               Value="48" />
       <Setter Property="HorizontalAlignment"
               Value="Stretch" />
+      <Setter Property="VerticalAlignment"
+              Value="Stretch" />
+      <Setter Property="Background"
+              Value="{ThemeResource AppBarButtonRevealBackground}" />
+      <Setter Property="Foreground"
+              Value="{ThemeResource AppBarButtonForeground}" />
+      <Setter Property="BorderBrush"
+              Value="{ThemeResource AppBarButtonRevealBorderBrush}" />
+      <Setter Property="BorderThickness"
+              Value="{ThemeResource AppBarButtonRevealBorderThemeThickness}" />
+      <Setter Property="FontFamily"
+              Value="{ThemeResource ContentControlThemeFontFamily}" />
+      <Setter Property="FontWeight"
+              Value="Normal" />
+      <Setter Property="UseSystemFocusVisuals"
+              Value="True" />
+      <Setter Property="AllowFocusOnInteraction"
+              Value="False" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="AppBarButton">
+            <Grid x:Name="Root"
+                  MinWidth="{TemplateBinding MinWidth}"
+                  MaxWidth="{TemplateBinding MaxWidth}"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                  <VisualState x:Name="Normal" />
+
+                  <VisualState x:Name="PointerOver">
+                    <VisualState.Setters>
+                      <Setter Target="Root.(RevealBrush.State)"
+                              Value="PointerOver" />
+                      <Setter Target="Root.Background"
+                              Value="{ThemeResource AppBarButtonRevealBackgroundPointerOver}" />
+                      <Setter Target="Root.BorderBrush"
+                              Value="{ThemeResource AppBarButtonRevealBorderBrushPointerOver}" />
+                      <Setter Target="Content.Foreground"
+                              Value="{ThemeResource AppBarButtonForegroundPointerOver}" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Pressed">
+                    <VisualState.Setters>
+                      <Setter Target="Root.(RevealBrush.State)"
+                              Value="Pressed" />
+                      <Setter Target="Root.Background"
+                              Value="{ThemeResource AppBarButtonRevealBackgroundPressed}" />
+                      <Setter Target="Root.BorderBrush"
+                              Value="{ThemeResource AppBarButtonRevealBorderBrushPressed}" />
+                      <Setter Target="Content.Foreground"
+                              Value="{ThemeResource AppBarButtonForegroundPressed}" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Disabled">
+                    <VisualState.Setters>
+                      <Setter Target="Root.Background"
+                              Value="{ThemeResource AppBarButtonRevealBackgroundDisabled}" />
+                      <Setter Target="Root.BorderBrush"
+                              Value="{ThemeResource AppBarButtonRevealBorderBrushDisabled}" />
+                      <Setter Target="Content.Foreground"
+                              Value="{ThemeResource AppBarButtonForegroundDisabled}" />
+                    </VisualState.Setters>
+                  </VisualState>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+              <ContentPresenter x:Name="Content"
+                                Height="20"
+                                Content="{TemplateBinding Icon}"
+                                Foreground="{TemplateBinding Foreground}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
     </Style>
   </ContentControl.Resources>
 
-  <Grid Margin="0,8,0,0"
-        SizeChanged="Grid_SizeChanged">
+  <Grid Margin="0,8,0,0" SizeChanged="Grid_SizeChanged">
     <Grid.RowDefinitions>
       <RowDefinition />
       <RowDefinition Height="Auto" />
@@ -39,12 +117,13 @@
              MinHeight="96"
              x:FieldModifier="protected"
              AcceptsReturn="True"
-             TextWrapping="Wrap"
-             InputScope="Text"
+             InputScope="Chat"
              TextChanged="tbContent_TextChanged"
-             IsReadOnly="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}" />
+             IsReadOnly="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}"
+             TextWrapping="Wrap" />
     <Grid x:Name="gdEditBar"
-          HorizontalAlignment="Stretch"
+          XYFocusKeyboardNavigation="Enabled"
+          TabFocusNavigation="Once"
           Grid.Row="1">
       <Grid.ColumnDefinitions>
         <ColumnDefinition />
@@ -56,28 +135,28 @@
       <AppBarButton x:Name="abbBold"
                     Grid.Column="0"
                     x:Uid="Views/CommentDialog/AppBarButtonBold"
-                    Style="{StaticResource AppBarButtonStyle}"
+                    Style="{StaticResource ToolBarAppBarButtonStyle}"
                     Click="abb_Click"
                     Icon="Bold"
                     Tag="b" />
       <AppBarButton x:Name="abbItalic"
                     Grid.Column="1"
                     x:Uid="Views/CommentDialog/AppBarButtonItalic"
-                    Style="{StaticResource AppBarButtonStyle}"
+                    Style="{StaticResource ToolBarAppBarButtonStyle}"
                     Click="abb_Click"
                     Icon="Italic"
                     Tag="i" />
       <AppBarButton x:Name="abbUnderline"
                     Grid.Column="2"
                     x:Uid="Views/CommentDialog/AppBarButtonUnderline"
-                    Style="{StaticResource AppBarButtonStyle}"
+                    Style="{StaticResource ToolBarAppBarButtonStyle}"
                     Click="abb_Click"
                     Icon="Underline"
                     Tag="u" />
       <AppBarButton x:Name="abbStrike"
                     Grid.Column="3"
                     x:Uid="Views/CommentDialog/AppBarButtonStrike"
-                    Style="{StaticResource AppBarButtonStyle}"
+                    Style="{StaticResource ToolBarAppBarButtonStyle}"
                     Click="abb_Click"
                     Tag="s">
         <AppBarButton.Icon>
@@ -89,7 +168,7 @@
       <AppBarButton x:Name="abbLink"
                     Grid.Column="4"
                     x:Uid="Views/CommentDialog/AppBarButtonLink"
-                    Style="{StaticResource AppBarButtonStyle}"
+                    Style="{StaticResource ToolBarAppBarButtonStyle}"
                     Click="abb_Click"
                     Icon="Link"
                     Tag="url" />

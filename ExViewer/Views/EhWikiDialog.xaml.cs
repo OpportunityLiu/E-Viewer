@@ -181,7 +181,7 @@ namespace ExViewer.Views
                         && tag.IndexOfAny(invalidTagChar) < 0)
                     {
                         this.WikiTag = new Tag(Namespace.Misc, tag.Replace('_', ' '));
-                        Microsoft.Azure.Mobile.Analytics.Analytics.TrackEvent("Ehwiki navigated", new Dictionary<string, string> { ["Tag"] = this.WikiTag.ToString() });
+                        Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Ehwiki navigated", new Dictionary<string, string> { ["Tag"] = this.WikiTag.ToString() });
                         return;
                     }
                 }
@@ -205,7 +205,7 @@ namespace ExViewer.Views
 
         private void MyContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            Microsoft.Azure.Mobile.Analytics.Analytics.TrackEvent("Ehwiki opened", new Dictionary<string, string> { ["Tag"] = this.WikiTag.ToString() });
+            Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Ehwiki opened", new Dictionary<string, string> { ["Tag"] = this.WikiTag.ToString() });
         }
     }
 }

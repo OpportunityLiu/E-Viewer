@@ -165,7 +165,7 @@
               Value="NoWrap" />
     </Style>
   </Page.Resources>
-  <RelativePanel>
+  <RelativePanel Background="{ThemeResource SystemControlAltHighAcrylicWindowBrush}">
     <Image x:Name="imgConnect"
            RelativePanel.AlignBottomWithPanel="True"
            RelativePanel.AlignLeftWithPanel="True"
@@ -251,8 +251,10 @@
                      Style="{StaticResource GalleryTitleTextBlockStyle}"
                      Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}">
                         <ToolTipService.ToolTip>
+                          <ToolTip IsEnabled="{x:Bind tb_Title.IsTextTrimmed, Mode=OneWay}">
                             <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                        TextWrapping="WrapWholeWords" />
+                          </ToolTip>
                         </ToolTipService.ToolTip>
                     </TextBlock>
           <TextBlock x:Name="tb_si"

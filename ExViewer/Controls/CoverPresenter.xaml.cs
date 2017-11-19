@@ -41,30 +41,28 @@ namespace ExViewer.Controls
 
         private void UserControl_Loading(FrameworkElement sender, object args)
         {
-            PowerManager_BatteryStatusChanged(null, null);
-            PowerManager.BatteryStatusChanged += this.PowerManager_BatteryStatusChanged;
+            PowerManager_EnergySaverStatusChanged(null, null);
+            PowerManager.EnergySaverStatusChanged += this.PowerManager_EnergySaverStatusChanged;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            PowerManager.BatteryStatusChanged -= this.PowerManager_BatteryStatusChanged;
+            PowerManager.EnergySaverStatusChanged -= this.PowerManager_EnergySaverStatusChanged;
         }
 
-        private void PowerManager_BatteryStatusChanged(object sender, object e)
+        private async void PowerManager_EnergySaverStatusChanged(object sender, object e)
         {
-            DispatcherHelper.BeginInvokeOnUIThread(() =>
+            await DispatcherHelper.YieldIdle();
+            if (PowerManager.EnergySaverStatus != EnergySaverStatus.On)
             {
-                if (PowerManager.EnergySaverStatus != EnergySaverStatus.On)
-                {
-                    FindName(nameof(this.BackgroundImage));
-                    this.BackgroundImage.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    if (this.BackgroundImage != null)
-                        this.BackgroundImage.Visibility = Visibility.Collapsed;
-                }
-            });
+                FindName(nameof(this.BackgroundImage));
+                this.BackgroundImage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                if (this.BackgroundImage != null)
+                    this.BackgroundImage.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

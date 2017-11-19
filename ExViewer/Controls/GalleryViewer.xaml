@@ -32,6 +32,102 @@
       <Setter Property="RelativePanel.AlignRightWithPanel"
               Value="True" />
     </Style>
+    <Style x:Key="CompactRatingStyle"
+           TargetType="RatingControl">
+      <Setter Property="Height"
+              Value="24" />
+      <Setter Property="Padding"
+              Value="0" />
+      <Setter Property="IsTabStop"
+              Value="False" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="RatingControl">
+            <Grid x:Name="LayoutRoot">
+
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                  <VisualState x:Name="Disabled">
+                    <VisualState.Setters>
+                      <Setter Target="ForegroundContentPresenter.Foreground"
+                              Value="{ThemeResource RatingControlDisabledSelectedForeground}" />
+                    </VisualState.Setters>
+                  </VisualState>
+                  <VisualState x:Name="Placeholder">
+                    <VisualState.Setters>
+                      <Setter Target="ForegroundContentPresenter.Foreground"
+                              Value="{ThemeResource RatingControlPlaceholderForeground}" />
+                    </VisualState.Setters>
+                  </VisualState>
+                  <VisualState x:Name="PointerOverPlaceholder">
+                    <VisualState.Setters>
+                      <Setter Target="ForegroundContentPresenter.Foreground"
+                              Value="{ThemeResource RatingControlPointerOverPlaceholderForeground}" />
+                    </VisualState.Setters>
+                  </VisualState>
+                  <VisualState x:Name="PointerOverUnselected">
+                    <VisualState.Setters>
+                      <Setter Target="ForegroundContentPresenter.Foreground"
+                              Value="{ThemeResource RatingControlPointerOverUnselectedForeground}" />
+                    </VisualState.Setters>
+                  </VisualState>
+                  <VisualState x:Name="Set">
+                    <VisualState.Setters>
+                      <Setter Target="ForegroundContentPresenter.Foreground"
+                              Value="{ThemeResource RatingControlSelectedForeground}" />
+                    </VisualState.Setters>
+                  </VisualState>
+                  <VisualState x:Name="PointerOverSet">
+                    <VisualState.Setters>
+                      <Setter Target="ForegroundContentPresenter.Foreground"
+                              Value="{ThemeResource RatingControlSelectedForeground}" />
+                    </VisualState.Setters>
+                  </VisualState>
+                </VisualStateGroup>
+
+              </VisualStateManager.VisualStateGroups>
+
+              <StackPanel Orientation="Horizontal"
+                          Grid.Row="0"
+                          Margin="-20,-20,-20,-20">
+                <StackPanel x:Name="RatingBackgroundStackPanel"
+                            Orientation="Horizontal"
+                            Background="Transparent"
+                            Margin="20,20,0,20" />
+                <TextBlock x:Name="Caption"
+                           Height="32"
+                           Margin="4,9,20,0"
+                           TextLineBounds="TrimToBaseline"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           AutomationProperties.AccessibilityView="Raw"
+                           AutomationProperties.Name="RatingCaption"
+                           IsHitTestVisible="False"
+                           Text="{TemplateBinding Caption}" />
+                <!-- 4 = 8 item spacing +4 of magic redline spacing -8 to compensate for scale of the last RatingItem -->
+                <!-- NB: The redlines say 8px, but it's really 12 px because:
+                                Designer note: The value between the last glyph and first text character is 12px.
+                                (There's 4px of whitespace accounted for in the text area in the redline) -->
+                <!-- TODO MSFT: 9925444 Fix vertical alignment in all text scenarios -->
+              </StackPanel>
+
+              <ContentPresenter x:Name="ForegroundContentPresenter"
+                                IsHitTestVisible="False"
+                                Grid.Row="0">
+                <!-- Margin is on the StackPanel because ContentPresenter clips differently such that moving the reverse margin up won't work -->
+                <StackPanel Orientation="Horizontal"
+                            Margin="-40,-40,-40,-40">
+                  <StackPanel x:Name="RatingForegroundStackPanel"
+                              Orientation="Horizontal"
+                              IsHitTestVisible="False"
+                              Margin="40,40,40,40" />
+                </StackPanel>
+              </ContentPresenter>
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
   </UserControl.Resources>
   <Grid Background="{x:Bind Background, Mode=OneWay}"
         BorderBrush="{x:Bind BorderBrush, Mode=OneWay}"
@@ -44,8 +140,7 @@
       <ColumnDefinition Width="2*" />
     </Grid.ColumnDefinitions>
     <local:CoverPresenter x:Name="Cover"
-                          Source="{x:Bind Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}"
-                          Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}" />
+                          Source="{x:Bind Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}" />
     <local:FavoriteCategoryPresenter x:Name="fcpFavorite"
                                      Margin="-2"
                                      HorizontalAlignment="Right"
@@ -67,7 +162,8 @@
                  TextTrimming="CharacterEllipsis"
                  Margin="0,0,0,8">
                 <ToolTipService.ToolTip>
-                    <ToolTip x:Name="TitleToolTop">
+                    <ToolTip x:Name="TitleToolTop"
+                             IsEnabled="{x:Bind TitleTextBlock.IsTextTrimmed, Mode=OneWay}">
                         <TextBlock Text="{x:Bind Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
                                    TextWrapping="WrapWholeWords" />
                     </ToolTip>
@@ -80,13 +176,12 @@
                  RelativePanel.Above="Rating"
                  Text="{x:Bind Gallery.Language, Mode=OneWay, Converter={StaticResource StringConverter}}"
                  Style="{StaticResource DetailTextBlockStyle}" />
-      <TextBlock x:Name="Rating"
-                 Padding="0,2.5"
-                 RelativePanel.AlignBottomWithPanel="True"
-                 Text="{x:Bind Gallery.Rating, Mode=OneWay, Converter={StaticResource RateStringConverter}}"
-                 Style="{StaticResource DetailTextBlockStyle}"
-                 TextTrimming="None"
-                 FontFamily="Segoe MDL2 Assets" />
+      <RatingControl x:Name="Rating"
+                     Style="{StaticResource CompactRatingStyle}"
+                     IsReadOnly="True"
+                     RelativePanel.AlignBottomWithPanel="True"
+                     PlaceholderValue="{x:Bind Gallery.Rating.AverageScore, Mode=OneWay}"
+                     Margin="0,-4,0,0" />
       <TextBlock x:Name="tbCount"
                  RelativePanel.AlignVerticalCenterWith="CategoryTag"
                  RelativePanel.RightOf="CategoryTag"

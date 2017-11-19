@@ -164,7 +164,7 @@ namespace ExViewer.Views
                     if (ApplicationView.TryEnterFullScreenMode())
                     {
                         ApplicationView.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
-                        Microsoft.Azure.Mobile.Analytics.Analytics.TrackEvent("Full screen entered");
+                        Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Full screen entered");
                     }
                 }
                 else
@@ -230,11 +230,13 @@ namespace ExViewer.Views
             private static void Frame_Navigated(object sender, NavigationEventArgs e)
             {
                 CurrentPageName = Frame.Content.GetType().ToString();
-                Microsoft.Azure.Mobile.Analytics.Analytics.TrackEvent("Navigated", new Dictionary<string, string> { ["Type"] = e.SourcePageType.ToString() });
+                Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Navigated", new Dictionary<string, string> { ["Type"] = e.SourcePageType.ToString() });
             }
 
             public static void SendToast(Exception ex, Type source)
             {
+                if (ex == null)
+                    throw new ArgumentNullException(nameof(ex));
                 var sourceString = source?.ToString() ?? "null";
 #if DEBUG
                 Debug.WriteLine(ex, "Exception");
@@ -249,6 +251,8 @@ namespace ExViewer.Views
             {
                 if (!Available)
                     return;
+                if (content == null)
+                    throw new ArgumentNullException(nameof(content));
                 DispatcherHelper.BeginInvokeOnUIThread(() =>
                 {
                     if (source != null && source != root.fm_inner.Content?.GetType())
@@ -293,15 +297,12 @@ namespace ExViewer.Views
             {
                 return Run(async token =>
                 {
-                    var result = await new LogOnDialog().ShowAsync();
-                    var succeed = !Client.Current.NeedLogOn;
-                    JYAnalytics.TrackEvent("LogOnRequested", $"Result: {(succeed ? "Succeed" : "Failed")}");
-                    Microsoft.Azure.Mobile.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (succeed ? "Succeed" : "Failed") });
-                    UpdateUserInfo(result == ContentDialogResult.Primary);
+                    var succeed = await new LogOnDialog().ShowAsync() == ContentDialogResult.Primary && !Client.Current.NeedLogOn;
+                    JYAnalytics.TrackEvent("LogOnRequested", $"Result: {(!succeed ? "Succeed" : "Failed")}");
+                    Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (succeed ? "Succeed" : "Failed") });
+                    UpdateUserInfo(succeed);
                     if (succeed)
-                    {
                         Settings.SettingCollection.Current.Apply();
-                    }
                     return succeed;
                 });
             }
@@ -430,10 +431,14 @@ namespace ExViewer.Views
                 root.FindName(nameof(root.rp_Disable));
                 root.sv_root.IsEnabled = false;
                 root.rp_Disable.Visibility = Visibility.Visible;
-                var indeterminate = !progress.HasValue || double.IsNaN(progress.Value);
-                root.pb_Disable.IsIndeterminate = indeterminate;
-                if (!indeterminate)
-                    root.pb_Disable.Value = progress.Value;
+                var indeterminate = !progress.HasValue;
+                var keep = double.IsNaN(progress.GetValueOrDefault());
+                if (!keep)
+                {
+                    root.pb_Disable.IsIndeterminate = indeterminate;
+                    if (!indeterminate)
+                        root.pb_Disable.Value = progress.Value;
+                }
 
                 HideDisablePanel.Stop();
                 ShowDisablePanel.Begin();

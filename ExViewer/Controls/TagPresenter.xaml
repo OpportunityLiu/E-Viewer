@@ -13,6 +13,7 @@
     <MenuFlyout x:Name="mfoTag"
                 Placement="Bottom">
       <MenuFlyoutItem x:Name="mfiContent"
+                      Icon="Tag"
                       Text="{x:Bind SelectedTag.Content.Content, Mode=OneWay}"
                       ToolTipService.ToolTip="{x:Bind SelectedTag.Content.Content, Mode=OneWay}"
                       Click="mfiContent_Click" />
@@ -20,22 +21,33 @@
       <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteUpMenuFlyoutItem"
                       x:Name="mfiUp"
                       Click="mfiUp_Click"
-                      Text="Vote up" />
+                      Text="Vote up">
+        <MenuFlyoutItem.Icon>
+          <FontIcon Glyph="&#xE70E;" />
+        </MenuFlyoutItem.Icon>
+      </MenuFlyoutItem>
       <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteDownMenuFlyoutItem"
                       x:Name="mfiDown"
                       Click="mfiDown_Click"
-                      Text="Vote down" />
+                      Text="Vote down">
+        <MenuFlyoutItem.Icon>
+          <FontIcon Glyph="&#xE70D;" />
+        </MenuFlyoutItem.Icon>
+      </MenuFlyoutItem>
       <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagWithdrawVoteMenuFlyoutItem"
                       x:Name="mfiWithdraw"
+                      Icon="Undo"
                       Click="mfiWithdraw_Click"
                       Text="Withdraw vote" />
       <MenuFlyoutSeparator />
       <MenuFlyoutItem x:Name="mfiTagDefination"
                       x:Uid="Controls/TagPresenter/GoToDefinitionMenuFlyoutItem"
+                      Icon="Library"
                       Click="mfiTagDefination_Click"
                       Text="Go to EHWiki for definition" />
       <MenuFlyoutItem x:Name="mfiTagSearch"
                       x:Uid="Controls/TagPresenter/SearchTagMenuFlyoutItem"
+                      Icon="Find"
                       Click="mfiTagSearch_Click"
                       Text="Show galleries with this tag" />
     </MenuFlyout>
@@ -59,6 +71,44 @@
                  FontWeight="{x:Bind State, Mode=OneWay, Converter={StaticResource TagStateToFontWeightConverter}}"
                  Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource TagStateToBrushConverter}}" />
     </DataTemplate>
+    <Style x:Key="TagGridViewItemStyle"
+           TargetType="GridViewItem">
+      <Setter Property="MinHeight"
+              Value="0" />
+      <Setter Property="MinWidth"
+              Value="0" />
+    </Style>
+    <Style x:Key="TagGroupGridViewStyle"
+           TargetType="GridView">
+      <Setter Property="ItemContainerStyle"
+              Value="{StaticResource TagGridViewItemStyle}" />
+      <Setter Property="ItemsPanel">
+        <Setter.Value>
+          <ItemsPanelTemplate>
+            <tk:WrapPanel />
+          </ItemsPanelTemplate>
+        </Setter.Value>
+      </Setter>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="GridView">
+            <ItemsPresenter Padding="{TemplateBinding Padding}"
+                            Footer="{TemplateBinding Footer}"
+                            FooterTemplate="{TemplateBinding FooterTemplate}"
+                            FooterTransitions="{TemplateBinding FooterTransitions}"
+                            Header="{TemplateBinding Header}"
+                            HeaderTemplate="{TemplateBinding HeaderTemplate}"
+                            HeaderTransitions="{TemplateBinding HeaderTransitions}" />
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Setter Property="IsItemClickEnabled"
+              Value="True" />
+      <Setter Property="Padding"
+              Value="0,0,0,4" />
+      <Setter Property="SelectionMode"
+              Value="None" />
+    </Style>
     <DataTemplate x:Key="TagGroupTemplate"
                   x:DataType="tagging:NamespaceTagCollection">
       <Grid>
@@ -73,39 +123,13 @@
                    HorizontalAlignment="Right"
                    Text="{x:Bind Namespace, Converter={StaticResource NamespaceToFriendlyStringConverter}}" />
         <GridView Grid.Column="2"
-                  Padding="0,0,0,4"
-                  IsItemClickEnabled="True"
+                  Style="{StaticResource TagGroupGridViewStyle}"
                   ItemClick="gvTagGroup_ItemClick"
                   ItemsSource="{x:Bind}"
-                  ItemTemplate="{StaticResource TagTemplate}"
-                  SelectionMode="None">
-          <GridView.ItemContainerStyle>
-            <Style TargetType="GridViewItem">
-              <Setter Property="MinHeight"
-                      Value="0" />
-              <Setter Property="MinWidth"
-                      Value="0" />
-            </Style>
-          </GridView.ItemContainerStyle>
-          <GridView.ItemsPanel>
-            <ItemsPanelTemplate>
-              <tk:WrapPanel />
-            </ItemsPanelTemplate>
-          </GridView.ItemsPanel>
+                  ItemTemplate="{StaticResource TagTemplate}">
           <GridView.ItemContainerTransitions>
             <TransitionCollection />
           </GridView.ItemContainerTransitions>
-          <GridView.Template>
-            <ControlTemplate TargetType="GridView">
-              <ItemsPresenter Padding="{TemplateBinding Padding}"
-                              Footer="{TemplateBinding Footer}"
-                              FooterTemplate="{TemplateBinding FooterTemplate}"
-                              FooterTransitions="{TemplateBinding FooterTransitions}"
-                              Header="{TemplateBinding Header}"
-                              HeaderTemplate="{TemplateBinding HeaderTemplate}"
-                              HeaderTransitions="{TemplateBinding HeaderTransitions}" />
-            </ControlTemplate>
-          </GridView.Template>
         </GridView>
       </Grid>
     </DataTemplate>

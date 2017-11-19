@@ -255,43 +255,44 @@ namespace ExClient.Galleries
                 {
                     var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
                     var folder = ImageFolder ?? await GetImageFolderAsync();
+                    this.Progress = 0;
+
+                    var loadImgInfo = this.loadImageUriAndHash();
+                    token.Register(loadImgInfo.Cancel);
+                    await loadImgInfo;
+                    token.ThrowIfCancellationRequested();
+
                     using (var db = new GalleryDb())
                     {
-                        this.Progress = 0;
-                        var loadImgInfo = this.loadImageUriAndHash();
-                        IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> loadImg = null;
-                        token.Register(() =>
-                        {
-                            loadImgInfo.Cancel();
-                            loadImg?.Cancel();
-                        });
-                        await loadImgInfo;
                         var imageModel = db.ImageSet.SingleOrDefault(ImageModel.PKEquals(this.imageHash));
-                        if (!reload && imageModel != null && (imageModel.OriginalLoaded || imageModel.OriginalLoaded == loadFull))
+                        while (!reload && imageModel != null && (imageModel.OriginalLoaded || imageModel.OriginalLoaded == loadFull))
                         {
+                            // Try load local file
                             var file = await folder.TryGetFileAsync(imageModel.FileName);
-                            if (file != null)
+                            if (file == null)
                             {
-                                this.ImageFile = file;
+                                // Failed
+                                break;
                             }
+                            this.ImageFile = file;
+                            this.OriginalLoaded = imageModel.OriginalLoaded;
+
                             var giModel = db.GalleryImageSet
                                 .SingleOrDefault(model => model.GalleryId == this.Owner.ID && model.PageId == this.PageID);
                             if (giModel == null)
-                            {
                                 db.GalleryImageSet.Add(new GalleryImageModel().Update(this));
-                            }
                             else
-                            {
                                 giModel.Update(this);
-                            }
                             db.SaveChanges();
                             this.Progress = 100;
                             this.State = ImageLoadingState.Loaded;
                             return;
                         }
+                        token.ThrowIfCancellationRequested();
                         if (this.imageUri.LocalPath.EndsWith("/509.gif"))
                             throw new InvalidOperationException(LocalizedStrings.Resources.ExceedLimits);
-                        Uri imgUri = null;
+
+                        var imgUri = default(Uri);
                         if (loadFull)
                         {
                             imgUri = this.originalImageUri ?? this.imageUri;
@@ -303,20 +304,35 @@ namespace ExClient.Galleries
                             this.OriginalLoaded = (this.originalImageUri == null);
                         }
                         this.State = ImageLoadingState.Loading;
-                        token.ThrowIfCancellationRequested();
-                        loadImg = Client.Current.HttpClient.GetAsync(imgUri);
-                        loadImg.Progress = loadImgProgress;
+
+                        var loadImg = Client.Current.HttpClient.GetAsync(imgUri);
+                        loadImg.Progress = (httpAsyncInfo, httpProgress) =>
+                        {
+                            if (token.IsCancellationRequested)
+                            {
+                                httpAsyncInfo.Cancel();
+                                return;
+                            }
+                            if (httpProgress.TotalBytesToReceive == null || httpProgress.TotalBytesToReceive == 0)
+                                this.Progress = 0;
+                            else
+                            {
+                                var pro = (int)(httpProgress.BytesReceived * 100 / ((ulong)httpProgress.TotalBytesToReceive));
+                                this.Progress = pro;
+                            }
+                        };
                         var imageLoadResponse = await loadImg;
+                        token.ThrowIfCancellationRequested();
+
                         if (imageLoadResponse.Content.Headers.ContentType.MediaType == "text/html")
                         {
                             var error = HtmlUtilities.ConvertToText(imageLoadResponse.Content.ToString());
                             if (error.StartsWith("You have exceeded your image viewing limits."))
-                            {
                                 throw new InvalidOperationException(LocalizedStrings.Resources.ExceedLimits);
-                            }
-                            throw new InvalidOperationException(error);
+                            else
+                                throw new InvalidOperationException(error);
                         }
-                        token.ThrowIfCancellationRequested();
+
                         await this.deleteImageFileAsync();
                         var buffer = await imageLoadResponse.Content.ReadAsBufferAsync();
                         var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
@@ -324,7 +340,6 @@ namespace ExClient.Galleries
                         var myModel = db.GalleryImageSet
                             .Include(model => model.Image)
                             .SingleOrDefault(model => model.GalleryId == this.Owner.ID && model.PageId == this.PageID);
-                        imageModel?.Update(this);
                         if (myModel == null)
                         {
                             if (imageModel == null)
@@ -351,17 +366,6 @@ namespace ExClient.Galleries
                         throw;
                 }
             });
-        }
-
-        private void loadImgProgress(IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> asyncInfo, HttpProgress progress)
-        {
-            if (progress.TotalBytesToReceive == null || progress.TotalBytesToReceive == 0)
-                this.Progress = 0;
-            else
-            {
-                var pro = (int)(progress.BytesReceived * 100 / ((ulong)progress.TotalBytesToReceive));
-                this.Progress = pro;
-            }
         }
 
         private async Task deleteImageFileAsync()

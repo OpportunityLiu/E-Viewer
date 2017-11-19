@@ -4,9 +4,10 @@
              xmlns:local="using:ExViewer.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
              xmlns:con="using:Opportunity.Converters"
+             xmlns:tcon="using:Opportunity.Converters.Typed"
              xmlns:commenting="using:ExClient.Galleries.Commenting"
+             mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="600"
              HorizontalContentAlignment="Stretch"
@@ -16,7 +17,66 @@
              IsTabStop="True"
              FocusEngaged="UserControl_FocusEngaged">
   <UserControl.Resources>
-    <ResourceDictionary Source="CommentViewerResourceDictionary.xaml" />
+    <Style x:Key="HeaderRectangleStyle"
+           TargetType="Rectangle">
+      <Setter Property="Fill"
+              Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+      <Setter Property="StrokeThickness"
+              Value="0" />
+    </Style>
+    <Style x:Key="CommentHeaderTextBlockStyle"
+           TargetType="TextBlock">
+      <Setter Property="FontSize"
+              Value="14" />
+      <Setter Property="FontWeight"
+              Value="Medium" />
+      <Setter Property="Margin"
+              Value="8,0" />
+    </Style>
+    <con:ChainConverter x:Key="ConUp">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>VotedDown</commenting:CommentStatus>
+        <commenting:CommentStatus>Votable</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ConWithdraw">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>VotedUp</commenting:CommentStatus>
+        <commenting:CommentStatus>VotedDown</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ConDown">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>VotedUp</commenting:CommentStatus>
+        <commenting:CommentStatus>Votable</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ConEdit">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>Editable</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ConReply">
+      <tcon:EnumToBooleanConverter>
+        <commenting:CommentStatus>Editable</commenting:CommentStatus>
+      </tcon:EnumToBooleanConverter>
+      <con:ConverterReference Converter="{StaticResource FalseToVisibleConverter}" />
+    </con:ChainConverter>
+    <con:ChainConverter x:Key="ContentOpacity">
+      <con:ConverterReference Converter="{StaticResource NullToTrueConverter}" />
+      <tcon:BooleanToObjectConverter>
+        <tcon:BooleanToObjectConverter.ValueForTrue>
+          <x:Double>1</x:Double>
+        </tcon:BooleanToObjectConverter.ValueForTrue>
+        <tcon:BooleanToObjectConverter.ValueForFalse>
+          <x:Double>0.6</x:Double>
+        </tcon:BooleanToObjectConverter.ValueForFalse>
+      </tcon:BooleanToObjectConverter>
+    </con:ChainConverter>
   </UserControl.Resources>
   <RelativePanel x:Name="LayoutRoot"
                  Background="{x:Bind Background, Mode=OneWay}"
@@ -120,7 +180,7 @@
                Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}, FallbackValue=Collapsed}" />
     <Button x:Name="Actions"
             x:Uid="Controls/CommentViewer/ActionsButton"
-            Style="{StaticResource EllipsisButton}"
+            Style="{StaticResource EllipsisButtonRevealStyle}"
             RelativePanel.AlignTopWith="Author"
             RelativePanel.AlignBottomWith="Header"
             RelativePanel.AlignRightWithPanel="True"
@@ -134,25 +194,30 @@
                     Placement="Bottom">
           <MenuFlyoutItem x:Name="VoteUp"
                           x:Uid="Controls/CommentViewer/VoteUpMenuFlyoutItem"
+                          Icon="Like"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConUp}}"
                           Click="VoteUp_Click"
                           Text="Vote up" />
           <MenuFlyoutItem x:Name="WithdrawVote"
+                          Icon="Undo"
                           x:Uid="Controls/CommentViewer/WithdrawVoteMenuFlyoutItem"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConWithdraw}}"
                           Click="WithdrawVote_Click"
                           Text="Withdraw vote" />
           <MenuFlyoutItem x:Name="VoteDown"
                           x:Uid="Controls/CommentViewer/VoteDownMenuFlyoutItem"
+                          Icon="Dislike"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConDown}}"
                           Click="VoteDown_Click"
                           Text="Vote down" />
           <MenuFlyoutItem x:Name="Edit"
+                          Icon="Edit"
                           x:Uid="Controls/CommentViewer/EditMenuFlyoutItem"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConEdit}}"
                           Text="Edit"
                           Click="Edit_Click" />
           <MenuFlyoutItem x:Name="Reply"
+                          Icon="LeaveChat"
                           x:Uid="Controls/CommentViewer/ReplyMenuFlyoutItem"
                           Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConReply}}"
                           Text="Reply"
@@ -162,7 +227,11 @@
                           x:Uid="Controls/CommentViewer/TranslateMenuFlyoutItem"
                           Text="Translate to English"
                           IsEnabled="{x:Bind TranslatedContent, Mode=OneWay, Converter={StaticResource NullToTrueConverter}}"
-                          Click="Translate_Click" />
+                          Click="Translate_Click">
+            <MenuFlyoutItem.Icon>
+              <FontIcon Glyph="&#xE8C1;" />
+            </MenuFlyoutItem.Icon>
+          </MenuFlyoutItem>
         </MenuFlyout>
       </Button.Flyout>
     </Button>
