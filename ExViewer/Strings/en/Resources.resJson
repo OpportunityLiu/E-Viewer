@@ -207,6 +207,7 @@
       "PivotHeaderNumberFormatString": "[{0}]",
       "PivotHeaderTorrentsTextBlock/Text": "Torrents",
       "SaveAppBarButton/Label": "Save this gallery",
+      "SearchUploaderAppBarButton/Label": "Search all galleries of the uploader",
       "ShareAppBarButton/Label": "Share",
       "TorrentDownloadButton/ToolTipService/ToolTip": "Download",
       "TorrentDownloaded": "Download finished, torrent file saved to {0}",

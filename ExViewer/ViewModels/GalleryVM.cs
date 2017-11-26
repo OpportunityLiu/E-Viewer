@@ -237,6 +237,12 @@ namespace ExViewer.ViewModels
                 }
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null);
+            this.SearchUploader = new Command(() =>
+            {
+                var search = Client.Current.Search(this.gallery.Uploader, null, SettingCollection.Current.DefaultSearchCategory);
+                var vm = SearchVM.GetVM(search);
+                RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+            }, () => this.gallery != null);
             this.SearchImage = new Command<SHA1Value>(sha =>
             {
                 var search = Client.Current.Search("", Category.All, Enumerable.Repeat(sha, 1), this.gallery.GetDisplayTitle());
@@ -289,6 +295,8 @@ namespace ExViewer.ViewModels
         public Command<GalleryImage> ReloadImage { get; }
 
         public Command<SHA1Value> SearchImage { get; }
+
+        public Command SearchUploader { get; }
 
         private Gallery gallery;
 

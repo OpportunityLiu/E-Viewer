@@ -3,11 +3,34 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Web.Http;
+using System;
 
 namespace ExClient
 {
     public partial class Client
     {
+        public AdvancedSearchResult Search(string uploader, string keyword, Category category, AdvancedSearchOptions advancedSearch)
+        {
+            if (string.IsNullOrWhiteSpace(uploader))
+                throw new ArgumentNullException(nameof(uploader));
+            uploader = uploader.Trim();
+            if (uploader.IndexOf(' ') >= 0)
+                keyword = $"uploader:\"{uploader}\" " + keyword;
+            else
+                keyword = $"uploader:{uploader} " + keyword;
+            return Search(keyword, category, advancedSearch);
+        }
+
+        public AdvancedSearchResult Search(string uploader, string keyword, Category category)
+        {
+            return Search(uploader, keyword, category, default(AdvancedSearchOptions));
+        }
+
+        public AdvancedSearchResult Search(string uploader, string keyword)
+        {
+            return Search(uploader, keyword, default(Category));
+        }
+
         public AdvancedSearchResult Search(string keyword, Category category, AdvancedSearchOptions advancedSearch)
         {
             return AdvancedSearchResult.Search(keyword, category, advancedSearch);
