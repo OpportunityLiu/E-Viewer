@@ -181,7 +181,7 @@
     <Compile Include="Launch\FavoritesSearchHandler.cs" />
     <Compile Include="Launch\GalleryHandler.cs" />
     <Compile Include="Launch\GalleryImageHandler.cs" />
-    <Compile Include="Launch\GalleryTorrentHandler.cs" />
+    <Compile Include="Launch\GalleryPopupHandler.cs" />
     <Compile Include="Launch\LaunchResult.cs" />
     <Compile Include="Launch\SearchCategoryHandler.cs" />
     <Compile Include="Launch\SearchHandler.cs" />

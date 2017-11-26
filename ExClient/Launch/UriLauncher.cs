@@ -13,7 +13,7 @@ namespace ExClient.Launch
             new SearchCategoryHandler(),
             new SearchUploaderAndTagHandler(),
             new GalleryHandler(),
-            new GalleryTorrentHandler(),
+            new GalleryPopupHandler(),
             new GalleryImageHandler(),
             new FavoritesSearchHandler()
         };
