@@ -34,8 +34,7 @@ namespace ExClient.Launch
             case "tag":
                 return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search(category, advanced)));
             case "uploader":
-                var uploader = v.IndexOf(' ') >= 0 ? $"uploader:\"{v}\"" : $"uploader:{v}";
-                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(uploader, category, advanced)));
+                return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(v, null, category, advanced)));
             }
             return AsyncWrapper.CreateError<LaunchResult>(new NotSupportedException("Unsupported uri."));
         }

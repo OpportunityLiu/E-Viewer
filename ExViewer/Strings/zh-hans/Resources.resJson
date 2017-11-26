@@ -207,6 +207,7 @@
       "PivotHeaderNumberFormatString": "[{0}]",
       "PivotHeaderTorrentsTextBlock/Text": "种子",
       "SaveAppBarButton/Label": "保存此画廊",
+      "SearchUploaderAppBarButton/Label": "搜索该上传者的所有画廊",
       "ShareAppBarButton/Label": "共享",
       "TorrentDownloadButton/ToolTipService/ToolTip": "下载",
       "TorrentDownloaded": "种子下载完成，已保存至 {0}",

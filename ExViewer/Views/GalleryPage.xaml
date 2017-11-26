@@ -572,16 +572,15 @@
                       Command="{x:Bind VM.AddComment, Mode=OneWay}" />
       </CommandBar.PrimaryCommands>
       <CommandBar.SecondaryCommands>
-        <AppBarButton x:Name="abb_share"
-                      x:Uid="Views/GalleryPage/ShareAppBarButton"
+        <AppBarButton x:Uid="Views/GalleryPage/ShareAppBarButton"
                       Command="{x:Bind VM.Share, Mode=OneWay}"
-                      Label="Share">
-          <AppBarButton.Icon>
-            <FontIcon Glyph="&#xE72D;" />
-          </AppBarButton.Icon>
-        </AppBarButton>
-        <AppBarButton x:Name="abb_save"
-                      x:Uid="Views/GalleryPage/SaveAppBarButton"
+                      Icon="Share"
+                      Label="Share" />
+        <AppBarButton x:Uid="Views/GalleryPage/SearchUploaderAppBarButton"
+                      Command="{x:Bind VM.SearchUploader, Mode=OneWay}"
+                      Icon="ContactInfo"
+                      Label="Search uploader" />
+        <AppBarButton x:Uid="Views/GalleryPage/SaveAppBarButton"
                       Command="{x:Bind VM.Save, Mode=OneWay}"
                       Icon="Download"
                       Label="Save this gallery" />
