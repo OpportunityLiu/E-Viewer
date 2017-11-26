@@ -162,7 +162,6 @@ namespace ExClient.Galleries
             this.ID = id;
             this.Token = token;
             this.Rating = new RatingStatus(this);
-            this.Comments = new CommentCollection(this);
             this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{ID.ToString()}/{Token.ToTokenString()}/");
         }
 
@@ -365,6 +364,9 @@ namespace ExClient.Galleries
             private set => Set(ref this.revisions, value);
         }
 
+
+        private CommentCollection comments;
+        public CommentCollection Comments => LazyInitializer.EnsureInitialized(ref this.comments, () => new CommentCollection(this));
         #endregion
 
         private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
@@ -456,8 +458,6 @@ namespace ExClient.Galleries
             return TorrentInfo.LoadTorrentsAsync(this);
         }
 
-        public CommentCollection Comments { get; }
-
         public IAsyncOperation<string> FetchFavoriteNoteAsync()
         {
             return Run(async token =>
@@ -529,5 +529,7 @@ namespace ExClient.Galleries
                 this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
             }).AsAsyncAction();
         }
+
+        public IAsyncOperation<Renaming.RenameInfo> FetchRenameInfoAsync() => Renaming.RenameInfo.FetchAsync(this.ToGalleryInfo());
     }
 }

@@ -3,7 +3,10 @@
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:c="using:Opportunity.Converters"
                         xmlns:t="using:Opportunity.Converters.Typed"
+                        xmlns:com="using:Opportunity.Converters.Command"
                         xmlns:local="using:ExViewer.Views">
+  <com:DelayConverter x:Name="DelayConverter" />
+  
   <t:SoftwareBitmapToImageSourceConverter x:Key="SoftwareBitmapToImageSourceConverter" />
   <t:ThicknessConverter x:Key="ThicknessConverter" />
   <t:IRandomAccessStreamReferenceToBitmapImageConverter x:Key="FileConverter" />
