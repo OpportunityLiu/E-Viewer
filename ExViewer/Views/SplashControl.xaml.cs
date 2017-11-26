@@ -202,7 +202,6 @@ namespace ExViewer.Views
 
         private async void afterActions()
         {
-            await ExClient.Galleries.Renaming.RenameInfo.FetchAsync(new ExClient.Api.GalleryInfo(460926, 0x5f0bac9518));
             try
             {
                 var ver = await VersionChecker.CheckAsync();
