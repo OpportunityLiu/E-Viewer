@@ -62,9 +62,6 @@ namespace ExViewer
                         }
                         switch (g.Status)
                         {
-                        case GalleryLaunchStatus.Default:
-                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
-                            break;
                         case GalleryLaunchStatus.Image:
                             RootControl.RootController.Frame.Navigate(typeof(ImagePage), g.GalleryInfo.ID);
                             await Task.Delay(500);
@@ -72,6 +69,9 @@ namespace ExViewer
                             break;
                         case GalleryLaunchStatus.Torrent:
                             (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
+                            break;
+                        default:
+                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
                             break;
                         }
                         return;

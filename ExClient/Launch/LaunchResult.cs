@@ -11,7 +11,12 @@ namespace ExClient.Launch
     {
         Default,
         Image,
-        Torrent
+        Torrent,
+        Archive,
+        Rename,
+        Expunge,
+        Favorite,
+        Stats
     }
 
     public sealed class GalleryLaunchResult : LaunchResult

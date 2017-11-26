@@ -78,19 +78,52 @@ namespace ExClient.Api
             return false;
         }
 
-        internal static bool TryParseGalleryTorrent(UriHandlerData data, out GalleryInfo info)
+        internal static bool TryParseGalleryPopup(UriHandlerData data, out GalleryInfo info, out GalleryLaunchStatus type)
         {
-            if (data.Path0 == "gallerytorrents.php" && data.Paths.Count == 1)
+            if (data.Paths.Count == 1
+                && (data.Path0 == "gallerytorrents.php"
+                    || data.Path0 == "gallerypopups.php"
+                    || data.Path0 == "stats.php"
+                    || data.Path0 == "archiver.php"))
             {
                 if (data.Queries.TryGetValue("gid", out var gidStr)
-                    && data.Queries.TryGetValue("t", out var gtoken)
+                    && (data.Queries.TryGetValue("t", out var gtoken) || data.Queries.TryGetValue("token", out gtoken))
                     && long.TryParse(data.Queries["gid"], out var gId))
                 {
                     info = new GalleryInfo(gId, gtoken.ToToken());
+                    type = GalleryLaunchStatus.Default;
+                    switch (data.Path0)
+                    {
+                    case "gallerytorrents.php":
+                        type = GalleryLaunchStatus.Torrent;
+                        break;
+                    case "stats.php":
+                        type = GalleryLaunchStatus.Stats;
+                        break;
+                    case "archiver.php":
+                        type = GalleryLaunchStatus.Archive;
+                        break;
+                    default:
+                        if (data.Queries.TryGetValue("act", out var action))
+                            switch (action)
+                            {
+                            case "addfav":
+                                type = GalleryLaunchStatus.Favorite;
+                                break;
+                            case "expunge":
+                                type = GalleryLaunchStatus.Expunge;
+                                break;
+                            case "rename":
+                                type = GalleryLaunchStatus.Rename;
+                                break;
+                            }
+                        break;
+                    }
                     return true;
                 }
             }
-            info = default(GalleryInfo);
+            info = default;
+            type = default;
             return false;
         }
 
@@ -99,10 +132,10 @@ namespace ExClient.Api
             var data = new UriHandlerData(uri);
             if (TryParseGallery(data, out info))
                 return true;
-            if (TryParseGalleryTorrent(data, out info))
+            if (TryParseGalleryPopup(data, out info, out _))
                 return true;
 
-            info = default(GalleryInfo);
+            info = default;
             return false;
         }
 
