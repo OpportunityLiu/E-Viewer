@@ -231,19 +231,17 @@ namespace ExViewer.Controls
             }
         }
 
-        private async void btnStartNew_Click(object sender, RoutedEventArgs e)
+        private void btnStartNew_Click(object sender, RoutedEventArgs e)
         {
             var firstLoad = this.asbNewTags == null;
             resetNewTagState(true);
-            if (firstLoad)
-                return;
-            await this.Dispatcher.Yield();
-            this.asbNewTags.Focus(FocusState.Programmatic);
+            if (!firstLoad)
+                asbNewTags_Loaded(this.asbNewTags, e);
         }
 
         private async void asbNewTags_Loaded(object sender, RoutedEventArgs e)
         {
-            await this.Dispatcher.Yield();
+            await this.Dispatcher.YieldIdle();
             this.asbNewTags.Focus(FocusState.Programmatic);
         }
 
