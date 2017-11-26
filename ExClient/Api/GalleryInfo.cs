@@ -156,4 +156,14 @@ namespace ExClient.Api
             return this.ID.GetHashCode() ^ this.Token.GetHashCode();
         }
     }
+
+    public static class GalleryInfoExtension
+    {
+        public static GalleryInfo ToGalleryInfo(this Gallery gallery)
+        {
+            if (gallery == null)
+                throw new ArgumentNullException(nameof(gallery));
+            return new GalleryInfo(gallery.ID, gallery.Token);
+        }
+    }
 }

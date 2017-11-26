@@ -577,7 +577,7 @@
                       Icon="Share"
                       Label="Share" />
         <AppBarButton x:Uid="Views/GalleryPage/SearchUploaderAppBarButton"
-                      Command="{x:Bind VM.SearchUploader, Mode=OneWay}"
+                      Command="{x:Bind VM.SearchUploader, Mode=OneWay, Converter={StaticResource DelayConverter}, ConverterParameter=250}"
                       Icon="ContactInfo"
                       Label="Search uploader" />
         <AppBarButton x:Uid="Views/GalleryPage/SaveAppBarButton"

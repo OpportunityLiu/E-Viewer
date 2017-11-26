@@ -141,6 +141,7 @@
     <Compile Include="Galleries\Metadata\LanguageNameExtension.cs" />
     <Compile Include="Galleries\Rating\RatingStatus.cs" />
     <Compile Include="Galleries\Rating\Score.cs" />
+    <Compile Include="Galleries\Renaming\RenameInfo.cs" />
     <Compile Include="Hentaiverse\HentaiVerseInfo.cs" />
     <Compile Include="Hentaiverse\MonsterEncounteredEventArgs.cs" />
     <Compile Include="Launch\SearchHandlerBase.cs" />
