@@ -10,6 +10,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using ExClient.Internal;
 using HtmlAgilityPack;
 using Opportunity.MvvmUniverse.Collections;
+using System.IO;
 
 namespace ExClient.Galleries.Renaming
 {
@@ -20,7 +21,7 @@ namespace ExClient.Galleries.Renaming
             return AsyncInfo.Run(async token =>
             {
                 var r = new RenameInfo(galleryInfo);
-                var u = r.UpdateAsync();
+                var u = r.RefreshAsync();
                 token.Register(u.Cancel);
                 await u;
                 return r;
@@ -65,12 +66,13 @@ namespace ExClient.Galleries.Renaming
             private set => Set(ref this.currentJpn, value);
         }
 
-        public IAsyncAction UpdateAsync()
+        private Uri apiUri => new Uri($"gallerypopups.php?gid={this.GalleryInfo.ID}&t={this.GalleryInfo.Token.ToTokenString()}&act=rename", UriKind.Relative);
+
+        public IAsyncAction RefreshAsync()
         {
             return AsyncInfo.Run(async token =>
             {
-                var uri = new Uri($"https://e-hentai.org/gallerypopups.php?gid={this.GalleryInfo.ID}&t={this.GalleryInfo.Token.ToTokenString()}&act=rename");
-                var get = Client.Current.HttpClient.GetDocumentAsync(uri);
+                var get = Client.Current.HttpClient.GetDocumentAsync(apiUri);
                 token.Register(get.Cancel);
                 var doc = await get;
                 analyze(doc);
@@ -116,6 +118,42 @@ namespace ExClient.Galleries.Renaming
                 }
                 return (currentID, records, original);
             }
+        }
+
+        public IAsyncAction VoteAsync(RenameRecord roman, RenameRecord japanese)
+        {
+            return AsyncInfo.Run(async token =>
+            {
+                var post = Client.Current.HttpClient.PostAsync(apiUri, new Windows.Web.Http.HttpFormUrlEncodedContent(new[]
+                {
+                    KeyValuePair.Create("new_r",roman.Title),
+                    KeyValuePair.Create("new_j",japanese.Title),
+                    KeyValuePair.Create("nid_r",roman.ID.ToString()),
+                    KeyValuePair.Create("nid_j",japanese.ID.ToString()),
+                    KeyValuePair.Create("apply","Submit")
+                }));
+                token.Register(post.Cancel);
+                var res = await post;
+                using (var stm = (await res.Content.ReadAsInputStreamAsync()).AsStreamForRead())
+                {
+                    var doc = new HtmlDocument();
+                    doc.Load(stm);
+                    analyze(doc);
+                }
+            });
+        }
+
+        public IAsyncAction VoteAsync(string roman, RenameRecord japanese) => VoteAsync(generateTempRenameRecord(roman), japanese);
+
+        public IAsyncAction VoteAsync(RenameRecord roman, string japanese) => VoteAsync(roman, generateTempRenameRecord(japanese));
+
+        public IAsyncAction VoteAsync(string roman, string japanese) => VoteAsync(generateTempRenameRecord(roman), generateTempRenameRecord(japanese));
+
+        private static RenameRecord generateTempRenameRecord(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+                return new RenameRecord(-1, "", -1);
+            return new RenameRecord(0, title.Trim(), 0);
         }
     }
 }
