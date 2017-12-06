@@ -625,7 +625,7 @@
       <Version>4.1.6</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.6.5</Version>
+      <Version>1.6.6</Version>
     </PackageReference>
     <PackageReference Include="JyAnalytics">
       <Version>1.0.10</Version>
@@ -643,7 +643,7 @@
       <Version>1.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.0.2</Version>
+      <Version>6.0.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>2.1.0</Version>
