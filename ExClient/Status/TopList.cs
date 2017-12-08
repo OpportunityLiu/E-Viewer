@@ -2,7 +2,7 @@
 
 namespace ExClient.Status
 {
-    public struct ToplistItem : IEquatable<ToplistItem>
+    public readonly struct ToplistItem : IEquatable<ToplistItem>
     {
         internal ToplistItem(int rank, ToplistName name)
         {

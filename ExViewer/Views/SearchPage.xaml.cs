@@ -100,16 +100,16 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.Key)
             {
-            case Windows.System.VirtualKey.GamepadY:
-                this.asb.Focus(FocusState.Keyboard);
-                break;
-            case Windows.System.VirtualKey.GamepadMenu:
-            case Windows.System.VirtualKey.Application:
-                this.ab.IsOpen = !this.ab.IsOpen;
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case Windows.System.VirtualKey.GamepadY:
+                    this.asb.Focus(FocusState.Keyboard);
+                    break;
+                case Windows.System.VirtualKey.GamepadMenu:
+                case Windows.System.VirtualKey.Application:
+                    this.ab.IsOpen = !this.ab.IsOpen;
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ExClient.Galleries.Metadata
 {
-    public struct Language : IEquatable<Language>
+    public readonly struct Language : IEquatable<Language>
     {
         private static readonly string[] technicalTags = new string[]
         {
@@ -31,26 +31,26 @@ namespace ExClient.Galleries.Metadata
             {
                 switch (item.Content.Content)
                 {
-                case "rewrite":
-                    modi = LanguageModifier.Rewrite;
-                    continue;
-                case "translated":
-                    modi = LanguageModifier.Translated;
-                    continue;
-                default:
-                    if (naTags.Contains(item.Content.Content))
-                    {
-                        language.Clear();
-                        lanNA = true;
-                    }
-                    else if (!lanNA)
-                    {
-                        if (Enum.TryParse<LanguageName>(item.Content.Content, true, out var lan))
-                            language.Add(lan);
-                        else
-                            language.Add(LanguageName.Other);
-                    }
-                    continue;
+                    case "rewrite":
+                        modi = LanguageModifier.Rewrite;
+                        continue;
+                    case "translated":
+                        modi = LanguageModifier.Translated;
+                        continue;
+                    default:
+                        if (naTags.Contains(item.Content.Content))
+                        {
+                            language.Clear();
+                            lanNA = true;
+                        }
+                        else if (!lanNA)
+                        {
+                            if (Enum.TryParse<LanguageName>(item.Content.Content, true, out var lan))
+                                language.Add(lan);
+                            else
+                                language.Add(LanguageName.Other);
+                        }
+                        continue;
                 }
             }
             if (!lanNA && language.Count == 0)
@@ -92,12 +92,12 @@ namespace ExClient.Galleries.Metadata
                 name = string.Join(", ", this.Names.Select(LanguageNameExtension.ToFriendlyNameString));
             switch (Modifier)
             {
-            case LanguageModifier.Translated:
-                return $"{name} {LocalizedStrings.Language.Modifiers.Translated}";
-            case LanguageModifier.Rewrite:
-                return $"{name} {LocalizedStrings.Language.Modifiers.Rewrite}";
-            default:
-                return name;
+                case LanguageModifier.Translated:
+                    return $"{name} {LocalizedStrings.Language.Modifiers.Translated}";
+                case LanguageModifier.Rewrite:
+                    return $"{name} {LocalizedStrings.Language.Modifiers.Rewrite}";
+                default:
+                    return name;
             }
         }
 

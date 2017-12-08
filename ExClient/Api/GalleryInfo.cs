@@ -10,7 +10,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 namespace ExClient.Api
 {
     [JsonConverter(typeof(GalleryInfoConverter))]
-    public struct GalleryInfo : IEquatable<GalleryInfo>
+    public readonly struct GalleryInfo : IEquatable<GalleryInfo>
     {
         private class GalleryInfoConverter : JsonConverter
         {
@@ -30,14 +30,14 @@ namespace ExClient.Api
                 {
                     switch (reader.Value.ToString())
                     {
-                    case "gid":
-                        gid = reader.ReadAsInt32().GetValueOrDefault();
-                        break;
-                    case "token":
-                        token = reader.ReadAsString().ToToken();
-                        break;
-                    default:
-                        break;
+                        case "gid":
+                            gid = reader.ReadAsInt32().GetValueOrDefault();
+                            break;
+                        case "token":
+                            token = reader.ReadAsString().ToToken();
+                            break;
+                        default:
+                            break;
                     }
                     reader.Read();
                 } while (reader.TokenType != JsonToken.EndObject);
@@ -94,30 +94,30 @@ namespace ExClient.Api
                     type = GalleryLaunchStatus.Default;
                     switch (data.Path0)
                     {
-                    case "gallerytorrents.php":
-                        type = GalleryLaunchStatus.Torrent;
-                        break;
-                    case "stats.php":
-                        type = GalleryLaunchStatus.Stats;
-                        break;
-                    case "archiver.php":
-                        type = GalleryLaunchStatus.Archive;
-                        break;
-                    default:
-                        if (data.Queries.TryGetValue("act", out var action))
-                            switch (action)
-                            {
-                            case "addfav":
-                                type = GalleryLaunchStatus.Favorite;
-                                break;
-                            case "expunge":
-                                type = GalleryLaunchStatus.Expunge;
-                                break;
-                            case "rename":
-                                type = GalleryLaunchStatus.Rename;
-                                break;
-                            }
-                        break;
+                        case "gallerytorrents.php":
+                            type = GalleryLaunchStatus.Torrent;
+                            break;
+                        case "stats.php":
+                            type = GalleryLaunchStatus.Stats;
+                            break;
+                        case "archiver.php":
+                            type = GalleryLaunchStatus.Archive;
+                            break;
+                        default:
+                            if (data.Queries.TryGetValue("act", out var action))
+                                switch (action)
+                                {
+                                    case "addfav":
+                                        type = GalleryLaunchStatus.Favorite;
+                                        break;
+                                    case "expunge":
+                                        type = GalleryLaunchStatus.Expunge;
+                                        break;
+                                    case "rename":
+                                        type = GalleryLaunchStatus.Rename;
+                                        break;
+                                }
+                            break;
                     }
                     return true;
                 }

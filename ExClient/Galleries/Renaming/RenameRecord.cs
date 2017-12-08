@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExClient.Galleries.Renaming
 {
-    public struct RenameRecord : IEquatable<RenameRecord>
+    public readonly struct RenameRecord : IEquatable<RenameRecord>
     {
         public int ID { get; }
 

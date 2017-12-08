@@ -224,31 +224,31 @@ namespace ExClient.Tagging
                     var state = default(TagState);
                     switch (divclass)
                     {
-                    case "gt":
-                        state |= TagState.HighPower; break;
-                    case "gtw":
-                        state |= TagState.LowPower; break;
-                    //case "gtl":
-                    default:
-                        state |= TagState.NormalPower; break;
+                        case "gt":
+                            state |= TagState.HighPower; break;
+                        case "gtw":
+                            state |= TagState.LowPower; break;
+                        //case "gtl":
+                        default:
+                            state |= TagState.NormalPower; break;
                     }
                     switch (divstyle)
                     {
-                    case "opacity:0.4":
-                        state |= TagState.Slave;
-                        break;
-                    //case "opacity:1.0":
-                    default:
-                        break;
+                        case "opacity:0.4":
+                            state |= TagState.Slave;
+                            break;
+                        //case "opacity:1.0":
+                        default:
+                            break;
                     }
                     switch (aclass)
                     {
-                    case "tup":
-                        state |= TagState.Upvoted;
-                        break;
-                    case "tdn":
-                        state |= TagState.Downvoted;
-                        break;
+                        case "tup":
+                            state |= TagState.Upvoted;
+                            break;
+                        case "tdn":
+                            state |= TagState.Downvoted;
+                            break;
                     }
                     var tag = divid.Substring(3).Replace('_', ' ');
                     return (Tag.Parse(tag), state);
@@ -288,11 +288,10 @@ namespace ExClient.Tagging
                 return success;
             }
 
-            public void Dispose()
+            void IDisposable.Dispose()
             {
                 this.i = int.MaxValue;
                 this.Current = default(NamespaceTagCollection);
-                this.parent = null;
             }
 
             public void Reset()
