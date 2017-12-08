@@ -99,19 +99,19 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.Key)
             {
-            case Windows.System.VirtualKey.GamepadY:
-                if (this.lv.SelectionMode == ListViewSelectionMode.None)
-                    this.cbCategory.Focus(FocusState.Keyboard);
-                else
-                    this.cbCategory2.Focus(FocusState.Keyboard);
-                break;
-            case Windows.System.VirtualKey.GamepadMenu:
-            case Windows.System.VirtualKey.Application:
-                e.Handled = false;
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case Windows.System.VirtualKey.GamepadY:
+                    if (this.lv.SelectionMode == ListViewSelectionMode.None)
+                        this.cbCategory.Focus(FocusState.Keyboard);
+                    else
+                        this.cbCategory2.Focus(FocusState.Keyboard);
+                    break;
+                case Windows.System.VirtualKey.GamepadMenu:
+                case Windows.System.VirtualKey.Application:
+                    e.Handled = false;
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 
@@ -240,7 +240,5 @@ namespace ExViewer.Views
         {
             Grid.SetColumn(this.cbCategory2, 1);
         }
-
-        Navigator INavigationHandler.Parent { get; set; }
     }
 }
