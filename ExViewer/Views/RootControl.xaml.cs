@@ -24,8 +24,6 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
 
-            this.manager = Navigator.GetOrCreateForCurrentView();
-
             this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
                 [this.svt_Saved] = typeof(SavedPage),
@@ -97,9 +95,7 @@ namespace ExViewer.Views
             }
         }
 
-        Navigator INavigationHandler.Parent { get; set; }
-
-        private readonly Navigator manager;
+        private readonly Navigator manager = Navigator.GetOrCreateForCurrentView();
 
         private void Control_Loading(FrameworkElement sender, object args)
         {
@@ -197,12 +193,12 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.OriginalKey)
             {
-            case Windows.System.VirtualKey.GamepadView:
-                RootController.SwitchSplitView(null);
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case Windows.System.VirtualKey.GamepadView:
+                    RootController.SwitchSplitView(null);
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 #if DEBUG_BOUNDS

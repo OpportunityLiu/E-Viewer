@@ -430,6 +430,7 @@ namespace ExViewer.Views
 
                 root.FindName(nameof(root.rp_Disable));
                 root.sv_root.IsEnabled = false;
+                root.manager.IsEnabled = false;
                 root.rp_Disable.Visibility = Visibility.Visible;
                 var indeterminate = !progress.HasValue;
                 var keep = double.IsNaN(progress.GetValueOrDefault());
@@ -449,6 +450,7 @@ namespace ExViewer.Views
                 ViewEnabled = true;
 
                 root.sv_root.IsEnabled = true;
+                root.manager.IsEnabled = true;
 
                 ShowDisablePanel.Stop();
                 HideDisablePanel.Begin();
