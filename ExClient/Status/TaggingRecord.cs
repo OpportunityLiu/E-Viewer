@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ExClient.Status
 {
-    public struct TaggingRecord
+    public readonly struct TaggingRecord
     {
         public Tag Tag { get; }
 

@@ -10,7 +10,7 @@ using Windows.Storage.Streams;
 
 namespace ExClient
 {
-    public struct SHA1Value : IEquatable<SHA1Value>, IFormattable
+    public readonly struct SHA1Value : IEquatable<SHA1Value>, IFormattable
     {
         private const int HASH_SIZE = 20;
         private static readonly HashAlgorithmProvider sha1compute = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
@@ -138,16 +138,16 @@ namespace ExClient
             var fmt = string.IsNullOrEmpty(format) ? 'x' : format[0];
             switch (fmt)
             {
-            case 'x':
-                return toStringL(HASH_SIZE);
-            case 'X':
-                return toStringU(HASH_SIZE);
-            case 't':
-                return toStringL(TokenExtension.TOKEN_LENGTH);
-            case 'T':
-                return toStringU(TokenExtension.TOKEN_LENGTH);
-            default:
-                throw new FormatException("Unknown format specifier.");
+                case 'x':
+                    return toStringL(HASH_SIZE);
+                case 'X':
+                    return toStringU(HASH_SIZE);
+                case 't':
+                    return toStringL(TokenExtension.TOKEN_LENGTH);
+                case 'T':
+                    return toStringU(TokenExtension.TOKEN_LENGTH);
+                default:
+                    throw new FormatException("Unknown format specifier.");
             }
         }
 

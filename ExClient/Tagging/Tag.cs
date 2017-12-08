@@ -4,7 +4,7 @@ using System;
 namespace ExClient.Tagging
 {
     [System.Diagnostics.DebuggerDisplay(@"[{Namespace}:{Content,nq}]")]
-    public struct Tag : IEquatable<Tag>, IComparable<Tag>, IComparable
+    public readonly struct Tag : IEquatable<Tag>, IComparable<Tag>, IComparable
     {
         // { method: "taggallery", apiuid: apiuid, apikey: apikey, gid: gid, token: token, tags: tagsSplitedWithComma, vote: 1or-1 };
         private static readonly char[] split = new char[] { ':' };
@@ -20,7 +20,7 @@ namespace ExClient.Tagging
 
         public static bool TryParse(string content, out Tag result)
         {
-            result = default(Tag);
+            result = default;
             var splited = content.Split(split, 2);
             Namespace ns;
             if (splited.Length == 2)

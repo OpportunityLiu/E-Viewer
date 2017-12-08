@@ -8,7 +8,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 namespace ExClient.Api
 {
     [JsonConverter(typeof(ImageInfoConverter))]
-    public struct ImageInfo : IEquatable<ImageInfo>
+    public readonly struct ImageInfo : IEquatable<ImageInfo>
     {
         private class ImageInfoConverter : JsonConverter
         {

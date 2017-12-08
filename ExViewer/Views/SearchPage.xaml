@@ -31,7 +31,6 @@
               Value="12,2,24,2" />
     </Style>
   </controls:MyPage.Resources>
-
   <RelativePanel>
     <tk:PullToRefreshListView x:Name="lv"
                               RelativePanel.Below="ab"

@@ -1,6 +1,6 @@
 ﻿namespace ExClient.Galleries
 {
-    public struct SaveGalleryProgress
+    public readonly struct SaveGalleryProgress
     {
         internal SaveGalleryProgress(int imageLoaded, int imageCount)
         {
