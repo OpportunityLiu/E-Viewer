@@ -47,11 +47,11 @@ namespace ExViewer
         {
             switch (e.Exception)
             {
-            case OperationCanceledException _:
-                break;
-            default:
-                RootControl.RootController.SendToast(e.Exception, null);
-                break;
+                case OperationCanceledException _:
+                    break;
+                default:
+                    RootControl.RootController.SendToast(e.Exception, null);
+                    break;
             }
             e.Handled = true;
         }
