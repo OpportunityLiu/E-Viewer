@@ -106,17 +106,19 @@ namespace ExClient.Galleries
         {
             return Run<SaveGalleryProgress>(async (token, progress) =>
             {
+                await Task.Delay(1).ConfigureAwait(false);
+                progress.Report(new SaveGalleryProgress(-1, this.RecordCount));
                 if (this.HasMoreItems)
                 {
-                    progress.Report(new SaveGalleryProgress(-1, this.RecordCount));
                     while (this.HasMoreItems)
                     {
                         await this.LoadMoreItemsAsync((uint)PageSize);
                         token.ThrowIfCancellationRequested();
+                        progress.Report(new SaveGalleryProgress(-1, this.RecordCount));
                     }
                 }
 
-                await Task.Delay(0).ConfigureAwait(false);
+                await Task.Yield();
                 var loadedCount = 0;
                 progress.Report(new SaveGalleryProgress(loadedCount, this.RecordCount));
 
@@ -454,9 +456,7 @@ namespace ExClient.Galleries
         }
 
         public IAsyncOperation<ReadOnlyCollection<TorrentInfo>> FetchTorrnetsAsync()
-        {
-            return TorrentInfo.LoadTorrentsAsync(this);
-        }
+            => TorrentInfo.LoadTorrentsAsync(this);
 
         public IAsyncOperation<string> FetchFavoriteNoteAsync()
         {
@@ -530,6 +530,7 @@ namespace ExClient.Galleries
             }).AsAsyncAction();
         }
 
-        public IAsyncOperation<Renaming.RenameInfo> FetchRenameInfoAsync() => Renaming.RenameInfo.FetchAsync(this.ToGalleryInfo());
+        public IAsyncOperation<Renaming.RenameInfo> FetchRenameInfoAsync()
+            => Renaming.RenameInfo.FetchAsync(this.ToGalleryInfo());
     }
 }

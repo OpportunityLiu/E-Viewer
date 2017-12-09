@@ -174,25 +174,25 @@ namespace ExViewer.ViewModels
                 var task = this.gallery.SaveAsync(SettingCollection.Current.GetStrategy());
                 task.Progress = (sender, e) =>
                 {
-                    this.SaveProgress = e.ImageLoaded / (double)e.ImageCount;
+                    this.SaveProgress = e.ImageLoaded * 100.0 / e.ImageCount;
                 };
                 task.Completed = (sender, e) =>
                 {
                     switch (e)
                     {
-                    case AsyncStatus.Canceled:
-                    case AsyncStatus.Error:
-                        this.SaveStatus = OperationState.Failed;
-                        RootControl.RootController.SendToast(sender.ErrorCode, null);
-                        break;
-                    case AsyncStatus.Completed:
-                        this.SaveStatus = OperationState.Completed;
-                        break;
-                    case AsyncStatus.Started:
-                        this.SaveStatus = OperationState.Started;
-                        break;
+                        case AsyncStatus.Canceled:
+                        case AsyncStatus.Error:
+                            this.SaveStatus = OperationState.Failed;
+                            RootControl.RootController.SendToast(sender.ErrorCode, null);
+                            break;
+                        case AsyncStatus.Completed:
+                            this.SaveStatus = OperationState.Completed;
+                            break;
+                        case AsyncStatus.Started:
+                            this.SaveStatus = OperationState.Started;
+                            break;
                     }
-                    this.SaveProgress = 1;
+                    this.SaveProgress = 100;
                 };
             }, () =>
             {

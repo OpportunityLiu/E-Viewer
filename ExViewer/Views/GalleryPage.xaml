@@ -593,9 +593,6 @@
                  VerticalAlignment="Top"
                  Foreground="{x:Bind VM.SaveStatus, Converter={StaticResource OperationStateToBrushConverter}, Mode=OneWay}"
                  IsHitTestVisible="False"
-                 LargeChange="0.0001"
-                 Maximum="1"
-                 SmallChange="1E-05"
                  Visibility="{x:Bind VM.SaveStatus, Converter={StaticResource OperationStateToVisibilityConverter}, Mode=OneWay}"
                  Value="{x:Bind VM.SaveProgress, Mode=OneWay}" />
   </Grid>
