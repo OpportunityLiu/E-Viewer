@@ -18,7 +18,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class RootControl : UserControl, INavigationHandler
+    public sealed partial class RootControl : UserControl
     {
         public RootControl()
         {
@@ -119,7 +119,7 @@ namespace ExViewer.Views
             }
             else
             {
-                this.manager.Handlers.Add(this);
+                this.manager.Handlers.Add(new FrameWrapper(this.fm_inner));
                 RootController.UpdateUserInfo(false);
                 RootController.HandleUriLaunch();
                 this.tbtPane.Focus(FocusState.Pointer);
@@ -138,7 +138,6 @@ namespace ExViewer.Views
             {
                 tab.IsChecked = true;
             }
-            this.RaiseCanGoBackChanged();
         }
 
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)
@@ -260,16 +259,6 @@ namespace ExViewer.Views
         private double getPaneLength(Thickness visibleBounds, double offset)
         {
             return visibleBounds.Left + offset;
-        }
-
-        public bool CanGoBack()
-        {
-            return this.fm_inner.CanGoBack;
-        }
-
-        public void GoBack()
-        {
-            this.fm_inner.GoBack();
         }
     }
 }
