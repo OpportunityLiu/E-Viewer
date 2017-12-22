@@ -124,7 +124,7 @@
     },
     "Disabled": "验证已通过组策略禁用，请联系管理员。",
     "FailedDialogTitle": "验证失败",
-    "NotConfigured": "请先设置 PIN。\n\n在 “设置 -> 账户-> 登陆选项 -> PIN -> 添加” 进行此项设定。",
+    "NotConfigured": "请先设置 PIN。\n\n在 “设置 -> 账户-> 登录选项 -> PIN -> 添加” 进行此项设定。",
     "OtherFailure": "请重新启动应用后重试。",
     "RetriesExhausted": "超过允许的重试次数，请重新启动应用后再试一次。"
   },
@@ -258,15 +258,9 @@
       "ToplistsHeaderTextBlock/Text": "排行榜"
     },
     "LogOnDialog": {
-      "ContentDialog/PrimaryButtonText": "确定",
-      "NoPassword": "请输入密码。",
-      "NoUserName": "请输入用户名。",
-      "PasswordBox/PlaceholderText": "密码",
-      "ReCaptchaTextBox/PlaceholderText": "验证码",
+      "ContentDialog/PrimaryButtonText": "重置",
       "RegisterHyperlinkButton/Content": "注册",
-      "ReloadReCaptchaButton/ToolTipService/ToolTip": "刷新验证码",
-      "TitleTextBlock/Text": "登陆",
-      "UserNameTextBox/PlaceholderText": "用户名"
+      "TitleTextBlock/Text": "登录"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "正在加载热门画廊...",

@@ -44,6 +44,15 @@ namespace ExClient.Internal
 
         public HttpRequestHeaderCollection DefaultRequestHeaders => this.inner.DefaultRequestHeaders;
 
+        private void checkSadPanda(HttpResponseMessage response)
+        {
+            if (response.Content.Headers.ContentDisposition?.FileName == "sadpanda.jpg")
+            {
+                this.owner.ResetExCookie();
+                throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
+            }
+        }
+
         public IHttpAsyncOperation GetAsync(Uri uri, HttpCompletionOption completionOption, bool checkStatusCode)
         {
             reformUri(ref uri);
@@ -55,11 +64,7 @@ namespace ExClient.Internal
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
-                if (response.Content.Headers.ContentDisposition?.FileName == "sadpanda.jpg")
-                {
-                    this.owner.ResetExCookie();
-                    throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
-                }
+                checkSadPanda(response);
                 if (checkStatusCode)
                     response.EnsureSuccessStatusCode();
                 var buffer = response.Content.BufferAllAsync();
@@ -141,6 +146,7 @@ namespace ExClient.Internal
                 request.Progress = (t, p) => progress.Report(p);
                 var doc = new HtmlDocument();
                 var response = await request;
+                checkSadPanda(response);
                 using (var stream = (await response.Content.ReadAsInputStreamAsync()).AsStreamForRead())
                 {
                     doc.Load(stream);
@@ -163,12 +169,12 @@ namespace ExClient.Internal
                     var msg = error.InnerText.DeEntitize();
                     switch (msg)
                     {
-                    case "This gallery has been removed or is unavailable.":
-                        throw new InvalidOperationException(LocalizedStrings.Resources.GalleryRemoved);
-                    case "This gallery has been locked for review. Please check back later.":
-                        throw new InvalidOperationException(LocalizedStrings.Resources.GalleryReviewing);
-                    default:
-                        throw new InvalidOperationException(msg);
+                        case "This gallery has been removed or is unavailable.":
+                            throw new InvalidOperationException(LocalizedStrings.Resources.GalleryRemoved);
+                        case "This gallery has been locked for review. Please check back later.":
+                            throw new InvalidOperationException(LocalizedStrings.Resources.GalleryReviewing);
+                        default:
+                            throw new InvalidOperationException(msg);
                     }
                 } while (false);
                 response.EnsureSuccessStatusCode();

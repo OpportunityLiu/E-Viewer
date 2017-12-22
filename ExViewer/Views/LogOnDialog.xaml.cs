@@ -1,6 +1,7 @@
 ﻿using ExClient;
 using ExViewer.Controls;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -17,175 +18,161 @@ namespace ExViewer.Views
         public LogOnDialog()
         {
             this.InitializeComponent();
-            this.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
         }
 
-        ReCaptcha recap;
-
-        private async Task loadReCapcha()
+        private void reset()
         {
-            this.sp_ReCaptcha.Visibility = Visibility.Visible;
-            this.img_ReCaptcha.Source = null;
-            this.tb_ReCaptcha.Text = "";
-            try
-            {
-                this.recap = await ReCaptcha.FetchAsync();
-                this.img_ReCaptcha.Source = new BitmapImage(this.recap.ImageUri);
-            }
-            catch(Exception ex)
-            {
-                this.tb_info.Text = ex.GetMessage();
-            }
+            this.wv.Navigate(Client.LogOnUri);
+            this.tempUserName = null;
+            this.tempPassword = null;
+            this.hideCalled = false;
         }
 
-        private async Task logOnAsync(ContentDialogClosingEventArgs args)
+        private async Task injectLogOnPage()
         {
-            try
+            var pass = AccountManager.CurrentCredential;
+            if (pass != null)
             {
-                var username = this.tb_user.Text;
-                var password = this.pb_pass.Password;
-                if(string.IsNullOrWhiteSpace(username))
-                {
-                    this.tb_info.Text = Strings.Resources.Views.LogOnDialog.NoUserName;
-                    this.tb_user.Focus(FocusState.Programmatic);
-                    args.Cancel = true;
-                }
-                else if(string.IsNullOrEmpty(password))
-                {
-                    this.tb_info.Text = Strings.Resources.Views.LogOnDialog.NoPassword;
-                    this.pb_pass.Focus(FocusState.Programmatic);
-                    args.Cancel = true;
-                }
-                else
-                {
-                    var d = args.GetDeferral();
-                    try
-                    {
-                        this.tb_info.Text = "";
-                        try
-                        {
-                            if(this.recap != null)
-                                await this.recap.Submit(this.tb_ReCaptcha.Text);
-                        }
-                        catch(Exception ex)
-                        {
-                            await loadReCapcha();
-                            this.tb_info.Text = ex.GetMessage();
-                            this.tb_ReCaptcha.Focus(FocusState.Programmatic);
-                            args.Cancel = true;
-                            return;
-                        }
-                        try
-                        {
-                            await Client.Current.LogOnAsync(username, password, this.recap);
-                            AccountManager.CurrentCredential = AccountManager.CreateCredential(username, password);
-                        }
-                        catch(InvalidOperationException ex)
-                        {
-                            await loadReCapcha();
-                            this.tb_info.Text = ex.GetMessage();
-                            this.tb_user.Focus(FocusState.Programmatic);
-                            args.Cancel = true;
-                        }
-                        catch(Exception ex)
-                        {
-                            this.tb_info.Text = ex.GetMessage();
-                            this.tb_user.Focus(FocusState.Programmatic);
-                            args.Cancel = true;
-                        }
-                    }
-                    finally
-                    {
-                        d.Complete();
-                    }
-                }
+                pass.RetrievePassword();
+                await this.wv.InvokeScriptAsync("eval", new[] { $@"
+(function ()
+{{
+    var u = document.getElementsByName('UserName');
+    if (u.length == 0) return;
+    var nU = u[0];
+    nU.value = '{escape(pass.UserName)}';
+    var p = document.getElementsByName('PassWord');
+    if (p.length == 0) return;
+    var nP = p[0];
+    nP.value = '{escape(pass.Password)}';
+    var l = document.getElementsByName('LOGIN');
+    if (l.length == 0) return;
+    var nL = l[0];
+    nL.onsubmit = function(ev)
+    {{
+        var ret = ValidateForm();
+        if (ret)
+        {{
+            window.external.notify(nU.value + '\n' + nP.value);
+        }}
+        return ret;
+    }}
+}})();
+" });
             }
-            finally
+            string escape(string value)
             {
-                await Dispatcher.YieldIdle();
-                this.pb_Loading.IsIndeterminate = false;
+                return value.Replace(@"\", @"\\").Replace("'", @"\'");
             }
         }
 
-        private async void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
+        private async Task injectOtherPage()
         {
-            switch(args.Result)
+            await this.wv.InvokeScriptAsync("eval", new[] { @"
+(function ()
+{
+    function getCookie(c_name)
+    {
+        if (document.cookie.length <= 0) return '';
+        var c_start = document.cookie.indexOf(c_name + '=');
+        if (c_start < 0) return '';
+        c_start = c_start + c_name.length + 1;
+        var c_end = document.cookie.indexOf(';', c_start);
+        if (c_end == -1) c_end = document.cookie.length;
+        return unescape(document.cookie.substring(c_start, c_end));
+    }
+    window.external.notify('\n' + getCookie('ipb_member_id') + '\n' + getCookie('ipb_pass_hash'));
+})();
+" });
+        }
+
+        private void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
+        {
+            if (args.Result == ContentDialogResult.Secondary)
             {
-            case ContentDialogResult.None:
-            case ContentDialogResult.Primary:
-                if(this.pb_Loading.IsIndeterminate)
-                {
-                    await logOnAsync(args);
-                }
-                else
-                {
-                    if(args.Result == ContentDialogResult.None && Client.Current.NeedLogOn)
-                    {
-                        args.Cancel = true;
-                    }
-                }
-                break;
-            case ContentDialogResult.Secondary:
-                if(Client.Current.NeedLogOn)
+                if (this.logOnInfoBackup != null)
+                    Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
+                if (Client.Current.NeedLogOn)
                 {
                     Application.Current.Exit();
                 }
-                break;
             }
-        }
-
-        private void tb_TextChanged(object sender, RoutedEventArgs e)
-        {
-            this.tb_info.Text = "";
-        }
-
-        private async void btn_ReloadReCaptcha_Click(object sender, RoutedEventArgs e)
-        {
-            await loadReCapcha();
         }
 
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            if(Client.Current.NeedLogOn)
+            if (Client.Current.NeedLogOn)
                 this.SecondaryButtonText = Strings.Resources.General.Exit;
             else
                 this.SecondaryButtonText = Strings.Resources.General.Cancel;
         }
 
-        protected override void OnKeyDown(KeyRoutedEventArgs e)
-        {
-            base.OnKeyDown(e);
-            if(e.OriginalKey == Windows.System.VirtualKey.Enter)
-            {
-                e.Handled = true;
-                if(string.IsNullOrWhiteSpace(this.tb_user.Text))
-                {
-                    this.tb_user.Focus(FocusState.Programmatic);
-                }
-                else if(string.IsNullOrEmpty(this.pb_pass.Password))
-                {
-                    this.pb_pass.Focus(FocusState.Programmatic);
-                }
-                else if(this.sp_ReCaptcha.Visibility == Visibility.Visible && string.IsNullOrEmpty(this.tb_ReCaptcha.Text))
-                {
-                    this.tb_ReCaptcha.Focus(FocusState.Programmatic);
-                }
-                else
-                {
-                    this.pb_Loading.IsIndeterminate = true;
-                    this.Hide();
-                }
-            }
-        }
-
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            this.pb_Loading.IsIndeterminate = true;
-        }
-
         private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            this.pb_Loading.IsIndeterminate = false;
+            this.logOnInfoBackup = Client.Current.GetLogOnInfo();
+            reset();
+        }
+
+        private async void wv_LoadCompleted(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Uri.ToString(), "WebView");
+            if (e.Uri.ToString().StartsWith(Client.LogOnUri.ToString()))
+                await injectLogOnPage();
+            else if (e.Uri.Host == Client.LogOnUri.Host)
+                await injectOtherPage();
+        }
+
+        private LogOnInfo logOnInfoBackup;
+
+        private string tempUserName, tempPassword;
+
+        private bool hideCalled = false;
+
+        private async void wv_ScriptNotify(object sender, NotifyEventArgs e)
+        {
+            if (this.hideCalled)
+                return;
+            var data = e.Value.Split('\n', StringSplitOptions.None);
+            if (e.CallingUri.ToString().StartsWith(Client.LogOnUri.ToString()))
+            {
+                if (data.Length != 2)
+                    return;
+                this.tempUserName = data[0];
+                this.tempPassword = data[1];
+                return;
+            }
+            if (data.Length != 3 || data[0].Length != 0)
+                return;
+            await logOnAsync(data[1], data[2]);
+        }
+
+        private void MyContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            if (this.hideCalled)
+                return;
+            reset();
+        }
+
+        private async Task logOnAsync(string id, string hash)
+        {
+            if (!long.TryParse(id, out var uid))
+                return;
+            if (this.hideCalled)
+                return;
+            try
+            {
+                await Client.Current.LogOnAsync(uid, hash);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            if (this.hideCalled)
+                return;
+            if (!string.IsNullOrEmpty(this.tempUserName) && !string.IsNullOrEmpty(this.tempPassword))
+                AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
+            this.Hide();
+            this.hideCalled = true;
         }
     }
 }

@@ -258,15 +258,9 @@
       "ToplistsHeaderTextBlock/Text": "Toplists"
     },
     "LogOnDialog": {
-      "ContentDialog/PrimaryButtonText": "OK",
-      "NoPassword": "Please enter your password.",
-      "NoUserName": "Please enter your user name.",
-      "PasswordBox/PlaceholderText": "Password",
-      "ReCaptchaTextBox/PlaceholderText": "ReCaptcha",
+      "ContentDialog/PrimaryButtonText": "Reset",
       "RegisterHyperlinkButton/Content": "Register",
-      "ReloadReCaptchaButton/ToolTipService/ToolTip": "Reload ReCaptcha",
-      "TitleTextBlock/Text": "LOG ON",
-      "UserNameTextBox/PlaceholderText": "User name"
+      "TitleTextBlock/Text": "LOG ON"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "Loading popular galleries...",

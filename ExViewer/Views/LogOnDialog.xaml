@@ -8,12 +8,12 @@
                           mc:Ignorable="d"
                           x:Uid="Views/LogOnDialog/ContentDialog"
                           Loaded="ContentDialog_Loaded"
-                          PrimaryButtonText="OK"
+                          PrimaryButtonText="Reset"
+                          PrimaryButtonClick="MyContentDialog_PrimaryButtonClick"
                           SecondaryButtonText="?"
                           Opened="ContentDialog_Opened"
                           Closing="ContentDialog_Closing"
-                          PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-                          IsEnabled="{x:Bind pb_Loading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}">
+                          FullSizeDesired="True">
   <ContentDialog.Title>
     <Grid>
       <TextBlock x:Uid="Views/LogOnDialog/TitleTextBlock"
@@ -28,68 +28,7 @@
                        FontSize="12" />
     </Grid>
   </ContentDialog.Title>
-  <StackPanel Width="270">
-    <TextBox x:Uid="Views/LogOnDialog/UserNameTextBox"
-             x:Name="tb_user"
-             Margin="0,4"
-             IsReadOnly="{x:Bind pb_Loading.IsIndeterminate, Mode=OneWay}"
-             PlaceholderText="User name"
-             InputScope="EmailNameOrAddress"
-             TextChanged="tb_TextChanged" />
-    <PasswordBox x:Uid="Views/LogOnDialog/PasswordBox"
-                 x:Name="pb_pass"
-                 Margin="0,4"
-                 PlaceholderText="Password"
-                 PasswordChanged="tb_TextChanged" />
-    <Grid x:Name="sp_ReCaptcha"
-          Visibility="Collapsed">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
-      <Border Grid.ColumnSpan="2"
-              Margin="0,4"
-              BorderBrush="{ThemeResource SystemControlBackgroundBaseLowBrush}"
-              BorderThickness="2"
-              Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}">
-        <Image x:Name="img_ReCaptcha"
-               MinHeight="50" />
-      </Border>
-      <TextBox x:Uid="Views/LogOnDialog/ReCaptchaTextBox"
-               x:Name="tb_ReCaptcha"
-               Margin="0,4"
-               IsReadOnly="{x:Bind pb_Loading.IsIndeterminate, Mode=OneWay}"
-               Grid.Row="1"
-               PlaceholderText="ReCaptcha"
-               InputScope="AlphanumericHalfWidth"
-               TextChanged="tb_TextChanged"
-               IsSpellCheckEnabled="False" />
-      <Button x:Uid="Views/LogOnDialog/ReloadReCaptchaButton"
-              x:Name="btn_ReloadReCaptcha"
-              Style="{StaticResource TextBlockButtonStyle}"
-              Grid.Row="1"
-              Grid.Column="1"
-              Margin="4,4,0,4"
-              Content="&#xE72C;"
-              FontFamily="Segoe MDL2 Assets"
-              Click="btn_ReloadReCaptcha_Click"
-              ToolTipService.ToolTip="Reload ReCaptcha"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch" />
-    </Grid>
-    <Grid Margin="0,8,0,0"
-          MinHeight="4">
-      <TextBlock x:Name="tb_info"
-                 HorizontalAlignment="Stretch"
-                 TextWrapping="WrapWholeWords"
-                 Visibility="{x:Bind tb_info.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
-      <ProgressBar x:Name="pb_Loading"
-                   Visibility="{x:Bind pb_Loading.IsIndeterminate, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                   VerticalAlignment="Top" />
-    </Grid>
-  </StackPanel>
+  <Grid x:Name="gdContentRoot">
+    <WebView x:Name="wv" LoadCompleted="wv_LoadCompleted" ScriptNotify="wv_ScriptNotify"/>
+  </Grid>
 </controls:MyContentDialog>

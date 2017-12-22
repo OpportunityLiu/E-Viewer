@@ -15,7 +15,7 @@ namespace ExClient
     {
         public static Uri ForumsUri { get; } = new Uri("https://forums.e-hentai.org/");
 
-        private static readonly Uri logOnUri = new Uri(ForumsUri, "index.php?act=Login&CODE=01");
+        public static Uri LogOnUri { get; } = new Uri(ForumsUri, "index.php?act=Login");
 
         public bool NeedLogOn
             => this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Count(isImportantCookie) < 3;
@@ -29,15 +29,21 @@ namespace ExClient
             public const string HathPerks = "hath_perks";
         }
 
+        private static class Domains
+        {
+            public const string Eh = "e-hentai.org";
+            public const string Ex = "exhentai.org";
+        }
+
         public void ResetExCookie()
         {
             foreach (var item in this.CookieManager.GetCookies(UriProvider.Ex.RootUri))
             {
                 this.CookieManager.DeleteCookie(item);
             }
-            foreach (var item in this.getLogOnInfo().Where(isImportantCookie))
+            foreach (var item in this.GetLogOnInfo().Cookies.Where(isImportantCookie))
             {
-                var cookie = new HttpCookie(item.Name, "exhentai.org", "/")
+                var cookie = new HttpCookie(item.Name, Domains.Ex, "/")
                 {
                     Expires = item.Expires,
                     Value = item.Value
@@ -55,14 +61,25 @@ namespace ExClient
                 || name == CookieNames.S;
         }
 
-        private List<HttpCookie> getLogOnInfo()
+        public LogOnInfo GetLogOnInfo()
         {
-            return this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Concat(this.CookieManager.GetCookies(UriProvider.Ex.RootUri)).ToList();
+            return new LogOnInfo(this);
+        }
+
+        public void RestoreLogOnInfo(LogOnInfo info)
+        {
+            if (info == null)
+                throw new ArgumentNullException(nameof(info));
+            ClearLogOnInfo();
+            foreach (var item in info.Cookies)
+            {
+                this.CookieManager.SetCookie(item);
+            }
         }
 
         public void ClearLogOnInfo()
         {
-            foreach (var item in getLogOnInfo())
+            foreach (var item in GetLogOnInfo().Cookies)
             {
                 this.CookieManager.DeleteCookie(item);
             }
@@ -71,66 +88,44 @@ namespace ExClient
 
         private void setDefaultCookies()
         {
-            this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, "e-hentai.org", "/") { Value = "1" });
-            this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, "exhentai.org", "/") { Value = "1" });
+            this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Eh, "/") { Value = "1" });
+            this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Ex, "/") { Value = "1" });
             this.Settings.ApplyChanges();
         }
 
-        public IAsyncAction LogOnAsync(string userName, string password, ReCaptcha reCaptcha)
+        /// <summary>
+        /// Log on with tokens.
+        /// View <see cref="LogOnUri"/> to get the tokens.
+        /// </summary>
+        /// <param name="userID">cookie with name ipb_member_id</param>
+        /// <param name="passHash">cookie with name ipb_pass_hash</param>
+        public IAsyncAction LogOnAsync(long userID, string passHash)
         {
-            if (string.IsNullOrWhiteSpace(userName))
-                throw new ArgumentNullException(nameof(userName));
-            if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentNullException(nameof(password));
+            if (userID <= 0)
+                throw new ArgumentOutOfRangeException(nameof(userID));
+            if (string.IsNullOrWhiteSpace(passHash))
+                throw new ArgumentNullException(nameof(passHash));
+            passHash = passHash.Trim().ToLowerInvariant();
+            if (passHash.Length != 32 || !passHash.All(c => (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')))
+                throw new ArgumentException("Should be 32 hex chars.", nameof(passHash));
+            var memberID = userID.ToString();
             return AsyncInfo.Run(async token =>
             {
-                var cookieBackUp = getLogOnInfo();
+                var cookieBackUp = GetLogOnInfo();
                 ClearLogOnInfo();
-                IEnumerable<KeyValuePair<string, string>> getParams()
-                {
-                    yield return new KeyValuePair<string, string>("CookieDate", "1");
-                    yield return new KeyValuePair<string, string>("UserName", userName);
-                    yield return new KeyValuePair<string, string>("PassWord", password);
-                    if (reCaptcha?.Answer != null)
-                    {
-                        yield return new KeyValuePair<string, string>("recaptcha_challenge_field", reCaptcha.Answer);
-                        yield return new KeyValuePair<string, string>("recaptcha_response_field", "manual_challenge");
-                    }
-                }
+                this.CookieManager.SetCookie(new HttpCookie(CookieNames.MemberID, Domains.Eh, "/") { Value = memberID, Expires = DateTimeOffset.UtcNow.AddYears(5) });
+                this.CookieManager.SetCookie(new HttpCookie(CookieNames.PassHash, Domains.Eh, "/") { Value = passHash, Expires = DateTimeOffset.UtcNow.AddYears(5) });
                 try
                 {
-                    var log = await this.HttpClient.PostAsync(logOnUri, new HttpFormUrlEncodedContent(getParams()));
-                    var html = new HtmlDocument();
-                    using (var stream = (await log.Content.ReadAsInputStreamAsync()).AsStreamForRead())
-                    {
-                        html.Load(stream);
-                    }
-                    var errorNode = html.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "") == "postcolor").FirstOrDefault();
-                    if (errorNode != null)
-                    {
-                        var errorText = errorNode.InnerText;
-                        switch (errorText)
-                        {
-                        case "Username or password incorrect":
-                            errorText = LocalizedStrings.Resources.WrongAccountInfo;
-                            break;
-                        case "The captcha was not entered correctly. Please try again.":
-                            errorText = LocalizedStrings.Resources.WrongCaptcha;
-                            break;
-                        }
-                        throw new InvalidOperationException(errorText);
-                    }
                     await this.HttpClient.GetAsync(new Uri(UriProvider.Eh.RootUri, "hathperks.php"), HttpCompletionOption.ResponseHeadersRead, true);
+                    if (this.NeedLogOn)
+                        throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
                     ResetExCookie();
                     var ignore = this.UserStatus?.RefreshAsync();
                 }
                 catch (Exception)
                 {
-                    ClearLogOnInfo();
-                    foreach (var item in cookieBackUp)
-                    {
-                        this.CookieManager.SetCookie(item);
-                    }
+                    RestoreLogOnInfo(cookieBackUp);
                     throw;
                 }
             });
@@ -143,7 +138,7 @@ namespace ExClient
                 var cookie = this.CookieManager.GetCookies(UriProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.MemberID);
                 if (cookie == null)
                     return -1;
-                return int.Parse(cookie.Value);
+                return long.Parse(cookie.Value);
             }
         }
 
