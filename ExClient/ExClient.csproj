@@ -146,6 +146,7 @@
     <Compile Include="Hentaiverse\HentaiVerseInfo.cs" />
     <Compile Include="Hentaiverse\MonsterEncounteredEventArgs.cs" />
     <Compile Include="Launch\SearchHandlerBase.cs" />
+    <Compile Include="LogOnInfo.cs" />
     <Compile Include="Migrations\20170612052132_NewMig.cs" />
     <Compile Include="Migrations\20170612052132_NewMig.designer.cs">
       <DependentUpon>20170612052132_NewMig.cs</DependentUpon>
@@ -218,7 +219,6 @@
     <Compile Include="Models\ImageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client-Search.cs" />
-    <Compile Include="ReCaptcha.cs" />
     <Compile Include="Galleries\Gallery.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingProvider.cs" />
@@ -255,7 +255,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.6.6</Version>
+      <Version>1.6.8</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite">
       <Version>2.0.1</Version>
@@ -264,7 +264,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.0.4</Version>
+      <Version>6.0.5</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>

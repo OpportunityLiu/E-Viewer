@@ -33,6 +33,9 @@
           </uap3:AppUriHandler>
         </uap3:Extension>
       </Extensions>
+      <uap:ApplicationContentUriRules>
+        <uap:Rule Match="https://forums.e-hentai.org" Type="include" WindowsRuntimeAccess="none" />
+      </uap:ApplicationContentUriRules>
     </Application>
   </Applications>
   <Capabilities>

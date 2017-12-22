@@ -297,6 +297,7 @@ namespace ExViewer.Views
             {
                 return Run(async token =>
                 {
+                    await DispatcherHelper.Yield();
                     var succeed = await new LogOnDialog().ShowAsync() == ContentDialogResult.Primary && !Client.Current.NeedLogOn;
                     JYAnalytics.TrackEvent("LogOnRequested", $"Result: {(!succeed ? "Succeed" : "Failed")}");
                     Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (succeed ? "Succeed" : "Failed") });

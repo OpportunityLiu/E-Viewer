@@ -124,7 +124,7 @@
     },
     "Disabled": "驗證已通過組策略禁用，請聯絡管理員。",
     "FailedDialogTitle": "驗證失敗",
-    "NotConfigured": "請先設定 PIN。\n\n在 “設定 -> 賬戶-> 登陸選項 -> PIN -> 新增” 進行此項設定。",
+    "NotConfigured": "請先設定 PIN。\n\n在 “設定 -> 賬戶-> 登入選項 -> PIN -> 新增” 進行此項設定。",
     "OtherFailure": "請重新啟動程式後重試。",
     "RetriesExhausted": "超過允許的重試次數，請重新啟動程式後再試一次。"
   },
@@ -258,15 +258,9 @@
       "ToplistsHeaderTextBlock/Text": "排行榜"
     },
     "LogOnDialog": {
-      "ContentDialog/PrimaryButtonText": "確定",
-      "NoPassword": "請輸入密碼。",
-      "NoUserName": "請輸入使用者名稱。",
-      "PasswordBox/PlaceholderText": "密碼",
-      "ReCaptchaTextBox/PlaceholderText": "驗證碼",
+      "ContentDialog/PrimaryButtonText": "重置",
       "RegisterHyperlinkButton/Content": "註冊",
-      "ReloadReCaptchaButton/ToolTipService/ToolTip": "重新整理驗證碼",
-      "TitleTextBlock/Text": "登陸",
-      "UserNameTextBox/PlaceholderText": "使用者名稱"
+      "TitleTextBlock/Text": "登入"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "正在載入熱門畫廊...",
