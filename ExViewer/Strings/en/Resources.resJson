@@ -294,6 +294,8 @@
       "AdvancedToggleButton/OnContent": "Hide advanced options",
       "AutoSuggestBox/PlaceholderText": "Search...",
       "DescriptionCheckBox/Content": "Search gallery description",
+      "DisableDefaultLanguageFiltersCheckBox/Content": "Disable default language filters",
+      "DisableDefaultUploaderFiltersCheckBox/Content": "Disable default uploader filters",
       "DownvotedTagsCheckBox/Content": "Search downvoted tags",
       "EmptyTextBlock/Text": "No hits found",
       "FileSearchButton/Content": "File search",
@@ -315,7 +317,6 @@
     "UpdateDialog": {
       "ContentDialog": {
         "Title": "NEW VERSION",
-        "PrimaryButtonText": "Update now",
         "SecondaryButtonText": "Remind me next time"
       },
       "ContentTemplate": "Version {0}.{1}.{2}.{3} has released."

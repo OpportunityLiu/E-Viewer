@@ -147,5 +147,16 @@ namespace ExViewer.Views
             CloseAll();
             await this.dlgFIleSearch.ShowAsync();
         }
+
+        private double caculateGdAbMaxHeight(Thickness visibleBounds)
+        {
+            var ac = this.ActualHeight;
+            if (ac <= 50)
+                return double.PositiveInfinity;
+            var r = ac - visibleBounds.Top - visibleBounds.Bottom;
+            if (r <= 0)
+                return double.PositiveInfinity;
+            return r;
+        }
     }
 }

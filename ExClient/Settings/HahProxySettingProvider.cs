@@ -16,7 +16,7 @@ namespace ExClient.Settings
 
         public string IPAddress
         {
-            get => ip;
+            get => this.ip;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
@@ -42,7 +42,7 @@ namespace ExClient.Settings
 
         public uint Port
         {
-            get => port;
+            get => this.port;
             set
             {
                 if (Set(nameof(AddressAndPort), ref this.port, value))

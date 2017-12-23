@@ -22,6 +22,7 @@ namespace ExClient.Settings
             ["Default"] = new DefaultSettingProvider(),
             [nameof(HahProxy)] = new HahProxySettingProvider(),
             [nameof(ExcludedLanguages)] = new ExcludedLanguagesSettingProvider(),
+            [nameof(ExcludedUploaders)] = new ExcludedUploadersSettingProvider(),
             [nameof(ExcludedTagNamespaces)] = new ExcludedTagNamespacesSettingProvider()
         };
 
@@ -32,18 +33,20 @@ namespace ExClient.Settings
 
         public HahProxySettingProvider HahProxy => (HahProxySettingProvider)getProvider();
         public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)getProvider();
+        public ExcludedUploadersSettingProvider ExcludedUploaders => (ExcludedUploadersSettingProvider)getProvider();
         public ExcludedTagNamespacesSettingProvider ExcludedTagNamespaces => (ExcludedTagNamespacesSettingProvider)getProvider();
 
         internal void ApplyChanges()
         {
-            var cookie = new HttpCookie("uconfig", "exhentai.org", "/")
+            var str = string.Join("-", this.items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray());
+            var cookie = new HttpCookie("uconfig", Client.Domains.Ex, "/")
             {
-                Value = string.Join("-", this.items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray())
+                Value = str
             };
             this.client.CookieManager.SetCookie(cookie);
-            cookie = new HttpCookie("uconfig", "e-hentai.org", "/")
+            cookie = new HttpCookie("uconfig", Client.Domains.Eh, "/")
             {
-                Value = string.Join("-", this.items.Values.Select(s => s.GetCookieContent()).Where(s => s != null).ToArray())
+                Value = str
             };
             this.client.CookieManager.SetCookie(cookie);
         }
