@@ -1,10 +1,12 @@
-﻿using System;
+﻿using ExClient.Launch;
+using System;
 
 namespace ExClient.Search
 {
-    //advsearch=1
     public sealed class AdvancedSearchOptions : IEquatable<AdvancedSearchOptions>
     {
+        private const string AdvancedSearchOptionsTag = "advsearch";
+
         public AdvancedSearchOptions() { }
 
         public AdvancedSearchOptions(
@@ -18,7 +20,9 @@ namespace ExClient.Search
             bool showExpungedGalleries = false,
             bool searchMinimumRating = false,
             int minimumRating = 2,
-            bool skipMasterTags = false)
+            bool skipMasterTags = false,
+            bool disableDefaultLanguageFilters = false,
+            bool disableDefaultUploaderFilters = false)
         {
             this.SearchName = searchName;
             this.SearchTags = searchTags;
@@ -31,11 +35,55 @@ namespace ExClient.Search
             this.SearchMinimumRating = searchMinimumRating;
             this.MinimumRating = minimumRating;
             this.SkipMasterTags = skipMasterTags;
+            this.DisableDefaultLanguageFilters = disableDefaultLanguageFilters;
+            this.DisableDefaultUploaderFilters = disableDefaultUploaderFilters;
         }
 
         internal AdvancedSearchOptions(ulong data)
         {
             this.data = data;
+        }
+
+        internal string ToSearchQuery()
+        {
+            if (this.data == 0)
+                return "&advsearch=1&f_sname=1&f_stags=1";
+            return $"&advsearch=1" +
+                $"{(SkipMasterTags ? "&skip_mastertags=1" : "")}" +
+                $"{(SearchName ? "&f_sname=1" : "")}" +
+                $"{(SearchTags ? "&f_stags=1" : "")}" +
+                $"{(SearchDescription ? "&f_sdesc=1" : "")}" +
+                $"{(SearchTorrentFilenames ? "&f_storr=1" : "")}" +
+                $"{(GalleriesWithTorrentsOnly ? "&f_sto=1" : "")}" +
+                $"{(SearchLowPowerTags ? "&f_sdt1=1" : "")}" +
+                $"{(SearchDownvotedTags ? "&f_sdt2=1" : "")}" +
+                $"{(ShowExpungedGalleries ? "&f_sh=1" : "")}" +
+                $"{(SearchMinimumRating ? "&f_sr=1&f_srdd=" + MinimumRating.ToString() : "")}" +
+                $"{(DisableDefaultLanguageFilters ? "&f_sfl=1" : "")}" +
+                $"{(DisableDefaultUploaderFilters ? "&f_sfu=1" : "")}";
+        }
+
+        internal static AdvancedSearchOptions ParseUri(UriHandlerData data)
+        {
+            var advanced = new AdvancedSearchOptions();
+            var advancedEnabled = data.Queries.GetBoolean(AdvancedSearchOptionsTag);
+            if (advancedEnabled)
+            {
+                advanced.SearchName = data.Queries.GetBoolean(SearchNameTag);
+                advanced.SearchTags = data.Queries.GetBoolean(SearchTagsTag);
+                advanced.SearchDescription = data.Queries.GetBoolean(SearchDescriptionTag);
+                advanced.SearchTorrentFilenames = data.Queries.GetBoolean(SearchTorrentFilenamesTag);
+                advanced.GalleriesWithTorrentsOnly = data.Queries.GetBoolean(GalleriesWithTorrentsOnlyTag);
+                advanced.SearchLowPowerTags = data.Queries.GetBoolean(SearchLowPowerTagsTag);
+                advanced.SearchDownvotedTags = data.Queries.GetBoolean(SearchDownvotedTagsTag);
+                advanced.ShowExpungedGalleries = data.Queries.GetBoolean(ShowExpungedGalleriesTag);
+                advanced.SearchMinimumRating = data.Queries.GetBoolean(SearchMinimumRatingTag);
+                advanced.MinimumRating = data.Queries.GetInt32(MinimumRatingTag);
+                advanced.DisableDefaultLanguageFilters = data.Queries.GetBoolean(DisableDefaultLanguageFiltersTag);
+                advanced.DisableDefaultUploaderFilters = data.Queries.GetBoolean(DisableDefaultUploaderFiltersTag);
+            }
+            advanced.SkipMasterTags = data.Queries.GetBoolean(SkipMasterTagsTag);
+            return advanced;
         }
 
         private ulong data;
@@ -68,77 +116,91 @@ namespace ExClient.Search
 
         private const int offset = 2;
 
-        //f_sname=on
+        private const string SearchNameTag = "f_sname";
         public bool SearchName
         {
             get => !getData(0);
             set => setData(0, !value);
         }
 
-        //f_stags=on
+        private const string SearchTagsTag = "f_stags";
         public bool SearchTags
         {
             get => !getData(1);
             set => setData(1, !value);
         }
 
-        //f_sdesc=on
+        private const string SearchDescriptionTag = "f_sdesc";
         public bool SearchDescription
         {
             get => getData(2);
             set => setData(2, value);
         }
 
-        //f_storr=on
+        private const string SearchTorrentFilenamesTag = "f_storr";
         public bool SearchTorrentFilenames
         {
             get => getData(3);
             set => setData(3, value);
         }
 
-        //f_sto=on
+        private const string GalleriesWithTorrentsOnlyTag = "f_sto";
         public bool GalleriesWithTorrentsOnly
         {
             get => getData(4);
             set => setData(4, value);
         }
 
-        //f_sdt1
+        private const string SearchLowPowerTagsTag = "f_sdt1";
         public bool SearchLowPowerTags
         {
             get => getData(5);
             set => setData(5, value);
         }
 
-        //f_sdt2
+        private const string SearchDownvotedTagsTag = "f_sdt2";
         public bool SearchDownvotedTags
         {
             get => getData(6);
             set => setData(6, value);
         }
 
-        //f_sh
+        private const string ShowExpungedGalleriesTag = "f_sh";
         public bool ShowExpungedGalleries
         {
             get => getData(7);
             set => setData(7, value);
         }
 
-        //f_sr
+        private const string SearchMinimumRatingTag = "f_sr";
         public bool SearchMinimumRating
         {
             get => getData(8);
             set => setData(8, value);
         }
 
-        //skip_mastertags
+        private const string SkipMasterTagsTag = "skip_mastertags";
         public bool SkipMasterTags
         {
             get => getData(9);
             set => setData(9, value);
         }
 
-        //f_srdd
+        private const string DisableDefaultLanguageFiltersTag = "f_sfl";
+        public bool DisableDefaultLanguageFilters
+        {
+            get => getData(10);
+            set => setData(10, value);
+        }
+
+        private const string DisableDefaultUploaderFiltersTag = "f_sfu";
+        public bool DisableDefaultUploaderFilters
+        {
+            get => getData(11);
+            set => setData(11, value);
+        }
+
+        private const string MinimumRatingTag = "f_srdd";
         public int MinimumRating
         {
             get => (int)(this.data & 0b11UL) + 2;
