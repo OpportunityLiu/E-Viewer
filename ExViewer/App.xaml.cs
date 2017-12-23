@@ -9,7 +9,6 @@ using Windows.UI.Xaml;
 using System.Collections.Generic;
 using Microsoft.AppCenter.Analytics;
 #if !DEBUG
-using Microsoft.HockeyApp;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Crashes;
 #endif
@@ -28,15 +27,6 @@ namespace ExViewer
         public App()
         {
             this.InitializeComponent();
-#if !DEBUG
-            HockeyClient.Current.Configure("9c09ca3908114a38a09c81ca8b68ee39", new TelemetryConfiguration
-            {
-                Collectors =
-                    WindowsCollectors.Metadata |
-                    WindowsCollectors.Session |
-                    WindowsCollectors.UnhandledException
-            }).SetExceptionDescriptionLoader(Telemetry.LogException);
-#endif
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
             this.UnhandledException += this.App_UnhandledException;
@@ -74,7 +64,7 @@ namespace ExViewer
             lanunchCore(e, e.PrelaunchActivated);
         }
 
-        private async void lanunchCore(IActivatedEventArgs e, bool prelaunchActivated)
+        private void lanunchCore(IActivatedEventArgs e, bool prelaunchActivated)
         {
 #if !DEBUG
             if (!AppCenter.Configured)
@@ -108,7 +98,6 @@ namespace ExViewer
             {
                 currentWindow.Activate();
             }
-            await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("fcf0a9351ea5917ec80d8c1b58b56ff1");
             ((Opportunity.Converters.Typed.StringToBooleanConverter)this.Resources["EmptyStringToFalseConverter"]).ValuesForFalse.Add("");
         }
 
@@ -133,9 +122,8 @@ namespace ExViewer
             }
         }
 
-        private async void OnResuming(object sender, object e)
+        private void OnResuming(object sender, object e)
         {
-            await JYAnalyticsUniversal.JYAnalytics.StartTrackAsync("fcf0a9351ea5917ec80d8c1b58b56ff1");
         }
 
         /// <summary>
@@ -145,11 +133,8 @@ namespace ExViewer
         /// </summary>
         /// <param name="sender">挂起的请求的源。</param>
         /// <param name="e">有关挂起请求的详细信息。</param>
-        private async void OnSuspending(object sender, SuspendingEventArgs e)
+        private void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            await JYAnalyticsUniversal.JYAnalytics.EndTrackAsync();
-            deferral.Complete();
         }
     }
 }

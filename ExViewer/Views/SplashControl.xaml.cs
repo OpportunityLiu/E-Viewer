@@ -2,7 +2,6 @@
 using ExViewer.Controls;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
-using JYAnalyticsUniversal;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

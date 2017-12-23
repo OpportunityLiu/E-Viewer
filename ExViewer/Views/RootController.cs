@@ -11,8 +11,6 @@ using System.Diagnostics;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Navigation;
 using ExClient;
-using JYAnalyticsUniversal;
-using Microsoft.HockeyApp;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using Windows.UI.Core;
 using System.Runtime.CompilerServices;
@@ -299,7 +297,6 @@ namespace ExViewer.Views
                 {
                     await DispatcherHelper.Yield();
                     var succeed = await new LogOnDialog().ShowAsync() == ContentDialogResult.Primary && !Client.Current.NeedLogOn;
-                    JYAnalytics.TrackEvent("LogOnRequested", $"Result: {(!succeed ? "Succeed" : "Failed")}");
                     Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (succeed ? "Succeed" : "Failed") });
                     UpdateUserInfo(succeed);
                     if (succeed)
