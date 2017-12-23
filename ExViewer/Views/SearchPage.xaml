@@ -85,7 +85,8 @@
             RelativePanel.AlignRightWithPanel="True"
             Opening="ab_Opening"
             Closed="ab_Closed">
-      <Grid>
+      <Grid x:Name="gdAb"
+            MaxHeight="{x:Bind caculateGdAbMaxHeight(VisibleBoundsThickness), Mode=OneWay}">
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition />
@@ -108,10 +109,11 @@
                         controls:TagSuggestionService.InputScope="Search"
                         controls:TagSuggestionService.SubmitCommand="{x:Bind VM.Search, Mode=OneWay}" />
         <ScrollViewer x:Name="sv_AdvancedSearch"
+                      Margin="0,0,0,12"
                       Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsEnabled="False"
-                      VerticalScrollBarVisibility="Hidden">
+                      VerticalScrollBarVisibility="Auto">
           <StackPanel>
             <controls:CategorySelector x:Name="cs_Category"
                                        MaxWidth="560"
@@ -130,7 +132,7 @@
                           Orientation="Horizontal"
                           XYFocusKeyboardNavigation="Enabled"
                           Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                          Margin="20,0,-20,12"
+                          Margin="20,0,-20,0"
                           MaxWidth="800"
                           HorizontalAlignment="Center">
               <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
@@ -185,10 +187,17 @@
                   <x:Int32>5</x:Int32>
                 </ComboBox>
               </StackPanel>
+              <CheckBox x:Uid="Views/SearchPage/DisableDefaultLanguageFiltersCheckBox"
+                        Content="Disable default language filters"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.DisableDefaultLanguageFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
+              <CheckBox x:Uid="Views/SearchPage/DisableDefaultUploaderFiltersCheckBox"
+                        Content="Disable default uploader filters"
+                        Style="{StaticResource AdvancedSearchOptionStyle}"
+                        IsChecked="{x:Bind VM.AdvancedSearch.DisableDefaultUploaderFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
             </tk:WrapPanel>
             <StackPanel HorizontalAlignment="Stretch"
-                        Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
-                        Padding="0,0,0,12">
+                        Visibility="{x:Bind ts_Advanced.IsOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}">
               <Button x:Name="btnFileSearch"
                       x:Uid="Views/SearchPage/FileSearchButton"
                       Content="File search"

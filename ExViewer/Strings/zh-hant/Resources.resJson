@@ -294,6 +294,8 @@
       "AdvancedToggleButton/OnContent": "隱藏高階選項",
       "AutoSuggestBox/PlaceholderText": "搜尋…",
       "DescriptionCheckBox/Content": "搜尋畫廊描述",
+      "DisableDefaultLanguageFiltersCheckBox/Content": "包含所有語言",
+      "DisableDefaultUploaderFiltersCheckBox/Content": "包含所有上傳者",
       "DownvotedTagsCheckBox/Content": "搜尋被反對的標籤",
       "EmptyTextBlock/Text": "沒有結果",
       "FileSearchButton/Content": "檔案搜尋",

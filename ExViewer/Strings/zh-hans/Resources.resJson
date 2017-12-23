@@ -294,6 +294,8 @@
       "AdvancedToggleButton/OnContent": "隐藏高级选项",
       "AutoSuggestBox/PlaceholderText": "搜索…",
       "DescriptionCheckBox/Content": "搜索画廊描述",
+      "DisableDefaultLanguageFiltersCheckBox/Content": "包含所有语言",
+      "DisableDefaultUploaderFiltersCheckBox/Content": "包含所有上传者",
       "DownvotedTagsCheckBox/Content": "搜索被反对的标签",
       "EmptyTextBlock/Text": "没有结果",
       "FileSearchButton/Content": "文件搜索",

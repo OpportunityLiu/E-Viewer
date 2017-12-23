@@ -1,5 +1,6 @@
 ﻿using ExClient.Launch;
 using System;
+using System.Text;
 
 namespace ExClient.Search
 {
@@ -46,21 +47,35 @@ namespace ExClient.Search
 
         internal string ToSearchQuery()
         {
-            if (this.data == 0)
+            if (this.data == default)
                 return "&advsearch=1&f_sname=1&f_stags=1";
-            return $"&advsearch=1" +
-                $"{(SkipMasterTags ? "&skip_mastertags=1" : "")}" +
-                $"{(SearchName ? "&f_sname=1" : "")}" +
-                $"{(SearchTags ? "&f_stags=1" : "")}" +
-                $"{(SearchDescription ? "&f_sdesc=1" : "")}" +
-                $"{(SearchTorrentFilenames ? "&f_storr=1" : "")}" +
-                $"{(GalleriesWithTorrentsOnly ? "&f_sto=1" : "")}" +
-                $"{(SearchLowPowerTags ? "&f_sdt1=1" : "")}" +
-                $"{(SearchDownvotedTags ? "&f_sdt2=1" : "")}" +
-                $"{(ShowExpungedGalleries ? "&f_sh=1" : "")}" +
-                $"{(SearchMinimumRating ? "&f_sr=1&f_srdd=" + MinimumRating.ToString() : "")}" +
-                $"{(DisableDefaultLanguageFilters ? "&f_sfl=1" : "")}" +
-                $"{(DisableDefaultUploaderFilters ? "&f_sfu=1" : "")}";
+            var builder = new StringBuilder(128);
+            if (SkipMasterTags) append(SkipMasterTagsTag);
+            append(AdvancedSearchOptionsTag);
+            if (SearchName) append(SearchNameTag);
+            if (SearchTags) append(SearchTagsTag);
+            if (SearchDescription) append(SearchDescriptionTag);
+            if (SearchTorrentFilenames) append(SearchTorrentFilenamesTag);
+            if (GalleriesWithTorrentsOnly) append(GalleriesWithTorrentsOnlyTag);
+            if (SearchLowPowerTags) append(SearchLowPowerTagsTag);
+            if (SearchDownvotedTags) append(SearchDownvotedTagsTag);
+            if (ShowExpungedGalleries) append(ShowExpungedGalleriesTag);
+            if (SearchMinimumRating)
+            {
+                append(SearchMinimumRatingTag);
+                append(MinimumRatingTag, MinimumRating);
+            }
+            if (DisableDefaultLanguageFilters) append(DisableDefaultLanguageFiltersTag);
+            if (DisableDefaultUploaderFilters) append(DisableDefaultUploaderFiltersTag);
+            return builder.ToString();
+            void append(string key, int value = 1)
+            {
+                builder
+                    .Append('&')
+                    .Append(key)
+                    .Append('=')
+                    .Append(value);
+            }
         }
 
         internal static AdvancedSearchOptions ParseUri(UriHandlerData data)
@@ -105,11 +120,11 @@ namespace ExClient.Search
                 pos += offset;
                 if (value)
                 {
-                    this.data |= (ushort)(1 << pos);
+                    this.data |= 1UL << pos;
                 }
                 else
                 {
-                    this.data &= (ushort)~(1 << pos);
+                    this.data &= ~(1UL << pos);
                 }
             }
         }

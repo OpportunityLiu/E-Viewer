@@ -23,16 +23,17 @@ namespace ExClient
             || this.UserID <= 0
             || this.PassHash == null;
 
-        private static class CookieNames
+        internal static class CookieNames
         {
             public const string MemberID = "ipb_member_id";
             public const string PassHash = "ipb_pass_hash";
             public const string S = "s";
             public const string NeverWarn = "nw";
             public const string HathPerks = "hath_perks";
+            public const string Config = "uconfig";
         }
 
-        private static class Domains
+        internal static class Domains
         {
             public const string Eh = "e-hentai.org";
             public const string Ex = "exhentai.org";
