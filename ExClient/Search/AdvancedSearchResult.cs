@@ -9,21 +9,7 @@ namespace ExClient.Search
             return new AdvancedSearchResult(keyword, category, advancedSearch);
         }
 
-        private string getQueryString()
-        {
-            var adv = new AdvancedSearchOptions(this.advSearchData);
-            return $"&advsearch=1" +
-                $"{(adv.SkipMasterTags ? "&skip_mastertags=1" : "")}" +
-                $"{(adv.SearchName ? "&f_sname=1" : "")}" +
-                $"{(adv.SearchTags ? "&f_stags=1" : "")}" +
-                $"{(adv.SearchDescription ? "&f_sdesc=1" : "")}" +
-                $"{(adv.SearchTorrentFilenames ? "&f_storr=1" : "")}" +
-                $"{(adv.GalleriesWithTorrentsOnly ? "&f_sto=1" : "")}" +
-                $"{(adv.SearchLowPowerTags ? "&f_sdt1=1" : "")}" +
-                $"{(adv.SearchDownvotedTags ? "&f_sdt2=1" : "")}" +
-                $"{(adv.ShowExpungedGalleries ? "&f_sh=1" : "")}" +
-                $"{(adv.SearchMinimumRating ? "&f_sr=1&f_srdd=" + adv.MinimumRating.ToString() : "")}";
-        }
+        private string getQueryString() => new AdvancedSearchOptions(this.advSearchData).ToSearchQuery();
 
         private AdvancedSearchResult(string keyword, Category category, AdvancedSearchOptions advancedSearch)
             : base(keyword, category)
