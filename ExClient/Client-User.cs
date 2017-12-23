@@ -1,6 +1,7 @@
 ﻿using ExClient.Internal;
 using ExClient.Status;
 using HtmlAgilityPack;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +19,9 @@ namespace ExClient
         public static Uri LogOnUri { get; } = new Uri(ForumsUri, "index.php?act=Login");
 
         public bool NeedLogOn
-            => this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Count(isImportantCookie) < 3;
+            => this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Count(isLogOnCookie) < 3
+            || this.UserID <= 0
+            || this.PassHash == null;
 
         private static class CookieNames
         {
@@ -54,6 +57,15 @@ namespace ExClient
         }
 
         private static bool isImportantCookie(HttpCookie cookie)
+        {
+            var name = cookie?.Name;
+            return name == CookieNames.MemberID
+                || name == CookieNames.PassHash
+                || name == CookieNames.S
+                || name == CookieNames.HathPerks;
+        }
+
+        private static bool isLogOnCookie(HttpCookie cookie)
         {
             var name = cookie?.Name;
             return name == CookieNames.MemberID
@@ -117,10 +129,7 @@ namespace ExClient
                 this.CookieManager.SetCookie(new HttpCookie(CookieNames.PassHash, Domains.Eh, "/") { Value = passHash, Expires = DateTimeOffset.UtcNow.AddYears(5) });
                 try
                 {
-                    await this.HttpClient.GetAsync(new Uri(UriProvider.Eh.RootUri, "hathperks.php"), HttpCompletionOption.ResponseHeadersRead, true);
-                    if (this.NeedLogOn)
-                        throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
-                    ResetExCookie();
+                    await this.refreshHathPerksCore();
                     var ignore = this.UserStatus?.RefreshAsync();
                 }
                 catch (Exception)
@@ -128,6 +137,26 @@ namespace ExClient
                     RestoreLogOnInfo(cookieBackUp);
                     throw;
                 }
+            });
+        }
+
+        private static readonly Uri hathperksUri = new Uri(UriProvider.Eh.RootUri, "hathperks.php");
+
+        public IAsyncAction RefreshHathPerks()
+        {
+            if (NeedLogOn)
+                throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
+            return refreshHathPerksCore();
+        }
+
+        private IAsyncAction refreshHathPerksCore()
+        {
+            return AsyncInfo.Run(async token =>
+            {
+                await this.HttpClient.GetAsync(hathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
+                if (this.NeedLogOn)
+                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
+                ResetExCookie();
             });
         }
 
