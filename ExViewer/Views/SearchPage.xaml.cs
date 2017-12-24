@@ -148,12 +148,11 @@ namespace ExViewer.Views
             await this.dlgFIleSearch.ShowAsync();
         }
 
-        private double caculateGdAbMaxHeight(Thickness visibleBounds)
+        private double caculateGdAbMaxHeight(Thickness visibleBounds, double rootHeight)
         {
-            var ac = this.ActualHeight;
-            if (ac <= 50)
+            if (rootHeight <= 50)
                 return double.PositiveInfinity;
-            var r = ac - visibleBounds.Top - visibleBounds.Bottom;
+            var r = rootHeight - visibleBounds.Top - visibleBounds.Bottom;
             if (r <= 0)
                 return double.PositiveInfinity;
             return r;

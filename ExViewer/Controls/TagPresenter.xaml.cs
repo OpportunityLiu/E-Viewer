@@ -265,21 +265,21 @@ namespace ExViewer.Controls
             var state = (TagState)value;
             switch (state.GetVoteState())
             {
-            case TagState.Upvoted:
-                if (state.IsSlave())
-                    return upSlaveBrush;
-                else
-                    return upBrush;
-            case TagState.Downvoted:
-                if (state.IsSlave())
-                    return downSlaveBrush;
-                else
-                    return downBrush;
-            default:
-                if (state.IsSlave())
-                    return slaveBrush;
-                else
-                    return normalBrush;
+                case TagState.Upvoted:
+                    if (state.IsSlave())
+                        return upSlaveBrush;
+                    else
+                        return upBrush;
+                case TagState.Downvoted:
+                    if (state.IsSlave())
+                        return downSlaveBrush;
+                    else
+                        return downBrush;
+                default:
+                    if (state.IsSlave())
+                        return slaveBrush;
+                    else
+                        return normalBrush;
             }
         }
 
@@ -306,12 +306,12 @@ namespace ExViewer.Controls
             var state = (TagState)value;
             switch (state.GetPowerState())
             {
-            case TagState.LowPower:
-                return Windows.UI.Text.FontWeights.ExtraLight;
-            case TagState.HighPower:
-                return Windows.UI.Text.FontWeights.Medium;
-            default:
-                return Windows.UI.Text.FontWeights.Normal;
+                case TagState.LowPower:
+                    return Windows.UI.Text.FontWeights.ExtraLight;
+                case TagState.HighPower:
+                    return Windows.UI.Text.FontWeights.Medium;
+                default:
+                    return Windows.UI.Text.FontWeights.Normal;
             }
         }
 

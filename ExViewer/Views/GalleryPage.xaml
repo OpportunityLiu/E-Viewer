@@ -362,7 +362,7 @@
                              Style="{StaticResource PivotHeaderTextBlockStyle}"
                              Text="Images" />
                   <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                             Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/GalleryPage/PivotHeaderNumberFormatString'}" />
+                             Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}" />
                 </Grid>
               </PivotItem.Header>
               <GridView xmlns:animation="using:Microsoft.Toolkit.Uwp.UI.Animations"
@@ -425,7 +425,7 @@
                              Style="{StaticResource PivotHeaderTextBlockStyle}"
                              Text="Comments" />
                   <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                             Text="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/GalleryPage/PivotHeaderNumberFormatString'}"
+                             Text="{x:Bind VM.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}"
                              Visibility="{x:Bind VM.Gallery.Comments.IsLoaded, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
                 </Grid>
               </PivotItem.Header>
@@ -485,7 +485,7 @@
                              Style="{StaticResource PivotHeaderTextBlockStyle}"
                              Text="Torrents" />
                   <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                             Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/GalleryPage/PivotHeaderNumberFormatString'}"
+                             Text="{x:Bind VM.TorrentCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}"
                              Visibility="{x:Bind VM.Torrents, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
                 </Grid>
               </PivotItem.Header>

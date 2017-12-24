@@ -174,7 +174,7 @@
                          Category="{x:Bind Gallery.Category, Mode=OneWay}" />
       <TextBlock x:Name="LanguageTextBlock"
                  RelativePanel.Above="Rating"
-                 Text="{x:Bind Gallery.Language, Mode=OneWay, Converter={StaticResource StringConverter}}"
+                 Text="{x:Bind Gallery.Language, Mode=OneWay, Converter={StaticResource FormatConverter}}"
                  Style="{StaticResource DetailTextBlockStyle}" />
       <RatingControl x:Name="Rating"
                      Style="{StaticResource CompactRatingStyle}"
@@ -185,7 +185,7 @@
       <TextBlock x:Name="tbCount"
                  RelativePanel.AlignVerticalCenterWith="CategoryTag"
                  RelativePanel.RightOf="CategoryTag"
-                 Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/GalleryViewer/RecordCountFormatString'}"
+                 Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/GalleryViewer/RecordCountFormatString'}"
                  Style="{StaticResource DetailRightTextBlockStyle}" />
       <TextBlock x:Name="tbPosted"
                  RelativePanel.AlignVerticalCenterWith="LanguageTextBlock"

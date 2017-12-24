@@ -154,22 +154,22 @@
           RelativePanel.AlignTopWithPanel="True">
       <TextBlock x:Name="Posted"
                  Style="{StaticResource CommentHeaderTextBlockStyle}"
-                 Text="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/CommentViewer/PostedFormatString'}"
+                 Text="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/PostedFormatString'}"
                  Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToVisibleConverter}}" />
       <TextBlock x:Name="Edited"
                  Style="{StaticResource CommentHeaderTextBlockStyle}"
-                 Text="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/CommentViewer/EditedFormatString'}"
+                 Text="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/EditedFormatString'}"
                  Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
-                 ToolTipService.ToolTip="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='Controls/CommentViewer/PostedFormatString'}" />
+                 ToolTipService.ToolTip="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/PostedFormatString'}" />
     </Grid>
     <TextBlock x:Name="Author"
                Style="{StaticResource CommentHeaderTextBlockStyle}"
-               Text="{x:Bind Comment.Author, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/AuthorFormatString'}" />
+               Text="{x:Bind Comment.Author, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/AuthorFormatString'}" />
     <TextBlock x:Name="Score"
                HorizontalAlignment="Right"
                RelativePanel.AlignTopWith="TimeInfo"
                Style="{StaticResource CommentHeaderTextBlockStyle}"
-               Text="{x:Bind Comment.Score, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Controls/CommentViewer/ScoreFormatString'}"
+               Text="{x:Bind Comment.Score, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/ScoreFormatString'}"
                Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}" />
     <TextBlock x:Name="IsUploaderComment"
                x:Uid="Controls/CommentViewer/IsUploaderCommentTextBlock"
