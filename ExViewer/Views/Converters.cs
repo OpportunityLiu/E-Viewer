@@ -14,7 +14,6 @@ using ExViewer.ViewModels;
 using Windows.UI;
 using System.Globalization;
 using Windows.UI.Xaml.Markup;
-using ExViewer.Converters;
 using Opportunity.Converters;
 using ExClient.Galleries;
 using ExClient.Tagging;

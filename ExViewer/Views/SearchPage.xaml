@@ -86,7 +86,7 @@
             Opening="ab_Opening"
             Closed="ab_Closed">
       <Grid x:Name="gdAb"
-            MaxHeight="{x:Bind caculateGdAbMaxHeight(VisibleBoundsThickness), Mode=OneWay}">
+            MaxHeight="{x:Bind caculateGdAbMaxHeight(VisibleBoundsThickness, root.ActualHeight), Mode=OneWay}">
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition />
@@ -179,8 +179,9 @@
                           IsChecked="{x:Bind VM.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
                 <ComboBox VerticalAlignment="Center"
                           SelectedItem="{x:Bind VM.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
-                          Margin="12,0,24,0"
-                          MinWidth="0">
+                          Margin="0,0,24,0"
+                          MinWidth="0"
+                          Width="60">
                   <x:Int32>2</x:Int32>
                   <x:Int32>3</x:Int32>
                   <x:Int32>4</x:Int32>
@@ -206,7 +207,7 @@
                       Style="{StaticResource TextBlockButtonStyle}" />
               <StackPanel Visibility="{x:Bind VM.FileSearch, Converter={StaticResource NullToCollapsedConverter}, Mode=OneWay}"
                           HorizontalAlignment="Center">
-                <TextBlock Text="{x:Bind VM.FileSearch.FileName, Converter={StaticResource StringConverter}, ConverterParameter='Views/SearchPage/FileSearchNameFormatString', Mode=OneWay}"
+                <TextBlock Text="{x:Bind VM.FileSearch.FileName, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Views/SearchPage/FileSearchNameFormatString', Mode=OneWay}"
                            HorizontalAlignment="Stretch"
                            TextWrapping="WrapWholeWords"
                            Margin="8" />

@@ -109,7 +109,7 @@ namespace ExClient.Search
         {
             unchecked
             {
-                return ((this.data >> (pos + offset)) & 1) == 1;
+                return ((this.data >> (pos + offset)) & 1UL) == 1UL;
             }
         }
 

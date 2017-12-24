@@ -82,6 +82,25 @@
       <Setter Property="IsTabStop"
               Value="False" />
     </Style>
+    <Style x:Key="ModPowerSeperatorRectangleStyle"
+           TargetType="Rectangle">
+      <Setter Property="Height"
+              Value="1" />
+      <Setter Property="Margin"
+              Value="4,1.5" />
+    </Style>
+    <Style x:Key="ModPowerKeyTextBlockStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource InfoPageBodyTextBlockStyle}">
+      <Setter Property="HorizontalAlignment"
+              Value="Left" />
+    </Style>
+    <Style x:Key="ModPowerValueTextBlockStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource InfoPageBodyTextBlockStyle}">
+      <Setter Property="HorizontalAlignment"
+              Value="Right" />
+    </Style>
     <MenuFlyout x:Name="mfTaggingRecord">
       <MenuFlyoutItem x:Uid="Views/InfoPage/OpenGalleryMenuFlyoutItem"
                       Command="{x:Bind VM.OpenGallery}"
@@ -129,14 +148,17 @@
           <DataTemplate xmlns:s="using:ExClient.Status"
                         xmlns:controls="using:ExViewer.Controls"
                         x:DataType="s:ToplistItem">
-            <HyperlinkButton Margin="8,0"
+            <HyperlinkButton Background="Transparent"
+                             Padding="0"
                              HorizontalAlignment="Stretch"
                              HorizontalContentAlignment="Stretch"
                              NavigateUri="{x:Bind s:ToplistNameExtension.Uri(Name)}">
-              <Grid Background="Transparent">
+              <Grid MaxWidth="500">
                 <TextBlock Text="{x:Bind s:ToplistNameExtension.ToFriendlyNameString(Name)}"
+                           Style="{StaticResource InfoPageBodyTextBlockStyle}"
                            HorizontalAlignment="Left" />
-                <TextBlock Text="{x:Bind Rank, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/ToplistItemRankFormatString'}"
+                <TextBlock Text="{x:Bind Rank, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Views/InfoPage/ToplistItemRankFormatString'}"
+                           Style="{StaticResource InfoPageBodyTextBlockStyle}"
                            HorizontalAlignment="Right" />
               </Grid>
             </HyperlinkButton>
@@ -147,17 +169,13 @@
             <TextBlock x:Uid="Views/InfoPage/ImageLimitsHeaderTextBlock"
                        Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
                        Text="Image Limits" />
-            <Grid Padding="8,4">
+            <Grid Margin="8,4,8,0">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
               </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
               <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
                          Text="{x:Bind VM.Status.ImageUsage, Mode=OneWay}" />
               <TextBlock x:Uid="Views/InfoPage/ImageLimitsSeparatorTextBlock"
@@ -170,11 +188,117 @@
               <TextBlock Grid.Column="3"
                          Style="{StaticResource CaptionTextBlockStyle}"
                          HorizontalAlignment="Right"
-                         Text="{x:Bind VM.Status.ImageUsageRegenerateRatePerMinute, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/RegenerateFormatString'}" />
-              <ProgressBar Grid.Row="1"
-                           Grid.ColumnSpan="999"
-                           Value="{x:Bind VM.Status.ImageUsage, Mode=OneWay, Converter={StaticResource DefaultConverter}}"
-                           Maximum="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
+                         Text="{x:Bind VM.Status.ImageUsageRegenerateRatePerMinute, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Views/InfoPage/RegenerateFormatString'}" />
+            </Grid>
+            <ProgressBar  Margin="8,0,8,4"
+                          Value="{x:Bind VM.Status.ImageUsage, Mode=OneWay, Converter={StaticResource DefaultConverter}}"
+                          Maximum="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay, Converter={StaticResource DefaultConverter}}" />
+            <TextBlock x:Uid="Views/InfoPage/ModPowerHeaderTextBlock"
+                       Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
+                       Text="Moderation Power" />
+            <Grid x:Name="gdModPower">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid x:Name="gdModPowerBasic">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Uid="Views/InfoPage/ModPowerBaseTextBlock"
+                           Style="{StaticResource ModPowerKeyTextBlockStyle}"
+                           Text="Base" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Text="{x:Bind VM.Status.ModerationPowerBase, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:+0.##;-0.##}}" />
+                <TextBlock x:Uid="Views/InfoPage/ModPowerAwardsTextBlock"
+                           Style="{StaticResource ModPowerKeyTextBlockStyle}"
+                           Grid.Row="1"
+                           Text="Awards" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Grid.Row="1"
+                           Text="{x:Bind VM.Status.ModerationPowerAwards, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:+0.##;-0.##}}" />
+                <TextBlock x:Uid="Views/InfoPage/ModPowerTaggingTextBlock"
+                           Style="{StaticResource ModPowerKeyTextBlockStyle}"
+                           Grid.Row="2"
+                           Text="Tagging" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Grid.Row="2"
+                           Text="{x:Bind VM.Status.ModerationPowerTagging, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:+0.##;-0.##}}" />
+              </Grid>
+              <Rectangle x:Name="gdModPowerSepLow"
+                         Grid.Row="1"
+                         Grid.ColumnSpan="2"
+                         Style="{StaticResource ModPowerSeperatorRectangleStyle}"
+                         Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" />
+              <Grid x:Name="gdModPowerAdvanced">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Uid="Views/InfoPage/ModPowerLevelTextBlock"
+                           Style="{StaticResource ModPowerKeyTextBlockStyle}"
+                           Text="Level" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Text="{x:Bind VM.Status.ModerationPowerLevel, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:+0.##;-0.##}}" />
+                <TextBlock x:Uid="Views/InfoPage/ModPowerDonationsTextBlock"
+                           Style="{StaticResource ModPowerKeyTextBlockStyle}"
+                           Grid.Row="1"
+                           Text="Donations" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Grid.Row="1"
+                           Text="{x:Bind VM.Status.ModerationPowerDonations, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:+0.##;-0.##}}" />
+                <TextBlock x:Uid="Views/InfoPage/ModPowerForumActivityTextBlock"
+                           Style="{StaticResource ModPowerKeyTextBlockStyle}"
+                           Grid.Row="2"
+                           Text="Forum activity" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Grid.Row="2"
+                           Text="{x:Bind VM.Status.ModerationPowerForumActivity, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:+0.##;-0.##}}" />
+                <TextBlock x:Uid="Views/InfoPage/ModPowerUploadsAndHatHTextBlock"
+                           Style="{StaticResource ModPowerKeyTextBlockStyle}"
+                           Grid.Row="3"
+                           Text="Uploads &amp; H@H" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Grid.Row="3"
+                           Text="{x:Bind VM.Status.ModerationPowerUploadsAndHatH, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:+0.##;-0.##}}" />
+                <TextBlock x:Uid="Views/InfoPage/ModPowerTextAccountAgeBlock"
+                           Style="{StaticResource ModPowerKeyTextBlockStyle}"
+                           Grid.Row="4"
+                           Text="Account age" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Grid.Row="4"
+                           Text="{x:Bind VM.Status.ModerationPowerAccountAge, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:+0.##;-0.##}}" />
+              </Grid>
+              <Rectangle x:Name="gdModPowerSepMedium"
+                         Grid.Row="3"
+                         Grid.ColumnSpan="2"
+                         Style="{StaticResource ModPowerSeperatorRectangleStyle}"
+                         Fill="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+              <Grid x:Name="gdModPowerTotal"
+                    Grid.Row="4"
+                    Grid.ColumnSpan="2">
+                <TextBlock x:Uid="Views/InfoPage/ModPowerTextBlock"
+                           Style="{StaticResource ModPowerKeyTextBlockStyle}"
+                           FontWeight="Bold"
+                           Grid.Row="4"
+                           Text="Total" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           FontWeight="Bold"
+                           Grid.Row="4"
+                           Text="{x:Bind VM.Status.ModerationPower, Mode=OneWay}" />
+              </Grid>
             </Grid>
             <TextBlock x:Uid="Views/InfoPage/ToplistsHeaderTextBlock"
                        Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
@@ -256,22 +380,22 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Style="{StaticResource CaptionTextBlockStyle}"
-                           Text="{x:Bind VM.TaggingStatistics.StartedAccuracy, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/TaggingPercentFormatString'}" />
+                           Text="{x:Bind VM.TaggingStatistics.StartedAccuracy, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:P}}" />
                 <TextBlock Grid.Row="1"
                            Grid.Column="1"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Style="{StaticResource CaptionTextBlockStyle}"
-                           Text="{x:Bind VM.TaggingStatistics.VotedAccuracy, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/TaggingPercentFormatString'}" />
+                           Text="{x:Bind VM.TaggingStatistics.VotedAccuracy, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter={}{0:P}}" />
                 <TextBlock Grid.Row="2"
                            HorizontalAlignment="Center"
                            Style="{StaticResource InfoPageCaptionTextBlockStyle}"
-                           Text="{x:Bind VM.TaggingStatistics.StartedCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/TaggingCountFormatString'}" />
+                           Text="{x:Bind VM.TaggingStatistics.StartedCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Views/InfoPage/TaggingCountFormatString'}" />
                 <TextBlock Grid.Row="2"
                            Grid.Column="1"
                            HorizontalAlignment="Center"
                            Style="{StaticResource InfoPageCaptionTextBlockStyle}"
-                           Text="{x:Bind VM.TaggingStatistics.VotedCount, Mode=OneWay, Converter={StaticResource StringConverter}, ConverterParameter='Views/InfoPage/TaggingCountFormatString'}" />
+                           Text="{x:Bind VM.TaggingStatistics.VotedCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Views/InfoPage/TaggingCountFormatString'}" />
               </Grid>
               <TextBlock x:Uid="Views/InfoPage/TaggingHistoryHeaderTextBlock"
                          Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
@@ -287,5 +411,41 @@
         </ListView.Header>
       </ListView>
     </PivotItem>
+    <VisualStateManager.VisualStateGroups>
+      <VisualStateGroup>
+        <VisualState>
+          <VisualState.StateTriggers>
+            <AdaptiveTrigger MinWindowWidth="0" />
+          </VisualState.StateTriggers>
+          <VisualState.Setters>
+            <Setter Target="gdModPower.MaxWidth"
+                    Value="500" />
+            <Setter Target="gdModPowerBasic.(Grid.ColumnSpan)"
+                    Value="2" />
+            <Setter Target="gdModPowerAdvanced.(Grid.ColumnSpan)"
+                    Value="2" />
+            <Setter Target="gdModPowerAdvanced.(Grid.Row)"
+                    Value="2" />
+          </VisualState.Setters>
+        </VisualState>
+        <VisualState>
+          <VisualState.StateTriggers>
+            <AdaptiveTrigger MinWindowWidth="720" />
+          </VisualState.StateTriggers>
+          <VisualState.Setters>
+            <Setter Target="gdModPower.MaxWidth"
+                    Value="720" />
+            <Setter Target="gdModPowerSepLow.Visibility"
+                    Value="Collapsed" />
+            <Setter Target="gdModPowerBasic.(Grid.RowSpan)"
+                    Value="3" />
+            <Setter Target="gdModPowerAdvanced.(Grid.Column)"
+                    Value="1" />
+            <Setter Target="gdModPowerAdvanced.(Grid.RowSpan)"
+                    Value="3" />
+          </VisualState.Setters>
+        </VisualState>
+      </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
   </Pivot>
 </controls:MyPage>

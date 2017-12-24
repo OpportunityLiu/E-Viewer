@@ -10,7 +10,7 @@
   <t:SoftwareBitmapToImageSourceConverter x:Key="SoftwareBitmapToImageSourceConverter" />
   <t:ThicknessConverter x:Key="ThicknessConverter" />
   <t:IRandomAccessStreamReferenceToBitmapImageConverter x:Key="FileConverter" />
-  <FormatStringConverter x:Key="StringConverter" />
+  <t:FormatConverter x:Key="FormatConverter" />
   <t:BooleanToVisibilityConverter x:Key="TrueToVisibleConverter"
                                   TrueForVisible="True" />
   <t:BooleanToVisibilityConverter x:Key="FalseToVisibleConverter"
@@ -31,7 +31,7 @@
   <c:SystemConverter x:Key="DefaultConverter" />
   <c:ChainConverter x:Key="IndexToStringConverter">
     <t:Int32OffsetConverter Offset="1" />
-    <c:ConverterReference Converter="{uwp:StaticResource StringConverter}" />
+    <c:ConverterReference Converter="{uwp:StaticResource FormatConverter}" />
   </c:ChainConverter>
   <t:ByteSizeToStringConverter x:Key="SizeConverter"
                                UnitPrefix="Binary" />
@@ -55,7 +55,7 @@
   </c:ChainConverter>
   <c:ChainConverter x:Key="DateTimeOffsetToStringConverter">
     <t:DateTimeOffsetToStringConverter />
-    <c:ConverterReference Converter="{uwp:StaticResource StringConverter}" />
+    <c:ConverterReference Converter="{uwp:StaticResource FormatConverter}" />
   </c:ChainConverter>
 
   <local:RateStringConverter x:Key="RateStringConverter" />
