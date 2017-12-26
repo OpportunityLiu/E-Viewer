@@ -221,8 +221,7 @@ namespace ExViewer.Views
 
             internal static void HandleUriLaunch()
             {
-                if (launchUri != null)
-                    HandleUriLaunch(launchUri);
+                HandleUriLaunch(launchUri);
             }
 
             private static void Frame_Navigated(object sender, NavigationEventArgs e)

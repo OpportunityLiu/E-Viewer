@@ -15,9 +15,25 @@ namespace ExViewer
 {
     internal static class UriHandler
     {
+        private static Uri reform(Uri uri)
+        {
+            if (isPrivateProtocal(uri))
+                return new Uri($"https://exhentai.org/{uri.PathAndQuery.TrimStart('/', '\\', ' ', '\t')}");
+            return uri;
+        }
+
+        private static bool isPrivateProtocal(Uri uri)
+        {
+            if (uri == null)
+                return false;
+            return uri.Scheme == "e-viewer-data";
+        }
+
         public static bool CanHandleInApp(Uri uri)
         {
-            return UriLauncher.CanHandle(uri);
+            if (isPrivateProtocal(uri))
+                return true;
+            return UriLauncher.CanHandle(reform(uri));
         }
 
         /// <summary>
@@ -29,8 +45,13 @@ namespace ExViewer
         {
             if (uri == null)
                 return true;
+            var p = isPrivateProtocal(uri);
+            uri = reform(uri);
             if (!CanHandleInApp(uri))
             {
+                if (p)
+                    // private protocal, handled by doing nothing
+                    return true;
                 var ignore = Launcher.LaunchUriAsync(uri, new LauncherOptions
                 {
                     DesiredRemainingView = Windows.UI.ViewManagement.ViewSizePreference.UseMore,
@@ -52,42 +73,42 @@ namespace ExViewer
                     var r = await UriLauncher.HandleAsync(uri);
                     switch (r)
                     {
-                    case GalleryLaunchResult g:
-                        var page = RootControl.RootController.Frame.Content;
-                        if (!(page is GalleryPage gPage && gPage.VM.Gallery.ID == g.GalleryInfo.ID))
-                        {
-                            await GalleryVM.GetVMAsync(g.GalleryInfo);
-                            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.GalleryInfo.ID);
-                            await Task.Delay(500);
-                        }
-                        switch (g.Status)
-                        {
-                        case GalleryLaunchStatus.Image:
-                            RootControl.RootController.Frame.Navigate(typeof(ImagePage), g.GalleryInfo.ID);
-                            await Task.Delay(500);
-                            (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
-                            break;
-                        case GalleryLaunchStatus.Torrent:
-                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
-                            break;
-                        default:
-                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
-                            break;
-                        }
-                        return;
-                    case SearchLaunchResult sr:
-                        switch (sr.Data)
-                        {
-                        case CategorySearchResult ksr:
-                            var vm = SearchVM.GetVM(ksr);
-                            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+                        case GalleryLaunchResult g:
+                            var page = RootControl.RootController.Frame.Content;
+                            if (!(page is GalleryPage gPage && gPage.VM.Gallery.ID == g.GalleryInfo.ID))
+                            {
+                                await GalleryVM.GetVMAsync(g.GalleryInfo);
+                                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.GalleryInfo.ID);
+                                await Task.Delay(500);
+                            }
+                            switch (g.Status)
+                            {
+                                case GalleryLaunchStatus.Image:
+                                    RootControl.RootController.Frame.Navigate(typeof(ImagePage), g.GalleryInfo.ID);
+                                    await Task.Delay(500);
+                                    (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
+                                    break;
+                                case GalleryLaunchStatus.Torrent:
+                                    (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
+                                    break;
+                                default:
+                                    (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
+                                    break;
+                            }
                             return;
-                        case FavoritesSearchResult fsr:
-                            var fvm = FavoritesVM.GetVM(fsr);
-                            RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), fvm.SearchQuery.ToString());
-                            return;
-                        }
-                        throw new InvalidOperationException();
+                        case SearchLaunchResult sr:
+                            switch (sr.Data)
+                            {
+                                case CategorySearchResult ksr:
+                                    var vm = SearchVM.GetVM(ksr);
+                                    RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+                                    return;
+                                case FavoritesSearchResult fsr:
+                                    var fvm = FavoritesVM.GetVM(fsr);
+                                    RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), fvm.SearchQuery.ToString());
+                                    return;
+                            }
+                            throw new InvalidOperationException();
                     }
                 }
                 catch (Exception e)

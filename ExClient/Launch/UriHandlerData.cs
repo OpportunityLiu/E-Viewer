@@ -11,7 +11,7 @@ namespace ExClient.Launch
         {
             this.Uri = uri;
             this.Paths = uri.AbsolutePath.Split(split0, StringSplitOptions.RemoveEmptyEntries);
-            if(this.Paths.Count != 0)
+            if (this.Paths.Count != 0)
                 this.Path0 = this.Paths[0].ToLowerInvariant();
             else
                 this.Path0 = "";
@@ -33,13 +33,13 @@ namespace ExClient.Launch
         private IReadOnlyDictionary<string, string> getQueries()
         {
             var query = this.Uri.Query;
-            if(string.IsNullOrWhiteSpace(query) || query.Length <= 1 || query[0] != '?')
+            if (string.IsNullOrWhiteSpace(query) || query.Length <= 1 || query[0] != '?')
                 return empty;
             query = query.Substring(1);
             var divided = query.Split(split1, StringSplitOptions.RemoveEmptyEntries);
             return new ReadOnlyDictionary<string, string>((from item in divided
                                                            select item.Split(split2, 2, StringSplitOptions.None))
-                   .ToDictionary(i => i[0], i => i[1].Unescape()));
+                   .ToDictionary(i => i[0], i => i.Length == 2 ? i[1].Unescape() : ""));
         }
     }
 }
