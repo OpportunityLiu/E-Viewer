@@ -77,10 +77,12 @@ namespace ExClient.Status
 
         public IAsyncAction RefreshAsync()
         {
-            return AsyncInfo.Run(async token => await Task.Run(async () =>
+            return AsyncInfo.Run(async token =>
             {
                 this.toplists.Clear();
-                var doc = await Client.Current.HttpClient.GetDocumentAsync(infoUri);
+                var getDoc = Client.Current.HttpClient.GetDocumentAsync(infoUri);
+                token.Register(getDoc.Cancel);
+                var doc = await getDoc;
                 var contentDivs = doc.DocumentNode
                     .Element("html").Element("body").Element("div").Elements("div")
                     .Where(d => d.GetAttributeValue("class", "") == "homebox").ToList();
@@ -90,7 +92,7 @@ namespace ExClient.Status
                 var totalGPGainedDiv = contentDivs[2];
                 analyzeToplists(contentDivs[3]);
                 analyzeModPower(contentDivs[4]);
-            }, token));
+            });
         }
 
         #region Image Limits

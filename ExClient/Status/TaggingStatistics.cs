@@ -35,18 +35,20 @@ namespace ExClient.Status
                 if (uid < 0)
                     throw new InvalidOperationException("Hasn't log in");
                 this.records.Clear();
-                var page = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"https://e-hentai.org/tools.php?act=taglist&uid={uid}"));
+                var getPage = Client.Current.HttpClient.GetDocumentAsync(new Uri($"https://e-hentai.org/tools.php?act=taglist&uid={uid}"));
+                token.Register(getPage.Cancel);
+                var page = await getPage;
                 var body = page.DocumentNode.Element("html").Element("body");
 
                 var overall = body.Element("div").Elements("div").Last().InnerText.DeEntitize();
                 var match = regex.Match(overall);
                 if (match.Success)
                 {
-                    Count = int.Parse(match.Groups[1].Value);
-                    StartedAccuracy = parsePercetage(match.Groups[2].Value);
-                    StartedCount = int.Parse(match.Groups[3].Value);
-                    VotedAccuracy = parsePercetage(match.Groups[4].Value);
-                    VotedCount = int.Parse(match.Groups[5].Value);
+                    this.Count = int.Parse(match.Groups[1].Value);
+                    this.StartedAccuracy = parsePercetage(match.Groups[2].Value);
+                    this.StartedCount = int.Parse(match.Groups[3].Value);
+                    this.VotedAccuracy = parsePercetage(match.Groups[4].Value);
+                    this.VotedCount = int.Parse(match.Groups[5].Value);
                 }
 
                 var table = body.Element("table");
