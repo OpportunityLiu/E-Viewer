@@ -256,30 +256,39 @@ namespace ExViewer.Controls
             if (this.btnStartNew.FocusState == FocusState.Keyboard)
                 btnStartNew_Click(sender, e);
         }
-    }
 
-    public sealed class TagStateToBrushConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        internal static Windows.UI.Text.FontWeight TagStateToFontWeight(TagState value)
         {
-            var state = (TagState)value;
-            switch (state.GetVoteState())
+            switch (value.GetPowerState())
             {
-                case TagState.Upvoted:
-                    if (state.IsSlave())
-                        return upSlaveBrush;
-                    else
-                        return upBrush;
-                case TagState.Downvoted:
-                    if (state.IsSlave())
-                        return downSlaveBrush;
-                    else
-                        return downBrush;
-                default:
-                    if (state.IsSlave())
-                        return slaveBrush;
-                    else
-                        return normalBrush;
+            case TagState.LowPower:
+                return Windows.UI.Text.FontWeights.ExtraLight;
+            case TagState.HighPower:
+                return Windows.UI.Text.FontWeights.Medium;
+            default:
+                return Windows.UI.Text.FontWeights.Normal;
+            }
+        }
+
+        internal static Brush TagStateToBrush(TagState value)
+        {
+            switch (value.GetVoteState())
+            {
+            case TagState.Upvoted:
+                if (value.IsSlave())
+                    return upSlaveBrush;
+                else
+                    return upBrush;
+            case TagState.Downvoted:
+                if (value.IsSlave())
+                    return downSlaveBrush;
+                else
+                    return downBrush;
+            default:
+                if (value.IsSlave())
+                    return slaveBrush;
+                else
+                    return normalBrush;
             }
         }
 
@@ -291,33 +300,5 @@ namespace ExViewer.Controls
 
         private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownTagBrush"];
         private static readonly Brush downSlaveBrush = (Brush)Application.Current.Resources["SlaveVoteDownTagBrush"];
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    public sealed class TagStateToFontWeightConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            var state = (TagState)value;
-            switch (state.GetPowerState())
-            {
-                case TagState.LowPower:
-                    return Windows.UI.Text.FontWeights.ExtraLight;
-                case TagState.HighPower:
-                    return Windows.UI.Text.FontWeights.Medium;
-                default:
-                    return Windows.UI.Text.FontWeights.Normal;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

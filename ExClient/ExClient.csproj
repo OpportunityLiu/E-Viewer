@@ -271,7 +271,7 @@
       <Version>10.0.3</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.1.3</Version>
+      <Version>1.1.5</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
       <Version>1.2.0</Version>

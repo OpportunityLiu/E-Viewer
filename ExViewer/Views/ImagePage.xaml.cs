@@ -1,4 +1,5 @@
-﻿using ExViewer.Controls;
+﻿using ExClient.Galleries;
+using ExViewer.Controls;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
 using System;
@@ -421,6 +422,33 @@ namespace ExViewer.Views
                 e.Handled = true;
                 this.fv.Focus(FocusState.Programmatic);
             }
+        }
+
+        private static readonly Brush pbLoading = (Brush)Application.Current.Resources["SystemControlForegroundAccentBrush"];
+        private static readonly Brush pbFailed = new SolidColorBrush(Colors.Red);
+
+        private static Brush loadStateToPbForeground(ImageLoadingState state)
+        {
+            if (state == ImageLoadingState.Failed)
+                return pbFailed;
+            else
+                return pbLoading;
+        }
+
+        private static bool loadStateToPbIsIndeterminate(ImageLoadingState state)
+        {
+            if (state == ImageLoadingState.Waiting || state == ImageLoadingState.Preparing)
+                return true;
+            else
+                return false;
+        }
+
+        private static Visibility loadStateToPbVisibility(ImageLoadingState state)
+        {
+            if (state == ImageLoadingState.Loaded)
+                return Visibility.Collapsed;
+            else
+                return Visibility.Visible;
         }
     }
 }

@@ -141,7 +141,7 @@
       <Version>6.0.5</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.1.3</Version>
+      <Version>1.1.5</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

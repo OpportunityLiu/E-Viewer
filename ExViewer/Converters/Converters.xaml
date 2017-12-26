@@ -57,11 +57,4 @@
     <t:DateTimeOffsetToStringConverter />
     <c:ConverterReference Converter="{uwp:StaticResource FormatConverter}" />
   </c:ChainConverter>
-
-  <local:RateStringConverter x:Key="RateStringConverter" />
-  <local:GalleryToTitleStringConverter x:Key="GalleryToTitleStringConverter" />
-  <local:OperationStateToBrushConverter x:Key="OperationStateToBrushConverter" />
-  <local:NamespaceToFriendlyStringConverter x:Key="NamespaceToFriendlyStringConverter" />
-  <local:FavoriteCategoryToBrushConverter x:Key="FavoriteCategoryToBrushConverter" />
-  <local:FavoriteCategoryToNameConverter x:Key="FavoriteCategoryToNameConverter" />
 </uwp:ResourceDictionary>

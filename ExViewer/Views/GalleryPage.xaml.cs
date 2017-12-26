@@ -374,22 +374,33 @@ namespace ExViewer.Views
             else
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
         }
-    }
 
-    class FavoriteCategoryToNameConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        private static string favoriteCategoryToName(FavoriteCategory cat)
         {
-            var cat = (FavoriteCategory)value;
             if (cat == null || cat.Index < 0)
                 return Strings.Resources.Views.GalleryPage.FavoritesAppBarButton.Text;
             return cat.Name;
-
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        private static Brush operationStateToBrush(OperationState value)
         {
-            throw new NotImplementedException();
+            switch (value)
+            {
+            case OperationState.NotStarted:
+                return opNotStarted;
+            case OperationState.Started:
+                return opStarted;
+            case OperationState.Failed:
+                return opFailed;
+            case OperationState.Completed:
+                return opCompleted;
+            }
+            return null;
         }
+
+        private static readonly Brush opNotStarted = new SolidColorBrush(Colors.Transparent);
+        private static readonly Brush opStarted = (Brush)Application.Current.Resources["SystemControlHighlightAccentBrush"];
+        private static readonly Brush opFailed = new SolidColorBrush(Colors.Red);
+        private static readonly Brush opCompleted = new SolidColorBrush(Colors.Green);
     }
 }

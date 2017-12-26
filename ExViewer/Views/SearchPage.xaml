@@ -126,7 +126,8 @@
                           Style="{StaticResource TextBlockToggleSwitchStyle}"
                           OffContent="Show advanced options"
                           OnContent="Hide advanced options"
-                          HorizontalAlignment="Center" />
+                          HorizontalAlignment="Center" 
+                          MinWidth="0"/>
             <tk:WrapPanel x:Name="wp_AdvancedSearch"
                           TabFocusNavigation="Once"
                           Orientation="Horizontal"

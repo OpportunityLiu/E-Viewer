@@ -5,6 +5,7 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:local="using:ExViewer.Views"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:client="using:ExClient"
                  x:Name="page"
                  Loading="page_Loading"
                  Loaded="page_Loaded"
@@ -19,7 +20,6 @@
     </TransitionCollection>
   </Page.Transitions>
   <Page.Resources>
-    <local:LoadStateToVisualStateConverter x:Key="LoadStateToVisualStateConverter" />
     <DataTemplate x:Key="FlipViewItemTemplate"
                   x:DataType="local:IImagePageImageView">
       <Grid DoubleTapped="fvi_DoubleTapped"
@@ -35,9 +35,9 @@
                      Padding="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                      Margin="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x0'}"
                      VerticalAlignment="Top"
-                     Foreground="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
-                     IsIndeterminate="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=True}"
-                     Visibility="{x:Bind Image.State, Mode=OneWay, Converter={StaticResource LoadStateToVisualStateConverter}, FallbackValue=Visible}"
+                     Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(Image.State), Mode=OneWay, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
+                     IsIndeterminate="{x:Bind local:ImagePage.loadStateToPbIsIndeterminate(Image.State), Mode=OneWay, FallbackValue=True}"
+                     Visibility="{x:Bind local:ImagePage.loadStateToPbVisibility(Image.State), Mode=OneWay, FallbackValue=Visible}"
                      Value="{x:Bind Image.Progress, Mode=OneWay, FallbackValue=0}">
           <ProgressBar.RenderTransform>
             <TranslateTransform Y="{Binding RenderTransform.Y, ElementName=cb_top, Mode=OneWay}" />
@@ -249,10 +249,10 @@
           <TextBlock x:Name="tb_Title"
                      Grid.Column="1"
                      Style="{StaticResource GalleryTitleTextBlockStyle}"
-                     Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}">
+                     Text="{x:Bind client:GalleryExtension.GetDisplayTitle(VM.Gallery), Mode=OneWay}">
                         <ToolTipService.ToolTip>
                           <ToolTip IsEnabled="{x:Bind tb_Title.IsTextTrimmed, Mode=OneWay}">
-                            <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                            <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(VM.Gallery), Mode=OneWay}"
                                        TextWrapping="WrapWholeWords" />
                           </ToolTip>
                         </ToolTipService.ToolTip>
