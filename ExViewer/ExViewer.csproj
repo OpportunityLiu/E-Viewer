@@ -308,7 +308,6 @@
     <Compile Include="Views\SavedPage.xaml.cs">
       <DependentUpon>SavedPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Converters.cs" />
     <Compile Include="Views\DeviceTrigger.cs" />
     <Compile Include="Views\GalleryPage.xaml.cs">
       <DependentUpon>GalleryPage.xaml</DependentUpon>
@@ -648,7 +647,7 @@
       <Version>2.1.4</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.1.3</Version>
+      <Version>1.1.5</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
       <Version>1.2.0</Version>

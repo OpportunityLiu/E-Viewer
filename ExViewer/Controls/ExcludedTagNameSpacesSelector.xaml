@@ -9,41 +9,33 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="400">
-    <GridView x:Name="gv"
-              HorizontalAlignment="Center">
-        <GridView.ItemContainerStyle>
-            <Style TargetType="GridViewItem">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="GridViewItem">
-                            <ContentPresenter Content="{TemplateBinding Content}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Margin"
-                        Value="0" />
-                <Setter Property="MinHeight"
-                        Value="0" />
-                <Setter Property="MinWidth"
-                        Value="0" />
-            </Style>
-        </GridView.ItemContainerStyle>
-        <GridView.ItemTemplate>
-            <DataTemplate x:DataType="tagging:Namespace">
-                <CheckBox Content="{x:Bind Converter={StaticResource NamespaceToFriendlyStringConverter}}"
-                          Checked="CheckBox_Checked"
-                          Unchecked="CheckBox_Unchecked"
-                          Loaded="CheckBox_Loaded" />
-            </DataTemplate>
-        </GridView.ItemTemplate>
-        <tagging:Namespace>Reclass</tagging:Namespace>
-        <tagging:Namespace>Language</tagging:Namespace>
-        <tagging:Namespace>Parody</tagging:Namespace>
-        <tagging:Namespace>Character</tagging:Namespace>
-        <tagging:Namespace>Group</tagging:Namespace>
-        <tagging:Namespace>Artist</tagging:Namespace>
-        <tagging:Namespace>Male</tagging:Namespace>
-        <tagging:Namespace>Female</tagging:Namespace>
-    </GridView>
+  <GridView x:Name="gv"
+            HorizontalAlignment="Center">
+    <GridView.ItemContainerStyle>
+      <Style TargetType="GridViewItem">
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="GridViewItem">
+              <ContentPresenter Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+        <Setter Property="Margin"
+                Value="0" />
+        <Setter Property="MinHeight"
+                Value="0" />
+        <Setter Property="MinWidth"
+                Value="0" />
+      </Style>
+    </GridView.ItemContainerStyle>
+    <GridView.ItemTemplate>
+      <DataTemplate x:DataType="sys:IBox">
+        <CheckBox Content="{x:Bind tagging:NamespaceExtention.ToFriendlyNameString((tagging:Namespace)Value)}"
+                  Checked="CheckBox_Checked"
+                  Unchecked="CheckBox_Unchecked"
+                  Loaded="CheckBox_Loaded" />
+      </DataTemplate>
+    </GridView.ItemTemplate>
+  </GridView>
 </UserControl>

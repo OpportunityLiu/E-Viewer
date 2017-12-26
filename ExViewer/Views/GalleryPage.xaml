@@ -538,10 +538,10 @@
                      Grid.Column="1"
                      Grid.ColumnSpan="999"
                      Style="{StaticResource GalleryTitleTextBlockStyle}"
-                     Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}">
+                     Text="{x:Bind client:GalleryExtension.GetDisplayTitle(VM.Gallery), Mode=OneWay}">
                         <ToolTipService.ToolTip>
                           <ToolTip IsEnabled="{x:Bind tbGalleryName.IsTextTrimmed, Mode=OneWay}">
-                            <TextBlock Text="{x:Bind VM.Gallery, Mode=OneWay, Converter={StaticResource GalleryToTitleStringConverter}}"
+                            <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(VM.Gallery), Mode=OneWay}"
                                        TextWrapping="WrapWholeWords" />
                           </ToolTip>
                         </ToolTipService.ToolTip>
@@ -559,9 +559,9 @@
                       CommandParameter="{x:Bind VM.Gallery.Revisions, Mode=OneWay}" />
         <AppBarButton x:Name="abbFavorites"
                       Icon="Favorite"
-                      Foreground="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToBrushConverter}, Mode=OneWay}"
-                      Label="{x:Bind VM.Gallery.FavoriteCategory, Converter={StaticResource FavoriteCategoryToNameConverter}, Mode=OneWay}"
-                      ToolTipService.ToolTip="{x:Bind abbFavorites.Label, Mode=OneWay}"
+                      Label="{x:Bind local:GalleryPage.favoriteCategoryToName(VM.Gallery.FavoriteCategory), Mode=OneWay}"
+                      Foreground="{x:Bind client:FavoriteExtension.GetThemeBrush(VM.Gallery.FavoriteCategory), Mode=OneWay}"
+                      ToolTipService.ToolTip="{x:Bind local:GalleryPage.favoriteCategoryToName(VM.Gallery.FavoriteCategory), Mode=OneWay}"
                       Click="abbFavorites_Click" />
         <AppBarButton x:Name="abbComment"
                       x:Uid="Views/GalleryPage/AppBarButtonAddComment"
@@ -591,7 +591,7 @@
                  Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                  IsIndeterminate="{x:Bind VM.SaveProgress, Converter={StaticResource SaveProgressToIsIndeterminateConverter}, Mode=OneWay}"
                  VerticalAlignment="Top"
-                 Foreground="{x:Bind VM.SaveStatus, Converter={StaticResource OperationStateToBrushConverter}, Mode=OneWay}"
+                 Foreground="{x:Bind local:GalleryPage.operationStateToBrush(VM.SaveStatus), Mode=OneWay}"
                  IsHitTestVisible="False"
                  Visibility="{x:Bind VM.SaveStatus, Converter={StaticResource OperationStateToVisibilityConverter}, Mode=OneWay}"
                  Value="{x:Bind VM.SaveProgress, Mode=OneWay}" />

@@ -62,14 +62,12 @@
       <Setter Property="MaxLines"
               Value="1" />
     </Style>
-    <local:TagStateToBrushConverter x:Key="TagStateToBrushConverter" />
-    <local:TagStateToFontWeightConverter x:Key="TagStateToFontWeightConverter" />
     <DataTemplate x:Key="TagTemplate"
                   x:DataType="tagging:GalleryTag">
       <TextBlock Style="{StaticResource TagTextBlockStyle}"
                  DataContextChanged="tbContent_DataContextChanged"
-                 FontWeight="{x:Bind State, Mode=OneWay, Converter={StaticResource TagStateToFontWeightConverter}}"
-                 Foreground="{x:Bind State, Mode=OneWay, Converter={StaticResource TagStateToBrushConverter}}" />
+                 FontWeight="{x:Bind local:TagPresenter.TagStateToFontWeight(State), Mode=OneWay}"
+                 Foreground="{x:Bind local:TagPresenter.TagStateToBrush(State), Mode=OneWay}" />
     </DataTemplate>
     <Style x:Key="TagGridViewItemStyle"
            TargetType="GridViewItem">
@@ -121,7 +119,7 @@
         <TextBlock Grid.Column="0"
                    Padding="2,0"
                    HorizontalAlignment="Right"
-                   Text="{x:Bind Namespace, Converter={StaticResource NamespaceToFriendlyStringConverter}}" />
+                   Text="{x:Bind tagging:NamespaceExtention.ToFriendlyNameString(Namespace)}" />
         <GridView Grid.Column="2"
                   Style="{StaticResource TagGroupGridViewStyle}"
                   ItemClick="gvTagGroup_ItemClick"

@@ -24,23 +24,9 @@ namespace ExClient
         public static Brush GetThemeBrush(this FavoriteCategory cat)
         {
             var idx = cat?.Index ?? -1;
-            if(idx < 0)
+            if (idx < 0)
                 return (Brush)favoritesBrushes["FavoriteCategoryNone"];
             return (Brush)favoritesBrushes[$"FavoriteCategory{cat.Index}"];
         }
-    }
-}
-
-namespace ExViewer.Views
-{
-    class FavoriteCategoryToBrushConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            return (value as FavoriteCategory).GetThemeBrush();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language) 
-            => throw new NotImplementedException();
     }
 }
