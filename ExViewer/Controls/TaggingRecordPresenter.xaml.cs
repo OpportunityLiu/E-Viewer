@@ -26,6 +26,10 @@ namespace ExViewer.Controls
             this.InitializeComponent();
         }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.update(Record);
+        }
 
         public TaggingRecord Record
         {
@@ -43,20 +47,22 @@ namespace ExViewer.Controls
         {
             var oldValue = (TaggingRecord)e.OldValue;
             var newValue = (TaggingRecord)e.NewValue;
-            if (oldValue.IsBlocked == newValue.IsBlocked
-                && oldValue.IsSlaved == newValue.IsSlaved
-                && oldValue.Tag == newValue.Tag
-                && oldValue.Score == newValue.Score)
+            if (oldValue == newValue)
                 return;
             var sender = (TaggingRecordPresenter)dp;
-            var dc = newValue.Tag.GetDisplayContentAsync();
+            sender.update(newValue);
+        }
+
+        private void update(TaggingRecord data)
+        {
+            var dc = data.Tag.GetDisplayContentAsync();
             if (dc.Status == AsyncStatus.Completed)
             {
-                sender.tbTag.Text = $"{newValue.Tag.Namespace.ToFriendlyNameString()}: {dc.GetResults()}";
+                this.tbTag.Text = $"{data.Tag.Namespace.ToFriendlyNameString()}: {dc.GetResults()}";
             }
             else
             {
-                sender.tbTag.Text = $"{newValue.Tag.Namespace.ToFriendlyNameString()}: {newValue.Tag.Content}";
+                this.tbTag.Text = $"{data.Tag.Namespace.ToFriendlyNameString()}: {data.Tag.Content}";
                 dc.Completed = (IAsyncOperation<string> op, AsyncStatus asyncStatus) =>
                 {
                     if (asyncStatus != AsyncStatus.Completed)
@@ -64,25 +70,31 @@ namespace ExViewer.Controls
                     var dispValue = op.GetResults();
                     Opportunity.MvvmUniverse.DispatcherHelper.BeginInvokeOnUIThread(() =>
                     {
-                        sender.tbTag.Text = $"{newValue.Tag.Namespace.ToFriendlyNameString()}: {dispValue}";
+                        this.tbTag.Text = $"{data.Tag.Namespace.ToFriendlyNameString()}: {dispValue}";
                     });
                 };
             }
-            if (newValue.Score > 0)
-                sender.tbTag.Foreground = upBrush;
-            else if (newValue.Score < 0)
-                sender.tbTag.Foreground = downBrush;
+
+            if (data.Score > 0)
+                this.tbTag.Foreground = upBrush;
+            else if (data.Score < 0)
+                this.tbTag.Foreground = downBrush;
             else
-                sender.tbTag.ClearValue(TextBlock.ForegroundProperty);
+                this.tbTag.ClearValue(TextBlock.ForegroundProperty);
+
             var indicators = "";
-            if (newValue.IsBlocked && newValue.IsSlaved)
-                indicators = Strings.Resources.Controls.TaggingRecordPresenter.BlockedAndSlavedIndicator;
-            else if (newValue.IsBlocked)
-                indicators = Strings.Resources.Controls.TaggingRecordPresenter.BlockedIndicator;
-            else if (newValue.IsSlaved)
-                indicators = Strings.Resources.Controls.TaggingRecordPresenter.SlavedIndicator;
-            sender.tbStatus.Text = indicators;
+            if (data.IsBlocked && data.IsSlaved)
+                indicators = BlockedAndSlavedIndicator;
+            else if (data.IsBlocked)
+                indicators = BlockedIndicator;
+            else if (data.IsSlaved)
+                indicators = SlavedIndicator;
+            this.tbStatus.Text = indicators;
         }
+
+        private static readonly string BlockedAndSlavedIndicator = Strings.Resources.Controls.TaggingRecordPresenter.BlockedAndSlavedIndicator;
+        private static readonly string BlockedIndicator = Strings.Resources.Controls.TaggingRecordPresenter.BlockedIndicator;
+        private static readonly string SlavedIndicator = Strings.Resources.Controls.TaggingRecordPresenter.SlavedIndicator;
 
         private static readonly Brush upBrush = (Brush)Application.Current.Resources["VoteUpTagBrush"];
         private static readonly Brush downBrush = (Brush)Application.Current.Resources["VoteDownTagBrush"];
