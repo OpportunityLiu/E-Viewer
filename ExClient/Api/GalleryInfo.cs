@@ -30,14 +30,14 @@ namespace ExClient.Api
                 {
                     switch (reader.Value.ToString())
                     {
-                        case "gid":
-                            gid = reader.ReadAsInt32().GetValueOrDefault();
-                            break;
-                        case "token":
-                            token = reader.ReadAsString().ToToken();
-                            break;
-                        default:
-                            break;
+                    case "gid":
+                        gid = reader.ReadAsInt32().GetValueOrDefault();
+                        break;
+                    case "token":
+                        token = reader.ReadAsString().ToToken();
+                        break;
+                    default:
+                        break;
                     }
                     reader.Read();
                 } while (reader.TokenType != JsonToken.EndObject);
@@ -94,30 +94,30 @@ namespace ExClient.Api
                     type = GalleryLaunchStatus.Default;
                     switch (data.Path0)
                     {
-                        case "gallerytorrents.php":
-                            type = GalleryLaunchStatus.Torrent;
-                            break;
-                        case "stats.php":
-                            type = GalleryLaunchStatus.Stats;
-                            break;
-                        case "archiver.php":
-                            type = GalleryLaunchStatus.Archive;
-                            break;
-                        default:
-                            if (data.Queries.TryGetValue("act", out var action))
-                                switch (action)
-                                {
-                                    case "addfav":
-                                        type = GalleryLaunchStatus.Favorite;
-                                        break;
-                                    case "expunge":
-                                        type = GalleryLaunchStatus.Expunge;
-                                        break;
-                                    case "rename":
-                                        type = GalleryLaunchStatus.Rename;
-                                        break;
-                                }
-                            break;
+                    case "gallerytorrents.php":
+                        type = GalleryLaunchStatus.Torrent;
+                        break;
+                    case "stats.php":
+                        type = GalleryLaunchStatus.Stats;
+                        break;
+                    case "archiver.php":
+                        type = GalleryLaunchStatus.Archive;
+                        break;
+                    default:
+                        if (data.Queries.TryGetValue("act", out var action))
+                            switch (action)
+                            {
+                            case "addfav":
+                                type = GalleryLaunchStatus.Favorite;
+                                break;
+                            case "expunge":
+                                type = GalleryLaunchStatus.Expunge;
+                                break;
+                            case "rename":
+                                type = GalleryLaunchStatus.Rename;
+                                break;
+                            }
+                        break;
                     }
                     return true;
                 }
@@ -162,20 +162,12 @@ namespace ExClient.Api
             });
         }
 
-        public long ID
-        {
-            get;
-        }
+        public long ID { get; }
 
-        public ulong Token
-        {
-            get;
-        }
+        public ulong Token { get; }
 
-        public bool Equals(GalleryInfo other)
-        {
-            return this.ID == other.ID && this.Token == other.Token;
-        }
+        public override int GetHashCode()
+            => this.ID.GetHashCode() * 19 ^ this.Token.GetHashCode();
 
         public override bool Equals(object obj)
         {
@@ -184,10 +176,14 @@ namespace ExClient.Api
             return false;
         }
 
-        public override int GetHashCode()
-        {
-            return this.ID.GetHashCode() ^ this.Token.GetHashCode();
-        }
+        public bool Equals(GalleryInfo other)
+            => this == other;
+
+        public static bool operator ==(GalleryInfo left, GalleryInfo right)
+            => left.ID == right.ID && left.Token == right.Token;
+
+        public static bool operator !=(GalleryInfo left, GalleryInfo right)
+            => !(left == right);
     }
 
     public static class GalleryInfoExtension
