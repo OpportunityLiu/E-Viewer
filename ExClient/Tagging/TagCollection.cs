@@ -122,9 +122,9 @@ namespace ExClient.Tagging
 
         bool ICollection.IsSynchronized => false;
 
-        object ICollection.SyncRoot => null;
+        object ICollection.SyncRoot => this;
 
-        object IList.this[int index] { get => this[index]; set => throw new NotImplementedException(); }
+        object IList.this[int index] { get => this[index]; set => throw new InvalidOperationException(); }
 
         [IndexerName("Groups")]
         public NamespaceTagCollection this[int index]
@@ -258,46 +258,52 @@ namespace ExClient.Tagging
 
         public struct Enumerator : IEnumerator<NamespaceTagCollection>
         {
-            private TagCollection parent;
+            private readonly TagCollection parent;
+            private readonly int version;
             private int i;
-            private int version;
 
             internal Enumerator(TagCollection parent)
             {
                 this.parent = parent;
                 this.version = parent.Version;
-                this.i = 0;
-                this.Current = default(NamespaceTagCollection);
+                this.i = -1;
             }
 
-            public NamespaceTagCollection Current { get; private set; }
+            public NamespaceTagCollection Current
+            {
+                get
+                {
+                    if (this.version != this.parent.Version)
+                        throw new InvalidOperationException("Collection changed.");
+                    if (this.i < 0)
+                        throw new InvalidOperationException("Enumeration hasn't started.");
+                    if (this.i >= this.parent.Keys.Length)
+                        throw new InvalidOperationException("Enumeration has ended.");
+                    return new NamespaceTagCollection(this.parent, this.i);
+                }
+            }
 
             object IEnumerator.Current => Current;
 
             public bool MoveNext()
             {
                 if (this.version != this.parent.Version)
-                    throw new InvalidOperationException("Collection changed");
-                var offset = this.parent.Offset;
-                var success = this.i < this.parent.Keys.Length;
-                if (success)
-                    this.Current = new NamespaceTagCollection(this.parent, this.i);
-                else
-                    this.Current = default(NamespaceTagCollection);
+                    throw new InvalidOperationException("Collection changed.");
+                var end = this.parent.Keys.Length;
+                if (this.i >= end)
+                    return false;
                 this.i++;
-                return success;
+                return this.i < end;
             }
 
             void IDisposable.Dispose()
             {
                 this.i = int.MaxValue;
-                this.Current = default(NamespaceTagCollection);
             }
 
             public void Reset()
             {
                 this.i = 0;
-                this.Current = default(NamespaceTagCollection);
             }
         }
 
@@ -308,32 +314,19 @@ namespace ExClient.Tagging
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public int IndexOf(GalleryTag tag)
-        {
-            var nsindex = getIndexOfKey(tag.Content.Namespace);
-            if (nsindex < 0)
-                return -1;
-            for (var i = this.Offset[nsindex]; i < this.Offset[nsindex + 1]; i++)
-            {
-                if (this.Data[i].Content == tag.Content)
-                    return i;
-            }
-            return -1;
-        }
+        int IList.Add(object value) => throw new InvalidOperationException();
 
-        int IList.Add(object value) => throw new NotImplementedException();
-
-        void IList.Clear() => throw new NotImplementedException();
+        void IList.Clear() => throw new InvalidOperationException();
 
         bool IList.Contains(object value) => false;
 
         int IList.IndexOf(object value) => -1;
 
-        void IList.Insert(int index, object value) => throw new NotImplementedException();
+        void IList.Insert(int index, object value) => throw new InvalidOperationException();
 
-        void IList.Remove(object value) => throw new NotImplementedException();
+        void IList.Remove(object value) => throw new InvalidOperationException();
 
-        void IList.RemoveAt(int index) => throw new NotImplementedException();
+        void IList.RemoveAt(int index) => throw new InvalidOperationException();
 
         void ICollection.CopyTo(Array array, int index) => throw new NotImplementedException();
     }
