@@ -42,37 +42,6 @@ namespace ExViewer.Controls
             sender.resetNewTagState(false);
         }
 
-        private void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            var s = (TextBlock)sender;
-            var newValue = (GalleryTag)args.NewValue;
-            var oldValue = (GalleryTag)s.Tag;
-            args.Handled = true;
-
-            if (oldValue == newValue)
-                return;
-            s.Tag = newValue;
-            var dc = newValue.Content.GetDisplayContentAsync();
-            if (dc.Status == AsyncStatus.Completed)
-            {
-                s.Text = dc.GetResults();
-            }
-            else
-            {
-                s.Text = newValue.Content.Content;
-                dc.Completed = (IAsyncOperation<string> op, AsyncStatus e) =>
-                {
-                    if (e != AsyncStatus.Completed)
-                        return;
-                    var dispValue = op.GetResults();
-                    Opportunity.MvvmUniverse.DispatcherHelper.BeginInvokeOnUIThread(() =>
-                    {
-                        s.Text = dispValue;
-                    });
-                };
-            }
-        }
-
         private void gvTagGroup_ItemClick(object sender, ItemClickEventArgs e)
         {
             this.SelectedTag = (GalleryTag)e.ClickedItem;
@@ -257,38 +226,69 @@ namespace ExViewer.Controls
                 btnStartNew_Click(sender, e);
         }
 
-        internal static Windows.UI.Text.FontWeight TagStateToFontWeight(TagState value)
+        private void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            switch (value.GetPowerState())
+            var s = (TextBlock)sender;
+            var newValue = (GalleryTag)args.NewValue;
+            var oldValue = (GalleryTag)s.Tag;
+            args.Handled = true;
+
+            if (oldValue == newValue)
+                return;
+            s.Tag = newValue;
+            var dc = newValue.Content.GetDisplayContentAsync();
+            if (dc.Status == AsyncStatus.Completed)
             {
-            case TagState.LowPower:
-                return Windows.UI.Text.FontWeights.ExtraLight;
-            case TagState.HighPower:
-                return Windows.UI.Text.FontWeights.Medium;
-            default:
-                return Windows.UI.Text.FontWeights.Normal;
+                s.Text = dc.GetResults();
+            }
+            else
+            {
+                s.Text = newValue.Content.Content;
+                dc.Completed = (IAsyncOperation<string> op, AsyncStatus e) =>
+                {
+                    if (e != AsyncStatus.Completed)
+                        return;
+                    var dispValue = op.GetResults();
+                    Opportunity.MvvmUniverse.DispatcherHelper.BeginInvokeOnUIThread(() =>
+                    {
+                        s.Text = dispValue;
+                    });
+                };
             }
         }
 
-        internal static Brush TagStateToBrush(TagState value)
+        private static Windows.UI.Text.FontWeight TagStateToFontWeight(TagState value)
+        {
+            switch (value.GetPowerState())
+            {
+                case TagState.LowPower:
+                    return Windows.UI.Text.FontWeights.ExtraLight;
+                case TagState.HighPower:
+                    return Windows.UI.Text.FontWeights.Medium;
+                default:
+                    return Windows.UI.Text.FontWeights.Normal;
+            }
+        }
+
+        private static Brush TagStateToBrush(TagState value)
         {
             switch (value.GetVoteState())
             {
-            case TagState.Upvoted:
-                if (value.IsSlave())
-                    return upSlaveBrush;
-                else
-                    return upBrush;
-            case TagState.Downvoted:
-                if (value.IsSlave())
-                    return downSlaveBrush;
-                else
-                    return downBrush;
-            default:
-                if (value.IsSlave())
-                    return slaveBrush;
-                else
-                    return normalBrush;
+                case TagState.Upvoted:
+                    if (value.IsSlave())
+                        return upSlaveBrush;
+                    else
+                        return upBrush;
+                case TagState.Downvoted:
+                    if (value.IsSlave())
+                        return downSlaveBrush;
+                    else
+                        return downBrush;
+                default:
+                    if (value.IsSlave())
+                        return slaveBrush;
+                    else
+                        return normalBrush;
             }
         }
 
