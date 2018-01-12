@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Web.Http;
 
 namespace ExClient.Status
 {
@@ -30,7 +31,6 @@ namespace ExClient.Status
                 return;
             }
             var newList = new List<ToplistItem>();
-            var toremove = new List<int>(Enumerable.Range(0, this.toplists.Count));
             foreach (var toplistRecord in table.Elements("tr"))
             {
                 var rankNode = toplistRecord.Descendants("strong").FirstOrDefault();
@@ -83,16 +83,25 @@ namespace ExClient.Status
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(infoUri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
-                var contentDivs = doc.DocumentNode
-                    .Element("html").Element("body").Element("div").Elements("div")
-                    .Where(d => d.GetAttributeValue("class", "") == "homebox").ToList();
-
-                analyzeImageLimit(contentDivs[0]);
-                var ehTrackerDiv = contentDivs[1];
-                var totalGPGainedDiv = contentDivs[2];
-                analyzeToplists(contentDivs[3]);
-                analyzeModPower(contentDivs[4]);
+                analyzeDoc(doc);
             });
+        }
+
+        private void analyzeDoc(HtmlDocument doc)
+        {
+            if (doc == null)
+                return;
+            var contentDivs = doc.DocumentNode
+               .Element("html").Element("body").Element("div").Elements("div")
+               .Where(d => d.GetAttributeValue("class", "") == "homebox").ToList();
+            if (contentDivs.Count != 5)
+                return;
+
+            analyzeImageLimit(contentDivs[0]);
+            var ehTrackerDiv = contentDivs[1];
+            var totalGPGainedDiv = contentDivs[2];
+            analyzeToplists(contentDivs[3]);
+            analyzeModPower(contentDivs[4]);
         }
 
         #region Image Limits
@@ -119,8 +128,17 @@ namespace ExClient.Status
 
         public IAsyncAction ResetImageUsageAsync()
         {
-            // TODO:
-            throw new NotImplementedException();
+            return AsyncInfo.Run(async token =>
+            {
+                var content = new HttpFormUrlEncodedContent(new[] { KeyValuePair.Create("act", "limits") });
+                var p = Client.Current.HttpClient.PostAsync(infoUri, content);
+                token.Register(p.Cancel);
+                var r = await p;
+                var html = await r.Content.ReadAsStringAsync();
+                var doc = new HtmlDocument();
+                doc.LoadHtml(html);
+                analyzeDoc(doc);
+            });
         }
         #endregion
 
