@@ -237,9 +237,6 @@ namespace ExViewer.Views
                 var sourceString = source?.ToString() ?? "null";
 #if DEBUG
                 Debug.WriteLine(ex, "Exception");
-#else
-                JYAnalytics.TrackError($"Exception {ex.HResult:X8}: {ex.GetType().ToString()} at {sourceString}");
-                HockeyClient.Current.TrackException(ex);
 #endif
                 SendToast(ex.GetMessage(), source);
             }

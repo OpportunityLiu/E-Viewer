@@ -87,21 +87,22 @@ namespace ExClient.Status
             });
         }
 
-        private void analyzeDoc(HtmlDocument doc)
+        private bool analyzeDoc(HtmlDocument doc)
         {
             if (doc == null)
-                return;
+                return false;
             var contentDivs = doc.DocumentNode
                .Element("html").Element("body").Element("div").Elements("div")
                .Where(d => d.GetAttributeValue("class", "") == "homebox").ToList();
             if (contentDivs.Count != 5)
-                return;
+                return false;
 
             analyzeImageLimit(contentDivs[0]);
             var ehTrackerDiv = contentDivs[1];
             var totalGPGainedDiv = contentDivs[2];
             analyzeToplists(contentDivs[3]);
             analyzeModPower(contentDivs[4]);
+            return true;
         }
 
         #region Image Limits
@@ -111,19 +112,19 @@ namespace ExClient.Status
         private int imageUsageResetCost;
         public int ImageUsage
         {
-            get => imageUsage; set => Set(ref imageUsage, value);
+            get => this.imageUsage; set => Set(ref this.imageUsage, value);
         }
         public int ImageUsageLimit
         {
-            get => imageUsageLimit; set => Set(ref imageUsageLimit, value);
+            get => this.imageUsageLimit; set => Set(ref this.imageUsageLimit, value);
         }
         public int ImageUsageRegenerateRatePerMinute
         {
-            get => imageUsageRegenerateRatePerMinute; set => Set(ref imageUsageRegenerateRatePerMinute, value);
+            get => this.imageUsageRegenerateRatePerMinute; set => Set(ref this.imageUsageRegenerateRatePerMinute, value);
         }
         public int ImageUsageResetCost
         {
-            get => imageUsageResetCost; set => Set(ref imageUsageResetCost, value);
+            get => this.imageUsageResetCost; set => Set(ref this.imageUsageResetCost, value);
         }
 
         public IAsyncAction ResetImageUsageAsync()
@@ -137,7 +138,8 @@ namespace ExClient.Status
                 var html = await r.Content.ReadAsStringAsync();
                 var doc = new HtmlDocument();
                 doc.LoadHtml(html);
-                analyzeDoc(doc);
+                if (!analyzeDoc(doc))
+                    await RefreshAsync();
             });
         }
         #endregion
@@ -159,39 +161,39 @@ namespace ExClient.Status
         private double moderationPowerAccountAge;
         public double ModerationPower
         {
-            get => moderationPower; set => Set(ref moderationPower, value);
+            get => this.moderationPower; set => Set(ref this.moderationPower, value);
         }
         public double ModerationPowerBase
         {
-            get => moderationPowerBase; set => Set(ref moderationPowerBase, value);
+            get => this.moderationPowerBase; set => Set(ref this.moderationPowerBase, value);
         }
         public double ModerationPowerAwards
         {
-            get => moderationPowerAwards; set => Set(ref moderationPowerAwards, value);
+            get => this.moderationPowerAwards; set => Set(ref this.moderationPowerAwards, value);
         }
         public double ModerationPowerTagging
         {
-            get => moderationPowerTagging; set => Set(ref moderationPowerTagging, value);
+            get => this.moderationPowerTagging; set => Set(ref this.moderationPowerTagging, value);
         }
         public double ModerationPowerLevel
         {
-            get => moderationPowerLevel; set => Set(ref moderationPowerLevel, value);
+            get => this.moderationPowerLevel; set => Set(ref this.moderationPowerLevel, value);
         }
         public double ModerationPowerDonations
         {
-            get => moderationPowerDonations; set => Set(ref moderationPowerDonations, value);
+            get => this.moderationPowerDonations; set => Set(ref this.moderationPowerDonations, value);
         }
         public double ModerationPowerForumActivity
         {
-            get => moderationPowerForumActivity; set => Set(ref moderationPowerForumActivity, value);
+            get => this.moderationPowerForumActivity; set => Set(ref this.moderationPowerForumActivity, value);
         }
         public double ModerationPowerUploadsAndHatH
         {
-            get => moderationPowerUploadsAndHatH; set => Set(ref moderationPowerUploadsAndHatH, value);
+            get => this.moderationPowerUploadsAndHatH; set => Set(ref this.moderationPowerUploadsAndHatH, value);
         }
         public double ModerationPowerAccountAge
         {
-            get => moderationPowerAccountAge; set => Set(ref moderationPowerAccountAge, value);
+            get => this.moderationPowerAccountAge; set => Set(ref this.moderationPowerAccountAge, value);
         }
         #endregion
     }

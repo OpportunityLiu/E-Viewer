@@ -166,26 +166,52 @@
         </ListView.ItemTemplate>
         <ListView.Header>
           <StackPanel>
-            <TextBlock x:Uid="Views/InfoPage/ImageLimitsHeaderTextBlock"
-                       Style="{StaticResource InfoPageSubtitleTextBlockStyle}"
-                       Text="Image Limits" />
-            <Grid Margin="8,4,8,0">
+            <Grid Margin="8,8,8,0">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="8" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
-              <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+              <TextBlock x:Uid="Views/InfoPage/ImageLimitsHeaderTextBlock"
+                         Grid.ColumnSpan="4"
+                         Style="{StaticResource SubtitleTextBlockStyle}"
+                         Text="Image Limits" />
+              <Button Grid.Column="9"
+                      HorizontalAlignment="Right"
+                      Style="{StaticResource TextBlockButtonStyle}"
+                      Padding="0"
+                      Command="{x:Bind VM.ResetImageUsage}"
+                      VerticalAlignment="Bottom">
+                <TextBlock x:Uid="Views/InfoPage/ImageLimitsResetButtonTextBlock"
+                           Text="Reset limit"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Visibility="{x:Bind VM.ResetImageUsage.IsExecuting, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}" />
+              </Button>
+              <ProgressRing Style="{StaticResource UpdateProgressRingStyle}"
+                            Grid.Column="9"
+                            HorizontalAlignment="Right"
+                            IsActive="{x:Bind VM.ResetImageUsage.IsExecuting, Mode=OneWay}" />
+              <TextBlock Grid.Row="2"
+                         Style="{StaticResource CaptionTextBlockStyle}"
                          Text="{x:Bind VM.Status.ImageUsage, Mode=OneWay}" />
               <TextBlock x:Uid="Views/InfoPage/ImageLimitsSeparatorTextBlock"
+                         Grid.Row="2"
                          Grid.Column="1"
                          Style="{StaticResource CaptionTextBlockStyle}"
                          Text="/" />
-              <TextBlock Grid.Column="2"
+              <TextBlock Grid.Row="2"
+                         Grid.Column="2"
                          Style="{StaticResource CaptionTextBlockStyle}"
                          Text="{x:Bind VM.Status.ImageUsageLimit, Mode=OneWay}" />
-              <TextBlock Grid.Column="3"
+              <TextBlock Grid.Row="2"
+                         Grid.Column="9"
                          Style="{StaticResource CaptionTextBlockStyle}"
                          HorizontalAlignment="Right"
                          Text="{x:Bind VM.Status.ImageUsageRegenerateRatePerMinute, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Views/InfoPage/RegenerateFormatString'}" />

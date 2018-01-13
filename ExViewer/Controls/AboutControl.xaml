@@ -63,19 +63,6 @@
         </Setter.Value>
       </Setter>
     </Style>
-    <Style x:Key="UpdateProgressRingStyle"
-           TargetType="ProgressRing">
-      <Setter Property="MinHeight"
-              Value="0" />
-      <Setter Property="MinWidth"
-              Value="0" />
-      <Setter Property="Height"
-              Value="16" />
-      <Setter Property="Width"
-              Value="16" />
-      <Setter Property="VerticalAlignment"
-              Value="Bottom" />
-    </Style>
   </UserControl.Resources>
   <StackPanel>
     <FlipView x:Name="fv_Banners"

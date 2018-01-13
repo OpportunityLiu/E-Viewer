@@ -31,6 +31,8 @@ namespace ExViewer.ViewModels
                 var vm = SearchVM.GetVM(tr.Tag.Search(Category.All, new AdvancedSearchOptions(skipMasterTags: true, searchLowPowerTags: true)));
                 RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
             }, tr => tr.Tag.Content != null);
+            this.ResetImageUsage = new AsyncCommand(() => Status.ResetImageUsageAsync().AsTask(),
+                () => Status != null);
         }
 
         public UserStatus Status => Client.Current.UserStatus;
@@ -40,6 +42,8 @@ namespace ExViewer.ViewModels
         public AsyncCommand RefreshStatus { get; }
 
         public AsyncCommand RefreshTaggingStatistics { get; }
+
+        public AsyncCommand ResetImageUsage { get; }
 
         public Command<TaggingRecord> OpenGallery { get; }
 
