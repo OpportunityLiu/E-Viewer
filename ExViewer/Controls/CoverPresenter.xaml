@@ -4,13 +4,11 @@
              xmlns:local="using:ExViewer.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-             xmlns:behaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors"
              Loading="UserControl_Loading"
              Unloaded="UserControl_Unloaded"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="400">
+             d:DesignWidth="200">
   <UserControl.Resources>
     <AcrylicBrush x:Key="ImageBackgroundBrush"
                   BackgroundSource="Backdrop"
@@ -22,7 +20,7 @@
     <Image x:Name="BackgroundImage"
            x:DeferLoadStrategy="Lazy"
            Source="{x:Bind Source, Mode=OneWay}"
-           Stretch="UniformToFill" />
+           Stretch="Fill" />
     <Grid Background="{StaticResource ImageBackgroundBrush}">
       <Image x:Name="ForegroundImage"
              Source="{x:Bind Source, Mode=OneWay}" />
