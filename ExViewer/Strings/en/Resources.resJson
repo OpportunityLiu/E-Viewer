@@ -237,6 +237,7 @@
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "Change user",
       "ImageLimitsHeaderTextBlock/Text": "Image Limits",
+      "ImageLimitsResetButtonTextBlock/Text": "Reset limit",
       "ImageLimitsSeparatorTextBlock/Text": "/",
       "ModPowerAwardsTextBlock/Text": "Awards",
       "ModPowerBaseTextBlock/Text": "Base",

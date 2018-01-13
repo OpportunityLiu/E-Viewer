@@ -237,6 +237,7 @@
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "更换用户",
       "ImageLimitsHeaderTextBlock/Text": "流量限制",
+      "ImageLimitsResetButtonTextBlock/Text": "重置",
       "ImageLimitsSeparatorTextBlock/Text": "/",
       "ModPowerAwardsTextBlock/Text": "奖项",
       "ModPowerBaseTextBlock/Text": "基础",
