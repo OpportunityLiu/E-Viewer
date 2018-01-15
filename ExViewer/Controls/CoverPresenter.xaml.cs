@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System.Power;
 using Windows.UI.Composition;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -39,21 +40,25 @@ namespace ExViewer.Controls
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register("Source", typeof(ImageSource), typeof(CoverPresenter), new PropertyMetadata(null));
 
+        private static UISettings uiSettings = new UISettings();
+
         private void UserControl_Loading(FrameworkElement sender, object args)
         {
-            PowerManager_EnergySaverStatusChanged(null, null);
-            PowerManager.EnergySaverStatusChanged += this.PowerManager_EnergySaverStatusChanged;
+            setEffectStatus(uiSettings, null);
+            PowerManager.EnergySaverStatusChanged += this.setEffectStatus;
+            uiSettings.AdvancedEffectsEnabledChanged += this.setEffectStatus;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            PowerManager.EnergySaverStatusChanged -= this.PowerManager_EnergySaverStatusChanged;
+            PowerManager.EnergySaverStatusChanged -= this.setEffectStatus;
+            uiSettings.AdvancedEffectsEnabledChanged -= this.setEffectStatus;
         }
 
-        private async void PowerManager_EnergySaverStatusChanged(object sender, object e)
+        private async void setEffectStatus(object sender, object args)
         {
             await DispatcherHelper.YieldIdle();
-            if (PowerManager.EnergySaverStatus != EnergySaverStatus.On)
+            if (uiSettings.AdvancedEffectsEnabled && PowerManager.EnergySaverStatus != EnergySaverStatus.On)
             {
                 FindName(nameof(this.BackgroundImage));
                 this.BackgroundImage.Visibility = Visibility.Visible;
