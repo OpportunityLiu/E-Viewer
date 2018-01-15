@@ -298,7 +298,10 @@ namespace ExViewer.Views
         private void cb_top_Hide_Completed(object sender, object e)
         {
             if (!this.cbVisible)
+            {
+                this.cb_top.IsOpen = false;
                 this.cb_top.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)

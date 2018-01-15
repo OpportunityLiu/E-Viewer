@@ -81,6 +81,42 @@
     </Storyboard>
     <Storyboard x:Name="cb_top_Show">
       <DoubleAnimation Storyboard.TargetName="cb_top"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="1">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdTop"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="1">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdLeft"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="1">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdRight"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="1">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="cb_top"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
                        To="0">
@@ -119,6 +155,42 @@
     </Storyboard>
     <Storyboard x:Name="cb_top_Hide"
                 Completed="cb_top_Hide_Completed">
+      <DoubleAnimation Storyboard.TargetName="cb_top"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdTop"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdLeft"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdRight"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
       <DoubleAnimation Storyboard.TargetName="cb_top"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
