@@ -179,6 +179,7 @@
                  x:FieldModifier="protected"
                  HorizontalAlignment="Stretch"
                  TextWrapping="WrapWholeWords"
+                 Foreground="Red"
                  Visibility="{x:Bind tbInfo.Text, Converter={StaticResource EmptyStringToCollapsedConverter}, Mode=OneWay}" />
       <ProgressBar x:Name="pbLoading"
                    x:FieldModifier="protected"

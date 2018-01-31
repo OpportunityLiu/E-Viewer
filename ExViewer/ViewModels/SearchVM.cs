@@ -84,7 +84,7 @@ namespace ExViewer.ViewModels
 
         private SearchVM()
         {
-            this.Search = new Command<string>(queryText =>
+            this.Search = Command.Create<string>(queryText =>
             {
                 if (SettingCollection.Current.SaveLastSearch)
                 {

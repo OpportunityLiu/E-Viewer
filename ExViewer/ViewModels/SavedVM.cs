@@ -24,7 +24,7 @@ namespace ExViewer.ViewModels
 
         private SavedVM()
         {
-            this.Clear = new Command(() =>
+            this.Clear = Command.Create(() =>
             {
                 RootControl.RootController.TrackAsyncAction(SavedGallery.ClearAllGalleriesAsync(), (s, e) =>
                 {
@@ -32,7 +32,7 @@ namespace ExViewer.ViewModels
                     this.Refresh.Execute();
                 });
             });
-            this.Refresh = new AsyncCommand(async () =>
+            this.Refresh = AsyncCommand.Create(async () =>
             {
                 this.Galleries = null;
                 this.Galleries = await SavedGallery.LoadSavedGalleriesAsync();

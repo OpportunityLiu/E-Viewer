@@ -51,6 +51,7 @@
       <TextBlock x:Name="tbInfo"
                  HorizontalAlignment="Stretch"
                  TextWrapping="WrapWholeWords"
+                 Foreground="Red"
                  Visibility="{x:Bind tbInfo.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
       <ProgressBar x:Name="pbLoading"
                    VerticalAlignment="Top"

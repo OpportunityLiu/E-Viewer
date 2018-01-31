@@ -7,7 +7,9 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using static ExViewer.Helpers.HtmlHelper;
 
 // “内容对话框”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上进行了说明
 
@@ -97,6 +99,11 @@ namespace ExViewer.Views
                     Application.Current.Exit();
                 }
             }
+            else
+            {
+                if (!this.hideCalled)
+                    args.Cancel = true;
+            }
         }
 
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
@@ -115,11 +122,31 @@ namespace ExViewer.Views
 
         private async void wv_LoadCompleted(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(e.Uri.ToString(), "WebView");
+            System.Diagnostics.Debug.WriteLine(e.Uri?.ToString() ?? "local string", "WebView");
             if (e.Uri.ToString().StartsWith(Client.LogOnUri.ToString()))
                 await injectLogOnPage();
             else if (e.Uri.Host == Client.LogOnUri.Host)
                 await injectOtherPage();
+        }
+
+        private void wv_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
+        {
+            this.wv.NavigateToString($@"
+<html>
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
+</head>
+<body style='background:{Color((SolidColorBrush)this.Background)}; font-family: sans-serif;'>
+    <div>
+        <p style='color:red;'>
+            {(int)e.WebErrorStatus} ({e.WebErrorStatus.ToString()})
+        </p>
+        <small style='color:{Color((SolidColorBrush)this.Foreground)}'>
+            {e.Uri}
+        </small>
+    </div>
+</body>
+</html>");
         }
 
         private LogOnInfo logOnInfoBackup;
@@ -171,8 +198,8 @@ namespace ExViewer.Views
                 return;
             if (!string.IsNullOrEmpty(this.tempUserName) && !string.IsNullOrEmpty(this.tempPassword))
                 AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
-            this.Hide();
             this.hideCalled = true;
+            this.Hide();
         }
     }
 }

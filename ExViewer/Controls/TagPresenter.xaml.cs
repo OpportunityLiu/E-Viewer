@@ -23,7 +23,31 @@ namespace ExViewer.Controls
         public TagPresenter()
         {
             this.InitializeComponent();
-            this.submitCmd = new Opportunity.MvvmUniverse.Commands.AsyncCommand<string>(submit);
+            this.submitCmd = Opportunity.MvvmUniverse.Commands.AsyncCommand.Create(async (string text) =>
+            {
+                var tagc = this.Tags;
+                if (tagc == null)
+                    return;
+                try
+                {
+                    this.asbNewTags.IsEnabled = false;
+                    var tags = text.Split(commas, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(s => !string.IsNullOrWhiteSpace(s))
+                        .Select(ExClient.Tagging.Tag.Parse)
+                        .Distinct().ToList();
+                    if (Tags.Count == 0)
+                        return;
+                    await tagc.VoteAsync(tags, VoteState.Up);
+                }
+                catch (Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+                }
+                finally
+                {
+                    resetNewTagState(false);
+                }
+            });
             this.resetNewTagState(false);
         }
 
@@ -150,32 +174,6 @@ namespace ExViewer.Controls
 
         private Opportunity.MvvmUniverse.Commands.AsyncCommand<string> submitCmd;
 
-        private async Task submit(string text)
-        {
-            var tagc = this.Tags;
-            if (tagc == null)
-                return;
-            try
-            {
-                this.asbNewTags.IsEnabled = false;
-                var tags = text.Split(commas, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(s => !string.IsNullOrWhiteSpace(s))
-                    .Select(ExClient.Tagging.Tag.Parse)
-                    .Distinct().ToList();
-                if (Tags.Count == 0)
-                    return;
-                await tagc.VoteAsync(tags, VoteState.Up);
-            }
-            catch (Exception ex)
-            {
-                RootControl.RootController.SendToast(ex, typeof(GalleryPage));
-            }
-            finally
-            {
-                resetNewTagState(false);
-            }
-        }
-
         private void resetNewTagState(bool startToTag)
         {
             if (startToTag)
@@ -261,12 +259,12 @@ namespace ExViewer.Controls
         {
             switch (value.GetPowerState())
             {
-                case TagState.LowPower:
-                    return Windows.UI.Text.FontWeights.ExtraLight;
-                case TagState.HighPower:
-                    return Windows.UI.Text.FontWeights.Medium;
-                default:
-                    return Windows.UI.Text.FontWeights.Normal;
+            case TagState.LowPower:
+                return Windows.UI.Text.FontWeights.ExtraLight;
+            case TagState.HighPower:
+                return Windows.UI.Text.FontWeights.Medium;
+            default:
+                return Windows.UI.Text.FontWeights.Normal;
             }
         }
 
@@ -274,21 +272,21 @@ namespace ExViewer.Controls
         {
             switch (value.GetVoteState())
             {
-                case TagState.Upvoted:
-                    if (value.IsSlave())
-                        return upSlaveBrush;
-                    else
-                        return upBrush;
-                case TagState.Downvoted:
-                    if (value.IsSlave())
-                        return downSlaveBrush;
-                    else
-                        return downBrush;
-                default:
-                    if (value.IsSlave())
-                        return slaveBrush;
-                    else
-                        return normalBrush;
+            case TagState.Upvoted:
+                if (value.IsSlave())
+                    return upSlaveBrush;
+                else
+                    return upBrush;
+            case TagState.Downvoted:
+                if (value.IsSlave())
+                    return downSlaveBrush;
+                else
+                    return downBrush;
+            default:
+                if (value.IsSlave())
+                    return slaveBrush;
+                else
+                    return normalBrush;
             }
         }
 

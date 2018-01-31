@@ -23,7 +23,7 @@ namespace ExViewer.ViewModels
     {
         protected SearchResultVM()
         {
-            this.Open = new Command<Gallery>(g =>
+            this.Open = Command.Create<Gallery>(g =>
             {
                 this.SelectedGallery = g;
                 GalleryVM.GetVM(g);
@@ -73,10 +73,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        internal Command<SearchHistory> DeleteHistory
-        {
-            get;
-        } = new Command<SearchHistory>(sh =>
+        internal Command<SearchHistory> DeleteHistory { get; } = Command.Create<SearchHistory>(sh =>
         {
             using (var db = new SearchHistoryDb())
             {

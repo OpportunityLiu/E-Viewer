@@ -156,7 +156,7 @@
       <Version>1.1.5</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
-      <Version>1.2.1</Version>
+      <Version>1.2.3</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
       <Version>1.2.2</Version>
