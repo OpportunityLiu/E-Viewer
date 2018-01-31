@@ -91,7 +91,7 @@ namespace ExViewer.Controls
 
         protected override void OnApplyTemplate()
         {
-            this.Presenter = GetTemplateChild(nameof(Presenter)) as RichTextBlock;
+            this.Presenter = GetTemplateChild(nameof(this.Presenter)) as RichTextBlock;
             reload();
         }
 
@@ -219,35 +219,34 @@ namespace ExViewer.Controls
 
         private void link(DependencyObject obj1, DependencyObject obj2)
         {
-            var o1h = obj1 as Hyperlink;
-            var o1b = obj1 as HyperlinkButton;
-            var o2h = obj2 as Hyperlink;
-            var o2b = obj2 as HyperlinkButton;
-            if (o1h != null)
+            switch (obj1)
             {
-                if (o2h != null)
+            case Hyperlink o1h:
+                switch (obj2)
                 {
+                case Hyperlink o2h:
                     o1h.XYFocusDown = o2h;
                     o2h.XYFocusUp = o1h;
-                }
-                else
-                {
+                    break;
+                case HyperlinkButton o2b:
                     o1h.XYFocusDown = o2b;
                     o2b.XYFocusUp = o1h;
+                    break;
                 }
-            }
-            else
-            {
-                if (o2h != null)
+                break;
+            case HyperlinkButton o1b:
+                switch (obj2)
                 {
+                case Hyperlink o2h:
                     o1b.XYFocusDown = o2h;
                     o2h.XYFocusUp = o1b;
-                }
-                else
-                {
+                    break;
+                case HyperlinkButton o2b:
                     o1b.XYFocusDown = o2b;
                     o2b.XYFocusUp = o1b;
+                    break;
                 }
+                break;
             }
         }
 

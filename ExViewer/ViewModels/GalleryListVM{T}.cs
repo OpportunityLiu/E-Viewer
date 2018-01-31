@@ -17,13 +17,13 @@ namespace ExViewer.ViewModels
     {
         protected GalleryListVM()
         {
-            this.Delete = new Command<Gallery>(async g =>
+            this.Delete = Command.Create(async (Gallery g) =>
             {
                 await g.DeleteAsync();
                 this.Galleries?.Remove(g);
                 RootControl.RootController.SendToast(Strings.Resources.Views.CachedPage.GalleryDeleted, null);
             }, g => g != null);
-            this.Open = new Command<Gallery>(g =>
+            this.Open = Command.Create((Gallery g) =>
             {
                 GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);

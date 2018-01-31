@@ -29,6 +29,9 @@
     </Grid>
   </ContentDialog.Title>
   <Grid x:Name="gdContentRoot">
-    <WebView x:Name="wv" LoadCompleted="wv_LoadCompleted" ScriptNotify="wv_ScriptNotify"/>
+    <WebView x:Name="wv"
+             LoadCompleted="wv_LoadCompleted"
+             NavigationFailed="wv_NavigationFailed"
+             ScriptNotify="wv_ScriptNotify" />
   </Grid>
 </controls:MyContentDialog>

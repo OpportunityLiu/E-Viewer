@@ -17,8 +17,8 @@ namespace ExViewer.ViewModels
     {
         public PopularVM()
         {
-            this.Refresh = new Command(() => this.Galleries.Clear());
-            this.Open = new Command<Gallery>(g =>
+            this.Refresh = Command.Create(() => this.Galleries.Clear());
+            this.Open = Command.Create<Gallery>(g =>
             {
                 GalleryVM.GetVM(g);
                 RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);

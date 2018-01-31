@@ -11,6 +11,7 @@ using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using static ExViewer.Helpers.HtmlHelper;
 
 // The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -84,7 +85,7 @@ namespace ExViewer.Views
                 }
                 catch (Exception ex)
                 {
-                    str = ex.GetMessage();
+                    str = $@"<p style='color:red;'>{HtmlAgilityPack.HtmlEntity.Entitize(ex.GetMessage(), true, true)}</p>";
                 }
                 var redirect = regRedirect.Match(str);
                 if (redirect.Success)
@@ -111,18 +112,18 @@ namespace ExViewer.Views
 <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
 <style type='text/css'>
     html {{
-        background: {color(background)};
+        background: {Color(background)};
         font-family: sans-serif;
         font-size: 15px;
-        color: {color(foreground)};
+        color: {Color(foreground)};
     }}
     
     a {{
-        color:{color(link)}
+        color:{Color(link)}
     }}
     
     a:hover {{
-        color: {color(foreground)}
+        color: {Color(foreground)}
     }}
     
     ul {{
@@ -148,13 +149,6 @@ namespace ExViewer.Views
     }}
 </style>
 <base href='{ew.ToString()}'>";
-        }
-
-        private static string color(SolidColorBrush color)
-        {
-            if (color.Color.A == 255)
-                return $"#{color.Color.R:X2}{color.Color.G:X2}{color.Color.B:X2}";
-            return $"rgba({color.Color.R},{color.Color.G},{color.Color.B},{color.Color.A / 255d})";
         }
 
         private static readonly Uri eh = new Uri("https://e-hentai.org/");

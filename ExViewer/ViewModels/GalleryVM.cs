@@ -97,9 +97,9 @@ namespace ExViewer.ViewModels
 
         private GalleryVM()
         {
-            this.Share = new Command<GalleryImage>(async image =>
+            this.Share = Command.Create<GalleryImage>(async image =>
             {
-                if (!Helpers.ShareHandler.IsShareSupported)
+                if (!ShareHandler.IsShareSupported)
                 {
                     if (image == null)
                         await Launcher.LaunchUriAsync(this.gallery.GalleryUri, new LauncherOptions { IgnoreAppUriHandlers = true });
@@ -108,7 +108,7 @@ namespace ExViewer.ViewModels
                     return;
                 }
                 var gallery = this.gallery;
-                Helpers.ShareHandler.Share(async (s, e) =>
+                ShareHandler.Share(async (s, e) =>
                 {
                     var deferral = e.Request.GetDeferral();
                     try
@@ -167,7 +167,7 @@ namespace ExViewer.ViewModels
                     }
                 });
             }, image => this.gallery != null);
-            this.Save = new Command(() =>
+            this.Save = Command.Create(() =>
             {
                 this.SaveStatus = OperationState.Started;
                 this.SaveProgress = -1;
@@ -180,17 +180,17 @@ namespace ExViewer.ViewModels
                 {
                     switch (e)
                     {
-                        case AsyncStatus.Canceled:
-                        case AsyncStatus.Error:
-                            this.SaveStatus = OperationState.Failed;
-                            RootControl.RootController.SendToast(sender.ErrorCode, null);
-                            break;
-                        case AsyncStatus.Completed:
-                            this.SaveStatus = OperationState.Completed;
-                            break;
-                        case AsyncStatus.Started:
-                            this.SaveStatus = OperationState.Started;
-                            break;
+                    case AsyncStatus.Canceled:
+                    case AsyncStatus.Error:
+                        this.SaveStatus = OperationState.Failed;
+                        RootControl.RootController.SendToast(sender.ErrorCode, null);
+                        break;
+                    case AsyncStatus.Completed:
+                        this.SaveStatus = OperationState.Completed;
+                        break;
+                    case AsyncStatus.Started:
+                        this.SaveStatus = OperationState.Started;
+                        break;
                     }
                     this.SaveProgress = 100;
                 };
@@ -202,12 +202,12 @@ namespace ExViewer.ViewModels
                     return false;
                 return true;
             });
-            this.OpenImage = new Command<GalleryImage>(image =>
+            this.OpenImage = Command.Create<GalleryImage>(image =>
             {
                 this.CurrentIndex = image.PageID - 1;
                 RootControl.RootController.Frame.Navigate(typeof(ImagePage), this.gallery.ID);
             });
-            this.LoadOriginal = new Command<GalleryImage>(async image =>
+            this.LoadOriginal = Command.Create<GalleryImage>(async image =>
             {
                 image.PropertyChanged += this.Image_PropertyChanged;
                 try
@@ -220,7 +220,7 @@ namespace ExViewer.ViewModels
                 }
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null && !image.OriginalLoaded);
-            this.ReloadImage = new Command<GalleryImage>(async image =>
+            this.ReloadImage = Command.Create<GalleryImage>(async image =>
             {
                 image.PropertyChanged += this.Image_PropertyChanged;
                 try
@@ -237,25 +237,25 @@ namespace ExViewer.ViewModels
                 }
                 image.PropertyChanged -= this.Image_PropertyChanged;
             }, image => image != null);
-            this.SearchUploader = new Command(() =>
+            this.SearchUploader = Command.Create(() =>
             {
                 var search = Client.Current.Search(this.gallery.Uploader, null, SettingCollection.Current.DefaultSearchCategory);
                 var vm = SearchVM.GetVM(search);
                 RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
             }, () => this.gallery != null);
-            this.SearchImage = new Command<SHA1Value>(sha =>
+            this.SearchImage = Command.Create<SHA1Value>(sha =>
             {
                 var search = Client.Current.Search("", Category.All, Enumerable.Repeat(sha, 1), this.gallery.GetDisplayTitle());
                 var vm = SearchVM.GetVM(search);
                 RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
             }, sha => this.gallery != null && sha != default(SHA1Value));
-            this.AddComment = new AsyncCommand(async () =>
+            this.AddComment = AsyncCommand.Create(async () =>
             {
                 var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref GalleryVM.addComment);
                 addComment.Gallery = this.Gallery;
                 await addComment.ShowAsync();
             }, () => this.Gallery != null);
-            this.GoToLatestRevision = new Command<RevisionCollection>(c =>
+            this.GoToLatestRevision = Command.Create<RevisionCollection>(c =>
             {
                 var info = c.DescendantsInfo.Last().Gallery;
                 var load = GetVMAsync(info);
@@ -432,7 +432,7 @@ namespace ExViewer.ViewModels
             });
         }
 
-        public Command<TorrentInfo> TorrentDownload { get; } = new Command<TorrentInfo>(async torrent =>
+        public Command<TorrentInfo> TorrentDownload { get; } = Command.Create<TorrentInfo>(async torrent =>
         {
             RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
             try
