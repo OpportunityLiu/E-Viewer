@@ -123,6 +123,8 @@ namespace ExViewer.Views
         private async void wv_LoadCompleted(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine(e.Uri?.ToString() ?? "local string", "WebView");
+            if (e.Uri == null)
+                return;
             if (e.Uri.ToString().StartsWith(Client.LogOnUri.ToString()))
                 await injectLogOnPage();
             else if (e.Uri.Host == Client.LogOnUri.Host)
