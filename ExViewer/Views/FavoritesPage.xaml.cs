@@ -60,10 +60,7 @@ namespace ExViewer.Views
             }
         }
 
-        private void Search_Executed(System.Windows.Input.ICommand sender, Opportunity.MvvmUniverse.Commands.CommandExecutedEventArgs e)
-        {
-            CloseAll();
-        }
+        private void Search_Executed(Opportunity.MvvmUniverse.Commands.ICommand<string> sender, Opportunity.MvvmUniverse.Commands.ExecutedEventArgs<string> e) => CloseAll();
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
@@ -99,19 +96,19 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.Key)
             {
-                case Windows.System.VirtualKey.GamepadY:
-                    if (this.lv.SelectionMode == ListViewSelectionMode.None)
-                        this.cbCategory.Focus(FocusState.Keyboard);
-                    else
-                        this.cbCategory2.Focus(FocusState.Keyboard);
-                    break;
-                case Windows.System.VirtualKey.GamepadMenu:
-                case Windows.System.VirtualKey.Application:
-                    e.Handled = false;
-                    break;
-                default:
-                    e.Handled = false;
-                    break;
+            case Windows.System.VirtualKey.GamepadY:
+                if (this.lv.SelectionMode == ListViewSelectionMode.None)
+                    this.cbCategory.Focus(FocusState.Keyboard);
+                else
+                    this.cbCategory2.Focus(FocusState.Keyboard);
+                break;
+            case Windows.System.VirtualKey.GamepadMenu:
+            case Windows.System.VirtualKey.Application:
+                e.Handled = false;
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 

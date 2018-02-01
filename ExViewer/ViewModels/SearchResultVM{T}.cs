@@ -23,15 +23,17 @@ namespace ExViewer.ViewModels
     {
         protected SearchResultVM()
         {
-            this.Open = Command.Create<Gallery>(g =>
-            {
-                this.SelectedGallery = g;
-                GalleryVM.GetVM(g);
-                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
-            }, g => g != null);
+            this.Open.Tag = this;
+            this.DeleteHistory.Tag = this;
         }
 
-        public Command<Gallery> Open { get; }
+        public Command<Gallery> Open { get; } = Command.Create<Gallery>((sender, g) =>
+        {
+            var that = (SearchResultVM<T>)sender.Tag;
+            that.SelectedGallery = g;
+            GalleryVM.GetVM(g);
+            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
+        }, (sender, g) => g != null);
 
         private T searchResult;
 
@@ -73,14 +75,14 @@ namespace ExViewer.ViewModels
             }
         }
 
-        internal Command<SearchHistory> DeleteHistory { get; } = Command.Create<SearchHistory>(sh =>
+        internal Command<SearchHistory> DeleteHistory { get; } = Command.Create<SearchHistory>((sender, sh) =>
         {
             using (var db = new SearchHistoryDb())
             {
                 db.SearchHistorySet.Remove(sh);
                 db.SaveChanges();
             }
-        }, sh => sh != null);
+        }, (sender, sh) => sh != null);
 
         public IAsyncAction ClearHistoryAsync()
         {

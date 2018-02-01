@@ -17,47 +17,32 @@ namespace ExViewer.ViewModels
     {
         protected GalleryListVM()
         {
-            this.Delete = Command.Create(async (Gallery g) =>
-            {
-                await g.DeleteAsync();
-                this.Galleries?.Remove(g);
-                RootControl.RootController.SendToast(Strings.Resources.Views.CachedPage.GalleryDeleted, null);
-            }, g => g != null);
-            this.Open = Command.Create((Gallery g) =>
-            {
-                GalleryVM.GetVM(g);
-                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
-            }, g => g != null);
+            this.Delete.Tag = this;
+            this.Open.Tag = this;
         }
 
         private ObservableList<Gallery> galleries;
-
         public ObservableList<Gallery> Galleries
         {
             get => this.galleries;
             protected set => Set(ref this.galleries, value);
         }
 
-        public AsyncCommand Refresh
-        {
-            get;
-            protected set;
-        }
+        public abstract AsyncCommand Refresh { get; }
 
-        public Command Clear
-        {
-            get;
-            protected set;
-        }
+        public abstract Command Clear { get; }
 
-        public Command<Gallery> Delete
+        public virtual Command<Gallery> Delete { get; } = Command.Create<Gallery>(async (sender, g) =>
         {
-            get;
-        }
+            await g.DeleteAsync();
+            ((GalleryListVM<T>)sender.Tag).Galleries?.Remove(g);
+            RootControl.RootController.SendToast(Strings.Resources.Views.CachedPage.GalleryDeleted, null);
+        }, (sender, g) => g != null);
 
-        public Command<Gallery> Open
+        public virtual Command<Gallery> Open { get; } = Command.Create<Gallery>((sender, g) =>
         {
-            get;
-        }
+            GalleryVM.GetVM(g);
+            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
+        }, (sender, g) => g != null);
     }
 }

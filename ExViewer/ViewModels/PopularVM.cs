@@ -17,18 +17,18 @@ namespace ExViewer.ViewModels
     {
         public PopularVM()
         {
-            this.Refresh = Command.Create(() => this.Galleries.Clear());
-            this.Open = Command.Create<Gallery>(g =>
-            {
-                GalleryVM.GetVM(g);
-                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
-            }, g => g != null);
+            this.Refresh.Tag = this;
+            this.Open.Tag = this;
         }
 
         public PopularCollection Galleries { get; } = new PopularCollection();
 
-        public Command Refresh { get; }
+        public Command Refresh { get; } = Command.Create(sender => ((PopularVM)sender.Tag).Galleries.Clear());
 
-        public Command<Gallery> Open { get; }
+        public Command<Gallery> Open { get; } = Command.Create<Gallery>((sender, g) =>
+        {
+            GalleryVM.GetVM(g);
+            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
+        }, (sender, g) => g != null);
     }
 }

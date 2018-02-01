@@ -112,13 +112,14 @@ namespace ExViewer.ViewModels
 
         private FavoritesVM()
         {
-            this.Search = Command.Create((string queryText) =>
-            {
-                RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), GetSearchQuery(queryText, this.category));
-            });
+            this.Search.Tag = this;
         }
 
-        public Command<string> Search { get; }
+        public Command<string> Search { get; } = Command.Create<string>((sender, queryText) =>
+        {
+            var that = (FavoritesVM)sender.Tag;
+            RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), GetSearchQuery(queryText, that.category));
+        });
 
         public void SetQueryWithSearchResult()
         {

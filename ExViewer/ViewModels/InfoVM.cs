@@ -17,22 +17,11 @@ namespace ExViewer.ViewModels
     {
         public InfoVM()
         {
-            this.RefreshStatus = AsyncCommand.Create(() => Status.RefreshAsync().AsTask(), () => Status != null);
-            this.RefreshTaggingStatistics = AsyncCommand.Create(() => TaggingStatistics.RefreshAsync().AsTask(), () => TaggingStatistics != null);
-            this.OpenGallery = Command.Create<TaggingRecord>(tr =>
-            {
-                RootControl.RootController.TrackAsyncAction(GalleryVM.GetVMAsync(tr.GalleryInfo).AsAsyncAction(), (s, e) =>
-                {
-                    RootControl.RootController.Frame.Navigate(typeof(GalleryPage), tr.GalleryInfo.ID);
-                });
-            }, tr => tr.GalleryInfo.ID > 0);
-            this.SearchTag = Command.Create<TaggingRecord>(tr =>
-            {
-                var vm = SearchVM.GetVM(tr.Tag.Search(Category.All, new AdvancedSearchOptions(skipMasterTags: true, searchLowPowerTags: true)));
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
-            }, tr => tr.Tag.Content != null);
-            this.ResetImageUsage = AsyncCommand.Create(() => Status.ResetImageUsageAsync().AsTask(),
-                () => Status != null);
+            this.RefreshStatus.Tag = this;
+            this.RefreshTaggingStatistics.Tag = this;
+            this.OpenGallery.Tag = this;
+            this.SearchTag.Tag = this;
+            this.ResetImageUsage.Tag = this;
         }
 
         public UserStatus Status => Client.Current.UserStatus;
@@ -40,13 +29,32 @@ namespace ExViewer.ViewModels
         public TaggingStatistics TaggingStatistics => Client.Current.TaggingStatistics;
 
         public AsyncCommand RefreshStatus { get; }
+            = AsyncCommand.Create(
+                sender => ((InfoVM)sender.Tag).Status.RefreshAsync(),
+                sender => ((InfoVM)sender.Tag).Status != null);
 
         public AsyncCommand RefreshTaggingStatistics { get; }
+            = AsyncCommand.Create(
+                sender => ((InfoVM)sender.Tag).TaggingStatistics.RefreshAsync(),
+                sender => ((InfoVM)sender.Tag).TaggingStatistics != null);
 
         public AsyncCommand ResetImageUsage { get; }
+            = AsyncCommand.Create(
+                sender => ((InfoVM)sender.Tag).Status.ResetImageUsageAsync(),
+                sender => ((InfoVM)sender.Tag).Status != null);
 
-        public Command<TaggingRecord> OpenGallery { get; }
+        public Command<TaggingRecord> OpenGallery { get; } = Command.Create<TaggingRecord>((sender, tr) =>
+        {
+            RootControl.RootController.TrackAsyncAction(GalleryVM.GetVMAsync(tr.GalleryInfo).AsAsyncAction(), (s, e) =>
+            {
+                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), tr.GalleryInfo.ID);
+            });
+        }, (sender, tr) => tr.GalleryInfo.ID > 0);
 
-        public Command<TaggingRecord> SearchTag { get; }
+        public Command<TaggingRecord> SearchTag { get; } = Command.Create<TaggingRecord>((sender, tr) =>
+        {
+            var vm = SearchVM.GetVM(tr.Tag.Search(Category.All, new AdvancedSearchOptions(skipMasterTags: true, searchLowPowerTags: true)));
+            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+        }, (sender, tr) => tr.Tag.Content != null);
     }
 }

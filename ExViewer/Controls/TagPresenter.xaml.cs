@@ -23,31 +23,7 @@ namespace ExViewer.Controls
         public TagPresenter()
         {
             this.InitializeComponent();
-            this.submitCmd = Opportunity.MvvmUniverse.Commands.AsyncCommand.Create(async (string text) =>
-            {
-                var tagc = this.Tags;
-                if (tagc == null)
-                    return;
-                try
-                {
-                    this.asbNewTags.IsEnabled = false;
-                    var tags = text.Split(commas, StringSplitOptions.RemoveEmptyEntries)
-                        .Where(s => !string.IsNullOrWhiteSpace(s))
-                        .Select(ExClient.Tagging.Tag.Parse)
-                        .Distinct().ToList();
-                    if (Tags.Count == 0)
-                        return;
-                    await tagc.VoteAsync(tags, VoteState.Up);
-                }
-                catch (Exception ex)
-                {
-                    RootControl.RootController.SendToast(ex, typeof(GalleryPage));
-                }
-                finally
-                {
-                    resetNewTagState(false);
-                }
-            });
+            this.submitCmd.Tag = this;
             this.resetNewTagState(false);
         }
 
@@ -172,7 +148,33 @@ namespace ExViewer.Controls
 
         private static readonly char[] commas = new[] { ',', '՝', '،', '߸', '፣', '᠂', '⸲', '⸴', '⹁', '꘍', '꛵', '᠈', '꓾', 'ʻ', 'ʽ', '、', '﹐', '，', '﹑', '､', '︐', '︑' };
 
-        private Opportunity.MvvmUniverse.Commands.AsyncCommand<string> submitCmd;
+        private Opportunity.MvvmUniverse.Commands.AsyncCommand<string> submitCmd =
+            Opportunity.MvvmUniverse.Commands.AsyncCommand.Create<string>(async (sender, text) =>
+        {
+            var that = (TagPresenter)sender.Tag;
+            var tagc = that.Tags;
+            if (tagc == null)
+                return;
+            try
+            {
+                that.asbNewTags.IsEnabled = false;
+                var tags = text.Split(commas, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Select(ExClient.Tagging.Tag.Parse)
+                    .Distinct().ToList();
+                if (that.Tags.Count == 0)
+                    return;
+                await tagc.VoteAsync(tags, VoteState.Up);
+            }
+            catch (Exception ex)
+            {
+                RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+            }
+            finally
+            {
+                that.resetNewTagState(false);
+            }
+        });
 
         private void resetNewTagState(bool startToTag)
         {
