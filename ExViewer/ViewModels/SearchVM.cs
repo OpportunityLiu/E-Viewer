@@ -84,19 +84,20 @@ namespace ExViewer.ViewModels
 
         private SearchVM()
         {
-            this.Search = Command.Create<string>(queryText =>
-            {
-                if (SettingCollection.Current.SaveLastSearch)
-                {
-                    SettingCollection.Current.DefaultSearchCategory = this.category;
-                    SettingCollection.Current.DefaultSearchString = queryText;
-                }
-                var vm = GetVM(Client.Current.Search(queryText, this.category, this.advancedSearch));
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
-            });
+            this.Search.Tag = this;
         }
 
-        public Command<string> Search { get; }
+        public Command<string> Search { get; } = Command.Create<string>((sender, queryText) =>
+        {
+            var that = (SearchVM)sender.Tag;
+            if (SettingCollection.Current.SaveLastSearch)
+            {
+                SettingCollection.Current.DefaultSearchCategory = that.category;
+                SettingCollection.Current.DefaultSearchString = queryText;
+            }
+            var vm = GetVM(Client.Current.Search(queryText, that.category, that.advancedSearch));
+            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+        });
 
         public void SetQueryWithSearchResult()
         {
