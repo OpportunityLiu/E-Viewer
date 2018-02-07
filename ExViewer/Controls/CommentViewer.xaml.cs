@@ -136,7 +136,7 @@ namespace ExViewer.Controls
             try
             {
                 var translateTask = this.Comment.TranslateAsync(Settings.SettingCollection.Current.CommentTranslationCode);
-                FindName(nameof(Translated));
+                FindName(nameof(this.Translated));
                 this.TranslatedContent = await translateTask;
             }
             catch (Exception ex)
