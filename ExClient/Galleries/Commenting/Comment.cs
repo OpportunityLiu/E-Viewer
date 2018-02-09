@@ -141,13 +141,23 @@ namespace ExClient.Galleries.Commenting
 
         public IAsyncAction VoteAsync(VoteState command)
         {
+            if (command == VoteState.Default)
+            {
+                // Withdraw votes
+                if (this.status == CommentStatus.VotedDown)
+                    command = VoteState.Down;
+                else if (this.status == CommentStatus.VotedUp)
+                    command = VoteState.Up;
+            }
             if (command != VoteState.Down && command != VoteState.Up)
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
             if (!this.CanVote)
+            {
                 if (this.IsUploaderComment)
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteStateUploader);
                 else
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteState);
+            }
             var request = new CommentVoteRequest(this, command);
             return AsyncInfo.Run(async token =>
             {
