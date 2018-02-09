@@ -14,41 +14,45 @@
                 Placement="Bottom">
       <MenuFlyoutItem x:Name="mfiContent"
                       Icon="Tag"
-                      Text="{x:Bind SelectedTag.Content.Content, Mode=OneWay}"
-                      ToolTipService.ToolTip="{x:Bind SelectedTag.Content.Content, Mode=OneWay}"
-                      Click="mfiContent_Click" />
+                      Text="{x:Bind VM.SelectedTag.Content.Content, Mode=OneWay, FallbackValue=''}"
+                      ToolTipService.ToolTip="{x:Bind VM.SelectedTag.Content.Content, Mode=OneWay, FallbackValue=''}"
+                      Command="{x:Bind VM.CopyContent}"
+                      CommandParameter="{x:Bind VM.SelectedTag.Content.Content, Mode=OneWay, FallbackValue=''}" />
       <MenuFlyoutSeparator />
       <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteUpMenuFlyoutItem"
-                      x:Name="mfiUp"
-                      Click="mfiUp_Click"
+                      Visibility="{x:Bind VM.IsVoteUpVisible(VM.SelectedTag.State), Mode=OneWay, FallbackValue=Collapsed}"
+                      Command="{x:Bind VM.VoteUp}"
+                      CommandParameter="{x:Bind VM.SelectedTag, Mode=OneWay}"
                       Text="Vote up">
         <MenuFlyoutItem.Icon>
           <FontIcon Glyph="&#xE70E;" />
         </MenuFlyoutItem.Icon>
       </MenuFlyoutItem>
+      <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagWithdrawVoteMenuFlyoutItem"
+                      Visibility="{x:Bind VM.IsVoteWithdrawVisible(VM.SelectedTag.State), Mode=OneWay, FallbackValue=Collapsed}"
+                      Command="{x:Bind VM.VoteWithdraw}"
+                      CommandParameter="{x:Bind VM.SelectedTag, Mode=OneWay}"
+                      Icon="Undo"
+                      Text="Withdraw vote" />
       <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagVoteDownMenuFlyoutItem"
-                      x:Name="mfiDown"
-                      Click="mfiDown_Click"
+                      Visibility="{x:Bind VM.IsVoteDownVisible(VM.SelectedTag.State), Mode=OneWay, FallbackValue=Collapsed}"
+                      Command="{x:Bind VM.VoteDown}"
+                      CommandParameter="{x:Bind VM.SelectedTag, Mode=OneWay}"
                       Text="Vote down">
         <MenuFlyoutItem.Icon>
           <FontIcon Glyph="&#xE70D;" />
         </MenuFlyoutItem.Icon>
       </MenuFlyoutItem>
-      <MenuFlyoutItem x:Uid="Controls/TagPresenter/TagWithdrawVoteMenuFlyoutItem"
-                      x:Name="mfiWithdraw"
-                      Icon="Undo"
-                      Click="mfiWithdraw_Click"
-                      Text="Withdraw vote" />
       <MenuFlyoutSeparator />
-      <MenuFlyoutItem x:Name="mfiTagDefination"
-                      x:Uid="Controls/TagPresenter/GoToDefinitionMenuFlyoutItem"
+      <MenuFlyoutItem x:Uid="Controls/TagPresenter/GoToDefinitionMenuFlyoutItem"
+                      Command="{x:Bind VM.GoToDefination}"
+                      CommandParameter="{x:Bind VM.SelectedTag, Mode=OneWay}"
                       Icon="Library"
-                      Click="mfiTagDefination_Click"
                       Text="Go to EHWiki for definition" />
-      <MenuFlyoutItem x:Name="mfiTagSearch"
-                      x:Uid="Controls/TagPresenter/SearchTagMenuFlyoutItem"
+      <MenuFlyoutItem x:Uid="Controls/TagPresenter/SearchTagMenuFlyoutItem"
+                      Command="{x:Bind VM.Search}"
+                      CommandParameter="{x:Bind VM.SelectedTag, Mode=OneWay}"
                       Icon="Find"
-                      Click="mfiTagSearch_Click"
                       Text="Show galleries with this tag" />
     </MenuFlyout>
     <Style x:Key="TagTextBlockStyle"
@@ -154,14 +158,14 @@
                     Margin="16,0"
                     QueryIcon="Tag"
                     PlaceholderText="Enter new tags, separated with comma"
-                    Loaded="asbNewTags_Loaded"
                     Style="{StaticResource SearchAutoSuggestBoxStyle}"
                     LostFocus="asbNewTags_LostFocus"
-                    local:TagSuggestionService.InputScope="AlphanumericHalfWidth"
+                    IsEnabled="{x:Bind VM.SubmitTag.IsExecuting, Mode=OneWay, Converter={StaticResource LogicalNotConverter}}"
                     local:TagSuggestionService.IsEnabled="True"
+                    local:TagSuggestionService.InputScope="AlphanumericHalfWidth"
                     local:TagSuggestionService.Separator=","
                     local:TagSuggestionService.UseHistory="False"
-                    local:TagSuggestionService.SubmitCommand="{x:Bind submitCmd}" />
+                    local:TagSuggestionService.SubmitCommand="{x:Bind VM.SubmitTag}" />
     <Button x:Uid="Controls/TagPresenter/AddNewTagsButton"
             x:Name="btnStartNew"
             Grid.Row="1"
