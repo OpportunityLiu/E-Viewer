@@ -93,8 +93,6 @@ namespace ExViewer.Controls
             }
         }
 
-
-
         public static string GetSeparator(DependencyObject obj)
         {
             return (string)obj.GetValue(SeparatorProperty);
@@ -145,6 +143,10 @@ namespace ExViewer.Controls
         public static void SetStateCode(DependencyObject obj, int value)
         {
             obj.SetValue(StateCodeProperty, value);
+        }
+        public static void IncreaseStateCode(DependencyObject obj)
+        {
+            SetStateCode(obj, GetStateCode(obj) + 1);
         }
 
         // Using a DependencyProperty as the backing store for StateCode.  This enables animation, styling, binding, etc...
