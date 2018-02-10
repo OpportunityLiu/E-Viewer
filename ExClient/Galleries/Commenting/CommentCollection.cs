@@ -23,7 +23,7 @@ namespace ExClient.Galleries.Commenting
 
         public bool IsLoaded
         {
-            get => isLoaded;
+            get => this.isLoaded;
             private set => Set(nameof(IsEmpty), ref this.isLoaded, value);
         }
 

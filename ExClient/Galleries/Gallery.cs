@@ -371,8 +371,6 @@ namespace ExClient.Galleries
         public CommentCollection Comments => LazyInitializer.EnsureInitialized(ref this.comments, () => new CommentCollection(this));
         #endregion
 
-        private static readonly Regex imgLinkMatcher = new Regex(@"/s/([0-9a-f]+)/(\d+)-(\d+)", RegexOptions.Compiled);
-
         private void updateFavoriteInfo(HtmlDocument html)
         {
             var favNode = html.GetElementbyId("fav");
@@ -392,13 +390,12 @@ namespace ExClient.Galleries
                 if (this.Revisions == null)
                     this.Revisions = new RevisionCollection(this, html);
                 this.Tags.Update(html);
-                var pcNodes = html.DocumentNode.Descendants("td")
-                    .Where(node => "document.location=this.firstChild.href" == node.GetAttribute("onclick", ""))
+                var pcNodes = html.DocumentNode.Element("html").Element("body").Element("div", "gtb").Descendants("td")
                     .Select(node =>
                     {
                         if (int.TryParse(node.InnerText, out var number))
                             return number;
-                        return -1;
+                        return int.MinValue;
                     }).DefaultIfEmpty(1).Max();
                 this.PageCount = pcNodes;
                 var picRoot = html.GetElementbyId("gdt");
@@ -408,16 +405,16 @@ namespace ExClient.Galleries
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                     foreach (var page in picRoot.Elements("div", "gdtl"))
                     {
-                        var nodeA = page.Descendants("a").Single();
-                        var match = imgLinkMatcher.Match(nodeA.GetAttribute("href", ""));
-                        if (!match.Success)
-                            continue;
-                        var thumb = nodeA.Descendants("img").Single().GetAttribute("src", default(Uri));
+                        var nodeA = page.Element("a");
+                        var thumb = nodeA.Element("img").GetAttribute("src", default(Uri));
                         if (thumb == null)
                             continue;
+                        var tokens = nodeA.GetAttribute("href", "").Split(new[] { '/', '-' });
+                        if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s")
+                            continue;
+                        var pId = int.Parse(tokens[tokens.Length - 1], System.Globalization.NumberStyles.Integer);
+                        var imageKey = tokens[tokens.Length - 3].ToToken();
                         var gId = this.ID;
-                        var pId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer);
-                        var imageKey = match.Groups[1].Value.ToToken();
                         var imageModel = db.GalleryImageSet
                             .Include(gi => gi.Image)
                             .FirstOrDefault(gi => gi.GalleryId == gId && gi.PageId == pId);

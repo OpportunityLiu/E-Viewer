@@ -43,15 +43,18 @@ namespace ExClient.Search
                 $"&f_apply=Search+Favorites";
         }
 
-        protected override void HandleAdditionalInfo(HtmlNode trNode, Gallery gallery)
+        protected override void HandleAdditionalInfo(HtmlNode dataNode, Gallery gallery, bool isList)
         {
-            base.HandleAdditionalInfo(trNode, gallery);
-            var favNode = trNode.ChildNodes[2].LastChild;
-            var favNote = favNode.GetInnerText();
-            if (favNote.StartsWith("Note: "))
-                gallery.FavoriteNote = favNote.Substring(6);
-            else
-                gallery.FavoriteNote = "";
+            base.HandleAdditionalInfo(dataNode, gallery, isList);
+            if (isList)
+            {
+                var favNode = dataNode.ChildNodes[2].LastChild;
+                var favNote = favNode.GetInnerText();
+                if (favNote.StartsWith("Note: "))
+                    gallery.FavoriteNote = favNote.Substring(6);
+                else
+                    gallery.FavoriteNote = "";
+            }
         }
 
         protected override void LoadPageOverride(HtmlDocument doc)

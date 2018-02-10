@@ -28,6 +28,7 @@ namespace ExClient
             public const string MemberID = "ipb_member_id";
             public const string PassHash = "ipb_pass_hash";
             public const string S = "s";
+            public const string SK = "sk";
             public const string NeverWarn = "nw";
             public const string HathPerks = "hath_perks";
             public const string Config = "uconfig";
@@ -63,6 +64,7 @@ namespace ExClient
             return name == CookieNames.MemberID
                 || name == CookieNames.PassHash
                 || name == CookieNames.S
+                || name == CookieNames.SK
                 || name == CookieNames.HathPerks;
         }
 
@@ -103,7 +105,6 @@ namespace ExClient
         {
             this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Eh, "/") { Value = "1" });
             this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Ex, "/") { Value = "1" });
-            this.Settings.ApplyChanges();
         }
 
         /// <summary>

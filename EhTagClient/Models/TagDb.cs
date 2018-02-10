@@ -6,7 +6,7 @@ namespace EhTagClient.Models
     {
         public static void Migrate()
         {
-            using(var db = new TagDb())
+            using (var db = new TagDb())
             {
                 db.Database.Migrate();
             }

@@ -23,7 +23,6 @@ namespace ExViewer.Settings
         public void Apply()
         {
             var clientSettings = Client.Current.Settings;
-            this.HahAddress = this.HahAddress;
             this.ExcludedTagNamespaces = this.ExcludedTagNamespaces;
             this.ExcludedLanguages = this.ExcludedLanguages;
             this.VisitEx = this.VisitEx;
@@ -60,7 +59,7 @@ namespace ExViewer.Settings
             set
             {
                 SetRoaming(value);
-                Client.Current.Settings.ExcludedTagNamespaces.Value = value;
+                Client.Current.Settings.ExcludedTagNamespaces = value;
             }
         }
 
@@ -192,28 +191,6 @@ namespace ExViewer.Settings
                 SetLocal(value);
                 if (value)
                     this.LoadLofiOnMeteredInternetConnection = true;
-            }
-        }
-
-        [Setting("Connection", Index = 60)]
-        public string HahAddress
-        {
-            get => GetLocal("");
-            set
-            {
-                var old = GetLocal("");
-                if (string.IsNullOrWhiteSpace(value))
-                    value = "";
-                try
-                {
-                    Client.Current.Settings.HahProxy.AddressAndPort = value;
-                    ForceSetLocal(Client.Current.Settings.HahProxy.AddressAndPort);
-                }
-                catch (System.Exception ex)
-                {
-                    ForceSetLocal(old);
-                    Views.RootControl.RootController.SendToast(ex, null);
-                }
             }
         }
 

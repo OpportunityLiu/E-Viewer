@@ -8,11 +8,6 @@ namespace HtmlAgilityPack
 {
     internal static class HtmlHelper
     {
-        //public static string DeEntitize(this string that)
-        //{
-        //    return HtmlEntity.DeEntitize(that);
-        //}
-
         public static HtmlNode Element(this HtmlNode node, string name, string className)
         {
             return node.Elements(name, className).FirstOrDefault();

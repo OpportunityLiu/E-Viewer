@@ -18,22 +18,23 @@ namespace ExClient.Search
         protected override void ClearItems()
         {
             base.ClearItems();
-            OnPropertyChanged(nameof(HasMoreItems));
+            Set(ref this.hasMoreItems, true);
         }
 
         protected override void InsertItems(int index, IReadOnlyList<Gallery> items)
         {
             base.InsertItems(index, items);
-            OnPropertyChanged(nameof(HasMoreItems));
+            Set(ref this.hasMoreItems, false);
         }
 
         protected override void RemoveItems(int index, int count)
         {
             base.RemoveItems(index, count);
-            OnPropertyChanged(nameof(HasMoreItems));
+            Set(ref this.hasMoreItems, this.Count == 0);
         }
 
-        public override bool HasMoreItems => Count == 0;
+        private bool hasMoreItems = true;
+        public override bool HasMoreItems => this.hasMoreItems;
 
         private void handleAdditionalInfo(HtmlNode trNode, Gallery gallery)
         {
@@ -49,6 +50,11 @@ namespace ExClient.Search
             {
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(UriProvider.Eh.RootUri);
                 var pp = doc.GetElementbyId("pp");
+                if (pp == null) // Disabled popular
+                {
+                    Set(ref this.hasMoreItems, false);
+                    return Array.Empty<Gallery>();
+                }
                 var nodes = (from div in pp.Elements("div")
                              where div.GetAttributeValue("class", "") == "id1"
                              select div).ToList();
