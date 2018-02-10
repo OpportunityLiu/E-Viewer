@@ -161,20 +161,20 @@ namespace ExClient.Internal
                     var title = rootNode.Element("html").Element("head").Element("title");
                     if (title == null)
                         break;
-                    if (!title.InnerText.DeEntitize().StartsWith("Gallery Not Available - "))
+                    if (!title.GetInnerText().StartsWith("Gallery Not Available - "))
                         break;
                     var error = rootNode.Element("html").Element("body")?.Element("div")?.Element("p");
                     if (error == null)
                         break;
-                    var msg = error.InnerText.DeEntitize();
+                    var msg = error.GetInnerText();
                     switch (msg)
                     {
-                        case "This gallery has been removed or is unavailable.":
-                            throw new InvalidOperationException(LocalizedStrings.Resources.GalleryRemoved);
-                        case "This gallery has been locked for review. Please check back later.":
-                            throw new InvalidOperationException(LocalizedStrings.Resources.GalleryReviewing);
-                        default:
-                            throw new InvalidOperationException(msg);
+                    case "This gallery has been removed or is unavailable.":
+                        throw new InvalidOperationException(LocalizedStrings.Resources.GalleryRemoved);
+                    case "This gallery has been locked for review. Please check back later.":
+                        throw new InvalidOperationException(LocalizedStrings.Resources.GalleryReviewing);
+                    default:
+                        throw new InvalidOperationException(msg);
                     }
                 } while (false);
                 response.EnsureSuccessStatusCode();

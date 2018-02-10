@@ -91,7 +91,7 @@ namespace ExClient.Search
             {
                 var infoNode = node.ChildNodes[2].FirstChild;
                 var detailNode = infoNode.ChildNodes[2]; //class = it5
-                var match = gLinkMatcher.Match(detailNode.FirstChild.GetAttributeValue("href", "").DeEntitize());
+                var match = gLinkMatcher.Match(detailNode.FirstChild.GetAttribute("href", ""));
                 trNodeList.Add(node);
                 gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.ToToken()));
             }

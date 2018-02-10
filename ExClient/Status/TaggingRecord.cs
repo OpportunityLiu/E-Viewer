@@ -11,14 +11,14 @@ namespace ExClient.Status
         internal TaggingRecord(HtmlNode trNode)
         {
             var td = trNode.Elements("td").ToList();
-            Tag = Tag.Parse(td[0].InnerText.DeEntitize());
-            Score = int.Parse(td[1].InnerText.DeEntitize());
-            var uri = new Uri(td[2].Element("a").GetAttributeValue("href", "").DeEntitize());
+            Tag = Tag.Parse(td[0].GetInnerText());
+            Score = int.Parse(td[1].GetInnerText());
+            var uri = td[2].Element("a").GetAttribute("href", default(Uri));
             GalleryInfo = GalleryInfo.Parse(uri);
-            Timestamp = DateTimeOffset.Parse(td[3].InnerText.DeEntitize(), null, System.Globalization.DateTimeStyles.AssumeUniversal);
-            UsageCount = long.Parse(td[4].InnerText.DeEntitize());
-            IsBlocked = td[5].InnerText.DeEntitize() == "B";
-            IsSlaved = td[6].InnerText.DeEntitize() == "S";
+            Timestamp = DateTimeOffset.Parse(td[3].GetInnerText(), null, System.Globalization.DateTimeStyles.AssumeUniversal);
+            UsageCount = long.Parse(td[4].GetInnerText());
+            IsBlocked = td[5].GetInnerText() == "B";
+            IsSlaved = td[6].GetInnerText() == "S";
         }
 
         public Tag Tag { get; }

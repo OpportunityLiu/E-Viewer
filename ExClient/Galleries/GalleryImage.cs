@@ -112,7 +112,7 @@ namespace ExClient.Galleries
                     loadPageUri = this.PageUri;
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri);
 
-                this.imageUri = new Uri(doc.GetElementbyId("img").GetAttributeValue("src", "").DeEntitize());
+                this.imageUri = doc.GetElementbyId("img").GetAttribute("src", default(Uri));
                 var originalNode = doc.GetElementbyId("i7").Element("a");
                 if (originalNode == null)
                 {
@@ -120,11 +120,11 @@ namespace ExClient.Galleries
                 }
                 else
                 {
-                    this.originalImageUri = new Uri(originalNode.GetAttributeValue("href", "").DeEntitize());
+                    this.originalImageUri = originalNode.GetAttribute("href", default(Uri));
                 }
                 var hashNode = doc.GetElementbyId("i6").Element("a");
-                this.ImageHash = SHA1Value.Parse(hashMatcher.Match(hashNode.GetAttributeValue("href", "").DeEntitize()).Groups[1].Value);
-                var loadFail = doc.GetElementbyId("loadfail").GetAttributeValue("onclick", "").DeEntitize();
+                this.ImageHash = SHA1Value.Parse(hashMatcher.Match(hashNode.GetAttribute("href", "")).Groups[1].Value);
+                var loadFail = doc.GetElementbyId("loadfail").GetAttribute("onclick", "");
                 var oft = this.failToken;
                 var nft = failTokenMatcher.Match(loadFail).Groups[1].Value;
                 if (oft == null)
@@ -139,8 +139,8 @@ namespace ExClient.Galleries
         private ImageLoadingState state;
         public ImageLoadingState State
         {
-            get => state;
-            protected set => Set(ref state, value);
+            get => this.state;
+            protected set => Set(ref this.state, value);
         }
 
         private Uri thumbUri;
@@ -388,8 +388,8 @@ namespace ExClient.Galleries
 
         public int Progress
         {
-            get => progress;
-            private set => Set(ref progress, value);
+            get => this.progress;
+            private set => Set(ref this.progress, value);
         }
 
         private Uri imageUri;

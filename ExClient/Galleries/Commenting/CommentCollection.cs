@@ -114,7 +114,7 @@ namespace ExClient.Galleries.Commenting
                 var pbr = cdiv.Element("p");
                 if (pbr != null)
                 {
-                    var error = pbr.InnerText.DeEntitize().Trim();
+                    var error = pbr.GetInnerText().Trim();
                     switch (error)
                     {
                     case "You can only add comments for active galleries.":

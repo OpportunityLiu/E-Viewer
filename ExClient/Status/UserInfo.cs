@@ -41,11 +41,11 @@ namespace ExClient.Status
                 }
                 return new UserInfo
                 {
-                    DisplayName = profileName.InnerText.DeEntitize(),
+                    DisplayName = profileName.GetInnerText(),
                     UserID = userID,
-                    Infomation = (info.ChildNodes.Count == 1 && info.ChildNodes[0].Name == "i" && info.InnerText == "No Information") ? null : info.InnerText.DeEntitize(),
+                    Infomation = (info.ChildNodes.Count == 1 && info.ChildNodes[0].Name == "i" && info.InnerText == "No Information") ? null : info.GetInnerText(),
                     Avatar = (avatar == null) ? null : new Uri(ForumsUri, avatar.Attributes["src"].Value),
-                    MemberGroup = groupAndJoin.FirstChild.InnerText.Trim().Substring(14).DeEntitize(),
+                    MemberGroup = groupAndJoin.FirstChild.GetInnerText().Trim().Substring(14),
                     RegisterDate = register
                 };
             }, token));

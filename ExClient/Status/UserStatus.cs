@@ -19,7 +19,7 @@ namespace ExClient.Status
 
         private static int deEntitizeAndParse(HtmlNode node)
         {
-            return int.Parse(node.InnerText.DeEntitize());
+            return int.Parse(node.GetInnerText());
         }
 
         private void analyzeToplists(HtmlNode toplistsDiv)
@@ -37,9 +37,9 @@ namespace ExClient.Status
                 var listNode = toplistRecord.Descendants("a").FirstOrDefault();
                 if (rankNode == null || listNode == null)
                     continue;
-                if (!int.TryParse(rankNode.InnerText.DeEntitize().TrimStart('#'), out var rank))
+                if (!int.TryParse(rankNode.GetInnerText().TrimStart('#'), out var rank))
                     continue;
-                var link = new Uri(listNode.GetAttributeValue("href", "").DeEntitize());
+                var link = listNode.GetAttribute("href", default(Uri));
                 if (!int.TryParse(link.Query.Split('=').Last(), out var listID))
                     continue;
                 newList.Add(new ToplistItem(rank, (ToplistName)listID));
@@ -61,7 +61,7 @@ namespace ExClient.Status
             this.ModerationPower = deEntitizeAndParse(modPowerDiv.Descendants("div").Last());
             var values = modPowerDiv.Descendants("td")
                 .Where(n => n.GetAttributeValue("style", "") == "font-weight:bold")
-                .Select(n => n.InnerText.DeEntitize())
+                .Select(n => n.GetInnerText())
                 .Where(s => !string.IsNullOrWhiteSpace(s) && s[0] != '=')
                 .Select(double.Parse)
                 .ToList();

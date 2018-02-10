@@ -40,7 +40,7 @@ namespace ExClient.Status
                 var page = await getPage;
                 var body = page.DocumentNode.Element("html").Element("body");
 
-                var overall = body.Element("div").Elements("div").Last().InnerText.DeEntitize();
+                var overall = body.Element("div").Elements("div").Last().GetInnerText();
                 var match = regex.Match(overall);
                 if (match.Success)
                 {
