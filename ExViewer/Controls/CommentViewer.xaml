@@ -33,50 +33,6 @@
       <Setter Property="Margin"
               Value="8,0" />
     </Style>
-    <con:ChainConverter x:Key="ConUp">
-      <tcon:EnumToBooleanConverter>
-        <commenting:CommentStatus>VotedDown</commenting:CommentStatus>
-        <commenting:CommentStatus>Votable</commenting:CommentStatus>
-      </tcon:EnumToBooleanConverter>
-      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
-    </con:ChainConverter>
-    <con:ChainConverter x:Key="ConWithdraw">
-      <tcon:EnumToBooleanConverter>
-        <commenting:CommentStatus>VotedUp</commenting:CommentStatus>
-        <commenting:CommentStatus>VotedDown</commenting:CommentStatus>
-      </tcon:EnumToBooleanConverter>
-      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
-    </con:ChainConverter>
-    <con:ChainConverter x:Key="ConDown">
-      <tcon:EnumToBooleanConverter>
-        <commenting:CommentStatus>VotedUp</commenting:CommentStatus>
-        <commenting:CommentStatus>Votable</commenting:CommentStatus>
-      </tcon:EnumToBooleanConverter>
-      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
-    </con:ChainConverter>
-    <con:ChainConverter x:Key="ConEdit">
-      <tcon:EnumToBooleanConverter>
-        <commenting:CommentStatus>Editable</commenting:CommentStatus>
-      </tcon:EnumToBooleanConverter>
-      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
-    </con:ChainConverter>
-    <con:ChainConverter x:Key="ConReply">
-      <tcon:EnumToBooleanConverter>
-        <commenting:CommentStatus>Editable</commenting:CommentStatus>
-      </tcon:EnumToBooleanConverter>
-      <con:ConverterReference Converter="{StaticResource FalseToVisibleConverter}" />
-    </con:ChainConverter>
-    <con:ChainConverter x:Key="ContentOpacity">
-      <con:ConverterReference Converter="{StaticResource NullToTrueConverter}" />
-      <tcon:BooleanToObjectConverter>
-        <tcon:BooleanToObjectConverter.ValueForTrue>
-          <x:Double>1</x:Double>
-        </tcon:BooleanToObjectConverter.ValueForTrue>
-        <tcon:BooleanToObjectConverter.ValueForFalse>
-          <x:Double>0.6</x:Double>
-        </tcon:BooleanToObjectConverter.ValueForFalse>
-      </tcon:BooleanToObjectConverter>
-    </con:ChainConverter>
   </UserControl.Resources>
   <RelativePanel x:Name="LayoutRoot"
                  Background="{x:Bind Background, Mode=OneWay}"
@@ -90,8 +46,8 @@
             <AdaptiveTrigger MinWindowWidth="0" />
           </VisualState.StateTriggers>
           <VisualState.Setters>
-            <Setter Target="Author.(RelativePanel.Below)"
-                    Value="TimeInfo" />
+            <Setter Target="TimeInfo.(RelativePanel.Below)"
+                    Value="Author" />
             <Setter Target="IsUploaderComment.(RelativePanel.AlignRightWithPanel)"
                     Value="True" />
             <Setter Target="Score.(RelativePanel.AlignRightWithPanel)"
@@ -105,8 +61,8 @@
             <AdaptiveTrigger MinWindowWidth="500" />
           </VisualState.StateTriggers>
           <VisualState.Setters>
-            <Setter Target="Author.(RelativePanel.RightOf)"
-                    Value="TimeInfo" />
+            <Setter Target="TimeInfo.(RelativePanel.RightOf)"
+                    Value="Author" />
             <Setter Target="IsUploaderComment.(RelativePanel.LeftOf)"
                     Value="Actions" />
             <Setter Target="Score.(RelativePanel.LeftOf)"
@@ -130,7 +86,7 @@
                Fill="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />
     <Rectangle x:Name="Header"
                Margin="0,-4"
-               RelativePanel.AlignBottomWith="Author"
+               RelativePanel.AlignBottomWith="TimeInfo"
                RelativePanel.AlignLeftWithPanel="True"
                RelativePanel.AlignRightWithPanel="True"
                RelativePanel.AlignTopWithPanel="True"
@@ -138,8 +94,8 @@
     <Rectangle x:Name="AttentionHeader"
                x:DeferLoadStrategy="Lazy"
                Margin="0,-4"
-               Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConEdit}}"
-               RelativePanel.AlignBottomWith="Author"
+               Visibility="{x:Bind VM.Comment.CanEdit, Mode=OneWay}"
+               RelativePanel.AlignBottomWith="TimeInfo"
                RelativePanel.AlignLeftWithPanel="True"
                RelativePanel.AlignRightWithPanel="True"
                RelativePanel.AlignTopWithPanel="True"
@@ -149,39 +105,39 @@
                          Opacity="0.3" />
       </Rectangle.Fill>
     </Rectangle>
-    <Grid x:Name="TimeInfo"
-          RelativePanel.AlignLeftWithPanel="True"
-          RelativePanel.AlignTopWithPanel="True">
+    <TextBlock x:Name="Author"
+               RelativePanel.AlignLeftWithPanel="True"
+               RelativePanel.AlignTopWithPanel="True"
+               Style="{StaticResource CommentHeaderTextBlockStyle}"
+               Text="{x:Bind VM.Comment.Author, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/AuthorFormatString'}" />
+    <Grid x:Name="TimeInfo">
       <TextBlock x:Name="Posted"
                  Style="{StaticResource CommentHeaderTextBlockStyle}"
-                 Text="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/PostedFormatString'}"
-                 Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToVisibleConverter}}" />
+                 Text="{x:Bind VM.Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/PostedFormatString'}"
+                 Visibility="{x:Bind VM.Comment.Edited, Mode=OneWay, Converter={StaticResource NullToVisibleConverter}}" />
       <TextBlock x:Name="Edited"
                  Style="{StaticResource CommentHeaderTextBlockStyle}"
-                 Text="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/EditedFormatString'}"
-                 Visibility="{x:Bind Comment.Edited, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
-                 ToolTipService.ToolTip="{x:Bind Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/PostedFormatString'}" />
+                 Text="{x:Bind VM.Comment.Edited, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/EditedFormatString'}"
+                 Visibility="{x:Bind VM.Comment.Edited, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
+                 ToolTipService.ToolTip="{x:Bind VM.Comment.Posted, Mode=OneWay, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/PostedFormatString'}" />
     </Grid>
-    <TextBlock x:Name="Author"
-               Style="{StaticResource CommentHeaderTextBlockStyle}"
-               Text="{x:Bind Comment.Author, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/AuthorFormatString'}" />
     <TextBlock x:Name="Score"
                HorizontalAlignment="Right"
-               RelativePanel.AlignTopWith="TimeInfo"
+               RelativePanel.AlignTopWith="Author"
                Style="{StaticResource CommentHeaderTextBlockStyle}"
-               Text="{x:Bind Comment.Score, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/ScoreFormatString'}"
-               Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}" />
+               Text="{x:Bind VM.Comment.Score, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/ScoreFormatString'}"
+               Visibility="{x:Bind VM.Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}" />
     <TextBlock x:Name="IsUploaderComment"
                x:Uid="Controls/CommentViewer/IsUploaderCommentTextBlock"
                HorizontalAlignment="Right"
                RelativePanel.AlignTopWithPanel="True"
                Style="{StaticResource CommentHeaderTextBlockStyle}"
                Text="Uploader Comment"
-               Visibility="{x:Bind Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}, FallbackValue=Collapsed}" />
+               Visibility="{x:Bind VM.Comment.IsUploaderComment, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}, FallbackValue=Collapsed}" />
     <Button x:Name="Actions"
             x:Uid="Controls/CommentViewer/ActionsButton"
             Style="{StaticResource EllipsisButtonRevealStyle}"
-            RelativePanel.AlignTopWith="Author"
+            RelativePanel.AlignTopWith="TimeInfo"
             RelativePanel.AlignBottomWith="Header"
             RelativePanel.AlignRightWithPanel="True"
             XYFocusDown="{x:Bind Text.FirstLink, Mode=OneWay}"
@@ -195,39 +151,44 @@
           <MenuFlyoutItem x:Name="VoteUp"
                           x:Uid="Controls/CommentViewer/VoteUpMenuFlyoutItem"
                           Icon="Like"
-                          Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConUp}}"
-                          Click="VoteUp_Click"
+                          Visibility="{x:Bind VM.IsVoteUpVisible(VM.Comment.Status), Mode=OneWay, FallbackValue=Collapsed}"
+                          Command="{x:Bind VM.VoteUp}"
+                          CommandParameter="{x:Bind VM.Comment, Mode=OneWay}"
                           Text="Vote up" />
           <MenuFlyoutItem x:Name="WithdrawVote"
                           Icon="Undo"
                           x:Uid="Controls/CommentViewer/WithdrawVoteMenuFlyoutItem"
-                          Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConWithdraw}}"
-                          Click="WithdrawVote_Click"
+                          Visibility="{x:Bind VM.IsVoteWithdrawVisible(VM.Comment.Status), Mode=OneWay, FallbackValue=Collapsed}"
+                          Command="{x:Bind VM.VoteWithdraw}"
+                          CommandParameter="{x:Bind VM.Comment, Mode=OneWay}"
                           Text="Withdraw vote" />
           <MenuFlyoutItem x:Name="VoteDown"
                           x:Uid="Controls/CommentViewer/VoteDownMenuFlyoutItem"
                           Icon="Dislike"
-                          Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConDown}}"
-                          Click="VoteDown_Click"
+                          Visibility="{x:Bind VM.IsVoteDownVisible(VM.Comment.Status), Mode=OneWay, FallbackValue=Collapsed}"
+                          Command="{x:Bind VM.VoteDown}"
+                          CommandParameter="{x:Bind VM.Comment, Mode=OneWay}"
                           Text="Vote down" />
           <MenuFlyoutItem x:Name="Edit"
                           Icon="Edit"
                           x:Uid="Controls/CommentViewer/EditMenuFlyoutItem"
-                          Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConEdit}}"
-                          Text="Edit"
-                          Click="Edit_Click" />
+                          Visibility="{x:Bind VM.Comment.CanEdit, Mode=OneWay, FallbackValue=Collapsed}"
+                          Command="{x:Bind VM.Edit}"
+                          CommandParameter="{x:Bind VM.Comment, Mode=OneWay}"
+                          Text="Edit" />
           <MenuFlyoutItem x:Name="Reply"
                           Icon="LeaveChat"
                           x:Uid="Controls/CommentViewer/ReplyMenuFlyoutItem"
-                          Visibility="{x:Bind Comment.Status, Mode=OneWay, Converter={StaticResource ConReply}}"
-                          Text="Reply"
-                          Click="Reply_Click" />
+                          Visibility="{x:Bind VM.Comment.CanEdit, Mode=OneWay, FallbackValue=Collapsed, Converter={StaticResource FalseToVisibleConverter}}"
+                          Command="{x:Bind VM.Reply}"
+                          CommandParameter="{x:Bind VM.Comment, Mode=OneWay}"
+                          Text="Reply" />
           <MenuFlyoutSeparator />
           <MenuFlyoutItem x:Name="Translate"
                           x:Uid="Controls/CommentViewer/TranslateMenuFlyoutItem"
                           Text="Translate to English"
-                          IsEnabled="{x:Bind TranslatedContent, Mode=OneWay, Converter={StaticResource NullToTrueConverter}}"
-                          Click="Translate_Click">
+                          Command="{x:Bind VM.Translate}"
+                          CommandParameter="{x:Bind VM.Comment, Mode=OneWay}">
             <MenuFlyoutItem.Icon>
               <FontIcon Glyph="&#xE8C1;" />
             </MenuFlyoutItem.Icon>
@@ -238,10 +199,10 @@
     <local:HtmlTextBlock x:Name="Text"
                          Margin="12,12,12,4"
                          DetectLink="True"
-                         Opacity="{x:Bind TranslatedContent, Converter={StaticResource ContentOpacity}, Mode=OneWay, FallbackValue=1}"
+                         Opacity="{x:Bind local:CommentViewer.toOpacity(VM.TranslatedContent), Mode=OneWay}"
                          XYFocusUp="{x:Bind Score}"
                          XYFocusDown="{x:Bind Translated.FirstLink, Mode=OneWay}"
-                         HtmlContent="{x:Bind Comment.Content, Mode=OneWay}"
+                         HtmlContent="{x:Bind VM.Comment.Content, Mode=OneWay}"
                          Pivot.SlideInAnimationGroup="GroupOne"
                          RelativePanel.AlignLeftWithPanel="True"
                          RelativePanel.AlignRightWithPanel="True"
@@ -250,8 +211,8 @@
                          x:DeferLoadStrategy="Lazy"
                          Margin="12,12,12,4"
                          DetectLink="True"
-                         HtmlContent="{x:Bind TranslatedContent, Mode=OneWay}"
-                         Visibility="{x:Bind TranslatedContent, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
+                         HtmlContent="{x:Bind VM.TranslatedContent, Mode=OneWay}"
+                         Visibility="{x:Bind VM.TranslatedContent, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}"
                          XYFocusUp="{x:Bind Text.LastLink, Mode=OneWay}"
                          Pivot.SlideInAnimationGroup="GroupTwo"
                          RelativePanel.AlignBottomWithPanel="True"

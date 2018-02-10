@@ -39,8 +39,7 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            var id = TagSuggestionService.GetStateCode(this.asb);
-            TagSuggestionService.SetStateCode(this.asb, id + 1);
+            TagSuggestionService.IncreaseStateCode(this.asb);
             Navigator.GetForCurrentView().Handlers.Add(this);
             base.OnNavigatedTo(e);
             this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
