@@ -47,7 +47,7 @@ namespace ExClient.Galleries.Commenting
             if (editNode != null)
                 this.Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
             var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.GetAttributeValue("class", "") == "c3");
-            this.Author = postedAndAuthorNode.Element("a").InnerText.DeEntitize();
+            this.Author = postedAndAuthorNode.Element("a").GetInnerText();
             this.Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
 
             if (!this.IsUploaderComment)
@@ -84,7 +84,7 @@ namespace ExClient.Galleries.Commenting
                 var node = HtmlNode.CreateNode(this.Content.OuterHtml);
                 foreach (var item in node.Descendants("#text"))
                 {
-                    var data = item.InnerHtml.DeEntitize();
+                    var data = item.GetInnerText();
                     var uri = $"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8"
                         + $"&sl=auto&tl={targetLangCode}&q={Uri.EscapeDataString(data)}";
                     var transRetHtml = await transClient.GetStringAsync(new Uri(uri));
@@ -133,7 +133,7 @@ namespace ExClient.Galleries.Commenting
 
         public int Score
         {
-            get => score;
+            get => this.score;
             internal set => Set(ref this.score, value);
         }
 
@@ -184,7 +184,7 @@ namespace ExClient.Galleries.Commenting
                 var textArea = doc.Descendants("textarea").FirstOrDefault();
                 if (textArea == null)
                     return "";
-                return textArea.InnerText.DeEntitize();
+                return textArea.GetInnerText();
             });
         }
 
@@ -196,10 +196,9 @@ namespace ExClient.Galleries.Commenting
         }
 
         private CommentStatus status;
-
         public CommentStatus Status
         {
-            get => status;
+            get => this.status;
             internal set => Set(nameof(CanVote), nameof(CanEdit), ref this.status, value);
         }
     }

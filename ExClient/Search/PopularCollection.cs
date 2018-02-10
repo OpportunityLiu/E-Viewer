@@ -54,8 +54,8 @@ namespace ExClient.Search
                              select div).ToList();
                 var ginfo = nodes.Select(n =>
                 {
-                    var link = n.Descendants("a").First().GetAttributeValue("href", "").DeEntitize();
-                    return GalleryInfo.Parse(new Uri(link));
+                    var link = n.Descendants("a").First().GetAttribute("href", default(Uri));
+                    return GalleryInfo.Parse(link);
                 }).ToList();
                 var galleries = await Gallery.FetchGalleriesAsync(ginfo);
                 for (var i = 0; i < ginfo.Count; i++)

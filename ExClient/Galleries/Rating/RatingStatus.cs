@@ -3,6 +3,7 @@ using HtmlAgilityPack;
 using Opportunity.MvvmUniverse;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
@@ -12,6 +13,7 @@ using Windows.Foundation;
 
 namespace ExClient.Galleries.Rating
 {
+    [DebuggerDisplay(@"\{{averageScore}({ratingCount})\}")]
     public class RatingStatus : ObservableObject
     {
         private readonly Gallery owner;
@@ -50,7 +52,7 @@ namespace ExClient.Galleries.Rating
 
             var ratingCount = -1L;
             var rCount = doc.GetElementbyId("rating_count");
-            if (rCount != null && uint.TryParse(rCount.InnerText.DeEntitize(), out var c))
+            if (rCount != null && uint.TryParse(rCount.GetInnerText(), out var c))
                 ratingCount = c;
 
             analyzeData(avgS, dispS, rImageClass, ratingCount);

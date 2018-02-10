@@ -23,10 +23,7 @@ namespace ExClient
             this.Index = index;
         }
 
-        public int Index
-        {
-            get;
-        }
+        public int Index { get; }
 
         public string Name
         {
@@ -79,14 +76,14 @@ namespace ExClient
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var match = favNoteMatcher.Match(responseContent, 1300);
                 if (match.Success)
-                    gallery.FavoriteNote = match.Groups[1].Value.DeEntitize();
+                    gallery.FavoriteNote = HtmlEntity.DeEntitize(match.Groups[1].Value);
                 else
                     gallery.FavoriteNote = null;
                 if (this.Index >= 0)
                 {
                     var match2 = favNameMatcher.Match(responseContent, 1300);
                     if (match2.Success)
-                        this.Name = match2.Groups[1].Value.DeEntitize();
+                        this.Name = HtmlEntity.DeEntitize(match2.Groups[1].Value);
                 }
                 gallery.FavoriteCategory = this;
             });

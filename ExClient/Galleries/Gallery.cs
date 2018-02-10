@@ -209,12 +209,12 @@ namespace ExClient.Galleries
                 throw new Exception(error);
             }
             this.Available = !expunged;
-            this.Title = title.DeEntitize();
-            this.TitleJpn = title_jpn.DeEntitize();
+            this.Title = HtmlEntity.DeEntitize(title);
+            this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
             if (!categoriesForRestApi.TryGetValue(category, out var ca))
                 ca = Category.Unspecified;
             this.Category = ca;
-            this.Uploader = uploader.DeEntitize();
+            this.Uploader = HtmlEntity.DeEntitize(uploader);
             this.Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture));
             this.RecordCount = int.Parse(filecount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
             this.FileSize = filesize;
@@ -386,58 +386,38 @@ namespace ExClient.Galleries
         {
             return Run(token => Task.Run<IEnumerable<GalleryImage>>(async () =>
             {
-                var needLoadComments = !this.Comments.IsLoaded;
-                var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
-                var html = await Client.Current.HttpClient.GetDocumentAsync(uri);
-                ApiToken.Update(html.DocumentNode.OuterHtml);
+                var html = await getDoc();
                 updateFavoriteInfo(html);
-                if (needLoadComments)
-                {
-                    this.Comments.AnalyzeDocument(html);
-                }
                 this.Rating.AnalyzeDocument(html);
                 if (this.Revisions == null)
                     this.Revisions = new RevisionCollection(this, html);
                 this.Tags.Update(html);
                 var pcNodes = html.DocumentNode.Descendants("td")
-                    .Where(node => "document.location=this.firstChild.href" == node.GetAttributeValue("onclick", ""))
+                    .Where(node => "document.location=this.firstChild.href" == node.GetAttribute("onclick", ""))
                     .Select(node =>
                     {
-                        var succeed = int.TryParse(node.InnerText, out var number);
-                        return new
-                        {
-                            succeed,
-                            number
-                        };
-                    })
-                    .Where(select => select.succeed)
-                    .DefaultIfEmpty(new
-                    {
-                        succeed = true,
-                        number = 1
-                    })
-                    .Max(select => select.number);
+                        if (int.TryParse(node.InnerText, out var number))
+                            return number;
+                        return -1;
+                    }).DefaultIfEmpty(1).Max();
                 this.PageCount = pcNodes;
-                var pics = from node in html.GetElementbyId("gdt").Descendants("div")
-                           where node.GetAttributeValue("class", null) == "gdtl"
-                           let nodeA = node.Descendants("a").Single()
-                           let thumb = nodeA.Descendants("img").Single().GetAttributeValue("src", null).DeEntitize()
-                           let match = imgLinkMatcher.Match(nodeA.GetAttributeValue("href", "").DeEntitize())
-                           where match.Success && thumb != null
-                           select new
-                           {
-                               pageId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer),
-                               imageKey = match.Groups[1].Value.ToToken(),
-                               thumbUri = new Uri(thumb)
-                           };
-                var toAdd = new List<GalleryImage>(PageSize);
+                var picRoot = html.GetElementbyId("gdt");
+                var toAdd = new List<GalleryImage>(picRoot.ChildNodes.Count);
                 using (var db = new GalleryDb())
                 {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                    foreach (var page in pics)
+                    foreach (var page in picRoot.Elements("div", "gdtl"))
                     {
+                        var nodeA = page.Descendants("a").Single();
+                        var match = imgLinkMatcher.Match(nodeA.GetAttribute("href", ""));
+                        if (!match.Success)
+                            continue;
+                        var thumb = nodeA.Descendants("img").Single().GetAttribute("src", default(Uri));
+                        if (thumb == null)
+                            continue;
                         var gId = this.ID;
-                        var pId = page.pageId;
+                        var pId = int.Parse(match.Groups[3].Value, System.Globalization.NumberStyles.Integer);
+                        var imageKey = match.Groups[1].Value.ToToken();
                         var imageModel = db.GalleryImageSet
                             .Include(gi => gi.Image)
                             .FirstOrDefault(gi => gi.GalleryId == gId && gi.PageId == pId);
@@ -448,10 +428,31 @@ namespace ExClient.Galleries
                             toAdd.Add(galleryImage);
                             continue;
                         }
-                        toAdd.Add(new GalleryImage(this, page.pageId, page.imageKey, page.thumbUri));
+                        toAdd.Add(new GalleryImage(this, pId, imageKey, thumb));
                     }
                 }
                 return toAdd;
+
+                async Task<HtmlDocument> getDoc(bool reIn = false)
+                {
+                    var needLoadComments = !this.Comments.IsLoaded;
+                    var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
+                    var doc = await Client.Current.HttpClient.GetDocumentAsync(uri);
+                    ApiToken.Update(doc.DocumentNode.OuterHtml);
+                    if (needLoadComments)
+                    {
+                        this.Comments.AnalyzeDocument(doc);
+                    }
+                    if (reIn)
+                        return doc;
+                    if (doc.GetElementbyId("gdo4").Elements("div", "ths").Last().InnerText != "Large")
+                    {
+                        // 切换到大图模式
+                        await Client.Current.HttpClient.GetAsync(new Uri("/?inline_set=ts_l", UriKind.Relative));
+                        doc = await getDoc(true);
+                    }
+                    return doc;
+                }
             }, token));
         }
 
@@ -471,14 +472,14 @@ namespace ExClient.Galleries
                     {
                         var favNode = doc.GetElementbyId($"fav{i}");
                         var favNameNode = favNode.ParentNode.ParentNode.Elements("div").Skip(2).First();
-                        Client.Current.Favorites[i].Name = favNameNode.InnerText.DeEntitize();
+                        Client.Current.Favorites[i].Name = favNameNode.GetInnerText();
                         if (!favSet && favNode.GetAttributeValue("checked", null) == "checked")
                         {
                             this.FavoriteCategory = Client.Current.Favorites[i];
                             favSet = true;
                         }
                     }
-                    this.FavoriteNote = doc.DocumentNode.Descendants("textarea").First().InnerText.DeEntitize();
+                    this.FavoriteNote = doc.DocumentNode.Descendants("textarea").First().GetInnerText();
                 }
                 else
                 {

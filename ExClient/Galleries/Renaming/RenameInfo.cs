@@ -95,7 +95,7 @@ namespace ExClient.Galleries.Renaming
                 var original = default(string);
                 var text = tableNode.Element("tr").LastChild.FirstChild;
                 if (text.NodeType == HtmlNodeType.Text)
-                    original = text.InnerText.DeEntitize();
+                    original = text.GetInnerText();
 
                 var trecords = tableNode.Elements("tr").Skip(1).ToList();
                 var records = new List<RenameRecord>();
@@ -110,9 +110,9 @@ namespace ExClient.Galleries.Renaming
                         currentID = recId;
                     if (recId > 0)
                     {
-                        var powStr = rec.ChildNodes[1].InnerText;
+                        var powStr = rec.ChildNodes[1].GetInnerText();
                         var power = int.Parse(powStr.Substring(0, powStr.Length - 1));
-                        var title = rec.ChildNodes[2].InnerText.DeEntitize();
+                        var title = rec.ChildNodes[2].GetInnerText();
                         records.Add(new RenameRecord(recId, title, power));
                     }
                 }
