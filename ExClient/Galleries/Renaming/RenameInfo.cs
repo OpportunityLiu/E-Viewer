@@ -126,11 +126,11 @@ namespace ExClient.Galleries.Renaming
             {
                 var post = Client.Current.HttpClient.PostAsync(apiUri, new Windows.Web.Http.HttpFormUrlEncodedContent(new[]
                 {
-                    KeyValuePair.Create("new_r",roman.Title),
-                    KeyValuePair.Create("new_j",japanese.Title),
-                    KeyValuePair.Create("nid_r",roman.ID.ToString()),
-                    KeyValuePair.Create("nid_j",japanese.ID.ToString()),
-                    KeyValuePair.Create("apply","Submit")
+                    new KeyValuePair<string, string>("new_r",roman.Title),
+                    new KeyValuePair<string, string>("new_j",japanese.Title),
+                    new KeyValuePair<string, string>("nid_r",roman.ID.ToString()),
+                    new KeyValuePair<string, string>("nid_j",japanese.ID.ToString()),
+                    new KeyValuePair<string, string>("apply","Submit"),
                 }));
                 token.Register(post.Cancel);
                 var res = await post;

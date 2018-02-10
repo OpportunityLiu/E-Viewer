@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Opportunity.MvvmUniverse;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
@@ -13,6 +14,7 @@ using Windows.Web.Http;
 
 namespace ExClient.Galleries.Commenting
 {
+    [DebuggerDisplay(@"[{Author,nq}: {Content.GetInnerText(),nq}]")]
     public sealed class Comment : ObservableObject
     {
         internal static IEnumerable<Comment> AnalyzeDocument(CommentCollection owner, HtmlDocument document)

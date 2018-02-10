@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace ExClient.Settings
 {
-    public sealed class ExcludedLanguagesSettingProvider : SettingProvider, ICollection<ExcludedLanguage>
+    public sealed class ExcludedLanguagesSettingProvider : SettingProvider, ICollection<ExcludedLanguage>, INotifyCollectionChanged
     {
-        internal ExcludedLanguagesSettingProvider()
-        {
-        }
+        internal ExcludedLanguagesSettingProvider() { }
 
         public static string ToString(IEnumerable<ExcludedLanguage> items)
         {
@@ -20,16 +19,9 @@ namespace ExClient.Settings
         {
             foreach (var item in (value ?? "").Split(", ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
-                if (Enum.TryParse(item, out ExcludedLanguage r))
+                if (Enum.TryParse<ExcludedLanguage>(item, out var r))
                     yield return r;
             }
-        }
-
-        internal override string GetCookieContent()
-        {
-            if (this.items.Count == 0)
-                return null;
-            return $"xl_{string.Join("x", this.items)}";
         }
 
         public override string ToString()
@@ -45,11 +37,13 @@ namespace ExClient.Settings
                     throw new ArgumentOutOfRangeException(nameof(item));
                 this.items.Add((ushort)item);
             }
-            ApplyChanges();
             OnPropertyChanged(nameof(Count));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         private HashSet<ushort> items = new HashSet<ushort>();
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         public void Add(ExcludedLanguage item)
         {
@@ -57,8 +51,8 @@ namespace ExClient.Settings
                 throw new ArgumentOutOfRangeException(nameof(item));
             if (this.items.Add((ushort)item))
             {
-                ApplyChanges();
                 OnPropertyChanged(nameof(Count));
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
         }
 
@@ -67,8 +61,8 @@ namespace ExClient.Settings
             if (this.items.Count == 0)
                 return;
             this.items.Clear();
-            ApplyChanges();
             OnPropertyChanged(nameof(Count));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public bool Contains(ExcludedLanguage item) => this.items.Contains((ushort)item);
@@ -90,8 +84,8 @@ namespace ExClient.Settings
             var r = this.items.Remove((ushort)item);
             if (r)
             {
-                ApplyChanges();
                 OnPropertyChanged(nameof(Count));
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
             return r;
         }
@@ -99,6 +93,30 @@ namespace ExClient.Settings
         public IEnumerator<ExcludedLanguage> GetEnumerator() => this.items.Cast<ExcludedLanguage>().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => this.items.GetEnumerator();
+
+        internal override void DataChanged(Dictionary<string, string> settings)
+        {
+            this.items.Clear();
+            foreach (var item in settings.Keys.Where(k => k.StartsWith("xl_")))
+            {
+                var i = ushort.Parse(item.Substring(3));
+                this.items.Add(i);
+            }
+            OnPropertyChanged(nameof(Count));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        internal override void ApplyChanges(Dictionary<string, string> settings)
+        {
+            foreach (var item in settings.Keys.Where(k => k.StartsWith("xl_")))
+            {
+                settings.Remove(item);
+            }
+            foreach (var item in this.items)
+            {
+                settings["xl_" + item] = "on";
+            }
+        }
 
         public int Count => this.items.Count;
 

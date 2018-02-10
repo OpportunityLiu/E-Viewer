@@ -8,6 +8,18 @@ using Windows.Foundation;
 
 namespace ExClient.Galleries.Metadata
 {
+    public readonly struct RevisionInfo
+    {
+        internal RevisionInfo(GalleryInfo gallery, DateTimeOffset updatedTime)
+        {
+            this.Gallery = gallery;
+            this.UpdatedTime = updatedTime;
+        }
+
+        public GalleryInfo Gallery { get; }
+        public DateTimeOffset UpdatedTime { get; }
+    }
+
     public class RevisionCollection
     {
         internal RevisionCollection(Gallery owner, HtmlDocument doc)
@@ -21,24 +33,24 @@ namespace ExClient.Galleries.Metadata
             if (descendantsNode != null)
             {
                 var count = descendantsNode.ChildNodes.Count / 3;
-                var descendants = new(DateTimeOffset UpdatedTime, GalleryInfo Gallery)[count];
+                var descendants = new RevisionInfo[count];
                 for (var i = 0; i < descendants.Length; i++)
                 {
                     var aNode = descendantsNode.ChildNodes[i * 3 + 1];
                     var textNode = descendantsNode.ChildNodes[i * 3 + 2];
                     var link = aNode.GetAttribute("href", default(Uri));
                     var dto = DateTimeOffset.ParseExact(textNode.GetInnerText(), "', added' yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
-                    descendants[i] = (dto, GalleryInfo.Parse(link));
+                    descendants[i] = new RevisionInfo(GalleryInfo.Parse(link), dto);
                 }
                 this.DescendantsInfo = descendants;
             }
             else
-                this.DescendantsInfo = Array.Empty<(DateTimeOffset, GalleryInfo)>();
+                this.DescendantsInfo = Array.Empty<RevisionInfo>();
         }
 
         internal Gallery Owner { get; }
         public GalleryInfo? ParentInfo { get; }
-        public IReadOnlyList<(DateTimeOffset UpdatedTime, GalleryInfo Gallery)> DescendantsInfo { get; }
+        public IReadOnlyList<RevisionInfo> DescendantsInfo { get; }
 
         public IAsyncOperation<Gallery> FetchParentAsync()
         {

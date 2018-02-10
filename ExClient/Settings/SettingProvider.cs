@@ -1,22 +1,15 @@
-﻿namespace ExClient.Settings
+﻿using System.Collections.Generic;
+
+namespace ExClient.Settings
 {
     public abstract class SettingProvider : Opportunity.MvvmUniverse.ObservableObject
     {
-        internal SettingProvider()
-        {
-        }
+        internal SettingCollection Owner { get; set; }
 
-        internal abstract string GetCookieContent();
+        internal SettingProvider() { }
 
-        protected void ApplyChanges()
-        {
-            Owner.ApplyChanges();
-        }
+        internal abstract void DataChanged(Dictionary<string, string> settings);
 
-        internal SettingCollection Owner
-        {
-            get;
-            set;
-        }
+        internal abstract void ApplyChanges(Dictionary<string, string> settings);
     }
 }
