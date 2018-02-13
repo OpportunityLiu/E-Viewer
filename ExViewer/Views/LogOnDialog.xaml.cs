@@ -161,7 +161,7 @@ namespace ExViewer.Views
         {
             if (this.hideCalled)
                 return;
-            var data = e.Value.Split('\n', StringSplitOptions.None);
+            var data = e.Value.Split(new[] { '\n' }, StringSplitOptions.None);
             if (e.CallingUri.ToString().StartsWith(Client.LogOnUri.ToString()))
             {
                 if (data.Length != 2)

@@ -1,5 +1,7 @@
 ﻿<controls:MyPage x:Class="ExViewer.Views.GalleryPage"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:rs3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
+                 xmlns:prers3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:VM="using:ExViewer.ViewModels"
                  xmlns:client="using:ExClient"
@@ -297,10 +299,9 @@
               <controls:CategoryTag Margin="6,4"
                                     VerticalAlignment="Center"
                                     Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
-              <RatingControl Margin="6,4,6,0"
-                             IsReadOnly="True"
-                             VerticalAlignment="Center"
-                             PlaceholderValue="{x:Bind VM.Gallery.Rating.AverageScore, Mode=OneWay}" />
+              <controls:Rating Margin="6,4,6,0"
+                               VerticalAlignment="Center"
+                               PlaceholderValue="{x:Bind VM.Gallery.Rating.AverageScore, Mode=OneWay}" />
             </StackPanel>
             <controls:TagPresenter x:Name="tpTags"
                                    Grid.Row="1"
@@ -540,7 +541,7 @@
                      Style="{StaticResource GalleryTitleTextBlockStyle}"
                      Text="{x:Bind client:GalleryExtension.GetDisplayTitle(VM.Gallery), Mode=OneWay}">
                         <ToolTipService.ToolTip>
-                          <ToolTip IsEnabled="{x:Bind tbGalleryName.IsTextTrimmed, Mode=OneWay}">
+                          <ToolTip rs3:IsEnabled="{x:Bind tbGalleryName.IsTextTrimmed, Mode=OneWay}">
                             <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(VM.Gallery), Mode=OneWay}"
                                        TextWrapping="WrapWholeWords" />
                           </ToolTip>
@@ -574,8 +575,11 @@
       <CommandBar.SecondaryCommands>
         <AppBarButton x:Uid="Views/GalleryPage/ShareAppBarButton"
                       Command="{x:Bind VM.Share, Mode=OneWay}"
-                      Icon="Share"
-                      Label="Share" />
+                      Label="Share">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE72D;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
         <AppBarButton x:Uid="Views/GalleryPage/SearchUploaderAppBarButton"
                       Command="{x:Bind VM.SearchUploader, Mode=OneWay, Converter={StaticResource DelayConverter}, ConverterParameter=250}"
                       Icon="ContactInfo"

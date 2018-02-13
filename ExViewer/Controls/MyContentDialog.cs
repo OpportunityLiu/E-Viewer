@@ -11,7 +11,7 @@ namespace ExViewer.Controls
     {
         public MyContentDialog()
         {
-            this.DefaultStyleKey = typeof(MyContentDialog);
+            // this.DefaultStyleKey = typeof(MyContentDialog);
             this.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
             this.Loading += this.ContentDialog_Loading;
         }

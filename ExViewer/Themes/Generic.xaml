@@ -1,4 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:rs3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
+                    xmlns:prers3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:ExViewer"
                     xmlns:controls="using:ExViewer.Controls"
@@ -471,9 +473,9 @@
     </Setter>
   </Style>
 
-  <Style TargetType="controls:MyContentDialog">
+  <!--<Style TargetType="controls:MyContentDialog">
     <Setter Property="PrimaryButtonStyle"
-            Value="{ThemeResource ButtonRevealStyle}" />
+            Value="{ThemeResource ButtonRevealStyle}"/>
     <Setter Property="SecondaryButtonStyle"
             Value="{ThemeResource ButtonRevealStyle}" />
     <Setter Property="CloseButtonStyle"
@@ -588,6 +590,8 @@
                 <VisualState x:Name="FullDialogSizing">
                   <VisualState.Setters>
                     <Setter Target="BackgroundElement.VerticalAlignment"
+                            Value="Stretch" />
+                    <Setter Target="BackgroundElement.HorizonalAlignment"
                             Value="Stretch" />
                   </VisualState.Setters>
                 </VisualState>
@@ -831,6 +835,35 @@
               </Border>
             </Grid>
           </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>-->
+
+  <Style TargetType="controls:Rating">
+    <Setter Property="Padding"
+            Value="4" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:Rating">
+          <Grid x:Name="LayoutRoot"
+                Margin="{TemplateBinding Padding}"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+            <TextBlock x:Name="Background"
+                       Text="&#xE735;&#xE735;&#xE735;&#xE735;&#xE735;"
+                       Opacity="0.5"
+                       Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}" />
+            <TextBlock x:Name="Placeholder"
+                       Text="&#xE735;&#xE735;&#xE735;&#xE735;&#xE735;"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">
+              <TextBlock.Clip>
+                <RectangleGeometry x:Name="PlaceholderClip" />
+              </TextBlock.Clip>
+            </TextBlock>
+          </Grid>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
