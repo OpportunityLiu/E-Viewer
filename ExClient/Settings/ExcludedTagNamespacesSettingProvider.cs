@@ -28,7 +28,7 @@ namespace ExClient.Settings
 
         internal override void ApplyChanges(Dictionary<string, string> settings)
         {
-            foreach (var item in settings.Keys.Where(k => k.StartsWith("xn_")))
+            foreach (var item in settings.Keys.Where(k => k.StartsWith("xn_")).ToList())
             {
                 settings.Remove(item);
             }

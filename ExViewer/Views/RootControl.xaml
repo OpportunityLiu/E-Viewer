@@ -1,5 +1,7 @@
 ﻿<UserControl x:Class="ExViewer.Views.RootControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:rs3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
+             xmlns:prers3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -124,19 +126,19 @@
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
     </Storyboard>
-    <AcrylicBrush x:Key="PaneBackgroundBrush"
-                  x:Name="abPaneBackground"
-                  BackgroundSource="{x:Bind abPaneBackgroundBind(sv_root.IsPaneOpen, sv_root.DisplayMode), Mode=OneWay}"
-                  TintColor="{ThemeResource SystemChromeAltHighColor}"
-                  TintOpacity="0.6"
-                  FallbackColor="{ThemeResource SystemChromeMediumColor}" />
+    <rs3:AcrylicBrush x:Key="PaneBackgroundBrush"
+                      x:Name="abPaneBackground"
+                      BackgroundSource="{x:Bind abPaneBackgroundBind(sv_root.IsPaneOpen, sv_root.DisplayMode), Mode=OneWay}"
+                      TintColor="{ThemeResource SystemChromeAltHighColor}"
+                      TintOpacity="0.6"
+                      FallbackColor="{ThemeResource SystemChromeMediumColor}" />
   </UserControl.Resources>
   <Grid x:Name="gdRoot"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <SplitView x:Name="sv_root"
                IsTabStop="False"
                LightDismissOverlayMode="On"
-               PaneBackground="{StaticResource PaneBackgroundBrush}"
+               rs3:PaneBackground="{StaticResource PaneBackgroundBrush}"
                OpenPaneLength="{x:Bind getPaneLength(VisibleBoundsThickness, 320), Mode=OneWay}"
                CompactPaneLength="{x:Bind getPaneLength(VisibleBoundsThickness, 48), Mode=OneWay}">
       <SplitView.Pane>
@@ -342,6 +344,6 @@
                    SmallChange="0.001"
                    LargeChange="0.01" />
     </RelativePanel>
-    
+
   </Grid>
 </UserControl>

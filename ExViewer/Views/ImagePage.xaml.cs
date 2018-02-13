@@ -2,6 +2,7 @@
 using ExViewer.Controls;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -114,7 +115,6 @@ namespace ExViewer.Views
             setCbColor();
             Av_VisibleBoundsChanged(this.av, null);
             this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
-            RootControl.RootController.SetFullScreen(StatusCollection.Current.FullScreenInImagePage);
             if (SettingCollection.Current.KeepScreenOn)
             {
                 this.displayRequest.RequestActive();
@@ -150,6 +150,7 @@ namespace ExViewer.Views
             setScale();
             if (!animationSucceed)
                 Animation_Completed(null, null);
+            RootControl.RootController.SetFullScreen(StatusCollection.Current.FullScreenInImagePage);
         }
 
         private void Animation_Completed(ConnectedAnimation sender, object args)
@@ -163,14 +164,15 @@ namespace ExViewer.Views
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
+            StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
+            RootControl.RootController.SetFullScreen(false);
+
             base.OnNavigatingFrom(e);
 
             if (!this.cbVisible)
                 changeCbVisibility();
 
             this.av.VisibleBoundsChanged -= this.Av_VisibleBoundsChanged;
-            StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
-            RootControl.RootController.SetFullScreen(false);
             if (this.displayActived)
             {
                 this.displayRequest.RequestRelease();
@@ -364,19 +366,19 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.OriginalKey)
             {
-            case VirtualKey.Enter:
-                this.enterPressed = false;
-                break;
-            case VirtualKey.Application:
-            case VirtualKey.GamepadMenu:
-                if (!changeCbVisibility())
-                    this.fv.Focus(FocusState.Programmatic);
-                else
-                    this.abb_fullScreen.Focus(FocusState.Programmatic);
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case VirtualKey.Enter:
+                    this.enterPressed = false;
+                    break;
+                case VirtualKey.Application:
+                case VirtualKey.GamepadMenu:
+                    if (!changeCbVisibility())
+                        this.fv.Focus(FocusState.Programmatic);
+                    else
+                        this.abb_fullScreen.Focus(FocusState.Programmatic);
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 
