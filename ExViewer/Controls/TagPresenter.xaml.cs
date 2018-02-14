@@ -97,10 +97,6 @@ namespace ExViewer.Controls
             this.resetNewTagState();
             this.VM.SubmitTag.Executed += (s, e) =>
             {
-                // TODO : 设置 Handled属性，或删除异常处理
-                var ex = e.Exception;
-                if (ex != null)
-                    RootControl.RootController.SendToast(ex, null);
                 resetNewTagState();
             };
         }

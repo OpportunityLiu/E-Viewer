@@ -303,7 +303,7 @@
               <controls:CategoryTag Margin="6,4"
                                     VerticalAlignment="Center"
                                     Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
-              <controls:Rating Margin="6,4,6,0"
+              <controls:Rating Margin="6,4"
                                VerticalAlignment="Center"
                                PlaceholderValue="{x:Bind VM.Gallery.Rating.AverageScore, Mode=OneWay}" />
             </StackPanel>

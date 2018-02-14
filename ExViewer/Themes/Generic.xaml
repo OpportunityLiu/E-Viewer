@@ -844,8 +844,8 @@
   </Style>
 
   <Style TargetType="controls:Rating">
-    <Setter Property="Padding"
-            Value="4" />
+    <Setter Property="MinHeight"
+            Value="20" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:Rating">
@@ -857,9 +857,13 @@
             <TextBlock x:Name="Background"
                        Text="&#xE735;&#xE735;&#xE735;&#xE735;&#xE735;"
                        Opacity="0.5"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
                        Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                        FontFamily="{ThemeResource SymbolThemeFontFamily}" />
             <TextBlock x:Name="Placeholder"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
                        Text="&#xE735;&#xE735;&#xE735;&#xE735;&#xE735;"
                        FontFamily="{ThemeResource SymbolThemeFontFamily}">
               <TextBlock.Clip>

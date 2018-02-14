@@ -426,6 +426,7 @@ namespace ExViewer.Views
 
                 root.FindName(nameof(root.rp_Disable));
                 root.sv_root.IsEnabled = false;
+                //TODO: 仅禁止向前和向后导航
                 root.manager.IsEnabled = false;
                 root.rp_Disable.Visibility = Visibility.Visible;
                 var indeterminate = !progress.HasValue;

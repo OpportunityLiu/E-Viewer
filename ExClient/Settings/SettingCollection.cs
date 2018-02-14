@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Opportunity.MvvmUniverse;
-using Opportunity.MvvmUniverse.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,12 +45,29 @@ namespace ExClient.Settings
             {
                 item.Owner = this;
             }
+            loadCache();
             loadSettingsDic();
+            FetchAsync().Completed = (s, e) => { };
         }
 
-        internal Dictionary<string, string> Settings => this.settingsCache.Value;
+        internal Dictionary<string, string> Settings { get; } = new Dictionary<string, string>();
 
-        private StorageProperty<Dictionary<string, string>> settingsCache = StorageProperty.CreateLocal("ExClient/SettingsCache", () => new Dictionary<string, string>());
+        private void storeCache()
+        {
+            var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
+            storage.Values["SettingsCache"] = JsonConvert.SerializeObject(Settings);
+        }
+
+        private void loadCache()
+        {
+            var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
+            storage.Values.TryGetValue("SettingsCache", out var r);
+            var value = r + "";
+            Settings.Clear();
+            if (string.IsNullOrEmpty(value))
+                return;
+            JsonConvert.PopulateObject(value, Settings);
+        }
 
         private void updateSettingsDic(HtmlDocument doc)
         {
@@ -114,7 +131,7 @@ namespace ExClient.Settings
             {
                 item.DataChanged(this.Settings);
             }
-            this.settingsCache.Flush();
+            storeCache();
             OnPropertyChanged("");
         }
 
@@ -150,7 +167,8 @@ namespace ExClient.Settings
             ["Default"] = new DefaultSettingProvider(),
             [nameof(ExcludedLanguages)] = new ExcludedLanguagesSettingProvider(),
             [nameof(ExcludedUploaders)] = new ExcludedUploadersSettingProvider(),
-            [nameof(ExcludedTagNamespaces)] = new ExcludedTagNamespacesSettingProvider()
+            [nameof(ExcludedTagNamespaces)] = new ExcludedTagNamespacesSettingProvider(),
+            [nameof(FavoriteCategoryNames)] = new FavoriteCategoryNamesSettingProvider(),
         };
 
         private SettingProvider getProvider([System.Runtime.CompilerServices.CallerMemberName]string key = null)
@@ -183,6 +201,8 @@ namespace ExClient.Settings
             get => ((DefaultSettingProvider)getProvider("Default")).FavoritesOrder;
             set => ((DefaultSettingProvider)getProvider("Default")).FavoritesOrder = value;
         }
+
+        public FavoriteCategoryNamesSettingProvider FavoriteCategoryNames => (FavoriteCategoryNamesSettingProvider)getProvider();
 
         private sealed class DefaultSettingProvider : SettingProvider
         {

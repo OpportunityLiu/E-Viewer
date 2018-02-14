@@ -4,7 +4,7 @@ using ExClient.Tagging;
 
 namespace ExClient.Settings
 {
-    public sealed class ExcludedTagNamespacesSettingProvider : SettingProvider
+    internal sealed class ExcludedTagNamespacesSettingProvider : SettingProvider
     {
         internal ExcludedTagNamespacesSettingProvider()
         {
