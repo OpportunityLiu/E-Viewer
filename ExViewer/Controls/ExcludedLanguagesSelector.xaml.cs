@@ -74,59 +74,71 @@ namespace ExViewer.Controls
             var el = ExcludedLanguagesSettingProvider.FromString(newS).OrderByDescending(k => k).ToList();
             var s = (ExcludedLanguagesSelector)sender;
             s.changing = true;
-            var fs = s.filters;
-            ushort offset = 0;
-            foreach (var item in fs)
+            try
             {
-                if (el.Count == 0)
-                    break;
-                var lan = item.Language;
-                var last = el[el.Count - 1];
-                if (lan + offset == last)
-                {
-                    el.RemoveAt(el.Count - 1);
-                    item.Original = true;
-                }
-                else
+                var fs = s.filters;
+                foreach (var item in fs)
                 {
                     item.Original = false;
-                }
-            }
-            offset = 1024;
-            foreach (var item in fs)
-            {
-                if (el.Count == 0)
-                    break;
-                var lan = item.Language;
-                var last = el[el.Count - 1];
-                if (lan + offset == last)
-                {
-                    el.RemoveAt(el.Count - 1);
-                    item.Translated = true;
-                }
-                else
-                {
                     item.Translated = false;
-                }
-            }
-            offset = 2048;
-            foreach (var item in fs)
-            {
-                if (el.Count == 0)
-                    break;
-                var lan = item.Language;
-                var last = el[el.Count - 1];
-                if (lan + offset == last)
-                {
-                    el.RemoveAt(el.Count - 1);
-                    item.Rewrite = true;
-                }
-                else
-                {
                     item.Rewrite = false;
                 }
+                ushort offset = 0;
+                foreach (var item in fs)
+                {
+                    if (el.Count == 0)
+                        break;
+                    var lan = item.Language;
+                    var last = el[el.Count - 1];
+                    if (lan + offset == last)
+                    {
+                        el.RemoveAt(el.Count - 1);
+                        item.Original = true;
+                    }
+                    else
+                    {
+                        item.Original = false;
+                    }
+                }
+                offset = 1024;
+                foreach (var item in fs)
+                {
+                    if (el.Count == 0)
+                        break;
+                    var lan = item.Language;
+                    var last = el[el.Count - 1];
+                    if (lan + offset == last)
+                    {
+                        el.RemoveAt(el.Count - 1);
+                        item.Translated = true;
+                    }
+                    else
+                    {
+                        item.Translated = false;
+                    }
+                }
+                offset = 2048;
+                foreach (var item in fs)
+                {
+                    if (el.Count == 0)
+                        break;
+                    var lan = item.Language;
+                    var last = el[el.Count - 1];
+                    if (lan + offset == last)
+                    {
+                        el.RemoveAt(el.Count - 1);
+                        item.Rewrite = true;
+                    }
+                    else
+                    {
+                        item.Rewrite = false;
+                    }
+                }
             }
-            s.changing = false;
+            finally
+            {
+                s.changing = false;
+            }
         }
 
         private bool changing;

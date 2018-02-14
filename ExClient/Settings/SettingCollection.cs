@@ -32,11 +32,12 @@ namespace ExClient.Settings
             {
                 item.Owner = this;
             }
+            loadSettingsDic();
         }
 
         internal Dictionary<string, string> Settings => this.settingsCache.Value;
 
-        private StorageProperty<Dictionary<string, string>> settingsCache = StorageProperty.CreateLocal<Dictionary<string, string>>("ExClient/SettingsCache");
+        private StorageProperty<Dictionary<string, string>> settingsCache = StorageProperty.CreateLocal("ExClient/SettingsCache", () => new Dictionary<string, string>());
 
         private void updateSettingsDic(HtmlDocument doc)
         {
@@ -57,57 +58,77 @@ namespace ExClient.Settings
                     continue;
                 switch (item.GetAttribute("type", default(string)))
                 {
-                    case "radio":
-                        if (item.GetAttribute("checked", "") == "checked")
-                            Settings[name] = item.GetAttribute("value", "");
-                        break;
-                    case "checkbox":
-                        if (item.GetAttribute("checked", "") == "checked")
-                            Settings[name] = item.GetAttribute("value", "on");
-                        break;
-                    //case "text":
-                    //case "hidden":
-                    //case "submit":
-                    //textarea
-                    default:
-                        Settings[name] = item.GetAttribute("value", item.GetInnerText());
-                        break;
+                case "radio":
+                    if (item.GetAttribute("checked", "") == "checked")
+                        Settings[name] = item.GetAttribute("value", "");
+                    break;
+                case "checkbox":
+                    if (item.GetAttribute("checked", "") == "checked")
+                        Settings[name] = item.GetAttribute("value", "on");
+                    break;
+                //case "text":
+                //case "hidden":
+                //case "submit":
+                //textarea
+                default:
+                    Settings[name] = item.GetAttribute("value", item.GetInnerText());
+                    break;
                 }
             }
-            foreach (var item in this.items.Values)
-            {
-                item.DataChanged(this.Settings);
-            }
-            this.settingsCache.Flush();
         }
 
         public IAsyncAction FetchAsync()
         {
             return AsyncInfo.Run(async token =>
             {
-                var getDoc = this.client.HttpClient.GetDocumentAsync(configUri);
-                token.Register(getDoc.Cancel);
-                var doc = await getDoc;
-                updateSettingsDic(doc);
+                try
+                {
+                    var getDoc = this.client.HttpClient.GetDocumentAsync(configUri);
+                    token.Register(getDoc.Cancel);
+                    var doc = await getDoc;
+                    updateSettingsDic(doc);
+                }
+                finally
+                {
+                    loadSettingsDic();
+                }
             });
+        }
+
+        private void loadSettingsDic()
+        {
+            foreach (var item in this.items.Values)
+            {
+                item.DataChanged(this.Settings);
+            }
+            this.settingsCache.Flush();
+            OnPropertyChanged("");
         }
 
         public IAsyncAction SendAsync()
         {
             return AsyncInfo.Run(async token =>
             {
-                if (this.Settings.Count == 0)
-                    throw new InvalidOperationException("Must fetch first.");
-                foreach (var item in this.items.Values)
+                try
                 {
-                    item.ApplyChanges(this.Settings);
+                    if (this.Settings.Count == 0)
+                        await FetchAsync();
+                    var postDic = new Dictionary<string, string>(this.Settings);
+                    foreach (var item in this.items.Values)
+                    {
+                        item.ApplyChanges(postDic);
+                    }
+                    var postData = this.client.HttpClient.PostAsync(configUri, new HttpFormUrlEncodedContent(postDic));
+                    token.Register(postData.Cancel);
+                    var r = await postData;
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(await r.Content.ReadAsStringAsync());
+                    updateSettingsDic(doc);
                 }
-                var postData = this.client.HttpClient.PostAsync(configUri, new HttpFormUrlEncodedContent(this.Settings));
-                token.Register(postData.Cancel);
-                var r = await postData;
-                var doc = new HtmlDocument();
-                doc.LoadHtml(await r.Content.ReadAsStringAsync());
-                updateSettingsDic(doc);
+                finally
+                {
+                    loadSettingsDic();
+                }
             });
         }
 
@@ -124,8 +145,6 @@ namespace ExClient.Settings
             return this.items[key];
         }
 
-        internal void RaisePropertyChanged(string propertyName) => OnPropertyChanged(propertyName);
-
         public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)getProvider();
         public ExcludedUploadersSettingProvider ExcludedUploaders => (ExcludedUploadersSettingProvider)getProvider();
         public Tagging.Namespace ExcludedTagNamespaces
@@ -136,8 +155,8 @@ namespace ExClient.Settings
 
         public ImageSize ResampledImageSize
         {
-            get => (ImageSize)int.Parse(this.Settings.GetValueOrDefault("xr", "0"));
-            set => this.Settings["xr"] = ((int)value).ToString();
+            get => ((DefaultSettingProvider)getProvider("Default")).ResampledImageSize;
+            set => ((DefaultSettingProvider)getProvider("Default")).ResampledImageSize = value;
         }
 
         private sealed class DefaultSettingProvider : SettingProvider
@@ -146,9 +165,21 @@ namespace ExClient.Settings
             {
                 // Thumbnail Size - Large
                 settings["ts"] = "1";
+
+                settings["xr"] = ((int)this.resampledImageSize).ToString();
             }
 
-            internal override void DataChanged(Dictionary<string, string> settings) { }
+            internal override void DataChanged(Dictionary<string, string> settings)
+            {
+                this.resampledImageSize = (ImageSize)int.Parse(settings.GetValueOrDefault("xr", "0"));
+            }
+
+            private ImageSize resampledImageSize;
+            public ImageSize ResampledImageSize
+            {
+                get => this.resampledImageSize;
+                set => Set(ref this.resampledImageSize, value);
+            }
         }
     }
 }

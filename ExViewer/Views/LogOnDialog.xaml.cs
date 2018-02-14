@@ -33,23 +33,25 @@ namespace ExViewer.Views
         private async Task injectLogOnPage()
         {
             var pass = AccountManager.CurrentCredential;
+            var u = "";
+            var p = "";
             if (pass != null)
             {
                 pass.RetrievePassword();
-                await this.wv.InvokeScriptAsync("eval", new[] { $@"
+                u = escape(pass.UserName);
+                p = escape(pass.Password);
+            }
+            await this.wv.InvokeScriptAsync("eval", new[] { $@"
 (function ()
 {{
-    var u = document.getElementsByName('UserName');
-    if (u.length == 0) return;
-    var nU = u[0];
-    nU.value = '{escape(pass.UserName)}';
-    var p = document.getElementsByName('PassWord');
-    if (p.length == 0) return;
-    var nP = p[0];
-    nP.value = '{escape(pass.Password)}';
-    var l = document.getElementsByName('LOGIN');
-    if (l.length == 0) return;
-    var nL = l[0];
+    var nL = document.LOGIN;
+    if(!nL) return;
+	var nU = nL.UserName;
+    if(!nU) return;
+    var nP = nL.PassWord;
+    if(!nP) return;
+    nU.value = '{u}';
+    nP.value = '{p}';
     nL.onsubmit = function(ev)
     {{
         var ret = ValidateForm();
@@ -61,7 +63,6 @@ namespace ExViewer.Views
     }}
 }})();
 " });
-            }
             string escape(string value)
             {
                 return value.Replace(@"\", @"\\").Replace("'", @"\'");
@@ -196,10 +197,10 @@ namespace ExViewer.Views
             {
                 return;
             }
-            if (this.hideCalled)
-                return;
             if (!string.IsNullOrEmpty(this.tempUserName) && !string.IsNullOrEmpty(this.tempPassword))
                 AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
+            if (this.hideCalled)
+                return;
             this.hideCalled = true;
             this.Hide();
         }

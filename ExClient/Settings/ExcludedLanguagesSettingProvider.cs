@@ -90,7 +90,7 @@ namespace ExClient.Settings
             return r;
         }
 
-        public IEnumerator<ExcludedLanguage> GetEnumerator() => this.items.Cast<ExcludedLanguage>().GetEnumerator();
+        public IEnumerator<ExcludedLanguage> GetEnumerator() => this.items.Select(i => (ExcludedLanguage)i).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => this.items.GetEnumerator();
 
