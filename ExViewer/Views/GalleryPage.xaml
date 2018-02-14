@@ -234,6 +234,18 @@
       <RowDefinition Height="Auto" />
       <RowDefinition />
     </Grid.RowDefinitions>
+    <Grid.Background>
+      <LinearGradientBrush EndPoint="0.5,1"
+                           StartPoint="0.5,0">
+        <GradientStop Color="{ThemeResource SystemChromeMediumColor}" />
+        <GradientStop Color="{ThemeResource SystemChromeMediumColor}"
+                      Offset="0.49" />
+        <GradientStop Color="{ThemeResource SystemAltHighColor}"
+                      Offset="0.51" />
+        <GradientStop Color="{ThemeResource SystemAltHighColor}"
+                      Offset="1" />
+      </LinearGradientBrush>
+    </Grid.Background>
     <VisualStateManager.VisualStateGroups>
       <VisualStateGroup>
         <VisualState x:Name="Wide">
@@ -334,6 +346,7 @@
                  VerticalContentAlignment="Stretch"
                  BorderThickness="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                  BorderBrush="{ThemeResource CommandBarBackground}"
+                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                  Loaded="pv_Loaded"
                  SelectionChanged="pv_SelectionChanged">
             <PivotItem>
@@ -512,8 +525,6 @@
         </Grid>
       </StackPanel>
     </ScrollViewer>
-    <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
-            Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,48,x1,x0'}" />
     <CommandBar x:Name="cb_top"
                 Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
                 Opening="cb_top_Opening"
