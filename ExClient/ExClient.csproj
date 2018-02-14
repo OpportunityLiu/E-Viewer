@@ -166,7 +166,6 @@
     <Compile Include="ConnectionStrategy.cs" />
     <Compile Include="FavoriteCategory.cs" />
     <Compile Include="FavoriteCollection.cs" />
-    <Compile Include="Internal\FavoriteCollectionNames.cs" />
     <Compile Include="Search\AdvancedSearchResult.cs" />
     <Compile Include="Search\CategorySearchResult.cs" />
     <Compile Include="Search\FavoritesSearchResult.cs" />
@@ -194,6 +193,7 @@
     <Compile Include="Search\SearchResult.cs" />
     <Compile Include="Settings\ExcludedLanguage.cs" />
     <Compile Include="Settings\ExcludedUploadersSettingProvider.cs" />
+    <Compile Include="Settings\FavoriteCategoryNamesSettingProvider.cs" />
     <Compile Include="SHA1Value.cs" />
     <Compile Include="Tagging\GalleryTag.cs" />
     <Compile Include="Tagging\Namespace.cs" />
@@ -269,10 +269,10 @@
       <Version>10.0.3</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.2.0</Version>
+      <Version>1.2.1</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
-      <Version>2.1.4</Version>
+      <Version>2.1.5</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
       <Version>1.2.2</Version>

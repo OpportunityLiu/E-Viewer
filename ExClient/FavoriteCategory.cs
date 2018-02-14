@@ -14,13 +14,14 @@ namespace ExClient
 {
     public sealed class FavoriteCategory : ObservableObject
     {
-        public static FavoriteCategory Removed { get; } = new FavoriteCategory(-1) { Name = LocalizedStrings.Resources.RemoveFromFavorites };
+        public static FavoriteCategory Removed { get; } = new FavoriteCategory(-1, LocalizedStrings.Resources.RemoveFromFavorites);
 
-        public static FavoriteCategory All { get; } = new FavoriteCategory(-1) { Name = LocalizedStrings.Resources.AllFavorites };
+        public static FavoriteCategory All { get; } = new FavoriteCategory(-1, LocalizedStrings.Resources.AllFavorites);
 
-        internal FavoriteCategory(int index)
+        internal FavoriteCategory(int index, string name)
         {
             this.Index = index;
+            this.name = name;
         }
 
         public int Index { get; }
@@ -29,25 +30,16 @@ namespace ExClient
         {
             get
             {
-                if (this.name != null)
+                if (this.Index < 0)
                     return this.name;
-                else if (this.Index < 0)
-                    return null;
                 else
-                    return FavoriteCollectionNames.Current.GetName(this.Index);
-            }
-            internal set
-            {
-                Set(ref this.name, value);
-                if (this.Index >= 0)
-                    FavoriteCollectionNames.Current.SetName(this.Index, value);
+                    return Client.Current.Settings.FavoriteCategoryNames[this.Index];
             }
         }
 
-        private string name;
+        internal void OnNameChanged() => OnPropertyChanged(nameof(this.Name));
 
-        private static readonly Regex favNoteMatcher = new Regex(@"fn\.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
-        private static readonly Regex favNameMatcher = new Regex(@"fi\.title\s*=\s*'(.*?)';", RegexOptions.Compiled);
+        private readonly string name;
 
         private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(long gId, ulong gToken, string note)
         {
@@ -68,6 +60,9 @@ namespace ExClient
             return Client.Current.HttpClient.PostAsync(requestUri, requestContent);
         }
 
+        private static readonly Regex favNoteMatcher = new Regex(@"fn\.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
+        private static readonly Regex favNameMatcher = new Regex(@"fi\.title\s*=\s*'(.*?)';", RegexOptions.Compiled);
+
         public IAsyncAction AddAsync(Gallery gallery, string note)
         {
             return Run(async token =>
@@ -83,7 +78,7 @@ namespace ExClient
                 {
                     var match2 = favNameMatcher.Match(responseContent, 1300);
                     if (match2.Success)
-                        this.Name = HtmlEntity.DeEntitize(match2.Groups[1].Value);
+                        Client.Current.Settings.FavoriteCategoryNames[this.Index] = HtmlEntity.DeEntitize(match2.Groups[1].Value);
                 }
                 gallery.FavoriteCategory = this;
             });

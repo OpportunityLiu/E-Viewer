@@ -18,7 +18,7 @@ namespace ExViewer
         private static Uri reform(Uri uri)
         {
             if (isPrivateProtocal(uri))
-                return new Uri($"https://exhentai.org/{uri.PathAndQuery.TrimStart('/', '\\', ' ', '\t')}");
+                return new Uri("https://exhentai.org/" + uri.PathAndQuery.TrimStart('/', '\\', ' ', '\t'));
             return uri;
         }
 
@@ -70,45 +70,62 @@ namespace ExViewer
             {
                 try
                 {
+                    //TODO: 删除设置 Navigator.IsEnabled 的代码
                     var r = await UriLauncher.HandleAsync(uri);
-                    switch (r)
+                    var o = RootControl.RootController.Navigator.IsEnabled;
+                    try
                     {
-                    case GalleryLaunchResult g:
-                        var page = RootControl.RootController.Frame.Content;
-                        if (!(page is GalleryPage gPage && gPage.VM.Gallery.ID == g.GalleryInfo.ID))
+                        switch (r)
                         {
-                            await GalleryVM.GetVMAsync(g.GalleryInfo);
-                            await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.GalleryInfo.ID);
-                            await Task.Delay(500);
-                        }
-                        switch (g.Status)
-                        {
-                        case GalleryLaunchStatus.Image:
-                            await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), g.GalleryInfo.ID);
-                            await Task.Delay(500);
-                            (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
-                            break;
-                        case GalleryLaunchStatus.Torrent:
-                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
-                            break;
-                        default:
-                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
-                            break;
-                        }
-                        return;
-                    case SearchLaunchResult sr:
-                        switch (sr.Data)
-                        {
-                        case CategorySearchResult ksr:
-                            var vm = SearchVM.GetVM(ksr);
-                            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
+                        case GalleryLaunchResult g:
+                            var page = RootControl.RootController.Frame.Content;
+                            if (!(page is GalleryPage gPage && gPage.VM.Gallery.ID == g.GalleryInfo.ID))
+                            {
+                                await GalleryVM.GetVMAsync(g.GalleryInfo);
+                                RootControl.RootController.Navigator.IsEnabled = true;
+                                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.GalleryInfo.ID);
+                                RootControl.RootController.Navigator.IsEnabled = o;
+                                await Task.Delay(500);
+                            }
+                            switch (g.Status)
+                            {
+                            case GalleryLaunchStatus.Image:
+                                RootControl.RootController.Navigator.IsEnabled = true;
+                                await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), g.GalleryInfo.ID);
+                                RootControl.RootController.Navigator.IsEnabled = o;
+                                await Task.Delay(500);
+                                (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
+                                break;
+                            case GalleryLaunchStatus.Torrent:
+                                (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
+                                break;
+                            default:
+                                (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
+                                break;
+                            }
                             return;
-                        case FavoritesSearchResult fsr:
-                            var fvm = FavoritesVM.GetVM(fsr);
-                            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), fvm.SearchQuery.ToString());
-                            return;
+                        case SearchLaunchResult sr:
+                            switch (sr.Data)
+                            {
+                            case CategorySearchResult ksr:
+                                var vm = SearchVM.GetVM(ksr);
+                                RootControl.RootController.Navigator.IsEnabled = true;
+                                await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
+                                RootControl.RootController.Navigator.IsEnabled = o;
+                                return;
+                            case FavoritesSearchResult fsr:
+                                var fvm = FavoritesVM.GetVM(fsr);
+                                RootControl.RootController.Navigator.IsEnabled = true;
+                                await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), fvm.SearchQuery.ToString());
+                                RootControl.RootController.Navigator.IsEnabled = o;
+                                return;
+                            }
+                            throw new InvalidOperationException();
                         }
-                        throw new InvalidOperationException();
+                    }
+                    finally
+                    {
+                        RootControl.RootController.Navigator.IsEnabled = o;
                     }
                 }
                 catch (Exception e)
