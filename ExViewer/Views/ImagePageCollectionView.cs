@@ -11,7 +11,7 @@ using ExClient.Galleries;
 
 namespace ExViewer.Views
 {
-    internal class ImagePageCollectionView : IReadOnlyList<IImagePageImageView>, IDisposable
+    internal class ImagePageCollectionView : IReadOnlyList<ImagePageImageView>, IDisposable
     {
         private const int initialCapacity = 10;
 
@@ -69,44 +69,7 @@ namespace ExViewer.Views
             }
         }
 
-        private sealed class ImagePageImageView : ObservableObject, IImagePageImageView, IDisposable
-        {
-            private static readonly GalleryImage defaultImage = null;
-
-            public ImagePageImageView(ImagePageCollectionView parent, int index)
-            {
-                this.parent = parent;
-                this.index = index;
-            }
-
-            private ImagePageCollectionView parent;
-            private readonly int index;
-
-            public GalleryImage Image
-            {
-                get
-                {
-                    if (this.parent == null || this.parent.collection == null)
-                        return defaultImage;
-                    if (this.index < this.parent.collection.Count)
-                        return this.parent.collection[this.index];
-                    return defaultImage;
-                }
-            }
-
-            public void Refresh()
-            {
-                OnPropertyChanged(nameof(Image));
-            }
-
-            public void Dispose()
-            {
-                this.parent = null;
-                Refresh();
-            }
-        }
-
-        public IImagePageImageView this[int index]
+        public ImagePageImageView this[int index]
         {
             get
             {
@@ -118,7 +81,7 @@ namespace ExViewer.Views
 
         public int Count => this.collection?.RecordCount ?? 0;
 
-        public IEnumerator<IImagePageImageView> GetEnumerator()
+        public IEnumerator<ImagePageImageView> GetEnumerator()
         {
             return this.imageViewCache.Take(this.Count).GetEnumerator();
         }
@@ -153,5 +116,42 @@ namespace ExViewer.Views
             Dispose(true);
         }
         #endregion
+    }
+
+    internal sealed class ImagePageImageView : ObservableObject, IDisposable
+    {
+        private static readonly GalleryImage defaultImage = null;
+
+        public ImagePageImageView(ImagePageCollectionView parent, int index)
+        {
+            this.parent = parent;
+            this.index = index;
+        }
+
+        private ImagePageCollectionView parent;
+        private readonly int index;
+
+        public GalleryImage Image
+        {
+            get
+            {
+                if (this.parent == null || this.parent.Collection == null)
+                    return defaultImage;
+                if (this.index >= this.parent.Collection.Count)
+                    return defaultImage;
+                return this.parent.Collection[this.index];
+            }
+        }
+
+        public void Refresh()
+        {
+            OnPropertyChanged(nameof(Image));
+        }
+
+        public void Dispose()
+        {
+            this.parent = null;
+            Refresh();
+        }
     }
 }

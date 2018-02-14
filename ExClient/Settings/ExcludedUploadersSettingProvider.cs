@@ -9,9 +9,18 @@ using System.Threading.Tasks;
 
 namespace ExClient.Settings
 {
-    public class ExcludedUploadersSettingProvider
+    public sealed class ExcludedUploadersSettingProvider
         : SettingProvider, INotifyCollectionChanged, IList<string>, ICollection<string>, IEnumerable<string>, IEnumerable, IReadOnlyList<string>, IReadOnlyCollection<string>, IList, ICollection
     {
+        public override string ToString() => string.Join("\n", this.userList);
+
+        public static string[] FromString(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return Array.Empty<string>();
+            return value.Split(crlf, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         private static readonly char[] crlf = new[] { '\r', '\n' };
 
         internal ExcludedUploadersSettingProvider()
@@ -28,17 +37,12 @@ namespace ExClient.Settings
         internal override void DataChanged(Dictionary<string, string> settings)
         {
             settings.TryGetValue("xu", out var data);
-            if (string.IsNullOrWhiteSpace(data))
-            {
-                this.userList.Clear();
-                return;
-            }
-            this.userList.Update(data.Split(crlf, StringSplitOptions.RemoveEmptyEntries));
+            this.userList.Update(FromString(data));
         }
 
         internal override void ApplyChanges(Dictionary<string, string> settings)
         {
-            settings["xu"] = string.Join("\n", this.userList);
+            settings["xu"] = ToString();
         }
 
         private readonly ObservableList<string> userList = new ObservableList<string>();

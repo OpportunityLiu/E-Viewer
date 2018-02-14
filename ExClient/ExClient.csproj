@@ -206,7 +206,6 @@
     <Compile Include="Internal\MyHttpClient.cs" />
     <Compile Include="Internal\RedirectFilter.cs" />
     <Compile Include="Models\SavedGalleryModel.cs" />
-    <Compile Include="Helpers\ExStorageHelper.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Helpers\ConnectionHelper.cs" />

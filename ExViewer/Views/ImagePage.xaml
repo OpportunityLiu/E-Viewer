@@ -23,7 +23,7 @@
   </Page.Transitions>
   <Page.Resources>
     <DataTemplate x:Key="FlipViewItemTemplate"
-                  x:DataType="local:IImagePageImageView">
+                  x:DataType="local:ImagePageImageView">
       <Grid DoubleTapped="fvi_DoubleTapped"
             Tapped="fvi_Tapped">
         <Grid.RowDefinitions>
@@ -37,10 +37,10 @@
                      Padding="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                      Margin="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x0'}"
                      VerticalAlignment="Top"
-                     Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(Image.State), Mode=OneWay, FallbackValue={ThemeResource SystemControlForegroundAccentBrush}}"
+                     Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(Image.State), Mode=OneWay}"
                      IsIndeterminate="{x:Bind local:ImagePage.loadStateToPbIsIndeterminate(Image.State), Mode=OneWay, FallbackValue=True}"
                      Visibility="{x:Bind local:ImagePage.loadStateToPbVisibility(Image.State), Mode=OneWay, FallbackValue=Visible}"
-                     Value="{x:Bind Image.Progress, Mode=OneWay, FallbackValue=0}">
+                     Value="{x:Bind Image.Progress, Mode=OneWay}">
           <ProgressBar.RenderTransform>
             <TranslateTransform Y="{Binding RenderTransform.Y, ElementName=cb_top, Mode=OneWay}" />
           </ProgressBar.RenderTransform>
@@ -360,13 +360,13 @@
         <AppBarButton x:Name="abb_reload"
                       x:Uid="Views/ImagePage/ReloadAppBarButton"
                       Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
+                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
                       Icon="Refresh"
                       Label="Reload" />
         <AppBarButton x:Name="abb_LoadOriginal"
                       x:Uid="Views/ImagePage/LoadOriginalAppBarButton"
                       Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
+                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
                       Label="Load original image">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE744;" />
@@ -375,7 +375,7 @@
         <AppBarButton x:Name="abb_Share"
                       x:Uid="Views/ImagePage/ShareAppBarButton"
                       Command="{x:Bind VM.Share, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
+                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
                       Label="Share">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE72D;" />
@@ -385,7 +385,7 @@
         <AppBarButton x:Name="abb_Search"
                       x:Uid="Views/ImagePage/SearchAppBarButton"
                       Command="{x:Bind VM.SearchImage, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:IImagePageImageView)fv.SelectedItem).Image.ImageHash, Mode=OneWay}"
+                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
                       Label="Show all galleries with this file">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE155;" />

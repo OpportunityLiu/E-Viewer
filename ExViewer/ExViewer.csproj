@@ -318,7 +318,6 @@
       <DependentUpon>ImagePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ImagePageCollectionView.cs" />
-    <Compile Include="Views\IImagePageImageView.cs" />
     <Compile Include="Views\RootController.cs" />
     <Compile Include="Views\LogOnDialog.xaml.cs">
       <DependentUpon>LogOnDialog.xaml</DependentUpon>
@@ -361,12 +360,6 @@
     <Content Include="Images\EH.scale-100.png" />
     <Content Include="Images\EH.scale-200.png" />
     <Content Include="Images\EH.scale-400.png" />
-    <Content Include="Images\Light\ImageLoading.scale-100.png" />
-    <Content Include="Images\Light\ImageLoading.scale-200.png" />
-    <Content Include="Images\Light\ImageLoading.scale-400.png" />
-    <Content Include="Images\Dark\ImageLoading.scale-100.png" />
-    <Content Include="Images\Dark\ImageLoading.scale-200.png" />
-    <Content Include="Images\Dark\ImageLoading.scale-400.png" />
     <Content Include="Images\Dark\UserBackground.scale-100.png" />
     <Content Include="Images\Dark\UserBackground.scale-200.png" />
     <Content Include="Images\Dark\UserBackground.scale-400.png" />

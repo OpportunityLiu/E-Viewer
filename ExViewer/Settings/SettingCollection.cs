@@ -26,7 +26,8 @@ namespace ExViewer.Settings
 
         private void ClientSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            OnPropertyChanged(nameof(ExcludedTagNamespaces), nameof(ExcludedLanguages), nameof(ResampledImageSize));
+            OnPropertyChanged(nameof(ExcludedTagNamespaces), nameof(ExcludedLanguages), nameof(ResampledImageSize),
+                nameof(ExcludedUploaders));
         }
 
         private void update()
@@ -121,6 +122,21 @@ namespace ExViewer.Settings
             set => SetRoaming(value);
         }
 
+        [Setting("Searching", Index = 1350)]
+        [ToggleSwitchRepresent("BooleanByFavoritedTime", "BooleanByLastUpdatedTime")]
+        public bool FavoritesOrderByFavoritedTime
+        {
+            get => Client.Current.Settings.FavoritesOrder == FavoritesOrder.ByFavoritedTime;
+            set
+            {
+                if (value)
+                    Client.Current.Settings.FavoritesOrder = FavoritesOrder.ByFavoritedTime;
+                else
+                    Client.Current.Settings.FavoritesOrder = FavoritesOrder.ByLastUpdatedTime;
+                update();
+            }
+        }
+
         [Setting("Searching", Index = 1400)]
         [CustomTemplate("ExcludedTagNamespacesTemplate")]
         public Namespace ExcludedTagNamespaces
@@ -147,6 +163,23 @@ namespace ExViewer.Settings
             }
         }
 
+        [Setting("Searching", Index = 1600)]
+        [TextTemplate(MultiLine = true)]
+        public string ExcludedUploaders
+        {
+            get => Client.Current.Settings.ExcludedUploaders.ToString();
+            set
+            {
+                var eu = Client.Current.Settings.ExcludedUploaders;
+                eu.Clear();
+                foreach (var item in ExcludedUploadersSettingProvider.FromString(value))
+                {
+                    eu.Add(item);
+                }
+                update();
+            }
+        }
+
         [Setting("Viewing", Index = 2100)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseChineseTagTranslation
@@ -161,6 +194,18 @@ namespace ExViewer.Settings
         {
             get => GetRoaming(false);
             set => SetRoaming(value);
+        }
+
+        [Setting("Viewing", Index = 2250)]
+        [EnumRepresent("CommentsOrderValues")]
+        public CommentsOrder CommentsOrder
+        {
+            get => Client.Current.Settings.CommentsOrder;
+            set
+            {
+                Client.Current.Settings.CommentsOrder = value;
+                update();
+            }
         }
 
         [Setting("Viewing", Index = 2300)]

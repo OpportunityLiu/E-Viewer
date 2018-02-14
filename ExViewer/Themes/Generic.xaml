@@ -473,9 +473,9 @@
     </Setter>
   </Style>
 
-  <!--<Style TargetType="controls:MyContentDialog">
+  <Style TargetType="controls:MyContentDialog">
     <Setter Property="PrimaryButtonStyle"
-            Value="{ThemeResource ButtonRevealStyle}"/>
+            Value="{ThemeResource ButtonRevealStyle}" />
     <Setter Property="SecondaryButtonStyle"
             Value="{ThemeResource ButtonRevealStyle}" />
     <Setter Property="CloseButtonStyle"
@@ -492,10 +492,8 @@
       <Setter.Value>
         <ControlTemplate TargetType="ContentDialog">
           <Border x:Name="Container">
-
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="DialogShowingStates">
-
                 <VisualStateGroup.Transitions>
                   <VisualTransition To="DialogHidden">
                     <Storyboard>
@@ -590,8 +588,6 @@
                 <VisualState x:Name="FullDialogSizing">
                   <VisualState.Setters>
                     <Setter Target="BackgroundElement.VerticalAlignment"
-                            Value="Stretch" />
-                    <Setter Target="BackgroundElement.HorizonalAlignment"
                             Value="Stretch" />
                   </VisualState.Setters>
                 </VisualState>
@@ -718,27 +714,34 @@
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
-
             </VisualStateManager.VisualStateGroups>
             <Grid x:Name="LayoutRoot"
-                  Visibility="Collapsed"
-                  Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}">
+                  rs3:Visibility="Collapsed"
+                  rs3:Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}">
+              <prers3:Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+              </prers3:Grid.RowDefinitions>
+              <prers3:Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+              </prers3:Grid.ColumnDefinitions>
               <Border x:Name="BackgroundElement"
                       Background="{TemplateBinding Background}"
                       FlowDirection="{TemplateBinding FlowDirection}"
                       BorderThickness="{ThemeResource ContentDialogBorderWidth}"
                       BorderBrush="{TemplateBinding BorderBrush}"
-                      MinWidth="{ThemeResource ContentDialogMinWidth}"
                       MaxWidth="{ThemeResource ContentDialogMaxWidth}"
-                      MinHeight="{ThemeResource ContentDialogMinHeight}"
                       MaxHeight="{ThemeResource ContentDialogMaxHeight}"
+                      MinWidth="{ThemeResource ContentDialogMinWidth}"
+                      MinHeight="{ThemeResource ContentDialogMinHeight}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       RenderTransformOrigin="0.5,0.5">
                 <Border.RenderTransform>
                   <ScaleTransform x:Name="ScaleTransform" />
                 </Border.RenderTransform>
+
                 <Grid x:Name="DialogSpace"
+                      prers3:VerticalAlignment="Stretch"
                       Padding="{ThemeResource ContentDialogPadding}">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -838,7 +841,7 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
-  </Style>-->
+  </Style>
 
   <Style TargetType="controls:Rating">
     <Setter Property="Padding"

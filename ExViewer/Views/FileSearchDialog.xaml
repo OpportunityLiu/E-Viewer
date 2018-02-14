@@ -1,6 +1,8 @@
 ﻿<controls:MyContentDialog x:Class="ExViewer.Views.FileSearchDialog"
                           x:Uid="Views/FileSearchDialog/ContentDialog"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:rs3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
+                          xmlns:prers3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:local="using:ExViewer.Views"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -36,6 +38,8 @@
         </Grid.ColumnDefinitions>
         <TextBox x:Name="tbFileName"
                  x:Uid="Views/FileSearchDialog/FileNameTextBox"
+                 IsTabStop="False"
+                 IsTapEnabled="False"
                  IsReadOnly="True"
                  Margin="4"
                  PlaceholderText="Drop a file here..."
@@ -45,6 +49,7 @@
                  Drop="tbFileName_Drop" />
         <Button x:Name="btnBrowse"
                 x:Uid="Views/FileSearchDialog/BrowseButton"
+                rs3:Style="{ThemeResource ButtonRevealStyle}"
                 Grid.Column="1"
                 Margin="4"
                 Content="Browse..."

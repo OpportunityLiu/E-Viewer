@@ -34,7 +34,7 @@ namespace ExViewer.Controls
 
         private List<ExcludedLanguageFilter> filters = new List<ExcludedLanguageFilter>()
         {
-            new ExcludedLanguageFilter(ExcludedLanguage.JapaneseOriginal),
+            new ExcludedLanguageFilter(ExcludedLanguage.Default),
             new ExcludedLanguageFilter(ExcludedLanguage.EnglishOriginal),
             new ExcludedLanguageFilter(ExcludedLanguage.ChineseOriginal),
             new ExcludedLanguageFilter(ExcludedLanguage.DutchOriginal),
@@ -173,7 +173,7 @@ namespace ExViewer.Controls
         }
     }
 
-    internal class ExcludedLanguageFilter : ObservableObject
+    internal sealed class ExcludedLanguageFilter : ObservableObject
     {
         public ExcludedLanguageFilter(ExcludedLanguage language)
         {
@@ -183,15 +183,11 @@ namespace ExViewer.Controls
             this.Language = language;
         }
 
-        public ExcludedLanguage Language
-        {
-            get;
-        }
+        public ExcludedLanguage Language { get; }
 
-        public string Name
-        {
-            get;
-        }
+        public string Name { get; }
+
+        public bool OriginalEnabled => Language != ExcludedLanguage.Default;
 
         private bool original;
 
@@ -226,12 +222,18 @@ namespace ExViewer.Controls
 
         public bool All
         {
-            get => this.original && this.translated && this.rewrite;
+            get
+            {
+                if (Language != ExcludedLanguage.Default)
+                    return this.original && this.translated && this.rewrite;
+                return this.translated && this.rewrite;
+            }
             set
             {
                 if (value == this.All)
                     return;
-                this.original = value;
+                if (Language != ExcludedLanguage.Default)
+                    this.original = value;
                 this.translated = value;
                 this.rewrite = value;
                 OnPropertyChanged(default(string));

@@ -20,6 +20,19 @@ namespace ExClient.Settings
         H2400 = 5,
     }
 
+    public enum CommentsOrder
+    {
+        ByTimeAscending = 0,
+        ByTimeDecending = 1,
+        ByScore = 2,
+    }
+
+    public enum FavoritesOrder
+    {
+        ByLastUpdatedTime = 0,
+        ByFavoritedTime = 1,
+    }
+
     public sealed class SettingCollection : ObservableObject
     {
         private readonly Client client;
@@ -159,19 +172,38 @@ namespace ExClient.Settings
             set => ((DefaultSettingProvider)getProvider("Default")).ResampledImageSize = value;
         }
 
+        public CommentsOrder CommentsOrder
+        {
+            get => ((DefaultSettingProvider)getProvider("Default")).CommentsOrder;
+            set => ((DefaultSettingProvider)getProvider("Default")).CommentsOrder = value;
+        }
+
+        public FavoritesOrder FavoritesOrder
+        {
+            get => ((DefaultSettingProvider)getProvider("Default")).FavoritesOrder;
+            set => ((DefaultSettingProvider)getProvider("Default")).FavoritesOrder = value;
+        }
+
         private sealed class DefaultSettingProvider : SettingProvider
         {
             internal override void ApplyChanges(Dictionary<string, string> settings)
             {
                 // Thumbnail Size - Large
                 settings["ts"] = "1";
+                // Popular Right Now - Display
+                if (this.Owner.client.Host == HostType.Ehentai)
+                    settings["pp"] = "0";
 
                 settings["xr"] = ((int)this.resampledImageSize).ToString();
+                settings["cs"] = ((int)this.commentsOrder).ToString();
+                settings["fs"] = ((int)this.favoritesOrder).ToString();
             }
 
             internal override void DataChanged(Dictionary<string, string> settings)
             {
                 this.resampledImageSize = (ImageSize)int.Parse(settings.GetValueOrDefault("xr", "0"));
+                this.commentsOrder = (CommentsOrder)int.Parse(settings.GetValueOrDefault("cs", "0"));
+                this.favoritesOrder = (FavoritesOrder)int.Parse(settings.GetValueOrDefault("fs", "0"));
             }
 
             private ImageSize resampledImageSize;
@@ -180,6 +212,12 @@ namespace ExClient.Settings
                 get => this.resampledImageSize;
                 set => Set(ref this.resampledImageSize, value);
             }
+
+            private CommentsOrder commentsOrder;
+            public CommentsOrder CommentsOrder { get => this.commentsOrder; set => Set(ref this.commentsOrder, value); }
+
+            private FavoritesOrder favoritesOrder;
+            public FavoritesOrder FavoritesOrder { get => this.favoritesOrder; set => Set(ref this.favoritesOrder, value); }
         }
     }
 }
