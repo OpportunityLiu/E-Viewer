@@ -18,6 +18,7 @@ using Windows.ApplicationModel.Core;
 using Opportunity.MvvmUniverse;
 using Windows.UI;
 using ExClient.Status;
+using Opportunity.MvvmUniverse.Views;
 
 namespace ExViewer.Views
 {
@@ -34,7 +35,6 @@ namespace ExViewer.Views
                 root.sv_root.PaneClosing += Sv_root_PaneClosing;
 
                 Frame.Navigated += Frame_Navigated;
-
                 var tb = CoreApplication.GetCurrentView().TitleBar;
                 tb.LayoutMetricsChanged += titleBar_LayoutMetricsChanged;
                 titleBar_LayoutMetricsChanged(tb, null);
@@ -176,6 +176,8 @@ namespace ExViewer.Views
             {
                 SetFullScreen(!IsFullScreen);
             }
+
+            public static Navigator Navigator => root.manager;
 
             public static Frame Frame => root?.fm_inner;
 

@@ -68,10 +68,10 @@ namespace ExViewer.Controls
                 await dialog.ShowAsync();
             }, (s, t) => t?.Content.Content != null);
 
-            public Command<GalleryTag> Search { get; } = Command.Create<GalleryTag>((s, t) =>
+            public Command<GalleryTag> Search { get; } = Command.Create<GalleryTag>(async (s, t) =>
             {
                 var vm = SearchVM.GetVM(t.Content.Search());
-                RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
             }, (s, t) => t?.Content.Content != null);
 
             private static readonly char[] commas = ",՝،߸፣᠂⸲⸴⹁꘍꛵᠈꓾ʻʽ、﹐，﹑､︐︑".ToCharArray();

@@ -63,13 +63,13 @@ namespace ExViewer.Views
             var search = ExClient.Client.Current.SearchAsync(this.SearchFile, this.cbSimilar.IsChecked ?? true, this.cbCover.IsChecked ?? false, this.cbExp.IsChecked ?? false);
             this.SearchFile = null;
             await this.Dispatcher.YieldIdle();
-            RootControl.RootController.TrackAsyncAction(search, p => double.NaN, (s, e) =>
+            RootControl.RootController.TrackAsyncAction(search, p => double.NaN, async (s, e) =>
             {
                 switch (e)
                 {
                 case AsyncStatus.Completed:
                     var vm = SearchVM.GetVM(s.GetResults());
-                    RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+                    await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
                     break;
                 case AsyncStatus.Error:
                     RootControl.RootController.SendToast(s.ErrorCode, typeof(SearchPage));

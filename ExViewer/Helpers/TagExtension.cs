@@ -30,7 +30,7 @@ namespace ExClient.Tagging
             {
                 var r = tag.GetEhTagTranslatorRecord();
                 if (r != null)
-                    return AsyncWrapper.CreateCompleted(r.Translated.Text);
+                    return AsyncOperation<string>.CreateCompleted(r.Translated.Text);
             }
             if (settings.UseJapaneseTagTranslation)
             {
@@ -39,25 +39,30 @@ namespace ExClient.Tagging
                 {
                     var r = t.GetResults();
                     if (!match(tag, r))
-                        return AsyncWrapper.CreateCompleted(tag.Content);
-                    return AsyncWrapper.CreateCompleted(r.Japanese ?? tag.Content);
+                        return AsyncOperation<string>.CreateCompleted(tag.Content);
+                    return AsyncOperation<string>.CreateCompleted(r.Japanese ?? tag.Content);
                 }
-                return Run(async token =>
+                var rTask = new AsyncOperation<string>();
+                rTask.RegisterCancellation(t.Cancel);
+                t.Completed = (s, e) =>
                 {
-                    try
+                    switch (e)
                     {
-                        var r = await t;
+                    case AsyncStatus.Error:
+                        rTask.SetException(s.ErrorCode);
+                        break;
+                    case AsyncStatus.Completed:
+                        var r = s.GetResults();
                         if (!match(tag, r))
-                            return tag.Content;
-                        return r.Japanese ?? tag.Content;
+                            rTask.SetResults(tag.Content);
+                        else
+                            rTask.SetResults(r.Japanese ?? tag.Content);
+                        break;
                     }
-                    catch (Exception)
-                    {
-                        return tag.Content;
-                    }
-                });
+                };
+                return rTask;
             }
-            return AsyncWrapper.CreateCompleted(tag.Content);
+            return AsyncOperation<string>.CreateCompleted(tag.Content);
         }
 
         private static bool match(Tag tag, EhWikiClient.Record wiki)

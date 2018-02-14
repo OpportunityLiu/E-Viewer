@@ -19,7 +19,7 @@ namespace ExClient.Launch
             var sr = data.Queries.ContainsKey("f_shash")
                  ? handleFileSearch(data)
                  : handleSearch(data);
-            return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(sr));
+            return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(sr));
         }
 
         private CategorySearchResult handleSearch(UriHandlerData data)

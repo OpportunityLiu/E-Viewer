@@ -87,7 +87,7 @@ namespace ExViewer.ViewModels
             this.Search.Tag = this;
         }
 
-        public Command<string> Search { get; } = Command.Create<string>((sender, queryText) =>
+        public Command<string> Search { get; } = Command.Create<string>(async (sender, queryText) =>
         {
             var that = (SearchVM)sender.Tag;
             if (SettingCollection.Current.SaveLastSearch)
@@ -96,7 +96,7 @@ namespace ExViewer.ViewModels
                 SettingCollection.Current.DefaultSearchString = queryText;
             }
             var vm = GetVM(Client.Current.Search(queryText, that.category, that.advancedSearch));
-            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
         });
 
         public void SetQueryWithSearchResult()

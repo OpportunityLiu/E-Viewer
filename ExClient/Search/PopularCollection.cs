@@ -13,7 +13,7 @@ namespace ExClient.Search
 {
     public sealed class PopularCollection : IncrementalLoadingList<Gallery>
     {
-        public PopularCollection() { }
+        internal PopularCollection() { }
 
         protected override void ClearItems()
         {

@@ -2,11 +2,13 @@
 using ExClient.Galleries;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -65,7 +67,7 @@ namespace ExViewer.Views
         {
             base.OnNavigatingFrom(e);
             CloseAll();
-            Navigator.GetForCurrentView().Handlers.Remove(this);
+            this.GetNavigator().Handlers.Remove(this);
         }
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
@@ -157,7 +159,7 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Visible;
             this.cbCategory.Visibility = Visibility.Collapsed;
             this.asb.Visibility = Visibility.Collapsed;
-            this.RaiseCanGoBackChanged();
+            this.GetNavigator().UpdateAppViewBackButtonVisibility();
             return true;
         }
 
@@ -170,19 +172,25 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Collapsed;
             this.cbCategory.Visibility = Visibility.Visible;
             this.asb.Visibility = Visibility.Visible;
-            this.RaiseCanGoBackChanged();
+            this.GetNavigator().UpdateAppViewBackButtonVisibility();
             return true;
         }
 
-        public bool CanGoBack()
+        public bool CanGoBack() => (this.lv.SelectionMode != ListViewSelectionMode.None);
+        public IAsyncOperation<bool> GoBackAsync()
         {
-            return (this.lv.SelectionMode != ListViewSelectionMode.None);
+            if (!CanGoBack())
+                return AsyncOperation<bool>.CreateCompleted(false);
+            exitSelectMode();
+            return AsyncOperation<bool>.CreateCompleted(true);
         }
 
-        public void GoBack()
-        {
-            exitSelectMode();
-        }
+        bool INavigationHandler.CanGoForward() => false;
+        IAsyncOperation<bool> INavigationHandler.GoForwardAsync()
+            => AsyncOperation<bool>.CreateCompleted(false);
+
+        IAsyncOperation<bool> INavigationHandler.NavigateAsync(Type sourcePageType, object parameter)
+            => AsyncOperation<bool>.CreateCompleted(false);
 
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {

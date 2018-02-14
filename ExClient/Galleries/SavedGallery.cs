@@ -81,7 +81,7 @@ namespace ExClient.Galleries
 
         protected override IAsyncAction InitOverrideAsync()
         {
-            return AsyncWrapper.CreateCompleted();
+            return AsyncAction.CreateCompleted();
         }
 
         protected override IAsyncOperation<IEnumerable<GalleryImage>> LoadPageAsync(int pageIndex)

@@ -115,10 +115,10 @@ namespace ExViewer.ViewModels
             this.Search.Tag = this;
         }
 
-        public Command<string> Search { get; } = Command.Create<string>((sender, queryText) =>
+        public Command<string> Search { get; } = Command.Create<string>(async (sender, queryText) =>
         {
             var that = (FavoritesVM)sender.Tag;
-            RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), GetSearchQuery(queryText, that.category));
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), GetSearchQuery(queryText, that.category));
         });
 
         public void SetQueryWithSearchResult()

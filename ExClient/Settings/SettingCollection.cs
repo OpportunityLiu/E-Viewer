@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,9 @@ namespace ExClient.Settings
             }
         }
 
-        internal Dictionary<string, string> Settings { get; } = new Dictionary<string, string>();
+        internal Dictionary<string, string> Settings => this.settingsCache.Value;
+
+        private StorageProperty<Dictionary<string, string>> settingsCache = StorageProperty.CreateLocal<Dictionary<string, string>>("ExClient/SettingsCache");
 
         private void updateSettingsDic(HtmlDocument doc)
         {
@@ -54,27 +57,28 @@ namespace ExClient.Settings
                     continue;
                 switch (item.GetAttribute("type", default(string)))
                 {
-                case "radio":
-                    if (item.GetAttribute("checked", "") == "checked")
-                        Settings[name] = item.GetAttribute("value", "");
-                    break;
-                case "checkbox":
-                    if (item.GetAttribute("checked", "") == "checked")
-                        Settings[name] = item.GetAttribute("value", "on");
-                    break;
-                //case "text":
-                //case "hidden":
-                //case "submit":
-                //textarea
-                default:
-                    Settings[name] = item.GetAttribute("value", item.GetInnerText());
-                    break;
+                    case "radio":
+                        if (item.GetAttribute("checked", "") == "checked")
+                            Settings[name] = item.GetAttribute("value", "");
+                        break;
+                    case "checkbox":
+                        if (item.GetAttribute("checked", "") == "checked")
+                            Settings[name] = item.GetAttribute("value", "on");
+                        break;
+                    //case "text":
+                    //case "hidden":
+                    //case "submit":
+                    //textarea
+                    default:
+                        Settings[name] = item.GetAttribute("value", item.GetInnerText());
+                        break;
                 }
             }
             foreach (var item in this.items.Values)
             {
                 item.DataChanged(this.Settings);
             }
+            this.settingsCache.Flush();
         }
 
         public IAsyncAction FetchAsync()

@@ -27,12 +27,12 @@ namespace ExViewer.ViewModels
             this.DeleteHistory.Tag = this;
         }
 
-        public Command<Gallery> Open { get; } = Command.Create<Gallery>((sender, g) =>
+        public Command<Gallery> Open { get; } = Command.Create<Gallery>(async (sender, g) =>
         {
             var that = (SearchResultVM<T>)sender.Tag;
             that.SelectedGallery = g;
             GalleryVM.GetVM(g);
-            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
         }, (sender, g) => g != null);
 
         private T searchResult;

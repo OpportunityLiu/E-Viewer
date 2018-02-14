@@ -57,7 +57,7 @@ namespace ExClient.Galleries
             if (galleryInfo == null)
                 throw new ArgumentNullException(nameof(galleryInfo));
             if (galleryInfo.Count <= 0)
-                return AsyncWrapper.CreateCompleted((IList<Gallery>)Array.Empty<Gallery>());
+                return AsyncOperation<IList<Gallery>>.CreateCompleted(Array.Empty<Gallery>());
             if (galleryInfo.Count <= 25)
             {
                 return Run<IList<Gallery>>(async token =>

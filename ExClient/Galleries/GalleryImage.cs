@@ -48,7 +48,7 @@ namespace ExClient.Galleries
         {
             var temp = ImageFolder;
             if (temp != null)
-                return AsyncWrapper.CreateCompleted(temp);
+                return AsyncOperation<StorageFolder>.CreateCompleted(temp);
             return Run(async token =>
             {
                 var temp2 = ImageFolder;
@@ -229,7 +229,7 @@ namespace ExClient.Galleries
                 if (!reload)
                 {
                     if (previousEnded)
-                        return AsyncWrapper.CreateCompleted();
+                        return AsyncAction.CreateCompleted();
                     return PollingAsyncWrapper.Wrap(previousAction, 1500);
                 }
                 else
@@ -240,7 +240,7 @@ namespace ExClient.Galleries
                 break;
             case ImageLoadingState.Preparing:
                 if (previousEnded)
-                    return AsyncWrapper.CreateCompleted();
+                    return AsyncAction.CreateCompleted();
                 return PollingAsyncWrapper.Wrap(previousAction, 1500);
             }
             return this.loadImageAction = startLoadImageAsync(reload, strategy, throwIfFailed);

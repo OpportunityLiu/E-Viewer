@@ -45,16 +45,16 @@ namespace ExViewer.ViewModels
 
         public Command<TaggingRecord> OpenGallery { get; } = Command.Create<TaggingRecord>((sender, tr) =>
         {
-            RootControl.RootController.TrackAsyncAction(GalleryVM.GetVMAsync(tr.GalleryInfo).AsAsyncAction(), (s, e) =>
+            RootControl.RootController.TrackAsyncAction(GalleryVM.GetVMAsync(tr.GalleryInfo).AsAsyncAction(), async (s, e) =>
             {
-                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), tr.GalleryInfo.ID);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), tr.GalleryInfo.ID);
             });
         }, (sender, tr) => tr.GalleryInfo.ID > 0);
 
-        public Command<TaggingRecord> SearchTag { get; } = Command.Create<TaggingRecord>((sender, tr) =>
+        public Command<TaggingRecord> SearchTag { get; } = Command.Create<TaggingRecord>(async (sender, tr) =>
         {
             var vm = SearchVM.GetVM(tr.Tag.Search(Category.All, new AdvancedSearchOptions(skipMasterTags: true, searchLowPowerTags: true)));
-            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
         }, (sender, tr) => tr.Tag.Content != null);
     }
 }

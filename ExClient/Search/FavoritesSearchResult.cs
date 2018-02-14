@@ -77,7 +77,7 @@ namespace ExClient.Search
             if (categoty == null)
                 throw new ArgumentNullException(nameof(categoty));
             if (items == null || items.Count == 0)
-                return AsyncWrapper.CreateCompleted();
+                return AsyncAction.CreateCompleted();
             return AsyncInfo.Run(async token =>
             {
                 var ddact = default(string);

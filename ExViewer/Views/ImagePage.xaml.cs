@@ -2,9 +2,11 @@
 using ExViewer.Controls;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
@@ -28,7 +30,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary> 
-    public sealed partial class ImagePage : MyPage, IHasAppBar
+    public sealed partial class ImagePage : MyPage, IHasAppBar, INavigationHandler
     {
         public ImagePage()
         {
@@ -112,6 +114,7 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            Navigator.GetForCurrentView().Handlers.Add(this);
             setCbColor();
             Av_VisibleBoundsChanged(this.av, null);
             this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
@@ -164,8 +167,7 @@ namespace ExViewer.Views
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
-            RootControl.RootController.SetFullScreen(false);
+            this.GetNavigator().Handlers.Remove(this);
 
             base.OnNavigatingFrom(e);
 
@@ -199,8 +201,29 @@ namespace ExViewer.Views
             cb_top_Closed(this.cb_top, null);
         }
 
-        bool? isFullScreen;
+        bool INavigationHandler.CanGoBack() => false;
+        IAsyncOperation<bool> INavigationHandler.GoBackAsync()
+        {
+            StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
+            RootControl.RootController.SetFullScreen(false);
+            return AsyncInfo.Run(async token =>
+            {
+                await Task.Delay(50);
+                return false;
+            });
+        }
+        bool INavigationHandler.CanGoForward() => false;
+        IAsyncOperation<bool> INavigationHandler.GoForwardAsync() => AsyncOperation<bool>.CreateCompleted(false);
+        IAsyncOperation<bool> INavigationHandler.NavigateAsync(Type sourcePageType, object parameter)
+        {
+            StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
+            RootControl.RootController.SetFullScreen(false);
+            return AsyncOperation<bool>.CreateCompleted(false);
+        }
 
+        // null fo unknown;
+        // tracked by Av_VisibleBoundsChanged
+        bool? isFullScreen;
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
         {
             var currentState = RootControl.RootController.IsFullScreen;
@@ -366,19 +389,19 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.OriginalKey)
             {
-                case VirtualKey.Enter:
-                    this.enterPressed = false;
-                    break;
-                case VirtualKey.Application:
-                case VirtualKey.GamepadMenu:
-                    if (!changeCbVisibility())
-                        this.fv.Focus(FocusState.Programmatic);
-                    else
-                        this.abb_fullScreen.Focus(FocusState.Programmatic);
-                    break;
-                default:
-                    e.Handled = false;
-                    break;
+            case VirtualKey.Enter:
+                this.enterPressed = false;
+                break;
+            case VirtualKey.Application:
+            case VirtualKey.GamepadMenu:
+                if (!changeCbVisibility())
+                    this.fv.Focus(FocusState.Programmatic);
+                else
+                    this.abb_fullScreen.Focus(FocusState.Programmatic);
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 

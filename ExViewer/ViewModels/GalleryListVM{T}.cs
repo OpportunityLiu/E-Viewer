@@ -39,10 +39,10 @@ namespace ExViewer.ViewModels
             RootControl.RootController.SendToast(Strings.Resources.Views.CachedPage.GalleryDeleted, null);
         }, (sender, g) => g != null);
 
-        public virtual Command<Gallery> Open { get; } = Command.Create<Gallery>((sender, g) =>
+        public virtual Command<Gallery> Open { get; } = Command.Create<Gallery>(async (sender, g) =>
         {
             GalleryVM.GetVM(g);
-            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
         }, (sender, g) => g != null);
     }
 }

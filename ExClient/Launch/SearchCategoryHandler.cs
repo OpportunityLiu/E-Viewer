@@ -31,7 +31,7 @@ namespace ExClient.Launch
             var category = categoryDic[data.Path0];
             var keyword = GetKeyword(data);
             var advanced = GetAdvancedSearchOptions(data);
-            return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
+            return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
         }
     }
 }
