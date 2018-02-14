@@ -45,11 +45,7 @@ namespace ExClient.Settings
         public Namespace Value
         {
             get => this.value;
-            set
-            {
-                if (Set(ref this.value, value & (Namespace)0xFF))
-                    this.Owner.RaisePropertyChanged(nameof(this.Owner.ExcludedTagNamespaces));
-            }
+            set => Set(ref this.value, value & (Namespace)0xFF);
         }
     }
 }

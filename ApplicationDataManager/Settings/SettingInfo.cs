@@ -60,8 +60,10 @@ namespace ApplicationDataManager.Settings
 
         private void settingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == this.Name)
+            if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == this.Name)
+            {
                 OnPropertyChanged(nameof(Value));
+            }
         }
 
         internal PropertyInfo PropertyInfo { get; }

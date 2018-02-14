@@ -18,66 +18,36 @@ namespace ExViewer.Settings
         } = new SettingCollection();
 
         private SettingCollection()
-            : base("Settings") { }
+            : base("Settings")
+        {
+            var clientSettings = Client.Current.Settings;
+            clientSettings.PropertyChanged += this.ClientSettings_PropertyChanged;
+        }
+
+        private void ClientSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(ExcludedTagNamespaces), nameof(ExcludedLanguages), nameof(ResampledImageSize));
+        }
+
+        private void update()
+        {
+            var task = Client.Current.Settings.SendAsync();
+            task.Completed = (s, e) =>
+            {
+                if (e == Windows.Foundation.AsyncStatus.Error)
+                {
+                    Views.RootControl.RootController.SendToast(s.ErrorCode, null);
+                }
+            };
+        }
 
         public void Apply()
         {
-            var clientSettings = Client.Current.Settings;
-            this.ExcludedTagNamespaces = this.ExcludedTagNamespaces;
-            this.ExcludedLanguages = this.ExcludedLanguages;
             this.VisitEx = this.VisitEx;
             this.OpenHVOnMonsterEncountered = this.OpenHVOnMonsterEncountered;
         }
 
-        [Setting("Searching", Index = 10)]
-        public string DefaultSearchString
-        {
-            get => GetRoaming("");
-            set => SetRoaming(value);
-        }
-
-        [Setting("Searching", Index = 20)]
-        [CustomTemplate("CatagorySettingTemplate")]
-        public Category DefaultSearchCategory
-        {
-            get => GetRoaming(Category.All);
-            set => SetRoaming(value);
-        }
-
-        [Setting("Searching", Index = 30)]
-        public bool SaveLastSearch
-        {
-            get => GetRoaming(false);
-            set => SetRoaming(value);
-        }
-
-        [Setting("Searching", Index = 35)]
-        [CustomTemplate("ExcludedTagNamespacesTemplate")]
-        public Namespace ExcludedTagNamespaces
-        {
-            get => GetRoaming(Namespace.Unknown);
-            set
-            {
-                SetRoaming(value);
-                Client.Current.Settings.ExcludedTagNamespaces = value;
-            }
-        }
-
-        [Setting("Searching", Index = 40)]
-        [CustomTemplate("ExcludedLanguagesTemplate")]
-        public string ExcludedLanguages
-        {
-            get => GetRoaming("");
-            set
-            {
-                SetRoaming(value);
-                var el = Client.Current.Settings.ExcludedLanguages;
-                el.Clear();
-                el.AddRange(ExcludedLanguagesSettingProvider.FromString(value));
-            }
-        }
-
-        [Setting("Global", Index = -10)]
+        [Setting("Global", Index = 100)]
         [EnumRepresent("ApplicationTheme")]
         public ApplicationTheme Theme
         {
@@ -90,14 +60,14 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Global", Index = 10)]
+        [Setting("Global", Index = 200)]
         public bool NeedVerify
         {
             get => GetLocal(false);
             set => SetLocal(value);
         }
 
-        [Setting("Global", Index = 15)]
+        [Setting("Global", Index = 300)]
         [ToggleSwitchRepresent("BooleanEx", "BooleanEh")]
         public bool VisitEx
         {
@@ -109,7 +79,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Global", Index = 17)]
+        [Setting("Global", Index = 400)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool OpenHVOnMonsterEncountered
         {
@@ -121,7 +91,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Global", Index = 20)]
+        [Setting("Global", Index = 500)]
         [ToggleSwitchRepresent("BooleanJT", "BooleanDT")]
         public bool UseJapaneseTitle
         {
@@ -129,7 +99,55 @@ namespace ExViewer.Settings
             set => SetRoaming(value);
         }
 
-        [Setting("Viewing", Index = 20)]
+        [Setting("Searching", Index = 1100)]
+        public string DefaultSearchString
+        {
+            get => GetRoaming("");
+            set => SetRoaming(value);
+        }
+
+        [Setting("Searching", Index = 1200)]
+        [CustomTemplate("CatagorySettingTemplate")]
+        public Category DefaultSearchCategory
+        {
+            get => GetRoaming(Category.All);
+            set => SetRoaming(value);
+        }
+
+        [Setting("Searching", Index = 1300)]
+        public bool SaveLastSearch
+        {
+            get => GetRoaming(false);
+            set => SetRoaming(value);
+        }
+
+        [Setting("Searching", Index = 1400)]
+        [CustomTemplate("ExcludedTagNamespacesTemplate")]
+        public Namespace ExcludedTagNamespaces
+        {
+            get => Client.Current.Settings.ExcludedTagNamespaces;
+            set
+            {
+                Client.Current.Settings.ExcludedTagNamespaces = value;
+                update();
+            }
+        }
+
+        [Setting("Searching", Index = 1500)]
+        [CustomTemplate("ExcludedLanguagesTemplate")]
+        public string ExcludedLanguages
+        {
+            get => Client.Current.Settings.ExcludedLanguages.ToString();
+            set
+            {
+                var el = Client.Current.Settings.ExcludedLanguages;
+                el.Clear();
+                el.AddRange(ExcludedLanguagesSettingProvider.FromString(value));
+                update();
+            }
+        }
+
+        [Setting("Viewing", Index = 2100)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseChineseTagTranslation
         {
@@ -137,7 +155,7 @@ namespace ExViewer.Settings
             set => SetRoaming(value);
         }
 
-        [Setting("Viewing", Index = 30)]
+        [Setting("Viewing", Index = 2200)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
         public bool UseJapaneseTagTranslation
         {
@@ -145,14 +163,14 @@ namespace ExViewer.Settings
             set => SetRoaming(value);
         }
 
-        [Setting("Viewing", Index = 35)]
+        [Setting("Viewing", Index = 2300)]
         public string CommentTranslationCode
         {
             get => GetRoaming(Strings.Resources.General.LanguageCode);
             set => SetRoaming(value);
         }
 
-        [Setting("Viewing", Index = 40)]
+        [Setting("Viewing", Index = 2400)]
         [ToggleSwitchRepresent("BooleanRightToLeft", "BooleanLeftToRight")]
         public bool ReverseFlowDirection
         {
@@ -160,14 +178,26 @@ namespace ExViewer.Settings
             set => SetLocal(value);
         }
 
-        [Setting("Viewing", Index = 50)]
+        [Setting("Viewing", Index = 2500)]
         public bool KeepScreenOn
         {
             get => GetLocal(false);
             set => SetLocal(value);
         }
 
-        [Setting("Connection", Index = 40)]
+        [Setting("Connection", Index = 9100)]
+        [EnumRepresent("ImageSize")]
+        public ImageSize ResampledImageSize
+        {
+            get => Client.Current.Settings.ResampledImageSize;
+            set
+            {
+                Client.Current.Settings.ResampledImageSize = value;
+                update();
+            }
+        }
+
+        [Setting("Connection", Index = 9200)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool LoadLofiOnMeteredInternetConnection
         {
@@ -181,7 +211,7 @@ namespace ExViewer.Settings
             }
         }
 
-        [Setting("Connection", Index = 50)]
+        [Setting("Connection", Index = 9300)]
         [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
         public bool LoadLofiOnAllInternetConnection
         {

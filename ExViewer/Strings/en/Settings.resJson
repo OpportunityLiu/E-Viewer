@@ -4,6 +4,15 @@
     "Dark": "Dark",
     "Light": "Light"
   },
+  "ResampledImageSize": "Horizontal resolution of resampled image",
+  "ImageSize": {
+    "Auto": "Auto",
+    "H1280": "1280px",
+    "H1600": "16000px",
+    "H2400": "2400px",
+    "H780": "780px",
+    "H980": "980px"
+  },
   "BooleanDT": "Default title",
   "BooleanEh": "E-hentai",
   "BooleanEx": "Exhentai (need permittion of account)",
@@ -17,7 +26,6 @@
   "ExcludedLanguages": "Excluded languages",
   "ExcludedTagNamespaces": "Excluded tag namespaces",
   "Global": "GLOBAL",
-  "HahAddress": "IP Address:Port for H@H (Leave blank to not use)",
   "KeepScreenOn": "Keep my screen on during image viewing",
   "LoadLofiOnAllInternetConnection": "Always load compressed image",
   "LoadLofiOnMeteredInternetConnection": "Load compressed image while using metered Internet connection",
