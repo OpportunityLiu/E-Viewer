@@ -177,6 +177,12 @@ namespace ExViewer.Controls
     {
         public ExcludedLanguageFilter(ExcludedLanguage language)
         {
+            if (language == ExcludedLanguage.Default)
+            {
+                this.Name = Strings.Resources.Controls.ExcludedLanguagesSelector.ExcludedLanguage.Japanese;
+                this.Language = language;
+                return;
+            }
             var lan = language.ToString();
             lan = lan.Substring(0, lan.Length - "Original".Length);
             this.Name = Strings.Resources.Controls.ExcludedLanguagesSelector.ExcludedLanguage.GetValue(lan);
