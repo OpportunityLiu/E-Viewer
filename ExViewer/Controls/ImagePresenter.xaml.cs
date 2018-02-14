@@ -20,6 +20,7 @@ using Windows.ApplicationModel;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
 using ExClient.Galleries;
+using Opportunity.MvvmUniverse;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -27,6 +28,19 @@ namespace ExViewer.Controls
 {
     public sealed partial class ImagePresenter : UserControl
     {
+        private static readonly BitmapImage defaultImage = new BitmapImage();
+
+        static ImagePresenter()
+        {
+            DispatcherHelper.BeginInvokeOnUIThread(async () =>
+            {
+                using (var img = await StorageHelper.GetIconOfExtension("jpg"))
+                {
+                    await defaultImage.SetSourceAsync(img);
+                }
+            });
+        }
+
         public ImagePresenter()
         {
             this.InitializeComponent();
@@ -38,12 +52,26 @@ namespace ExViewer.Controls
             set => SetValue(ImageProperty, value);
         }
 
-        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null, ImagePropertyChangedCallback));
+        /// <summary>
+        /// Indentify <see cref="Image"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty ImageProperty =
+            DependencyProperty.Register(nameof(Image), typeof(GalleryImage), typeof(ImagePresenter), new PropertyMetadata(null, ImagePropertyChanged));
 
-        private static async void ImagePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static async void ImagePropertyChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
         {
-            if(e.NewValue is GalleryImage image)
-                await image.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
+            var oldValue = (GalleryImage)e.OldValue;
+            var newValue = (GalleryImage)e.NewValue;
+            if (oldValue == newValue)
+                return;
+            var sender = (ImagePresenter)dp;
+            if (newValue != null)
+            {
+                sender.img_Thumb.Source = newValue.Thumb;
+                await newValue.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
+            }
+            else
+                sender.img_Thumb.Source = defaultImage;
         }
 
         protected override void OnDisconnectVisualChildren()
@@ -75,7 +103,7 @@ namespace ExViewer.Controls
 
         private void setSvManipulationMode(object sender, PointerRoutedEventArgs e)
         {
-            switch(e.Pointer.PointerDeviceType)
+            switch (e.Pointer.PointerDeviceType)
             {
             case Windows.Devices.Input.PointerDeviceType.Touch:
                 this.sv.ManipulationMode = ManipulationModes.System;
@@ -107,18 +135,18 @@ namespace ExViewer.Controls
 
         public void ZoomTo(Point point, float factor)
         {
-            if(factor > this.sv.MaxZoomFactor)
+            if (factor > this.sv.MaxZoomFactor)
                 factor = this.sv.MaxZoomFactor;
-            else if(factor < this.sv.MinZoomFactor)
+            else if (factor < this.sv.MinZoomFactor)
                 factor = this.sv.MinZoomFactor;
             var pi = point;
             var psX = point.X * this.sv.ZoomFactor;
             var psY = point.Y * this.sv.ZoomFactor;
-            if(this.sv.ScrollableWidth > 0)
+            if (this.sv.ScrollableWidth > 0)
                 psX -= this.sv.HorizontalOffset;
             else
                 psX += (this.sv.ActualWidth - this.sv.ExtentWidth) / 2;
-            if(this.sv.ScrollableHeight > 0)
+            if (this.sv.ScrollableHeight > 0)
                 psY -= this.sv.VerticalOffset;
             else
                 psY += (this.sv.ActualHeight - this.sv.ExtentHeight) / 2;
@@ -133,11 +161,11 @@ namespace ExViewer.Controls
         public void ZoomTo(float factor)
         {
             double w, h;
-            if(this.sv.ScrollableWidth > 0)
+            if (this.sv.ScrollableWidth > 0)
                 w = (this.sv.ActualWidth / 2 + this.sv.HorizontalOffset) / this.sv.ZoomFactor;
             else
                 w = this.gd_ContentRoot.ActualWidth / 2;
-            if(this.sv.ScrollableHeight > 0)
+            if (this.sv.ScrollableHeight > 0)
                 h = (this.sv.ActualHeight / 2 + this.sv.VerticalOffset) / this.sv.ZoomFactor;
             else
                 h = this.gd_ContentRoot.ActualHeight / 2;
@@ -146,7 +174,7 @@ namespace ExViewer.Controls
 
         private void Zoom(Point p)
         {
-            if(this.sv.ZoomFactor > 1.001)
+            if (this.sv.ZoomFactor > 1.001)
                 ResetZoom(false);
             else
                 this.ZoomTo(p);
@@ -169,7 +197,7 @@ namespace ExViewer.Controls
         {
             base.OnKeyDown(e);
             e.Handled = true;
-            switch(e.Key)
+            switch (e.Key)
             {
             case Windows.System.VirtualKey.GamepadRightThumbstickUp:
             case (Windows.System.VirtualKey)221:
@@ -181,16 +209,16 @@ namespace ExViewer.Controls
                 break;
             case Windows.System.VirtualKey.Up:
             case Windows.System.VirtualKey.Down:
-                if(this.sv.ScrollableHeight < 1)
+                if (this.sv.ScrollableHeight < 1)
                     e.Handled = false;
                 break;
             case Windows.System.VirtualKey.Left:
             case Windows.System.VirtualKey.Right:
-                if(this.sv.ScrollableWidth < 1)
+                if (this.sv.ScrollableWidth < 1)
                     e.Handled = false;
                 break;
             case Windows.System.VirtualKey.Space:
-                if(this.spacePressed)
+                if (this.spacePressed)
                     e.Handled = false;
                 else
                 {
@@ -209,7 +237,7 @@ namespace ExViewer.Controls
         {
             base.OnKeyUp(e);
             e.Handled = true;
-            switch(e.Key)
+            switch (e.Key)
             {
             case (Windows.System.VirtualKey)187:
                 ZoomTo(this.sv.MaxZoomFactor);

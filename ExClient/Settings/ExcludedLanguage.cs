@@ -1,7 +1,11 @@
-﻿namespace ExClient.Settings
+﻿using System;
+
+namespace ExClient.Settings
 {
     public enum ExcludedLanguage
     {
+        Default = 0,
+        [Obsolete("Not supported by server")]
         JapaneseOriginal = 0, JapaneseTranslated = 0 + 1024, JapaneseRewrite = 0 + 2048,
         EnglishOriginal = 1, EnglishTranslated = EnglishOriginal + 1024, EnglishRewrite = EnglishOriginal + 2048,
         ChineseOriginal = 10, ChineseTranslated = ChineseOriginal + 1024, ChineseRewrite = ChineseOriginal + 2048,

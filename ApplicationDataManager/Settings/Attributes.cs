@@ -72,7 +72,15 @@ namespace ApplicationDataManager.Settings
         public string TemplateName { get; }
     }
 
-    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class TextTemplateAttribute : ValueRepresentAttribute
+    {
+        public override ValueType TargetType => ValueType.String;
+
+        public TextTemplateAttribute() { }
+
+        public bool MultiLine { get; set; }
+    }
+
     public sealed class Int32RangeAttribute : ValueRepresentAttribute, IValueRange
     {
         private readonly int min, max;
@@ -105,7 +113,6 @@ namespace ApplicationDataManager.Settings
         public override ValueType TargetType => ValueType.Int32;
     }
 
-    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class Int64RangeAttribute : ValueRepresentAttribute, IValueRange
     {
         private readonly long min, max;
@@ -138,7 +145,6 @@ namespace ApplicationDataManager.Settings
         public override ValueType TargetType => ValueType.Int64;
     }
 
-    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class DoubleRangeAttribute : ValueRepresentAttribute, IValueRange
     {
         private readonly double min, max;
@@ -171,7 +177,6 @@ namespace ApplicationDataManager.Settings
         public override ValueType TargetType => ValueType.Double;
     }
 
-    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class SingleRangeAttribute : ValueRepresentAttribute, IValueRange
     {
         private readonly float min, max;
@@ -204,7 +209,6 @@ namespace ApplicationDataManager.Settings
         public override ValueType TargetType => ValueType.Single;
     }
 
-    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class EnumRepresentAttribute : ValueRepresentAttribute
     {
         public static EnumRepresentAttribute Default
@@ -224,7 +228,7 @@ namespace ApplicationDataManager.Settings
 
         public string GetFriendlyNameOf(string name)
         {
-            if(ReferenceEquals(this, Default))
+            if (ReferenceEquals(this, Default))
                 return name;
             return StringLoader.GetString($"{this.ResourcePrefix}/{name}");
         }

@@ -28,7 +28,7 @@ namespace ExViewer.Controls
             this.InitializeComponent();
             foreach (var item in EnumHelper.GetDefinedValues<Namespace>())
             {
-                if (item.Value == Namespace.Unknown)
+                if (item.Value == Namespace.Unknown || item.Value >= Namespace.Misc)
                     continue;
                 this.gv.Items.Add(new Box<Namespace> { Value = item.Value });
             }

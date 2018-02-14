@@ -116,22 +116,13 @@
   <Grid Margin="0,8,0,0"
         SizeChanged="Grid_SizeChanged">
     <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
       <RowDefinition />
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
-    <TextBox x:Name="tbContent"
-             MinHeight="96"
-             x:FieldModifier="protected"
-             AcceptsReturn="True"
-             InputScope="Chat"
-             TextChanged="tbContent_TextChanged"
-             IsReadOnly="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}"
-             TextWrapping="Wrap" />
     <Grid x:Name="gdEditBar"
           XYFocusKeyboardNavigation="Enabled"
-          TabFocusNavigation="Once"
-          Grid.Row="1">
+          TabFocusNavigation="Once">
       <Grid.ColumnDefinitions>
         <ColumnDefinition />
         <ColumnDefinition />
@@ -185,6 +176,15 @@
                     Icon="Link"
                     Tag="url" />
     </Grid>
+    <TextBox x:Name="tbContent"
+             MinHeight="96"
+             x:FieldModifier="protected"
+             AcceptsReturn="True"
+             InputScope="Chat"
+             TextChanged="tbContent_TextChanged"
+             IsReadOnly="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}"
+             TextWrapping="Wrap" 
+             Grid.Row="1"/>
     <Grid Grid.Row="2"
           MinHeight="4">
       <TextBlock x:Name="tbInfo"

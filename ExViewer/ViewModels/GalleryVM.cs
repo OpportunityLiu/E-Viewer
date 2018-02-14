@@ -285,13 +285,14 @@ namespace ExViewer.ViewModels
             image.PropertyChanged -= that.Image_PropertyChanged;
         }, (sender, image) => image != null);
 
-        public Command<SHA1Value> SearchImage { get; } = Command.Create<SHA1Value>(async (sender, sha) =>
+        public Command<GalleryImage> SearchImage { get; } = Command.Create<GalleryImage>(async (sender, image) =>
         {
             var that = (GalleryVM)sender.Tag;
+            var sha = image.ImageHash;
             var search = Client.Current.Search("", Category.All, Enumerable.Repeat(sha, 1), that.gallery.GetDisplayTitle());
             var vm = SearchVM.GetVM(search);
             await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
-        }, (sender, sha) => ((GalleryVM)sender.Tag).gallery != null && sha != default(SHA1Value));
+        }, (sender, image) => ((GalleryVM)sender.Tag).gallery != null && image != null && image.ImageHash != default);
 
         public Command SearchUploader { get; } = Command.Create(async sender =>
         {
