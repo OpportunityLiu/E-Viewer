@@ -124,8 +124,15 @@ namespace ExClient.Galleries.Metadata
                     var loadT = client.GetBufferAsync(this.TorrentUri);
                     var filename = StorageHelper.ToValidFileName(this.Name + ".torrent");
                     var folder = await StorageHelper.CreateTempFolderAsync();
-                    var file = await folder.SaveFileAsync(filename, CreationCollisionOption.ReplaceExisting, await loadT);
-                    return file;
+                    var buf = await loadT;
+                    try
+                    {
+                        return await folder.SaveFileAsync(filename, CreationCollisionOption.ReplaceExisting, buf);
+                    }
+                    catch (Exception)
+                    {
+                        return await folder.SaveFileAsync("gallery.torrent", CreationCollisionOption.ReplaceExisting, buf);
+                    }
                 }
             });
         }

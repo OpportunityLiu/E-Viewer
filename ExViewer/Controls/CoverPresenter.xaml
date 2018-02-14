@@ -18,14 +18,15 @@
                       TintColor="Transparent"
                       TintOpacity="0" />
     <prers3:SolidColorBrush x:Key="ImageBackgroundBrushFallback"
-                     Color="{ThemeResource SystemBaseMediumColor}"/>
+                            Color="{ThemeResource SystemBaseMediumColor}" />
   </UserControl.Resources>
   <Grid>
-    <Image x:Name="BackgroundImage"
-           x:DeferLoadStrategy="Lazy"
-           Source="{x:Bind Source, Mode=OneWay}"
-           Stretch="Fill" />
-    <Grid rs3:Background="{StaticResource ImageBackgroundBrush}" prers3:Background="{StaticResource ImageBackgroundBrushFallback}">
+    <rs3:Image x:Name="BackgroundImage"
+               x:DeferLoadStrategy="Lazy"
+               Source="{x:Bind Source, Mode=OneWay}"
+               Stretch="Fill" />
+    <Grid rs3:Background="{StaticResource ImageBackgroundBrush}"
+          prers3:Background="{StaticResource ImageBackgroundBrushFallback}">
       <Image x:Name="ForegroundImage"
              Source="{x:Bind Source, Mode=OneWay}" />
     </Grid>
