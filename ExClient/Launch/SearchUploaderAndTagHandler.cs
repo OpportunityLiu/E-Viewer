@@ -15,12 +15,12 @@ namespace ExClient.Launch
                 return false;
             switch (data.Path0)
             {
-                case "tag":
-                    return Tag.TryParse(data.Paths[1].Unescape2().Trim().TrimEnd(trim), out _);
-                case "uploader":
-                    return true;
-                default:
-                    return false;
+            case "tag":
+                return Tag.TryParse(data.Paths[1].Unescape2().Trim().TrimEnd(trim), out _);
+            case "uploader":
+                return true;
+            default:
+                return false;
             }
         }
 
@@ -31,12 +31,12 @@ namespace ExClient.Launch
             var advanced = GetAdvancedSearchOptions(data);
             switch (data.Path0)
             {
-                case "tag":
-                    return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search(category, advanced)));
-                case "uploader":
-                    return AsyncWrapper.CreateCompleted<LaunchResult>(new SearchLaunchResult(Client.Current.Search(v, null, category, advanced)));
+            case "tag":
+                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search(category, advanced)));
+            case "uploader":
+                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(Client.Current.Search(v, null, category, advanced)));
             }
-            return AsyncWrapper.CreateError<LaunchResult>(new NotSupportedException("Unsupported uri."));
+            return AsyncOperation<LaunchResult>.CreateFault(new NotSupportedException("Unsupported uri."));
         }
     }
 }

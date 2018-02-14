@@ -186,8 +186,6 @@ namespace ExViewer.Views
 
         private async void afterActions()
         {
-            await ExClient.Client.Current.Settings.FetchAsync();
-            await ExClient.Client.Current.Settings.SendAsync();
             try
             {
                 var ver = await VersionChecker.CheckAsync();
@@ -250,28 +248,28 @@ namespace ExViewer.Views
             var result = await UserConsentVerifier.RequestVerificationAsync(Strings.Resources.Verify.Dialog.Content);
             switch (result)
             {
-            case UserConsentVerificationResult.Verified:
-                succeed = true;
-                break;
-            case UserConsentVerificationResult.DeviceNotPresent:
-            case UserConsentVerificationResult.NotConfiguredForUser:
-                info = Strings.Resources.Verify.NotConfigured;
-                break;
-            case UserConsentVerificationResult.DisabledByPolicy:
-                info = Strings.Resources.Verify.Disabled;
-                break;
-            case UserConsentVerificationResult.DeviceBusy:
-                info = Strings.Resources.Verify.DeviceBusy;
-                break;
-            case UserConsentVerificationResult.RetriesExhausted:
-                info = Strings.Resources.Verify.RetriesExhausted;
-                break;
-            case UserConsentVerificationResult.Canceled:
-                info = Strings.Resources.Verify.Canceled;
-                break;
-            default:
-                info = Strings.Resources.Verify.OtherFailure;
-                break;
+                case UserConsentVerificationResult.Verified:
+                    succeed = true;
+                    break;
+                case UserConsentVerificationResult.DeviceNotPresent:
+                case UserConsentVerificationResult.NotConfiguredForUser:
+                    info = Strings.Resources.Verify.NotConfigured;
+                    break;
+                case UserConsentVerificationResult.DisabledByPolicy:
+                    info = Strings.Resources.Verify.Disabled;
+                    break;
+                case UserConsentVerificationResult.DeviceBusy:
+                    info = Strings.Resources.Verify.DeviceBusy;
+                    break;
+                case UserConsentVerificationResult.RetriesExhausted:
+                    info = Strings.Resources.Verify.RetriesExhausted;
+                    break;
+                case UserConsentVerificationResult.Canceled:
+                    info = Strings.Resources.Verify.Canceled;
+                    break;
+                default:
+                    info = Strings.Resources.Verify.OtherFailure;
+                    break;
             }
             if (!succeed)
             {

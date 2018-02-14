@@ -265,17 +265,9 @@
       <StackPanel>
         <Grid x:Name="gdInfo"
               Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+              Background="{ThemeResource CommandBarBackground}"
               MinHeight="100"
               MaxHeight="300">
-          <Grid.Background>
-            <LinearGradientBrush StartPoint="0.5,0"
-                                 EndPoint="0.5,1">
-              <GradientStop Offset="0"
-                            Color="{ThemeResource SystemAltHighColor}" />
-              <GradientStop Offset="1"
-                            Color="{ThemeResource SystemChromeMediumColor}" />
-            </LinearGradientBrush>
-          </Grid.Background>
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
@@ -315,7 +307,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
           </Grid.RowDefinitions>
-          <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+          <Border Background="{ThemeResource CommandBarBackground}"
                   Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}">
             <Button x:Name="btn_Scroll"
                     Width="48"
@@ -341,7 +333,7 @@
                  HorizontalContentAlignment="Stretch"
                  VerticalContentAlignment="Stretch"
                  BorderThickness="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                 BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                 BorderBrush="{ThemeResource CommandBarBackground}"
                  Loaded="pv_Loaded"
                  SelectionChanged="pv_SelectionChanged">
             <PivotItem>

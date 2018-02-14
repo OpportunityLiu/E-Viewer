@@ -185,7 +185,7 @@ namespace ExClient.Tagging
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
             var req = new TagRequest(this, tags, command);
             if (string.IsNullOrWhiteSpace(req.Tags))
-                return AsyncWrapper.CreateCompleted();
+                return AsyncAction.CreateCompleted();
             return voteAsync(req);
         }
 

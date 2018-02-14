@@ -14,7 +14,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             GalleryInfo.TryParseGalleryPopup(data, out var info, out var type);
-            return AsyncWrapper.CreateCompleted((LaunchResult)new GalleryLaunchResult(info, -1, type));
+            return AsyncOperation<LaunchResult>.CreateCompleted(new GalleryLaunchResult(info, -1, type));
         }
     }
 }

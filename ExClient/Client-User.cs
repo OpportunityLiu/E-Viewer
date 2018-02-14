@@ -132,6 +132,7 @@ namespace ExClient
                 try
                 {
                     await this.refreshHathPerksCore();
+                    await Settings.FetchAsync();
                     var ignore = this.UserStatus?.RefreshAsync();
                 }
                 catch (Exception)

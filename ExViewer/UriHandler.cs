@@ -73,42 +73,42 @@ namespace ExViewer
                     var r = await UriLauncher.HandleAsync(uri);
                     switch (r)
                     {
-                        case GalleryLaunchResult g:
-                            var page = RootControl.RootController.Frame.Content;
-                            if (!(page is GalleryPage gPage && gPage.VM.Gallery.ID == g.GalleryInfo.ID))
-                            {
-                                await GalleryVM.GetVMAsync(g.GalleryInfo);
-                                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.GalleryInfo.ID);
-                                await Task.Delay(500);
-                            }
-                            switch (g.Status)
-                            {
-                                case GalleryLaunchStatus.Image:
-                                    RootControl.RootController.Frame.Navigate(typeof(ImagePage), g.GalleryInfo.ID);
-                                    await Task.Delay(500);
-                                    (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
-                                    break;
-                                case GalleryLaunchStatus.Torrent:
-                                    (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
-                                    break;
-                                default:
-                                    (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
-                                    break;
-                            }
+                    case GalleryLaunchResult g:
+                        var page = RootControl.RootController.Frame.Content;
+                        if (!(page is GalleryPage gPage && gPage.VM.Gallery.ID == g.GalleryInfo.ID))
+                        {
+                            await GalleryVM.GetVMAsync(g.GalleryInfo);
+                            await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.GalleryInfo.ID);
+                            await Task.Delay(500);
+                        }
+                        switch (g.Status)
+                        {
+                        case GalleryLaunchStatus.Image:
+                            await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), g.GalleryInfo.ID);
+                            await Task.Delay(500);
+                            (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
+                            break;
+                        case GalleryLaunchStatus.Torrent:
+                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
+                            break;
+                        default:
+                            (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
+                            break;
+                        }
+                        return;
+                    case SearchLaunchResult sr:
+                        switch (sr.Data)
+                        {
+                        case CategorySearchResult ksr:
+                            var vm = SearchVM.GetVM(ksr);
+                            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
                             return;
-                        case SearchLaunchResult sr:
-                            switch (sr.Data)
-                            {
-                                case CategorySearchResult ksr:
-                                    var vm = SearchVM.GetVM(ksr);
-                                    RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
-                                    return;
-                                case FavoritesSearchResult fsr:
-                                    var fvm = FavoritesVM.GetVM(fsr);
-                                    RootControl.RootController.Frame.Navigate(typeof(FavoritesPage), fvm.SearchQuery.ToString());
-                                    return;
-                            }
-                            throw new InvalidOperationException();
+                        case FavoritesSearchResult fsr:
+                            var fvm = FavoritesVM.GetVM(fsr);
+                            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), fvm.SearchQuery.ToString());
+                            return;
+                        }
+                        throw new InvalidOperationException();
                     }
                 }
                 catch (Exception e)

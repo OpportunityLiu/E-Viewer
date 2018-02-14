@@ -1,12 +1,13 @@
 ﻿using ExClient.Internal;
 using ExClient.Settings;
 using ExClient.Status;
+using Opportunity.MvvmUniverse;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 
 namespace ExClient
 {
-    public partial class Client
+    public partial class Client : ObservableObject
     {
         public static Client Current { get; } = new Client();
 
@@ -27,7 +28,18 @@ namespace ExClient
 
         internal UriProvider Uris => this.Host == HostType.Exhentai ? UriProvider.Ex : UriProvider.Eh;
 
-        public HostType Host { get; set; } = HostType.Ehentai;
+        private HostType host;
+        public HostType Host
+        {
+            get => this.host;
+            set
+            {
+                if (Set(ref this.host, value))
+                {
+                    Settings.FetchAsync().Completed = (s, e) => s.Close();
+                }
+            }
+        }
 
         public SettingCollection Settings { get; }
 

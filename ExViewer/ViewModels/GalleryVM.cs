@@ -120,7 +120,7 @@ namespace ExViewer.ViewModels
             this.Gallery = gallery;
         }
 
-        public Command<RevisionCollection> GoToLatestRevision { get; } = Command.Create<RevisionCollection>((sender, c) =>
+        public Command<RevisionCollection> GoToLatestRevision { get; } = Command.Create<RevisionCollection>(async (sender, c) =>
         {
             var info = c.DescendantsInfo.Last().Gallery;
             var load = GetVMAsync(info);
@@ -128,10 +128,10 @@ namespace ExViewer.ViewModels
                 RootControl.RootController.TrackAsyncAction(load, async (s, e) =>
                 {
                     await DispatcherHelper.YieldIdle();
-                    RootControl.RootController.Frame.Navigate(typeof(GalleryPage), info.ID);
+                    await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
                 });
             else
-                RootControl.RootController.Frame.Navigate(typeof(GalleryPage), info.ID);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
         }, (sender, c) => c != null && c.DescendantsInfo.Count != 0);
 
         public Command<GalleryImage> Share { get; } = Command.Create<GalleryImage>(async (sender, image) =>
@@ -244,11 +244,11 @@ namespace ExViewer.ViewModels
             return true;
         });
 
-        public Command<GalleryImage> OpenImage { get; } = Command.Create<GalleryImage>((sender, image) =>
+        public Command<GalleryImage> OpenImage { get; } = Command.Create<GalleryImage>(async (sender, image) =>
         {
             var that = (GalleryVM)sender.Tag;
             that.CurrentIndex = image.PageID - 1;
-            RootControl.RootController.Frame.Navigate(typeof(ImagePage), that.gallery.ID);
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), that.gallery.ID);
         }, (sender, image) => image != null);
 
         public Command<GalleryImage> LoadOriginal { get; } = Command.Create<GalleryImage>(async (sender, image) =>
@@ -285,20 +285,20 @@ namespace ExViewer.ViewModels
             image.PropertyChanged -= that.Image_PropertyChanged;
         }, (sender, image) => image != null);
 
-        public Command<SHA1Value> SearchImage { get; } = Command.Create<SHA1Value>((sender, sha) =>
+        public Command<SHA1Value> SearchImage { get; } = Command.Create<SHA1Value>(async (sender, sha) =>
         {
             var that = (GalleryVM)sender.Tag;
             var search = Client.Current.Search("", Category.All, Enumerable.Repeat(sha, 1), that.gallery.GetDisplayTitle());
             var vm = SearchVM.GetVM(search);
-            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
         }, (sender, sha) => ((GalleryVM)sender.Tag).gallery != null && sha != default(SHA1Value));
 
-        public Command SearchUploader { get; } = Command.Create(sender =>
+        public Command SearchUploader { get; } = Command.Create(async sender =>
         {
             var that = (GalleryVM)sender.Tag;
             var search = Client.Current.Search(that.gallery.Uploader, null, SettingCollection.Current.DefaultSearchCategory);
             var vm = SearchVM.GetVM(search);
-            RootControl.RootController.Frame.Navigate(typeof(SearchPage), vm.SearchQuery.ToString());
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
         }, sender => ((GalleryVM)sender.Tag).gallery != null);
 
         private Gallery gallery;

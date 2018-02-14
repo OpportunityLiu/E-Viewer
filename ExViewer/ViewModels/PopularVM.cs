@@ -21,14 +21,14 @@ namespace ExViewer.ViewModels
             this.Open.Tag = this;
         }
 
-        public PopularCollection Galleries { get; } = new PopularCollection();
+        public PopularCollection Galleries => Client.Current.Popular;
 
         public Command Refresh { get; } = Command.Create(sender => ((PopularVM)sender.Tag).Galleries.Clear());
 
-        public Command<Gallery> Open { get; } = Command.Create<Gallery>((sender, g) =>
+        public Command<Gallery> Open { get; } = Command.Create<Gallery>(async (sender, g) =>
         {
             GalleryVM.GetVM(g);
-            RootControl.RootController.Frame.Navigate(typeof(GalleryPage), g.ID);
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
         }, (sender, g) => g != null);
     }
 }

@@ -35,10 +35,10 @@ namespace EhWikiClient
             {
                 var record = db.Table.AsNoTracking().SingleOrDefault(r => r.Title == title);
                 if (record != null && record.IsValid)
-                    return AsyncWrapper.CreateCompleted(record);
+                    return AsyncOperation<Record>.CreateCompleted(record);
                 if (record == null || record.LastUpdate.AddDays(7) < DateTimeOffset.Now)
                     return FetchAsync(title);
-                return AsyncWrapper.CreateCompleted(default(Record));
+                return AsyncOperation<Record>.CreateCompleted(default);
             }
         }
 

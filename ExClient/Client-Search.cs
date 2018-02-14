@@ -9,6 +9,8 @@ namespace ExClient
 {
     public partial class Client
     {
+        public PopularCollection Popular { get; } = new PopularCollection();
+
         public AdvancedSearchResult Search(string uploader, string keyword, Category category, AdvancedSearchOptions advancedSearch)
         {
             if (string.IsNullOrWhiteSpace(uploader))

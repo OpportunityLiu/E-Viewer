@@ -24,6 +24,8 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
 
+            this.manager.Handlers.Add(new FrameWrapper(this.fm_inner));
+
             this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
                 [this.svt_Saved] = typeof(SavedPage),
@@ -97,7 +99,7 @@ namespace ExViewer.Views
 
         private readonly Navigator manager = Navigator.GetOrCreateForCurrentView();
 
-        private void Control_Loading(FrameworkElement sender, object args)
+        private async void Control_Loading(FrameworkElement sender, object args)
         {
             if (!this.layoutLoaded)
             {
@@ -105,7 +107,7 @@ namespace ExViewer.Views
             }
             else
             {
-                this.fm_inner.Navigate(typeof(SearchPage));
+                await this.manager.NavigateAsync(typeof(SearchPage));
             }
         }
 
@@ -119,7 +121,6 @@ namespace ExViewer.Views
             }
             else
             {
-                this.manager.Handlers.Add(new FrameWrapper(this.fm_inner));
                 RootController.UpdateUserInfo(false);
                 RootController.HandleUriLaunch();
                 this.tbtPane.Focus(FocusState.Pointer);
@@ -151,19 +152,19 @@ namespace ExViewer.Views
             }
         }
 
-        private void svt_Click(object sender, RoutedEventArgs e)
+        private async void svt_Click(object sender, RoutedEventArgs e)
         {
             var s = (Controls.SplitViewTab)sender;
             if (s.IsChecked)
                 return;
-            this.fm_inner.Navigate(this.tabs[s]);
+            await this.manager.NavigateAsync(this.tabs[s]);
             RootController.SwitchSplitView(false);
         }
 
-        private void btn_UserInfo_Click(object sender, RoutedEventArgs e)
+        private async void btn_UserInfo_Click(object sender, RoutedEventArgs e)
         {
             if (!(this.fm_inner.Content is InfoPage))
-                this.fm_inner.Navigate(typeof(InfoPage));
+                await this.manager.NavigateAsync(typeof(InfoPage));
             RootController.SwitchSplitView(false);
         }
 
@@ -190,12 +191,12 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.OriginalKey)
             {
-                case Windows.System.VirtualKey.GamepadView:
-                    RootController.SwitchSplitView(null);
-                    break;
-                default:
-                    e.Handled = false;
-                    break;
+            case Windows.System.VirtualKey.GamepadView:
+                RootController.SwitchSplitView(null);
+                break;
+            default:
+                e.Handled = false;
+                break;
             }
         }
 #if DEBUG_BOUNDS

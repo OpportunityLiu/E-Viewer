@@ -55,14 +55,14 @@ namespace ExClient.Galleries.Metadata
         public IAsyncOperation<Gallery> FetchParentAsync()
         {
             if (!(this.ParentInfo is GalleryInfo i))
-                return AsyncWrapper.CreateCompleted<Gallery>(null);
+                return AsyncOperation<Gallery>.CreateCompleted(null);
             return i.FetchGalleryAsync();
         }
 
         public IAsyncOperation<Gallery> FetchLatestRevisionAsync()
         {
             if (this.DescendantsInfo.Count == 0)
-                return AsyncWrapper.CreateCompleted(this.Owner);
+                return AsyncOperation<Gallery>.CreateCompleted(this.Owner);
             return this.DescendantsInfo.Last().Gallery.FetchGalleryAsync();
         }
     }
