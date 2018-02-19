@@ -5,7 +5,6 @@ A Client for e-hentai.org on Windows 10.
 ## Releases / 发布
 |[Latest Release / 最新版本](https://github.com/OpportunityLiu/ExViewer/releases/latest)|[![Github Latest Release](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/latest/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases/latest)|
 |:---|---:|
-|[**Release for Pre-RS3 / 用于 RS3 之前系统的版本**](https://github.com/OpportunityLiu/ExViewer/releases)|[![Github All Releases](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/v2017.9.15/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases/tag/v2017.9.15)|
 |[**All Releases / 所有版本**](https://github.com/OpportunityLiu/ExViewer/releases)|[![Github All Releases](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases)|
 
 Install dependencies [[x86](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/ARM.zip)] and signature (`.cer` file) first.     
