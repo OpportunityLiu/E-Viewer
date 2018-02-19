@@ -103,8 +103,8 @@
   "General": {
     "Cancel": "取消",
     "Exit": "退出",
-    // see https://ctrlq.org/code/19899-google-translate-languages#languages
     // Use local language to replace "English"
+    // see https://ctrlq.org/code/19899-google-translate-languages#languages
     "LanguageCode": "zh-Hans",
     "OK": "确定"
   },
@@ -182,7 +182,7 @@
       "SelectAllAppBarButton/Label": "全部选择"
     },
     "FileSearchDialog": {
-      "BrowseButton/Content": "浏览...",
+      "BrowseButton/Content": "浏览",
       "ContentDialog/PrimaryButtonText": "搜索",
       "ContentDialog/SecondaryButtonText": "取消",
       "ContentDialog/Title": "文件搜索",
@@ -191,7 +191,7 @@
       "DropWrongFileNumber": "只能搜索单个文件",
       "DropWrongFileType": "不支持的文件类型",
       "ExpungedCheckBox/Content": "显示已失效的画廊",
-      "FileNameTextBox/PlaceholderText": "拖放文件到此处...",
+      "FileNameTextBox/PlaceholderText": "拖放文件到此处",
       "FileOpenPicker/CommitButtonText": "选择",
       "SimilarCheckBox/Content": "搜索相似内容"
     },
@@ -199,9 +199,9 @@
       "AppBarButtonAddComment/Label": "发表新评论",
       "AppBarButtonLatestRevision/Label": "转到最新版本",
       "CommentsEmptyTextBlock/Text": "没有评论",
-      "CommentsLoadingTextBlock/Text": "正在加载评论...",
+      "CommentsLoadingTextBlock/Text": "正在加载评论…",
       "FavoritesAppBarButton/Text": "添加至收藏",
-      "ImagesLoadingMoreTextBlock/Text": "正在加载更多...",
+      "ImagesLoadingMoreTextBlock/Text": "正在加载更多…",
       "PivotHeaderCommentsTextBlock/Text": "评论",
       "PivotHeaderImagesTextBlock/Text": "图片",
       "PivotHeaderTorrentsTextBlock/Text": "种子",
@@ -218,7 +218,7 @@
       "TorrentSeedsTextBlock/Text": "做种",
       "TorrentsEmptyTextBlock/Text": "没有可用的种子",
       "TorrentSizeTextBlock/Text": "大小",
-      "TorrentsLoadingTextBlock/Text": "正在加载种子...",
+      "TorrentsLoadingTextBlock/Text": "正在加载种子…",
       "TorrentUploaderTextBlock/Text": "上传者"
     },
     "ImagePage": {
@@ -272,7 +272,7 @@
       "TitleTextBlock/Text": "登录"
     },
     "PopularPage": {
-      "LoadingMoreTextBlock/Text": "正在加载热门画廊...",
+      "LoadingMoreTextBlock/Text": "正在加载热门画廊…",
       "RefreshAppBarButton/Label": "刷新"
     },
     "RootControl": {

@@ -103,8 +103,8 @@
   "General": {
     "Cancel": "Cancel",
     "Exit": "Exit",
-    // see https://ctrlq.org/code/19899-google-translate-languages#languages
     // Use local language to replace "English"
+    // see https://ctrlq.org/code/19899-google-translate-languages#languages
     "LanguageCode": "en",
     "OK": "OK"
   },
@@ -140,7 +140,7 @@
       "DeleteMenuFlyout/Text": "Delete",
       "EmptyTextBlock/Text": "No cached galleries",
       "GalleryDeleted": "Selected gallery has been deleted.",
-      "LoadingMoreTextBlock/Text": "Loading more galleries...",
+      "LoadingMoreTextBlock/Text": "Loading more galleries…",
       "RefreshAppBarButton/Label": "Refresh"
     },
     "ClearCachedDialog": {
@@ -175,14 +175,14 @@
     },
     "FavoritesPage": {
       "ApplyAppBarButton/Label": "Apply",
-      "AutoSuggestBox/PlaceholderText": "Search...",
+      "AutoSuggestBox/PlaceholderText": "Search…",
       "ClearSelectionAppBarButton/Label": "Cancel all",
       "EmptyTextBlock/Text": "No hits found",
-      "LoadingMoreTextBlock/Text": "Loading more galleries...",
+      "LoadingMoreTextBlock/Text": "Loading more galleries…",
       "SelectAllAppBarButton/Label": "Select all"
     },
     "FileSearchDialog": {
-      "BrowseButton/Content": "Browse...",
+      "BrowseButton/Content": "Browse",
       "ContentDialog/PrimaryButtonText": "Search",
       "ContentDialog/SecondaryButtonText": "Cancel",
       "ContentDialog/Title": "FILE SEARCH",
@@ -191,7 +191,7 @@
       "DropWrongFileNumber": "You can only search single file",
       "DropWrongFileType": "Unsupported file type",
       "ExpungedCheckBox/Content": "Show expunged galleries",
-      "FileNameTextBox/PlaceholderText": "Drop a file here...",
+      "FileNameTextBox/PlaceholderText": "Drop a file here",
       "FileOpenPicker/CommitButtonText": "Select",
       "SimilarCheckBox/Content": "Use similarity scan"
     },
@@ -199,9 +199,9 @@
       "AppBarButtonAddComment/Label": "Post new comment",
       "AppBarButtonLatestRevision/Label": "Go to latest revision",
       "CommentsEmptyTextBlock/Text": "No comments",
-      "CommentsLoadingTextBlock/Text": "Loading comments...",
+      "CommentsLoadingTextBlock/Text": "Loading comments…",
       "FavoritesAppBarButton/Text": "Add to favorite",
-      "ImagesLoadingMoreTextBlock/Text": "Loading more items...",
+      "ImagesLoadingMoreTextBlock/Text": "Loading more items…",
       "PivotHeaderCommentsTextBlock/Text": "Comments",
       "PivotHeaderImagesTextBlock/Text": "Images",
       "PivotHeaderTorrentsTextBlock/Text": "Torrents",
@@ -210,7 +210,7 @@
       "ShareAppBarButton/Label": "Share",
       "TorrentDownloadButton/ToolTipService/ToolTip": "Download",
       "TorrentDownloaded": "Download finished, torrent file saved to {0}",
-      "TorrentDownloading": "Start downloading...",
+      "TorrentDownloading": "Start downloading…",
       "TorrentDownloadsTextBlock/Text": "Downloads",
       "TorrentExpungedTextBlock/Text": "Expunged",
       "TorrentPeersTextBlock/Text": "Peers",
@@ -218,7 +218,7 @@
       "TorrentSeedsTextBlock/Text": "Seeds",
       "TorrentsEmptyTextBlock/Text": "No available torrents",
       "TorrentSizeTextBlock/Text": "Size",
-      "TorrentsLoadingTextBlock/Text": "Loading torrents...",
+      "TorrentsLoadingTextBlock/Text": "Loading torrents…",
       "TorrentUploaderTextBlock/Text": "Uploader"
     },
     "ImagePage": {
@@ -272,13 +272,13 @@
       "TitleTextBlock/Text": "LOG ON"
     },
     "PopularPage": {
-      "LoadingMoreTextBlock/Text": "Loading popular galleries...",
+      "LoadingMoreTextBlock/Text": "Loading popular galleries…",
       "RefreshAppBarButton/Label": "Refresh"
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "Cached galleries",
       "CachedSplitViewTab/ToolTipService/ToolTip": "Cached galleries",
-      "DisableInfoTextBlock/Text": "Operation in progress, plaese wait...",
+      "DisableInfoTextBlock/Text": "Operation in progress, plaese wait…",
       "FavoritesSplitViewTab/Content": "Favorites",
       "FavoritesSplitViewTab/ToolTipService/ToolTip": "Favorites",
       "PopularSplitViewTab/Content": "Popular galleries",
@@ -295,13 +295,13 @@
       "DeleteAllAppBarButton/Label": "Delete all",
       "DeleteMenuFlyout/Text": "Delete",
       "EmptyTextBlock/Text": "No saved galleries",
-      "LoadingMoreTextBlock/Text": "Loading more galleries...",
+      "LoadingMoreTextBlock/Text": "Loading more galleries…",
       "RefreshAppBarButton/Label": "Refresh"
     },
     "SearchPage": {
       "AdvancedToggleButton/OffContent": "Show advanced options",
       "AdvancedToggleButton/OnContent": "Hide advanced options",
-      "AutoSuggestBox/PlaceholderText": "Search...",
+      "AutoSuggestBox/PlaceholderText": "Search…",
       "DescriptionCheckBox/Content": "Search gallery description",
       "DisableDefaultLanguageFiltersCheckBox/Content": "Disable default language filters",
       "DisableDefaultUploaderFiltersCheckBox/Content": "Disable default uploader filters",
@@ -309,7 +309,7 @@
       "EmptyTextBlock/Text": "No hits found",
       "FileSearchButton/Content": "File search",
       "FileSearchNameFormatString": "Search for file \"{0}\" with following options: ",
-      "LoadingMoreTextBlock/Text": "Loading more galleries...",
+      "LoadingMoreTextBlock/Text": "Loading more galleries…",
       "LowPowerTagsCheckBox/Content": "Search low-power tags",
       "MinRatingCheckBox/Content": "Minimum rating:",
       "NamesCheckBox/Content": "Search gallery name",
