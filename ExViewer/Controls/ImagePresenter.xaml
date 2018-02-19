@@ -10,31 +10,32 @@
              Loaded="UserControl_Loaded"
              d:DesignHeight="300"
              d:DesignWidth="400">
-    <ScrollViewer x:Name="sv"
-                  IsTabStop="True"
-                  FocusVisualMargin="{x:Bind FocusVisualMargin, Mode=OneWay}"
-                  FocusVisualPrimaryBrush="{x:Bind FocusVisualPrimaryBrush, Mode=OneWay}"
-                  FocusVisualPrimaryThickness="{x:Bind FocusVisualPrimaryThickness, Mode=OneWay}"
-                  FocusVisualSecondaryBrush="{x:Bind FocusVisualSecondaryBrush, Mode=OneWay}"
-                  FocusVisualSecondaryThickness="{x:Bind FocusVisualSecondaryThickness, Mode=OneWay}"
-                  ZoomMode="Enabled"
-                  Template="{StaticResource ScrollViewerScrollBarlessTemplate}"
-                  HorizontalScrollBarVisibility="Auto"
-                  VerticalScrollBarVisibility="Auto"
-                  MinZoomFactor="1"
-                  MaxZoomFactor="8"
-                  ManipulationDelta="sv_ManipulationDelta"
-                  PointerEntered="sv_PointerEntered"
-                  PointerMoved="sv_PointerMoved"
-                  PointerPressed="sv_PointerPressed"
-                  ManipulationMode="All">
-        <Grid HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              x:Name="gd_ContentRoot">
-            <Image x:Name="img_Thumb" />
-            <Image x:Name="img_Content"
-                   Source="{x:Bind Image.ImageFile, Mode=OneWay, Converter={StaticResource FileConverter}}"
-                   Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
-        </Grid>
-    </ScrollViewer>
+  <ScrollViewer x:Name="sv"
+                IsTabStop="True"
+                FocusVisualMargin="{x:Bind FocusVisualMargin, Mode=OneWay}"
+                FocusVisualPrimaryBrush="{x:Bind FocusVisualPrimaryBrush, Mode=OneWay}"
+                FocusVisualPrimaryThickness="{x:Bind FocusVisualPrimaryThickness, Mode=OneWay}"
+                FocusVisualSecondaryBrush="{x:Bind FocusVisualSecondaryBrush, Mode=OneWay}"
+                FocusVisualSecondaryThickness="{x:Bind FocusVisualSecondaryThickness, Mode=OneWay}"
+                ZoomMode="Enabled"
+                Template="{StaticResource ScrollViewerScrollBarlessTemplate}"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto"
+                MinZoomFactor="1"
+                MaxZoomFactor="8"
+                ManipulationDelta="sv_ManipulationDelta"
+                PointerEntered="sv_PointerEntered"
+                PointerMoved="sv_PointerMoved"
+                PointerPressed="sv_PointerPressed"
+                ManipulationMode="All">
+    <Grid HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          x:Name="gd_ContentRoot">
+      <Image x:Name="img_Thumb"
+             Source="{x:Bind Image.Thumb, Mode=OneWay}" />
+      <Image x:Name="img_Content"
+             Source="{x:Bind Image.ImageFile, Mode=OneWay, Converter={StaticResource FileConverter}}"
+             Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
+    </Grid>
+  </ScrollViewer>
 </UserControl>

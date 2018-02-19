@@ -52,7 +52,7 @@ namespace ExClient.Settings
 
         internal Dictionary<string, string> Settings { get; } = new Dictionary<string, string>();
 
-        private void storeCache()
+        internal void StoreCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
             storage.Values["SettingsCache"] = JsonConvert.SerializeObject(Settings);
@@ -131,7 +131,7 @@ namespace ExClient.Settings
             {
                 item.DataChanged(this.Settings);
             }
-            storeCache();
+            StoreCache();
             OnPropertyChanged("");
         }
 

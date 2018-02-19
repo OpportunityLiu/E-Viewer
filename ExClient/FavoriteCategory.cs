@@ -67,7 +67,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var response = await post(gallery.ID, gallery.Token, note);
+                var response = await this.post(gallery.ID, gallery.Token, note);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var match = favNoteMatcher.Match(responseContent, 1300);
                 if (match.Success)
@@ -78,7 +78,11 @@ namespace ExClient
                 {
                     var match2 = favNameMatcher.Match(responseContent, 1300);
                     if (match2.Success)
-                        Client.Current.Settings.FavoriteCategoryNames[this.Index] = HtmlEntity.DeEntitize(match2.Groups[1].Value);
+                    {
+                        var settings = Client.Current.Settings;
+                        settings.FavoriteCategoryNames[this.Index] = HtmlEntity.DeEntitize(match2.Groups[1].Value);
+                        settings.StoreCache();
+                    }
                 }
                 gallery.FavoriteCategory = this;
             });

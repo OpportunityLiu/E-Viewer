@@ -33,16 +33,16 @@ namespace ExViewer
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
         }
 
-        private void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
+        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = e.Exception;
             switch (ex)
             {
-                case OperationCanceledException _:
-                    break;
-                default:
-                    RootControl.RootController.SendToast(ex, null);
-                    break;
+            case OperationCanceledException _:
+                break;
+            default:
+                RootControl.RootController.SendToast(ex, null);
+                break;
             }
             e.Handled = true;
         }

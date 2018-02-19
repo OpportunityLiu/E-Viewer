@@ -60,7 +60,7 @@ namespace ExClient.Status
         {
             this.ModerationPower = deEntitizeAndParse(modPowerDiv.Descendants("div").Last());
             var values = modPowerDiv.Descendants("td")
-                .Where(n => n.GetAttributeValue("style", "") == "font-weight:bold")
+                .Where(n => n.GetAttribute("style", "").Contains("font-weight:bold"))
                 .Select(n => n.GetInnerText())
                 .Where(s => !string.IsNullOrWhiteSpace(s) && s[0] != '=')
                 .Select(double.Parse)
@@ -92,8 +92,8 @@ namespace ExClient.Status
             if (doc == null)
                 return false;
             var contentDivs = doc.DocumentNode
-               .Element("html").Element("body").Element("div").Elements("div")
-               .Where(d => d.GetAttributeValue("class", "") == "homebox").ToList();
+               .Element("html").Element("body").Element("div")
+               .Elements("div", "homebox").ToList();
             if (contentDivs.Count != 5)
                 return false;
 

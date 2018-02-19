@@ -17,17 +17,19 @@ namespace ExClient
         {
             if (favoriteIconNode == null)
                 return FavoriteCategory.Removed;
-            var favName = favoriteIconNode.GetAttributeValue("title", null);
+            var favName = favoriteIconNode.GetAttribute("title", "");
             if (favName == null)
                 return FavoriteCategory.Removed;
-            var favStyle = favoriteIconNode.GetAttributeValue("style", "");
+            var favStyle = favoriteIconNode.GetAttribute("style", "");
             var mat = favStyleMatcher.Match(favStyle);
             if (!mat.Success)
                 return FavoriteCategory.Removed;
             var favImgOffset = int.Parse(mat.Groups[1].Value);
             var favIdx = favImgOffset / 19;
             var fav = this[favIdx];
-            Client.Current.Settings.FavoriteCategoryNames[favIdx] = favName;
+            var settings = Client.Current.Settings;
+            settings.FavoriteCategoryNames[favIdx] = favName;
+            settings.StoreCache();
             return fav;
         }
 
