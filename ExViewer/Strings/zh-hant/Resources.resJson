@@ -103,8 +103,8 @@
   "General": {
     "Cancel": "取消",
     "Exit": "退出",
-    // see https://ctrlq.org/code/19899-google-translate-languages#languages
     // Use local language to replace "English"
+    // see https://ctrlq.org/code/19899-google-translate-languages#languages
     "LanguageCode": "zh-Hant",
     "OK": "確定"
   },
@@ -182,7 +182,7 @@
       "SelectAllAppBarButton/Label": "全部選擇"
     },
     "FileSearchDialog": {
-      "BrowseButton/Content": "瀏覽...",
+      "BrowseButton/Content": "瀏覽",
       "ContentDialog/PrimaryButtonText": "搜尋",
       "ContentDialog/SecondaryButtonText": "取消",
       "ContentDialog/Title": "檔案搜尋",
@@ -191,7 +191,7 @@
       "DropWrongFileNumber": "只能搜尋單個檔案",
       "DropWrongFileType": "不支援的檔案型別",
       "ExpungedCheckBox/Content": "顯示已失效的畫廊",
-      "FileNameTextBox/PlaceholderText": "拖放檔案到此處...",
+      "FileNameTextBox/PlaceholderText": "拖放檔案到此處",
       "FileOpenPicker/CommitButtonText": "選擇",
       "SimilarCheckBox/Content": "搜尋相似內容"
     },
@@ -199,9 +199,9 @@
       "AppBarButtonAddComment/Label": "發表新評論",
       "AppBarButtonLatestRevision/Label": "轉到最新版本",
       "CommentsEmptyTextBlock/Text": "沒有評論",
-      "CommentsLoadingTextBlock/Text": "正在載入評論...",
+      "CommentsLoadingTextBlock/Text": "正在載入評論…",
       "FavoritesAppBarButton/Text": "新增至收藏",
-      "ImagesLoadingMoreTextBlock/Text": "正在載入更多...",
+      "ImagesLoadingMoreTextBlock/Text": "正在載入更多…",
       "PivotHeaderCommentsTextBlock/Text": "評論",
       "PivotHeaderImagesTextBlock/Text": "圖片",
       "PivotHeaderTorrentsTextBlock/Text": "種子",
@@ -218,7 +218,7 @@
       "TorrentSeedsTextBlock/Text": "做種",
       "TorrentsEmptyTextBlock/Text": "沒有可用的種子",
       "TorrentSizeTextBlock/Text": "大小",
-      "TorrentsLoadingTextBlock/Text": "正在載入種子...",
+      "TorrentsLoadingTextBlock/Text": "正在載入種子…",
       "TorrentUploaderTextBlock/Text": "上傳者"
     },
     "ImagePage": {
@@ -272,7 +272,7 @@
       "TitleTextBlock/Text": "登入"
     },
     "PopularPage": {
-      "LoadingMoreTextBlock/Text": "正在載入熱門畫廊...",
+      "LoadingMoreTextBlock/Text": "正在載入熱門畫廊…",
       "RefreshAppBarButton/Label": "重新整理"
     },
     "RootControl": {
