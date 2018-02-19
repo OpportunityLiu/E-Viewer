@@ -28,7 +28,7 @@ namespace ExClient.Galleries.Commenting
                 var commentNode = commentNodes[i + 1];
                 if (headerNode.Name != "a" || commentNode.Name != "div")
                     break;
-                var id = int.Parse(headerNode.GetAttributeValue("name", "c0").Substring(1));
+                var id = int.Parse(headerNode.GetAttribute("name", "c0").Substring(1));
                 yield return new Comment(owner, id, commentNode);
             }
         }
@@ -45,26 +45,26 @@ namespace ExClient.Galleries.Commenting
             var contentHtml = document.GetElementbyId($"comment_{id}").OuterHtml.Replace("://forums.exhentai.org", "://forums.e-hentai.org");
             this.Content = HtmlNode.CreateNode(contentHtml);
 
-            var editNode = commentNode.Descendants("div").FirstOrDefault(node => node.GetAttributeValue("class", "") == "c8");
+            var editNode = commentNode.Descendants("div").FirstOrDefault(node => node.HasClass("c8"));
             if (editNode != null)
                 this.Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
-            var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.GetAttributeValue("class", "") == "c3");
+            var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.HasClass("c3"));
             this.Author = postedAndAuthorNode.Element("a").GetInnerText();
             this.Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
 
             if (!this.IsUploaderComment)
             {
                 this.score = int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
-                var actionNode = commentNode.Descendants("div").FirstOrDefault(node => node.GetAttributeValue("class", "") == "c4 nosel");
+                var actionNode = commentNode.Descendants("div").FirstOrDefault(node => node.HasClass("c4") && node.HasClass("nosel"));
                 if (actionNode != null)
                 {
                     var vuNode = document.GetElementbyId($"comment_vote_up_{id}");
                     var vdNode = document.GetElementbyId($"comment_vote_down_{id}");
                     if (vuNode != null && vdNode != null)
                     {
-                        if (vuNode.GetAttributeValue("style", "") == "color:blue")
+                        if (vuNode.GetAttribute("style", "").Contains("color:blue"))
                             this.status = CommentStatus.VotedUp;
-                        else if (vdNode.GetAttributeValue("style", "") == "color:blue")
+                        else if (vdNode.GetAttribute("style", "").Contains("color:blue"))
                             this.status = CommentStatus.VotedDown;
                         else
                             this.status = CommentStatus.Votable;

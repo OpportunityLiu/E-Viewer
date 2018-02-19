@@ -104,8 +104,8 @@ namespace ExClient.Galleries.Renaming
                 {
                     var input = rec.Descendants("input").First();
                     // 0 for new; -1 for blank vote
-                    var recId = input.GetAttributeValue("value", -1);
-                    var check = !string.IsNullOrWhiteSpace(input.GetAttributeValue("checked", null));
+                    var recId = input.GetAttribute("value", -1);
+                    var check = input.GetAttribute("checked", false);
                     if (check)
                         currentID = recId;
                     if (recId > 0)

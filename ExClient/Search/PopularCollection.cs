@@ -56,7 +56,7 @@ namespace ExClient.Search
                     return Array.Empty<Gallery>();
                 }
                 var nodes = (from div in pp.Elements("div")
-                             where div.GetAttributeValue("class", "") == "id1"
+                             where div.HasClass("id1")
                              select div).ToList();
                 var ginfo = nodes.Select(n =>
                 {

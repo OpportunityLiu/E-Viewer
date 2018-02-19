@@ -469,8 +469,10 @@ namespace ExClient.Galleries
                     {
                         var favNode = doc.GetElementbyId($"fav{i}");
                         var favNameNode = favNode.ParentNode.ParentNode.Elements("div").Skip(2).First();
-                        Client.Current.Settings.FavoriteCategoryNames[i] = favNameNode.GetInnerText();
-                        if (!favSet && favNode.GetAttributeValue("checked", null) == "checked")
+                        var settings = Client.Current.Settings;
+                        settings.FavoriteCategoryNames[i] = favNameNode.GetInnerText();
+                        settings.StoreCache();
+                        if (!favSet && favNode.GetAttribute("checked", false))
                         {
                             this.FavoriteCategory = Client.Current.Favorites[i];
                             favSet = true;

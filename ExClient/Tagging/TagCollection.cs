@@ -215,41 +215,27 @@ namespace ExClient.Tagging
             var query = tableNode.Descendants("div")
                 .Select(node =>
                 {
-                    var a = node.Element("a");
-                    var divid = node.Id;
-                    var divstyle = node.GetAttributeValue("style", "opacity:1.0");
-                    var divclass = node.GetAttributeValue("class", "gtl");
-                    var aclass = a.GetAttributeValue("class", "");
                     var state = default(TagState);
-                    switch (divclass)
-                    {
-                    case "gt":
-                        state |= TagState.HighPower; break;
-                    case "gtw":
-                        state |= TagState.LowPower; break;
-                    //case "gtl":
-                    default:
-                        state |= TagState.NormalPower; break;
-                    }
-                    switch (divstyle)
-                    {
-                    case "opacity:0.4":
+
+                    if (node.HasClass("gt"))
+                        state |= TagState.HighPower;
+                    else if (node.HasClass("gtw"))
+                        state |= TagState.LowPower;
+                    else // if(node.HasClass("gtl")
+                        state |= TagState.NormalPower;
+
+                    var divstyle = node.GetAttribute("style", "opacity:1.0");
+                    if (divstyle.Contains("opacity:0.4"))
                         state |= TagState.Slave;
-                        break;
-                    //case "opacity:1.0":
-                    default:
-                        break;
-                    }
-                    switch (aclass)
-                    {
-                    case "tup":
+                    //else if(divstyle.Contains("opacity:1.0"))
+
+                    var a = node.Element("a");
+                    if (a.HasClass("tup"))
                         state |= TagState.Upvoted;
-                        break;
-                    case "tdn":
+                    else if (a.HasClass("tdn"))
                         state |= TagState.Downvoted;
-                        break;
-                    }
-                    var tag = divid.Substring(3).Replace('_', ' ');
+
+                    var tag = node.Id.Substring(3).Replace('_', ' ');
                     return (Tag.Parse(tag), state);
                 });
             initOrReset(query);

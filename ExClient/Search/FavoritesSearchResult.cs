@@ -67,7 +67,7 @@ namespace ExClient.Search
             var fpNodes = noselNode.Elements("div").Take(10);
             foreach (var n in fpNodes)
             {
-                var fav = n.Elements("div").First(nn => nn.GetAttributeValue("class", null) == "i");
+                var fav = n.Element("div", "i");
                 Client.Current.Favorites.GetCategory(fav);
             }
         }

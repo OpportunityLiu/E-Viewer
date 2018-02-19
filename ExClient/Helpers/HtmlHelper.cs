@@ -42,11 +42,7 @@ namespace HtmlAgilityPack
             var r = node.GetAttribute(attributeName, default(string));
             if (r == null)
                 return def;
-            if (int.TryParse(r, out var intP))
-                return intP != 0;
-            if (bool.TryParse(r, out var boolP))
-                return boolP;
-            return def;
+            return true;
         }
 
         public static Uri GetAttribute(this HtmlNode node, string attributeName, Uri def = default)

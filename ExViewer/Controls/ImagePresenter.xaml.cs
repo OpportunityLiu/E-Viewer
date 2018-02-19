@@ -67,7 +67,6 @@ namespace ExViewer.Controls
             var sender = (ImagePresenter)dp;
             if (newValue != null)
             {
-                sender.img_Thumb.Source = newValue.Thumb;
                 await newValue.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
             }
             else
