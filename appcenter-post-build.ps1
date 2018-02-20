@@ -1,4 +1,4 @@
-$Files = Get-ChildItem -Path $Env:APPCENTER_OUTPUT_DIRECTORY -Include @('*.cer', '*.appxsym', '*.appxbundle') -Recurse
+$Files = Get-ChildItem -Path $Env:APPCENTER_SOURCE_DIRECTORY -Include @('*.cer', '*.appxsym', '*.appxbundle') -Recurse
 $Version = $Files[0].Name.Split('_')[1]
 $Auth = [convert]::ToBase64String([system.text.encoding]::UTF8.GetBytes("${ENV:GITHUB_USER}:${ENV:GITHUB_PASS}"))
 $DefaultHeader = @{
