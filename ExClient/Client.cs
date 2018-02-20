@@ -34,10 +34,8 @@ namespace ExClient
             get => this.host;
             set
             {
-                if (Set(ref this.host, value))
-                {
-                    Settings.FetchAsync().Completed = (s, e) => s.Close();
-                }
+                Set(ref this.host, value);
+                Settings.FetchAsync().Completed = (s, e) => s.Close();
             }
         }
 

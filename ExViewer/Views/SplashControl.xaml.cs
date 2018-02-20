@@ -209,6 +209,7 @@ namespace ExViewer.Views
                 //Ignore exceptions here.
             }
             if (DateTimeOffset.Now - EhTagClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
+            {
                 try
                 {
                     await EhTagClient.Client.UpdateAsync();
@@ -218,6 +219,7 @@ namespace ExViewer.Views
                 {
                     RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Failed, null);
                 }
+            }
             try
             {
                 if (await EhTagTranslatorClient.Client.NeedUpdateAsync())
@@ -231,6 +233,7 @@ namespace ExViewer.Views
                 RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Failed, null);
             }
             if (DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
+            {
                 try
                 {
                     await BannerProvider.Provider.FetchBanners();
@@ -239,6 +242,7 @@ namespace ExViewer.Views
                 {
                     //Ignore exceptions here.
                 }
+            }
         }
 
         private async Task verify()
