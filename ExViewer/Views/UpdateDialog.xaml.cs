@@ -32,21 +32,24 @@ namespace ExViewer.Views
             await Launcher.LaunchUriAsync(VersionChecker.ReleaseUri);
         }
 
-        public PackageVersion Version
+        internal VersionChecker.VersionInfo Version
         {
-            get => (PackageVersion)GetValue(VersionProperty);
+            get => (VersionChecker.VersionInfo)GetValue(VersionProperty);
             set => SetValue(VersionProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Version.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VersionProperty =
-            DependencyProperty.Register("Version", typeof(PackageVersion), typeof(UpdateDialog), new PropertyMetadata(default(PackageVersion), VersionPropertyChangedCallback));
+            DependencyProperty.Register("Version", typeof(VersionChecker.VersionInfo), typeof(UpdateDialog), new PropertyMetadata(default(VersionChecker.VersionInfo), VersionPropertyChangedCallback));
 
-        private static void VersionPropertyChangedCallback(DependencyObject d,DependencyPropertyChangedEventArgs e)
+        private static void VersionPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (UpdateDialog)d;
-            var newValue = (PackageVersion)e.NewValue;
-            sender.Content = string.Format(Strings.Resources.Views.UpdateDialog.ContentTemplate, newValue.Major, newValue.Minor, newValue.Build, newValue.Revision);
+            var newValue = (VersionChecker.VersionInfo)e.NewValue;
+            var v = newValue.Version;
+            sender.tbTitle.Text = newValue.Title;
+            sender.tbContent.Text = newValue.Content;
+            sender.tbVersion.Text= string.Format(Strings.Resources.Views.UpdateDialog.ContentTemplate, v.Major, v.Minor, v.Build, v.Revision);
         }
     }
 }
