@@ -1,4 +1,6 @@
 # ExViewer
+[![Build status](https://build.appcenter.ms/v0.1/apps/1d95ad63-8ff4-4266-9235-d2079686e6cb/branches/master/badge)](https://appcenter.ms)
+
 A Client for e-hentai.org on Windows 10.    
 用于 WIndows 10 的 E-站 UWP 应用。
 
