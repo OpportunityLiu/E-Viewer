@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -121,9 +122,9 @@ namespace ExViewer.Views
             }
             else
             {
+                this.tbtPane.Focus(FocusState.Pointer);
                 RootController.UpdateUserInfo(false);
                 RootController.HandleUriLaunch();
-                this.tbtPane.Focus(FocusState.Pointer);
             }
         }
 
@@ -157,15 +158,17 @@ namespace ExViewer.Views
             var s = (Controls.SplitViewTab)sender;
             if (s.IsChecked)
                 return;
-            await this.manager.NavigateAsync(this.tabs[s]);
             RootController.SwitchSplitView(false);
+            await this.manager.NavigateAsync(this.tabs[s]);
         }
 
         private async void btn_UserInfo_Click(object sender, RoutedEventArgs e)
         {
             if (!(this.fm_inner.Content is InfoPage))
+            {
+                RootController.SwitchSplitView(false);
                 await this.manager.NavigateAsync(typeof(InfoPage));
-            RootController.SwitchSplitView(false);
+            }
         }
 
         private void tbtPaneBindBack(bool? value)

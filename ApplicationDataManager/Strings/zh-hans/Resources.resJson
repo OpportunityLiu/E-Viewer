@@ -1,20 +1,20 @@
 ﻿{
-    "Boolean": {
-        "YesNo": {
-            "True": "是",
-            "False": "否"
-        },
-        "EnabledDisabled": {
-            "True": "启用",
-            "False": "停用"
-        },
-        "OnOff": {
-            "True": "开",
-            "False": "关"
-        },
-        "TrueFalse": {
-            "True": "真",
-            "False": "假"
-        }
+  "Boolean": {
+    "YesNo": {
+      "True": "是",
+      "False": "否"
+    },
+    "EnabledDisabled": {
+      "True": "启用",
+      "False": "停用"
+    },
+    "OnOff": {
+      "True": "开",
+      "False": "关"
+    },
+    "TrueFalse": {
+      "True": "真",
+      "False": "假"
     }
+  }
 }
