@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F164C16F-5F47-4A2A-896C-31CAB8C7D74D}"
 	ProjectSection(SolutionItems) = preProject
 		appcenter-post-build.ps1 = appcenter-post-build.ps1
+		appcenter-post-clone.ps1 = appcenter-post-clone.ps1
 		appcenter-pre-build.ps1 = appcenter-pre-build.ps1
 		CleanUp.ps1 = CleanUp.ps1
 	EndProjectSection
