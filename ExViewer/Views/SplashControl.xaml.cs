@@ -189,7 +189,7 @@ namespace ExViewer.Views
             try
             {
                 var ver = await VersionChecker.CheckAsync();
-                if (ver is Windows.ApplicationModel.PackageVersion v)
+                if (ver is VersionChecker.VersionInfo v)
                 {
                     var dialog = new UpdateDialog { Version = v };
                     await dialog.ShowAsync();

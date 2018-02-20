@@ -10,4 +10,14 @@
                      Title="NEW VERSION"
                      PrimaryButtonText="Update now"
                      SecondaryButtonText="Remind me next time"
-                     PrimaryButtonClick="ContentDialog_PrimaryButtonClick" />
+                     PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
+  <StackPanel>
+    <TextBlock x:Name="tbVersion"
+               Style="{ThemeResource CaptionTextBlockStyle}" />
+    <TextBlock x:Name="tbTitle"
+               Style="{ThemeResource  SubtitleTextBlockStyle}"
+               Padding="0,8" />
+    <TextBlock x:Name="tbContent"
+               Style="{ThemeResource BodyTextBlockStyle}" />
+  </StackPanel>
+</con:MyContentDialog>
