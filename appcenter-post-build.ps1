@@ -1,5 +1,5 @@
 $Path = Join-Path $Env:APPCENTER_SOURCE_DIRECTORY "\ExViewer\AppPackages"
-$Files = Get-ChildItem -Path $Path -Include @('*.cer', '*.appxsym', '*.appxbundle') -Recurse
+$Files = Get-ChildItem -Path $Path -Include @('*.cer', '*.appxbundle') -Recurse
 $Version = $Files[0].Name.Split('_')[1]
 $Auth = [convert]::ToBase64String([system.text.encoding]::UTF8.GetBytes("${ENV:GITHUB_USER}:${ENV:GITHUB_PASS}"))
 $DefaultHeader = @{
