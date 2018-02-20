@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.0
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExViewer", "ExViewer\ExViewer.csproj", "{DCB55DB8-3F92-40A1-BF66-5169365C5471}"
 EndProject
@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExClient", "ExClient\ExClie
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F164C16F-5F47-4A2A-896C-31CAB8C7D74D}"
 	ProjectSection(SolutionItems) = preProject
+		appcenter-pre-build.ps1 = appcenter-pre-build.ps1
 		CleanUp.ps1 = CleanUp.ps1
 	EndProjectSection
 EndProject
