@@ -62,7 +62,7 @@
                  RelativePanel.AlignRightWithPanel="True"
                  RelativePanel.AlignTopWithPanel="True"
                  RelativePanel.Above="CategoryTag"
-                 Text="{x:Bind client:GalleryExtension.GetDisplayTitle(Gallery), Mode=OneWay}"
+                 Text="{x:Bind client:GalleryExtension.GetDisplayTitle(Gallery), Mode=OneWay, FallbackValue=''}"
                  Style="{StaticResource SubtitleTextBlockStyle}"
                  TextWrapping="WrapWholeWords"
                  MaxLines="3"
@@ -71,7 +71,7 @@
                 <ToolTipService.ToolTip>
                     <ToolTip x:Name="TitleToolTop"
                              rs3:IsEnabled="{x:Bind TitleTextBlock.IsTextTrimmed, Mode=OneWay}">
-                        <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(Gallery), Mode=OneWay}"
+                        <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(Gallery), Mode=OneWay, FallbackValue=''}"
                                    TextWrapping="WrapWholeWords" />
                     </ToolTip>
                 </ToolTipService.ToolTip>
@@ -85,7 +85,8 @@
                  Style="{StaticResource DetailTextBlockStyle}" />
       <local:Rating x:Name="Rating"
                     RelativePanel.AlignBottomWithPanel="True"
-                    PlaceholderValue="{x:Bind Gallery.Rating.AverageScore, Mode=OneWay}"/>
+                    PlaceholderValue="{x:Bind Gallery.Rating.AverageScore, Mode=OneWay, FallbackValue=0}"
+                    UserRatingValue="{x:Bind Gallery.Rating.UserScore, Mode=OneWay, FallbackValue={x:Null}}"/>
       <TextBlock x:Name="tbCount"
                  RelativePanel.AlignVerticalCenterWith="CategoryTag"
                  RelativePanel.RightOf="CategoryTag"

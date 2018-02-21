@@ -870,6 +870,16 @@
                 <RectangleGeometry x:Name="PlaceholderClip" />
               </TextBlock.Clip>
             </TextBlock>
+            <TextBlock x:Name="UserRating"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text="&#xE735;&#xE735;&#xE735;&#xE735;&#xE735;"
+                       Foreground="{ThemeResource SystemControlForegroundAccentBrush}"
+                       FontFamily="{ThemeResource SymbolThemeFontFamily}">
+              <TextBlock.Clip>
+                <RectangleGeometry x:Name="UserRatingClip" />
+              </TextBlock.Clip>
+            </TextBlock>
           </Grid>
         </ControlTemplate>
       </Setter.Value>

@@ -305,7 +305,8 @@
                                     Category="{x:Bind VM.Gallery.Category, Mode=OneWay}" />
               <controls:Rating Margin="6,4"
                                VerticalAlignment="Center"
-                               PlaceholderValue="{x:Bind VM.Gallery.Rating.AverageScore, Mode=OneWay}" />
+                               PlaceholderValue="{x:Bind VM.Gallery.Rating.AverageScore, Mode=OneWay, FallbackValue=0}"
+                               UserRatingValue="{x:Bind VM.Gallery.Rating.UserScore, Mode=OneWay, FallbackValue={x:Null}}" />
             </StackPanel>
             <controls:TagPresenter x:Name="tpTags"
                                    Grid.Row="1"
