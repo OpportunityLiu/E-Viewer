@@ -74,9 +74,8 @@
                     Stretch="Fill" />
       </FlipView.Background>
       <FlipView.ItemTemplate>
-        <DataTemplate xmlns:storage="using:Windows.Storage"
-                      x:DataType="storage:StorageFile">
-          <Image Source="{x:Bind Converter={StaticResource FileConverter}}" />
+        <DataTemplate x:DataType="BitmapImage">
+          <Image Source="{x:Bind}" />
         </DataTemplate>
       </FlipView.ItemTemplate>
     </FlipView>

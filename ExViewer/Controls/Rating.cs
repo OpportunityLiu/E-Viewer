@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
+using ExClient.Galleries.Rating;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
@@ -26,31 +27,6 @@ namespace ExViewer.Controls
         {
             get => (double)GetValue(PlaceholderValueProperty);
             set => SetValue(PlaceholderValueProperty, value);
-        }
-
-        private TextBlock tbBackground;
-        private TextBlock tbPlaceholder;
-        private RectangleGeometry rgPlaceholderClip;
-
-        protected override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-            this.tbBackground = GetTemplateChild("Background") as TextBlock;
-            this.tbPlaceholder = GetTemplateChild("Placeholder") as TextBlock;
-            this.rgPlaceholderClip = GetTemplateChild("PlaceholderClip") as RectangleGeometry;
-        }
-
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            draw(finalSize);
-            return base.ArrangeOverride(finalSize);
-        }
-
-        private void draw(Size size)
-        {
-            if (this.tbBackground == null || this.tbPlaceholder == null)
-                return;
-            this.rgPlaceholderClip.Rect = new Rect(0, 0, size.Width / 5 * this.PlaceholderValue, size.Height);
         }
 
         /// <summary>
@@ -71,5 +47,68 @@ namespace ExViewer.Controls
             sender.InvalidateArrange();
         }
 
+        public Score? UserRatingValue
+        {
+            get => (Score?)GetValue(UserRatingValueProperty);
+            set => SetValue(UserRatingValueProperty, value);
+        }
+
+        /// <summary>
+        /// Indentify <see cref="UserRatingValue"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty UserRatingValueProperty =
+            DependencyProperty.Register(nameof(UserRatingValue), typeof(Score?), typeof(Rating), new PropertyMetadata(null, UserRatingValuePropertyChanged));
+
+        private static void UserRatingValuePropertyChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
+        {
+            var oldValue = (Score?)e.OldValue;
+            var newValue = (Score?)e.NewValue;
+            if (oldValue == newValue)
+                return;
+            var sender = (Rating)dp;
+            sender.InvalidateArrange();
+        }
+
+        private TextBlock tbBackground;
+        private TextBlock tbPlaceholder;
+        private TextBlock tbUserRating;
+        private RectangleGeometry rgPlaceholderClip;
+        private RectangleGeometry rgUserRatingClip;
+
+        protected override void OnApplyTemplate()
+        {
+            this.tbBackground = GetTemplateChild("Background") as TextBlock;
+            this.tbPlaceholder = GetTemplateChild("Placeholder") as TextBlock;
+            this.tbUserRating = GetTemplateChild("UserRating") as TextBlock;
+            this.rgPlaceholderClip = GetTemplateChild("PlaceholderClip") as RectangleGeometry;
+            this.rgUserRatingClip = GetTemplateChild("UserRatingClip") as RectangleGeometry;
+            base.OnApplyTemplate();
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            draw(finalSize);
+            return base.ArrangeOverride(finalSize);
+        }
+
+        private void draw(Size size)
+        {
+            var ph = this.PlaceholderValue;
+            var ur = this.UserRatingValue;
+            if (ur is Score urv)
+            {
+                if (this.rgPlaceholderClip != null)
+                    this.rgPlaceholderClip.Rect = Rect.Empty;
+                if (this.rgUserRatingClip != null)
+                    this.rgUserRatingClip.Rect = new Rect(0, 0, size.Width / 5 * urv.ToDouble(), size.Height);
+            }
+            else
+            {
+                if (this.rgPlaceholderClip != null)
+                    this.rgPlaceholderClip.Rect = new Rect(0, 0, size.Width / 5 * ph, size.Height);
+                if (this.rgUserRatingClip != null)
+                    this.rgUserRatingClip.Rect = Rect.Empty;
+            }
+        }
     }
 }

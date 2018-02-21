@@ -10,6 +10,8 @@ using Windows.Foundation;
 using System.Collections.Generic;
 using Windows.UI.Core;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media.Imaging;
+using System.Collections;
 
 namespace ExViewer.Controls
 {
@@ -39,10 +41,23 @@ namespace ExViewer.Controls
             var source = await BannerProvider.Provider.GetBannersAsync();
             if (source == null)
                 source = new[] { await StorageFile.GetFileFromApplicationUriAsync(BannerProvider.Provider.DefaultBanner) };
-            else if (source.Count > 2)
-                // 循环滚动
-                source.Add(source[0]);
-            this.fv_Banners.ItemsSource = source;
+
+            var data = new List<BitmapImage>();
+            foreach (var item in source)
+            {
+                var img = new BitmapImage();
+                data.Add(img);
+                using (var stream = await item.OpenReadAsync())
+                {
+                    var ignore = img.SetSourceAsync(stream);
+                }
+            }
+            if (data.Count >= 2)
+            {  // 循环滚动
+                data.Insert(0, data[data.Count - 1]);
+                data.Add(data[1]);
+            }
+            this.fv_Banners.ItemsSource = data;
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -60,7 +75,7 @@ namespace ExViewer.Controls
             {
                 var c = this.fv_Banners.SelectedIndex;
                 c++;
-                if (((IList<StorageFile>)this.fv_Banners.ItemsSource).Count <= c)
+                if (((ICollection)this.fv_Banners.ItemsSource).Count <= c)
                     c = 0;
                 this.fv_Banners.SelectedIndex = c;
             }
@@ -73,10 +88,19 @@ namespace ExViewer.Controls
         private async void fv_Banners_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.fv_Banners_Counter = 0;
-            if (((IList<StorageFile>)this.fv_Banners.ItemsSource).Count == this.fv_Banners.SelectedIndex + 1)
+            var data = (ICollection)this.fv_Banners.ItemsSource;
+            if (data.Count >= 4)
             {
-                await Task.Delay(500);
-                this.fv_Banners.SelectedIndex = 0;
+                if (data.Count == this.fv_Banners.SelectedIndex + 1)
+                {
+                    await Task.Delay(500);
+                    this.fv_Banners.SelectedIndex = 1;
+                }
+                else if (this.fv_Banners.SelectedIndex == 0)
+                {
+                    await Task.Delay(500);
+                    this.fv_Banners.SelectedIndex = data.Count - 2;
+                }
             }
         }
 

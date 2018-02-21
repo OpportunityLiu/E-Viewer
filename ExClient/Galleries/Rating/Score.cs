@@ -22,18 +22,9 @@ namespace ExClient.Galleries.Rating
 
     public static class ScoreExtension
     {
-        public static double ToDouble(this Score score)
-        {
-            return (byte)score / 2.0;
-        }
-        public static float ToFloat(this Score score)
-        {
-            return (byte)score / 2.0f;
-        }
-        public static decimal ToDecimal(this Score score)
-        {
-            return decimal.Divide((byte)score, 2);
-        }
+        public static double ToDouble(this Score score) => (byte)score / 2.0;
+        public static float ToFloat(this Score score) => (byte)score / 2.0f;
+        public static decimal ToDecimal(this Score score) => decimal.Divide((byte)score, 2);
 
         public static Score ToScore(this double value)
         {
