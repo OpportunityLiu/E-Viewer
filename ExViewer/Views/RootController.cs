@@ -44,6 +44,23 @@ namespace ExViewer.Views
 
                 InputPane.Showing += InputPane_VisibilityChanging;
                 InputPane.Hiding += InputPane_VisibilityChanging;
+
+                Controls.AboutControl.UpdateEhWiki.Executed += (s, e) =>
+                {
+                    if (e.Exception != null)
+                        SendToast(Strings.Resources.Database.EhTagClient.Update.Failed, null);
+                    else
+                        SendToast(Strings.Resources.Database.EhTagClient.Update.Succeeded, null);
+                    e.Handled = true;
+                };
+                Controls.AboutControl.UpdateETT.Executed += (s, e) =>
+                {
+                    if (e.Exception != null)
+                        SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Failed, null);
+                    else
+                        SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Succeeded, null);
+                    e.Handled = true;
+                };
             }
 
             private static void InputPane_VisibilityChanging(InputPane sender, InputPaneVisibilityEventArgs args)

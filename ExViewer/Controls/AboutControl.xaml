@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="using:ExViewer.Controls"
              mc:Ignorable="d"
              Loading="UserControl_Loading"
              Unloaded="UserControl_Unloaded"
@@ -226,7 +227,7 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
       <Button x:Name="btnUpdateEt"
               x:Uid="Controls/AboutControl/UpdateButton"
               Content="Update"
-              Click="btnUpdateEt_Click"
+              Command="{x:Bind local:AboutControl.UpdateEhWiki}"
               Style="{StaticResource AboutControlCaptionButtonStyle}" />
       <ProgressRing Style="{StaticResource UpdateProgressRingStyle}"
                     IsActive="{x:Bind btnUpdateEt.IsEnabled, Mode=OneWay, Converter={StaticResource LogicalNotConverter}}" />
@@ -245,7 +246,7 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
       <Button x:Name="btnUpdateEht"
               x:Uid="Controls/AboutControl/UpdateButton"
               Content="Update"
-              Click="btnUpdateEht_Click"
+              Command="{x:Bind local:AboutControl.UpdateETT}"
               Style="{StaticResource AboutControlCaptionButtonStyle}" />
       <ProgressRing Style="{StaticResource UpdateProgressRingStyle}"
                     IsActive="{x:Bind btnUpdateEht.IsEnabled, Mode=OneWay, Converter={StaticResource LogicalNotConverter}}" />

@@ -116,6 +116,7 @@ namespace ExViewer.Views
         {
             var temp = this.layoutLoaded;
             this.layoutLoaded = true;
+            await Dispatcher.YieldIdle();
             if (!temp)
             {
                 this.UserInfo = await UserInfo.LoadFromCache();

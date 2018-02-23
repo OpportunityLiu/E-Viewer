@@ -185,10 +185,12 @@
                          Text="Image Limits" />
               <Button Grid.Column="9"
                       HorizontalAlignment="Right"
+                      VerticalAlignment="Bottom"
+                      MinWidth="16"
+                      MinHeight="16"
                       Style="{StaticResource TextBlockButtonStyle}"
                       Padding="0"
-                      Command="{x:Bind VM.ResetImageUsage}"
-                      VerticalAlignment="Bottom">
+                      Command="{x:Bind VM.ResetImageUsage}">
                 <TextBlock x:Uid="Views/InfoPage/ImageLimitsResetButtonTextBlock"
                            Text="Reset limit"
                            Style="{ThemeResource CaptionTextBlockStyle}"
