@@ -426,8 +426,8 @@ namespace ExViewer.Views
 
                 root.FindName(nameof(root.rp_Disable));
                 root.sv_root.IsEnabled = false;
-                //TODO: 仅禁止向前和向后导航
-                root.manager.IsEnabled = false;
+                root.manager.IsGoBackEnabled = false;
+                root.manager.IsGoForwardEnabled = false;
                 root.rp_Disable.Visibility = Visibility.Visible;
                 var indeterminate = !progress.HasValue;
                 var keep = double.IsNaN(progress.GetValueOrDefault());
@@ -447,7 +447,8 @@ namespace ExViewer.Views
                 ViewEnabled = true;
 
                 root.sv_root.IsEnabled = true;
-                root.manager.IsEnabled = true;
+                root.manager.IsGoBackEnabled = true;
+                root.manager.IsGoForwardEnabled = true;
 
                 ShowDisablePanel.Stop();
                 HideDisablePanel.Begin();

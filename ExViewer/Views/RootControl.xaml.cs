@@ -122,9 +122,10 @@ namespace ExViewer.Views
             }
             else
             {
-                this.tbtPane.Focus(FocusState.Pointer);
                 RootController.UpdateUserInfo(false);
                 RootController.HandleUriLaunch();
+                await Dispatcher.YieldIdle();
+                this.tbtPane.Focus(FocusState.Pointer);
             }
         }
 
