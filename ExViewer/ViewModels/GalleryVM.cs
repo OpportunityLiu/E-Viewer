@@ -39,10 +39,8 @@ namespace ExViewer.ViewModels
 
     public class GalleryVM : ViewModelBase
     {
-        private static CacheStorage<GalleryInfo, GalleryVM> Cache
-        {
-            get;
-        } = new CacheStorage<GalleryInfo, GalleryVM>(gi => Run(async token => new GalleryVM(await gi.FetchGalleryAsync())), 25, new GalleryInfoComparer());
+        private static CacheStorage<GalleryInfo, GalleryVM> Cache { get; }
+            = new CacheStorage<GalleryInfo, GalleryVM>(gi => Run(async token => new GalleryVM(await gi.FetchGalleryAsync())), 25, new GalleryInfoComparer());
 
         private class GalleryInfoComparer : IEqualityComparer<GalleryInfo>
         {
@@ -55,6 +53,11 @@ namespace ExViewer.ViewModels
             {
                 return obj.ID.GetHashCode();
             }
+        }
+
+        public static void RemoveVM(long id)
+        {
+            //TODO:
         }
 
         public static GalleryVM GetVM(Gallery gallery)
@@ -108,12 +111,6 @@ namespace ExViewer.ViewModels
             this.AddComment.Tag = this;
             this.GoToLatestRevision.Tag = this;
             this.OpenQRCode.Tag = this;
-        }
-
-        private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(GalleryImage.OriginalLoaded))
-                this.LoadOriginal.OnCanExecuteChanged();
         }
 
         private GalleryVM(Gallery gallery)
@@ -256,7 +253,6 @@ namespace ExViewer.ViewModels
         public Command<GalleryImage> LoadOriginal { get; } = Command.Create<GalleryImage>(async (sender, image) =>
         {
             var that = (GalleryVM)sender.Tag;
-            image.PropertyChanged += that.Image_PropertyChanged;
             try
             {
                 await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
@@ -265,13 +261,11 @@ namespace ExViewer.ViewModels
             {
                 RootControl.RootController.SendToast(ex, typeof(ImagePage));
             }
-            image.PropertyChanged -= that.Image_PropertyChanged;
         }, (sender, image) => image != null && !image.OriginalLoaded);
 
         public Command<GalleryImage> ReloadImage { get; } = Command.Create<GalleryImage>(async (sender, image) =>
         {
             var that = (GalleryVM)sender.Tag;
-            image.PropertyChanged += that.Image_PropertyChanged;
             try
             {
                 if (image.OriginalLoaded)
@@ -284,17 +278,15 @@ namespace ExViewer.ViewModels
             {
                 RootControl.RootController.SendToast(ex, typeof(ImagePage));
             }
-            image.PropertyChanged -= that.Image_PropertyChanged;
         }, (sender, image) => image != null);
 
-        public Command<GalleryImage> SearchImage { get; } = Command.Create<GalleryImage>(async (sender, image) =>
+        public Command<SHA1Value> SearchImage { get; } = Command.Create<SHA1Value>(async (sender, hash) =>
         {
             var that = (GalleryVM)sender.Tag;
-            var sha = image.ImageHash;
-            var search = Client.Current.Search("", Category.All, Enumerable.Repeat(sha, 1), that.gallery.GetDisplayTitle());
+            var search = Client.Current.Search("", Category.All, Enumerable.Repeat(hash, 1), that.gallery.GetDisplayTitle());
             var vm = SearchVM.GetVM(search);
             await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
-        }, (sender, image) => ((GalleryVM)sender.Tag).gallery != null && image != null && image.ImageHash != default);
+        }, (sender, hash) => ((GalleryVM)sender.Tag).gallery != null && hash != default);
 
         public Command SearchUploader { get; } = Command.Create(async sender =>
         {
@@ -334,16 +326,19 @@ namespace ExViewer.ViewModels
         public int CurrentIndex
         {
             get => this.currentIndex;
-            set => Set(ref this.currentIndex, value);
+            set
+            {
+                if (Set(ref this.currentIndex, value))
+                {
+                    CurrentInfo = null;
+                    QRCodeResult = null;
+                }
+            }
         }
 
         private string currentInfo;
 
-        public string CurrentInfo
-        {
-            get => this.currentInfo;
-            private set => Set(ref this.currentInfo, value);
-        }
+        public string CurrentInfo { get => this.currentInfo; private set => Set(ref this.currentInfo, value); }
 
         private string qrCodeResult;
         public string QRCodeResult { get => this.qrCodeResult; private set => Set(ref this.qrCodeResult, value); }

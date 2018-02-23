@@ -3,6 +3,7 @@ using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -116,7 +117,6 @@ namespace ExViewer.Views
         {
             var temp = this.layoutLoaded;
             this.layoutLoaded = true;
-            await Dispatcher.YieldIdle();
             if (!temp)
             {
                 this.UserInfo = await UserInfo.LoadFromCache();
@@ -125,7 +125,7 @@ namespace ExViewer.Views
             {
                 RootController.UpdateUserInfo(false);
                 RootController.HandleUriLaunch();
-                await Dispatcher.YieldIdle();
+                await Task.Delay(30);
                 this.tbtPane.Focus(FocusState.Pointer);
             }
         }
