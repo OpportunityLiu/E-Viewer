@@ -480,5 +480,7 @@ namespace ExViewer.Views
             else
                 return Visibility.Visible;
         }
+
+        private static GalleryImage loadOriginalCommandParameter(GalleryImage image, bool originalLoaded) => image;
     }
 }
