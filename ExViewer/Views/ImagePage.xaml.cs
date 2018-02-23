@@ -347,12 +347,14 @@ namespace ExViewer.Views
             await this.VM.RefreshInfoAsync();
         }
 
-        private void cb_top_Opening(object sender, object e)
+        private async void cb_top_Opening(object sender, object e)
         {
             this.tb_Title.MaxLines = 0;
             Grid.SetColumn(this.tb_Title, 0);
             Grid.SetColumnSpan(this.tb_Title, 2);
             this.cb_top_Open.Begin();
+            this.VM.CurrentIndex = this.fv.SelectedIndex;
+            await this.VM.RefreshInfoAsync();
         }
 
         private void cb_top_Closing(object sender, object e)

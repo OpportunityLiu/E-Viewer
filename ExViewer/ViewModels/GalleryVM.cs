@@ -25,6 +25,7 @@ using ExClient.Galleries;
 using ExClient.Galleries.Metadata;
 using Windows.Storage.AccessCache;
 using ExViewer.Helpers;
+using Windows.UI.Xaml.Controls;
 
 namespace ExViewer.ViewModels
 {
@@ -106,6 +107,7 @@ namespace ExViewer.ViewModels
             this.SearchImage.Tag = this;
             this.AddComment.Tag = this;
             this.GoToLatestRevision.Tag = this;
+            this.OpenQRCode.Tag = this;
         }
 
         private void Image_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -343,23 +345,57 @@ namespace ExViewer.ViewModels
             private set => Set(ref this.currentInfo, value);
         }
 
+        private string qrCodeResult;
+        public string QRCodeResult { get => this.qrCodeResult; private set => Set(ref this.qrCodeResult, value); }
+
         public IAsyncAction RefreshInfoAsync()
         {
             return Run(async token =>
             {
-                var current = GetCurrent();
-                if (current?.ImageFile == null)
+                var current = this.GetCurrent();
+                var imageFile = current?.ImageFile;
+                if (imageFile == null)
                 {
                     this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
+                    this.QRCodeResult = null;
                     return;
                 }
-                var prop = await current.ImageFile.GetBasicPropertiesAsync();
-                var imageProp = await current.ImageFile.Properties.GetImagePropertiesAsync();
-                this.CurrentInfo = string.Format(Strings.Resources.Views.ImagePage.ImageFileInfo, current.ImageFile.DisplayType,
+                var prop = await imageFile.GetBasicPropertiesAsync();
+                var imageProp = await imageFile.Properties.GetImagePropertiesAsync();
+                this.CurrentInfo = string.Format(Strings.Resources.Views.ImagePage.ImageFileInfo, imageFile.DisplayType,
                     Opportunity.Converters.Typed.ByteSizeToStringConverter.ByteSizeToString((long)prop.Size, Opportunity.Converters.Typed.UnitPrefix.Binary),
                     imageProp.Width.ToString(), imageProp.Height.ToString());
+                using (var stream = await imageFile.OpenReadAsync())
+                {
+                    var decoder = await BitmapDecoder.CreateAsync(stream);
+                    var sb = await decoder.GetSoftwareBitmapAsync();
+                    var r = new ZXing.QrCode.QRCodeReader();
+                    var qr = r.decode(new ZXing.BinaryBitmap(new ZXing.Common.HybridBinarizer(new ZXing.SoftwareBitmapLuminanceSource(sb))));
+                    this.QRCodeResult = qr?.Text;
+                }
             });
         }
+
+        private static QRCodeDialog qrCodeDialog;
+        public Command<string> OpenQRCode { get; } = Command.Create<string>(async (sender, code) =>
+        {
+            var opened = false;
+            try
+            {
+                var uri = new Uri(code);
+                opened = await Launcher.LaunchUriAsync(uri);
+            }
+            catch (Exception)
+            {
+            }
+            if (!opened)
+            {
+                if (qrCodeDialog is null)
+                    qrCodeDialog = new QRCodeDialog();
+                qrCodeDialog.Text = code;
+                await qrCodeDialog.ShowAsync();
+            }
+        }, (sender, code) => code != null);
 
         private OperationState saveStatus;
 

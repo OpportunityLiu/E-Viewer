@@ -846,10 +846,16 @@
   <Style TargetType="controls:Rating">
     <Setter Property="MinHeight"
             Value="20" />
+    <Setter Property="UseSystemFocusVisuals"
+            Value="True" />
+    <Setter Property="IsTabStop"
+            Value="False" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:Rating">
           <Grid x:Name="LayoutRoot"
+                Control.IsTemplateFocusTarget="True"
+                Control.IsTemplateKeyTipTarget="True"
                 Margin="{TemplateBinding Padding}"
                 Background="{TemplateBinding Background}"
                 BorderBrush="{TemplateBinding BorderBrush}"

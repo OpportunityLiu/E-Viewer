@@ -230,6 +230,7 @@
       "ImageFileInfoDefault": "图片未加载完成。",
       "ImageInfoAppBarButton/Label": "文件信息",
       "LoadOriginalAppBarButton/Label": "加载原图",
+      "QRCodeAppBarButton/Label": "扫描 QR 码",
       "ReloadAppBarButton/Label": "重新加载",
       "SearchAppBarButton/Label": "显示所有包含此文件的画廊",
       "ShareAppBarButton/Label": "共享"
@@ -274,6 +275,13 @@
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "正在加载热门画廊…",
       "RefreshAppBarButton/Label": "刷新"
+    },
+    "QRCodeDialog": {
+      "ContentDialog": {
+        "PrimaryButtonText": "复制",
+        "SecondaryButtonText": "关闭",
+        "Title": "QR 码"
+      }
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "缓存的画廊",

@@ -208,29 +208,20 @@ namespace ExViewer.Views
             {
                 //Ignore exceptions here.
             }
-            if (DateTimeOffset.Now - EhTagClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
-            {
-                try
-                {
-                    await EhTagClient.Client.UpdateAsync();
-                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Succeeded, null);
-                }
-                catch (Exception)
-                {
-                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Failed, null);
-                }
-            }
             try
             {
                 if (await EhTagTranslatorClient.Client.NeedUpdateAsync())
                 {
-                    await EhTagTranslatorClient.Client.UpdateAsync();
-                    RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Succeeded, null);
+                    AboutControl.UpdateEhWiki.Execute();
                 }
             }
             catch (Exception)
             {
                 RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Failed, null);
+            }
+            if (DateTimeOffset.Now - EhTagClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
+            {
+                AboutControl.UpdateETT.Execute();
             }
             if (DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
             {

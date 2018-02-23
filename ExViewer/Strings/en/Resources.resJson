@@ -129,6 +129,13 @@
     "RetriesExhausted": "You have exceeded the allowed number of verification. Plaese restart the app and try again."
   },
   "Views": {
+    "QRCodeDialog": {
+      "ContentDialog": {
+        "PrimaryButtonText": "Copy",
+        "SecondaryButtonText": "Close",
+        "Title": "QR CODE"
+      }
+    },
     "AddToFavoritesDialog": {
       "AddTitle": "ADD TO FAVORITES",
       "FavoriteCategoryUnselected": "Please select one category.",
@@ -230,6 +237,7 @@
       "ImageFileInfoDefault": "The image hasn't finished loading.",
       "ImageInfoAppBarButton/Label": "Image infomation",
       "LoadOriginalAppBarButton/Label": "Load original image",
+      "QRCodeAppBarButton/Label": "Scan QR code",
       "ReloadAppBarButton/Label": "Reload",
       "SearchAppBarButton/Label": "Show all galleries with this file",
       "ShareAppBarButton/Label": "Share"

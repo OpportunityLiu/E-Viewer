@@ -12,6 +12,7 @@ using Windows.UI.Core;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Collections;
+using Opportunity.MvvmUniverse.Commands;
 
 namespace ExViewer.Controls
 {
@@ -34,6 +35,8 @@ namespace ExViewer.Controls
             this.tb_AppDescription.Text = Package.Current.Description;
             this.refreshTimer.Tick += RefreshTimer_Tick;
             this.hlbHV.NavigateUri = ExClient.HentaiVerse.HentaiVerseInfo.LogOnUri;
+            UpdateEhWiki.Executed += (s, e) => this.Bindings.Update();
+            UpdateETT.Executed += (s, e) => this.Bindings.Update();
         }
 
         private async void init()
@@ -69,7 +72,6 @@ namespace ExViewer.Controls
 
         private void RefreshTimer_Tick(object sender, object e)
         {
-            this.Bindings.Update();
             this.fv_Banners_Counter++;
             if (this.fv_Banners_Counter > 7)
             {
@@ -116,42 +118,7 @@ namespace ExViewer.Controls
             this.refreshTimer.Stop();
         }
 
-        private async void btnUpdateEt_Click(object sender, RoutedEventArgs e)
-        {
-            this.btnUpdateEt.IsEnabled = false;
-            try
-            {
-                await EhTagClient.Client.UpdateAsync();
-                RootControl.RootController.SendToast(Strings.Resources.Database.EhTagClient.Update.Succeeded, null);
-                this.Bindings.Update();
-            }
-            catch (Exception ex)
-            {
-                RootControl.RootController.SendToast(ex, null);
-            }
-            finally
-            {
-                this.btnUpdateEt.IsEnabled = true;
-            }
-        }
-
-        private async void btnUpdateEht_Click(object sender, RoutedEventArgs e)
-        {
-            this.btnUpdateEht.IsEnabled = false;
-            try
-            {
-                await EhTagTranslatorClient.Client.UpdateAsync();
-                RootControl.RootController.SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Succeeded, null);
-                this.Bindings.Update();
-            }
-            catch (Exception ex)
-            {
-                RootControl.RootController.SendToast(ex, null);
-            }
-            finally
-            {
-                this.btnUpdateEht.IsEnabled = true;
-            }
-        }
+        public static AsyncCommand UpdateEhWiki { get; } = AsyncCommand.Create(_ => EhTagClient.Client.UpdateAsync());
+        public static AsyncCommand UpdateETT { get; } = AsyncCommand.Create(_ => EhTagTranslatorClient.Client.UpdateAsync());
     }
 }
