@@ -19,7 +19,7 @@ namespace ExClient
         public static Uri LogOnUri { get; } = new Uri(ForumsUri, "index.php?act=Login");
 
         public bool NeedLogOn
-            => this.CookieManager.GetCookies(UriProvider.Eh.RootUri).Count(isLogOnCookie) < 3
+            => this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).Count(isLogOnCookie) < 3
             || this.UserID <= 0
             || this.PassHash == null;
 
@@ -42,7 +42,7 @@ namespace ExClient
 
         public void ResetExCookie()
         {
-            foreach (var item in this.CookieManager.GetCookies(UriProvider.Ex.RootUri))
+            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Ex.RootUri))
             {
                 this.CookieManager.DeleteCookie(item);
             }
@@ -132,7 +132,7 @@ namespace ExClient
                 try
                 {
                     await this.refreshHathPerksCore();
-                    await Settings.FetchAsync();
+                    await fetchSettings();
                     var ignore = this.UserStatus?.RefreshAsync();
                 }
                 catch (Exception)
@@ -143,7 +143,7 @@ namespace ExClient
             });
         }
 
-        private static readonly Uri hathperksUri = new Uri(UriProvider.Eh.RootUri, "hathperks.php");
+        private static readonly Uri hathperksUri = new Uri(DomainProvider.Eh.RootUri, "hathperks.php");
 
         public IAsyncAction RefreshHathPerks()
         {
@@ -167,7 +167,7 @@ namespace ExClient
         {
             get
             {
-                var cookie = this.CookieManager.GetCookies(UriProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.MemberID);
+                var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.MemberID);
                 if (cookie == null)
                     return -1;
                 return long.Parse(cookie.Value);
@@ -178,7 +178,7 @@ namespace ExClient
         {
             get
             {
-                var cookie = this.CookieManager.GetCookies(UriProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.PassHash);
+                var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.PassHash);
                 if (cookie == null)
                     return null;
                 return cookie.Value;

@@ -44,16 +44,24 @@ namespace ExClient.Search
             gallery.Rating.AnalyzeNode(trNode.ChildNodes[2].ChildNodes[2]);
         }
 
-        protected override IAsyncOperation<IEnumerable<Gallery>> LoadMoreItemsImplementAsync(int count)
+        private IAsyncOperation<IEnumerable<Gallery>> loadCore(bool reIn)
         {
             return AsyncInfo.Run<IEnumerable<Gallery>>(async token =>
             {
-                var doc = await Client.Current.HttpClient.GetDocumentAsync(UriProvider.Eh.RootUri);
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(DomainProvider.Eh.RootUri);
                 var pp = doc.GetElementbyId("pp");
                 if (pp == null) // Disabled popular
                 {
-                    Set(ref this.hasMoreItems, false);
-                    return Array.Empty<Gallery>();
+                    if (reIn)
+                    {
+                        Set(ref this.hasMoreItems, false);
+                        return Array.Empty<Gallery>();
+                    }
+                    else
+                    {
+                        await DomainProvider.Eh.Settings.SendAsync();
+                        return await loadCore(true);
+                    }
                 }
                 var nodes = (from div in pp.Elements("div")
                              where div.HasClass("id1")
@@ -71,5 +79,8 @@ namespace ExClient.Search
                 return galleries;
             });
         }
+
+        protected override IAsyncOperation<IEnumerable<Gallery>> LoadMoreItemsImplementAsync(int count)
+            => loadCore(false);
     }
 }

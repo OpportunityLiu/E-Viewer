@@ -13,7 +13,7 @@ namespace ExClient.Search
         private static readonly Uri fileSearchUriEh = new Uri("https://upload.e-hentai.org/image_lookup.php");
         private static readonly Uri fileSearchUriEx = new Uri("https://exhentai.org/upload/image_lookup.php");
 
-        private static Uri fileSearchUri => Client.Current.Host == HostType.Ehentai ? fileSearchUriEh : fileSearchUriEx;
+        private static Uri fileSearchUri => Client.Current.Host == HostType.EHentai ? fileSearchUriEh : fileSearchUriEx;
 
         internal static IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
         {

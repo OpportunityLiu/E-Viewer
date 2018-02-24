@@ -14,8 +14,8 @@ namespace ExClient
 
         internal LogOnInfo(Client client)
         {
-            this.Cookies = client.CookieManager.GetCookies(UriProvider.Eh.RootUri)
-                      .Concat(client.CookieManager.GetCookies(UriProvider.Ex.RootUri)).ToList();
+            this.Cookies = client.CookieManager.GetCookies(DomainProvider.Eh.RootUri)
+                      .Concat(client.CookieManager.GetCookies(DomainProvider.Ex.RootUri)).ToList();
         }
     }
 }

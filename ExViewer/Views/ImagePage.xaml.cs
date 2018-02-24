@@ -208,12 +208,17 @@ namespace ExViewer.Views
             RootControl.RootController.SetFullScreen(false);
             return AsyncInfo.Run(async token =>
             {
-                await Task.Delay(50);
+                await Task.Delay(100);
                 return false;
             });
         }
         bool INavigationHandler.CanGoForward() => false;
-        IAsyncOperation<bool> INavigationHandler.GoForwardAsync() => AsyncOperation<bool>.CreateCompleted(false);
+        IAsyncOperation<bool> INavigationHandler.GoForwardAsync()
+        {
+            StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
+            RootControl.RootController.SetFullScreen(false);
+            return AsyncOperation<bool>.CreateCompleted(false);
+        }
         IAsyncOperation<bool> INavigationHandler.NavigateAsync(Type sourcePageType, object parameter)
         {
             StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
