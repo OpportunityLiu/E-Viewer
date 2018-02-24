@@ -25,7 +25,7 @@ namespace ExClient.Launch
         {
             if(uri == null)
                 return false;
-            if(uri.Host != UriProvider.Eh.RootUri.Host && uri.Host != UriProvider.Ex.RootUri.Host)
+            if(uri.Host != DomainProvider.Eh.RootUri.Host && uri.Host != DomainProvider.Ex.RootUri.Host)
                 return false;
             var data = new UriHandlerData(uri);
             foreach(var item in handlers)

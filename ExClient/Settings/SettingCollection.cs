@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using ExClient.Internal;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Opportunity.MvvmUniverse;
 using System;
@@ -35,19 +36,21 @@ namespace ExClient.Settings
 
     public sealed class SettingCollection : ObservableObject
     {
-        private readonly Client client;
-        private static readonly Uri configUri = new Uri("/uconfig.php", UriKind.Relative);
+        private static readonly Uri configUriRaletive = new Uri("/uconfig.php", UriKind.Relative);
 
-        internal SettingCollection(Client client)
+        private readonly DomainProvider owner;
+        private readonly Uri configUri;
+
+        internal SettingCollection(DomainProvider owner)
         {
-            this.client = client;
+            this.owner = owner;
+            this.configUri = new Uri(owner.RootUri, configUriRaletive);
             foreach (var item in this.items.Values)
             {
                 item.Owner = this;
             }
             loadCache();
             loadSettingsDic();
-            FetchAsync().Completed = (s, e) => { };
         }
 
         internal Dictionary<string, string> Settings { get; } = new Dictionary<string, string>();
@@ -55,13 +58,13 @@ namespace ExClient.Settings
         internal void StoreCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values["SettingsCache"] = JsonConvert.SerializeObject(Settings);
+            storage.Values[this.owner.Type + "SettingsCache"] = JsonConvert.SerializeObject(Settings);
         }
 
         private void loadCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values.TryGetValue("SettingsCache", out var r);
+            storage.Values.TryGetValue(this.owner.Type + "SettingsCache", out var r);
             var value = r + "";
             Settings.Clear();
             if (string.IsNullOrEmpty(value))
@@ -113,7 +116,7 @@ namespace ExClient.Settings
             {
                 try
                 {
-                    var getDoc = this.client.HttpClient.GetDocumentAsync(configUri);
+                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(configUri);
                     token.Register(getDoc.Cancel);
                     var doc = await getDoc;
                     updateSettingsDic(doc);
@@ -148,7 +151,7 @@ namespace ExClient.Settings
                     {
                         item.ApplyChanges(postDic);
                     }
-                    var postData = this.client.HttpClient.PostAsync(configUri, new HttpFormUrlEncodedContent(postDic));
+                    var postData = Client.Current.HttpClient.PostAsync(configUri, new HttpFormUrlEncodedContent(postDic));
                     token.Register(postData.Cancel);
                     var r = await postData;
                     var doc = new HtmlDocument();
@@ -211,7 +214,7 @@ namespace ExClient.Settings
                 // Thumbnail Size - Large
                 settings["ts"] = "1";
                 // Popular Right Now - Display
-                if (this.Owner.client.Host == HostType.Ehentai)
+                if (this.Owner.owner.Type == HostType.EHentai)
                     settings["pp"] = "0";
 
                 settings["xr"] = ((int)this.resampledImageSize).ToString();

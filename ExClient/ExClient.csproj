@@ -145,6 +145,7 @@
     <Compile Include="Galleries\Renaming\RenameRecord.cs" />
     <Compile Include="Hentaiverse\HentaiVerseInfo.cs" />
     <Compile Include="Hentaiverse\MonsterEncounteredEventArgs.cs" />
+    <Compile Include="Internal\DomainProvider.cs" />
     <Compile Include="Launch\SearchHandlerBase.cs" />
     <Compile Include="LogOnInfo.cs" />
     <Compile Include="Migrations\20170612052132_NewMig.cs" />
@@ -176,7 +177,6 @@
     <Compile Include="HostType.cs" />
     <Compile Include="Galleries\ImageLoadingState.cs" />
     <Compile Include="Internal\TokenExtension.cs" />
-    <Compile Include="Internal\UriProvider.cs" />
     <Compile Include="Galleries\Metadata\Language.cs" />
     <Compile Include="Launch\FavoritesSearchHandler.cs" />
     <Compile Include="Launch\GalleryHandler.cs" />

@@ -2,7 +2,7 @@
 {
     public enum HostType
     {
-        Ehentai,
-        Exhentai
+        EHentai,
+        ExHentai
     }
 }

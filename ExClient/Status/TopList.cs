@@ -75,7 +75,7 @@ namespace ExClient.Status
         {
             if (!topList.IsDefined())
                 return null;
-            return new Uri(Internal.UriProvider.Eh.RootUri, $"toplist.php?tl={(int)topList}");
+            return new Uri(Internal.DomainProvider.Eh.RootUri, $"toplist.php?tl={(int)topList}");
         }
 
         public static string ToFriendlyNameString(this ToplistName topList)

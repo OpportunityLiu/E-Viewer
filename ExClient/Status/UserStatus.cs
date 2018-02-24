@@ -13,7 +13,7 @@ namespace ExClient.Status
 {
     public class UserStatus : ObservableObject
     {
-        private static readonly Uri infoUri = new Uri(Internal.UriProvider.Eh.RootUri, "home.php");
+        private static readonly Uri infoUri = new Uri(Internal.DomainProvider.Eh.RootUri, "home.php");
 
         internal UserStatus() { }
 

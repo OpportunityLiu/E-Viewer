@@ -76,7 +76,7 @@ namespace ExViewer.Settings
             set
             {
                 SetRoaming(value);
-                Client.Current.Host = value ? HostType.Exhentai : HostType.Ehentai;
+                Client.Current.Host = value ? HostType.ExHentai : HostType.EHentai;
             }
         }
 
