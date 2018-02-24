@@ -39,8 +39,8 @@ namespace ExViewer.ViewModels
 
     public class GalleryVM : ViewModelBase
     {
-        private static CacheStorage<GalleryInfo, GalleryVM> Cache { get; }
-            = new CacheStorage<GalleryInfo, GalleryVM>(gi => Run(async token => new GalleryVM(await gi.FetchGalleryAsync())), 25, new GalleryInfoComparer());
+        private static AutoFillCacheStorage<GalleryInfo, GalleryVM> Cache { get; }
+            = AutoFillCacheStorage.Create(gi => Run(async token => new GalleryVM(await gi.FetchGalleryAsync())), 25, new GalleryInfoComparer());
 
         private class GalleryInfoComparer : IEqualityComparer<GalleryInfo>
         {
@@ -55,15 +55,12 @@ namespace ExViewer.ViewModels
             }
         }
 
-        public static void RemoveVM(long id)
-        {
-            //TODO:
-        }
+        public static bool RemoveVM(long id) => Cache.Remove(new GalleryInfo(id, default));
 
         public static GalleryVM GetVM(Gallery gallery)
         {
             var gi = new GalleryInfo(gallery.ID, gallery.Token);
-            if (Cache.TryGet(gi, out var vm))
+            if (Cache.TryGetValue(gi, out var vm))
             {
                 vm.Gallery = gallery;
                 if (gallery.Count <= vm.currentIndex)
@@ -77,14 +74,11 @@ namespace ExViewer.ViewModels
             return vm;
         }
 
-        public static IAsyncOperation<GalleryVM> GetVMAsync(long parameter)
-        {
-            return Cache.GetAsync(new GalleryInfo(parameter, 0));
-        }
+        public static GalleryVM GetVM(long id) => Cache[new GalleryInfo(id, default)];
 
         public static IAsyncOperation<GalleryVM> GetVMAsync(GalleryInfo gInfo)
         {
-            return Cache.GetAsync(gInfo);
+            return Cache.GetOrCreateAsync(gInfo);
         }
 
         public GalleryImage GetCurrent()
@@ -285,7 +279,7 @@ namespace ExViewer.ViewModels
             var that = (GalleryVM)sender.Tag;
             var search = Client.Current.Search("", Category.All, Enumerable.Repeat(hash, 1), that.gallery.GetDisplayTitle());
             var vm = SearchVM.GetVM(search);
-            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
         }, (sender, hash) => ((GalleryVM)sender.Tag).gallery != null && hash != default);
 
         public Command SearchUploader { get; } = Command.Create(async sender =>
@@ -293,7 +287,7 @@ namespace ExViewer.ViewModels
             var that = (GalleryVM)sender.Tag;
             var search = Client.Current.Search(that.gallery.Uploader, null, SettingCollection.Current.DefaultSearchCategory);
             var vm = SearchVM.GetVM(search);
-            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
         }, sender => ((GalleryVM)sender.Tag).gallery != null);
 
         private Gallery gallery;

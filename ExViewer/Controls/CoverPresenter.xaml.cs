@@ -65,12 +65,10 @@ namespace ExViewer.Controls
             if (uiSettings.AdvancedEffectsEnabled && PowerManager.EnergySaverStatus != EnergySaverStatus.On)
             {
                 FindName(nameof(this.BackgroundImage));
-                this.BackgroundImage.Visibility = Visibility.Visible;
             }
             else
             {
-                if (this.BackgroundImage != null)
-                    this.BackgroundImage.Visibility = Visibility.Collapsed;
+                UnloadObject(this.BackgroundImage);
             }
         }
     }

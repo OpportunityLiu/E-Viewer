@@ -120,12 +120,11 @@ namespace ExViewer.Views
             if (!temp)
             {
                 this.UserInfo = await UserInfo.LoadFromCache();
+                RootController.UpdateUserInfo(false);
             }
             else
             {
-                RootController.UpdateUserInfo(false);
                 RootController.HandleUriLaunch();
-                await Task.Delay(30);
                 this.tbtPane.Focus(FocusState.Pointer);
             }
         }

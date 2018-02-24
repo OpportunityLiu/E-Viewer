@@ -21,11 +21,16 @@ namespace ExViewer.ViewModels
     public abstract class SearchResultVM<T> : ViewModelBase
         where T : SearchResult
     {
-        protected SearchResultVM()
+        protected SearchResultVM(T searchResult)
         {
+            this.searchResult = searchResult;
             this.Open.Tag = this;
             this.DeleteHistory.Tag = this;
+            this.Search.Tag = this;
+            SetQueryWithSearchResult();
         }
+
+        public string SearchQuery => this.SearchResult.SearchUri.ToString();
 
         public Command<Gallery> Open { get; } = Command.Create<Gallery>(async (sender, g) =>
         {
@@ -35,8 +40,9 @@ namespace ExViewer.ViewModels
             await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
         }, (sender, g) => g != null);
 
-        private T searchResult;
+        public abstract Command<string> Search { get; }
 
+        private T searchResult;
         public T SearchResult
         {
             get => this.searchResult;
@@ -50,13 +56,16 @@ namespace ExViewer.ViewModels
             }
         }
 
-        private Gallery selectedGallery;
-
-        public Gallery SelectedGallery
+        public virtual void SetQueryWithSearchResult()
         {
-            get => this.selectedGallery;
-            protected set => Set(ref this.selectedGallery, value);
+            this.Keyword = this.SearchResult.Keyword;
         }
+
+        private Gallery selectedGallery;
+        public Gallery SelectedGallery { get => this.selectedGallery; protected set => Set(ref this.selectedGallery, value); }
+
+        private string keyword;
+        public string Keyword { get => this.keyword; set => Set(ref this.keyword, value); }
 
         private void SearchResult_LoadMoreItemsException(IncrementalLoadingList<Gallery> sender, LoadMoreItemsExceptionEventArgs args)
         {

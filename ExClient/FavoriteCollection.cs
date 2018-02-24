@@ -10,7 +10,6 @@ namespace ExClient
 {
     public sealed class FavoriteCollection : IReadOnlyList<FavoriteCategory>, IList
     {
-
         private static readonly Regex favStyleMatcher = new Regex(@"background-position:\s*0\s*px\s+-(\d+)\s*px", RegexOptions.Compiled);
 
         internal FavoriteCategory GetCategory(HtmlNode favoriteIconNode)
@@ -42,14 +41,9 @@ namespace ExClient
             }
         }
 
-        public FavoritesSearchResult Search(string keyword, FavoriteCategory category)
-        {
-            return FavoritesSearchResult.Search(keyword, category);
-        }
-
         public FavoritesSearchResult Search(string keyword)
         {
-            return Search(keyword, null);
+            return FavoritesSearchResult.Search(keyword, null);
         }
 
         private FavoriteCategory[] data;

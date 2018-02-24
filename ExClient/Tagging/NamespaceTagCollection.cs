@@ -26,13 +26,10 @@ namespace ExClient.Tagging
 
         public int Count => this.Owner.Offset[this.groupIndex + 1] - this.Owner.Offset[this.groupIndex];
 
-        public bool IsFixedSize => true;
-
-        public bool IsReadOnly => true;
-
-        public bool IsSynchronized => false;
-
-        public object SyncRoot => ((IList)this.Owner).SyncRoot;
+        bool IList.IsFixedSize => true;
+        bool IList.IsReadOnly => true;
+        bool ICollection.IsSynchronized => false;
+        object ICollection.SyncRoot => ((IList)this.Owner).SyncRoot;
 
         object IList.this[int index] { get => this[index]; set => throw new InvalidOperationException(); }
 
@@ -49,20 +46,38 @@ namespace ExClient.Tagging
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        public bool Contains(GalleryTag item) => IndexOf(item) >= 0;
+
+        public int IndexOf(GalleryTag item)
+        {
+            var i = 0;
+            foreach (var ii in this)
+            {
+                if (ii == item)
+                    return i;
+                i++;
+            }
+            return -1;
+        }
+
         int IList.Add(object value) => throw new InvalidOperationException();
-
         void IList.Clear() => throw new InvalidOperationException();
-
-        bool IList.Contains(object value) => throw new InvalidOperationException();
-
-        int IList.IndexOf(object value) => throw new InvalidOperationException();
-
+        bool IList.Contains(object value) => Contains(value.TryCast<GalleryTag>());
+        int IList.IndexOf(object value) => IndexOf(value.TryCast<GalleryTag>());
         void IList.Insert(int index, object value) => throw new InvalidOperationException();
-
         void IList.Remove(object value) => throw new InvalidOperationException();
-
         void IList.RemoveAt(int index) => throw new InvalidOperationException();
-
-        public void CopyTo(Array array, int index) => throw new InvalidOperationException();
+        public void CopyTo(Array array, int index)
+        {
+            if (!(array is GalleryTag[] arr))
+                throw new ArgumentException("Wrong type of array", nameof(array));
+            if (index + Count > arr.Length)
+                throw new ArgumentException("Not enough space for copying", nameof(array));
+            foreach (var item in this)
+            {
+                arr[index] = item;
+                index++;
+            }
+        }
     }
 }

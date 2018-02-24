@@ -16,78 +16,49 @@ using Opportunity.MvvmUniverse.Collections;
 
 namespace ExViewer.ViewModels
 {
-    public class SearchVM : SearchResultVM<CategorySearchResult>
+    public sealed class SearchVM : SearchResultVM<CategorySearchResult>
     {
-        private static class Cache
-        {
-            private static CacheStorage<string, SearchVM> srCache = new CacheStorage<string, SearchVM>(query =>
-            {
-                var search = default(CategorySearchResult);
-                if (string.IsNullOrEmpty(query))
-                {
-                    var keyword = SettingCollection.Current.DefaultSearchString;
-                    var category = SettingCollection.Current.DefaultSearchCategory;
-                    search = Client.Current.Search(keyword, category);
-                }
-                else
-                {
-                    var uri = new Uri(query);
-
-                    var handle = ExClient.Launch.UriLauncher.HandleAsync(uri);
-                    if (handle.Status != AsyncStatus.Completed)
-                        throw new ArgumentException();
-                    search = (CategorySearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
-                }
-                var vm = new SearchVM(search);
-                AddHistory(vm.Keyword);
-                return vm;
-            }, 10);
-
-            public static SearchVM GetSearchVM(string query)
-            {
-                return srCache.Get(query);
-            }
-
-            public static string AddSearchVM(SearchVM searchVM)
-            {
-                var query = searchVM.SearchQuery.ToString();
-                AddHistory(searchVM.Keyword);
-                srCache.Add(query, searchVM);
-                return query;
-            }
-        }
-
         public static IAsyncAction InitAsync()
         {
             var defaultVM = GetVM(string.Empty);
             return defaultVM.SearchResult.LoadMoreItemsAsync(40).AsTask().AsAsyncAction();
         }
 
-        public static SearchVM GetVM(string parameter)
+        private static AutoFillCacheStorage<string, SearchVM> Cache = AutoFillCacheStorage.Create((string query) =>
         {
-            return Cache.GetSearchVM(parameter ?? string.Empty);
-        }
+            var search = default(CategorySearchResult);
+            if (string.IsNullOrEmpty(query))
+            {
+                var keyword = SettingCollection.Current.DefaultSearchString;
+                var category = SettingCollection.Current.DefaultSearchCategory;
+                search = Client.Current.Search(keyword, category);
+            }
+            else
+            {
+                var uri = new Uri(query);
+
+                var handle = ExClient.Launch.UriLauncher.HandleAsync(uri);
+                search = (CategorySearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
+            }
+            var vm = new SearchVM(search);
+            AddHistory(vm.Keyword);
+            return vm;
+        }, 10);
+
+        public static SearchVM GetVM(string query) => Cache.GetOrCreateAsync(query ?? string.Empty).GetResults();
 
         public static SearchVM GetVM(CategorySearchResult searchResult)
         {
             var vm = new SearchVM(searchResult ?? throw new ArgumentNullException(nameof(searchResult)));
-            Cache.AddSearchVM(vm);
+            AddHistory(vm.Keyword);
+            Cache[vm.SearchQuery] = vm;
             return vm;
         }
 
         private SearchVM(CategorySearchResult searchResult)
-            : this()
-        {
-            this.SearchResult = searchResult;
-            SetQueryWithSearchResult();
-        }
+            : base(searchResult) { }
 
-        private SearchVM()
-        {
-            this.Search.Tag = this;
-        }
-
-        public Command<string> Search { get; } = Command.Create<string>(async (sender, queryText) =>
+        public override Command<string> Search { get; } = Command.Create<string>(async (sender, queryText) =>
         {
             var that = (SearchVM)sender.Tag;
             if (SettingCollection.Current.SaveLastSearch)
@@ -96,23 +67,15 @@ namespace ExViewer.ViewModels
                 SettingCollection.Current.DefaultSearchString = queryText;
             }
             var vm = GetVM(Client.Current.Search(queryText, that.category, that.advancedSearch));
-            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
         });
 
-        public void SetQueryWithSearchResult()
+        public override void SetQueryWithSearchResult()
         {
-            this.Keyword = this.SearchResult.Keyword;
+            base.SetQueryWithSearchResult();
             this.Category = this.SearchResult.Category;
             this.AdvancedSearch = (this.SearchResult as AdvancedSearchResult)?.AdvancedSearch ?? new AdvancedSearchOptions();
             this.FileSearch = this.SearchResult as FileSearchResult;
-        }
-
-        private string keyword;
-
-        public string Keyword
-        {
-            get => this.keyword;
-            set => Set(ref this.keyword, value);
         }
 
         private Category category;
@@ -136,7 +99,5 @@ namespace ExViewer.ViewModels
             get => this.fileSearch;
             private set => Set(ref this.fileSearch, value);
         }
-
-        public Uri SearchQuery => this.SearchResult.SearchUri;
     }
 }

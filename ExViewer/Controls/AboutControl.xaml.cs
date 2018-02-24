@@ -28,7 +28,6 @@ namespace ExViewer.Controls
             if (!"release".Equals(config.Configuration, StringComparison.OrdinalIgnoreCase))
             {
                 FindName(nameof(this.tb_VersionInfoTag));
-                this.tb_VersionInfoTag.Visibility = Visibility.Visible;
                 this.tb_VersionInfoTag.Text = config.Configuration;
             }
             this.tb_AppAuthor.Text = Package.Current.PublisherDisplayName;

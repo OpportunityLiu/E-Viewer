@@ -22,7 +22,7 @@
   </UserControl.Resources>
   <Grid>
     <rs3:Image x:Name="BackgroundImage"
-               x:DeferLoadStrategy="Lazy"
+               x:Load="False"
                Source="{x:Bind Source, Mode=OneWay}"
                Stretch="Fill" />
     <Grid rs3:Background="{StaticResource ImageBackgroundBrush}"

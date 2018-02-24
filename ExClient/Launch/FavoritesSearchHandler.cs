@@ -14,7 +14,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             var keyword = "";
-            var category = (FavoriteCategory)null;
+            var category = FavoriteCategory.All;
             var ap = false;
             foreach (var item in data.Queries)
             {
@@ -38,9 +38,9 @@ namespace ExClient.Launch
                 }
             }
             if (!ap)
-                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(Client.Current.Favorites.Search("", category)));
+                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(category.Search("")));
             else
-                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(Client.Current.Favorites.Search(keyword, category)));
+                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(category.Search(keyword)));
         }
     }
 }

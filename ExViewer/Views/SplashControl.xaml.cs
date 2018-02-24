@@ -212,7 +212,7 @@ namespace ExViewer.Views
             {
                 if (await EhTagTranslatorClient.Client.NeedUpdateAsync())
                 {
-                    AboutControl.UpdateEhWiki.Execute();
+                    AboutControl.UpdateETT.Execute();
                 }
             }
             catch (Exception)
@@ -221,7 +221,7 @@ namespace ExViewer.Views
             }
             if (DateTimeOffset.Now - EhTagClient.Client.LastUpdate > new TimeSpan(7, 0, 0, 0))
             {
-                AboutControl.UpdateETT.Execute();
+                AboutControl.UpdateEhWiki.Execute();
             }
             if (DateTimeOffset.Now - BannerProvider.Provider.LastUpdate > new TimeSpan(7, 0, 0, 0))
             {

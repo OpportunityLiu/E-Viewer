@@ -126,7 +126,7 @@ namespace ExViewer.Views
 
             base.OnNavigatedTo(e);
 
-            this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
+            this.VM = GalleryVM.GetVM((long)e.Parameter);
 
             var index = this.VM.CurrentIndex;
             if (index < 0)

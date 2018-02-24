@@ -85,8 +85,7 @@
                Style="{StaticResource TitleTextBlockStyle}"
                Text="AppName" />
     <TextBlock x:Name="tb_VersionInfoTag"
-               x:DeferLoadStrategy="Lazy"
-               Visibility="Collapsed"
+               x:Load="False"
                Style="{StaticResource AboutControlBaseTextBlockStyle}"
                Text="Debug" />
     <TextBlock x:Name="tb_AppAuthor"
