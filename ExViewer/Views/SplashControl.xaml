@@ -61,7 +61,7 @@
                     Grid.Row="1"
                     Width="40"
                     Height="40"
-                    x:DeferLoadStrategy="Lazy"
+                    x:Load="False"
                     IsActive="True"
                     VerticalAlignment="Top" />
     </Grid>

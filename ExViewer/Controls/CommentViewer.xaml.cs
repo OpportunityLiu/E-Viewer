@@ -30,6 +30,9 @@ namespace ExViewer.Controls
             public CommentVM()
             {
                 this.Translate.Tag = this;
+                this.VoteUp.Tag = this;
+                this.VoteDown.Tag = this;
+                this.VoteWithdraw.Tag = this;
             }
 
             private Comment comment;
@@ -45,13 +48,9 @@ namespace ExViewer.Controls
                 }
             }
 
-            public static bool CanVoteUp(CommentStatus status) => status == CommentStatus.Votable || status == CommentStatus.VotedDown;
-            public static bool CanVoteDown(CommentStatus status) => status == CommentStatus.Votable || status == CommentStatus.VotedUp;
-            public static bool CanVoteWithdraw(CommentStatus status) => status == CommentStatus.VotedUp || status == CommentStatus.VotedDown;
-
-            public Visibility IsVoteUpVisible(CommentStatus status) => CanVoteUp(status) ? Visibility.Visible : Visibility.Collapsed;
-            public Visibility IsVoteDownVisible(CommentStatus status) => CanVoteDown(status) ? Visibility.Visible : Visibility.Collapsed;
-            public Visibility IsVoteWithdrawVisible(CommentStatus status) => CanVoteWithdraw(status) ? Visibility.Visible : Visibility.Collapsed;
+            public bool CanVoteUp(CommentStatus status) => status == CommentStatus.Votable || status == CommentStatus.VotedDown;
+            public bool CanVoteDown(CommentStatus status) => status == CommentStatus.Votable || status == CommentStatus.VotedUp;
+            public bool CanVoteWithdraw(CommentStatus status) => status == CommentStatus.VotedUp || status == CommentStatus.VotedDown;
 
             private HtmlAgilityPack.HtmlNode translated;
             public HtmlAgilityPack.HtmlNode TranslatedContent
@@ -71,13 +70,13 @@ namespace ExViewer.Controls
             }, (s, c) => c != null && ((CommentVM)s.Tag).translated == null);
 
             public AsyncCommand<Comment> VoteUp { get; }
-                = AsyncCommand.Create<Comment>((s, c) => c.VoteAsync(ExClient.Api.VoteState.Up), (s, c) => c != null && CanVoteUp(c.Status));
+                = AsyncCommand.Create<Comment>((s, c) => c.VoteAsync(ExClient.Api.VoteState.Up), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteUp(c.Status));
 
             public AsyncCommand<Comment> VoteDown { get; }
-                = AsyncCommand.Create<Comment>((s, c) => c.VoteAsync(ExClient.Api.VoteState.Down), (s, c) => c != null && CanVoteDown(c.Status));
+                = AsyncCommand.Create<Comment>((s, c) => c.VoteAsync(ExClient.Api.VoteState.Down), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteDown(c.Status));
 
             public AsyncCommand<Comment> VoteWithdraw { get; }
-                = AsyncCommand.Create<Comment>((s, c) => c.VoteAsync(ExClient.Api.VoteState.Default), (s, c) => c != null && CanVoteWithdraw(c.Status));
+                = AsyncCommand.Create<Comment>((s, c) => c.VoteAsync(ExClient.Api.VoteState.Default), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteWithdraw(c.Status));
 
             private static EditCommentDialog editDialog;
             public Command<Comment> Edit { get; } = Command.Create<Comment>(async (s, c) =>
@@ -102,19 +101,10 @@ namespace ExViewer.Controls
             this.VM.Translate.Executed += (s, e) =>
             {
                 var ex = e.Exception;
+                e.Handled = true;
                 if (ex != null)
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
-                else
-                    FindName(nameof(this.Translated));
             };
-            this.VM.PropertyChanged += this.VM_PropertyChanged;
-        }
-
-        private void VM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            var vm = (CommentVM)sender;
-            if (vm.Comment?.CanEdit ?? false)
-                FindName(nameof(this.AttentionHeader));
         }
 
         private readonly CommentVM VM = new CommentVM();
@@ -139,11 +129,6 @@ namespace ExViewer.Controls
         {
             this.ClearValue(CommentProperty);
             base.OnDisconnectVisualChildren();
-        }
-
-        private void UserControl_FocusEngaged(Control sender, FocusEngagedEventArgs args)
-        {
-            FindName(nameof(this.EngagementIndicator));
         }
 
         private static double toOpacity(HtmlAgilityPack.HtmlNode val)

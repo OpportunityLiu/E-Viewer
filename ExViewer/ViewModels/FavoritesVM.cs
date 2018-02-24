@@ -16,133 +16,61 @@ using Opportunity.MvvmUniverse.Collections;
 
 namespace ExViewer.ViewModels
 {
-    public class FavoritesVM : SearchResultVM<FavoritesSearchResult>
+    public sealed class FavoritesVM : SearchResultVM<FavoritesSearchResult>
     {
-        private class SearchResultData
+        private static AutoFillCacheStorage<string, FavoritesVM> Cache = AutoFillCacheStorage.Create((string query) =>
         {
-            public string Keyword
+            var search = default(FavoritesSearchResult);
+            if (string.IsNullOrEmpty(query))
             {
-                get; set;
+                search = Client.Current.Favorites.Search(string.Empty);
             }
-
-            public int CategoryIndex
+            else
             {
-                get; set;
+                var uri = new Uri(query);
+
+                var handle = ExClient.Launch.UriLauncher.HandleAsync(uri);
+                search = (FavoritesSearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
             }
-        }
+            var vm = new FavoritesVM(search);
+            AddHistory(vm.Keyword);
+            return vm;
+        }, 10);
 
-        private static class Cache
-        {
-            private static CacheStorage<string, FavoritesVM> srCache = new CacheStorage<string, FavoritesVM>(query =>
-            {
-                var vm = new FavoritesVM(query);
-                AddHistory(vm.Keyword);
-                return vm;
-            }, 10);
-
-            public static FavoritesVM GetSearchVM(string query)
-            {
-                return srCache.Get(query);
-            }
-
-            public static string AddSearchVM(FavoritesVM searchVM)
-            {
-                var query = searchVM.SearchQuery;
-                AddHistory(searchVM.Keyword);
-                srCache.Add(query, searchVM);
-                return query;
-            }
-        }
-
-        public static string GetSearchQuery(string keyword)
-        {
-            return JsonConvert.SerializeObject(new SearchResultData()
-            {
-                Keyword = keyword
-            });
-        }
-
-        public static string GetSearchQuery(string keyword, FavoriteCategory filter)
-        {
-            return JsonConvert.SerializeObject(new SearchResultData()
-            {
-                Keyword = keyword,
-                CategoryIndex = filter?.Index ?? -1
-            });
-        }
-
-        public static FavoritesVM GetVM(string parameter)
-        {
-            return Cache.GetSearchVM(parameter ?? string.Empty);
-        }
+        public static FavoritesVM GetVM(string query) => Cache.GetOrCreateAsync(query ?? string.Empty).GetResults();
 
         public static FavoritesVM GetVM(FavoritesSearchResult searchResult)
         {
             var vm = new FavoritesVM(searchResult ?? throw new ArgumentNullException(nameof(searchResult)));
-            Cache.AddSearchVM(vm);
+            var query = vm.SearchQuery;
+            AddHistory(vm.Keyword);
+            Cache[query] = vm;
             return vm;
         }
 
         private FavoritesVM(FavoritesSearchResult searchResult)
-            : this()
-        {
-            this.SearchResult = searchResult;
-            SetQueryWithSearchResult();
-        }
+            : base(searchResult) { }
 
-        private FavoritesVM(string parameter)
-            : this()
-        {
-            if (string.IsNullOrEmpty(parameter))
-            {
-                this.keyword = "";
-                this.category = FavoriteCategory.All;
-            }
-            else
-            {
-                var q = JsonConvert.DeserializeObject<SearchResultData>(parameter);
-                this.keyword = q.Keyword;
-                if (q.CategoryIndex < 0 || q.CategoryIndex >= Client.Current.Favorites.Count)
-                    this.category = FavoriteCategory.All;
-                else
-                    this.category = Client.Current.Favorites[q.CategoryIndex];
-            }
-            this.SearchResult = Client.Current.Favorites.Search(this.keyword, this.category);
-        }
-
-        private FavoritesVM()
-        {
-            this.Search.Tag = this;
-        }
-
-        public Command<string> Search { get; } = Command.Create<string>(async (sender, queryText) =>
+        public override Command<string> Search { get; } = Command.Create<string>(async (sender, queryText) =>
         {
             var that = (FavoritesVM)sender.Tag;
-            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), GetSearchQuery(queryText, that.category));
+            var cat = that.category;
+            var search = cat == null ? Client.Current.Favorites.Search(queryText) : cat.Search(queryText);
+            var vm = GetVM(search);
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), vm.SearchQuery);
         });
 
-        public void SetQueryWithSearchResult()
+        public override void SetQueryWithSearchResult()
         {
-            this.Keyword = this.SearchResult.Keyword;
+            base.SetQueryWithSearchResult();
             this.Category = this.SearchResult.Category;
         }
 
-        private string keyword;
-
-        public string Keyword
-        {
-            get => this.keyword;
-            set => Set(ref this.keyword, value);
-        }
-
         private FavoriteCategory category;
-
         public FavoriteCategory Category
         {
             get => this.category;
             set => Set(ref this.category, value);
         }
-
-        public string SearchQuery => GetSearchQuery(this.keyword, this.category);
     }
 }

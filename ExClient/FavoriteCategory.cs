@@ -1,6 +1,7 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
 using ExClient.Internal;
+using ExClient.Search;
 using HtmlAgilityPack;
 using Opportunity.MvvmUniverse;
 using System;
@@ -22,6 +23,11 @@ namespace ExClient
         {
             this.Index = index;
             this.name = name;
+        }
+
+        public FavoritesSearchResult Search(string keyword)
+        {
+            return FavoritesSearchResult.Search(keyword, this);
         }
 
         public int Index { get; }

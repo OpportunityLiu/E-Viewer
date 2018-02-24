@@ -69,7 +69,7 @@ namespace ExViewer.Views
                 {
                 case AsyncStatus.Completed:
                     var vm = SearchVM.GetVM(s.GetResults());
-                    await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
+                    await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
                     break;
                 case AsyncStatus.Error:
                     RootControl.RootController.SendToast(s.ErrorCode, typeof(SearchPage));

@@ -54,7 +54,7 @@ namespace ExViewer.ViewModels
         public Command<TaggingRecord> SearchTag { get; } = Command.Create<TaggingRecord>(async (sender, tr) =>
         {
             var vm = SearchVM.GetVM(tr.Tag.Search(Category.All, new AdvancedSearchOptions(skipMasterTags: true, searchLowPowerTags: true)));
-            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
+            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
         }, (sender, tr) => tr.Tag.Content != null);
     }
 }

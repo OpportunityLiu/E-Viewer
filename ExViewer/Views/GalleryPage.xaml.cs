@@ -167,7 +167,7 @@ namespace ExViewer.Views
                 this.needResetView = true;
             else if (restore)
                 this.needRestoreView = true;
-            this.VM = await GalleryVM.GetVMAsync((long)e.Parameter);
+            this.VM = GalleryVM.GetVM((long)e.Parameter);
             Control restoreElement = null;
             var idx = this.VM.CurrentIndex;
             if (reset)

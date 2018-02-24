@@ -101,11 +101,11 @@ namespace ExViewer
                         {
                         case CategorySearchResult ksr:
                             var vm = SearchVM.GetVM(ksr);
-                            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
+                            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
                             return;
                         case FavoritesSearchResult fsr:
                             var fvm = FavoritesVM.GetVM(fsr);
-                            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), fvm.SearchQuery.ToString());
+                            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), fvm.SearchQuery);
                             return;
                         }
                         throw new InvalidOperationException();
