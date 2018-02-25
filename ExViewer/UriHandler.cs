@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ExClient.Launch;
-using ExViewer.Views;
-using ExViewer.ViewModels;
-using Windows.System;
-using Windows.Foundation;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using ExClient.Launch;
 using ExClient.Search;
+using ExViewer.ViewModels;
+using ExViewer.Views;
+using System;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.System;
 
 namespace ExViewer
 {

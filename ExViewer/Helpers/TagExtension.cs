@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EhTagTranslatorClient;
 using ExViewer.Settings;
-using EhTagTranslatorClient;
-using Windows.Foundation;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Windows.UI.Xaml;
 using Opportunity.Helpers.Universal.AsyncHelpers;
-using ExClient.Tagging;
+using Windows.Foundation;
 
 namespace ExClient.Tagging
 {

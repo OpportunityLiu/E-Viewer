@@ -3,9 +3,7 @@ using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -47,18 +45,20 @@ namespace ExViewer.Views
                 [typeof(PopularPage)] = this.svt_Popular,
                 [typeof(SettingsPage)] = this.svt_Settings
             };
-#if DEBUG
-            this.GotFocus += this.OnGotFocus;
+
+            vistualizeFocus();
         }
 
-        private void OnGotFocus(object sender, RoutedEventArgs e)
+        [Conditional("DEBUG")]
+        private void vistualizeFocus()
         {
-            if (FocusManager.GetFocusedElement() is FrameworkElement focus)
+            this.GotFocus += (s, e) =>
             {
-                var c = focus as Control;
-                Debug.WriteLine($"{focus.Name}({focus.GetType()}) {c?.FocusState}", "Focus state");
-            }
-#endif
+                var focus = FocusManager.GetFocusedElement();
+                var fe = focus as FrameworkElement;
+                var con = fe as Control;
+                Debug.WriteLine($"{(fe?.Name ?? focus.ToString())}({focus.GetType()}) {con?.FocusState}", "Focus state");
+            };
         }
 
         private readonly Dictionary<Controls.SplitViewTab, Type> tabs;

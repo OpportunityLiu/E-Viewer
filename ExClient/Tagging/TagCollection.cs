@@ -1,17 +1,14 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
 using HtmlAgilityPack;
-using Newtonsoft.Json;
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text.RegularExpressions;
 using Windows.Foundation;
 using static ExClient.Tagging.Namespace;
 

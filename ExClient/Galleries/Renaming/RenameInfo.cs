@@ -1,16 +1,14 @@
-﻿using Opportunity.MvvmUniverse;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ExClient.Api;
-using Windows.Foundation;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using ExClient.Api;
 using ExClient.Internal;
 using HtmlAgilityPack;
+using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Foundation;
 
 namespace ExClient.Galleries.Renaming
 {

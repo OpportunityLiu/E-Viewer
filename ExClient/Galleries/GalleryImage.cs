@@ -2,8 +2,8 @@
 using ExClient.Models;
 using HtmlAgilityPack;
 using Microsoft.EntityFrameworkCore;
-using Opportunity.MvvmUniverse;
 using Opportunity.Helpers.Universal.AsyncHelpers;
+using Opportunity.MvvmUniverse;
 using System;
 using System.IO;
 using System.Linq;

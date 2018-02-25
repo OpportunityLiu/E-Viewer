@@ -1,13 +1,13 @@
 ﻿using ExViewer.Views;
+using Microsoft.AppCenter.Analytics;
 using System;
+using System.Collections.Generic;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using System.Collections.Generic;
-using Microsoft.AppCenter.Analytics;
 #if !DEBUG
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Crashes;

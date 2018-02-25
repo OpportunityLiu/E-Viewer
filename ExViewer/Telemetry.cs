@@ -1,15 +1,12 @@
-﻿using ExClient;
-using ExViewer.Views;
+﻿using ExClient.Galleries;
+using ExClient.Search;
 using ExViewer.ViewModels;
+using ExViewer.Views;
+using Opportunity.MvvmUniverse;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
-using ExClient.Search;
-using ExClient.Galleries;
-using Opportunity.MvvmUniverse;
 
 namespace ExViewer
 {
