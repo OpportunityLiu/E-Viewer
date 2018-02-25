@@ -5,6 +5,7 @@ using ExClient.Galleries.Metadata;
 using ExViewer.Helpers;
 using ExViewer.Settings;
 using ExViewer.Views;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
@@ -332,16 +334,16 @@ namespace ExViewer.ViewModels
 
         public IAsyncAction RefreshInfoAsync()
         {
-            return Run(async token =>
+            var current = this.GetCurrent();
+            var imageFile = current?.ImageFile;
+            if (imageFile == null)
             {
-                var current = this.GetCurrent();
-                var imageFile = current?.ImageFile;
-                if (imageFile == null)
-                {
-                    this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
-                    this.QRCodeResult = null;
-                    return;
-                }
+                this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
+                this.QRCodeResult = null;
+                return AsyncAction.CreateCompleted();
+            }
+            return Task.Run(async () =>
+            {
                 var prop = await imageFile.GetBasicPropertiesAsync();
                 var imageProp = await imageFile.Properties.GetImagePropertiesAsync();
                 this.CurrentInfo = string.Format(Strings.Resources.Views.ImagePage.ImageFileInfo, imageFile.DisplayType,
@@ -355,7 +357,7 @@ namespace ExViewer.ViewModels
                     var qr = r.decode(new ZXing.BinaryBitmap(new ZXing.Common.HybridBinarizer(new ZXing.SoftwareBitmapLuminanceSource(sb))));
                     this.QRCodeResult = qr?.Text;
                 }
-            });
+            }).AsAsyncAction();
         }
 
         private static QRCodeDialog qrCodeDialog;
