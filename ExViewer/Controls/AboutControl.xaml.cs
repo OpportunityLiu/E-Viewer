@@ -1,18 +1,16 @@
-﻿using ExViewer.Views;
+﻿using Opportunity.MvvmUniverse.Commands;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.Foundation;
-using System.Collections.Generic;
-using Windows.UI.Core;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
-using System.Collections;
-using Opportunity.MvvmUniverse.Commands;
 
 namespace ExViewer.Controls
 {

@@ -1,10 +1,6 @@
 ﻿using ExClient.Internal;
 using ExClient.Status;
-using HtmlAgilityPack;
-using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;

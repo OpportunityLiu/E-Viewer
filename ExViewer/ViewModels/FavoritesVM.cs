@@ -1,18 +1,9 @@
 ﻿using ExClient;
-using ExViewer.Database;
-using ExViewer.Settings;
-using ExViewer.Views;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using System.Linq;
-using Opportunity.MvvmUniverse.Commands;
 using ExClient.Search;
-using ExClient.Galleries;
+using ExViewer.Views;
 using Opportunity.MvvmUniverse.Collections;
+using Opportunity.MvvmUniverse.Commands;
+using System;
 
 namespace ExViewer.ViewModels
 {

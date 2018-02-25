@@ -1,10 +1,8 @@
 ﻿using EhWikiClient;
-using ExClient;
 using ExClient.Tagging;
 using ExViewer.Controls;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.System;

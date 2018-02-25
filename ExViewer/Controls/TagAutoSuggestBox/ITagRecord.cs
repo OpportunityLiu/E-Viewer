@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TransClient = EhTagTranslatorClient.Client;
 using TransRecord = EhTagTranslatorClient.Record;
-using WikiClient = EhWikiClient.Client;
 
 namespace ExViewer.Controls.TagSuggestion
 {

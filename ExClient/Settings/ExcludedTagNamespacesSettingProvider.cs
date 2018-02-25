@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using ExClient.Tagging;
+using System.Collections.Generic;
 using System.Linq;
-using ExClient.Tagging;
 
 namespace ExClient.Settings
 {

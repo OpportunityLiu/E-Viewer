@@ -1,15 +1,11 @@
-﻿using ExClient.Status;
-using ExClient;
-using Opportunity.MvvmUniverse;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Opportunity.MvvmUniverse.Commands;
-using ExViewer.Views;
+﻿using ExClient;
 using ExClient.Search;
+using ExClient.Status;
+using ExViewer.Views;
 using Opportunity.Helpers.Universal.AsyncHelpers;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Commands;
+using System;
 
 namespace ExViewer.ViewModels
 {

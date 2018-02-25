@@ -1,13 +1,8 @@
-﻿using static ExViewer.Helpers.DocumentHelper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Markup;
+using static ExViewer.Helpers.DocumentHelper;
 
 namespace ExViewer.Controls
 {

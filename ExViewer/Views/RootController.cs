@@ -1,24 +1,21 @@
-﻿using System;
+﻿using ExClient;
+using ExClient.Status;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Views;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media.Animation;
 using System.Diagnostics;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Navigation;
-using ExClient;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Windows.UI.Core;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.ApplicationModel.Core;
-using Opportunity.MvvmUniverse;
-using Windows.UI;
-using ExClient.Status;
-using Opportunity.MvvmUniverse.Views;
+using Windows.Foundation;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Navigation;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.Views
 {

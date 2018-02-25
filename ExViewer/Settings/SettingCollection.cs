@@ -1,11 +1,9 @@
 ﻿using ApplicationDataManager.Settings;
 using ExClient;
 using ExClient.Settings;
-using System.Diagnostics;
+using ExClient.Tagging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using ExViewer.Helpers;
-using ExClient.Tagging;
 
 namespace ExViewer.Settings
 {

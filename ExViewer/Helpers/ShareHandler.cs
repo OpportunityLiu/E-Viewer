@@ -1,23 +1,19 @@
 ﻿using ExViewer.Views;
 using Opportunity.MvvmUniverse;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.UserProfile;
 using Windows.UI;
-using Windows.UI.Core;
-using System.Collections;
 
 namespace ExViewer.Helpers
 {

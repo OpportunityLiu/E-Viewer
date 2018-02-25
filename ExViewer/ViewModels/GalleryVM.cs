@@ -1,31 +1,24 @@
 ﻿using ExClient;
-using ExViewer.Settings;
-using ExViewer.Views;
-using Newtonsoft.Json;
-using System;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Windows.Foundation;
-using Windows.System;
-using System.Collections.ObjectModel;
-using Windows.Storage.Streams;
-using Windows.Storage;
-using Windows.Graphics.Imaging;
 using ExClient.Api;
-using Windows.ApplicationModel.DataTransfer;
-using Opportunity.MvvmUniverse.Collections;
-using Opportunity.MvvmUniverse.Commands;
-using Opportunity.MvvmUniverse;
-using ExClient.Tagging;
 using ExClient.Galleries;
 using ExClient.Galleries.Metadata;
-using Windows.Storage.AccessCache;
 using ExViewer.Helpers;
-using Windows.UI.Xaml.Controls;
+using ExViewer.Settings;
+using ExViewer.Views;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Collections;
+using Opportunity.MvvmUniverse.Commands;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Windows.Foundation;
+using Windows.Graphics.Imaging;
+using Windows.Storage;
+using Windows.Storage.AccessCache;
+using Windows.Storage.Streams;
+using Windows.System;
+using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.ViewModels
 {

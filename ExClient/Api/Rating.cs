@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ExClient.Galleries;
-using Newtonsoft.Json;
+﻿using ExClient.Galleries;
 using ExClient.Galleries.Rating;
+using Newtonsoft.Json;
+using System;
 
 namespace ExClient.Api
 {

@@ -1,10 +1,7 @@
-﻿using System;
+﻿using EhTagTranslatorClient.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using EhTagTranslatorClient.Model;
-using ExClient.Tagging;
 
 namespace EhTagTranslatorClient.Migrations
 {

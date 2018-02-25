@@ -2,7 +2,6 @@
 using HtmlAgilityPack;
 using System;
 using System.IO;
-using System.Linq;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.Web.Http;

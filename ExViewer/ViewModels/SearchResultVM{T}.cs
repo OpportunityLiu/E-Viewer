@@ -1,20 +1,13 @@
-﻿using ExClient;
+﻿using ExClient.Galleries;
+using ExClient.Search;
 using ExViewer.Database;
-using ExViewer.Settings;
 using ExViewer.Views;
-using Newtonsoft.Json;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Collections;
+using Opportunity.MvvmUniverse.Commands;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using System.Linq;
-using EhTagTranslatorClient;
-using Opportunity.MvvmUniverse.Collections;
-using Opportunity.MvvmUniverse;
-using Opportunity.MvvmUniverse.Commands;
-using ExClient.Search;
-using ExClient.Galleries;
 
 namespace ExViewer.ViewModels
 {

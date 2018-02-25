@@ -1,14 +1,10 @@
 ﻿using ExClient;
 using ExViewer.Controls;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using static ExViewer.Helpers.HtmlHelper;
 
 // “内容对话框”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上进行了说明
