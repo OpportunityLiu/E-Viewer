@@ -55,6 +55,8 @@ namespace ExViewer.Views
             this.GotFocus += (s, e) =>
             {
                 var focus = FocusManager.GetFocusedElement();
+                if (focus == null)
+                    return;
                 var fe = focus as FrameworkElement;
                 var con = fe as Control;
                 Debug.WriteLine($"{(fe?.Name ?? focus.ToString())}({focus.GetType()}) {con?.FocusState}", "Focus state");
