@@ -291,10 +291,33 @@ namespace ExViewer.Views
             e.Handled = true;
             switch (e.Key)
             {
-
             case VirtualKey.GamepadY:
+                if (this.cb_top.IsOpen)
+                {
+                    e.Handled = false;
+                    break;
+                }
                 this.changeViewTo(false, false);
                 this.tpTags.Focus(FocusState.Keyboard);
+                break;
+            case VirtualKey.GamepadX:
+                if (this.cb_top.IsOpen)
+                {
+                    e.Handled = false;
+                    break;
+                }
+                this.changeViewTo(true, false);
+                if ((this.pv.SelectedItem as PivotItem)?.Content is ListViewBase lvb)
+                {
+                    if (lvb.Items.Count == 0)
+                        this.pv.Focus(FocusState.Keyboard);
+                    else if (lvb.ContainerFromIndex(lvb.SelectedIndex) is Control c)
+                        c.Focus(FocusState.Keyboard);
+                    else
+                        lvb.Focus(FocusState.Keyboard);
+                }
+                else
+                    this.pv.Focus(FocusState.Keyboard);
                 break;
             case VirtualKey.GamepadMenu:
             case VirtualKey.Application:
