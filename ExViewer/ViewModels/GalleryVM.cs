@@ -330,7 +330,16 @@ namespace ExViewer.ViewModels
         public string CurrentInfo { get => this.currentInfo; private set => Set(ref this.currentInfo, value); }
 
         private string qrCodeResult;
-        public string QRCodeResult { get => this.qrCodeResult; private set => Set(ref this.qrCodeResult, value); }
+        private int qrCodeHash;
+        public string QRCodeResult
+        {
+            get => this.qrCodeResult;
+            private set
+            {
+                Set(ref this.qrCodeResult, value);
+                this.qrCodeHash = 0;
+            }
+        }
 
         public IAsyncAction RefreshInfoAsync()
         {
@@ -350,6 +359,9 @@ namespace ExViewer.ViewModels
                     fileType: imageFile.DisplayType,
                     size: Opportunity.Converters.Typed.ByteSizeToStringConverter.ByteSizeToString((long)prop.Size, Opportunity.Converters.Typed.UnitPrefix.Binary),
                     width: imageProp.Width, height: imageProp.Height);
+                var newQRHash = prop.Size.GetHashCode() ^ imageFile.Name.GetHashCode();
+                if (newQRHash == this.qrCodeHash)
+                    return;
                 using (var stream = await imageFile.OpenReadAsync())
                 {
                     var decoder = await BitmapDecoder.CreateAsync(stream);
@@ -357,6 +369,7 @@ namespace ExViewer.ViewModels
                     var r = new ZXing.QrCode.QRCodeReader();
                     var qr = r.decode(new ZXing.BinaryBitmap(new ZXing.Common.HybridBinarizer(new ZXing.SoftwareBitmapLuminanceSource(sb))));
                     this.QRCodeResult = qr?.Text;
+                    this.qrCodeHash = newQRHash;
                 }
             }).AsAsyncAction();
         }

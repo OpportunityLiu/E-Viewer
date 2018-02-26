@@ -366,7 +366,7 @@
         <AppBarButton x:Name="abb_LoadOriginal"
                       x:Uid="Views/ImagePage/LoadOriginalAppBarButton"
                       Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
-                      CommandParameter="{x:Bind local:ImagePage.loadOriginalCommandParameter(((local:ImagePageImageView)fv.SelectedItem).Image,((local:ImagePageImageView)fv.SelectedItem).Image.OriginalLoaded), Mode=OneWay}"
+                      CommandParameter="{x:Bind local:ImagePage.loadOriginalCommandParameter(((local:ImagePageImageView)fv.SelectedItem).Image,((local:ImagePageImageView)fv.SelectedItem).Image.OriginalLoaded), Mode=OneWay, FallbackValue={x:Null}}"
                       Label="Load original image">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE744;" />
