@@ -37,7 +37,7 @@ namespace ExViewer.Views
             var v = newValue.Version;
             sender.tbTitle.Text = newValue.Title;
             sender.tbContent.Text = newValue.Content;
-            sender.tbVersion.Text= string.Format(Strings.Resources.Views.UpdateDialog.ContentTemplate, v.Major, v.Minor, v.Build, v.Revision);
+            sender.tbVersion.Text = Strings.Resources.Views.UpdateDialog.ContentTemplate(v.Major, v.Minor, v.Build, v.Revision);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace ExClient.Tagging
             Language,
             Parody,
             Character,
-            Namespace.Group,
+            Group,
             Artist,
             Male,
             Female,

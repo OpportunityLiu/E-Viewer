@@ -196,6 +196,7 @@
       "SimilarCheckBox/Content": "搜尋相似內容"
     },
     "GalleryPage": {
+      "$TorrentDownloaded": "種子下載完成，已儲存至 {path}",
       "AppBarButtonAddComment/Label": "發表新評論",
       "AppBarButtonLatestRevision/Label": "轉到最新版本",
       "CommentsEmptyTextBlock/Text": "沒有評論",
@@ -209,7 +210,6 @@
       "SearchUploaderAppBarButton/Label": "搜尋該上傳者的所有畫廊",
       "ShareAppBarButton/Label": "共享",
       "TorrentDownloadButton/ToolTipService/ToolTip": "下載",
-      "TorrentDownloaded": "種子下載完成，已儲存至 {0}",
       "TorrentDownloading": "開始下載種子…",
       "TorrentDownloadsTextBlock/Text": "完成",
       "TorrentExpungedTextBlock/Text": "已失效",
@@ -222,11 +222,11 @@
       "TorrentUploaderTextBlock/Text": "上傳者"
     },
     "ImagePage": {
+      "$ImageFileInfo": "檔案型別：{fileType}\n大小：{size}\n尺寸：{width} × {height}",
       "BackToWindow": "退出全屏",
       "CounterSeparatorTextBlock/Text": "/",
       "FullScreen": "全屏",
       "FullScreenAppBarButton/Label": "全屏",
-      "ImageFileInfo": "檔案型別：{0}\n大小：{1}\n尺寸：{2} × {3}",
       "ImageFileInfoDefault": "圖片未載入完成。",
       "ImageInfoAppBarButton/Label": "檔案資訊",
       "LoadOriginalAppBarButton/Label": "載入原圖",
@@ -332,12 +332,12 @@
       "TorrentNamesCheckBox/Content": "搜尋種子檔名"
     },
     "UpdateDialog": {
+      "$ContentTemplate": "版本 {major}.{minor}.{build}.{revision} 已釋出。",
       "ContentDialog": {
         "Title": "新版本",
         "PrimaryButtonText": "現在升級",
         "SecondaryButtonText": "下次提醒"
-      },
-      "ContentTemplate": "版本 {0}.{1}.{2}.{3} 已釋出。"
+      }
     }
   }
 }
