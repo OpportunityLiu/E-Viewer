@@ -196,6 +196,7 @@
       "SimilarCheckBox/Content": "搜索相似内容"
     },
     "GalleryPage": {
+      "$TorrentDownloaded": "种子下载完成，已保存至 {path}",
       "AppBarButtonAddComment/Label": "发表新评论",
       "AppBarButtonLatestRevision/Label": "转到最新版本",
       "CommentsEmptyTextBlock/Text": "没有评论",
@@ -209,7 +210,6 @@
       "SearchUploaderAppBarButton/Label": "搜索该上传者的所有画廊",
       "ShareAppBarButton/Label": "共享",
       "TorrentDownloadButton/ToolTipService/ToolTip": "下载",
-      "TorrentDownloaded": "种子下载完成，已保存至 {0}",
       "TorrentDownloading": "开始下载种子…",
       "TorrentDownloadsTextBlock/Text": "完成",
       "TorrentExpungedTextBlock/Text": "已失效",
@@ -222,11 +222,11 @@
       "TorrentUploaderTextBlock/Text": "上传者"
     },
     "ImagePage": {
+      "$ImageFileInfo": "文件类型：{fileType}\n大小：{size}\n尺寸：{width} × {height}",
       "BackToWindow": "退出全屏",
       "CounterSeparatorTextBlock/Text": "/",
       "FullScreen": "全屏",
       "FullScreenAppBarButton/Label": "全屏",
-      "ImageFileInfo": "文件类型：{0}\n大小：{1}\n尺寸：{2} × {3}",
       "ImageFileInfoDefault": "图片未加载完成。",
       "ImageInfoAppBarButton/Label": "文件信息",
       "LoadOriginalAppBarButton/Label": "加载原图",
@@ -332,12 +332,12 @@
       "TorrentNamesCheckBox/Content": "搜索种子文件名"
     },
     "UpdateDialog": {
+      "$ContentTemplate": "版本 {major}.{minor}.{build}.{revision} 已发布。",
       "ContentDialog": {
         "Title": "新版本",
         "PrimaryButtonText": "现在升级",
         "SecondaryButtonText": "下次提醒"
-      },
-      "ContentTemplate": "版本 {0}.{1}.{2}.{3} 已发布。"
+      }
     }
   }
 }

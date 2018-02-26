@@ -54,7 +54,7 @@ namespace ExClient.Api
             var validMatch = tagNotValid.Match(Error);
             if (validMatch.Success)
             {
-                throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNotValid, validMatch.Groups[1].Value));
+                throw new InvalidOperationException(LocalizedStrings.Resources.TagNotValid(validMatch.Groups[1].Value));
             }
             var needNsMatch = tagNeedNs.Match(Error);
             if (needNsMatch.Success)
@@ -66,32 +66,32 @@ namespace ExClient.Api
                 switch (ns.Length)
                 {
                 case 1:
-                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace1, tag, ns[0]));
+                    throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace1(tag, ns[0]));
                 case 2:
-                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace2, tag, ns[0], ns[1]));
+                    throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace2(tag, ns[0], ns[1]));
                 case 3:
-                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace3, tag, ns[0], ns[1], ns[2]));
+                    throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace3(tag, ns[0], ns[1], ns[2]));
                 case 4:
-                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace4, tag, ns[0], ns[1], ns[2], ns[3]));
+                    throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace4(tag, ns[0], ns[1], ns[2], ns[3]));
                 case 5:
-                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace5, tag, ns[0], ns[1], ns[2], ns[3], ns[4]));
+                    throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace5(tag, ns[0], ns[1], ns[2], ns[3], ns[4]));
                 case 6:
-                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace6, tag, ns[0], ns[1], ns[2], ns[3], ns[4], ns[5]));
+                    throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace6(tag, ns[0], ns[1], ns[2], ns[3], ns[4], ns[5]));
                 case 7:
-                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace7, tag, ns[0], ns[1], ns[2], ns[3], ns[4], ns[5], ns[6]));
+                    throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace7(tag, ns[0], ns[1], ns[2], ns[3], ns[4], ns[5], ns[6]));
                 case 8:
-                    throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagNeedNamespace8, tag, ns[0], ns[1], ns[2], ns[3], ns[4], ns[5], ns[6], ns[7]));
+                    throw new InvalidOperationException(LocalizedStrings.Resources.TagNeedNamespace8(tag, ns[0], ns[1], ns[2], ns[3], ns[4], ns[5], ns[6], ns[7]));
                 }
             }
             var vetoedMatch = tagVetoed.Match(Error);
             if (vetoedMatch.Success)
             {
-                throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagVetoedForGallery, vetoedMatch.Groups[1].Value));
+                throw new InvalidOperationException(LocalizedStrings.Resources.TagVetoedForGallery(vetoedMatch.Groups[1].Value));
             }
             var blacklistMatch = tagInBlackList.Match(Error);
             if (blacklistMatch.Success)
             {
-                throw new InvalidOperationException(string.Format(LocalizedStrings.Resources.TagInBlackList, blacklistMatch.Groups[1].Value));
+                throw new InvalidOperationException(LocalizedStrings.Resources.TagInBlackList(blacklistMatch.Groups[1].Value));
             }
             if (tagCantVote.IsMatch(Error))
                 throw new InvalidOperationException(LocalizedStrings.Resources.TagNoVotePremition);

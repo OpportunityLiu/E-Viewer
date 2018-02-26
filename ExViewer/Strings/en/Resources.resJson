@@ -203,6 +203,7 @@
       "SimilarCheckBox/Content": "Use similarity scan"
     },
     "GalleryPage": {
+      "$TorrentDownloaded": "Download finished, torrent file saved to {path}",
       "AppBarButtonAddComment/Label": "Post new comment",
       "AppBarButtonLatestRevision/Label": "Go to latest revision",
       "CommentsEmptyTextBlock/Text": "No comments",
@@ -216,7 +217,6 @@
       "SearchUploaderAppBarButton/Label": "Search all galleries of the uploader",
       "ShareAppBarButton/Label": "Share",
       "TorrentDownloadButton/ToolTipService/ToolTip": "Download",
-      "TorrentDownloaded": "Download finished, torrent file saved to {0}",
       "TorrentDownloading": "Start downloading…",
       "TorrentDownloadsTextBlock/Text": "Downloads",
       "TorrentExpungedTextBlock/Text": "Expunged",
@@ -229,11 +229,11 @@
       "TorrentUploaderTextBlock/Text": "Uploader"
     },
     "ImagePage": {
+      "$ImageFileInfo": "File type: {fileType}\nSize: {size}\nDimensions: {width} × {height}",
       "BackToWindow": "Back to window",
       "CounterSeparatorTextBlock/Text": "/",
       "FullScreen": "Full screen",
       "FullScreenAppBarButton/Label": "Full screen",
-      "ImageFileInfo": "File type: {0}\nSize: {1}\nDimensions: {2} × {3}",
       "ImageFileInfoDefault": "The image hasn't finished loading.",
       "ImageInfoAppBarButton/Label": "Image infomation",
       "LoadOriginalAppBarButton/Label": "Load original image",
@@ -332,12 +332,12 @@
       "TorrentNamesCheckBox/Content": "Search torrent filenames"
     },
     "UpdateDialog": {
+      "$ContentTemplate": "Version {major}.{minor}.{build}.{revision} has released.",
       "ContentDialog": {
         "Title": "NEW VERSION",
         "PrimaryButtonText": "Update now",
         "SecondaryButtonText": "Remind me next time"
-      },
-      "ContentTemplate": "Version {0}.{1}.{2}.{3} has released."
+      }
     }
   }
 }

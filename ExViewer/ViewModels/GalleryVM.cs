@@ -346,9 +346,10 @@ namespace ExViewer.ViewModels
             {
                 var prop = await imageFile.GetBasicPropertiesAsync();
                 var imageProp = await imageFile.Properties.GetImagePropertiesAsync();
-                this.CurrentInfo = string.Format(Strings.Resources.Views.ImagePage.ImageFileInfo, imageFile.DisplayType,
-                    Opportunity.Converters.Typed.ByteSizeToStringConverter.ByteSizeToString((long)prop.Size, Opportunity.Converters.Typed.UnitPrefix.Binary),
-                    imageProp.Width.ToString(), imageProp.Height.ToString());
+                this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfo(
+                    fileType: imageFile.DisplayType,
+                    size: Opportunity.Converters.Typed.ByteSizeToStringConverter.ByteSizeToString((long)prop.Size, Opportunity.Converters.Typed.UnitPrefix.Binary),
+                    width: imageProp.Width, height: imageProp.Height);
                 using (var stream = await imageFile.OpenReadAsync())
                 {
                     var decoder = await BitmapDecoder.CreateAsync(stream);
@@ -474,7 +475,7 @@ namespace ExViewer.ViewModels
                 await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
                 if (!await Launcher.LaunchFileAsync(file))
                     await Launcher.LaunchFolderAsync(torrentfolder);
-                RootControl.RootController.SendToast(string.Format(Strings.Resources.Views.GalleryPage.TorrentDownloaded, torrentfolder.Path), null);
+                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloaded(torrentfolder.Path), null);
             }
             catch (Exception ex)
             {
