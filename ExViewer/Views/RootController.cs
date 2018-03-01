@@ -232,7 +232,7 @@ namespace ExViewer.Views
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
                 else
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                root.manager.AppViewBackButtonVisibilityOverride = null;
+                root.manager.IsGoBackEnabled = true;
             }
 
             internal static void HandleUriLaunch()
@@ -293,7 +293,7 @@ namespace ExViewer.Views
                     root.sv_root.IsPaneOpen = true;
                     OpenSplitViewPane.Begin();
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                    root.manager.AppViewBackButtonVisibilityOverride = AppViewBackButtonVisibility.Collapsed;
+                    root.manager.IsGoBackEnabled = false;
                     var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? root.svt_Search;
                     currentTab.Focus(FocusState.Programmatic);
                 }
@@ -429,10 +429,7 @@ namespace ExViewer.Views
                 action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
             }
 
-            public static bool ViewEnabled
-            {
-                get; private set;
-            } = true;
+            public static bool ViewEnabled { get; private set; } = true;
 
             private static void DisableView(double? progress)
             {

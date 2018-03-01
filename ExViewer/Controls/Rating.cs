@@ -40,9 +40,9 @@ namespace ExViewer.Controls
             sender.InvalidateArrange();
         }
 
-        public Score? UserRatingValue
+        public Score UserRatingValue
         {
-            get => (Score?)GetValue(UserRatingValueProperty);
+            get => (Score)GetValue(UserRatingValueProperty);
             set => SetValue(UserRatingValueProperty, value);
         }
 
@@ -50,12 +50,12 @@ namespace ExViewer.Controls
         /// Indentify <see cref="UserRatingValue"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty UserRatingValueProperty =
-            DependencyProperty.Register(nameof(UserRatingValue), typeof(Score?), typeof(Rating), new PropertyMetadata(null, UserRatingValuePropertyChanged));
+            DependencyProperty.Register(nameof(UserRatingValue), typeof(Score), typeof(Rating), new PropertyMetadata((Score)0, UserRatingValuePropertyChanged));
 
         private static void UserRatingValuePropertyChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
         {
-            var oldValue = (Score?)e.OldValue;
-            var newValue = (Score?)e.NewValue;
+            var oldValue = (Score)e.OldValue;
+            var newValue = (Score)e.NewValue;
             if (oldValue == newValue)
                 return;
             var sender = (Rating)dp;
@@ -88,12 +88,12 @@ namespace ExViewer.Controls
         {
             var ph = this.PlaceholderValue;
             var ur = this.UserRatingValue;
-            if (ur is Score urv)
+            if (ur > 0)
             {
                 if (this.rgPlaceholderClip != null)
                     this.rgPlaceholderClip.Rect = Rect.Empty;
                 if (this.rgUserRatingClip != null)
-                    this.rgUserRatingClip.Rect = new Rect(0, 0, size.Width / 5 * urv.ToDouble(), size.Height);
+                    this.rgUserRatingClip.Rect = new Rect(0, 0, size.Width / 5 * ur.ToDouble(), size.Height);
             }
             else
             {

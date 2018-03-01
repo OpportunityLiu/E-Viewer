@@ -86,7 +86,7 @@
       <local:Rating x:Name="Rating"
                     RelativePanel.AlignBottomWithPanel="True"
                     PlaceholderValue="{x:Bind Gallery.Rating.AverageScore, Mode=OneWay, FallbackValue=0}"
-                    UserRatingValue="{x:Bind Gallery.Rating.UserScore, Mode=OneWay, FallbackValue={x:Null}}"/>
+                    UserRatingValue="{x:Bind Gallery.Rating.UserScore, Mode=OneWay}"/>
       <TextBlock x:Name="tbCount"
                  RelativePanel.AlignVerticalCenterWith="CategoryTag"
                  RelativePanel.RightOf="CategoryTag"
