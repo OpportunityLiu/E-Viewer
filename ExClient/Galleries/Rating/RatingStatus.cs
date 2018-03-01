@@ -22,8 +22,8 @@ namespace ExClient.Galleries.Rating
         private double averageScore;
         public double AverageScore { get => this.averageScore; internal set => Set(ref this.averageScore, value); }
 
-        private Score? userScore;
-        public Score? UserScore { get => this.userScore; private set => Set(ref this.userScore, value); }
+        private Score userScore;
+        public Score UserScore { get => this.userScore; private set => Set(ref this.userScore, value); }
 
         private long ratingCount = -1;
         public long RatingCount { get => this.ratingCount; private set => Set(ref this.ratingCount, value); }
@@ -84,7 +84,7 @@ namespace ExClient.Galleries.Rating
             if (ratingImageClass != null && userRated(ratingImageClass))
                 this.UserScore = displayScore.ToScore();
             else
-                this.UserScore = null;
+                this.UserScore = Score.NotSet;
 
         }
 

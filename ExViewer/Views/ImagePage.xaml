@@ -375,7 +375,7 @@
         <AppBarButton x:Name="abb_Share"
                       x:Uid="Views/ImagePage/ShareAppBarButton"
                       Command="{x:Bind VM.Share, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
+                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay, FallbackValue={x:Null}}"
                       Label="Share">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE72D;" />
@@ -431,7 +431,7 @@
                       x:Uid="Views/ImagePage/QRCodeAppBarButton"
                       Label="Scan QR Code"
                       Command="{x:Bind VM.OpenQRCode, Mode=OneWay}"
-                      CommandParameter="{x:Bind VM.QRCodeResult, Mode=OneWay, FallbackValue={x:Null}}">
+                      CommandParameter="{x:Bind VM.QRCodeResult, Mode=OneWay}">
           <AppBarButton.Icon>
             <PathIcon Data="M1.25,1.25h5v1.25h-3.75v3.75h-1.25zM1.25,18.75h5v-1.25h-3.75v-3.75h-1.25zM18.75,1.25h-5v1.25h3.75v3.75h1.25zM18.75,18.75h-5v-1.25h3.75v-3.75h1.25zM0,9.375h20v1.25h-20z" />
           </AppBarButton.Icon>

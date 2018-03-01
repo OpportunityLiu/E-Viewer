@@ -4,6 +4,7 @@ namespace ExClient.Galleries.Rating
 {
     public enum Score : byte
     {
+        NotSet = 0,
         Score_0_5 = 1,
         Score_1_0 = 2,
         Score_1_5 = 3,

@@ -20,7 +20,7 @@ namespace ExClient.HentaiVerse
         private static Uri newsUri = new Uri("https://e-hentai.org/news.php");
 
         public static IAsyncActionWithProgress<HttpProgress> FetchAsync()
-            => Client.Current.HttpClient.GetDocumentAsync(newsUri).AsAsyncAction();
+            => Client.Current.HttpClient.GetDocumentAsync(newsUri).ContinueWith(a => { });
 
         internal static void AnalyzePage(HtmlDocument doc)
         {
