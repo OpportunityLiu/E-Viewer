@@ -35,8 +35,9 @@
       <Image x:Name="img_Thumb"
              Source="{x:Bind Image.Thumb, Mode=OneWay}" />
       <Image x:Name="img_Content"
+             xmlns:s="using:Windows.Storage.Streams"
              Source="{x:Bind xb:Image.OfRandomAccessStreamReference(Image.ImageFile), Mode=OneWay}"
-             Visibility="{x:Bind Image, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
+             Visibility="{x:Bind Image.ImageFile, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}, FallbackValue=Collapsed}" />
     </Grid>
   </ScrollViewer>
 </UserControl>
