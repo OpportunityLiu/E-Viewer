@@ -370,8 +370,7 @@
           </DataTemplate>
         </ListView.ItemTemplate>
         <ListView.Header>
-          <tk:ScrollHeader TargetListViewBase="{x:Bind lvTagging}"
-                           Mode="QuickReturn">
+          <tk:ScrollHeader Mode="QuickReturn">
             <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                         Margin="-4"
                         Padding="4">

@@ -360,13 +360,13 @@
         <AppBarButton x:Name="abb_reload"
                       x:Uid="Views/ImagePage/ReloadAppBarButton"
                       Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay}"
+                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay, FallbackValue=''}"
                       Icon="Refresh"
                       Label="Reload" />
         <AppBarButton x:Name="abb_LoadOriginal"
                       x:Uid="Views/ImagePage/LoadOriginalAppBarButton"
                       Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
-                      CommandParameter="{x:Bind local:ImagePage.loadOriginalCommandParameter(((local:ImagePageImageView)fv.SelectedItem).Image,((local:ImagePageImageView)fv.SelectedItem).Image.OriginalLoaded), Mode=OneWay, FallbackValue={x:Null}}"
+                      CommandParameter="{x:Bind local:ImagePage.loadOriginalCommandParameter(((local:ImagePageImageView)fv.SelectedItem).Image,((local:ImagePageImageView)fv.SelectedItem).Image.OriginalLoaded), Mode=OneWay, FallbackValue=''}"
                       Label="Load original image">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE744;" />
@@ -375,7 +375,7 @@
         <AppBarButton x:Name="abb_Share"
                       x:Uid="Views/ImagePage/ShareAppBarButton"
                       Command="{x:Bind VM.Share, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay, FallbackValue={x:Null}}"
+                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay, FallbackValue=''}"
                       Label="Share">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE72D;" />
@@ -385,7 +385,7 @@
         <AppBarButton x:Name="abb_Search"
                       x:Uid="Views/ImagePage/SearchAppBarButton"
                       Command="{x:Bind VM.SearchImage, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image.ImageHash, Mode=OneWay, FallbackValue={x:Null}}"
+                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image.ImageHash, Mode=OneWay, FallbackValue=''}"
                       Label="Show all galleries with this file">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE155;" />
