@@ -170,7 +170,6 @@
     <Compile Include="Search\AdvancedSearchResult.cs" />
     <Compile Include="Search\CategorySearchResult.cs" />
     <Compile Include="Search\FavoritesSearchResult.cs" />
-    <Compile Include="Galleries\GalleryImagePlaceHolder.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Galleries\GalleryList{T}.cs" />
     <Compile Include="Api\ApiRequest.cs" />
@@ -254,7 +253,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.7.0</Version>
+      <Version>1.7.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite">
       <Version>1.1.5</Version>
@@ -272,7 +271,7 @@
       <Version>1.3.1</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
-      <Version>2.3.4</Version>
+      <Version>2.4.2</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
       <Version>1.3.3</Version>

@@ -74,23 +74,7 @@ namespace ExClient.Galleries
         }
 
         internal SavedGallery(GalleryModel model)
-                : base(model)
-        {
-            this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
-        }
-
-        protected override IAsyncAction InitOverrideAsync()
-        {
-            return AsyncAction.CreateCompleted();
-        }
-
-        protected override IAsyncOperation<IEnumerable<GalleryImage>> LoadPageAsync(int pageIndex)
-        {
-            if (this.Comments.IsLoaded)
-                return LoadPageLocalilyAsync(pageIndex);
-            else
-                return base.LoadPageAsync(pageIndex);
-        }
+                : base(model) { }
 
         protected override IAsyncOperation<SoftwareBitmap> GetThumbAsync()
         {

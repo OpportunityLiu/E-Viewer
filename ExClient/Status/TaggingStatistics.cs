@@ -52,7 +52,10 @@ namespace ExClient.Status
                 var table = body.Element("table");
                 if (table != null)
                 {
-                    this.records.AddRange(table.Elements("tr").Skip(1).Select(t => new TaggingRecord(t)));
+                    foreach (var item in table.Elements("tr").Skip(1))
+                    {
+                        this.records.Add(new TaggingRecord(item));
+                    }
                 }
                 OnPropertyChanged(default(string));
             }, token));

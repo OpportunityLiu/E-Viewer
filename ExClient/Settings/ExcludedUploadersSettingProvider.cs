@@ -3,11 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using Windows.UI.Xaml.Interop;
 
 namespace ExClient.Settings
 {
     public sealed class ExcludedUploadersSettingProvider
-        : SettingProvider, INotifyCollectionChanged, IList<string>, ICollection<string>, IEnumerable<string>, IEnumerable, IReadOnlyList<string>, IReadOnlyCollection<string>, IList, ICollection
+        : SettingProvider, IBindableObservableVector, IList<string>, ICollection<string>, IEnumerable<string>, IEnumerable, IReadOnlyList<string>, IReadOnlyCollection<string>, IList, ICollection
     {
         public override string ToString() => string.Join("\n", this.userList);
 
@@ -23,12 +24,14 @@ namespace ExClient.Settings
         internal ExcludedUploadersSettingProvider()
         {
             this.userList = new ObservableList<string>();
-            this.userList.CollectionChanged += this.userList_CollectionChanged;
+            this.userList.VectorChanged += this.userList_VectorChanged;
         }
 
-        private void userList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+
+        public event BindableVectorChangedEventHandler VectorChanged;
+        private void userList_VectorChanged(IBindableObservableVector vector, object e)
         {
-            this.CollectionChanged?.Invoke(this, e);
+            this.VectorChanged?.Invoke(this, e);
         }
 
         internal override void DataChanged(Dictionary<string, string> settings)
@@ -57,8 +60,6 @@ namespace ExClient.Settings
 
         object IList.this[int index] { get => ((IList)this.userList)[index]; set => ((IList)this.userList)[index] = checkUser(value); }
         public string this[int index] { get => this.userList[index]; set => this.userList[index] = checkUser(value); }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         private static string checkUser(object value)
         {

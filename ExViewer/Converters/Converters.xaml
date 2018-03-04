@@ -29,10 +29,6 @@
   </c:ChainConverter>
   <c:EmptyConverter x:Key="EmptyConverter" />
   <c:SystemConverter x:Key="DefaultConverter" />
-  <c:ChainConverter x:Key="IndexToStringConverter">
-    <t:Int32OffsetConverter Offset="1" />
-    <c:ConverterReference Converter="{uwp:StaticResource FormatConverter}" />
-  </c:ChainConverter>
   <t:ByteSizeToStringConverter x:Key="SizeConverter"
                                UnitPrefix="Binary" />
   <t:LogicalNotConverter x:Key="LogicalNotConverter" />

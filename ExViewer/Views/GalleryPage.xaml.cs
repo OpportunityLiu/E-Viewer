@@ -126,11 +126,11 @@ namespace ExViewer.Views
         private void restoreView()
         {
             changeViewTo(true, true);
-            var current = this.VM.GetCurrent();
-            if (current != null)
-            {
-                this.gv.ScrollIntoView(current, ScrollIntoViewAlignment.Leading);
-            }
+            var ci = this.VM.View.CurrentItem;
+            if (ci == null)
+                ci = this.VM.View.FirstOrDefault();
+            if (ci != null)
+                this.gv.ScrollIntoView(ci, ScrollIntoViewAlignment.Leading);
         }
 
         private bool isGdInfoHide
@@ -160,8 +160,8 @@ namespace ExViewer.Views
             else if (restore)
                 this.needRestoreView = true;
             this.VM = GalleryVM.GetVM((long)e.Parameter);
-            Control restoreElement = null;
-            var idx = this.VM.CurrentIndex;
+            var idx = this.VM.View.CurrentPosition;
+            var container = default(Control);
             if (reset)
             {
                 resetView();
@@ -169,11 +169,11 @@ namespace ExViewer.Views
             else if (restore)
             {
                 var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
-                if (animation != null)
+                if (animation != null && this.pv.SelectedIndex == 0)
                 {
-                    var con = this.gv.ContainerFromIndex(idx);
-                    if (con != null)
-                        animation.TryStart(con.Descendants<Image>().First());
+                    container = (Control)this.gv.ContainerFromIndex(idx);
+                    if (container != null)
+                        animation.TryStart(container.Descendants<Image>().First());
                     else
                         animation.Cancel();
                 }
@@ -187,10 +187,23 @@ namespace ExViewer.Views
             }
             else if (restore)
             {
-                if (restoreElement == null)
-                    restoreElement = (Control)this.gv.ContainerFromIndex(this.VM.CurrentIndex);
-                await Dispatcher.YieldIdle();
-                restoreElement?.Focus(FocusState.Programmatic);
+                if (container == null)
+                    container = (Control)this.gv.ContainerFromIndex(idx);
+                if (container != null && this.pv.SelectedIndex == 0)
+                {
+                    await Dispatcher.YieldIdle();
+                    container.Focus(FocusState.Programmatic);
+                }
+            }
+            try
+            {
+                var gallery = this.VM.Gallery;
+                if (gallery is SavedGallery || gallery is CachedGallery)
+                    await gallery.RefreshMetaDataAsync();
+            }
+            catch (Exception ex)
+            {
+                RootControl.RootController.SendToast(ex, typeof(GalleryPage));
             }
         }
 

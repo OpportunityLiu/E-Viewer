@@ -90,7 +90,7 @@
       <TextBlock x:Name="tbCount"
                  RelativePanel.AlignVerticalCenterWith="CategoryTag"
                  RelativePanel.RightOf="CategoryTag"
-                 Text="{x:Bind Gallery.RecordCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/GalleryViewer/RecordCountFormatString'}"
+                 Text="{x:Bind Gallery.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/GalleryViewer/RecordCountFormatString'}"
                  Style="{StaticResource DetailRightTextBlockStyle}" />
       <TextBlock x:Name="tbPosted"
                  RelativePanel.AlignVerticalCenterWith="LanguageTextBlock"

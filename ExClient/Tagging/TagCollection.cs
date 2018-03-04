@@ -95,7 +95,7 @@ namespace ExClient.Tagging
             this.Keys = keys;
             this.Offset = offset;
             this.Version++;
-            OnCollectionReset();
+            OnVectorReset();
             OnPropertyChanged(nameof(Count), nameof(Items), "Groups");
         }
 

@@ -18,23 +18,24 @@ namespace ExClient.Search
         protected override void ClearItems()
         {
             base.ClearItems();
-            Set(ref this.hasMoreItems, true);
+            OnPropertyChanged(nameof(HasMoreItems));
         }
 
-        protected override void InsertItems(int index, IReadOnlyList<Gallery> items)
+        protected override void InsertItem(int index, Gallery item)
         {
-            base.InsertItems(index, items);
-            Set(ref this.hasMoreItems, false);
+            base.InsertItem(index, item);
+            if (Count == 1)
+                OnPropertyChanged(nameof(HasMoreItems));
         }
 
-        protected override void RemoveItems(int index, int count)
+        protected override void RemoveItem(int index)
         {
-            base.RemoveItems(index, count);
-            Set(ref this.hasMoreItems, this.Count == 0);
+            base.RemoveItem(index);
+            if (Count == 0)
+                OnPropertyChanged(nameof(HasMoreItems));
         }
 
-        private bool hasMoreItems = true;
-        public override bool HasMoreItems => this.hasMoreItems;
+        public override bool HasMoreItems => this.Count == 0;
 
         private void handleAdditionalInfo(HtmlNode trNode, Gallery gallery)
         {
@@ -44,9 +45,9 @@ namespace ExClient.Search
             gallery.Rating.AnalyzeNode(trNode.ChildNodes[2].ChildNodes[2]);
         }
 
-        private IAsyncOperation<IEnumerable<Gallery>> loadCore(bool reIn)
+        private IAsyncOperation<LoadItemsResult<Gallery>> loadCore(bool reIn)
         {
-            return AsyncInfo.Run<IEnumerable<Gallery>>(async token =>
+            return AsyncInfo.Run(async token =>
             {
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(DomainProvider.Eh.RootUri);
                 var pp = doc.GetElementbyId("pp");
@@ -54,8 +55,7 @@ namespace ExClient.Search
                 {
                     if (reIn)
                     {
-                        Set(ref this.hasMoreItems, false);
-                        return Array.Empty<Gallery>();
+                        return LoadItemsResult.Empty<Gallery>();
                     }
                     else
                     {
@@ -76,11 +76,11 @@ namespace ExClient.Search
                 {
                     handleAdditionalInfo(nodes[i], galleries[i]);
                 }
-                return galleries;
+                return LoadItemsResult.Create(0, galleries);
             });
         }
 
-        protected override IAsyncOperation<IEnumerable<Gallery>> LoadMoreItemsImplementAsync(int count)
+        protected override IAsyncOperation<LoadItemsResult<Gallery>> LoadItemsAsync(int count)
             => loadCore(false);
     }
 }

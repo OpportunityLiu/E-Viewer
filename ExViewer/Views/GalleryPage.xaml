@@ -369,7 +369,7 @@
                              Style="{StaticResource PivotHeaderTextBlockStyle}"
                              Text="Images" />
                   <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                             Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}" />
+                             Text="{x:Bind VM.Gallery.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}" />
                 </Grid>
               </PivotItem.Header>
               <GridView xmlns:animation="using:Microsoft.Toolkit.Uwp.UI.Animations"
@@ -380,9 +380,8 @@
                         animation:ReorderGridAnimation.Duration="100"
                         IsItemClickEnabled="True"
                         ItemClick="gv_ItemClick"
-                        ItemsSource="{x:Bind VM.Gallery, Mode=OneWay}"
-                        Loaded="pv_Content_Loaded"
-                        SelectedIndex="{x:Bind VM.CurrentIndex, Mode=TwoWay}">
+                        ItemsSource="{x:Bind VM.View, Mode=OneWay}"
+                        Loaded="pv_Content_Loaded">
                 <GridView.ItemsPanel>
                   <ItemsPanelTemplate>
                     <ItemsWrapGrid HorizontalAlignment="Center"
@@ -401,14 +400,14 @@
                            ToolTipService.ToolTip="{x:Bind PageID, Mode=OneWay}" />
                   </DataTemplate>
                 </GridView.ItemTemplate>
-                <GridView.Footer>
+                <!--<GridView.Footer>
                   <TextBlock x:Uid="Views/GalleryPage/ImagesLoadingMoreTextBlock"
                              Padding="12"
                              HorizontalAlignment="Center"
                              Style="{StaticResource BaseTextBlockStyle}"
                              Text="Loading more items..."
                              Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
-                </GridView.Footer>
+                </GridView.Footer>-->
               </GridView>
             </PivotItem>
             <PivotItem>

@@ -57,7 +57,14 @@ namespace ExViewer.Controls
             var sender = (ImagePresenter)dp;
             if (newValue != null)
             {
-                await newValue.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
+                try
+                {
+                    await newValue.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
+                }
+                catch (Exception ex)
+                {
+                    Views.RootControl.RootController.SendToast(ex, null);
+                }
             }
             else
                 sender.img_Thumb.Source = defaultImage;

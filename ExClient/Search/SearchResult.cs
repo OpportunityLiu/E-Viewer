@@ -7,13 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Search
 {
-    public abstract class SearchResult : PagingList<Gallery>
+    [System.Diagnostics.DebuggerDisplay(@"\{Count = {Count}/{rc} Page = {lpc}/{pc}\}")]
+    public abstract class SearchResult : IncrementalLoadingList<Gallery>
     {
         public abstract Uri SearchUri { get; }
 
@@ -27,22 +29,35 @@ namespace ExClient.Search
 
         public void Reset()
         {
-            ResetAll();
-            this.PageCount = 1;
+            Clear();
             this.RecordCount = -1;
+            this.lpc = 0;
+            this.PageCount = 1;
         }
 
-        private static readonly Regex recordCountMatcher = new Regex(@"Showing.+of\s+([0-9,]+)", RegexOptions.Compiled);
+        private int lpc = 0;
 
-        private void updatePageCountAndRecordCount(HtmlDocument doc)
+        private int pc = 1;
+        public int PageCount { get => this.pc; set => Set(ref this.pc, value); }
+
+        private int rc;
+        public int RecordCount { get => this.rc; set => Set(nameof(HasMoreItems), ref this.rc, value); }
+
+        public override bool HasMoreItems => this.rc < 0 || this.rc > this.Count;
+
+        private static readonly Regex recordCountMatcher = new Regex(@"Showing.+?-\s*[0-9,]+\s*of\s*([0-9,]+)", RegexOptions.Compiled);
+
+        private void updateRecordCount(HtmlDocument doc)
         {
-            var rcNode = doc.DocumentNode
+            var idoNode = doc.DocumentNode
                 .Element("html")
                 .Element("body")
-                .Element("div")
-                .Descendants("p")
+                .Element("div", "ido");
+            var rcNode = idoNode.Descendants("p")
                 .FirstOrDefault(node => node.HasClass("ip"));
-            if (rcNode == null)
+            var pttNode = idoNode.Descendants("table")
+                .FirstOrDefault(node => node.HasClass("ptt"));
+            if (rcNode == null || pttNode == null)
             {
                 this.RecordCount = 0;
             }
@@ -50,22 +65,17 @@ namespace ExClient.Search
             {
                 var match = recordCountMatcher.Match(rcNode.InnerText);
                 if (match.Success)
+                {
+                    this.PageCount = pttNode.Descendants("td").Select(node =>
+                    {
+                        if (!int.TryParse(node.GetInnerText(), out var i))
+                            i = -1;
+                        return i;
+                    }).Max();
                     this.RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
+                }
                 else
                     this.RecordCount = 0;
-            }
-            if (!this.IsEmpty)
-            {
-                var pcNodes = rcNode.NextSibling
-                    .Element("tr")
-                    .ChildNodes
-                    .Select(node =>
-                    {
-                        if (int.TryParse(node.InnerText, out var i))
-                            return i;
-                        return int.MinValue;
-                    }).DefaultIfEmpty(1).Max();
-                this.PageCount = pcNodes;
             }
         }
 
@@ -93,7 +103,7 @@ namespace ExClient.Search
 
         protected virtual void LoadPageOverride(HtmlDocument doc) { }
 
-        private async Task<IEnumerable<Gallery>> loadPage(HtmlDocument doc)
+        private async Task<IList<Gallery>> loadPage(HtmlDocument doc, CancellationToken token)
         {
             var isList = true;
             var dataRoot = doc.DocumentNode.Descendants("table").SingleOrDefault(node => node.HasClass("itg"));
@@ -125,7 +135,10 @@ namespace ExClient.Search
                     gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.ToToken()));
                 }
             }
-            var galleries = await Gallery.FetchGalleriesAsync(gInfoList);
+            var getG = Gallery.FetchGalleriesAsync(gInfoList);
+            token.Register(getG.Cancel);
+            var galleries = await getG;
+            token.ThrowIfCancellationRequested();
             for (var i = 0; i < galleries.Count; i++)
             {
                 HandleAdditionalInfo(dataNodeList[i], galleries[i], isList);
@@ -134,18 +147,48 @@ namespace ExClient.Search
             return galleries;
         }
 
-        protected sealed override IAsyncOperation<IEnumerable<Gallery>> LoadPageAsync(int pageIndex)
+        protected override IAsyncOperation<LoadItemsResult<Gallery>> LoadItemsAsync(int count)
         {
             return Run(async token =>
             {
-                var uri = new Uri($"{this.SearchUri}&page={pageIndex.ToString()}");
+                var listCount = Count;
+                var uri = new Uri($"{this.SearchUri}&page={this.lpc.ToString()}");
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(uri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
-                updatePageCountAndRecordCount(doc);
-                if (this.IsEmpty)
-                    return Array.Empty<Gallery>();
-                return await loadPage(doc);
+                updateRecordCount(doc);
+                if (this.RecordCount == 0)
+                {
+                    this.lpc++;
+                    return LoadItemsResult.Empty<Gallery>();
+                }
+                var loadlistTask = loadPage(doc, token);
+                var list = await loadlistTask;
+                token.ThrowIfCancellationRequested();
+                if (this.Count == 0)
+                    goto defaultRet;
+                var lastID = this[this.Count - 1].ID;
+                var index = list.Count - 1;
+                for (; index >= 0; index--)
+                {
+                    if (list[index].ID == lastID)
+                        break;
+                }
+                if (index < 0)
+                    goto defaultRet;
+                var listStart = this.Count - index - 1;
+                var i = this.Count - 1;
+                for (; index >= 0; index--, i--)
+                {
+                    if (list[index].ID != this[i].ID)
+                        goto defaultRet;
+                }
+                this.lpc++;
+                return LoadItemsResult.Create(listStart, list, false);
+
+                defaultRet:
+                this.lpc++;
+                return LoadItemsResult.Create(listCount, list, false);
             });
         }
     }

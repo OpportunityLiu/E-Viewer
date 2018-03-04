@@ -71,19 +71,19 @@ namespace ExViewer
                     switch (r)
                     {
                     case GalleryLaunchResult g:
+                    {
                         var page = RootControl.RootController.Frame.Content;
+                        var vm = await GalleryVM.GetVMAsync(g.GalleryInfo);
                         if (!(page is GalleryPage gPage && gPage.VM.Gallery.ID == g.GalleryInfo.ID))
                         {
-                            await GalleryVM.GetVMAsync(g.GalleryInfo);
                             await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.GalleryInfo.ID);
                             await Task.Delay(500);
                         }
                         switch (g.Status)
                         {
                         case GalleryLaunchStatus.Image:
+                            vm.View.MoveCurrentToPosition(g.CurrentIndex);
                             await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), g.GalleryInfo.ID);
-                            await Task.Delay(500);
-                            (RootControl.RootController.Frame.Content as ImagePage)?.SetImageIndex(g.CurrentIndex - 1);
                             break;
                         case GalleryLaunchStatus.Torrent:
                             (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
@@ -93,6 +93,7 @@ namespace ExViewer
                             break;
                         }
                         return;
+                    }
                     case SearchLaunchResult sr:
                         switch (sr.Data)
                         {

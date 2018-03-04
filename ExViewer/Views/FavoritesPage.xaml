@@ -68,7 +68,7 @@
                    HorizontalAlignment="Center"
                    Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                   Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(VM.SearchResult.Count, VM.SearchResult.HasMoreItems), FallbackValue=Collapsed, Mode=OneWay}"
                    Text="No hits found" />
       </ListView.Header>
       <ListView.Footer>

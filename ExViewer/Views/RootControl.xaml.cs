@@ -24,7 +24,7 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
 
-            this.manager.Handlers.Add(new FrameWrapper(this.fm_inner));
+            this.manager.Handlers.Add(this.fm_inner.AsNavigationHandler());
 
             this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
