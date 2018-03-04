@@ -243,7 +243,7 @@ namespace ExViewer.Views
 
         private int oldIndex = -1;
 
-        private async void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = this.fv.SelectedIndex;
             if (index < 0)

@@ -195,16 +195,6 @@ namespace ExViewer.Views
                     container.Focus(FocusState.Programmatic);
                 }
             }
-            try
-            {
-                var gallery = this.VM.Gallery;
-                if (gallery is SavedGallery || gallery is CachedGallery)
-                    await gallery.RefreshMetaDataAsync();
-            }
-            catch (Exception ex)
-            {
-                RootControl.RootController.SendToast(ex, typeof(GalleryPage));
-            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
