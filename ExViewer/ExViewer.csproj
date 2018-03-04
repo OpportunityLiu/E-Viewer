@@ -214,6 +214,9 @@
     <Compile Include="Controls\ExcludedLanguagesSelector.xaml.cs">
       <DependentUpon>ExcludedLanguagesSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FolderPicker.xaml.cs">
+      <DependentUpon>FolderPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\InAppNavigator.cs" />
     <Compile Include="Controls\MyContentDialog.cs" />
     <Compile Include="Controls\MyPage.cs" />
@@ -424,6 +427,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ExcludedLanguagesSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FolderPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

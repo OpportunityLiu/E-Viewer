@@ -61,12 +61,22 @@
       "RewriteTextBlock/Text": "Rewrite",
       "TranslatedTextBlock/Text": "Translated"
     },
+    "FolderPicker": {
+      "DefaultTextBlock/Text": "Default",
+      "ResetButton/Content": "Reset",
+      "SelectButton/Content": "Select"
+    },
     "GalleryViewer": {
       "RecordCountFormatString": "{0} pages"
     },
     "PullToRefreshIndicator": {
       "PullTextBlock/Text": "Pull to refresh",
       "ReleaseTextBlock/Text": "Release to refresh"
+    },
+    "TaggingRecordPresenter": {
+      "BlockedAndSlavedIndicator": "B S",
+      "BlockedIndicator": "B",
+      "SlavedIndicator": "S"
     },
     "TagPresenter": {
       "AddNewTagsAutoSuggestBox/PlaceholderText": "Enter new tags, separated with comma",
@@ -79,11 +89,6 @@
       "TagVoteDownMenuFlyoutItem/Text": "Vote down",
       "TagVoteUpMenuFlyoutItem/Text": "Vote up",
       "TagWithdrawVoteMenuFlyoutItem/Text": "Withdraw vote"
-    },
-    "TaggingRecordPresenter": {
-      "BlockedAndSlavedIndicator": "B S",
-      "BlockedIndicator": "B",
-      "SlavedIndicator": "S"
     }
   },
   "Database": {

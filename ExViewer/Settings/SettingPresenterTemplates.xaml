@@ -4,30 +4,37 @@
                     xmlns:a="using:ExViewer.Views"
                     xmlns:controls="using:ExViewer.Controls"
                     xmlns:settings="using:ApplicationDataManager.Settings">
-    <DataTemplate x:Name="CatagorySettingTemplate"
-                  x:DataType="settings:SettingInfo">
-        <StackPanel>
-            <TextBlock Text="{Binding FriendlyName}" />
-            <controls:CategorySelector HorizontalAlignment="Stretch"
-                                       SelectedCategory="{Binding Value, Mode=TwoWay}" />
-        </StackPanel>
-    </DataTemplate>
-    <DataTemplate x:Name="ExcludedTagNamespacesTemplate"
-                  x:DataType="settings:SettingInfo">
-        <StackPanel>
-            <TextBlock Text="{Binding FriendlyName}" />
-            <controls:ExcludedTagNamespacesSelector ExcludedTagNamespaces="{Binding Value, Mode=TwoWay}" />
-        </StackPanel>
-    </DataTemplate>
-    <DataTemplate x:Name="ExcludedLanguagesTemplate"
-                  x:DataType="settings:SettingInfo">
-        <StackPanel>
-            <TextBlock Text="{Binding FriendlyName}" />
-            <controls:ExcludedLanguagesSelector ExcludedLanguages="{Binding Value, Mode=TwoWay}" />
-        </StackPanel>
-    </DataTemplate>
-    <DataTemplate x:Name="AboutContentTemplate"
-                  x:DataType="settings:SettingInfo">
-        <controls:AboutControl />
-    </DataTemplate>
+  <DataTemplate x:Name="CatagorySettingTemplate"
+                x:DataType="settings:SettingInfo">
+    <StackPanel>
+      <TextBlock Text="{Binding FriendlyName}" />
+      <controls:CategorySelector HorizontalAlignment="Stretch"
+                                 SelectedCategory="{Binding Value, Mode=TwoWay}" />
+    </StackPanel>
+  </DataTemplate>
+  <DataTemplate x:Name="ExcludedTagNamespacesTemplate"
+                x:DataType="settings:SettingInfo">
+    <StackPanel>
+      <TextBlock Text="{Binding FriendlyName}" />
+      <controls:ExcludedTagNamespacesSelector ExcludedTagNamespaces="{Binding Value, Mode=TwoWay}" />
+    </StackPanel>
+  </DataTemplate>
+  <DataTemplate x:Name="ExcludedLanguagesTemplate"
+                x:DataType="settings:SettingInfo">
+    <StackPanel>
+      <TextBlock Text="{Binding FriendlyName}" />
+      <controls:ExcludedLanguagesSelector ExcludedLanguages="{Binding Value, Mode=TwoWay}" />
+    </StackPanel>
+  </DataTemplate>
+  <DataTemplate x:Name="AboutContentTemplate"
+                x:DataType="settings:SettingInfo">
+    <controls:AboutControl />
+  </DataTemplate>
+  <DataTemplate x:Name="FolderTemplate"
+                x:DataType="settings:SettingInfo">
+    <StackPanel>
+      <TextBlock Text="{Binding FriendlyName}" />
+      <controls:FolderPicker FolderToken="{Binding Value, Mode=TwoWay}" />
+    </StackPanel>
+  </DataTemplate>
 </ResourceDictionary>

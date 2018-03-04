@@ -42,20 +42,25 @@ namespace ExClient.Galleries
 
         private static DisplayInformation display;
 
-        protected internal static StorageFolder ImageFolder { get; private set; }
+        private static StorageFolder imageFolder;
+        public static StorageFolder ImageFolder
+        {
+            get => imageFolder;
+            set => imageFolder = value;
+        }
 
         protected internal static IAsyncOperation<StorageFolder> GetImageFolderAsync()
         {
-            var temp = ImageFolder;
+            var temp = imageFolder;
             if (temp != null)
                 return AsyncOperation<StorageFolder>.CreateCompleted(temp);
             return Run(async token =>
             {
-                var temp2 = ImageFolder;
+                var temp2 = imageFolder;
                 if (temp2 == null)
                 {
                     temp2 = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
-                    ImageFolder = temp2;
+                    imageFolder = temp2;
                 }
                 return temp2;
             });

@@ -6,19 +6,18 @@
   },
   "BooleanByFavoritedTime": "By favorited time",
   "BooleanByLastUpdatedTime": "By last gallery update time",
-  "FavoritesOrderByFavoritedTime": "Sort order for favorites",
-  "CommentsOrder": "Sort order for comments",
-  "CommentsOrderValues": {
-    "ByTimeAscending": "Oldest comments first",
-    "ByTimeDecending": "Recent comments first",
-    "ByScore": "By highest score"
-  },
   "BooleanDT": "Default title",
   "BooleanEh": "E-hentai",
   "BooleanEx": "Exhentai (need permittion of account)",
   "BooleanJT": "Japanese title (If available)",
   "BooleanLeftToRight": "Left to right",
   "BooleanRightToLeft": "Right to left",
+  "CommentsOrder": "Sort order for comments",
+  "CommentsOrderValues": {
+    "ByTimeAscending": "Oldest comments first",
+    "ByTimeDecending": "Recent comments first",
+    "ByScore": "By highest score"
+  },
   "CommentTranslationCode": "Language code of comment translating",
   "Connection": "CONNECTION",
   "DefaultSearchCategory": "Default categories on the front page",
@@ -26,7 +25,9 @@
   "ExcludedLanguages": "Excluded languages",
   "ExcludedTagNamespaces": "Excluded tag namespaces",
   "ExcludedUploaders": "Excluded uploaders",
+  "FavoritesOrderByFavoritedTime": "Sort order for favorites",
   "Global": "GLOBAL",
+  "ImageCacheFolder": "Image cache folder",
   "ImageSize": {
     "Auto": "Auto",
     "H1280": "1280px",

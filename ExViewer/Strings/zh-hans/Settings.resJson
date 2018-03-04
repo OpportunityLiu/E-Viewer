@@ -27,6 +27,7 @@
   "ExcludedUploaders": "排除上传者",
   "FavoritesOrderByFavoritedTime": "收藏排序依据",
   "Global": "全局",
+  "ImageCacheFolder": "图片缓存文件夹",
   "ImageSize": {
     "Auto": "自动",
     "H1280": "1280px",
