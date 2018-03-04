@@ -400,14 +400,6 @@
                            ToolTipService.ToolTip="{x:Bind PageID, Mode=OneWay}" />
                   </DataTemplate>
                 </GridView.ItemTemplate>
-                <!--<GridView.Footer>
-                  <TextBlock x:Uid="Views/GalleryPage/ImagesLoadingMoreTextBlock"
-                             Padding="12"
-                             HorizontalAlignment="Center"
-                             Style="{StaticResource BaseTextBlockStyle}"
-                             Text="Loading more items..."
-                             Visibility="{x:Bind VM.Gallery.HasMoreItems, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
-                </GridView.Footer>-->
               </GridView>
             </PivotItem>
             <PivotItem>

@@ -1,7 +1,10 @@
 ﻿using ApplicationDataManager.Settings;
 using ExClient;
+using ExClient.Galleries;
 using ExClient.Settings;
 using ExClient.Tagging;
+using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
@@ -44,6 +47,7 @@ namespace ExViewer.Settings
         {
             this.VisitEx = this.VisitEx;
             this.OpenHVOnMonsterEncountered = this.OpenHVOnMonsterEncountered;
+            this.ImageCacheFolder = this.ImageCacheFolder;
         }
 
         [Setting("Global", Index = 100)]
@@ -74,7 +78,10 @@ namespace ExViewer.Settings
             set
             {
                 SetRoaming(value);
+                Client.Current.Settings.PropertyChanged -= this.ClientSettings_PropertyChanged;
                 Client.Current.Host = value ? HostType.ExHentai : HostType.EHentai;
+                Client.Current.Settings.PropertyChanged += this.ClientSettings_PropertyChanged;
+                this.ClientSettings_PropertyChanged(Client.Current.Settings, new System.ComponentModel.PropertyChangedEventArgs(null));
             }
         }
 
@@ -264,6 +271,34 @@ namespace ExViewer.Settings
                 SetLocal(value);
                 if (value)
                     this.LoadLofiOnMeteredInternetConnection = true;
+            }
+        }
+
+        [Setting("Connection", Index = 9400)]
+        [CustomTemplate("FolderTemplate")]
+        public string ImageCacheFolder
+        {
+            get => GetLocal(default(string));
+            set
+            {
+                SetLocal(value);
+                if (value == null)
+                    GalleryImage.ImageFolder = null;
+                else
+                {
+                    try
+                    {
+                        var gf = StorageApplicationPermissions.FutureAccessList.GetFolderAsync(value);
+                        if (gf.Status == Windows.Foundation.AsyncStatus.Completed)
+                            GalleryImage.ImageFolder = gf.GetResults();
+                        else
+                            gf.Completed = (s, _) => GalleryImage.ImageFolder = s.GetResults();
+                    }
+                    catch
+                    {
+                        ImageCacheFolder = null;
+                    }
+                }
             }
         }
 

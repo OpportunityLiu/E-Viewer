@@ -61,6 +61,11 @@
       "RewriteTextBlock/Text": "重写",
       "TranslatedTextBlock/Text": "翻译"
     },
+    "FolderPicker": {
+      "DefaultTextBlock/Text": "默认",
+      "ResetButton/Content": "重置",
+      "SelectButton/Content": "选择"
+    },
     "GalleryViewer": {
       "RecordCountFormatString": "{0} 页"
     },
