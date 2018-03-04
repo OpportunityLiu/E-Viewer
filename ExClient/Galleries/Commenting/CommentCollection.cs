@@ -31,12 +31,9 @@ namespace ExClient.Galleries.Commenting
 
         private readonly object syncroot = new object();
 
-        public IAsyncAction FetchAsync()
-        {
-            return fetchAsync(true);
-        }
+        public IAsyncAction FetchAsync() => FetchAsync(true);
 
-        private IAsyncAction fetchAsync(bool reload)
+        internal IAsyncAction FetchAsync(bool reload)
         {
             return AsyncInfo.Run(async token =>
             {
@@ -48,7 +45,8 @@ namespace ExClient.Galleries.Commenting
                 var get = Client.Current.HttpClient.GetDocumentAsync(new Uri(this.Owner.GalleryUri, "?hc=1"));
                 token.Register(get.Cancel);
                 var document = await get;
-                Api.ApiToken.Update(document.DocumentNode.OuterHtml);
+                token.ThrowIfCancellationRequested();
+                this.Owner.RefreshMetaData(document);
                 AnalyzeDocument(document);
                 return;
             });
@@ -131,7 +129,7 @@ namespace ExClient.Galleries.Commenting
                     }
                     throw new InvalidOperationException(error);
                 }
-                await fetchAsync(false);
+                await FetchAsync(false);
             });
         }
     }

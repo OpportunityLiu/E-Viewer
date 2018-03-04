@@ -76,131 +76,31 @@ namespace ExClient.Galleries
         }
 
         internal CachedGallery(GalleryModel model)
-            : base(model)
-        {
-            this.loadingPageArray = new IAsyncAction[MathHelper.GetPageCount(model.RecordCount, PageSize)];
-        }
-
-        internal GalleryImageModel[] GalleryImageModels { get; private set; }
-
-        internal void LoadImageModels()
-        {
-            if (this.GalleryImageModels != null)
-                return;
-            this.GalleryImageModels = new GalleryImageModel[this.RecordCount];
-            using (var db = new GalleryDb())
-            {
-                db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                var gid = this.ID;
-                var models = db.GalleryImageSet
-                    .Include(gi => gi.Image)
-                    .Where(gi => gi.GalleryId == gid);
-                foreach (var item in models)
-                {
-                    this.GalleryImageModels[item.PageId - 1] = item;
-                }
-            }
-        }
-
-        protected override IAsyncOperation<IEnumerable<GalleryImage>> LoadPageAsync(int pageIndex)
-        {
-            return Run(async token =>
-            {
-                try
-                {
-                    return await base.LoadPageAsync(pageIndex);
-                }
-                catch
-                {
-                    return await LoadPageLocalilyAsync(pageIndex);
-                }
-            });
-        }
-
-        protected IAsyncOperation<IEnumerable<GalleryImage>> LoadPageLocalilyAsync(int pageIndex)
-        {
-            return Task.Run<IEnumerable<GalleryImage>>(async () =>
-            {
-                this.LoadImageModels();
-                var currentPageSize = MathHelper.GetSizeOfPage(this.RecordCount, PageSize, pageIndex);
-                var loadList = new GalleryImage[currentPageSize];
-                for (var i = 0; i < currentPageSize; i++)
-                {
-                    var model = this.GalleryImageModels[this.Count + i];
-                    if (model == null)
-                    {
-                        loadList[i] = new GalleryImagePlaceHolder(this, this.Count + i + 1);
-                    }
-                    else
-                    {
-                        loadList[i] = await GalleryImage.LoadCachedImageAsync(this, model, model.Image);
-                    }
-                }
-                return loadList;
-            }).AsAsyncOperation();
-        }
-
-        private readonly IAsyncAction[] loadingPageArray;
-
-        internal IAsyncAction LoadImageAsync(GalleryImagePlaceHolder image)
-        {
-            var pageIndex = MathHelper.GetPageIndexOfRecord(PageSize, image.PageID - 1);
-            var lpAc = this.loadingPageArray[pageIndex];
-            if (lpAc != null && lpAc.Status == AsyncStatus.Started)
-                return lpAc;
-            return this.loadingPageArray[pageIndex] = Run(async token =>
-            {
-                var images = (IList<GalleryImage>)await base.LoadPageAsync(pageIndex);
-                var offset = MathHelper.GetStartIndexOfPage(PageSize, pageIndex);
-                for (var i = 0; i < images.Count; i++)
-                {
-                    var ph = this[i + offset] as GalleryImagePlaceHolder;
-                    if (ph == null)
-                        continue;
-                    this[i + offset] = images[i];
-                }
-                await Task.Yield();
-                this.loadingPageArray[pageIndex] = null;
-            }).AsMulticast();
-        }
-
-        public override IAsyncAction DeleteAsync()
-        {
-            this.GalleryImageModels = null;
-            Array.Clear(this.loadingPageArray, 0, this.loadingPageArray.Length);
-            return base.DeleteAsync();
-        }
-
-        public override IAsyncActionWithProgress<SaveGalleryProgress> SaveAsync(ConnectionStrategy strategy)
-        {
-            return Run<SaveGalleryProgress>(async (token, progress) =>
-            {
-                var toReport = new SaveGalleryProgress(-1, this.RecordCount);
-                progress.Report(toReport);
-                while (this.HasMoreItems)
-                {
-                    await this.LoadMoreItemsAsync((uint)PageSize);
-                    token.ThrowIfCancellationRequested();
-                }
-                for (var i = 0; i < this.Count; i++)
-                {
-                    if (this[i] is GalleryImagePlaceHolder ph)
-                    {
-                        await ph.LoadImageAsync(false, strategy, true);
-                        token.ThrowIfCancellationRequested();
-                    }
-                }
-
-                var load = base.SaveAsync(strategy);
-                load.Progress = (sender, pro) => progress.Report(pro);
-                token.Register(load.Cancel);
-                await load;
-            });
-        }
+            : base(model) { }
 
         protected override IAsyncAction InitOverrideAsync()
         {
-            return AsyncAction.CreateCompleted();
+            return LoadLocalItemsAsync();
+        }
+
+        internal IAsyncAction LoadLocalItemsAsync()
+        {
+            return Task.Run(async () =>
+            {
+                using (var db = new GalleryDb())
+                {
+                    db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+                    var gid = this.ID;
+                    var models = db.GalleryImageSet
+                        .Include(gi => gi.Image)
+                        .Where(gi => gi.GalleryId == gid);
+                    foreach (var item in models)
+                    {
+                        await this[item.PageId - 1].PopulateCachedImageAsync(item, item.Image);
+                        this.LoadedItems[item.PageId - 1] = true;
+                    }
+                }
+            }).AsAsyncAction();
         }
 
         protected override IAsyncOperation<SoftwareBitmap> GetThumbAsync()

@@ -49,8 +49,6 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(GalleryVM), typeof(ImagePage), new PropertyMetadata(null, VMPropertyChangedCallback));
 
-        private ImagePageCollectionView collectionView = new ImagePageCollectionView();
-
         private static void VMPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
         {
             var oldVM = (GalleryVM)e.OldValue;
@@ -60,15 +58,6 @@ namespace ExViewer.Views
             var that = (ImagePage)dp;
             var pageFlipView = that.fv;
             pageFlipView.ItemsSource = null;
-            if (newVM == null)
-            {
-                that.collectionView.Collection = null;
-            }
-            else
-            {
-                that.collectionView.Collection = newVM.Gallery;
-                pageFlipView.ItemsSource = that.collectionView;
-            }
         }
 
         private readonly ApplicationView av = ApplicationView.GetForCurrentView();
@@ -127,14 +116,12 @@ namespace ExViewer.Views
 
             this.VM = GalleryVM.GetVM((long)e.Parameter);
 
-            var index = this.VM.CurrentIndex;
+            var index = this.VM.View.CurrentPosition;
             if (index < 0)
                 index = 0;
+            this.fv.ItemsSource = this.VM.View;
             this.fv.SelectedIndex = index;
-            if (unchecked((uint)index < (uint)this.VM.Gallery.Count))
-            {
-                this.imgConnect.Source = this.VM.Gallery[index].Thumb;
-            }
+            this.imgConnect.Source = this.VM.Gallery[index].Thumb;
             var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
             var animationSucceed = false;
             if (animation != null)
@@ -180,12 +167,7 @@ namespace ExViewer.Views
                 this.displayActived = false;
             }
 
-            var index = this.fv.SelectedIndex;
-            if (index < VM.Gallery.Count)
-                VM.CurrentIndex = index;
-            else
-                VM.CurrentIndex = VM.Gallery.Count - 1;
-            var container = this.fv.ContainerFromIndex(index);
+            var container = this.fv.ContainerFromIndex(this.fv.SelectedIndex);
             if (container != null)
                 ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ImageAnimation", container.Descendants<Image>().First());
         }
@@ -198,6 +180,7 @@ namespace ExViewer.Views
             base.OnNavigatedFrom(e);
             CloseAll();
             cb_top_Closed(this.cb_top, null);
+            this.oldIndex = -1;
         }
 
         bool INavigationHandler.CanGoBack() => false;
@@ -258,34 +241,20 @@ namespace ExViewer.Views
             }
         }
 
+        private int oldIndex = -1;
+
         private async void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            var index = this.fv.SelectedIndex;
+            if (index < 0)
+                return;
+            if (index == this.oldIndex)
+                return;
+            this.oldIndex = index;
             var g = this.VM?.Gallery;
             if (g == null)
                 return;
             setScale();
-            if (this.fv.SelectedItem is ImagePageImageView gi && gi.Image != null)
-            {
-                gi.Image.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), true).Completed =
-                    (task, state) =>
-                    {
-                        if (state == AsyncStatus.Error)
-                            RootControl.RootController.SendToast(task.ErrorCode, typeof(ImagePage));
-                    };
-
-            }
-            var target = this.fv.SelectedIndex;
-            if (target < 0)
-                return;
-            target += 5;
-            if (target >= g.RecordCount)
-                target = g.RecordCount - 1;
-            if (g.Count > target)
-                return;
-            while (target >= g.Count && g.HasMoreItems)
-            {
-                await g.LoadMoreItemsAsync(5);
-            }
         }
 
         private System.Threading.CancellationTokenSource changingCbVisibility;
@@ -347,7 +316,6 @@ namespace ExViewer.Views
 
         private async void Flyout_Opening(object sender, object e)
         {
-            this.VM.CurrentIndex = this.fv.SelectedIndex;
             await this.VM.RefreshInfoAsync();
         }
 
@@ -357,7 +325,6 @@ namespace ExViewer.Views
             Grid.SetColumn(this.tb_Title, 0);
             Grid.SetColumnSpan(this.tb_Title, 2);
             this.cb_top_Open.Begin();
-            this.VM.CurrentIndex = this.fv.SelectedIndex;
             await this.VM.RefreshInfoAsync();
         }
 
@@ -416,11 +383,6 @@ namespace ExViewer.Views
         public void CloseAll()
         {
             this.cb_top.IsOpen = false;
-        }
-
-        public void SetImageIndex(int value)
-        {
-            this.fv.SelectedIndex = value;
         }
 
         private void page_Loading(FrameworkElement sender, object args)

@@ -9,8 +9,6 @@ namespace ExClient.Galleries
     internal abstract class GalleryList<TGallery, TModel> : ObservableList<Gallery>, IItemsRangeInfo
          where TGallery : Gallery
     {
-        public bool IsEmpty => this.Count == 0;
-
         private int loadedCount;
 
         internal GalleryList(List<TModel> models)
@@ -33,19 +31,14 @@ namespace ExClient.Galleries
             this.models.Clear();
             this.loadedCount = 0;
             base.ClearItems();
-            OnPropertyChanged(nameof(IsEmpty));
         }
 
-        protected override void RemoveItems(int index, int count)
+        protected override void RemoveItem(int index)
         {
-            this.models.RemoveRange(index, count);
-            for (var i = 0; i < count; i++)
-            {
-                if (this[index + i] != null)
-                    this.loadedCount--;
-            }
-            base.RemoveItems(index, count);
-            OnPropertyChanged(nameof(IsEmpty));
+            this.models.RemoveAt(index);
+            if (this[index] != null)
+                this.loadedCount--;
+            base.RemoveItem(index);
         }
 
         void IItemsRangeInfo.RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)

@@ -10,7 +10,7 @@
         public static int GetSizeOfPage(int recordCount, int pageSize, int pageIndex)
         {
             var remainRecordCount = recordCount - pageIndex * pageSize;
-            if(remainRecordCount < pageSize)
+            if (remainRecordCount < pageSize)
                 return remainRecordCount;
             else
                 return pageSize;

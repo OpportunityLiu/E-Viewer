@@ -20,6 +20,7 @@ using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Streams;
 using Windows.System;
+using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.ViewModels
@@ -58,8 +59,6 @@ namespace ExViewer.ViewModels
             if (Cache.TryGetValue(gi, out var vm))
             {
                 vm.Gallery = gallery;
-                if (gallery.Count <= vm.currentIndex)
-                    vm.currentIndex = -1;
             }
             else
             {
@@ -74,18 +73,6 @@ namespace ExViewer.ViewModels
         public static IAsyncOperation<GalleryVM> GetVMAsync(GalleryInfo gInfo)
         {
             return Cache.GetOrCreateAsync(gInfo);
-        }
-
-        public GalleryImage GetCurrent()
-        {
-            try
-            {
-                return this.Gallery[this.currentIndex];
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return null;
-            }
         }
 
         private GalleryVM()
@@ -160,9 +147,6 @@ namespace ExViewer.ViewModels
                             else
                                 data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
                         }
-                        if (gallery is SavedGallery)
-                            while (gallery.HasMoreItems)
-                                await gallery.LoadMoreItemsAsync(20);
                         var imageFiles = gallery
                             .Where(i => i.ImageFile != null)
                             .Select(i => new { i.ImageFile, Name = $"{i.PageID}{i.ImageFile.FileType}" })
@@ -235,7 +219,7 @@ namespace ExViewer.ViewModels
         public Command<GalleryImage> OpenImage { get; } = Command.Create<GalleryImage>(async (sender, image) =>
         {
             var that = (GalleryVM)sender.Tag;
-            that.CurrentIndex = image.PageID - 1;
+            that.View.MoveCurrentToPosition(image.PageID - 1);
             await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), that.gallery.ID);
         }, (sender, image) => image != null);
 
@@ -292,11 +276,16 @@ namespace ExViewer.ViewModels
             get => this.gallery;
             private set
             {
-                if (this.gallery != null)
-                    this.gallery.LoadMoreItemsException -= this.Gallery_LoadMoreItemsException;
-                Set(ref this.gallery, value);
-                if (this.gallery != null)
-                    this.gallery.LoadMoreItemsException += this.Gallery_LoadMoreItemsException;
+                if (View != null)
+                {
+                    View.CurrentChanged -= this.View_CurrentChanged;
+                }
+                View = value?.CreateView();
+                if (View != null)
+                {
+                    View.CurrentChanged += this.View_CurrentChanged;
+                }
+                Set(nameof(View), ref this.gallery, value);
                 this.Save.OnCanExecuteChanged();
                 this.Share.OnCanExecuteChanged();
                 this.AddComment.OnCanExecuteChanged();
@@ -304,29 +293,15 @@ namespace ExViewer.ViewModels
             }
         }
 
-        private void Gallery_LoadMoreItemsException(IncrementalLoadingList<GalleryImage> sender, LoadMoreItemsExceptionEventArgs args)
+        private void View_CurrentChanged(object sender, object e)
         {
-            RootControl.RootController.SendToast(args.Exception, typeof(GalleryPage));
-            args.Handled = true;
+            CurrentInfo = null;
+            QRCodeResult = null;
         }
 
-        private int currentIndex = -1;
-
-        public int CurrentIndex
-        {
-            get => this.currentIndex;
-            set
-            {
-                if (Set(ref this.currentIndex, value))
-                {
-                    CurrentInfo = null;
-                    QRCodeResult = null;
-                }
-            }
-        }
+        public ICollectionView View { get; private set; }
 
         private string currentInfo;
-
         public string CurrentInfo { get => this.currentInfo; private set => Set(ref this.currentInfo, value); }
 
         private string qrCodeResult;
@@ -343,7 +318,7 @@ namespace ExViewer.ViewModels
 
         public IAsyncAction RefreshInfoAsync()
         {
-            var current = this.GetCurrent();
+            var current = (GalleryImage)this.View.CurrentItem;
             var imageFile = current?.ImageFile;
             if (imageFile == null)
             {

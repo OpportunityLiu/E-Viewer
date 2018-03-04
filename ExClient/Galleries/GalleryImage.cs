@@ -63,39 +63,36 @@ namespace ExClient.Galleries
 
         protected static BitmapImage DefaultThumb { get; private set; }
 
-        internal static IAsyncOperation<GalleryImage> LoadCachedImageAsync(Gallery owner, GalleryImageModel galleryImageModel, ImageModel imageModel)
+        internal IAsyncAction PopulateCachedImageAsync(GalleryImageModel galleryImageModel, ImageModel imageModel)
         {
             return Run(async token =>
             {
                 var folder = ImageFolder ?? await GetImageFolderAsync();
                 var hash = galleryImageModel.ImageId;
-                var img = new GalleryImage(owner, galleryImageModel.PageId, hash.ToToken(), null)
-                {
-                    imageHash = hash
-                };
+                this.ImageHash = hash;
                 var imageFile = await folder.TryGetFileAsync(imageModel.FileName);
-                if (imageFile == null)
+                if (imageFile != null)
                 {
-                    img.originalLoaded = false;
-                    img.state = ImageLoadingState.Waiting;
+                    ImageFile = imageFile;
+                    OriginalLoaded = imageModel.OriginalLoaded;
+                    Progress = 100;
+                    State = ImageLoadingState.Loaded;
                 }
-                else
-                {
-                    img.imageFile = imageFile;
-                    img.originalLoaded = imageModel.OriginalLoaded;
-                    img.progress = 100;
-                    img.state = ImageLoadingState.Loaded;
-                }
-                return img;
+                this.Init(hash.ToToken(), null);
             });
         }
 
-        internal GalleryImage(Gallery owner, int pageID, ulong imageKey, Uri thumb)
+        internal GalleryImage(Gallery owner, int pageID)
         {
             this.Owner = owner;
             this.PageID = pageID;
+        }
+
+        internal void Init(ulong imageKey, Uri thumb)
+        {
             this.ImageKey = imageKey;
             this.thumbUri = thumb;
+            OnPropertyChanged(nameof(Thumb));
         }
 
         private static readonly Regex failTokenMatcher = new Regex(@"return\s+nl\(\s*'(.+?)'\s*\)", RegexOptions.Compiled);
@@ -205,9 +202,11 @@ namespace ExClient.Galleries
         /// </summary>
         public int PageID { get; }
 
-        public Uri PageUri => new Uri(Client.Current.Uris.RootUri, $"s/{ImageKey.ToTokenString()}/{Owner.ID}-{PageID}");
+        public Uri PageUri
+            => this.imageKey == 0 ? null : new Uri(Client.Current.Uris.RootUri, $"s/{this.imageKey.ToTokenString()}/{Owner.ID}-{PageID}");
 
-        public ulong ImageKey { get; }
+        private ulong imageKey;
+        public ulong ImageKey { get => this.imageKey; set => Set(nameof(PageUri), ref this.imageKey, value); }
 
         private SHA1Value imageHash;
         public SHA1Value ImageHash
@@ -253,6 +252,8 @@ namespace ExClient.Galleries
             {
                 try
                 {
+                    if (this.PageUri == null)
+                        await Owner.LoadItemsAsync(this.PageID - 1, 1);
                     var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
                     var folder = ImageFolder ?? await GetImageFolderAsync();
                     this.Progress = 0;

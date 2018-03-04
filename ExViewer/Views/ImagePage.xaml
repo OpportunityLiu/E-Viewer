@@ -8,7 +8,9 @@
                  xmlns:local="using:ExViewer.Views"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:client="using:ExClient"
+                 xmlns:g="using:ExClient.Galleries"
                  x:Name="page"
+                 xmlns:xb="using:Opportunity.Converters.XBind"
                  Loading="page_Loading"
                  Loaded="page_Loaded"
                  Unloaded="page_Unloaded"
@@ -23,7 +25,7 @@
   </Page.Transitions>
   <Page.Resources>
     <DataTemplate x:Key="FlipViewItemTemplate"
-                  x:DataType="local:ImagePageImageView">
+                  x:DataType="g:GalleryImage">
       <Grid DoubleTapped="fvi_DoubleTapped"
             Tapped="fvi_Tapped">
         <Grid.RowDefinitions>
@@ -32,15 +34,15 @@
         </Grid.RowDefinitions>
         <controls:ImagePresenter x:Name="ip"
                                  Grid.RowSpan="2"
-                                 Image="{x:Bind Image, Mode=OneWay}" />
+                                 Image="{x:Bind Mode=OneWay}" />
         <ProgressBar Grid.Row="1"
                      Padding="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
                      Margin="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x0'}"
                      VerticalAlignment="Top"
-                     Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(Image.State), Mode=OneWay, FallbackValue=Yellow}"
-                     IsIndeterminate="{x:Bind local:ImagePage.loadStateToPbIsIndeterminate(Image.State), Mode=OneWay, FallbackValue=True}"
-                     Visibility="{x:Bind local:ImagePage.loadStateToPbVisibility(Image.State), Mode=OneWay, FallbackValue=Visible}"
-                     Value="{x:Bind Image.Progress, Mode=OneWay}">
+                     Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(State), Mode=OneWay, FallbackValue=Yellow}"
+                     IsIndeterminate="{x:Bind local:ImagePage.loadStateToPbIsIndeterminate(State), Mode=OneWay, FallbackValue=True}"
+                     Visibility="{x:Bind local:ImagePage.loadStateToPbVisibility(State), Mode=OneWay, FallbackValue=Visible}"
+                     Value="{x:Bind Progress, Mode=OneWay}">
           <ProgressBar.RenderTransform>
             <TranslateTransform Y="{Binding RenderTransform.Y, ElementName=cb_top, Mode=OneWay}" />
           </ProgressBar.RenderTransform>
@@ -335,7 +337,7 @@
           <TextBlock x:Name="tb_si"
                      Grid.Column="2"
                      Style="{StaticResource PageIndicatorTextBlockStyle}"
-                     Text="{x:Bind fv.SelectedIndex, Mode=OneWay, Converter={StaticResource IndexToStringConverter}}" />
+                     Text="{x:Bind xb:Int32.IncreaseToString(fv.SelectedIndex), Mode=OneWay}" />
           <TextBlock x:Name="tb_sep"
                      x:Uid="Views/ImagePage/CounterSeparatorTextBlock"
                      Grid.Column="3"
@@ -345,7 +347,7 @@
                      Grid.Column="4"
                      Margin="0,0,8,0"
                      Style="{StaticResource PageIndicatorTextBlockStyle}"
-                     Text="{x:Bind VM.Gallery.RecordCount, Mode=OneWay}" />
+                     Text="{x:Bind VM.Gallery.Count, Mode=OneWay}" />
         </Grid>
       </CommandBar.Content>
       <CommandBar.PrimaryCommands>
@@ -360,13 +362,13 @@
         <AppBarButton x:Name="abb_reload"
                       x:Uid="Views/ImagePage/ReloadAppBarButton"
                       Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay, FallbackValue=''}"
+                      CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay, FallbackValue=''}"
                       Icon="Refresh"
                       Label="Reload" />
         <AppBarButton x:Name="abb_LoadOriginal"
                       x:Uid="Views/ImagePage/LoadOriginalAppBarButton"
                       Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
-                      CommandParameter="{x:Bind local:ImagePage.loadOriginalCommandParameter(((local:ImagePageImageView)fv.SelectedItem).Image,((local:ImagePageImageView)fv.SelectedItem).Image.OriginalLoaded), Mode=OneWay, FallbackValue=''}"
+                      CommandParameter="{x:Bind local:ImagePage.loadOriginalCommandParameter((g:GalleryImage)fv.SelectedItem, ((g:GalleryImage)fv.SelectedItem).OriginalLoaded), Mode=OneWay, FallbackValue=''}"
                       Label="Load original image">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE744;" />
@@ -375,7 +377,7 @@
         <AppBarButton x:Name="abb_Share"
                       x:Uid="Views/ImagePage/ShareAppBarButton"
                       Command="{x:Bind VM.Share, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image, Mode=OneWay, FallbackValue=''}"
+                      CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay, FallbackValue=''}"
                       Label="Share">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE72D;" />
@@ -385,7 +387,7 @@
         <AppBarButton x:Name="abb_Search"
                       x:Uid="Views/ImagePage/SearchAppBarButton"
                       Command="{x:Bind VM.SearchImage, Mode=OneWay}"
-                      CommandParameter="{x:Bind ((local:ImagePageImageView)fv.SelectedItem).Image.ImageHash, Mode=OneWay, FallbackValue=''}"
+                      CommandParameter="{x:Bind ((g:GalleryImage)fv.SelectedItem).ImageHash, Mode=OneWay, FallbackValue=''}"
                       Label="Show all galleries with this file">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE155;" />

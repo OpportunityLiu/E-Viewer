@@ -5,6 +5,7 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
+                 xmlns:client="using:ExClient"
                  mc:Ignorable="d"
                  Loading="root_Loading"
                  Unloaded="root_Unloaded"
@@ -61,7 +62,7 @@
                    HorizontalAlignment="Center"
                    Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind VM.SearchResult.IsEmpty, FallbackValue=Collapsed, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                   Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(VM.SearchResult.Count, VM.SearchResult.HasMoreItems), FallbackValue=Collapsed, Mode=OneWay}"
                    Text="No hits found" />
       </ListView.Header>
       <ListView.Footer>

@@ -13,8 +13,10 @@ using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -26,10 +28,10 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 namespace ExClient.Galleries
 {
     [JsonObject]
-    [System.Diagnostics.DebuggerDisplay(@"\{ID = {ID} Count = {Count} RecordCount = {RecordCount}\}")]
-    public class Gallery : PagingList<GalleryImage>
+    [System.Diagnostics.DebuggerDisplay(@"\{ID = {ID} Count = {Count}\}")]
+    public class Gallery : FixedIncrementalLoadingList<GalleryImage>
     {
-        internal static readonly int PageSize = 20;
+        private static HttpClient coverClient { get; } = new HttpClient();
 
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
@@ -103,23 +105,16 @@ namespace ExClient.Galleries
 
         public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveAsync(ConnectionStrategy strategy)
         {
-            return Run<SaveGalleryProgress>(async (token, progress) =>
+            return Run<SaveGalleryProgress>((token, progress) => Task.Run(async () =>
             {
-                await Task.Delay(1).ConfigureAwait(false);
-                progress.Report(new SaveGalleryProgress(-1, this.RecordCount));
-                if (this.HasMoreItems)
-                {
-                    while (this.HasMoreItems)
-                    {
-                        await this.LoadMoreItemsAsync((uint)PageSize);
-                        token.ThrowIfCancellationRequested();
-                        progress.Report(new SaveGalleryProgress(-1, this.RecordCount));
-                    }
-                }
-
                 await Task.Yield();
+                progress.Report(new SaveGalleryProgress(-1, this.Count));
+                var loadOP = LoadItemsAsync(0, this.Count);
+                token.Register(loadOP.Cancel);
+                await loadOP;
+                token.ThrowIfCancellationRequested();
                 var loadedCount = 0;
-                progress.Report(new SaveGalleryProgress(loadedCount, this.RecordCount));
+                progress.Report(new SaveGalleryProgress(loadedCount, this.Count));
 
                 using (var semaphore = new SemaphoreSlim(16, 16))
                 {
@@ -130,8 +125,7 @@ namespace ExClient.Galleries
                         {
                             token.ThrowIfCancellationRequested();
                             await image.LoadImageAsync(false, strategy, true);
-                            Interlocked.Increment(ref loadedCount);
-                            progress.Report(new SaveGalleryProgress(loadedCount, this.RecordCount));
+                            progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), this.Count));
                         }
                         finally
                         {
@@ -155,19 +149,30 @@ namespace ExClient.Galleries
                     }
                     await db.SaveChangesAsync();
                 }
-            });
+            }));
         }
 
-        private Gallery(long id, ulong token)
+        private Gallery(long id, ulong token, int recordCount)
+            : base(recordCount)
         {
             this.ID = id;
             this.Token = token;
             this.Rating = new RatingStatus(this);
             this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{ID.ToString()}/{Token.ToTokenString()}/");
+            if (Client.Current.Settings.Settings.TryGetValue("tr", out var trv))
+            {
+                switch (trv)
+                {
+                case "1": this.pageSize = 50; break;
+                case "2": this.pageSize = 100; break;
+                case "3": this.pageSize = 200; break;
+                default: this.pageSize = 20; break;
+                }
+            }
         }
 
         internal Gallery(GalleryModel model)
-            : this(model.GalleryModelId, model.Token)
+            : this(model.GalleryModelId, model.Token, model.RecordCount)
         {
             this.Available = model.Available;
             this.Title = model.Title;
@@ -179,9 +184,7 @@ namespace ExClient.Galleries
             this.Expunged = model.Expunged;
             this.Rating.AverageScore = model.Rating;
             this.Tags = new TagCollection(this, JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)));
-            this.RecordCount = model.RecordCount;
             this.ThumbUri = new Uri(model.ThumbUri);
-            this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
 
         [JsonConstructor]
@@ -201,7 +204,7 @@ namespace ExClient.Galleries
             string rating = null,
             string torrentcount = null,
             string[] tags = null)
-            : this(gid, token?.ToToken() ?? 0)
+            : this(gid, token?.ToToken() ?? 0, int.Parse(filecount, NumberStyles.Integer, CultureInfo.InvariantCulture))
         {
             if (error != null)
             {
@@ -214,25 +217,17 @@ namespace ExClient.Galleries
                 ca = Category.Unspecified;
             this.Category = ca;
             this.Uploader = HtmlEntity.DeEntitize(uploader);
-            this.Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture));
-            this.RecordCount = int.Parse(filecount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
+            this.Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, NumberStyles.Integer, CultureInfo.InvariantCulture));
             this.FileSize = filesize;
             this.Expunged = expunged;
-            this.Rating.AverageScore = double.Parse(rating, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
-            this.TorrentCount = int.Parse(torrentcount, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
+            this.Rating.AverageScore = double.Parse(rating, NumberStyles.Number, CultureInfo.InvariantCulture);
+            this.TorrentCount = int.Parse(torrentcount, NumberStyles.Integer, CultureInfo.InvariantCulture);
             this.Tags = new TagCollection(this, tags.Select(tag => Tag.Parse(tag)));
             this.ThumbUri = new Uri(thumb);
-            this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
         }
-
-        private static HttpClient coverClient { get; } = new HttpClient();
 
         protected IAsyncAction InitAsync()
         {
-            //return Run(async token =>
-            //{
-            //    await InitOverrideAsync();
-            //});
             return InitOverrideAsync();
         }
 
@@ -256,6 +251,9 @@ namespace ExClient.Galleries
                 }
             }).AsAsyncAction();
         }
+
+        protected override GalleryImage CreatePlaceholder(int index)
+            => new GalleryImage(this, index + 1);
 
         protected virtual IAsyncOperation<SoftwareBitmap> GetThumbAsync()
         {
@@ -334,6 +332,9 @@ namespace ExClient.Galleries
 
         public long FileSize { get; }
 
+        private int pageSize;
+        public int PageSize { get => this.pageSize; set => Set(ref this.pageSize, value); }
+
         public bool Expunged { get; }
 
         public RatingStatus Rating { get; }
@@ -370,35 +371,32 @@ namespace ExClient.Galleries
         public CommentCollection Comments => LazyInitializer.EnsureInitialized(ref this.comments, () => new CommentCollection(this));
         #endregion
 
-        private void updateFavoriteInfo(HtmlDocument html)
+        internal void RefreshMetaData(HtmlDocument doc)
         {
-            var favNode = html.GetElementbyId("fav");
-            if (favNode == null)
-                return;
-            var favContentNode = favNode.Element("div");
-            this.FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
+            ApiToken.Update(doc.DocumentNode.OuterHtml);
+            var favNode = doc.GetElementbyId("fav");
+            if (favNode != null)
+            {
+                var favContentNode = favNode.Element("div");
+                this.FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
+            }
+            this.Rating.AnalyzeDocument(doc);
+            if (this.Revisions == null)
+                this.Revisions = new RevisionCollection(this, doc);
+            this.Tags.Update(doc);
         }
 
-        protected override IAsyncOperation<IEnumerable<GalleryImage>> LoadPageAsync(int pageIndex)
+        public IAsyncAction RefreshMetaDataAsync() => this.Comments.FetchAsync(false);
+
+        protected override IAsyncOperation<LoadItemsResult<GalleryImage>> LoadItemAsync(int index)
         {
-            return Run(token => Task.Run<IEnumerable<GalleryImage>>(async () =>
+            return Run(token => Task.Run(async () =>
             {
-                var html = await getDoc();
-                updateFavoriteInfo(html);
-                this.Rating.AnalyzeDocument(html);
-                if (this.Revisions == null)
-                    this.Revisions = new RevisionCollection(this, html);
-                this.Tags.Update(html);
-                var pcNodes = html.DocumentNode.Element("html").Element("body").Element("div", "gtb").Descendants("td")
-                    .Select(node =>
-                    {
-                        if (int.TryParse(node.InnerText, out var number))
-                            return number;
-                        return int.MinValue;
-                    }).DefaultIfEmpty(1).Max();
-                this.PageCount = pcNodes;
+                var html = await getDoc(index, token);
+                token.ThrowIfCancellationRequested();
                 var picRoot = html.GetElementbyId("gdt");
-                var toAdd = new List<GalleryImage>(picRoot.ChildNodes.Count);
+                var start = int.MaxValue;
+                var end = 0;
                 using (var db = new GalleryDb())
                 {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -411,7 +409,7 @@ namespace ExClient.Galleries
                         var tokens = nodeA.GetAttribute("href", "").Split(new[] { '/', '-' });
                         if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s")
                             continue;
-                        var pId = int.Parse(tokens[tokens.Length - 1], System.Globalization.NumberStyles.Integer);
+                        var pId = int.Parse(tokens[tokens.Length - 1], NumberStyles.Integer);
                         var imageKey = tokens[tokens.Length - 3].ToToken();
                         var gId = this.ID;
                         var imageModel = db.GalleryImageSet
@@ -420,32 +418,48 @@ namespace ExClient.Galleries
                         if (imageModel != null)
                         {
                             // Load cache
-                            var galleryImage = await GalleryImage.LoadCachedImageAsync(this, imageModel, imageModel.Image);
-                            toAdd.Add(galleryImage);
-                            continue;
+                            await this[pId - 1].PopulateCachedImageAsync(imageModel, imageModel.Image);
                         }
-                        toAdd.Add(new GalleryImage(this, pId, imageKey, thumb));
+                        else
+                        {
+                            this[pId - 1].Init(imageKey, thumb);
+                        }
+                        if (pId - 1 < start)
+                            start = pId - 1;
+                        if (pId > end)
+                            end = pId;
                     }
                 }
-                return toAdd;
+                return LoadItemsResult.Create(start, this.Skip(start).Take(end - start), false);
 
-                async Task<HtmlDocument> getDoc(bool reIn = false)
+                async Task<HtmlDocument> getDoc(int imageIndex, CancellationToken cancellationToken, bool reIn = false)
                 {
+                    var pageIndex = imageIndex / this.pageSize;
                     var needLoadComments = !this.Comments.IsLoaded;
                     var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
-                    var doc = await Client.Current.HttpClient.GetDocumentAsync(uri);
-                    ApiToken.Update(doc.DocumentNode.OuterHtml);
+                    var docOp = Client.Current.HttpClient.GetDocumentAsync(uri);
+                    cancellationToken.Register(docOp.Cancel);
+                    var doc = await docOp;
+                    RefreshMetaData(doc);
                     if (needLoadComments)
                     {
                         this.Comments.AnalyzeDocument(doc);
                     }
                     if (reIn)
                         return doc;
+                    var rows = doc.GetElementbyId("gdo2").Elements("div", "ths").Last().GetInnerText();
+                    rows = rows.Substring(0, rows.IndexOf(' '));
+                    var rowCount = int.Parse(rows);
+                    this.PageSize = rowCount * 5;
                     if (doc.GetElementbyId("gdo4").Elements("div", "ths").Last().InnerText != "Large")
                     {
                         // 切换到大图模式
                         await Client.Current.HttpClient.GetAsync(new Uri("/?inline_set=ts_l", UriKind.Relative));
-                        doc = await getDoc(true);
+                        doc = await getDoc(imageIndex, cancellationToken, true);
+                    }
+                    else if (pageIndex != imageIndex / this.pageSize)
+                    {
+                        doc = await getDoc(imageIndex, cancellationToken, true);
                     }
                     return doc;
                 }
@@ -522,10 +536,10 @@ namespace ExClient.Galleries
                     }
                     await db.SaveChangesAsync();
                 }
-                var c = this.RecordCount;
-                ResetAll();
-                this.RecordCount = c;
-                this.PageCount = MathHelper.GetPageCount(this.RecordCount, PageSize);
+                for (var i = 0; i < this.Count; i++)
+                {
+                    UnloadAt(i);
+                }
             }).AsAsyncAction();
         }
 

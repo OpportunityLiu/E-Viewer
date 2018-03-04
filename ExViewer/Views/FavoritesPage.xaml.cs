@@ -46,10 +46,9 @@ namespace ExViewer.Views
             this.VM.SetQueryWithSearchResult();
             this.VM.Search.Executed += this.Search_Executed;
             await Dispatcher.YieldIdle();
-            if (e.NavigationMode == NavigationMode.New || this.VM.SelectedGallery == null)
+            if (e.NavigationMode == NavigationMode.New)
             {
-                if (e.Parameter != null)
-                    this.VM.SearchResult.Reset();
+                this.VM.SearchResult.Reset();
                 this.cbCategory.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)

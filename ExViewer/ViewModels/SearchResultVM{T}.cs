@@ -39,14 +39,7 @@ namespace ExViewer.ViewModels
         public T SearchResult
         {
             get => this.searchResult;
-            protected set
-            {
-                if (this.searchResult != null)
-                    this.searchResult.LoadMoreItemsException -= this.SearchResult_LoadMoreItemsException;
-                Set(ref this.searchResult, value);
-                if (this.searchResult != null)
-                    this.searchResult.LoadMoreItemsException += this.SearchResult_LoadMoreItemsException;
-            }
+            protected set => Set(ref this.searchResult, value);
         }
 
         public virtual void SetQueryWithSearchResult()
@@ -59,14 +52,6 @@ namespace ExViewer.ViewModels
 
         private string keyword;
         public string Keyword { get => this.keyword; set => Set(ref this.keyword, value); }
-
-        private void SearchResult_LoadMoreItemsException(IncrementalLoadingList<Gallery> sender, LoadMoreItemsExceptionEventArgs args)
-        {
-            if (!RootControl.RootController.Available)
-                return;
-            RootControl.RootController.SendToast(args.Exception, typeof(SearchPage));
-            args.Handled = true;
-        }
 
         internal static void AddHistory(string content)
         {
