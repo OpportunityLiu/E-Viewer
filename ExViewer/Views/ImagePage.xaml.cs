@@ -180,10 +180,12 @@ namespace ExViewer.Views
             base.OnNavigatedFrom(e);
             CloseAll();
             cb_top_Closed(this.cb_top, null);
-            this.oldIndex = -1;
         }
 
-        bool INavigationHandler.CanGoBack() => false;
+        void INavigationHandler.OnAdd(Navigator navigator) { }
+        void INavigationHandler.OnRemove() { }
+
+        bool INavigationHandler.CanGoBack => false;
         IAsyncOperation<bool> INavigationHandler.GoBackAsync()
         {
             StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
@@ -194,7 +196,7 @@ namespace ExViewer.Views
                 return false;
             });
         }
-        bool INavigationHandler.CanGoForward() => false;
+        bool INavigationHandler.CanGoForward => false;
         IAsyncOperation<bool> INavigationHandler.GoForwardAsync()
         {
             StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
@@ -241,16 +243,11 @@ namespace ExViewer.Views
             }
         }
 
-        private int oldIndex = -1;
-
         private void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = this.fv.SelectedIndex;
             if (index < 0)
                 return;
-            if (index == this.oldIndex)
-                return;
-            this.oldIndex = index;
             var g = this.VM?.Gallery;
             if (g == null)
                 return;

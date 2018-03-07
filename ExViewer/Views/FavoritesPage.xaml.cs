@@ -156,7 +156,7 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Visible;
             this.cbCategory.Visibility = Visibility.Collapsed;
             this.asb.Visibility = Visibility.Collapsed;
-            this.GetNavigator().UpdateAppViewBackButtonVisibility();
+            this.GetNavigator().UpdateProperties();
             return true;
         }
 
@@ -169,20 +169,23 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Collapsed;
             this.cbCategory.Visibility = Visibility.Visible;
             this.asb.Visibility = Visibility.Visible;
-            this.GetNavigator().UpdateAppViewBackButtonVisibility();
+            this.GetNavigator().UpdateProperties();
             return true;
         }
 
-        public bool CanGoBack() => (this.lv.SelectionMode != ListViewSelectionMode.None);
+        void INavigationHandler.OnAdd(Navigator navigator) { }
+        void INavigationHandler.OnRemove() { }
+
+        public bool CanGoBack => (this.lv.SelectionMode != ListViewSelectionMode.None);
         public IAsyncOperation<bool> GoBackAsync()
         {
-            if (!CanGoBack())
+            if (!CanGoBack)
                 return AsyncOperation<bool>.CreateCompleted(false);
             exitSelectMode();
             return AsyncOperation<bool>.CreateCompleted(true);
         }
 
-        bool INavigationHandler.CanGoForward() => false;
+        bool INavigationHandler.CanGoForward => false;
         IAsyncOperation<bool> INavigationHandler.GoForwardAsync()
             => AsyncOperation<bool>.CreateCompleted(false);
 

@@ -2,6 +2,7 @@
 using ExClient.Galleries;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
+using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,53 +30,55 @@ namespace ExViewer.Views
         {
             this.InitializeComponent();
             this.VisibleBoundHandledByDesign = true;
-            this.gdInfo.RegisterPropertyChangedCallback(ActualHeightProperty, this.set_btn_Scroll_Rotation);
-            this.sv_Content.RegisterPropertyChangedCallback(ScrollViewer.VerticalOffsetProperty, this.set_btn_Scroll_Rotation);
         }
 
-        private void set_btn_Scroll_Rotation(DependencyObject d, DependencyProperty dp)
+
+        private void spContent_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
         {
-            var infoHeight = this.gdInfo.ActualHeight;
-            if (infoHeight < 1)
-                this.ct_btn_Scroll.Rotation = 0;
-            else
-                this.ct_btn_Scroll.Rotation = this.sv_Content.VerticalOffset / infoHeight * 180d;
+            if (e.Handled)
+                return;
+            var prop = e.GetCurrentPoint(this).Properties;
+            if (!prop.IsHorizontalMouseWheel && prop.MouseWheelDelta != 0)
+            {
+                var c = this.isGdInfoHide;
+                var n = prop.MouseWheelDelta < 0;
+                if (c == n)
+                    return;
+                changeViewTo(n, false);
+                e.Handled = true;
+            }
         }
 
-        private async void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        private void pv_Content_Loaded(object sender, RoutedEventArgs e)
         {
-            await Dispatcher.YieldIdle();
-            if (e.NextView.VerticalOffset < e.FinalView.VerticalOffset && this.sv_Content.VerticalOffset < 1)
+            var fe_Content = (FrameworkElement)sender;
+            var bd_Content = VisualTreeHelper.GetChild(fe_Content, 0);
+            var sv_Content = (ScrollViewer)VisualTreeHelper.GetChild(bd_Content, 0);
+            sv_Content.ViewChanging += this.pv_Content_ViewChanging;
+            fe_Content.Loaded -= this.pv_Content_Loaded;
+        }
+
+        private void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            if (e.NextView.VerticalOffset < e.FinalView.VerticalOffset && !this.isGdInfoHide)
             {
                 changeViewTo(true, false);
             }
-            else if (e.IsInertial && e.NextView.VerticalOffset < 1 && this.sv_Content.VerticalOffset > this.gdInfo.ActualHeight - 1)
+            else if (e.IsInertial && e.NextView.VerticalOffset < 1 && this.isGdInfoHide)
             {
                 changeViewTo(false, false);
             }
         }
 
-        private void pv_Header_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        protected override void VisibleBoundsThicknessChanged(Thickness visibleBoundsThickness)
         {
-            var prop = e.GetCurrentPoint(this).Properties;
-            if (!prop.IsHorizontalMouseWheel && prop.MouseWheelDelta != 0)
-            {
-                changeViewTo(prop.MouseWheelDelta < 0, false);
-                e.Handled = true;
-            }
+            InvalidateMeasure();
+            changeViewTo(this.isGdInfoHide, true);
         }
 
-        private bool needResetView, needRestoreView;
-
-        protected override async void VisibleBoundsThicknessChanged(Thickness visibleBoundsThickness)
+        private void page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.needResetView || this.needRestoreView)
-                return;
-            InvalidateMeasure();
-            await Dispatcher.YieldIdle();
-            changeViewTo(false, true);
-            await Task.Delay(33);
-            changeViewTo(false, true);
+            changeViewTo(this.isGdInfoHide, true);
         }
 
         private Grid gdPvContentHeaderPresenter;
@@ -97,57 +100,24 @@ namespace ExViewer.Views
             return base.MeasureOverride(availableSize);
         }
 
-        private void page_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (this.needResetView)
-            {
-                this.needResetView = false;
-                resetView();
-            }
-            else if (this.needRestoreView)
-            {
-                this.needRestoreView = false;
-                restoreView();
-            }
-            else
-            {
-                changeView(true, true);
-            }
-        }
-
-        private void resetView()
-        {
-            changeViewTo(false, true);
-            this.gv.ScrollIntoView(this.VM.Gallery.FirstOrDefault());
-            this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
-            this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
-        }
-
-        private void restoreView()
-        {
-            changeViewTo(true, true);
-            var ci = this.VM.View.CurrentItem;
-            if (ci == null)
-                ci = this.VM.View.FirstOrDefault();
-            if (ci != null)
-                this.gv.ScrollIntoView(ci, ScrollIntoViewAlignment.Leading);
-        }
-
-        private bool isGdInfoHide
-        {
-            get
-            {
-                var fullOffset = this.gdInfo.ActualHeight;
-                return this.sv_Content.VerticalOffset > fullOffset * 0.95;
-            }
-        }
+        private bool isGdInfoHide = false;
 
         private void changeViewTo(bool hideGdInfo, bool disableAnimation)
         {
+            this.isGdInfoHide = hideGdInfo;
+            var d = 500d;
+            if (disableAnimation)
+                d = 0;
             if (hideGdInfo)
-                this.sv_Content.ChangeView(null, this.gdInfo.ActualHeight, null, disableAnimation);
+            {
+                this.btn_Scroll.Rotate(180, 0, 0, d).Start();
+                this.spContent.Offset(offsetY: -(float)this.gdInfo.ActualHeight, duration: d, easingType: EasingType.Default).Start();
+            }
             else
-                this.sv_Content.ChangeView(null, 0, null, disableAnimation);
+            {
+                this.btn_Scroll.Rotate(0, 0, 0, d).Start();
+                this.spContent.Offset(duration: d, easingType: EasingType.Default).Start();
+            }
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -155,51 +125,39 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             var reset = e.NavigationMode == NavigationMode.New;
             var restore = e.NavigationMode == NavigationMode.Back;
-            if (reset)
-                this.needResetView = true;
-            else if (restore)
-                this.needRestoreView = true;
             this.VM = GalleryVM.GetVM((long)e.Parameter);
             var idx = this.VM.View.CurrentPosition;
-            var container = default(Control);
             if (reset)
             {
-                resetView();
-            }
-            else if (restore)
-            {
-                var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
-                if (animation != null && this.pv.SelectedIndex == 0)
-                {
-                    container = (Control)this.gv.ContainerFromIndex(idx);
-                    if (container != null)
-                        animation.TryStart(container.Descendants<Image>().First());
-                    else
-                        animation.Cancel();
-                }
-            }
-            await Dispatcher.YieldIdle();
-            if (reset)
-            {
+                changeViewTo(false, true);
+                this.gv.ScrollIntoView(this.VM.Gallery.FirstOrDefault());
+                this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
+                this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
+                await Task.Delay(33);
                 this.pv.Focus(FocusState.Programmatic);
-                await Task.Delay(50);
                 this.pv.SelectedIndex = 0;
             }
             else if (restore)
             {
+                changeViewTo(true, true);
+                this.gv.ScrollIntoView(this.VM.View.CurrentItem);
+                await Dispatcher.YieldIdle();
+                var container = default(Control);
+                var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
+                if (animation != null)
+                {
+                    if (this.pv.SelectedIndex == 0)
+                        await this.gv.TryStartConnectedAnimationAsync(animation, this.VM.View.CurrentItem, "Image");
+                    else
+                        animation.Cancel();
+                }
                 if (container == null)
                     container = (Control)this.gv.ContainerFromIndex(idx);
                 if (container != null && this.pv.SelectedIndex == 0)
                 {
-                    await Dispatcher.YieldIdle();
                     container.Focus(FocusState.Programmatic);
                 }
             }
-        }
-
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            base.OnNavigatingFrom(e);
         }
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
@@ -218,17 +176,9 @@ namespace ExViewer.Views
         public static readonly DependencyProperty VMProperty =
             DependencyProperty.Register("VM", typeof(GalleryVM), typeof(GalleryPage), new PropertyMetadata(null));
 
-        private void changeView(bool keep, bool disableAnimation)
+        private void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
-            var state = this.isGdInfoHide;
-            if (!keep) state = !state;
-            changeViewTo(state, disableAnimation);
-        }
-
-        private async void btn_Scroll_Click(object sender, RoutedEventArgs e)
-        {
-            await Dispatcher.YieldIdle();
-            changeView(false, false);
+            changeViewTo(!this.isGdInfoHide, false);
         }
 
         private async void pv_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -277,15 +227,6 @@ namespace ExViewer.Views
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
                 gd.Visibility = Visibility.Visible;
             }
-        }
-
-        private void pv_Loaded(object sender, RoutedEventArgs e)
-        {
-            var sv_pv = this.pv.Descendants("PivotItemPresenter").First();
-            var sv_pv2 = this.pv.Descendants("HeaderClipper").First();
-            sv_pv.PointerWheelChanged += this.pv_Header_PointerWheelChanged;
-            sv_pv2.PointerWheelChanged += this.pv_Header_PointerWheelChanged;
-            this.pv.Loaded -= this.pv_Loaded;
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -338,16 +279,6 @@ namespace ExViewer.Views
         }
 
         private Button btn_MoreButton;
-
-        private void pv_Content_Loaded(object sender, RoutedEventArgs e)
-        {
-            var fe_Content = (FrameworkElement)sender;
-            var bd_Content = VisualTreeHelper.GetChild(fe_Content, 0);
-            var sv_Content = (ScrollViewer)VisualTreeHelper.GetChild(bd_Content, 0);
-            sv_Content.ViewChanging += this.pv_Content_ViewChanging;
-            fe_Content.Loaded -= this.pv_Content_Loaded;
-        }
-
         public void CloseAll()
         {
             this.cb_top.IsOpen = false;

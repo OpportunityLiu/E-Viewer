@@ -5,6 +5,7 @@ using ExViewer.Views;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
