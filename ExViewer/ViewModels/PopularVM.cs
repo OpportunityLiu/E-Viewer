@@ -4,6 +4,7 @@ using ExClient.Search;
 using ExViewer.Views;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Commands;
+using Opportunity.MvvmUniverse.Views;
 using System;
 
 namespace ExViewer.ViewModels

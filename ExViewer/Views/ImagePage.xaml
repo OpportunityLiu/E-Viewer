@@ -301,6 +301,7 @@
       </Border.RenderTransform>
     </Border>
     <CommandBar x:Name="cb_top"
+                xmlns:ani="using:Microsoft.Toolkit.Uwp.UI.Animations"
                 KeyDown="cb_top_KeyDown"
                 Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
                 HorizontalContentAlignment="Stretch"

@@ -232,7 +232,7 @@ namespace ExViewer.Views
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
                 else
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                root.manager.IsGoBackEnabled = true;
+                root.manager.IsBackEnabled = true;
             }
 
             internal static void HandleUriLaunch()
@@ -293,7 +293,7 @@ namespace ExViewer.Views
                     root.sv_root.IsPaneOpen = true;
                     OpenSplitViewPane.Begin();
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                    root.manager.IsGoBackEnabled = false;
+                    root.manager.IsBackEnabled = false;
                     var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? root.svt_Search;
                     currentTab.Focus(FocusState.Programmatic);
                 }
@@ -437,8 +437,9 @@ namespace ExViewer.Views
 
                 root.FindName(nameof(root.rp_Disable));
                 root.sv_root.IsEnabled = false;
-                root.manager.IsGoBackEnabled = false;
-                root.manager.IsGoForwardEnabled = false;
+
+                root.manager.IsBackEnabled = false;
+                root.manager.IsForwardEnabled = false;
                 root.rp_Disable.Visibility = Visibility.Visible;
                 var indeterminate = !progress.HasValue;
                 var keep = double.IsNaN(progress.GetValueOrDefault());
@@ -458,8 +459,9 @@ namespace ExViewer.Views
                 ViewEnabled = true;
 
                 root.sv_root.IsEnabled = true;
-                root.manager.IsGoBackEnabled = true;
-                root.manager.IsGoForwardEnabled = true;
+
+                root.manager.IsBackEnabled = true;
+                root.manager.IsForwardEnabled = true;
 
                 ShowDisablePanel.Stop();
                 HideDisablePanel.Begin();

@@ -3,6 +3,7 @@ using ExViewer.Views;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
+using Opportunity.MvvmUniverse.Views;
 using System;
 
 namespace ExViewer.ViewModels

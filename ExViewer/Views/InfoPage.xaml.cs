@@ -1,5 +1,6 @@
 ﻿using ExViewer.Controls;
 using ExViewer.ViewModels;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -13,15 +14,14 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class InfoPage : MyPage, IHasAppBar
+    public sealed partial class InfoPage : MvvmPage, IHasAppBar
     {
         public InfoPage()
         {
             this.InitializeComponent();
-            this.VisibleBoundHandledByDesign = true;
-            this.VM = new InfoVM();
-            this.VM.RefreshStatus.Execute();
-            this.VM.RefreshTaggingStatistics.Execute();
+            this.ViewModel = new InfoVM();
+            this.ViewModel.RefreshStatus.Execute();
+            this.ViewModel.RefreshTaggingStatistics.Execute();
         }
 
         private double percent(double value)
@@ -31,23 +31,16 @@ namespace ExViewer.Views
             return value;
         }
 
-        public InfoVM VM
+        public new InfoVM ViewModel
         {
-            get => (InfoVM)GetValue(VMProperty);
-            set => SetValue(VMProperty, value);
+            get => (InfoVM)base.ViewModel;
+            set => base.ViewModel = value;
         }
-
-        /// <summary>
-        /// Indentify <see cref="VM"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register(nameof(VM), typeof(InfoVM), typeof(InfoPage), new PropertyMetadata(null));
 
         private void page_Loading(FrameworkElement sender, object args)
         {
             this.setSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.setSplitViewButtonPlaceholderVisibility;
-
         }
 
         private void page_Unloaded(object sender, RoutedEventArgs e)
@@ -68,10 +61,10 @@ namespace ExViewer.Views
             switch (this.pv_root.SelectedIndex)
             {
             case 0:
-                this.abbRefresh.Command = VM.RefreshStatus;
+                this.abbRefresh.Command = ViewModel.RefreshStatus;
                 break;
             case 1:
-                this.abbRefresh.Command = VM.RefreshTaggingStatistics;
+                this.abbRefresh.Command = ViewModel.RefreshTaggingStatistics;
                 break;
             }
         }
@@ -80,8 +73,8 @@ namespace ExViewer.Views
         {
             if (await RootControl.RootController.RequestLogOn())
             {
-                this.VM.RefreshStatus.Execute();
-                this.VM.RefreshTaggingStatistics.Execute();
+                this.ViewModel.RefreshStatus.Execute();
+                this.ViewModel.RefreshTaggingStatistics.Execute();
             }
         }
 
