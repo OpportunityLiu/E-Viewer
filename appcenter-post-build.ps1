@@ -1,3 +1,4 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $Path = Join-Path $Env:APPCENTER_SOURCE_DIRECTORY "\ExViewer\AppPackages"
 $Files = Get-ChildItem -Path $Path -Include @('*.cer', '*.appxbundle') -Recurse
 $Version = $Files[0].Name.Split('_')[1]
