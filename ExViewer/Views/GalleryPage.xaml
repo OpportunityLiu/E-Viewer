@@ -271,253 +271,252 @@
         </VisualState>
       </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
-    <StackPanel x:Name="spContent"
-                GotFocus="spContent_GotFocus"
-                PointerWheelChanged="spContent_PointerWheelChanged"
-                Grid.Row="1">
-      <Grid x:Name="gdInfo"
-            Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-            Background="{ThemeResource CommandBarBackground}"
-            MinHeight="100"
-            MaxHeight="300">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Image x:Name="img_Thumb"
-               Grid.RowSpan="2"
-               Width="160"
-               Margin="8"
-               Source="{x:Bind ViewModel.Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}" />
-        <Grid Grid.Column="1"
-              VerticalAlignment="Center">
+    <Border Grid.Row="1">
+      <StackPanel x:Name="spContent"
+                  Background="Transparent"
+                  PointerPressed="spContent_PointerPressed"
+                  GotFocus="spContent_GotFocus"
+                  PointerWheelChanged="spContent_PointerWheelChanged">
+        <Grid x:Name="gdInfo"
+              Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+              Background="{ThemeResource CommandBarBackground}"
+              MinHeight="100"
+              MaxHeight="300">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <Image x:Name="img_Thumb"
+                 Grid.RowSpan="2"
+                 Width="160"
+                 Margin="8"
+                 Source="{x:Bind ViewModel.Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}" />
+          <Grid Grid.Column="1"
+                VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="wsp_Info"
+                        Grid.Column="1"
+                        Margin="2,4"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal">
+              <controls:CategoryTag Margin="6,4"
+                                    VerticalAlignment="Center"
+                                    Category="{x:Bind ViewModel.Gallery.Category, Mode=OneWay}" />
+              <controls:Rating Margin="6,4"
+                               VerticalAlignment="Center"
+                               PlaceholderValue="{x:Bind ViewModel.Gallery.Rating.AverageScore, Mode=OneWay, FallbackValue=0}"
+                               UserRatingValue="{x:Bind ViewModel.Gallery.Rating.UserScore, Mode=OneWay}" />
+            </StackPanel>
+            <controls:TagPresenter x:Name="tpTags"
+                                   Grid.Row="1"
+                                   Grid.Column="1"
+                                   Margin="6"
+                                   Tags="{x:Bind ViewModel.Gallery.Tags, Mode=OneWay}" />
+          </Grid>
+        </Grid>
+        <Grid x:Name="gd_Pivot">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
           </Grid.RowDefinitions>
-          <StackPanel x:Name="wsp_Info"
-                      Grid.Column="1"
-                      Margin="2,4"
-                      HorizontalAlignment="Left"
-                      Orientation="Horizontal">
-            <controls:CategoryTag Margin="6,4"
-                                  VerticalAlignment="Center"
-                                  Category="{x:Bind ViewModel.Gallery.Category, Mode=OneWay}" />
-            <controls:Rating Margin="6,4"
-                             VerticalAlignment="Center"
-                             PlaceholderValue="{x:Bind ViewModel.Gallery.Rating.AverageScore, Mode=OneWay, FallbackValue=0}"
-                             UserRatingValue="{x:Bind ViewModel.Gallery.Rating.UserScore, Mode=OneWay}" />
-          </StackPanel>
-          <controls:TagPresenter x:Name="tpTags"
-                                 Grid.Row="1"
-                                 Grid.Column="1"
-                                 Margin="6"
-                                 Tags="{x:Bind ViewModel.Gallery.Tags, Mode=OneWay}" />
-        </Grid>
-      </Grid>
-      <Grid x:Name="gd_Pivot">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition />
-        </Grid.RowDefinitions>
-        <ani:Implicit.ShowAnimations>
-          <ani:OpacityAnimation From="0"
-                                To="1" />
-        </ani:Implicit.ShowAnimations>
-        <Border Background="{ThemeResource CommandBarBackground}"
-                Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}">
-          <Button x:Name="btn_Scroll"
-                  Width="48"
-                  Height="24"
-                  Padding="0"
-                  HorizontalAlignment="Center"
-                  HorizontalContentAlignment="Center"
-                  Click="btn_Scroll_Click"
-                  Content="&#xE014;"
-                  FontFamily="Segoe MDL2 Assets"
-                  IsTabStop="False"
-                  RenderTransformOrigin="0.5,0.5"
-                  Style="{StaticResource TextBlockButtonStyle}">
-            <Button.RenderTransform>
-              <CompositeTransform x:Name="ct_btn_Scroll"
-                                  Rotation="0" />
-            </Button.RenderTransform>
-          </Button>
-        </Border>
+          <Border Background="{ThemeResource CommandBarBackground}"
+                  Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}">
+            <Button x:Name="btn_Scroll"
+                    Width="48"
+                    Height="24"
+                    Padding="0"
+                    HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Click="btn_Scroll_Click"
+                    Content="&#xE014;"
+                    FontFamily="Segoe MDL2 Assets"
+                    IsTabStop="False"
+                    RenderTransformOrigin="0.5,0.5"
+                    Style="{StaticResource TextBlockButtonStyle}">
+              <Button.RenderTransform>
+                <CompositeTransform x:Name="ct_btn_Scroll"
+                                    Rotation="0" />
+              </Button.RenderTransform>
+            </Button>
+          </Border>
 
-        <Pivot x:Name="pv"
-               Grid.Row="1"
-               HorizontalContentAlignment="Stretch"
-               VerticalContentAlignment="Stretch"
-               BorderThickness="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-               BorderBrush="{ThemeResource CommandBarBackground}"
-               Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-               SelectionChanged="pv_SelectionChanged">
-          <PivotItem>
-            <PivotItem.Header>
-              <Grid Style="{StaticResource PivotHeaderGridStyle}">
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition />
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition />
-                  <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <PathIcon Data="M0,12 V28 H24 V12 H0 Z                   M2,14 V26 H22 V14 H2 Z                   M2,22 L8,16 L12,20 L15,17 L22,24 V26 H21.172 L15,19.828 L8.828,26 H6 L10.586,21.414 L8,18.828 L2,24.828 Z                   M18,17 A1,1,0,1,0,19,16 A1,1,0,0,0,18,17 Z                   M 4,12 V8 H28 V24 H24 V22 H26 V10 H6 V12 H4 Z                   M 8,8 V4 H32 V20 H28 V18 H30 V6 H10 V8 H8 Z"
-                          Style="{StaticResource PivotHeaderIconStyle}" />
-                <TextBlock x:Uid="Views/GalleryPage/PivotHeaderImagesTextBlock"
-                           Style="{StaticResource PivotHeaderTextBlockStyle}"
-                           Text="Images" />
-                <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                           Text="{x:Bind ViewModel.Gallery.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}" />
-              </Grid>
-            </PivotItem.Header>
-            <GridView x:Name="gv"
-                      Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                      Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
-                      VerticalAlignment="Top"
-                      ani:ReorderGridAnimation.Duration="100"
-                      IsItemClickEnabled="True"
-                      ItemClick="gv_ItemClick"
-                      ItemsSource="{x:Bind ViewModel.View, Mode=OneWay}"
-                      Loaded="pv_Content_Loaded">
-              <GridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                  <ItemsWrapGrid HorizontalAlignment="Center"
-                                 Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-              </GridView.ItemsPanel>
-              <GridView.ItemTemplate>
-                <DataTemplate xmlns:c="using:ExClient.Galleries"
-                              x:DataType="c:GalleryImage">
-                  <Image x:Name="Image"
-                         Width="100"
-                         MinHeight="100"
-                         MaxHeight="200"
-                         Source="{x:Bind Thumb, Mode=OneWay}"
-                         ToolTipService.Placement="Right"
-                         ToolTipService.ToolTip="{x:Bind PageID, Mode=OneWay}" />
-                </DataTemplate>
-              </GridView.ItemTemplate>
-            </GridView>
-          </PivotItem>
-          <PivotItem>
-            <PivotItem.Header>
-              <Grid Style="{StaticResource PivotHeaderGridStyle}">
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition />
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition />
-                  <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock FontFamily="Segoe MDL2 Assets"
-                           FontSize="32"
-                           Style="{StaticResource PivotHeaderIconStyle}"
-                           Text="&#xE90A;" />
-                <TextBlock x:Uid="Views/GalleryPage/PivotHeaderCommentsTextBlock"
-                           Style="{StaticResource PivotHeaderTextBlockStyle}"
-                           Text="Comments" />
-                <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                           Text="{x:Bind ViewModel.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}"
-                           Visibility="{x:Bind ViewModel.Gallery.Comments.IsLoaded, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
-              </Grid>
-            </PivotItem.Header>
-            <ListView x:Name="lv_Comments"
-                      Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                      Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
-                      ItemsSource="{x:Bind ViewModel.Gallery.Comments, Mode=OneWay}"
-                      Loaded="pv_Content_Loaded"
-                      SelectionMode="None">
-              <ListView.ItemTemplate>
-                <DataTemplate xmlns:c="using:ExClient.Galleries.Commenting"
-                              x:DataType="c:Comment">
-                  <controls:CommentViewer Comment="{x:Bind}" />
-                </DataTemplate>
-              </ListView.ItemTemplate>
-              <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem"
-                       BasedOn="{StaticResource ListViewItemStyle}">
-                  <Setter Property="IsTabStop"
-                          Value="False" />
-                </Style>
-              </ListView.ItemContainerStyle>
-              <ListView.Header>
-                <Grid>
-                  <TextBlock x:Uid="Views/GalleryPage/CommentsEmptyTextBlock"
-                             Margin="12"
-                             HorizontalAlignment="Center"
-                             Style="{StaticResource BaseTextBlockStyle}"
-                             Text="No comments"
-                             Visibility="{x:Bind ViewModel.Gallery.Comments.IsEmpty, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
-                  <TextBlock x:Uid="Views/GalleryPage/CommentsLoadingTextBlock"
-                             Margin="12"
-                             HorizontalAlignment="Center"
-                             Style="{StaticResource BaseTextBlockStyle}"
-                             Text="Loading comments..."
-                             Visibility="{x:Bind ViewModel.Gallery.Comments.IsLoaded, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
+          <Pivot x:Name="pv"
+                 Grid.Row="1"
+                 HorizontalContentAlignment="Stretch"
+                 VerticalContentAlignment="Stretch"
+                 BorderThickness="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                 BorderBrush="{ThemeResource CommandBarBackground}"
+                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                 SelectionChanged="pv_SelectionChanged">
+            <PivotItem>
+              <PivotItem.Header>
+                <Grid Style="{StaticResource PivotHeaderGridStyle}">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <PathIcon Data="M0,12 V28 H24 V12 H0 Z                   M2,14 V26 H22 V14 H2 Z                   M2,22 L8,16 L12,20 L15,17 L22,24 V26 H21.172 L15,19.828 L8.828,26 H6 L10.586,21.414 L8,18.828 L2,24.828 Z                   M18,17 A1,1,0,1,0,19,16 A1,1,0,0,0,18,17 Z                   M 4,12 V8 H28 V24 H24 V22 H26 V10 H6 V12 H4 Z                   M 8,8 V4 H32 V20 H28 V18 H30 V6 H10 V8 H8 Z"
+                            Style="{StaticResource PivotHeaderIconStyle}" />
+                  <TextBlock x:Uid="Views/GalleryPage/PivotHeaderImagesTextBlock"
+                             Style="{StaticResource PivotHeaderTextBlockStyle}"
+                             Text="Images" />
+                  <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
+                             Text="{x:Bind ViewModel.Gallery.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}" />
                 </Grid>
-              </ListView.Header>
-            </ListView>
-          </PivotItem>
-          <PivotItem>
-            <PivotItem.Header>
-              <Grid Style="{StaticResource PivotHeaderGridStyle}">
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition />
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition />
-                  <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <PathIcon Data="M4,0V16H6V2H26V17C26,19,24,20,24,22V30H12V32H28A2,2,0,0,0,30,30V22C30,20,28,19,28,17V2A2,2,0,0,0,26,0ZM26,30H28V22.5Q28,21.3,27,20.4Q26,21.3,26,22.5ZM0,32H10V30H0ZM4,18H6V28.172L8.586,25.586L10,27L7,30H3L0,27L1.414,25.586L4,28.172Z"
-                          Style="{StaticResource PivotHeaderIconStyle}" />
-                <TextBlock x:Uid="Views/GalleryPage/PivotHeaderTorrentsTextBlock"
-                           Style="{StaticResource PivotHeaderTextBlockStyle}"
-                           Text="Torrents" />
-                <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                           Text="{x:Bind ViewModel.TorrentCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}"
-                           Visibility="{x:Bind ViewModel.Torrents, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
-              </Grid>
-            </PivotItem.Header>
-            <ListView x:Name="lv_Torrents"
-                      Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                      Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
-                      ItemTemplate="{StaticResource TorrentTemplate}"
-                      ItemsSource="{x:Bind ViewModel.Torrents, Mode=OneWay}"
-                      ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}"
-                      Loaded="pv_Content_Loaded"
-                      SelectionChanged="lv_Torrents_SelectionChanged">
-              <ListView.Header>
-                <Grid>
-                  <TextBlock x:Uid="Views/GalleryPage/TorrentsEmptyTextBlock"
-                             Margin="12"
-                             HorizontalAlignment="Center"
-                             Style="{StaticResource BaseTextBlockStyle}"
-                             Text="No available torrents"
-                             Visibility="{x:Bind ViewModel.Torrents.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}" />
-                  <TextBlock x:Uid="Views/GalleryPage/TorrentsLoadingTextBlock"
-                             Margin="12"
-                             HorizontalAlignment="Center"
-                             Style="{StaticResource BaseTextBlockStyle}"
-                             Text="Loading torrents..."
-                             Visibility="{x:Bind ViewModel.Torrents, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}" />
+              </PivotItem.Header>
+              <GridView x:Name="gv"
+                        Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                        Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                        VerticalAlignment="Top"
+                        ani:ReorderGridAnimation.Duration="100"
+                        IsItemClickEnabled="True"
+                        ItemClick="gv_ItemClick"
+                        ItemsSource="{x:Bind ViewModel.View, Mode=OneWay}"
+                        Loaded="pv_Content_Loaded">
+                <GridView.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <ItemsWrapGrid HorizontalAlignment="Center"
+                                   Orientation="Horizontal" />
+                  </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+                <GridView.ItemTemplate>
+                  <DataTemplate xmlns:c="using:ExClient.Galleries"
+                                x:DataType="c:GalleryImage">
+                    <Image x:Name="Image"
+                           Width="100"
+                           MinHeight="100"
+                           MaxHeight="200"
+                           Source="{x:Bind Thumb, Mode=OneWay}"
+                           ToolTipService.Placement="Right"
+                           ToolTipService.ToolTip="{x:Bind PageID, Mode=OneWay}" />
+                  </DataTemplate>
+                </GridView.ItemTemplate>
+              </GridView>
+            </PivotItem>
+            <PivotItem>
+              <PivotItem.Header>
+                <Grid Style="{StaticResource PivotHeaderGridStyle}">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock FontFamily="Segoe MDL2 Assets"
+                             FontSize="32"
+                             Style="{StaticResource PivotHeaderIconStyle}"
+                             Text="&#xE90A;" />
+                  <TextBlock x:Uid="Views/GalleryPage/PivotHeaderCommentsTextBlock"
+                             Style="{StaticResource PivotHeaderTextBlockStyle}"
+                             Text="Comments" />
+                  <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
+                             Text="{x:Bind ViewModel.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}"
+                             Visibility="{x:Bind ViewModel.Gallery.Comments.IsLoaded, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
                 </Grid>
-              </ListView.Header>
-            </ListView>
-          </PivotItem>
-        </Pivot>
-      </Grid>
-    </StackPanel>
+              </PivotItem.Header>
+              <ListView x:Name="lv_Comments"
+                        Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                        Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                        ItemsSource="{x:Bind ViewModel.Gallery.Comments, Mode=OneWay}"
+                        Loaded="pv_Content_Loaded"
+                        SelectionMode="None">
+                <ListView.ItemTemplate>
+                  <DataTemplate xmlns:c="using:ExClient.Galleries.Commenting"
+                                x:DataType="c:Comment">
+                    <controls:CommentViewer Comment="{x:Bind}" />
+                  </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                  <Style TargetType="ListViewItem"
+                         BasedOn="{StaticResource ListViewItemStyle}">
+                    <Setter Property="IsTabStop"
+                            Value="False" />
+                  </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.Header>
+                  <Grid>
+                    <TextBlock x:Uid="Views/GalleryPage/CommentsEmptyTextBlock"
+                               Margin="12"
+                               HorizontalAlignment="Center"
+                               Style="{StaticResource BaseTextBlockStyle}"
+                               Text="No comments"
+                               Visibility="{x:Bind ViewModel.Gallery.Comments.IsEmpty, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
+                    <TextBlock x:Uid="Views/GalleryPage/CommentsLoadingTextBlock"
+                               Margin="12"
+                               HorizontalAlignment="Center"
+                               Style="{StaticResource BaseTextBlockStyle}"
+                               Text="Loading comments..."
+                               Visibility="{x:Bind ViewModel.Gallery.Comments.IsLoaded, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
+                  </Grid>
+                </ListView.Header>
+              </ListView>
+            </PivotItem>
+            <PivotItem>
+              <PivotItem.Header>
+                <Grid Style="{StaticResource PivotHeaderGridStyle}">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <PathIcon Data="M4,0V16H6V2H26V17C26,19,24,20,24,22V30H12V32H28A2,2,0,0,0,30,30V22C30,20,28,19,28,17V2A2,2,0,0,0,26,0ZM26,30H28V22.5Q28,21.3,27,20.4Q26,21.3,26,22.5ZM0,32H10V30H0ZM4,18H6V28.172L8.586,25.586L10,27L7,30H3L0,27L1.414,25.586L4,28.172Z"
+                            Style="{StaticResource PivotHeaderIconStyle}" />
+                  <TextBlock x:Uid="Views/GalleryPage/PivotHeaderTorrentsTextBlock"
+                             Style="{StaticResource PivotHeaderTextBlockStyle}"
+                             Text="Torrents" />
+                  <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
+                             Text="{x:Bind ViewModel.TorrentCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}"
+                             Visibility="{x:Bind ViewModel.Torrents, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
+                </Grid>
+              </PivotItem.Header>
+              <ListView x:Name="lv_Torrents"
+                        Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                        Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                        ItemTemplate="{StaticResource TorrentTemplate}"
+                        ItemsSource="{x:Bind ViewModel.Torrents, Mode=OneWay}"
+                        ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}"
+                        Loaded="pv_Content_Loaded"
+                        SelectionChanged="lv_Torrents_SelectionChanged">
+                <ListView.Header>
+                  <Grid>
+                    <TextBlock x:Uid="Views/GalleryPage/TorrentsEmptyTextBlock"
+                               Margin="12"
+                               HorizontalAlignment="Center"
+                               Style="{StaticResource BaseTextBlockStyle}"
+                               Text="No available torrents"
+                               Visibility="{x:Bind ViewModel.Torrents.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}" />
+                    <TextBlock x:Uid="Views/GalleryPage/TorrentsLoadingTextBlock"
+                               Margin="12"
+                               HorizontalAlignment="Center"
+                               Style="{StaticResource BaseTextBlockStyle}"
+                               Text="Loading torrents..."
+                               Visibility="{x:Bind ViewModel.Torrents, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}" />
+                  </Grid>
+                </ListView.Header>
+              </ListView>
+            </PivotItem>
+          </Pivot>
+        </Grid>
+      </StackPanel>
+    </Border>
     <CommandBar x:Name="cb_top"
                 Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
                 Opening="cb_top_Opening"

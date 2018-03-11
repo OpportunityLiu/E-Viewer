@@ -29,25 +29,20 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary> 
-    public sealed partial class ImagePage : MyPage, IHasAppBar, INavigationHandler
+    public sealed partial class ImagePage : MvvmPage, IHasAppBar, INavigationHandler
     {
         public ImagePage()
         {
             this.InitializeComponent();
             this.fv.Opacity = 0;
             this.fv.IsEnabled = false;
-            this.VisibleBoundHandledByDesign = true;
         }
 
-        public GalleryVM VM
+        public new GalleryVM ViewModel
         {
-            get => (GalleryVM)GetValue(VMProperty);
-            set => SetValue(VMProperty, value);
+            get => (GalleryVM)base.ViewModel;
+            set => base.ViewModel = value;
         }
-
-        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register("VM", typeof(GalleryVM), typeof(ImagePage), new PropertyMetadata(null));
 
         private readonly ApplicationView av = ApplicationView.GetForCurrentView();
         private readonly DisplayRequest displayRequest = new DisplayRequest();
@@ -103,14 +98,14 @@ namespace ExViewer.Views
 
             base.OnNavigatedTo(e);
 
-            this.VM = GalleryVM.GetVM((long)e.Parameter);
+            this.ViewModel = GalleryVM.GetVM((long)e.Parameter);
 
-            var index = this.VM.View.CurrentPosition;
+            var index = this.ViewModel.View.CurrentPosition;
             if (index < 0)
                 index = 0;
-            this.fv.ItemsSource = this.VM.View;
+            this.fv.ItemsSource = this.ViewModel.View;
             this.fv.SelectedIndex = index;
-            this.imgConnect.Source = this.VM.Gallery[index].Thumb;
+            this.imgConnect.Source = this.ViewModel.Gallery[index].Thumb;
             var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
             var animationSucceed = false;
             if (animation != null)
@@ -137,7 +132,7 @@ namespace ExViewer.Views
             this.fv.IsEnabled = true;
             this.fv.Opacity = 1;
             this.fv.Focus(FocusState.Programmatic);
-            this.fv.SelectedIndex = VM.View.CurrentPosition;
+            this.fv.SelectedIndex = ViewModel.View.CurrentPosition;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -237,7 +232,7 @@ namespace ExViewer.Views
             var index = this.fv.SelectedIndex;
             if (index < 0)
                 return;
-            var g = this.VM?.Gallery;
+            var g = this.ViewModel?.Gallery;
             if (g == null)
                 return;
             setScale();
@@ -302,7 +297,7 @@ namespace ExViewer.Views
 
         private async void Flyout_Opening(object sender, object e)
         {
-            await this.VM.RefreshInfoAsync();
+            await this.ViewModel.RefreshInfoAsync();
         }
 
         private async void cb_top_Opening(object sender, object e)
@@ -311,7 +306,7 @@ namespace ExViewer.Views
             Grid.SetColumn(this.tb_Title, 0);
             Grid.SetColumnSpan(this.tb_Title, 2);
             this.cb_top_Open.Begin();
-            await this.VM.RefreshInfoAsync();
+            await this.ViewModel.RefreshInfoAsync();
         }
 
         private void cb_top_Closing(object sender, object e)
