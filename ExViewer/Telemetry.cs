@@ -114,12 +114,12 @@ namespace ExViewer
 
         private static void AddtionalInfo(StringBuilder sb, GalleryPage gp)
         {
-            if (gp.VM == null)
+            if (gp.ViewModel == null)
                 return;
             var pv = gp.Descendants<Windows.UI.Xaml.Controls.Pivot>("pv").FirstOrDefault();
             if (pv != null)
                 sb.AppendLine($"Pivot: SelectedIndex={pv.SelectedIndex}");
-            AddtionalInfo(sb, gp.VM);
+            AddtionalInfo(sb, gp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, ImagePage ip)

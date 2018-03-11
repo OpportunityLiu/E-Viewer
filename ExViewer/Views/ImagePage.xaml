@@ -337,17 +337,17 @@
                     </TextBlock>
           <TextBlock x:Name="tb_si"
                      Grid.Column="2"
-                     Style="{StaticResource PageIndicatorTextBlockStyle}"
+                     Style="{ThemeResource PageIndicatorTextBlockStyle}"
                      Text="{x:Bind xb:Int32.IncreaseToString(fv.SelectedIndex), Mode=OneWay}" />
           <TextBlock x:Name="tb_sep"
                      x:Uid="Views/ImagePage/CounterSeparatorTextBlock"
                      Grid.Column="3"
-                     Style="{StaticResource PageIndicatorTextBlockStyle}"
+                     Style="{ThemeResource PageIndicatorTextBlockStyle}"
                      Text="/" />
           <TextBlock x:Name="tb_rc"
                      Grid.Column="4"
                      Margin="0,0,8,0"
-                     Style="{StaticResource PageIndicatorTextBlockStyle}"
+                     Style="{ThemeResource PageIndicatorTextBlockStyle}"
                      Text="{x:Bind VM.Gallery.Count, Mode=OneWay}" />
         </Grid>
       </CommandBar.Content>
