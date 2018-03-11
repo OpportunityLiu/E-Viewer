@@ -124,12 +124,12 @@ namespace ExViewer
 
         private static void AddtionalInfo(StringBuilder sb, ImagePage ip)
         {
-            if (ip.VM == null)
+            if (ip.ViewModel == null)
                 return;
             var fv = ip.Descendants<Windows.UI.Xaml.Controls.FlipView>("fv").FirstOrDefault();
             if (fv != null)
                 sb.AppendLine($"FlipView: SelectedIndex={fv.SelectedIndex}");
-            AddtionalInfo(sb, ip.VM);
+            AddtionalInfo(sb, ip.ViewModel);
         }
 
         private static void AddtionalInfo<T>(StringBuilder sb, SearchResultVM<T> srVM)

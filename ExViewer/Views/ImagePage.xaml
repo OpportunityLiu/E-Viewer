@@ -1,4 +1,5 @@
-﻿<controls:MyPage x:Class="ExViewer.Views.ImagePage"
+﻿<views:MvvmPage x:Class="ExViewer.Views.ImagePage"
+                 xmlns:views="using:Opportunity.MvvmUniverse.Views"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:rs3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
                  xmlns:prers3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
@@ -36,8 +37,8 @@
                                  Grid.RowSpan="2"
                                  Image="{x:Bind Mode=OneWay}" />
         <ProgressBar Grid.Row="1"
-                     Padding="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                     Margin="{Binding VisibleBoundsThickness, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x0'}"
+                     Padding="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                     Margin="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x0'}"
                      VerticalAlignment="Top"
                      Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(State), Mode=OneWay, FallbackValue=Yellow}"
                      IsIndeterminate="{x:Bind local:ImagePage.loadStateToPbIsIndeterminate(State), Mode=OneWay, FallbackValue=True}"
@@ -248,7 +249,7 @@
            RelativePanel.AlignLeftWithPanel="True"
            RelativePanel.AlignRightWithPanel="True"
            RelativePanel.AlignTopWithPanel="True"
-           Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay}" />
+           Margin="{x:Bind VisibleBounds, Mode=OneWay}" />
     <FlipView x:Name="fv"
               Background="Transparent"
               RelativePanel.AlignBottomWithPanel="True"
@@ -256,7 +257,7 @@
               RelativePanel.AlignRightWithPanel="True"
               RelativePanel.AlignTopWithPanel="True"
               SelectionChanged="fv_SelectionChanged"
-              Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay}"
+              Margin="{x:Bind VisibleBounds, Mode=OneWay}"
               ItemTemplate="{StaticResource FlipViewItemTemplate}">
       <FlipView.ItemContainerStyle>
         <Style TargetType="FlipViewItem">
@@ -266,7 +267,7 @@
       </FlipView.ItemContainerStyle>
     </FlipView>
     <Border x:Name="bdTop"
-            Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
+            Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
             Visibility="{x:Bind cb_top.Visibility, Mode=OneWay}"
             Background="{x:Bind cb_top.Background, Mode=OneWay}"
             RelativePanel.AlignTopWithPanel="True"
@@ -277,9 +278,9 @@
       </Border.RenderTransform>
     </Border>
     <Border x:Name="bdLeft"
-            Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0,x0,x0'}"
+            Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0,x0,x0'}"
             Height="48"
-            Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x1,x0,x0'}"
+            Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x1,x0,x0'}"
             Visibility="{x:Bind cb_top.Visibility, Mode=OneWay}"
             Background="{x:Bind cb_top.Background, Mode=OneWay}"
             RelativePanel.AlignTopWithPanel="True"
@@ -289,9 +290,9 @@
       </Border.RenderTransform>
     </Border>
     <Border x:Name="bdRight"
-            Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x1,x0'}"
+            Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x1,x0'}"
             Height="48"
-            Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x1,x0,x0'}"
+            Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x1,x0,x0'}"
             Visibility="{x:Bind cb_top.Visibility, Mode=OneWay}"
             Background="{x:Bind cb_top.Background, Mode=OneWay}"
             RelativePanel.AlignTopWithPanel="True"
@@ -303,7 +304,7 @@
     <CommandBar x:Name="cb_top"
                 xmlns:ani="using:Microsoft.Toolkit.Uwp.UI.Animations"
                 KeyDown="cb_top_KeyDown"
-                Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
+                Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
                 HorizontalContentAlignment="Stretch"
                 IsDynamicOverflowEnabled="False"
                 Closing="cb_top_Closing"
@@ -327,10 +328,10 @@
           <TextBlock x:Name="tb_Title"
                      Grid.Column="1"
                      Style="{StaticResource GalleryTitleTextBlockStyle}"
-                     Text="{x:Bind client:GalleryExtension.GetDisplayTitle(VM.Gallery), Mode=OneWay}">
+                     Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}">
                         <ToolTipService.ToolTip>
                           <ToolTip rs3:IsEnabled="{x:Bind tb_Title.IsTextTrimmed, Mode=OneWay}">
-                            <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(VM.Gallery), Mode=OneWay}"
+                            <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}"
                                        TextWrapping="WrapWholeWords" />
                           </ToolTip>
                         </ToolTipService.ToolTip>
@@ -348,7 +349,7 @@
                      Grid.Column="4"
                      Margin="0,0,8,0"
                      Style="{ThemeResource PageIndicatorTextBlockStyle}"
-                     Text="{x:Bind VM.Gallery.Count, Mode=OneWay}" />
+                     Text="{x:Bind ViewModel.Gallery.Count, Mode=OneWay}" />
         </Grid>
       </CommandBar.Content>
       <CommandBar.PrimaryCommands>
@@ -362,13 +363,13 @@
       <CommandBar.SecondaryCommands>
         <AppBarButton x:Name="abb_reload"
                       x:Uid="Views/ImagePage/ReloadAppBarButton"
-                      Command="{x:Bind VM.ReloadImage, Mode=OneWay}"
+                      Command="{x:Bind ViewModel.ReloadImage, Mode=OneWay}"
                       CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay, FallbackValue=''}"
                       Icon="Refresh"
                       Label="Reload" />
         <AppBarButton x:Name="abb_LoadOriginal"
                       x:Uid="Views/ImagePage/LoadOriginalAppBarButton"
-                      Command="{x:Bind VM.LoadOriginal, Mode=OneWay}"
+                      Command="{x:Bind ViewModel.LoadOriginal, Mode=OneWay}"
                       CommandParameter="{x:Bind local:ImagePage.loadOriginalCommandParameter((g:GalleryImage)fv.SelectedItem, ((g:GalleryImage)fv.SelectedItem).OriginalLoaded), Mode=OneWay, FallbackValue=''}"
                       Label="Load original image">
           <AppBarButton.Icon>
@@ -377,7 +378,7 @@
         </AppBarButton>
         <AppBarButton x:Name="abb_Share"
                       x:Uid="Views/ImagePage/ShareAppBarButton"
-                      Command="{x:Bind VM.Share, Mode=OneWay}"
+                      Command="{x:Bind ViewModel.Share, Mode=OneWay}"
                       CommandParameter="{x:Bind fv.SelectedItem, Mode=OneWay, FallbackValue=''}"
                       Label="Share">
           <AppBarButton.Icon>
@@ -387,7 +388,7 @@
         <AppBarSeparator />
         <AppBarButton x:Name="abb_Search"
                       x:Uid="Views/ImagePage/SearchAppBarButton"
-                      Command="{x:Bind VM.SearchImage, Mode=OneWay}"
+                      Command="{x:Bind ViewModel.SearchImage, Mode=OneWay}"
                       CommandParameter="{x:Bind ((g:GalleryImage)fv.SelectedItem).ImageHash, Mode=OneWay, FallbackValue=''}"
                       Label="Show all galleries with this file">
           <AppBarButton.Icon>
@@ -407,7 +408,7 @@
               <StackPanel>
                 <TextBlock x:Name="tb_Info"
                            Style="{StaticResource BodyTextBlockStyle}"
-                           Text="{x:Bind VM.CurrentInfo, Mode=OneWay}" />
+                           Text="{x:Bind ViewModel.CurrentInfo, Mode=OneWay}" />
               </StackPanel>
               <Flyout.FlyoutPresenterStyle>
                 <Style TargetType="FlyoutPresenter">
@@ -433,8 +434,8 @@
         <AppBarButton x:Name="abbQRCode"
                       x:Uid="Views/ImagePage/QRCodeAppBarButton"
                       Label="Scan QR Code"
-                      Command="{x:Bind VM.OpenQRCode, Mode=OneWay}"
-                      CommandParameter="{x:Bind VM.QRCodeResult, Mode=OneWay}">
+                      Command="{x:Bind ViewModel.OpenQRCode, Mode=OneWay}"
+                      CommandParameter="{x:Bind ViewModel.QRCodeResult, Mode=OneWay}">
           <AppBarButton.Icon>
             <PathIcon Data="M1.25,1.25h5v1.25h-3.75v3.75h-1.25zM1.25,18.75h5v-1.25h-3.75v-3.75h-1.25zM18.75,1.25h-5v1.25h3.75v3.75h1.25zM18.75,18.75h-5v-1.25h3.75v-3.75h1.25zM0,9.375h20v1.25h-20z" />
           </AppBarButton.Icon>
@@ -442,4 +443,4 @@
       </CommandBar.SecondaryCommands>
     </CommandBar>
   </RelativePanel>
-</controls:MyPage>
+</views:MvvmPage>
