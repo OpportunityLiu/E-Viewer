@@ -3,6 +3,7 @@ using ExClient.Galleries;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
 using Microsoft.Toolkit.Uwp.UI.Animations;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,27 +25,20 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class GalleryPage : MyPage, IHasAppBar
+    public sealed partial class GalleryPage : MvvmPage, IHasAppBar
     {
         public GalleryPage()
         {
             this.InitializeComponent();
-            this.VisibleBoundHandledByDesign = true;
+            this.RegisterPropertyChangedCallback(VisibleBoundsProperty, (s, e) => ((GalleryPage)s).InvalidateMeasure());
         }
-
 
         private void spContent_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
         {
-            if (e.Handled)
-                return;
             var prop = e.GetCurrentPoint(this).Properties;
             if (!prop.IsHorizontalMouseWheel && prop.MouseWheelDelta != 0)
             {
-                var c = this.isGdInfoHide;
-                var n = prop.MouseWheelDelta < 0;
-                if (c == n)
-                    return;
-                changeViewTo(n, false);
+                this.changeViewTo(prop.MouseWheelDelta < 0, false);
                 e.Handled = true;
             }
         }
@@ -70,22 +64,28 @@ namespace ExViewer.Views
             }
         }
 
-        protected override void VisibleBoundsThicknessChanged(Thickness visibleBoundsThickness)
-        {
-            InvalidateMeasure();
-            changeViewTo(this.isGdInfoHide, true);
-        }
-
         private void page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             changeViewTo(this.isGdInfoHide, true);
+        }
+
+        private void spContent_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is Control ele && ele.FocusState == FocusState.Keyboard)
+            {
+                var trans = this.spContent.TransformToVisual(ele).TransformPoint(new Point(0, this.gdInfo.ActualHeight));
+                if (trans.Y > 0)
+                    changeViewTo(false, false);
+                else if (trans.Y < -68)
+                    changeViewTo(true, false);
+            }
         }
 
         private Grid gdPvContentHeaderPresenter;
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            var t = VisibleBoundsThickness;
+            var t = VisibleBounds;
             var height = availableSize.Height - 48 - t.Top;
             var infoH = height - t.Bottom;
             if (RootControl.RootController.InputPane.OccludedRect.Height == 0)
@@ -93,7 +93,7 @@ namespace ExViewer.Views
                 if (this.gdPvContentHeaderPresenter == null)
                     this.gdPvContentHeaderPresenter = this.pv.Descendants<Grid>("HeaderPresenter").FirstOrDefault();
                 if (this.gdPvContentHeaderPresenter != null)
-                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight - 24;
+                    infoH -= 68/*this.gdPvContentHeaderPresenter.ActualHeight*/ + 24;
             }
             this.gdInfo.MaxHeight = Math.Min(infoH, 360);
             this.gd_Pivot.Height = height;
@@ -104,6 +104,8 @@ namespace ExViewer.Views
 
         private void changeViewTo(bool hideGdInfo, bool disableAnimation)
         {
+            if (this.isGdInfoHide == hideGdInfo && !disableAnimation)
+                return;
             this.isGdInfoHide = hideGdInfo;
             var d = 500d;
             if (disableAnimation)
@@ -125,12 +127,12 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             var reset = e.NavigationMode == NavigationMode.New;
             var restore = e.NavigationMode == NavigationMode.Back;
-            this.VM = GalleryVM.GetVM((long)e.Parameter);
-            var idx = this.VM.View.CurrentPosition;
+            this.ViewModel = GalleryVM.GetVM((long)e.Parameter);
+            var idx = this.ViewModel.View.CurrentPosition;
             if (reset)
             {
                 changeViewTo(false, true);
-                this.gv.ScrollIntoView(this.VM.Gallery.FirstOrDefault());
+                this.gv.ScrollIntoView(this.ViewModel.Gallery.FirstOrDefault());
                 this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
                 this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
                 await Task.Delay(33);
@@ -140,14 +142,14 @@ namespace ExViewer.Views
             else if (restore)
             {
                 changeViewTo(true, true);
-                this.gv.ScrollIntoView(this.VM.View.CurrentItem);
+                this.gv.ScrollIntoView(this.ViewModel.View.CurrentItem);
                 await Dispatcher.YieldIdle();
                 var container = default(Control);
                 var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
                 if (animation != null)
                 {
                     if (this.pv.SelectedIndex == 0)
-                        await this.gv.TryStartConnectedAnimationAsync(animation, this.VM.View.CurrentItem, "Image");
+                        await this.gv.TryStartConnectedAnimationAsync(animation, this.ViewModel.View.CurrentItem, "Image");
                     else
                         animation.Cancel();
                 }
@@ -160,21 +162,24 @@ namespace ExViewer.Views
             }
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            if (e.SourcePageType == typeof(ImagePage))
+                changeViewTo(true, true);
+        }
+
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
         {
             this.gv.PrepareConnectedAnimation("ImageAnimation", e.ClickedItem, "Image");
-            this.VM.OpenImage.Execute((GalleryImage)e.ClickedItem);
+            this.ViewModel.OpenImage.Execute((GalleryImage)e.ClickedItem);
         }
 
-        public GalleryVM VM
+        public new GalleryVM ViewModel
         {
-            get => (GalleryVM)GetValue(VMProperty);
-            set => SetValue(VMProperty, value);
+            get => (GalleryVM)base.ViewModel;
+            set => base.ViewModel = value;
         }
-
-        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register("VM", typeof(GalleryVM), typeof(GalleryPage), new PropertyMetadata(null));
 
         private void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
@@ -186,12 +191,12 @@ namespace ExViewer.Views
             switch (this.pv.SelectedIndex)
             {
             case 1://Comments
-                if (!this.VM.Gallery.Comments.IsLoaded)
-                    await this.VM.LoadComments();
+                if (!this.ViewModel.Gallery.Comments.IsLoaded)
+                    await this.ViewModel.LoadComments();
                 break;
             case 2://Torrents
-                if (this.VM.Torrents == null)
-                    await this.VM.LoadTorrents();
+                if (this.ViewModel.Torrents == null)
+                    await this.ViewModel.LoadTorrents();
                 // finish the add animation
                 await Task.Delay(150);
                 if (this.lv_Torrents.Items.Count > 0)
@@ -300,7 +305,7 @@ namespace ExViewer.Views
         private async void abbFavorites_Click(object sender, RoutedEventArgs e)
         {
             var addToFavorites = System.Threading.LazyInitializer.EnsureInitialized(ref this.addToFavorites);
-            addToFavorites.Gallery = this.VM.Gallery;
+            addToFavorites.Gallery = this.ViewModel.Gallery;
             await addToFavorites.ShowAsync();
         }
 

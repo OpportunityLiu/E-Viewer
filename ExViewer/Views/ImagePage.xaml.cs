@@ -47,18 +47,7 @@ namespace ExViewer.Views
 
         // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register("VM", typeof(GalleryVM), typeof(ImagePage), new PropertyMetadata(null, VMPropertyChangedCallback));
-
-        private static void VMPropertyChangedCallback(DependencyObject dp, DependencyPropertyChangedEventArgs e)
-        {
-            var oldVM = (GalleryVM)e.OldValue;
-            var newVM = (GalleryVM)e.NewValue;
-            if (oldVM == newVM)
-                return;
-            var that = (ImagePage)dp;
-            var pageFlipView = that.fv;
-            pageFlipView.ItemsSource = null;
-        }
+            DependencyProperty.Register("VM", typeof(GalleryVM), typeof(ImagePage), new PropertyMetadata(null));
 
         private readonly ApplicationView av = ApplicationView.GetForCurrentView();
         private readonly DisplayRequest displayRequest = new DisplayRequest();
@@ -135,7 +124,6 @@ namespace ExViewer.Views
             }
 
             await Dispatcher.YieldIdle();
-            this.fv.SelectedIndex = index;
             setScale();
             if (!animationSucceed)
                 Animation_Completed(null, null);
@@ -149,6 +137,7 @@ namespace ExViewer.Views
             this.fv.IsEnabled = true;
             this.fv.Opacity = 1;
             this.fv.Focus(FocusState.Programmatic);
+            this.fv.SelectedIndex = VM.View.CurrentPosition;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
