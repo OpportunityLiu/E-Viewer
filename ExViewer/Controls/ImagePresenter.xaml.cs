@@ -185,7 +185,8 @@ namespace ExViewer.Controls
         {
             base.OnDoubleTapped(e);
             var point = e.GetPosition(this.gd_ContentRoot);
-            await Task.Yield();
+            if (e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
+                await Task.Delay(100);
             this.Zoom(point);
         }
 
