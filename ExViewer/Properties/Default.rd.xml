@@ -25,6 +25,9 @@
     <Type Name="System.Collections.Generic.IEnumerable{Windows.Storage.IStorageItem}" Dynamic="Required All">
       <Subtypes Dynamic="Required All" />
     </Type>
+    <Type Name="System.Collections.Generic.IEnumerable{Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier}" Dynamic="Required All">
+      <Subtypes Dynamic="Required All" />
+    </Type>
 
     <!-- Add your application specific runtime directives here. -->
     <Namespace Name="Windows.UI.Xaml" Dynamic="Required All"/>

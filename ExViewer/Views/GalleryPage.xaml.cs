@@ -75,7 +75,7 @@ namespace ExViewer.Views
             var endpoint2 = InteractionTrackerInertiaRestingValue.Create(this.compositor);
             endpoint2.SetCondition(trackerTarget.NaturalRestingPosition.Y >= (trackerTarget.MaxPosition.Y - trackerTarget.MinPosition.Y) / 2);
             endpoint2.SetRestingValue(trackerTarget.MaxPosition.Y);
-            this.tracker.ConfigurePositionYInertiaModifiers(new[] { endpoint1, endpoint2 });
+            this.tracker.ConfigurePositionYInertiaModifiers(new InteractionTrackerInertiaModifier[] { endpoint1, endpoint2 });
 
             this.interactionSource = VisualInteractionSource.Create(this.spVisual);
             this.interactionSource.PositionYSourceMode = InteractionSourceMode.EnabledWithInertia;
