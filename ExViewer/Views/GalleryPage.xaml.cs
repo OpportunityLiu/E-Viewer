@@ -87,11 +87,11 @@ namespace ExViewer.Views
             this.btnScrollVisual.StartAnimation("RotationAngleInDegrees", ExpressionFunctions.Clamp(progress, 0, 1) * 180);
             this.btnScrollVisual.CenterPoint = new System.Numerics.Vector3((float)this.btn_Scroll.ActualWidth / 2, (float)this.btn_Scroll.ActualHeight / 2, 0);
             this.spVisual.StartAnimation("Offset.Y", -progress * tref.MaxPosition.Y);
-            page_SizeChanged(this, null);
+            gdInfo_SizeChanged(this, null);
         }
 
         private int sizeChanging;
-        private async void page_SizeChanged(object sender, SizeChangedEventArgs e)
+        private async void gdInfo_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             this.sizeChanging++;
             await Dispatcher.YieldIdle();

@@ -15,12 +15,10 @@
                 xmlns:tcon="using:Opportunity.Converters.Typed"
                 xmlns:ani="using:Microsoft.Toolkit.Uwp.UI.Animations"
                 xmlns:interactive="using:Microsoft.Xaml.Interactivity"
-                xmlns:behaviers="using:ExViewer.Behaviers"
                 x:Name="page"
                 Loading="page_Loading"
                 Unloaded="page_Unloaded"
                 NavigationCacheMode="Enabled"
-                SizeChanged="page_SizeChanged"
                 mc:Ignorable="d">
   <views:MvvmPage.Transitions>
     <TransitionCollection>
@@ -280,6 +278,7 @@
         <Grid x:Name="gdInfo"
               Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
               Background="{ThemeResource CommandBarBackground}"
+              SizeChanged="gdInfo_SizeChanged"
               MinHeight="100"
               MaxHeight="300">
           <Grid.ColumnDefinitions>
