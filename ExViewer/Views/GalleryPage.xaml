@@ -16,6 +16,7 @@
                 xmlns:ani="using:Microsoft.Toolkit.Uwp.UI.Animations"
                 xmlns:interactive="using:Microsoft.Xaml.Interactivity"
                 x:Name="page"
+                xmlns:xb="using:Opportunity.Converters.XBind"
                 Loading="page_Loading"
                 Unloaded="page_Unloaded"
                 NavigationCacheMode="Enabled"
@@ -184,7 +185,7 @@
           <TextBlock Grid.Row="5"
                      Grid.Column="2"
                      Style="{StaticResource ValueTextBlockStyle}"
-                     Text="{x:Bind Size, Converter={StaticResource SizeConverter}}" />
+                     Text="{x:Bind xb:String.OfByteSizeBinary(Size)}" />
         </Grid>
       </Grid>
     </DataTemplate>
@@ -276,7 +277,7 @@
                   GotFocus="spContent_GotFocus"
                   PointerWheelChanged="spContent_PointerWheelChanged">
         <Grid x:Name="gdInfo"
-              Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+              Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
               Background="{ThemeResource CommandBarBackground}"
               SizeChanged="gdInfo_SizeChanged"
               MinHeight="100"
@@ -289,7 +290,7 @@
                  Grid.RowSpan="2"
                  Width="160"
                  Margin="8"
-                 Source="{x:Bind ViewModel.Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}" />
+                 Source="{x:Bind xb:Image.OfSoftwareBitmap(ViewModel.Gallery.Thumb), Mode=OneWay}" />
           <Grid Grid.Column="1"
                 VerticalAlignment="Center">
             <Grid.RowDefinitions>
@@ -322,7 +323,7 @@
             <RowDefinition />
           </Grid.RowDefinitions>
           <Border Background="{ThemeResource CommandBarBackground}"
-                  Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}">
+                  Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}">
             <Button x:Name="btn_Scroll"
                     Width="48"
                     Height="24"
@@ -346,7 +347,7 @@
                  Grid.Row="1"
                  HorizontalContentAlignment="Stretch"
                  VerticalContentAlignment="Stretch"
-                 BorderThickness="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                 BorderThickness="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                  BorderBrush="{ThemeResource CommandBarBackground}"
                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                  SelectionChanged="pv_SelectionChanged">
@@ -373,8 +374,8 @@
                 </Grid>
               </PivotItem.Header>
               <GridView x:Name="gv"
-                        Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                        Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                        Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
+                        Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                         VerticalAlignment="Top"
                         ani:ReorderGridAnimation.Duration="100"
                         IsItemClickEnabled="True"
@@ -423,12 +424,12 @@
                              Text="Comments" />
                   <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
                              Text="{x:Bind ViewModel.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}"
-                             Visibility="{x:Bind ViewModel.Gallery.Comments.IsLoaded, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
+                             Visibility="{x:Bind ViewModel.Gallery.Comments.IsLoaded, Mode=OneWay}" />
                 </Grid>
               </PivotItem.Header>
               <ListView x:Name="lv_Comments"
-                        Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                        Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                        Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
+                        Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                         ItemsSource="{x:Bind ViewModel.Gallery.Comments, Mode=OneWay}"
                         Loaded="pv_Content_Loaded"
                         SelectionMode="None">
@@ -452,13 +453,13 @@
                                HorizontalAlignment="Center"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Text="No comments"
-                               Visibility="{x:Bind ViewModel.Gallery.Comments.IsEmpty, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}" />
+                               Visibility="{x:Bind ViewModel.Gallery.Comments.IsEmpty, Mode=OneWay}" />
                     <TextBlock x:Uid="Views/GalleryPage/CommentsLoadingTextBlock"
                                Margin="12"
                                HorizontalAlignment="Center"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Text="Loading comments..."
-                               Visibility="{x:Bind ViewModel.Gallery.Comments.IsLoaded, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
+                               Visibility="{x:Bind xb:Visibility.OfBooleanInv(ViewModel.Gallery.Comments.IsLoaded), Mode=OneWay}" />
                   </Grid>
                 </ListView.Header>
               </ListView>
@@ -487,8 +488,8 @@
                 </Grid>
               </PivotItem.Header>
               <ListView x:Name="lv_Torrents"
-                        Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
-                        Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                        Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
+                        Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                         ItemTemplate="{StaticResource TorrentTemplate}"
                         ItemsSource="{x:Bind ViewModel.Torrents, Mode=OneWay}"
                         ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}"
@@ -507,7 +508,7 @@
                                HorizontalAlignment="Center"
                                Style="{StaticResource BaseTextBlockStyle}"
                                Text="Loading torrents..."
-                               Visibility="{x:Bind ViewModel.Torrents, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}" />
+                               Visibility="{x:Bind ViewModel.Torrents, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay, FallbackValue=Visible}" />
                   </Grid>
                 </ListView.Header>
               </ListView>
@@ -517,7 +518,7 @@
       </StackPanel>
     </Border>
     <CommandBar x:Name="cb_top"
-                Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
+                Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
                 Opening="cb_top_Opening"
                 Closed="cb_top_Closed"
                 HorizontalContentAlignment="Stretch"

@@ -1,15 +1,16 @@
 ﻿<views:MvvmPage x:Class="ExViewer.Views.InfoPage"
-                 xmlns:views="using:Opportunity.MvvmUniverse.Views"
-                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                 xmlns:local="using:ExViewer.Views"
-                 xmlns:controls="using:ExViewer.Controls"
-                 Loading="page_Loading"
-                 NavigationCacheMode="Enabled"
-                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
-                 mc:Ignorable="d">
+                xmlns:views="using:Opportunity.MvvmUniverse.Views"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:local="using:ExViewer.Views"
+                xmlns:controls="using:ExViewer.Controls"
+                Loading="page_Loading"
+                NavigationCacheMode="Enabled"
+                xmlns:xb="using:Opportunity.Converters.XBind"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
+                mc:Ignorable="d">
   <views:MvvmPage.Transitions>
     <TransitionCollection>
       <NavigationThemeTransition>
@@ -114,7 +115,7 @@
     </MenuFlyout>
   </views:MvvmPage.Resources>
   <Pivot x:Name="pv_root"
-         BorderThickness="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x1,x0'}"
+         BorderThickness="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
          BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
          SelectionChanged="pv_root_SelectionChanged">
     <Pivot.LeftHeader>
@@ -141,8 +142,8 @@
     <PivotItem x:Uid="Views/InfoPage/OverviewPivotItem"
                Header="OVERVIEW">
       <ListView SelectionMode="None"
-                Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
-                Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                 ItemsSource="{x:Bind ViewModel.Status.Toplists, Mode=OneWay}"
                 ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}">
         <ListView.ItemTemplate>
@@ -195,7 +196,7 @@
                 <TextBlock x:Uid="Views/InfoPage/ImageLimitsResetButtonTextBlock"
                            Text="Reset limit"
                            Style="{ThemeResource CaptionTextBlockStyle}"
-                           Visibility="{x:Bind ViewModel.ResetImageUsage.IsExecuting, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}" />
+                           Visibility="{x:Bind xb:Visibility.OfBooleanInv(ViewModel.ResetImageUsage.IsExecuting), Mode=OneWay}" />
               </Button>
               <ProgressRing Style="{StaticResource UpdateProgressRingStyle}"
                             Grid.Column="9"
@@ -353,8 +354,8 @@
     <PivotItem x:Uid="Views/InfoPage/TaggingPivotItem"
                Header="TAGGING">
       <ListView x:Name="lvTagging"
-                Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
-                Margin="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                 SelectionMode="None"
                 IsItemClickEnabled="True"
                 ItemsSource="{x:Bind ViewModel.TaggingStatistics.Records, Mode=OneWay}"
