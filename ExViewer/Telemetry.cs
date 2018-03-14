@@ -79,16 +79,16 @@ namespace ExViewer
 
         private static void AddtionalInfo(StringBuilder sb, SavedPage svp)
         {
-            if (svp.VM == null)
+            if (svp.ViewModel == null)
                 return;
-            AddtionalInfo(sb, svp.VM);
+            AddtionalInfo(sb, svp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, CachedPage cp)
         {
-            if (cp.VM == null)
+            if (cp.ViewModel == null)
                 return;
-            AddtionalInfo(sb, cp.VM);
+            AddtionalInfo(sb, cp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, PopularPage pp)

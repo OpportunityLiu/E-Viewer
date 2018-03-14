@@ -1,6 +1,7 @@
 ﻿using ExClient.Galleries;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Linq;
 using Windows.UI.Core;
@@ -17,24 +18,19 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SavedPage : MyPage, IHasAppBar
+    public sealed partial class SavedPage : MvvmPage, IHasAppBar
     {
         public SavedPage()
         {
             this.InitializeComponent();
-            this.VisibleBoundHandledByDesign = true;
-            this.VM = SavedVM.Instance;
+            this.ViewModel = SavedVM.Instance;
         }
 
-        public SavedVM VM
+        public SavedVM ViewModel
         {
-            get => (SavedVM)GetValue(VMProperty);
-            set => SetValue(VMProperty, value);
+            get => (SavedVM)base.ViewModel;
+            set => base.ViewModel = value;
         }
-
-        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register("VM", typeof(SavedVM), typeof(SavedPage), new PropertyMetadata(null));
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -42,9 +38,9 @@ namespace ExViewer.Views
             await Dispatcher.YieldIdle();
             if (e.NavigationMode != NavigationMode.Back)
             {
-                if (this.VM.Galleries == null)
+                if (this.ViewModel.Galleries == null)
                 {
-                    this.VM.Refresh.Execute();
+                    this.ViewModel.Refresh.Execute();
                     this.abb_Refresh.Focus(FocusState.Programmatic);
                 }
                 else
@@ -86,14 +82,13 @@ namespace ExViewer.Views
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (Gallery)e.ClickedItem;
-            if (this.VM.Open.Execute(item))
+            if (this.ViewModel.Open.Execute(item))
             {
                 this.opened = item;
             }
         }
 
         private MyContentDialog cdg_ConfirmClear;
-
         private async void abb_DeleteAll_Click(object sender, RoutedEventArgs e)
         {
             if (this.cdg_ConfirmClear == null)
@@ -103,7 +98,7 @@ namespace ExViewer.Views
                     Content = Strings.Resources.Views.ClearSavedDialog.Content,
                     PrimaryButtonText = Strings.Resources.General.OK,
                     SecondaryButtonText = Strings.Resources.General.Cancel,
-                    PrimaryButtonCommand = this.VM.Clear
+                    PrimaryButtonCommand = this.ViewModel.Clear
                 };
             await this.cdg_ConfirmClear.ShowAsync();
         }
