@@ -268,10 +268,10 @@
       <Version>11.0.1</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.3.1</Version>
+      <Version>1.3.2</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
-      <Version>2.4.6</Version>
+      <Version>2.4.8</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
       <Version>1.3.3</Version>

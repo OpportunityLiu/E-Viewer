@@ -116,7 +116,7 @@ namespace ExClient.Settings
             {
                 try
                 {
-                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(configUri);
+                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(this.configUri);
                     token.Register(getDoc.Cancel);
                     var doc = await getDoc;
                     updateSettingsDic(doc);
@@ -151,7 +151,7 @@ namespace ExClient.Settings
                     {
                         item.ApplyChanges(postDic);
                     }
-                    var postData = Client.Current.HttpClient.PostAsync(configUri, new HttpFormUrlEncodedContent(postDic));
+                    var postData = Client.Current.HttpClient.PostAsync(this.configUri, new HttpFormUrlEncodedContent(postDic));
                     token.Register(postData.Cancel);
                     var r = await postData;
                     var doc = new HtmlDocument();
@@ -184,13 +184,21 @@ namespace ExClient.Settings
         public Tagging.Namespace ExcludedTagNamespaces
         {
             get => ((ExcludedTagNamespacesSettingProvider)getProvider()).Value;
-            set => ((ExcludedTagNamespacesSettingProvider)getProvider()).Value = value;
+            set
+            {
+                ((ExcludedTagNamespacesSettingProvider)getProvider()).Value = value;
+                OnPropertyChanged();
+            }
         }
 
         public ImageSize ResampledImageSize
         {
             get => ((DefaultSettingProvider)getProvider("Default")).ResampledImageSize;
-            set => ((DefaultSettingProvider)getProvider("Default")).ResampledImageSize = value;
+            set
+            {
+                ((DefaultSettingProvider)getProvider("Default")).ResampledImageSize = value;
+                OnPropertyChanged();
+            }
         }
 
         public CommentsOrder CommentsOrder
@@ -217,30 +225,34 @@ namespace ExClient.Settings
                 if (this.Owner.owner.Type == HostType.EHentai)
                     settings["pp"] = "0";
 
-                settings["xr"] = ((int)this.resampledImageSize).ToString();
-                settings["cs"] = ((int)this.commentsOrder).ToString();
-                settings["fs"] = ((int)this.favoritesOrder).ToString();
+                settings["xr"] = ((int)this.ResampledImageSize).ToString();
+                settings["cs"] = ((int)this.CommentsOrder).ToString();
+                settings["fs"] = ((int)this.FavoritesOrder).ToString();
             }
 
             internal override void DataChanged(Dictionary<string, string> settings)
             {
-                this.resampledImageSize = (ImageSize)int.Parse(settings.GetValueOrDefault("xr", "0"));
-                this.commentsOrder = (CommentsOrder)int.Parse(settings.GetValueOrDefault("cs", "0"));
-                this.favoritesOrder = (FavoritesOrder)int.Parse(settings.GetValueOrDefault("fs", "0"));
+                if (settings.TryGetValue("xr", out var xr))
+                    this.ResampledImageSize = (ImageSize)int.Parse(xr);
+                else
+                    this.ResampledImageSize = ImageSize.Auto;
+
+                if (settings.TryGetValue("cs", out var cs))
+                    this.CommentsOrder = (CommentsOrder)int.Parse(cs);
+                else
+                    this.CommentsOrder = CommentsOrder.ByTimeAscending;
+
+                if (settings.TryGetValue("fs", out var fs))
+                    this.FavoritesOrder = (FavoritesOrder)int.Parse(fs);
+                else
+                    this.FavoritesOrder = FavoritesOrder.ByLastUpdatedTime;
             }
 
-            private ImageSize resampledImageSize;
-            public ImageSize ResampledImageSize
-            {
-                get => this.resampledImageSize;
-                set => Set(ref this.resampledImageSize, value);
-            }
+            public ImageSize ResampledImageSize;
 
-            private CommentsOrder commentsOrder;
-            public CommentsOrder CommentsOrder { get => this.commentsOrder; set => Set(ref this.commentsOrder, value); }
+            public CommentsOrder CommentsOrder;
 
-            private FavoritesOrder favoritesOrder;
-            public FavoritesOrder FavoritesOrder { get => this.favoritesOrder; set => Set(ref this.favoritesOrder, value); }
+            public FavoritesOrder FavoritesOrder;
         }
     }
 }

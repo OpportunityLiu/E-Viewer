@@ -23,7 +23,9 @@ namespace ExClient.Settings
         {
             for (var i = 0; i < this.data.Length; i++)
             {
-                this[i] = settings.GetValueOrDefault("favorite_" + i, "Favorite " + i);
+                if (!settings.TryGetValue("favorite_" + i, out var name))
+                    name = "Favorite " + i;
+                this[i] = name;
             }
         }
 
