@@ -1,6 +1,7 @@
 ﻿using ExClient.Galleries;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Linq;
 using Windows.System;
@@ -18,32 +19,19 @@ namespace ExViewer.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CachedPage : MyPage, IHasAppBar
+    public sealed partial class CachedPage : MvvmPage, IHasAppBar
     {
         public CachedPage()
         {
             this.InitializeComponent();
-            this.VisibleBoundHandledByDesign = true;
-            this.VM = CachedVM.Instance;
-            this.cdg_ConfirmClear = new MyContentDialog()
-            {
-                Title = Strings.Resources.Views.ClearCachedDialog.Title,
-                Content = Strings.Resources.Views.ClearCachedDialog.Content,
-                PrimaryButtonText = Strings.Resources.General.OK,
-                SecondaryButtonText = Strings.Resources.General.Cancel,
-                PrimaryButtonCommand = this.VM.Clear
-            };
+            this.ViewModel = CachedVM.Instance;
         }
 
-        public CachedVM VM
+        public CachedVM ViewModel
         {
-            get => (CachedVM)GetValue(VMProperty);
-            set => SetValue(VMProperty, value);
+            get => (CachedVM)base.ViewModel;
+            set => base.ViewModel = value;
         }
-
-        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register("VM", typeof(CachedVM), typeof(CachedPage), new PropertyMetadata(null));
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -51,9 +39,9 @@ namespace ExViewer.Views
             await Dispatcher.YieldIdle();
             if (e.NavigationMode != NavigationMode.Back)
             {
-                if (this.VM.Galleries == null)
+                if (this.ViewModel.Galleries == null)
                 {
-                    this.VM.Refresh.Execute();
+                    this.ViewModel.Refresh.Execute();
                     this.abb_Refresh.Focus(FocusState.Programmatic);
                 }
                 else
@@ -95,7 +83,7 @@ namespace ExViewer.Views
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (Gallery)e.ClickedItem;
-            if (this.VM.Open.Execute(item))
+            if (this.ViewModel.Open.Execute(item))
             {
                 this.opened = item;
             }
@@ -105,6 +93,15 @@ namespace ExViewer.Views
 
         private async void abb_DeleteAll_Click(object sender, RoutedEventArgs e)
         {
+            if (this.cdg_ConfirmClear == null)
+                this.cdg_ConfirmClear = new MyContentDialog()
+                {
+                    Title = Strings.Resources.Views.ClearCachedDialog.Title,
+                    Content = Strings.Resources.Views.ClearCachedDialog.Content,
+                    PrimaryButtonText = Strings.Resources.General.OK,
+                    SecondaryButtonText = Strings.Resources.General.Cancel,
+                    PrimaryButtonCommand = this.ViewModel.Clear
+                };
             await this.cdg_ConfirmClear.ShowAsync();
         }
 
