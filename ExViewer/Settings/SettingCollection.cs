@@ -294,6 +294,7 @@ namespace ExViewer.Settings
                         try
                         {
                             GalleryImage.ImageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
+                            Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Custom cache folder set");
                         }
                         catch
                         {

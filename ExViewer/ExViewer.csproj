@@ -265,6 +265,7 @@
       <DependentUpon>20170327142247_MigrationReset.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\SearchHistoryDbModelSnapshot.cs" />
+    <Compile Include="Services\ContentDialogNotification.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />
     <Compile Include="Settings\StatusCollection.cs" />
@@ -661,7 +662,7 @@
       <Version>1.3.2</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
-      <Version>2.4.8</Version>
+      <Version>2.4.9</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
       <Version>1.3.5</Version>
@@ -673,9 +674,7 @@
       <Version>0.16.2</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Behaviers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

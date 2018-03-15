@@ -3,6 +3,8 @@ using ExClient.Galleries;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
 using Opportunity.Helpers.Universal.AsyncHelpers;
+using Opportunity.MvvmUniverse.Services;
+using Opportunity.MvvmUniverse.Services.Navigation;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
@@ -23,12 +25,11 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class FavoritesPage : MyPage, IHasAppBar, INavigationHandler
+    public sealed partial class FavoritesPage : MvvmPage, IHasAppBar, INavigationHandler
     {
         public FavoritesPage()
         {
             this.InitializeComponent();
-            this.VisibleBoundHandledByDesign = true;
             var l = new List<FavoriteCategory>(11)
             {
                 FavoriteCategory.All
@@ -42,18 +43,19 @@ namespace ExViewer.Views
             TagSuggestionService.IncreaseStateCode(this.asb);
             Navigator.GetForCurrentView().Handlers.Add(this);
             base.OnNavigatedTo(e);
-            this.VM = FavoritesVM.GetVM(e.Parameter?.ToString());
-            this.VM.SetQueryWithSearchResult();
-            this.VM.Search.Executed += this.Search_Executed;
+            this.ViewModel = FavoritesVM.GetVM(e.Parameter?.ToString());
+            this.ViewModel.SetQueryWithSearchResult();
+            this.ViewModel.Search.Executed += this.Search_Executed;
             await Dispatcher.YieldIdle();
             if (e.NavigationMode == NavigationMode.New)
             {
-                this.VM.SearchResult.Reset();
+                if (e.Parameter != null)
+                    this.ViewModel.SearchResult.Reset();
                 this.cbCategory.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
-                if (!await ViewHelper.ScrollAndFocus(this.lv, this.VM.SelectedGallery))
+                if (!await ViewHelper.ScrollAndFocus(this.lv, this.ViewModel.SelectedGallery))
                     this.cbCategory.Focus(FocusState.Programmatic);
             }
         }
@@ -64,28 +66,23 @@ namespace ExViewer.Views
         {
             base.OnNavigatingFrom(e);
             CloseAll();
-            this.GetNavigator().Handlers.Remove(this);
+            this.GetService<Navigator, INavigationHandler>().Handlers.Remove(this);
         }
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            this.VM.Open.Execute((Gallery)e.ClickedItem);
+            this.ViewModel.Open.Execute((Gallery)e.ClickedItem);
         }
 
-        public FavoritesVM VM
+        public new FavoritesVM ViewModel
         {
-            get => (FavoritesVM)GetValue(VMProperty);
-            set => SetValue(VMProperty, value);
+            get => (FavoritesVM)base.ViewModel;
+            set => base.ViewModel = value;
         }
-
-
-        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register("VM", typeof(FavoritesVM), typeof(FavoritesPage), new PropertyMetadata(null));
 
         private void lv_RefreshRequested(object sender, EventArgs e)
         {
-            this.VM?.SearchResult.Reset();
+            this.ViewModel?.SearchResult.Reset();
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -156,7 +153,7 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Visible;
             this.cbCategory.Visibility = Visibility.Collapsed;
             this.asb.Visibility = Visibility.Collapsed;
-            this.GetNavigator().UpdateProperties();
+            this.GetService<Navigator, INavigationHandler>().UpdateProperties();
             return true;
         }
 
@@ -169,12 +166,13 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Collapsed;
             this.cbCategory.Visibility = Visibility.Visible;
             this.asb.Visibility = Visibility.Visible;
-            this.GetNavigator().UpdateProperties();
+            this.GetService<Navigator, INavigationHandler>().UpdateProperties();
             return true;
         }
 
-        void INavigationHandler.OnAdd(Navigator navigator) { }
-        void INavigationHandler.OnRemove() { }
+
+        void IServiceHandler<Navigator>.OnAdd(Navigator service) { }
+        void IServiceHandler<Navigator>.OnRemove(Navigator service) { }
 
         public bool CanGoBack => (this.lv.SelectionMode != ListViewSelectionMode.None);
         public IAsyncOperation<bool> GoBackAsync()
@@ -186,6 +184,7 @@ namespace ExViewer.Views
         }
 
         bool INavigationHandler.CanGoForward => false;
+
         IAsyncOperation<bool> INavigationHandler.GoForwardAsync()
             => AsyncOperation<bool>.CreateCompleted(false);
 
@@ -221,7 +220,7 @@ namespace ExViewer.Views
         private void abbApply_Click(object sender, RoutedEventArgs e)
         {
             var cat = (FavoriteCategory)this.cbCategory2.SelectedItem ?? FavoriteCategory.Removed;
-            var task = this.VM.SearchResult.AddToCategoryAsync(this.lv.SelectedRanges.ToList(), cat);
+            var task = this.ViewModel.SearchResult.AddToCategoryAsync(this.lv.SelectedRanges.ToList(), cat);
             this.lv.SelectionMode = ListViewSelectionMode.None;
             RootControl.RootController.TrackAsyncAction(task, (s, args) =>
             {
