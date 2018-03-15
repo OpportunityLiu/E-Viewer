@@ -100,9 +100,9 @@ namespace ExViewer
 
         private static void AddtionalInfo(StringBuilder sb, FavoritesPage fp)
         {
-            if (fp.VM == null)
+            if (fp.ViewModel == null)
                 return;
-            AddtionalInfo(sb, fp.VM);
+            AddtionalInfo(sb, fp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, SearchPage sp)

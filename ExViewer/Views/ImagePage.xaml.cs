@@ -3,6 +3,8 @@ using ExViewer.Controls;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
 using Opportunity.Helpers.Universal.AsyncHelpers;
+using Opportunity.MvvmUniverse.Services;
+using Opportunity.MvvmUniverse.Services.Navigation;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Linq;
@@ -137,7 +139,7 @@ namespace ExViewer.Views
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            this.GetNavigator().Handlers.Remove(this);
+            this.GetService<Navigator, INavigationHandler>().Handlers.Remove(this);
 
             base.OnNavigatingFrom(e);
 
@@ -166,8 +168,8 @@ namespace ExViewer.Views
             cb_top_Closed(this.cb_top, null);
         }
 
-        void INavigationHandler.OnAdd(Navigator navigator) { }
-        void INavigationHandler.OnRemove() { }
+        void IServiceHandler<Navigator>.OnAdd(Navigator navigator) { }
+        void IServiceHandler<Navigator>.OnRemove(Navigator navigator) { }
 
         bool INavigationHandler.CanGoBack => false;
         IAsyncOperation<bool> INavigationHandler.GoBackAsync()

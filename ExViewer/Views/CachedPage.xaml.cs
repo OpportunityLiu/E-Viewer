@@ -1,6 +1,8 @@
 ﻿using ExClient.Galleries;
 using ExViewer.Controls;
+using ExViewer.Services;
 using ExViewer.ViewModels;
+using Opportunity.MvvmUniverse.Services.Notification;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Linq;
@@ -89,20 +91,21 @@ namespace ExViewer.Views
             }
         }
 
-        private MyContentDialog cdg_ConfirmClear;
+        private static ContentDialogQuestionData confirmClear = new ContentDialogQuestionData
+        {
+            Title = Strings.Resources.Views.ClearCachedDialog.Title,
+            Content = Strings.Resources.Views.ClearCachedDialog.Content,
+            PrimaryButtonText = Strings.Resources.General.OK,
+            CloseButtonText = Strings.Resources.General.Cancel,
+        };
 
         private async void abb_DeleteAll_Click(object sender, RoutedEventArgs e)
         {
-            if (this.cdg_ConfirmClear == null)
-                this.cdg_ConfirmClear = new MyContentDialog()
-                {
-                    Title = Strings.Resources.Views.ClearCachedDialog.Title,
-                    Content = Strings.Resources.Views.ClearCachedDialog.Content,
-                    PrimaryButtonText = Strings.Resources.General.OK,
-                    PrimaryButtonCommand = this.ViewModel.Clear,
-                    CloseButtonText = Strings.Resources.General.Cancel,
-                };
-            await this.cdg_ConfirmClear.ShowAsync();
+            if ((await Notificator.GetForCurrentView().NotifyAsync(ContentDialogNotification.Question, confirmClear))
+                == NotificationResult.Positive)
+            {
+                this.ViewModel.Clear.Execute();
+            }
         }
 
         public void CloseAll()

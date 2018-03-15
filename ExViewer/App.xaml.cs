@@ -81,6 +81,10 @@ namespace ExViewer
                 Opportunity.MvvmUniverse.DispatcherHelper.Initialize();
                 Opportunity.MvvmUniverse.DispatcherHelper.UseForNotification = true;
             }
+            if (Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Count == 0)
+            {
+                Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Add(new Services.ContentDialogNotification());
+            }
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
             if (currentContent == null)

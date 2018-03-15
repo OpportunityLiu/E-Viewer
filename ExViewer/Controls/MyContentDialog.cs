@@ -1,8 +1,9 @@
-﻿using Windows.UI.Xaml;
+﻿using Opportunity.MvvmUniverse.Views;
+using Windows.UI.Xaml;
 
 namespace ExViewer.Controls
 {
-    public class MyContentDialog : Windows.UI.Xaml.Controls.ContentDialog
+    public class MyContentDialog : MvvmContentDialog
     {
         public MyContentDialog()
         {

@@ -1,5 +1,5 @@
 ﻿using ExClient.Status;
-using Opportunity.MvvmUniverse.Views;
+using Opportunity.MvvmUniverse.Services.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
