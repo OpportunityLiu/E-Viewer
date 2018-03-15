@@ -12,7 +12,7 @@
                           Title="ADD/EDIT COMMENT"
                           PrimaryButtonText="OK"
                           PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-                          SecondaryButtonText="Cancel"
+                          CloseButtonText="Cancel"
                           IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}">
   <ContentControl.Resources>
     <rs3:Style x:Key="ToolBarAppBarButtonStyle"

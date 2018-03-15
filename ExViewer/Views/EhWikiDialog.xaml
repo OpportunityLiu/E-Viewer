@@ -8,7 +8,7 @@
                           x:Uid="Views/EhWikiDialog/ContentDialog"
                           Title="TITLE"
                           FullSizeDesired="True"
-                          PrimaryButtonText="Ok"
+                          CloseButtonText="Ok"
                           Opened="MyContentDialog_Opened"
                           RequiresPointer="WhenFocused"
                           mc:Ignorable="d">

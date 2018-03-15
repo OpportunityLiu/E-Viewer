@@ -33,9 +33,5 @@ namespace ExViewer.Views
             Clipboard.SetContent(dp);
             Clipboard.Flush();
         }
-
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-        }
     }
 }

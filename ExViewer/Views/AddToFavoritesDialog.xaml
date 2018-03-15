@@ -9,7 +9,7 @@
                           mc:Ignorable="d"
                           Title="ADD TO FAVORITES"
                           PrimaryButtonText="OK"
-                          SecondaryButtonText="Cancel"
+                          CloseButtonText="Cancel"
                           IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
                           PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
                           Loading="MyContentDialog_Loading">

@@ -273,7 +273,7 @@ namespace ExViewer.Views
                     {
                         Title = Strings.Resources.Verify.FailedDialogTitle,
                         Content = info,
-                        PrimaryButtonText = Strings.Resources.General.Exit
+                        CloseButtonText = Strings.Resources.General.Exit,
                     };
                     await dialog.ShowAsync();
                 }

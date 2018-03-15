@@ -18,6 +18,7 @@
                 x:Name="page"
                 xmlns:xb="using:Opportunity.Converters.XBind"
                 Loading="page_Loading"
+                Loaded="page_Loaded"
                 Unloaded="page_Unloaded"
                 NavigationCacheMode="Enabled"
                 mc:Ignorable="d">

@@ -27,7 +27,7 @@ namespace ExViewer.Views
             this.ViewModel = CachedVM.Instance;
         }
 
-        public CachedVM ViewModel
+        public new CachedVM ViewModel
         {
             get => (CachedVM)base.ViewModel;
             set => base.ViewModel = value;
@@ -99,8 +99,8 @@ namespace ExViewer.Views
                     Title = Strings.Resources.Views.ClearCachedDialog.Title,
                     Content = Strings.Resources.Views.ClearCachedDialog.Content,
                     PrimaryButtonText = Strings.Resources.General.OK,
-                    SecondaryButtonText = Strings.Resources.General.Cancel,
-                    PrimaryButtonCommand = this.ViewModel.Clear
+                    PrimaryButtonCommand = this.ViewModel.Clear,
+                    CloseButtonText = Strings.Resources.General.Cancel,
                 };
             await this.cdg_ConfirmClear.ShowAsync();
         }

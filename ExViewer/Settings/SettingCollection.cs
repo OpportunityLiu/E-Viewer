@@ -1,4 +1,5 @@
 ﻿using ApplicationDataManager.Settings;
+using System;
 using ExClient;
 using ExClient.Galleries;
 using ExClient.Settings;
@@ -282,21 +283,22 @@ namespace ExViewer.Settings
             set
             {
                 SetLocal(value);
-                if (value == null)
-                    GalleryImage.ImageFolder = null;
-                else
+                setAsync(value);
+
+                async void setAsync(string token)
                 {
-                    try
+                    if (string.IsNullOrEmpty(token))
+                        GalleryImage.ImageFolder = null;
+                    else
                     {
-                        var gf = StorageApplicationPermissions.FutureAccessList.GetFolderAsync(value);
-                        if (gf.Status == Windows.Foundation.AsyncStatus.Completed)
-                            GalleryImage.ImageFolder = gf.GetResults();
-                        else
-                            gf.Completed = (s, _) => GalleryImage.ImageFolder = s.GetResults();
-                    }
-                    catch
-                    {
-                        ImageCacheFolder = null;
+                        try
+                        {
+                            GalleryImage.ImageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
+                        }
+                        catch
+                        {
+                            ImageCacheFolder = null;
+                        }
                     }
                 }
             }

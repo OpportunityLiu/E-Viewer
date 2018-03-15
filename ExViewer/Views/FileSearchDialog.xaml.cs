@@ -79,10 +79,6 @@ namespace ExViewer.Views
             });
         }
 
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-        }
-
         private async void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
             var file = await this.picker.PickSingleFileAsync();

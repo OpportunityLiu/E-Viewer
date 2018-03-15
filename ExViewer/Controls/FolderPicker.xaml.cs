@@ -49,7 +49,7 @@ namespace ExViewer.Controls
         /// Indentify <see cref="FolderToken"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty FolderTokenProperty =
-            DependencyProperty.Register(nameof(FolderToken), typeof(string), typeof(FolderPicker), new PropertyMetadata(null, FolderTokenPropertyChanged));
+            DependencyProperty.Register(nameof(FolderToken), typeof(string), typeof(FolderPicker), new PropertyMetadata("", FolderTokenPropertyChanged));
 
         private static async void FolderTokenPropertyChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
         {
@@ -58,7 +58,9 @@ namespace ExViewer.Controls
             if (oldValue == newValue)
                 return;
             var sender = (FolderPicker)dp;
-            if (newValue == null)
+            if (!string.IsNullOrEmpty(oldValue))
+                StorageApplicationPermissions.FutureAccessList.Remove(oldValue);
+            if (string.IsNullOrEmpty(newValue))
                 sender.Folder = null;
             else
                 sender.Folder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(newValue);
@@ -76,14 +78,12 @@ namespace ExViewer.Controls
             var f = await p.PickSingleFolderAsync();
             if (f == null)
                 return;
-            if (this.FolderToken != null)
-                StorageApplicationPermissions.FutureAccessList.Remove(this.FolderToken);
             this.FolderToken = StorageApplicationPermissions.FutureAccessList.Add(f);
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            this.FolderToken = null;
+            this.FolderToken = "";
         }
 
         private async void FolderButton_Click(object sender, RoutedEventArgs e)

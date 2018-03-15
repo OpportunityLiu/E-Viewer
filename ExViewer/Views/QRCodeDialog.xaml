@@ -9,9 +9,8 @@
                           mc:Ignorable="d"
                           Title="QR CODE"
                           PrimaryButtonText="Copy"
-                          SecondaryButtonText="Close"
-                          PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-                          SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+                          CloseButtonText="Close"
+                          PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
   <TextBlock Text="{x:Bind Text, Mode=OneWay}"
              IsTextSelectionEnabled="True"
              Style="{ThemeResource BodyTextBlockStyle}" />
