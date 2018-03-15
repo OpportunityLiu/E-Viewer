@@ -282,11 +282,9 @@
       "RefreshAppBarButton/Label": "刷新"
     },
     "QRCodeDialog": {
-      "ContentDialog": {
-        "PrimaryButtonText": "复制",
-        "CloseButtonText": "关闭",
-        "Title": "QR 码"
-      }
+      "PrimaryButtonText": "复制",
+      "CloseButtonText": "关闭",
+      "Title": "QR 码扫描结果"
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "缓存的画廊",

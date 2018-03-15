@@ -282,11 +282,9 @@
       "RefreshAppBarButton/Label": "重新整理"
     },
     "QRCodeDialog": {
-      "ContentDialog": {
-        "PrimaryButtonText": "複製",
-        "CloseButtonText": "關閉",
-        "Title": "QR 碼"
-      }
+      "PrimaryButtonText": "複製",
+      "CloseButtonText": "關閉",
+      "Title": "QR 碼掃描結果"
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "快取的畫廊",

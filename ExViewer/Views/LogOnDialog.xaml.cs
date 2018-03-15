@@ -83,8 +83,7 @@ namespace ExViewer.Views
         if (c_end == -1) c_end = document.cookie.length;
         return unescape(document.cookie.substring(c_start, c_end));
     }
-    //window.external.notify('\n' + getCookie('ipb_member_id') + '\n' + getCookie('ipb_pass_hash'));
-    return ( getCookie('ipb_member_id') + '\n' + getCookie('ipb_pass_hash'));
+    return (getCookie('ipb_member_id') + '\n' + getCookie('ipb_pass_hash'));
 })();
 " });
             var data = r.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -147,7 +146,7 @@ namespace ExViewer.Views
 
         private string tempUserName, tempPassword;
 
-        private async void wv_ScriptNotify(object sender, NotifyEventArgs e)
+        private void wv_ScriptNotify(object sender, NotifyEventArgs e)
         {
             var data = e.Value.Split(new[] { '\n' }, StringSplitOptions.None);
             if (e.CallingUri.ToString().StartsWith(Client.LogOnUri.ToString()))
