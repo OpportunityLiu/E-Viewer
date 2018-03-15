@@ -72,7 +72,7 @@ namespace ExViewer.Controls
             {
                 SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.ComputerFolder,
                 SettingsIdentifier = "FP",
-                ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail
+                ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail,
             };
             p.FileTypeFilter.Add(".");
             var f = await p.PickSingleFolderAsync();

@@ -2,6 +2,7 @@
 using ExViewer.Controls;
 using System;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -24,7 +25,6 @@ namespace ExViewer.Views
             this.wv.Navigate(Client.LogOnUri);
             this.tempUserName = null;
             this.tempPassword = null;
-            this.hideCalled = false;
         }
 
         private async Task injectLogOnPage()
@@ -68,7 +68,9 @@ namespace ExViewer.Views
 
         private async Task injectOtherPage()
         {
-            await this.wv.InvokeScriptAsync("eval", new[] { @"
+            if (this.loggingOn)
+                return;
+            var r = await this.wv.InvokeScriptAsync("eval", new[] { @"
 (function ()
 {
     function getCookie(c_name)
@@ -81,27 +83,14 @@ namespace ExViewer.Views
         if (c_end == -1) c_end = document.cookie.length;
         return unescape(document.cookie.substring(c_start, c_end));
     }
-    window.external.notify('\n' + getCookie('ipb_member_id') + '\n' + getCookie('ipb_pass_hash'));
+    //window.external.notify('\n' + getCookie('ipb_member_id') + '\n' + getCookie('ipb_pass_hash'));
+    return ( getCookie('ipb_member_id') + '\n' + getCookie('ipb_pass_hash'));
 })();
 " });
-        }
-
-        private void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
-        {
-            if (args.Result != ContentDialogResult.Primary)
-            {
-                if (this.logOnInfoBackup != null)
-                    Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
-                if (Client.Current.NeedLogOn)
-                {
-                    Application.Current.Exit();
-                }
-            }
-            else
-            {
-                if (!this.hideCalled)
-                    args.Cancel = true;
-            }
+            var data = r.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            if (data.Length != 2)
+                return;
+            await logOnAsync(data[0], data[1]);
         }
 
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
@@ -118,14 +107,19 @@ namespace ExViewer.Views
             reset();
         }
 
-        private async void wv_LoadCompleted(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
+        private async void wv_DOMContentLoaded(WebView sender, WebViewDOMContentLoadedEventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine(e.Uri?.ToString() ?? "local string", "WebView");
-            if (e.Uri == null)
+            System.Diagnostics.Debug.WriteLine(args.Uri?.ToString() ?? "local string", "WebView");
+            if (args.Uri == null)
                 return;
-            if (e.Uri.ToString().StartsWith(Client.LogOnUri.ToString()))
+            if (args.Uri == Client.LogOnUri)
                 await injectLogOnPage();
-            else if (e.Uri.Host == Client.LogOnUri.Host)
+            else if (args.Uri.ToString().StartsWith(Client.LogOnUri.ToString()))
+            {
+                await injectLogOnPage();
+                await injectOtherPage();
+            }
+            else if (args.Uri.Host == Client.LogOnUri.Host)
                 await injectOtherPage();
         }
 
@@ -153,12 +147,8 @@ namespace ExViewer.Views
 
         private string tempUserName, tempPassword;
 
-        private bool hideCalled = false;
-
         private async void wv_ScriptNotify(object sender, NotifyEventArgs e)
         {
-            if (this.hideCalled)
-                return;
             var data = e.Value.Split(new[] { '\n' }, StringSplitOptions.None);
             if (e.CallingUri.ToString().StartsWith(Client.LogOnUri.ToString()))
             {
@@ -168,38 +158,54 @@ namespace ExViewer.Views
                 this.tempPassword = data[1];
                 return;
             }
-            if (data.Length != 3 || data[0].Length != 0)
-                return;
-            await logOnAsync(data[1], data[2]);
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            this.wv.MinWidth = Math.Min(availableSize.Width - 144, 700);
+            return base.MeasureOverride(availableSize);
         }
 
         private void MyContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            if (this.hideCalled)
-                return;
             reset();
+            args.Cancel = true;
         }
 
+        private void MyContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            if (this.logOnInfoBackup != null)
+                Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
+            if (Client.Current.NeedLogOn)
+            {
+                Application.Current.Exit();
+            }
+        }
+
+        private bool loggingOn = false;
         private async Task logOnAsync(string id, string hash)
         {
-            if (!long.TryParse(id, out var uid))
-                return;
-            if (this.hideCalled)
-                return;
+            this.loggingOn = true;
             try
             {
-                await Client.Current.LogOnAsync(uid, hash);
+                if (!long.TryParse(id, out var uid))
+                    return;
+                try
+                {
+                    await Client.Current.LogOnAsync(uid, hash);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+                if (!string.IsNullOrEmpty(this.tempUserName) && !string.IsNullOrEmpty(this.tempPassword))
+                    AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
+                this.Hide();
             }
-            catch (Exception)
+            finally
             {
-                return;
+                this.loggingOn = false;
             }
-            if (!string.IsNullOrEmpty(this.tempUserName) && !string.IsNullOrEmpty(this.tempPassword))
-                AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
-            if (this.hideCalled)
-                return;
-            this.hideCalled = true;
-            this.Hide();
         }
     }
 }

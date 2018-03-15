@@ -91,7 +91,7 @@ namespace ExViewer.Views
             }
         }
 
-        private static ContentDialogQuestionData confirmClear = new ContentDialogQuestionData
+        private ContentDialogNotificationData confirmClear = new ContentDialogNotificationData
         {
             Title = Strings.Resources.Views.ClearCachedDialog.Title,
             Content = Strings.Resources.Views.ClearCachedDialog.Content,
@@ -101,11 +101,8 @@ namespace ExViewer.Views
 
         private async void abb_DeleteAll_Click(object sender, RoutedEventArgs e)
         {
-            if ((await Notificator.GetForCurrentView().NotifyAsync(ContentDialogNotification.Question, confirmClear))
-                == NotificationResult.Positive)
-            {
-                this.ViewModel.Clear.Execute();
-            }
+            this.confirmClear.PrimaryButtonCommand = this.ViewModel.Clear;
+            await Notificator.GetForCurrentView().NotifyAsync(this.confirmClear);
         }
 
         public void CloseAll()
