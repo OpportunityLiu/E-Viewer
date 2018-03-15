@@ -144,6 +144,7 @@
     <ListView x:Name="lv_Tags"
               ItemsSource="{x:Bind Tags, Mode=OneWay}"
               ScrollViewer.IsVerticalScrollChainingEnabled="True"
+              ScrollViewer.VerticalScrollMode="Auto"
               SelectionMode="None"
               ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
               ItemTemplate="{StaticResource TagGroupTemplate}">

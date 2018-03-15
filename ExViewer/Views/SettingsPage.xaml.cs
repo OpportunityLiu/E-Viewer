@@ -1,5 +1,6 @@
 ﻿using ExViewer.Controls;
 using ExViewer.Settings;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
 using Windows.UI.Core;
@@ -13,12 +14,11 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SettingsPage : MyPage
+    public sealed partial class SettingsPage : MvvmPage
     {
         public SettingsPage()
         {
             this.InitializeComponent();
-            this.VisibleBoundHandledByDesign = true;
             this.pv_root.ItemsSource = SettingCollection.Current.GroupedSettings;
         }
 

@@ -9,7 +9,7 @@
                      x:Uid="Views/UpdateDialog/ContentDialog"
                      Title="NEW VERSION"
                      PrimaryButtonText="Update now"
-                     SecondaryButtonText="Remind me next time"
+                     CloseButtonText="Remind me next time"
                      PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
   <StackPanel>
     <TextBlock x:Name="tbVersion"

@@ -26,7 +26,7 @@ namespace ExViewer.Views
             this.ViewModel = SavedVM.Instance;
         }
 
-        public SavedVM ViewModel
+        public new SavedVM ViewModel
         {
             get => (SavedVM)base.ViewModel;
             set => base.ViewModel = value;
@@ -97,8 +97,8 @@ namespace ExViewer.Views
                     Title = Strings.Resources.Views.ClearSavedDialog.Title,
                     Content = Strings.Resources.Views.ClearSavedDialog.Content,
                     PrimaryButtonText = Strings.Resources.General.OK,
-                    SecondaryButtonText = Strings.Resources.General.Cancel,
-                    PrimaryButtonCommand = this.ViewModel.Clear
+                    PrimaryButtonCommand = this.ViewModel.Clear,
+                    CloseButtonText = Strings.Resources.General.Cancel,
                 };
             await this.cdg_ConfirmClear.ShowAsync();
         }

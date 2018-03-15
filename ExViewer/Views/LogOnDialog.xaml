@@ -10,7 +10,7 @@
                           Loaded="ContentDialog_Loaded"
                           PrimaryButtonText="Reset"
                           PrimaryButtonClick="MyContentDialog_PrimaryButtonClick"
-                          SecondaryButtonText="?"
+                          CloseButtonText="?"
                           Opened="ContentDialog_Opened"
                           Closing="ContentDialog_Closing"
                           FullSizeDesired="True">

@@ -54,13 +54,9 @@ namespace ExViewer.Views
         private VisualInteractionSource interactionSource;
         private CompositionPropertySet propertySet;
 
-        private void pv_Content_Loaded(object sender, RoutedEventArgs e)
+        private void page_Loaded(object sender, RoutedEventArgs e)
         {
-            var fe_Content = (FrameworkElement)sender;
-            var bd_Content = VisualTreeHelper.GetChild(fe_Content, 0);
-            var sv_Content = (ScrollViewer)VisualTreeHelper.GetChild(bd_Content, 0);
-            sv_Content.ViewChanging += this.pv_Content_ViewChanging;
-            fe_Content.Loaded -= this.pv_Content_Loaded;
+            this.Loaded -= this.page_Loaded;
 
             this.spVisual = ElementCompositionPreview.GetElementVisual(this.spContent);
             this.btnScrollVisual = ElementCompositionPreview.GetElementVisual(this.btn_Scroll);
@@ -88,6 +84,14 @@ namespace ExViewer.Views
             this.btnScrollVisual.CenterPoint = new System.Numerics.Vector3((float)this.btn_Scroll.ActualWidth / 2, (float)this.btn_Scroll.ActualHeight / 2, 0);
             this.spVisual.StartAnimation("Offset.Y", -progress * tref.MaxPosition.Y);
             gdInfo_SizeChanged(this, null);
+        }
+
+        private void pv_Content_Loaded(object sender, RoutedEventArgs e)
+        {
+            var fe_Content = (FrameworkElement)sender;
+            var sv_Content = fe_Content.Descendants<ScrollViewer>().First();
+            sv_Content.ViewChanging += this.pv_Content_ViewChanging;
+            fe_Content.Loaded -= this.pv_Content_Loaded;
         }
 
         private int sizeChanging;

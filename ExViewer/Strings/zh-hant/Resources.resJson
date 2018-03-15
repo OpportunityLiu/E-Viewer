@@ -170,12 +170,12 @@
       "AppBarButtonUnderline/ToolTipService/ToolTip": "下劃線 (Ctrl + U)",
       "ContentDialog": {
         "PrimaryButtonText": "釋出",
-        "SecondaryButtonText": "取消"
+        "CloseButtonText": "取消"
       },
       "EditTitle": "編輯評論"
     },
     "EhWikiDialog": {
-      "ContentDialog/PrimaryButtonText": "確定",
+      "ContentDialog/CloseButtonText": "確定",
       "TagNotFound": "在 EhWiki 中未找到此標籤。"
     },
     "FavoritesPage": {
@@ -189,7 +189,7 @@
     "FileSearchDialog": {
       "BrowseButton/Content": "瀏覽",
       "ContentDialog/PrimaryButtonText": "搜尋",
-      "ContentDialog/SecondaryButtonText": "取消",
+      "ContentDialog/CloseButtonText": "取消",
       "ContentDialog/Title": "檔案搜尋",
       "CoverCheckBox/Content": "只檢索封面",
       "DropHint": "使用此檔案",
@@ -284,7 +284,7 @@
     "QRCodeDialog": {
       "ContentDialog": {
         "PrimaryButtonText": "複製",
-        "SecondaryButtonText": "關閉",
+        "CloseButtonText": "關閉",
         "Title": "QR 碼"
       }
     },
@@ -341,7 +341,7 @@
       "ContentDialog": {
         "Title": "新版本",
         "PrimaryButtonText": "現在升級",
-        "SecondaryButtonText": "下次提醒"
+        "CloseButtonText": "下次提醒"
       }
     }
   }

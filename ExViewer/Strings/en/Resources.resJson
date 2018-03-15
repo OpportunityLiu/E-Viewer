@@ -137,7 +137,7 @@
     "QRCodeDialog": {
       "ContentDialog": {
         "PrimaryButtonText": "Copy",
-        "SecondaryButtonText": "Close",
+        "CloseButtonText": "Close",
         "Title": "QR CODE"
       }
     },
@@ -177,12 +177,12 @@
       "AppBarButtonUnderline/ToolTipService/ToolTip": "Underline (Ctrl + U)",
       "ContentDialog": {
         "PrimaryButtonText": "Post",
-        "SecondaryButtonText": "Cancel"
+        "CloseButtonText": "Cancel"
       },
       "EditTitle": "EDIT COMMENT"
     },
     "EhWikiDialog": {
-      "ContentDialog/PrimaryButtonText": "OK",
+      "ContentDialog/CloseButtonText": "OK",
       "TagNotFound": "Tag not found in wiki."
     },
     "FavoritesPage": {
@@ -196,7 +196,7 @@
     "FileSearchDialog": {
       "BrowseButton/Content": "Browse",
       "ContentDialog/PrimaryButtonText": "Search",
-      "ContentDialog/SecondaryButtonText": "Cancel",
+      "ContentDialog/CloseButtonText": "Cancel",
       "ContentDialog/Title": "FILE SEARCH",
       "CoverCheckBox/Content": "Only search covers",
       "DropHint": "Use this file",
@@ -341,7 +341,7 @@
       "ContentDialog": {
         "Title": "NEW VERSION",
         "PrimaryButtonText": "Update now",
-        "SecondaryButtonText": "Remind me next time"
+        "CloseButtonText": "Remind me next time"
       }
     }
   }

@@ -20,6 +20,7 @@ namespace ExViewer.Views
 
         private void reset()
         {
+            this.wv.NavigateToString("");
             this.wv.Navigate(Client.LogOnUri);
             this.tempUserName = null;
             this.tempPassword = null;
@@ -87,7 +88,7 @@ namespace ExViewer.Views
 
         private void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
         {
-            if (args.Result == ContentDialogResult.Secondary)
+            if (args.Result != ContentDialogResult.Primary)
             {
                 if (this.logOnInfoBackup != null)
                     Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
@@ -106,9 +107,9 @@ namespace ExViewer.Views
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
             if (Client.Current.NeedLogOn)
-                this.SecondaryButtonText = Strings.Resources.General.Exit;
+                this.CloseButtonText = Strings.Resources.General.Exit;
             else
-                this.SecondaryButtonText = Strings.Resources.General.Cancel;
+                this.CloseButtonText = Strings.Resources.General.Cancel;
         }
 
         private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)

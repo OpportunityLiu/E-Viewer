@@ -14,10 +14,9 @@
                           Loaded="MyContentDialog_Loaded"
                           Title="FILE SEARCH"
                           PrimaryButtonText="Search"
-                          SecondaryButtonText="Cancel"
+                          CloseButtonText="Cancel"
                           PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-                          IsPrimaryButtonEnabled="{x:Bind SearchFile, Mode=OneWay, Converter={StaticResource NullToFalseConverter}}"
-                          SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+                          IsPrimaryButtonEnabled="{x:Bind SearchFile, Mode=OneWay, Converter={StaticResource NullToFalseConverter}}">
     <controls:MyContentDialog.Resources>
         <Style x:Key="CheckBoxStyle"
                TargetType="CheckBox">
