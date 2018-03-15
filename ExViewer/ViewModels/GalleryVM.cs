@@ -3,12 +3,14 @@ using ExClient.Api;
 using ExClient.Galleries;
 using ExClient.Galleries.Metadata;
 using ExViewer.Helpers;
+using ExViewer.Services;
 using ExViewer.Settings;
 using ExViewer.Views;
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
+using Opportunity.MvvmUniverse.Services.Notification;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
@@ -21,6 +23,7 @@ using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Streams;
 using Windows.System;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
@@ -350,7 +353,13 @@ namespace ExViewer.ViewModels
             }).AsAsyncAction();
         }
 
-        private static QRCodeDialog qrCodeDialog;
+        private static ContentDialogNotificationData qrCodeDialog = new ContentDialogNotificationData
+        {
+            Title = Strings.Resources.Views.QRCodeDialog.Title,
+            PrimaryButtonText = Strings.Resources.Views.QRCodeDialog.PrimaryButtonText,
+            PrimaryButtonCommand = Opportunity.MvvmUniverse.Commands.Predefined.DataTransferCommands.SetClipboard,
+            CloseButtonText = Strings.Resources.Views.QRCodeDialog.CloseButtonText,
+        };
         public Command<string> OpenQRCode { get; } = Command.Create<string>(async (sender, code) =>
         {
             var opened = false;
@@ -364,10 +373,14 @@ namespace ExViewer.ViewModels
             }
             if (!opened)
             {
-                if (qrCodeDialog is null)
-                    qrCodeDialog = new QRCodeDialog();
-                qrCodeDialog.Text = code;
-                await qrCodeDialog.ShowAsync();
+                if (!(qrCodeDialog.Content is TextBlock tb))
+                {
+                    tb = new TextBlock { IsTextSelectionEnabled = true, TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap };
+                    qrCodeDialog.Content = tb;
+                }
+                tb.Text = code;
+                qrCodeDialog.PrimaryButtonCommandParameter = code;
+                await Notificator.GetForCurrentView().NotifyAsync(qrCodeDialog);
             }
         }, (sender, code) => code != null);
 

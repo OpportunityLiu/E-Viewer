@@ -22,9 +22,11 @@ namespace ExViewer.Services
 
         public string PrimaryButtonText { get; set; } = "";
         public ICommand PrimaryButtonCommand { get; set; }
+        public object PrimaryButtonCommandParameter { get; set; }
 
         public string SecondaryButtonText { get; set; } = "";
         public ICommand SecondaryButtonCommand { get; set; }
+        public object SecondaryButtonCommandParameter { get; set; }
 
         public string CloseButtonText { get; set; } = "";
 
@@ -56,8 +58,10 @@ namespace ExViewer.Services
             this.Content = null;
             this.PrimaryButtonText = "";
             this.PrimaryButtonCommand = null;
+            this.PrimaryButtonCommandParameter = null;
             this.SecondaryButtonText = "";
             this.SecondaryButtonCommand = null;
+            this.SecondaryButtonCommandParameter = null;
             this.CloseButtonText = "";
             this.DefaultButton = ContentDialogButton.None;
         }
@@ -73,8 +77,10 @@ namespace ExViewer.Services
             this.Content = notificationData.Content;
             this.PrimaryButtonText = notificationData.PrimaryButtonText;
             this.PrimaryButtonCommand = notificationData.PrimaryButtonCommand;
+            this.PrimaryButtonCommandParameter = notificationData.PrimaryButtonCommandParameter;
             this.SecondaryButtonText = notificationData.SecondaryButtonText;
             this.SecondaryButtonCommand = notificationData.SecondaryButtonCommand;
+            this.SecondaryButtonCommandParameter = notificationData.SecondaryButtonCommandParameter;
             this.CloseButtonText = notificationData.CloseButtonText;
             this.DefaultButton = notificationData.DefaultButton;
 

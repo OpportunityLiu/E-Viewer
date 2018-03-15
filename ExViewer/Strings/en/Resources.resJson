@@ -134,13 +134,6 @@
     "RetriesExhausted": "You have exceeded the allowed number of verification. Plaese restart the app and try again."
   },
   "Views": {
-    "QRCodeDialog": {
-      "ContentDialog": {
-        "PrimaryButtonText": "Copy",
-        "CloseButtonText": "Close",
-        "Title": "QR CODE"
-      }
-    },
     "AddToFavoritesDialog": {
       "AddTitle": "ADD TO FAVORITES",
       "FavoriteCategoryUnselected": "Please select one category.",
@@ -287,6 +280,11 @@
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "Loading popular galleries…",
       "RefreshAppBarButton/Label": "Refresh"
+    },
+    "QRCodeDialog": {
+      "PrimaryButtonText": "Copy",
+      "CloseButtonText": "Close",
+      "Title": "QR CODE SCAN RESULT"
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "Cached galleries",
