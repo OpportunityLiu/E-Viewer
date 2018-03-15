@@ -139,7 +139,7 @@ namespace ExViewer.Views
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            this.GetService<Navigator, INavigationHandler>().Handlers.Remove(this);
+            this.GetNavigator().Handlers.Remove(this);
 
             base.OnNavigatingFrom(e);
 

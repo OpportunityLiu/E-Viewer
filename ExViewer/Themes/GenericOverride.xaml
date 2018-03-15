@@ -367,4 +367,6 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <x:Double x:Key="ContentDialogMaxWidth">748</x:Double>
 </ResourceDictionary>

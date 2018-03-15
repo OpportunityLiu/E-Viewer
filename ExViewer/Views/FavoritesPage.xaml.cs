@@ -66,7 +66,7 @@ namespace ExViewer.Views
         {
             base.OnNavigatingFrom(e);
             CloseAll();
-            this.GetService<Navigator, INavigationHandler>().Handlers.Remove(this);
+            this.GetNavigator().Handlers.Remove(this);
         }
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
@@ -153,7 +153,7 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Visible;
             this.cbCategory.Visibility = Visibility.Collapsed;
             this.asb.Visibility = Visibility.Collapsed;
-            this.GetService<Navigator, INavigationHandler>().UpdateProperties();
+            this.GetNavigator().UpdateProperties();
             return true;
         }
 
@@ -166,7 +166,7 @@ namespace ExViewer.Views
             this.cbActions.Visibility = Visibility.Collapsed;
             this.cbCategory.Visibility = Visibility.Visible;
             this.asb.Visibility = Visibility.Visible;
-            this.GetService<Navigator, INavigationHandler>().UpdateProperties();
+            this.GetNavigator().UpdateProperties();
             return true;
         }
 

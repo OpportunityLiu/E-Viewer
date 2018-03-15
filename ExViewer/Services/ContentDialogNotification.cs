@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 
@@ -19,22 +20,19 @@ namespace ExViewer.Services
 
         public object Content { get; set; } = "";
 
-        public string CloseButtonText { get; set; } = "";
-    }
-
-    public class ContentDialogQuestionData : ContentDialogNotificationData
-    {
         public string PrimaryButtonText { get; set; } = "";
+        public ICommand PrimaryButtonCommand { get; set; }
+
         public string SecondaryButtonText { get; set; } = "";
+        public ICommand SecondaryButtonCommand { get; set; }
+
+        public string CloseButtonText { get; set; } = "";
 
         public ContentDialogButton DefaultButton { get; set; } = ContentDialogButton.None;
     }
 
     public sealed class ContentDialogNotification : MyContentDialog, INotificationHandler
     {
-        public static readonly string Notification = "Notification";
-        public static readonly string Question = "Question";
-
         public ContentDialogNotification()
         {
             this.Opened += this.ContentDialogNotification_Opened;
@@ -57,49 +55,30 @@ namespace ExViewer.Services
             this.Title = null;
             this.Content = null;
             this.PrimaryButtonText = "";
+            this.PrimaryButtonCommand = null;
             this.SecondaryButtonText = "";
+            this.SecondaryButtonCommand = null;
             this.CloseButtonText = "";
             this.DefaultButton = ContentDialogButton.None;
         }
 
         private bool isopen = false;
 
-        public bool Notify(string category, object data)
+        public IAsyncOperation<bool> NotifyAsync(object data)
         {
-            if (category != Notification)
-                return false;
-            if (this.isopen)
-                return false;
-            if (!(data is ContentDialogNotificationData notificationData))
-                return false;
-            this.Title = notificationData.Title;
-            this.Content = notificationData.Content;
-            this.CloseButtonText = notificationData.CloseButtonText;
-            var ignore = this.ShowAsync();
-            return true;
-        }
-
-        public IAsyncOperation<NotificationResult> NotifyAsync(string category, object data)
-        {
-            if (category != Question || this.isopen || !(data is ContentDialogQuestionData notificationData))
-                return AsyncOperation<NotificationResult>.CreateCompleted();
+            if (this.isopen || !(data is ContentDialogNotificationData notificationData))
+                return AsyncOperation<bool>.CreateCompleted(false);
 
             this.Title = notificationData.Title;
             this.Content = notificationData.Content;
             this.PrimaryButtonText = notificationData.PrimaryButtonText;
+            this.PrimaryButtonCommand = notificationData.PrimaryButtonCommand;
             this.SecondaryButtonText = notificationData.SecondaryButtonText;
+            this.SecondaryButtonCommand = notificationData.SecondaryButtonCommand;
             this.CloseButtonText = notificationData.CloseButtonText;
             this.DefaultButton = notificationData.DefaultButton;
 
-            return AsyncInfo.Run(async token =>
-            {
-                var t = ShowAsync();
-                token.Register(t.Cancel);
-                if ((await t) == ContentDialogResult.Primary)
-                    return NotificationResult.Positive;
-                else
-                    return NotificationResult.Negetive;
-            });
+            return ShowAsync().ContinueWith(a => true);
         }
 
 
