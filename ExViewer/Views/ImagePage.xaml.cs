@@ -46,57 +46,9 @@ namespace ExViewer.Views
             set => base.ViewModel = value;
         }
 
-        private readonly ApplicationView av = ApplicationView.GetForCurrentView();
-        private readonly DisplayRequest displayRequest = new DisplayRequest();
-        private bool displayActived;
-
-        private Color currentBackColor, currentNeedColor;
-
-        private void setCbColor()
-        {
-            var backColor = this.scbBack.Color;
-            var needColor = this.scbNeed.Color;
-            if (this.currentBackColor == backColor && this.currentNeedColor == needColor)
-                return;
-            this.currentBackColor = backColor;
-            this.currentNeedColor = needColor;
-
-            Color getCbColor(byte alpha)
-            {
-                var ratio = alpha / 255d;
-                var ratio_1 = ratio - 1;
-                return Color.FromArgb(alpha,
-                    (byte)((needColor.R + ratio_1 * backColor.R) / ratio),
-                    (byte)((needColor.G + ratio_1 * backColor.G) / ratio),
-                    (byte)((needColor.B + ratio_1 * backColor.B) / ratio));
-            }
-
-            var toColor = getCbColor(85);
-            this.cb_top.Background = new SolidColorBrush(toColor);
-            this.fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
-                FlowDirection.RightToLeft : FlowDirection.LeftToRight;
-
-            var kfc = this.cb_top_CloseAnimation.KeyFrames.Count;
-            var offset = (255d - 85d) / (kfc - 1);
-            for (var i = 0; i < kfc; i++)
-            {
-                var c = getCbColor((byte)(85 + i * offset));
-                this.cb_top_OpenAnimation.KeyFrames[i].Value = c;
-                this.cb_top_CloseAnimation.KeyFrames[kfc - 1 - i].Value = c;
-            }
-        }
-
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             Navigator.GetForCurrentView().Handlers.Add(this);
-            setCbColor();
-            Av_VisibleBoundsChanged(this.av, null);
-            this.av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
-            if (SettingCollection.Current.KeepScreenOn)
-            {
-                this.displayRequest.RequestActive();
-                this.displayActived = true;
-            }
 
             base.OnNavigatedTo(e);
 
@@ -145,13 +97,6 @@ namespace ExViewer.Views
 
             if (!this.cbVisible)
                 changeCbVisibility();
-
-            this.av.VisibleBoundsChanged -= this.Av_VisibleBoundsChanged;
-            if (this.displayActived)
-            {
-                this.displayRequest.RequestRelease();
-                this.displayActived = false;
-            }
 
             var container = this.fv.ContainerFromIndex(this.fv.SelectedIndex);
             if (container != null)
@@ -368,16 +313,63 @@ namespace ExViewer.Views
             this.cb_top.IsOpen = false;
         }
 
+        private readonly DisplayRequest displayRequest = new DisplayRequest();
+        private bool displayActived;
+
+        private Color currentBackColor, currentNeedColor;
+
+        private void setCbColor()
+        {
+            var backColor = this.scbBack.Color;
+            var needColor = this.scbNeed.Color;
+            if (this.currentBackColor == backColor && this.currentNeedColor == needColor)
+                return;
+            this.currentBackColor = backColor;
+            this.currentNeedColor = needColor;
+
+            Color getCbColor(byte alpha)
+            {
+                var ratio = alpha / 255d;
+                var ratio_1 = ratio - 1;
+                return Color.FromArgb(alpha,
+                    (byte)((needColor.R + ratio_1 * backColor.R) / ratio),
+                    (byte)((needColor.G + ratio_1 * backColor.G) / ratio),
+                    (byte)((needColor.B + ratio_1 * backColor.B) / ratio));
+            }
+
+            var toColor = getCbColor(85);
+            this.cb_top.Background = new SolidColorBrush(toColor);
+
+            var kfc = this.cb_top_CloseAnimation.KeyFrames.Count;
+            var offset = (255d - 85d) / (kfc - 1);
+            for (var i = 0; i < kfc; i++)
+            {
+                var c = getCbColor((byte)(85 + i * offset));
+                this.cb_top_OpenAnimation.KeyFrames[i].Value = c;
+                this.cb_top_CloseAnimation.KeyFrames[kfc - 1 - i].Value = c;
+            }
+        }
+
         private void page_Loading(FrameworkElement sender, object args)
         {
+            setCbColor();
             this.SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
+            var av = ApplicationView.GetForCurrentView();
+            Av_VisibleBoundsChanged(av, null);
+            av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
+            if (SettingCollection.Current.KeepScreenOn)
+            {
+                this.displayRequest.RequestActive();
+                this.displayActived = true;
+            }
         }
 
         private void page_Loaded(object sender, RoutedEventArgs e)
         {
             this.fv.Descendants<ScrollContentPresenter>().First().Clip = null;
-
+            this.fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
+                FlowDirection.RightToLeft : FlowDirection.LeftToRight;
             switch (SettingCollection.Current.ImageViewOrientation)
             {
             case ViewOrientation.Vertical:
@@ -397,7 +389,14 @@ namespace ExViewer.Views
 
         private void page_Unloaded(object sender, RoutedEventArgs e)
         {
+            var av = ApplicationView.GetForCurrentView();
+            av.VisibleBoundsChanged -= this.Av_VisibleBoundsChanged;
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
+            if (this.displayActived)
+            {
+                this.displayRequest.RequestRelease();
+                this.displayActived = false;
+            }
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
