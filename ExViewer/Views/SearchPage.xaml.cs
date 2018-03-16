@@ -1,6 +1,7 @@
 ﻿using ExClient.Galleries;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Linq;
 using Windows.UI.Core;
@@ -17,12 +18,11 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SearchPage : MyPage, IHasAppBar
+    public sealed partial class SearchPage : MvvmPage, IHasAppBar
     {
         public SearchPage()
         {
             this.InitializeComponent();
-            this.VisibleBoundHandledByDesign = true;
         }
 
         private Button _btnExpandButton;
@@ -32,19 +32,19 @@ namespace ExViewer.Views
         {
             TagSuggestionService.IncreaseStateCode(this.asb);
             base.OnNavigatedTo(e);
-            this.VM = SearchVM.GetVM(e.Parameter?.ToString());
-            this.VM.SetQueryWithSearchResult();
-            this.VM.Search.Executed += this.Search_Executed;
+            this.ViewModel = SearchVM.GetVM(e.Parameter?.ToString());
+            this.ViewModel.SetQueryWithSearchResult();
+            this.ViewModel.Search.Executed += this.Search_Executed;
             await Dispatcher.YieldIdle();
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (e.Parameter != null) // for the pre-load page
-                    this.VM.SearchResult.Reset();
+                    this.ViewModel.SearchResult.Reset();
                 this.btnExpandButton?.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
-                if (!await ViewHelper.ScrollAndFocus(this.lv, this.VM.SelectedGallery))
+                if (!await ViewHelper.ScrollAndFocus(this.lv, this.ViewModel.SelectedGallery))
                     this.btnExpandButton?.Focus(FocusState.Programmatic);
             }
         }
@@ -59,18 +59,14 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            this.VM.Open.Execute((Gallery)e.ClickedItem);
+            this.ViewModel.Open.Execute((Gallery)e.ClickedItem);
         }
 
-        public SearchVM VM
+        public new SearchVM ViewModel
         {
-            get => (SearchVM)GetValue(VMProperty);
-            set => SetValue(VMProperty, value);
+            get => (SearchVM)base.ViewModel;
+            set => base.ViewModel = value;
         }
-
-        // Using a DependencyProperty as the backing store for VM.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register("VM", typeof(SearchVM), typeof(SearchPage), new PropertyMetadata(null));
 
         private void ab_Opening(object sender, object e)
         {
@@ -86,7 +82,7 @@ namespace ExViewer.Views
 
         private void lv_RefreshRequested(object sender, EventArgs e)
         {
-            this.VM?.SearchResult.Reset();
+            this.ViewModel?.SearchResult.Reset();
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -133,14 +129,14 @@ namespace ExViewer.Views
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
         }
 
-        private FileSearchDialog dlgFIleSearch;
+        private FileSearchDialog dlgFileSearch;
 
         private async void btnFileSearch_Click(object sender, RoutedEventArgs e)
         {
-            if (this.dlgFIleSearch == null)
-                this.dlgFIleSearch = new FileSearchDialog();
+            if (this.dlgFileSearch == null)
+                this.dlgFileSearch = new FileSearchDialog();
             CloseAll();
-            await this.dlgFIleSearch.ShowAsync();
+            await this.dlgFileSearch.ShowAsync();
         }
 
         private double caculateGdAbMaxHeight(Thickness visibleBounds, double rootHeight)

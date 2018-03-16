@@ -1,7 +1,7 @@
 ﻿<views:MvvmPage x:Class="ExViewer.Views.FavoritesPage"
                 xmlns:views="using:Opportunity.MvvmUniverse.Views"
-                x:Name="root"
                 xmlns:xb="using:Opportunity.Converters.XBind"
+                x:Name="root"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:local="using:ExViewer.Views"
