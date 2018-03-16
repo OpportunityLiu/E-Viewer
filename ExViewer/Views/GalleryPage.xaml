@@ -17,6 +17,7 @@
                 xmlns:interactive="using:Microsoft.Xaml.Interactivity"
                 x:Name="page"
                 xmlns:xb="using:Opportunity.Converters.XBind"
+                xmlns:sys="using:System"
                 Loading="page_Loading"
                 Loaded="page_Loaded"
                 Unloaded="page_Unloaded"
@@ -44,13 +45,7 @@
                                    RangeEnd="100"
                                    IncludeEnd="True"
                                    InRangeResult="False" />
-    <con:ChainConverter x:Key="OperationStateToVisibilityConverter">
-      <tcon:EnumToBooleanConverter>
-        <VM:OperationState>NotStarted</VM:OperationState>
-      </tcon:EnumToBooleanConverter>
-      <con:ConverterReference Converter="{StaticResource FalseToVisibleConverter}" />
-    </con:ChainConverter>
-
+    
     <Style x:Key="TorrentNameTextBlockStyle"
            TargetType="TextBlock">
       <Setter Property="FontWeight"
@@ -371,13 +366,12 @@
                              Style="{StaticResource PivotHeaderTextBlockStyle}"
                              Text="Images" />
                   <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                             Text="{x:Bind ViewModel.Gallery.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}" />
+                             Text="{x:Bind sys:String.Format('[{0}]', ViewModel.Gallery.Count), Mode=OneWay}"/>
                 </Grid>
               </PivotItem.Header>
               <GridView x:Name="gv"
                         Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                         Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
-                        VerticalAlignment="Top"
                         ani:ReorderGridAnimation.Duration="100"
                         IsItemClickEnabled="True"
                         ItemClick="gv_ItemClick"
@@ -424,7 +418,7 @@
                              Style="{StaticResource PivotHeaderTextBlockStyle}"
                              Text="Comments" />
                   <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                             Text="{x:Bind ViewModel.Gallery.Comments.Count, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}"
+                             Text="{x:Bind sys:String.Format('[{0}]', ViewModel.Gallery.Comments.Count), Mode=OneWay}"
                              Visibility="{x:Bind ViewModel.Gallery.Comments.IsLoaded, Mode=OneWay}" />
                 </Grid>
               </PivotItem.Header>
@@ -484,8 +478,8 @@
                              Style="{StaticResource PivotHeaderTextBlockStyle}"
                              Text="Torrents" />
                   <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                             Text="{x:Bind ViewModel.TorrentCount, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='[{0}]'}"
-                             Visibility="{x:Bind ViewModel.Torrents, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}" />
+                             Text="{x:Bind sys:String.Format('[{0}]', ViewModel.TorrentCount), Mode=OneWay}"
+                             Visibility="{x:Bind ViewModel.TorrentCount, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}, FallbackValue=Collapsed}" />
                 </Grid>
               </PivotItem.Header>
               <ListView x:Name="lv_Torrents"
@@ -576,8 +570,9 @@
             <FontIcon Glyph="&#xE72D;" />
           </AppBarButton.Icon>
         </AppBarButton>
+        <!--Wait 250ms for command bar close animation-->
         <AppBarButton x:Uid="Views/GalleryPage/SearchUploaderAppBarButton"
-                      Command="{x:Bind ViewModel.SearchUploader, Mode=OneWay, Converter={StaticResource DelayConverter}, ConverterParameter=250}"
+                      Command="{x:Bind xb:Command.Delay(ViewModel.SearchUploader, 250), Mode=OneWay}"
                       Icon="ContactInfo"
                       Label="Search uploader" />
         <AppBarButton x:Uid="Views/GalleryPage/SaveAppBarButton"
@@ -588,12 +583,12 @@
     </CommandBar>
     <ProgressBar x:Name="pb_save"
                  Grid.Row="1"
-                 Padding="{x:Bind VisibleBounds, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+                 Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                  IsIndeterminate="{x:Bind ViewModel.SaveProgress, Converter={StaticResource SaveProgressToIsIndeterminateConverter}, Mode=OneWay}"
                  VerticalAlignment="Top"
-                 Foreground="{x:Bind local:GalleryPage.operationStateToBrush(ViewModel.SaveStatus), Mode=OneWay}"
                  IsHitTestVisible="False"
-                 Visibility="{x:Bind ViewModel.SaveStatus, Converter={StaticResource OperationStateToVisibilityConverter}, Mode=OneWay}"
+                 Foreground="{x:Bind local:GalleryPage.operationStateToBrush(ViewModel.SaveStatus), Mode=OneWay}"
+                 Visibility="{x:Bind local:GalleryPage.operationStateToVisibility(ViewModel.SaveStatus), Mode=OneWay}"
                  Value="{x:Bind ViewModel.SaveProgress, Mode=OneWay}" />
   </Grid>
 </views:MvvmPage>
