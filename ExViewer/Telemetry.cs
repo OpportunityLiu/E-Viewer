@@ -93,9 +93,9 @@ namespace ExViewer
 
         private static void AddtionalInfo(StringBuilder sb, PopularPage pp)
         {
-            if (pp.VM == null)
+            if (pp.ViewModel == null)
                 return;
-            AddtionalInfo(sb, pp.VM);
+            AddtionalInfo(sb, pp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, FavoritesPage fp)
@@ -107,9 +107,9 @@ namespace ExViewer
 
         private static void AddtionalInfo(StringBuilder sb, SearchPage sp)
         {
-            if (sp.VM == null)
+            if (sp.ViewModel == null)
                 return;
-            AddtionalInfo(sb, sp.VM);
+            AddtionalInfo(sb, sp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, GalleryPage gp)

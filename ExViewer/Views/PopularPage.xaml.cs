@@ -1,6 +1,7 @@
 ﻿using ExClient.Galleries;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -15,23 +16,22 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class PopularPage : MyPage, IHasAppBar
+    public sealed partial class PopularPage : MvvmPage, IHasAppBar
     {
         public PopularPage()
         {
             this.InitializeComponent();
-            this.VisibleBoundHandledByDesign = true;
-            this.VM = new PopularVM();
+            this.ViewModel = new PopularVM();
         }
 
-        public PopularVM VM
+        public new PopularVM ViewModel
         {
-            get => (PopularVM)GetValue(VMProperty);
-            set => SetValue(VMProperty, value);
+            get => (PopularVM)base.ViewModel;
+            set => base.ViewModel = value;
         }
 
         public static readonly DependencyProperty VMProperty =
-            DependencyProperty.Register(nameof(VM), typeof(PopularVM), typeof(PopularPage), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(ViewModel), typeof(PopularVM), typeof(PopularPage), new PropertyMetadata(null));
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -77,7 +77,7 @@ namespace ExViewer.Views
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (Gallery)e.ClickedItem;
-            if (this.VM.Open.Execute(item))
+            if (this.ViewModel.Open.Execute(item))
             {
                 this.opened = item;
             }

@@ -219,7 +219,6 @@
     </Compile>
     <Compile Include="Controls\InAppNavigator.cs" />
     <Compile Include="Controls\MyContentDialog.cs" />
-    <Compile Include="Controls\MyPage.cs" />
     <Compile Include="Controls\PullToRefreshIndicator.cs" />
     <Compile Include="Controls\Rating.cs" />
     <Compile Include="Controls\TagAutoSuggestBox\TagSuggestionService.cs" />
