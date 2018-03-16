@@ -37,10 +37,6 @@ namespace ExViewer.Views
                 root.sv_root.PaneClosing += Sv_root_PaneClosing;
 
                 Frame.Navigated += Frame_Navigated;
-                var tb = CoreApplication.GetCurrentView().TitleBar;
-                tb.LayoutMetricsChanged += titleBar_LayoutMetricsChanged;
-                titleBar_LayoutMetricsChanged(tb, null);
-
 
                 Controls.AboutControl.UpdateEhWiki.Executed += (s, e) =>
                 {
@@ -58,16 +54,6 @@ namespace ExViewer.Views
                         SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Succeeded, null);
                     e.Handled = true;
                 };
-            }
-
-            private static void titleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
-            {
-                var ov = TitleBarHeight;
-                var nv = sender.Height;
-                if (ov == nv)
-                    return;
-                TitleBarHeight = nv;
-                root.InvalidateMeasure();
             }
 
             private static Uri launchUri;
@@ -128,9 +114,6 @@ namespace ExViewer.Views
             public static bool Available => root != null;
 
             public static StatusBar StatusBar { get; private set; }
-
-            public static double TitleBarHeight { get; private set; } = -1;
-
 
 #if !DEBUG_BOUNDS
             async
@@ -202,11 +185,9 @@ namespace ExViewer.Views
                 return storage = sb;
             }
 
-            private static Storyboard showPanel, hidePanel, playToast;
+            private static Storyboard playToast;
             private static Storyboard openSplitViewPane, closeSplitViewPane;
 
-            private static Storyboard ShowDisablePanel => sbInitializer(ref showPanel, ShowPanel_Completed);
-            private static Storyboard HideDisablePanel => sbInitializer(ref hidePanel, HidePanel_Completed);
             private static Storyboard PlayToastPanel => sbInitializer(ref playToast, PlayToast_Completed);
             private static Storyboard CloseSplitViewPane => sbInitializer(ref closeSplitViewPane, null);
             private static Storyboard OpenSplitViewPane => sbInitializer(ref openSplitViewPane, null);
@@ -427,7 +408,9 @@ namespace ExViewer.Views
 
                 root.manager.IsBackEnabled = false;
                 root.manager.IsForwardEnabled = false;
+
                 root.rp_Disable.Visibility = Visibility.Visible;
+
                 var indeterminate = !progress.HasValue;
                 var keep = double.IsNaN(progress.GetValueOrDefault());
                 if (!keep)
@@ -436,9 +419,6 @@ namespace ExViewer.Views
                     if (!indeterminate)
                         root.pb_Disable.Value = progress.Value;
                 }
-
-                HideDisablePanel.Stop();
-                ShowDisablePanel.Begin();
             }
 
             private static async void EnableView()
@@ -450,20 +430,10 @@ namespace ExViewer.Views
                 root.manager.IsBackEnabled = true;
                 root.manager.IsForwardEnabled = true;
 
-                ShowDisablePanel.Stop();
-                HideDisablePanel.Begin();
+                root.rp_Disable.Visibility = Visibility.Collapsed;
 
                 await root.Dispatcher.Yield();
                 root.Focus(FocusState.Programmatic);
-            }
-
-            private static void HidePanel_Completed(object sender, object e)
-            {
-                root.rp_Disable.Visibility = Visibility.Collapsed;
-            }
-
-            private static void ShowPanel_Completed(object sender, object e)
-            {
             }
         }
     }

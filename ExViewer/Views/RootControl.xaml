@@ -18,26 +18,6 @@
                 Loaded="Control_Loaded"
                 Unloaded="Control_Unloaded">
   <UserControl.Resources>
-    <Storyboard x:Key="ShowDisablePanel">
-      <DoubleAnimation Duration="0:0:0.5"
-                       To="1"
-                       Storyboard.TargetName="rp_Disable"
-                       Storyboard.TargetProperty="(UIElement.Opacity)">
-        <DoubleAnimation.EasingFunction>
-          <PowerEase />
-        </DoubleAnimation.EasingFunction>
-      </DoubleAnimation>
-    </Storyboard>
-    <Storyboard x:Key="HideDisablePanel">
-      <DoubleAnimation Duration="0:0:0.5"
-                       To="0"
-                       Storyboard.TargetName="rp_Disable"
-                       Storyboard.TargetProperty="(UIElement.Opacity)">
-        <DoubleAnimation.EasingFunction>
-          <PowerEase EasingMode="EaseOut" />
-        </DoubleAnimation.EasingFunction>
-      </DoubleAnimation>
-    </Storyboard>
     <Storyboard x:Key="PlayToastPanel">
       <DoubleAnimationUsingKeyFrames Storyboard.TargetName="bd_Toast"
                                      Storyboard.TargetProperty="(UIElement.Opacity)"
@@ -338,6 +318,14 @@
                    Visibility="Collapsed"
                    Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}"
                    Padding="{x:Bind VisibleBounds, Mode=OneWay}">
+      <ani:Implicit.ShowAnimations>
+        <ani:OpacityAnimation To="1"
+                              Duration="0:0:1" />
+      </ani:Implicit.ShowAnimations>
+      <ani:Implicit.HideAnimations>
+        <ani:OpacityAnimation To="0"
+                              Duration="0:0:0.5" />
+      </ani:Implicit.HideAnimations>
       <TextBlock x:Name="tb_DisableInfo"
                  x:Uid="Views/RootControl/DisableInfoTextBlock"
                  Text="Operation in progress, plaese wait..."
