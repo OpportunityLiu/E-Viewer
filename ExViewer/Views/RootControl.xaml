@@ -1,19 +1,22 @@
-﻿<UserControl x:Class="ExViewer.Views.RootControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:rs3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
-             xmlns:prers3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="using:ExViewer"
-             xmlns:controls="using:ExViewer.Controls"
-             mc:Ignorable="d"
-             x:Name="page"
-             xmlns:themes="using:ExViewer.Themes"
-             IsTextScaleFactorEnabled="False"
-             Loading="Control_Loading"
-             Loaded="Control_Loaded"
-             Unloaded="Control_Unloaded">
+﻿<views:MvvmPage x:Class="ExViewer.Views.RootControl"
+                xmlns:views="using:Opportunity.MvvmUniverse.Views"
+                xmlns:xb="using:Opportunity.Converters.XBind"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:rs3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
+                xmlns:prers3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:ani="using:Microsoft.Toolkit.Uwp.UI.Animations"
+                xmlns:local="using:ExViewer"
+                xmlns:controls="using:ExViewer.Controls"
+                mc:Ignorable="d"
+                x:Name="page"
+                xmlns:themes="using:ExViewer.Themes"
+                IsTextScaleFactorEnabled="False"
+                Loading="Control_Loading"
+                Loaded="Control_Loaded"
+                Unloaded="Control_Unloaded">
   <UserControl.Resources>
     <Storyboard x:Key="ShowDisablePanel">
       <DoubleAnimation Duration="0:0:0.5"
@@ -139,10 +142,10 @@
                IsTabStop="False"
                LightDismissOverlayMode="On"
                rs3:PaneBackground="{StaticResource PaneBackgroundBrush}"
-               OpenPaneLength="{x:Bind getPaneLength(VisibleBoundsThickness, 320), Mode=OneWay}"
-               CompactPaneLength="{x:Bind getPaneLength(VisibleBoundsThickness, 48), Mode=OneWay}">
+               OpenPaneLength="{x:Bind getPaneLength(VisibleBounds, 320), Mode=OneWay}"
+               CompactPaneLength="{x:Bind getPaneLength(VisibleBounds, 48), Mode=OneWay}">
       <SplitView.Pane>
-        <Grid Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x1,x0,x1'}">
+        <Grid Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x0,x1'), Mode=OneWay}">
           <Grid.RowDefinitions>
             <RowDefinition Height="48" />
             <RowDefinition Height="Auto" />
@@ -156,7 +159,7 @@
             <ColumnDefinition />
           </Grid.ColumnDefinitions>
           <Border x:Name="bdPaneHeader"
-                  Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x-1,x0,x0'}"
+                  Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x-1,x-1,x0,x0'), Mode=OneWay}"
                   Opacity="0.2"
                   Background="{ThemeResource UserBackgroundThemeBrush}"
                   Grid.RowSpan="3"
@@ -198,7 +201,7 @@
                      Margin="8"
                      MaxWidth="200"
                      TextTrimming="CharacterEllipsis"
-                     Text="{x:Bind UserInfo.DisplayName, Mode=OneWay, FallbackValue={StaticResource GuestUserNameString}}"
+                     Text="{x:Bind UserInfo.DisplayName, Mode=OneWay, FallbackValue='Loading...'}"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center" />
           <Button x:Uid="Views/RootControl/UserInfoButton"
@@ -302,11 +305,15 @@
     </SplitView>
     <ToggleButton x:Name="tbtPane"
                   x:Uid="Views/RootControl/PaneButton"
-                  Margin="{x:Bind VisibleBoundsThickness, Mode=OneWay}"
+                  Margin="{x:Bind VisibleBounds, Mode=OneWay}"
                   Style="{StaticResource SplitViewToggleButtonStyle}"
                   IsChecked="{x:Bind tbtPaneBind(sv_root.IsPaneOpen), BindBack=tbtPaneBindBack, Mode=TwoWay}"
                   IsTabStop="False"
-                  AccessKey="P" />
+                  AccessKey="P">
+      <ani:Implicit.Animations>
+        <ani:OpacityAnimation />
+      </ani:Implicit.Animations>
+    </ToggleButton>
     <Border x:Name="bd_Toast"
             x:DeferLoadStrategy="Lazy"
             HorizontalAlignment="Stretch"
@@ -314,7 +321,7 @@
             Opacity="0"
             IsHitTestVisible="False"
             Visibility="Collapsed"
-            Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0,x1,x1'}">
+            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0,x1,x1'), Mode=OneWay}">
       <Border.Background>
         <SolidColorBrush Color="{ThemeResource SystemChromeMediumLowColor}"
                          Opacity="0.75" />
@@ -330,7 +337,7 @@
                    Opacity="0"
                    Visibility="Collapsed"
                    Background="{ThemeResource SystemControlPageBackgroundMediumAltMediumBrush}"
-                   Padding="{x:Bind VisibleBoundsThickness, Mode=OneWay}">
+                   Padding="{x:Bind VisibleBounds, Mode=OneWay}">
       <TextBlock x:Name="tb_DisableInfo"
                  x:Uid="Views/RootControl/DisableInfoTextBlock"
                  Text="Operation in progress, plaese wait..."
@@ -346,4 +353,4 @@
     </RelativePanel>
 
   </Grid>
-</UserControl>
+</views:MvvmPage>

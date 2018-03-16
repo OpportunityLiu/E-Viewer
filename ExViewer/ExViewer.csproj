@@ -264,6 +264,7 @@
       <DependentUpon>20170327142247_MigrationReset.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\SearchHistoryDbModelSnapshot.cs" />
+    <Compile Include="Services\InAppToastNotification.cs" />
     <Compile Include="Services\ContentDialogNotification.cs" />
     <Compile Include="Settings\SettingCollection.cs" />
     <Compile Include="Settings\SettingsHelper.cs" />

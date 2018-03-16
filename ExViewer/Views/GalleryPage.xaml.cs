@@ -14,6 +14,7 @@ using Windows.UI;
 using Windows.UI.Composition;
 using Windows.UI.Composition.Interactions;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
@@ -149,7 +150,7 @@ namespace ExViewer.Views
             var t = VisibleBounds;
             var height = availableSize.Height - 48 - t.Top;
             var infoH = height - t.Bottom;
-            if (RootControl.RootController.InputPane.OccludedRect.Height == 0)
+            if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
             {
                 if (this.gdPvContentHeaderPresenter == null)
                     this.gdPvContentHeaderPresenter = this.pv.Descendants<Grid>("HeaderPresenter").FirstOrDefault();
@@ -211,6 +212,7 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            this.tpTags.IsTabStop = false;
             base.OnNavigatedTo(e);
             var reset = e.NavigationMode == NavigationMode.New;
             var restore = e.NavigationMode == NavigationMode.Back;
@@ -247,6 +249,8 @@ namespace ExViewer.Views
                     container.Focus(FocusState.Programmatic);
                 }
             }
+            await Dispatcher.YieldIdle();
+            this.tpTags.IsTabStop = true;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

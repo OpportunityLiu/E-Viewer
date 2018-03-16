@@ -23,14 +23,14 @@
                 Unloaded="page_Unloaded"
                 NavigationCacheMode="Enabled"
                 mc:Ignorable="d">
-  <views:MvvmPage.Transitions>
+  <Page.Transitions>
     <TransitionCollection>
       <NavigationThemeTransition>
         <ContinuumNavigationTransitionInfo />
       </NavigationThemeTransition>
     </TransitionCollection>
-  </views:MvvmPage.Transitions>
-  <views:MvvmPage.Resources>
+  </Page.Transitions>
+  <Page.Resources>
     <con:ChainConverter x:Key="ConAddComment">
       <tcon:ObjectToBooleanConverter IfNeither="False">
         <tcon:ObjectToBooleanConverter.ValuesForTrue>
@@ -227,7 +227,7 @@
       <Setter Property="VerticalAlignment"
               Value="Top" />
     </Style>
-  </views:MvvmPage.Resources>
+  </Page.Resources>
   <Grid x:Name="gd_Root">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />

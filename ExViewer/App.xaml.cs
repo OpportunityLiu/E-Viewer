@@ -84,6 +84,7 @@ namespace ExViewer
             if (Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Count == 0)
             {
                 Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Add(new Services.ContentDialogNotification());
+                Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Add(new Services.InAppToastNotification());
             }
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
