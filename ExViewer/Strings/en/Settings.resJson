@@ -36,13 +36,14 @@
     "H780": "780px",
     "H980": "980px"
   },
+  "ImageViewOrientation": "Flip orientation",
   "KeepScreenOn": "Keep my screen on during image viewing",
   "LoadLofiOnAllInternetConnection": "Always load compressed image",
   "LoadLofiOnMeteredInternetConnection": "Load compressed image while using metered Internet connection",
   "NeedVerify": "Verify my PIN when the app is starting",
   "OpenHVOnMonsterEncountered": "Open HentaiVerse when I have encountered a monster",
   "ResampledImageSize": "Horizontal resolution of resampled image",
-  "ReverseFlowDirection": "Flip direction",
+  "ReverseFlowDirection": "Horizontal flip direction",
   "SaveLastSearch": "Save my lastest search as default",
   "Searching": "SEARCHING",
   "Theme": "The theme of the app",
@@ -50,5 +51,10 @@
   "UseJapaneseTagTranslation": "Use Japanese translation of tags",
   "UseJapaneseTitle": "The default title displayed",
   "Viewing": "VIEWING",
+  "ViewOrientation": {
+    "Auto": "Vertical for WebToon",
+    "Horizontal": "Horizontal",
+    "Vertical": "Vertical"
+  },
   "VisitEx": "Site to visit"
 }

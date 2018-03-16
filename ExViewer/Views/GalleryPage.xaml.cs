@@ -80,9 +80,9 @@ namespace ExViewer.Views
             this.propertySet.InsertScalar("progress", 0.0f);
             this.propertySet.StartAnimation("progress", tref.Position.Y / tref.MaxPosition.Y);
             var progress = this.propertySet.GetReference().GetScalarProperty("progress");
-            this.btnScrollVisual.StartAnimation("RotationAngleInDegrees", ExpressionFunctions.Clamp(progress, 0, 1) * 180);
+            this.btnScrollVisual.StartAnimation("RotationAngleInDegrees", ExpressionFunctions.Clamp(progress, 0f, 1f) * 180);
             this.btnScrollVisual.CenterPoint = new System.Numerics.Vector3((float)this.btn_Scroll.ActualWidth / 2, (float)this.btn_Scroll.ActualHeight / 2, 0);
-            this.spVisual.StartAnimation("Offset.Y", -progress * tref.MaxPosition.Y);
+            this.spVisual.StartAnimation("Offset.Y", -ExpressionFunctions.Clamp(progress, -0.4f, 1.4f) * tref.MaxPosition.Y);
             gdInfo_SizeChanged(this, null);
         }
 

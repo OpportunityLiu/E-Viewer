@@ -36,13 +36,14 @@
     "H780": "780px",
     "H980": "980px"
   },
+  "ImageViewOrientation": "滚动方向",
   "KeepScreenOn": "在浏览图片时保持屏幕常亮",
   "LoadLofiOnAllInternetConnection": "始终加载压缩的图片",
   "LoadLofiOnMeteredInternetConnection": "使用按流量计费的网络时加载压缩的图片",
   "NeedVerify": "启动应用时使用 Windows Hello 验证身份",
   "OpenHVOnMonsterEncountered": "当我遇到怪物时启动 HentaiVerse",
   "ResampledImageSize": "压缩图片的横向分辨率",
-  "ReverseFlowDirection": "翻页方向",
+  "ReverseFlowDirection": "水平翻页方向",
   "SaveLastSearch": "保存最后一次搜索为默认",
   "Searching": "搜索",
   "Theme": "应用主题",
@@ -50,5 +51,10 @@
   "UseJapaneseTagTranslation": "标签日文翻译",
   "UseJapaneseTitle": "默认显示的画廊标题",
   "Viewing": "浏览",
+  "ViewOrientation": {
+    "Auto": "仅对 WebToon 使用垂直滚动",
+    "Horizontal": "水平滚动",
+    "Vertical": "垂直滚动"
+  },
   "VisitEx": "访问站点"
 }

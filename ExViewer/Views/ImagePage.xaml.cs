@@ -377,6 +377,22 @@ namespace ExViewer.Views
         private void page_Loaded(object sender, RoutedEventArgs e)
         {
             this.fv.Descendants<ScrollContentPresenter>().First().Clip = null;
+
+            switch (SettingCollection.Current.ImageViewOrientation)
+            {
+            case ViewOrientation.Vertical:
+                this.fv.Descendants<VirtualizingStackPanel>().First().Orientation = Orientation.Vertical;
+                break;
+            case ViewOrientation.Auto:
+                if (this.ViewModel.Gallery.Tags[ExClient.Tagging.Namespace.Misc].Any(t => t.Content.Content == "webtoon"))
+                    this.fv.Descendants<VirtualizingStackPanel>().First().Orientation = Orientation.Vertical;
+                else
+                    this.fv.Descendants<VirtualizingStackPanel>().First().Orientation = Orientation.Horizontal;
+                break;
+            default:
+                this.fv.Descendants<VirtualizingStackPanel>().First().Orientation = Orientation.Horizontal;
+                break;
+            }
         }
 
         private void page_Unloaded(object sender, RoutedEventArgs e)

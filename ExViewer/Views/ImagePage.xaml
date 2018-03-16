@@ -265,6 +265,11 @@
                   Value="False" />
         </Style>
       </FlipView.ItemContainerStyle>
+      <FlipView.ItemsPanel>
+        <ItemsPanelTemplate>
+          <VirtualizingStackPanel />
+        </ItemsPanelTemplate>
+      </FlipView.ItemsPanel>
     </FlipView>
     <Border x:Name="bdTop"
             Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
