@@ -1,5 +1,6 @@
 ﻿using ExClient.Status;
 using Opportunity.MvvmUniverse.Services.Navigation;
+using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,7 +19,7 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class RootControl : UserControl
+    public sealed partial class RootControl : MvvmPage
     {
         public RootControl()
         {
@@ -77,29 +78,6 @@ namespace ExViewer.Views
         // Using a DependencyProperty as the backing store for UserInfo.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty UserInfoProperty =
             DependencyProperty.Register("UserInfo", typeof(UserInfo), typeof(RootControl), new PropertyMetadata(null));
-
-        public Thickness VisibleBoundsThickness
-        {
-            get => (Thickness)GetValue(VisibleBoundsThicknessProperty);
-            set => SetValue(VisibleBoundsThicknessProperty, value);
-        }
-
-        public static readonly DependencyProperty VisibleBoundsThicknessProperty =
-            DependencyProperty.Register(nameof(VisibleBoundsThickness), typeof(Thickness), typeof(RootControl), new PropertyMetadata(new Thickness(0)));
-
-        public Thickness ContentVisibleBoundsThickness
-        {
-            get
-            {
-                if (this.sv_root.DisplayMode == SplitViewDisplayMode.Overlay)
-                {
-                    return VisibleBoundsThickness;
-                }
-                var v = VisibleBoundsThickness;
-                v.Left = 0;
-                return v;
-            }
-        }
 
         private readonly Navigator manager = Navigator.GetOrCreateForCurrentView();
 
@@ -229,36 +207,7 @@ namespace ExViewer.Views
                     RootController.SetSplitViewButtonPlaceholderVisibility(false);
                 }
             }
-            var paneHeight = RootController.InputPane.OccludedRect.Height;
-            if (RootController.ApplicationView.DesiredBoundsMode == ApplicationViewBoundsMode.UseCoreWindow)
-            {
-                if (paneHeight == 0)
-                    setVisibleBoundsThickness(new Thickness());
-                else
-                    setVisibleBoundsThickness(new Thickness(0, 0, 0, paneHeight));
-            }
-            else
-            {
-                var vb = RootController.ApplicationView.VisibleBounds;
-                var wb = Window.Current.Bounds;
-                var tbh = RootController.TitleBarHeight;
-                setVisibleBoundsThickness(new Thickness(
-                    bound(vb.Left - wb.Left),
-                    bound(vb.Top + tbh - wb.Top),
-                    bound(wb.Right - vb.Right),
-                    bound(wb.Bottom - vb.Bottom + paneHeight)));
-
-                double bound(double value) => value < 0 ? 0 : value;
-            }
             return base.MeasureOverride(availableSize);
-        }
-
-        private void setVisibleBoundsThickness(Thickness value)
-        {
-            var old = this.VisibleBoundsThickness;
-            if (old == value)
-                return;
-            this.VisibleBoundsThickness = value;
         }
 
         private double getPaneLength(Thickness visibleBounds, double offset)

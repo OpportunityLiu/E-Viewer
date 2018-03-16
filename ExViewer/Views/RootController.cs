@@ -27,7 +27,12 @@ namespace ExViewer.Views
             {
                 RootController.root = root;
 
-                StatusBar = ApiInfo.StatusBarSupported ? StatusBar.GetForCurrentView() : null;
+                if (ApiInfo.StatusBarSupported)
+                {
+                    StatusBar = StatusBar.GetForCurrentView();
+                    av_VisibleBoundsChanged(ApplicationView, null);
+                    ApplicationView.VisibleBoundsChanged += av_VisibleBoundsChanged;
+                }
 
                 root.sv_root.PaneClosing += Sv_root_PaneClosing;
 
@@ -36,11 +41,6 @@ namespace ExViewer.Views
                 tb.LayoutMetricsChanged += titleBar_LayoutMetricsChanged;
                 titleBar_LayoutMetricsChanged(tb, null);
 
-                av_VisibleBoundsChanged(ApplicationView, null);
-                ApplicationView.VisibleBoundsChanged += av_VisibleBoundsChanged;
-
-                InputPane.Showing += InputPane_VisibilityChanging;
-                InputPane.Hiding += InputPane_VisibilityChanging;
 
                 Controls.AboutControl.UpdateEhWiki.Executed += (s, e) =>
                 {
@@ -58,12 +58,6 @@ namespace ExViewer.Views
                         SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Succeeded, null);
                     e.Handled = true;
                 };
-            }
-
-            private static void InputPane_VisibilityChanging(InputPane sender, InputPaneVisibilityEventArgs args)
-            {
-                args.EnsuredFocusedElementInView = true;
-                root.InvalidateMeasure();
             }
 
             private static void titleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
@@ -143,10 +137,6 @@ namespace ExViewer.Views
 #endif
             private static void av_VisibleBoundsChanged(ApplicationView sender, object args)
             {
-                if (IsFullScreen)
-                    sender.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
-                else
-                    sender.SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
 #if !DEBUG_BOUNDS
                 if (ApiInfo.StatusBarSupported)
                 {
@@ -160,14 +150,11 @@ namespace ExViewer.Views
                     }
                 }
 #endif
-                root.InvalidateMeasure();
             }
 
             public static bool IsFullScreen => ApplicationView.IsFullScreenMode;
 
             public static ApplicationView ApplicationView { get; } = ApplicationView.GetForCurrentView();
-
-            public static InputPane InputPane { get; } = InputPane.GetForCurrentView();
 
             public static void SetFullScreen(bool fullScreen)
             {
