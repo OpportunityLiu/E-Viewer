@@ -11,6 +11,13 @@ using Windows.UI.Xaml.Media;
 
 namespace ExViewer.Settings
 {
+    public enum ViewOrientation
+    {
+        Auto,
+        Horizontal,
+        Vertical,
+    }
+
     public class SettingCollection : ApplicationSettingCollection
     {
         public static SettingCollection Current
@@ -219,6 +226,14 @@ namespace ExViewer.Settings
         {
             get => GetRoaming(Strings.Resources.General.LanguageCode);
             set => SetRoaming(value);
+        }
+
+        [Setting("Viewing", Index = 2350)]
+        [EnumRepresent("ViewOrientation")]
+        public ViewOrientation ImageViewOrientation
+        {
+            get => GetLocal(ViewOrientation.Auto);
+            set => SetLocal(value);
         }
 
         [Setting("Viewing", Index = 2400)]
