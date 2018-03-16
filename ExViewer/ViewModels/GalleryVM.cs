@@ -512,7 +512,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        public int? TorrentCount => this.torrents?.Count ?? (this.gallery is SavedGallery ? null : this.gallery?.TorrentCount);
+        public int? TorrentCount => this.torrents?.Count ?? (this.gallery is CachedGallery ? null : this.gallery?.TorrentCount);
 
         #endregion Torrents
     }

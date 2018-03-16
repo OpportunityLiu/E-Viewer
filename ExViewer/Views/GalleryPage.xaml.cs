@@ -422,7 +422,13 @@ namespace ExViewer.Views
                 return Strings.Resources.Views.GalleryPage.FavoritesAppBarButton.Text;
             return cat.Name;
         }
-
+        private static Visibility operationStateToVisibility(OperationState value)
+        {
+            if (value == OperationState.NotStarted)
+                return Visibility.Collapsed;
+            else
+                return Visibility.Visible;
+        }
         private static Brush operationStateToBrush(OperationState value)
         {
             switch (value)
