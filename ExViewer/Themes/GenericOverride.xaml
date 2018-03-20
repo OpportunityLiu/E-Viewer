@@ -369,4 +369,6 @@
   </Style>
 
   <x:Double x:Key="ContentDialogMaxWidth">748</x:Double>
+
+  <ListViewItemPresenterCheckMode x:Key="ListViewItemCheckMode">Overlay</ListViewItemPresenterCheckMode>
 </ResourceDictionary>

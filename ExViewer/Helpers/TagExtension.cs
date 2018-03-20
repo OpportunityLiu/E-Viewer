@@ -26,33 +26,22 @@ namespace ExClient.Tagging
             }
             if (settings.UseJapaneseTagTranslation)
             {
-                var t = tag.GetEhWikiRecordAsync();
-                if (t.Status == AsyncStatus.Completed)
+                return tag.GetEhWikiRecordAsync().ContinueWith(action =>
                 {
-                    var r = t.GetResults();
-                    if (!match(tag, r))
-                        return AsyncOperation<string>.CreateCompleted(tag.Content);
-                    return AsyncOperation<string>.CreateCompleted(r.Japanese ?? tag.Content);
-                }
-                var rTask = new AsyncOperation<string>();
-                rTask.RegisterCancellation(t.Cancel);
-                t.Completed = (s, e) =>
-                {
-                    switch (e)
+                    if (action.Status == AsyncStatus.Completed)
                     {
-                    case AsyncStatus.Error:
-                        rTask.SetException(s.ErrorCode);
-                        break;
-                    case AsyncStatus.Completed:
-                        var r = s.GetResults();
+                        var r = action.GetResults();
                         if (!match(tag, r))
-                            rTask.SetResults(tag.Content);
+                            return tag.Content;
                         else
-                            rTask.SetResults(r.Japanese ?? tag.Content);
-                        break;
+                            return r.Japanese ?? tag.Content;
                     }
-                };
-                return rTask;
+                    else
+                    {
+                        throw action.ErrorCode;
+
+                    }
+                });
             }
             return AsyncOperation<string>.CreateCompleted(tag.Content);
         }
