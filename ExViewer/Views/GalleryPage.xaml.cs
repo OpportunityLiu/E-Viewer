@@ -146,21 +146,23 @@ namespace ExViewer.Views
 
         private Grid gdPvContentHeaderPresenter;
 
-        protected override Size MeasureOverride(Size availableSize)
+        private double caculateGdPivotHeight(double pageHeight, Thickness vb)
         {
-            var t = VisibleBounds;
-            var height = availableSize.Height - 48 - t.Top;
-            var infoH = height - t.Bottom;
+            return pageHeight - 48 - vb.Top;
+        }
+
+        private double caculateGdInfoMaxHeight(double pageHeight, Thickness vb)
+        {
+            var height = pageHeight - 48 - vb.Top;
+            var infoH = height - vb.Bottom;
             if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
             {
                 if (this.gdPvContentHeaderPresenter == null)
                     this.gdPvContentHeaderPresenter = this.pv.Descendants<Grid>("HeaderPresenter").FirstOrDefault();
                 if (this.gdPvContentHeaderPresenter != null)
-                    infoH -= 68/*this.gdPvContentHeaderPresenter.ActualHeight*/ + 24;
+                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight + this.btn_Scroll.ActualHeight;
             }
-            this.gdInfo.MaxHeight = Math.Min(infoH, 360);
-            this.gd_Pivot.Height = height;
-            return base.MeasureOverride(availableSize);
+            return Math.Min(infoH, 360);
         }
 
         private bool? isGdInfoHideDef = false;
