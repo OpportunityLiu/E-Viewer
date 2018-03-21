@@ -9,7 +9,7 @@ using Windows.Foundation;
 
 namespace ExClient.Galleries.Rating
 {
-    [DebuggerDisplay(@"\{{averageScore}({ratingCount})\}")]
+    [DebuggerDisplay(@"\{{userScore} - {averageScore}({ratingCount})\}")]
     public class RatingStatus : ObservableObject
     {
         private readonly Gallery owner;
@@ -74,7 +74,8 @@ namespace ExClient.Galleries.Rating
             this.UserScore = (Score)((x + 80) / 8 - (y < -10 ? 1 : 0));
         }
 
-        private static bool userRated(string classes) => (classes.Contains("irr") || classes.Contains("irg") || classes.Contains("irb"));
+        private static bool userRated(string classes)
+            => (classes.Contains("irr") || classes.Contains("irg") || classes.Contains("irb"));
 
         private void analyzeData(double averageScore, double displayScore, string ratingImageClass, long ratingCount)
         {
@@ -85,7 +86,6 @@ namespace ExClient.Galleries.Rating
                 this.UserScore = displayScore.ToScore();
             else
                 this.UserScore = Score.NotSet;
-
         }
 
         public IAsyncAction RatingAsync(Score rating)

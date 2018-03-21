@@ -86,6 +86,7 @@
                  Text="{x:Bind Gallery.Language, Mode=OneWay, Converter={StaticResource FormatConverter}}"
                  Style="{StaticResource DetailTextBlockStyle}" />
       <local:Rating x:Name="Rating"
+                    IsEnabled="False"
                     RelativePanel.AlignBottomWithPanel="True"
                     PlaceholderValue="{x:Bind Gallery.Rating.AverageScore, Mode=OneWay, FallbackValue=0}"
                     UserRatingValue="{x:Bind Gallery.Rating.UserScore, Mode=OneWay}"/>

@@ -3,6 +3,7 @@ using System;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
@@ -37,7 +38,7 @@ namespace ExViewer.Controls
             var sender = (Rating)dp;
             if (double.IsNaN(newValue) || newValue > 5 || newValue < 0)
                 throw new ArgumentOutOfRangeException(nameof(PlaceholderValue));
-            sender.InvalidateArrange();
+            sender.draw();
         }
 
         public Score UserRatingValue
@@ -50,7 +51,7 @@ namespace ExViewer.Controls
         /// Indentify <see cref="UserRatingValue"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty UserRatingValueProperty =
-            DependencyProperty.Register(nameof(UserRatingValue), typeof(Score), typeof(Rating), new PropertyMetadata((Score)0, UserRatingValuePropertyChanged));
+            DependencyProperty.Register(nameof(UserRatingValue), typeof(Score), typeof(Rating), new PropertyMetadata(Score.NotSet, UserRatingValuePropertyChanged));
 
         private static void UserRatingValuePropertyChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
         {
@@ -59,7 +60,8 @@ namespace ExViewer.Controls
             if (oldValue == newValue)
                 return;
             var sender = (Rating)dp;
-            sender.InvalidateArrange();
+            sender.actualUserRating = newValue;
+            sender.draw();
         }
 
         private TextBlock tbBackground;
@@ -67,6 +69,107 @@ namespace ExViewer.Controls
         private TextBlock tbUserRating;
         private RectangleGeometry rgPlaceholderClip;
         private RectangleGeometry rgUserRatingClip;
+
+        private Score actualUserRating = Score.NotSet;
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            base.OnLostFocus(e);
+            this.actualUserRating = this.UserRatingValue;
+            draw();
+        }
+
+        protected override void OnKeyUp(KeyRoutedEventArgs e)
+        {
+            base.OnKeyUp(e);
+            e.Handled = true;
+            switch (e.OriginalKey)
+            {
+            case Windows.System.VirtualKey.Right:
+            case Windows.System.VirtualKey.GamepadDPadRight:
+            case Windows.System.VirtualKey.GamepadLeftThumbstickRight:
+                if (this.actualUserRating == Score.NotSet)
+                    this.actualUserRating = this.PlaceholderValue.ToScore();
+                if (this.actualUserRating != Score.Score_5_0)
+                {
+                    this.actualUserRating++;
+                }
+                draw();
+                break;
+            case Windows.System.VirtualKey.Left:
+            case Windows.System.VirtualKey.GamepadDPadLeft:
+            case Windows.System.VirtualKey.GamepadLeftThumbstickLeft:
+                if (this.actualUserRating == Score.NotSet)
+                {
+                    var a = this.PlaceholderValue;
+                    if (a <= 0.5)
+                        this.actualUserRating = Score.Score_0_5;
+                    else
+                        this.actualUserRating = a.ToScore();
+                }
+                if (this.actualUserRating != Score.Score_0_5)
+                {
+                    this.actualUserRating--;
+                }
+                draw();
+                break;
+            case Windows.System.VirtualKey.Space:
+            case Windows.System.VirtualKey.Enter:
+            case Windows.System.VirtualKey.GamepadA:
+                if (this.actualUserRating != this.UserRatingValue)
+                {
+                    this.UserRatingValue = this.actualUserRating;
+                }
+                this.RemoveFocusEngagement();
+                break;
+            default:
+                e.Handled = false;
+                break;
+            }
+        }
+
+        protected override void OnPointerMoved(PointerRoutedEventArgs e)
+        {
+            base.OnPointerMoved(e);
+            if (FocusState == FocusState.Keyboard)
+                return;
+            e.Handled = true;
+            var p = e.GetCurrentPoint(this);
+            var pp = p.Position.X / this.ActualWidth;
+            if (pp < 0) pp = 0;
+            else if (pp > 1) pp = 1;
+            this.actualUserRating = (Score)Math.Max((byte)Math.Round(pp * 10), (byte)1);
+            draw();
+        }
+
+        protected override void OnPointerExited(PointerRoutedEventArgs e)
+        {
+            base.OnPointerExited(e);
+            if (FocusState == FocusState.Keyboard)
+                return;
+            e.Handled = true;
+            this.actualUserRating = this.UserRatingValue;
+            draw();
+        }
+
+        protected override void OnPointerPressed(PointerRoutedEventArgs e)
+        {
+            base.OnPointerPressed(e);
+            if (FocusState == FocusState.Keyboard)
+                return;
+            e.Handled = true;
+            CapturePointer(e.Pointer);
+        }
+
+        protected override void OnPointerReleased(PointerRoutedEventArgs e)
+        {
+            base.OnPointerReleased(e);
+            ReleasePointerCapture(e.Pointer);
+            if (FocusState == FocusState.Keyboard)
+                return;
+            e.Handled = true;
+            this.UserRatingValue = this.actualUserRating;
+        }
 
         protected override void OnApplyTemplate()
         {
@@ -84,10 +187,11 @@ namespace ExViewer.Controls
             return base.ArrangeOverride(finalSize);
         }
 
+        private void draw() => draw(new Size(ActualWidth, ActualHeight));
         private void draw(Size size)
         {
             var ph = this.PlaceholderValue;
-            var ur = this.UserRatingValue;
+            var ur = this.actualUserRating;
             if (ur > 0)
             {
                 if (this.rgPlaceholderClip != null)

@@ -1,5 +1,6 @@
 ﻿using ExClient;
 using ExClient.Galleries;
+using ExClient.Galleries.Rating;
 using ExViewer.Controls;
 using ExViewer.ViewModels;
 using Microsoft.Toolkit.Uwp.UI.Animations;
@@ -212,7 +213,6 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            this.tpTags.IsTabStop = false;
             base.OnNavigatedTo(e);
             var reset = e.NavigationMode == NavigationMode.New;
             var restore = e.NavigationMode == NavigationMode.Back;
@@ -249,8 +249,6 @@ namespace ExViewer.Views
                     container.Focus(FocusState.Programmatic);
                 }
             }
-            await Dispatcher.YieldIdle();
-            this.tpTags.IsTabStop = true;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -448,6 +446,7 @@ namespace ExViewer.Views
             }
             return null;
         }
+        private static Score score(Score score) => score;
 
         private static readonly Brush opNotStarted = new SolidColorBrush(Colors.Transparent);
         private static readonly Brush opStarted = (Brush)Application.Current.Resources["SystemControlHighlightAccentBrush"];

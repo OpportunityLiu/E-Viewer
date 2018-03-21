@@ -16,7 +16,8 @@
                 x:DataType="settings:SettingInfo">
     <StackPanel>
       <TextBlock Text="{Binding FriendlyName}" />
-      <controls:ExcludedTagNamespacesSelector ExcludedTagNamespaces="{Binding Value, Mode=TwoWay}" />
+      <controls:ExcludedTagNamespacesSelector ExcludedTagNamespaces="{Binding Value, Mode=TwoWay}" 
+                                              HorizontalAlignment="Center"/>
     </StackPanel>
   </DataTemplate>
   <DataTemplate x:Name="ExcludedLanguagesTemplate"

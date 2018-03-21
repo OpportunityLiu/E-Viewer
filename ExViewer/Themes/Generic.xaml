@@ -849,7 +849,11 @@
     <Setter Property="UseSystemFocusVisuals"
             Value="True" />
     <Setter Property="IsTabStop"
-            Value="False" />
+            Value="True" />
+    <Setter Property="IsFocusEngagementEnabled"
+            Value="True" />
+    <Setter Property="FocusVisualMargin"
+            Value="-4,-2" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:Rating">

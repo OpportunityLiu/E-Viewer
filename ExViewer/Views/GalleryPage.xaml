@@ -303,8 +303,9 @@
                                     Category="{x:Bind ViewModel.Gallery.Category, Mode=OneWay}" />
               <controls:Rating Margin="6,4"
                                VerticalAlignment="Center"
+                               IsEnabled="{x:Bind xb:Logical.Not(ViewModel.Rate.IsExecuting), Mode=OneWay}"
                                PlaceholderValue="{x:Bind ViewModel.Gallery.Rating.AverageScore, Mode=OneWay, FallbackValue=0}"
-                               UserRatingValue="{x:Bind ViewModel.Gallery.Rating.UserScore, Mode=OneWay}" />
+                               UserRatingValue="{x:Bind local:GalleryPage.score(ViewModel.Gallery.Rating.UserScore), BindBack=ViewModel.Rate.Execute, Mode=TwoWay}" />
             </StackPanel>
             <controls:TagPresenter x:Name="tpTags"
                                    Grid.Row="1"
