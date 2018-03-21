@@ -119,7 +119,6 @@
                       VerticalScrollBarVisibility="Auto">
           <StackPanel>
             <controls:CategorySelector x:Name="cs_Category"
-                                       MaxWidth="560"
                                        XYFocusDown="{x:Bind ts_Advanced}"
                                        SelectedCategory="{x:Bind ViewModel.Category, Mode=TwoWay}"
                                        HorizontalAlignment="Center" />
