@@ -58,11 +58,6 @@ namespace ExViewer.Views
 
         private Gallery opened;
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-        }
-
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             base.OnKeyUp(e);
@@ -91,7 +86,7 @@ namespace ExViewer.Views
             }
         }
 
-        private ContentDialogNotificationData confirmClear = new ContentDialogNotificationData
+        private readonly ContentDialogNotificationData confirmClear = new ContentDialogNotificationData
         {
             Title = Strings.Resources.Views.ClearCachedDialog.Title,
             Content = Strings.Resources.Views.ClearCachedDialog.Content,

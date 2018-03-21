@@ -7,9 +7,9 @@ namespace ExViewer.Controls
     {
         public MyContentDialog()
         {
-            this.DefaultStyleKey = typeof(MyContentDialog);
-            this.RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
-            this.Loading += this.ContentDialog_Loading;
+            DefaultStyleKey = typeof(MyContentDialog);
+            RequestedTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
+            Loading += ContentDialog_Loading;
         }
 
         private void ContentDialog_Loading(FrameworkElement sender, object args)

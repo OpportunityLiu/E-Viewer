@@ -14,7 +14,7 @@ namespace ExViewer.Controls
     {
         public Rating()
         {
-            this.DefaultStyleKey = typeof(Rating);
+            DefaultStyleKey = typeof(Rating);
         }
 
         public double PlaceholderValue
@@ -85,46 +85,50 @@ namespace ExViewer.Controls
             e.Handled = true;
             switch (e.OriginalKey)
             {
-            case Windows.System.VirtualKey.Right:
-            case Windows.System.VirtualKey.GamepadDPadRight:
-            case Windows.System.VirtualKey.GamepadLeftThumbstickRight:
-                if (this.actualUserRating == Score.NotSet)
-                    this.actualUserRating = this.PlaceholderValue.ToScore();
-                if (this.actualUserRating != Score.Score_5_0)
-                {
-                    this.actualUserRating++;
-                }
-                draw();
-                break;
-            case Windows.System.VirtualKey.Left:
-            case Windows.System.VirtualKey.GamepadDPadLeft:
-            case Windows.System.VirtualKey.GamepadLeftThumbstickLeft:
-                if (this.actualUserRating == Score.NotSet)
-                {
-                    var a = this.PlaceholderValue;
-                    if (a <= 0.5)
-                        this.actualUserRating = Score.Score_0_5;
-                    else
-                        this.actualUserRating = a.ToScore();
-                }
-                if (this.actualUserRating != Score.Score_0_5)
-                {
-                    this.actualUserRating--;
-                }
-                draw();
-                break;
-            case Windows.System.VirtualKey.Space:
-            case Windows.System.VirtualKey.Enter:
-            case Windows.System.VirtualKey.GamepadA:
-                if (this.actualUserRating != this.UserRatingValue)
-                {
-                    this.UserRatingValue = this.actualUserRating;
-                }
-                this.RemoveFocusEngagement();
-                break;
-            default:
-                e.Handled = false;
-                break;
+                case Windows.System.VirtualKey.Right:
+                case Windows.System.VirtualKey.GamepadDPadRight:
+                case Windows.System.VirtualKey.GamepadLeftThumbstickRight:
+                    if (this.actualUserRating == Score.NotSet)
+                        this.actualUserRating = this.PlaceholderValue.ToScore();
+                    if (this.actualUserRating != Score.Score_5_0)
+                    {
+                        this.actualUserRating++;
+                    }
+
+                    draw();
+                    break;
+                case Windows.System.VirtualKey.Left:
+                case Windows.System.VirtualKey.GamepadDPadLeft:
+                case Windows.System.VirtualKey.GamepadLeftThumbstickLeft:
+                    if (this.actualUserRating == Score.NotSet)
+                    {
+                        var a = this.PlaceholderValue;
+                        if (a <= 0.5)
+                            this.actualUserRating = Score.Score_0_5;
+                        else
+                            this.actualUserRating = a.ToScore();
+                    }
+
+                    if (this.actualUserRating != Score.Score_0_5)
+                    {
+                        this.actualUserRating--;
+                    }
+
+                    draw();
+                    break;
+                case Windows.System.VirtualKey.Space:
+                case Windows.System.VirtualKey.Enter:
+                case Windows.System.VirtualKey.GamepadA:
+                    if (this.actualUserRating != Score.NotSet)
+                    {
+                        UserRatingValue = this.actualUserRating;
+                    }
+
+                    RemoveFocusEngagement();
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
             }
         }
 
@@ -135,7 +139,7 @@ namespace ExViewer.Controls
                 return;
             e.Handled = true;
             var p = e.GetCurrentPoint(this);
-            var pp = p.Position.X / this.ActualWidth;
+            var pp = p.Position.X / ActualWidth;
             if (pp < 0) pp = 0;
             else if (pp > 1) pp = 1;
             this.actualUserRating = (Score)Math.Max((byte)Math.Round(pp * 10), (byte)1);

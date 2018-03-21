@@ -138,7 +138,7 @@ namespace ExViewer.Views
             }
             else
             {
-                var begin = "[url]";
+                const string begin = "[url]";
                 var replaced = string.Concat(begin, currentSelected, end);
                 this.tbContent.SelectedText = replaced;
                 var s = this.tbContent.SelectionStart;
