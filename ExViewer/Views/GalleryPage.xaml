@@ -31,14 +31,6 @@
     </TransitionCollection>
   </Page.Transitions>
   <Page.Resources>
-    <con:ChainConverter x:Key="ConAddComment">
-      <tcon:ObjectToBooleanConverter IfNeither="False">
-        <tcon:ObjectToBooleanConverter.ValuesForTrue>
-          <x:Int32>1</x:Int32>
-        </tcon:ObjectToBooleanConverter.ValuesForTrue>
-      </tcon:ObjectToBooleanConverter>
-      <con:ConverterReference Converter="{StaticResource TrueToVisibleConverter}" />
-    </con:ChainConverter>
     <tcon:NumberToBooleanConverter x:Key="SaveProgressToIsIndeterminateConverter"
                                    RangeStart="0"
                                    IncludeStart="True"
@@ -277,7 +269,7 @@
               Background="{ThemeResource CommandBarBackground}"
               SizeChanged="gdInfo_SizeChanged"
               MinHeight="100"
-              MaxHeight="300">
+              MaxHeight="{x:Bind caculateGdInfoMaxHeight(ActualHeight, VisibleBounds), Mode=OneWay}">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
@@ -314,7 +306,8 @@
                                    Tags="{x:Bind ViewModel.Gallery.Tags, Mode=OneWay}" />
           </Grid>
         </Grid>
-        <Grid x:Name="gd_Pivot">
+        <Grid x:Name="gd_Pivot"
+              Height="{x:Bind caculateGdPivotHeight(ActualHeight, VisibleBounds), Mode=OneWay}">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -560,7 +553,7 @@
                       Icon="Add"
                       Label="Post new comment"
                       ToolTipService.ToolTip="{x:Bind abbComment.Label}"
-                      Visibility="{x:Bind pv.SelectedIndex, Mode=OneWay, Converter={StaticResource ConAddComment}}"
+                      x:Load="{x:Bind xb:Int32.AreEqual(pv.SelectedIndex, 1), Mode=OneWay}"
                       Command="{x:Bind ViewModel.AddComment, Mode=OneWay}" />
       </CommandBar.PrimaryCommands>
       <CommandBar.SecondaryCommands>
