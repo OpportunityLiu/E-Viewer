@@ -131,11 +131,10 @@ namespace ExViewer.Controls
             if (this.asbNewTags != null)
                 this.asbNewTags.Visibility = Visibility.Collapsed;
             this.btnStartNew.Visibility = Visibility.Visible;
-            if (this.asbNewTags != null)
-            {
-                this.asbNewTags.Text = "";
-                TagSuggestionService.IncreaseStateCode(this.asbNewTags);
-            }
+            if (this.asbNewTags == null) 
+                return;
+            this.asbNewTags.Text = "";
+            TagSuggestionService.IncreaseStateCode(this.asbNewTags);
         }
 
         private void btnStartNew_Click(object sender, RoutedEventArgs e)
@@ -207,20 +206,11 @@ namespace ExViewer.Controls
             switch (value.GetVoteState())
             {
             case TagState.Upvoted:
-                if (value.IsSlave())
-                    return upSlaveBrush;
-                else
-                    return upBrush;
+                return value.IsSlave() ? upSlaveBrush : upBrush;
             case TagState.Downvoted:
-                if (value.IsSlave())
-                    return downSlaveBrush;
-                else
-                    return downBrush;
+                return value.IsSlave() ? downSlaveBrush : downBrush;
             default:
-                if (value.IsSlave())
-                    return slaveBrush;
-                else
-                    return normalBrush;
+                return value.IsSlave() ? slaveBrush : normalBrush;
             }
         }
 

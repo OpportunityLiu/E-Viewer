@@ -2,16 +2,15 @@
 using ExViewer.Views;
 using Opportunity.MvvmUniverse.Commands;
 using System;
+using System.Collections.Generic;
 using Windows.Storage.Pickers;
+using ICommand = System.Windows.Input.ICommand;
 
 namespace ExViewer.ViewModels
 {
     public class SavedVM : GalleryListVM<SavedGallery>
     {
-        public static SavedVM Instance
-        {
-            get;
-        } = new SavedVM();
+        public static SavedVM Instance { get; } = new SavedVM();
 
         private SavedVM()
         {

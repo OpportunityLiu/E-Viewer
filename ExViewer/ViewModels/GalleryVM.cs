@@ -420,17 +420,17 @@ namespace ExViewer.ViewModels
             catch (Exception)
             {
             }
-            if (!opened)
+
+            if (opened)
+                return;
+            if (!(qrCodeDialog.Content is TextBlock tb))
             {
-                if (!(qrCodeDialog.Content is TextBlock tb))
-                {
-                    tb = new TextBlock { IsTextSelectionEnabled = true, TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap };
-                    qrCodeDialog.Content = tb;
-                }
-                tb.Text = code;
-                qrCodeDialog.PrimaryButtonCommandParameter = code;
-                await Notificator.GetForCurrentView().NotifyAsync(qrCodeDialog);
+                tb = new TextBlock { IsTextSelectionEnabled = true, TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap };
+                qrCodeDialog.Content = tb;
             }
+            tb.Text = code;
+            qrCodeDialog.PrimaryButtonCommandParameter = code;
+            await Notificator.GetForCurrentView().NotifyAsync(qrCodeDialog);
         }, (sender, code) => code != null);
 
         private OperationState saveStatus;

@@ -47,11 +47,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
             this.PullProgress = e.PullProgress;
         }
 
-        protected override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-        }
-
         public double PullProgress
         {
             get => (double)GetValue(PullProgressProperty);

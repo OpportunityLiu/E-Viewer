@@ -38,9 +38,8 @@ namespace ExViewer.Controls
 
         private async void init()
         {
-            var source = await BannerProvider.Provider.GetBannersAsync();
-            if (source == null)
-                source = new[] { await StorageFile.GetFileFromApplicationUriAsync(BannerProvider.Provider.DefaultBanner) };
+            var source = await BannerProvider.Provider.GetBannersAsync()
+                ?? new[] { await StorageFile.GetFileFromApplicationUriAsync(BannerProvider.Provider.DefaultBanner) };
 
             var data = new List<BitmapImage>();
             foreach (var item in source)
@@ -70,14 +69,13 @@ namespace ExViewer.Controls
         private void RefreshTimer_Tick(object sender, object e)
         {
             this.fv_Banners_Counter++;
-            if (this.fv_Banners_Counter > 7)
-            {
-                var c = this.fv_Banners.SelectedIndex;
-                c++;
-                if (((ICollection)this.fv_Banners.ItemsSource).Count <= c)
-                    c = 0;
-                this.fv_Banners.SelectedIndex = c;
-            }
+            if (this.fv_Banners_Counter <= 7) 
+                return;
+            var c = this.fv_Banners.SelectedIndex;
+            c++;
+            if (((ICollection)this.fv_Banners.ItemsSource).Count <= c)
+                c = 0;
+            this.fv_Banners.SelectedIndex = c;
         }
 
         private DispatcherTimer refreshTimer = new DispatcherTimer { Interval = new TimeSpan(10_000_000) };
@@ -88,18 +86,17 @@ namespace ExViewer.Controls
         {
             this.fv_Banners_Counter = 0;
             var data = (ICollection)this.fv_Banners.ItemsSource;
-            if (data.Count >= 4)
+            if (data.Count < 4) 
+                return;
+            if (data.Count == this.fv_Banners.SelectedIndex + 1)
             {
-                if (data.Count == this.fv_Banners.SelectedIndex + 1)
-                {
-                    await Task.Delay(500);
-                    this.fv_Banners.SelectedIndex = 1;
-                }
-                else if (this.fv_Banners.SelectedIndex == 0)
-                {
-                    await Task.Delay(500);
-                    this.fv_Banners.SelectedIndex = data.Count - 2;
-                }
+                await Task.Delay(500);
+                this.fv_Banners.SelectedIndex = 1;
+            }
+            else if (this.fv_Banners.SelectedIndex == 0)
+            {
+                await Task.Delay(500);
+                this.fv_Banners.SelectedIndex = data.Count - 2;
             }
         }
 

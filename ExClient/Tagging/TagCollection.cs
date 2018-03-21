@@ -119,10 +119,9 @@ namespace ExClient.Tagging
         bool ICollection.IsSynchronized => false;
 
         object ICollection.SyncRoot => this;
-
+        
         object IList.this[int index] { get => this[index]; set => throw new InvalidOperationException(); }
 
-        [IndexerName("Groups")]
         public NamespaceTagCollection this[int index]
         {
             get
@@ -132,8 +131,7 @@ namespace ExClient.Tagging
                 return new NamespaceTagCollection(this, index);
             }
         }
-
-        [IndexerName("Groups")]
+        
         public RangedListView<GalleryTag> this[Namespace key]
         {
             get
@@ -152,14 +150,11 @@ namespace ExClient.Tagging
         private RangedListView<GalleryTag> getValue(Namespace key)
         {
             var i = getIndexOfKey(key);
-            if (i < 0)
-            {
-                if (key.IsDefined())
-                    return RangedListView<GalleryTag>.Empty;
-                else
-                    throw new ArgumentOutOfRangeException(nameof(key));
-            }
-            return getValue(i);
+            if (i >= 0) 
+                return getValue(i);
+            if (!key.IsDefined())
+                throw new ArgumentOutOfRangeException(nameof(key));
+            return RangedListView<GalleryTag>.Empty;
         }
 
         private RangedListView<GalleryTag> getValue(int index)

@@ -4,7 +4,7 @@
 
 namespace ExViewer.Controls
 {
-    class SplitViewTab : SplitViewButton
+    internal class SplitViewTab : SplitViewButton
     {
         public SplitViewTab()
         {
@@ -36,7 +36,7 @@ namespace ExViewer.Controls
 
         private void updateState(bool animate)
         {
-            VisualStateManager.GoToState(this, this.IsChecked ? "Checked" : "Unchecked", animate);
+            VisualStateManager.GoToState(this, IsChecked ? "Checked" : "Unchecked", animate);
         }
 
         protected override void OnApplyTemplate()

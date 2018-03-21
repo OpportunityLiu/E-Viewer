@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace ExViewer.Controls
 {
-    class SplitViewButton : Button
+    internal class SplitViewButton : Button
     {
         public SplitViewButton()
         {
