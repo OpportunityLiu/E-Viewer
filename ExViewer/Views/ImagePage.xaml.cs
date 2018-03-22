@@ -370,22 +370,19 @@ namespace ExViewer.Views
             this.fv.Descendants<ScrollContentPresenter>().First().Clip = null;
             this.fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
                 FlowDirection.RightToLeft : FlowDirection.LeftToRight;
-            var panel = this.fv.ItemsPanelRoot as VirtualizingStackPanel;
-            if (panel is null)
-                return;
             switch (SettingCollection.Current.ImageViewOrientation)
             {
             case ViewOrientation.Vertical:
-                panel.Orientation = Orientation.Vertical;
+                this.fv.ItemsPanel = this.iptVertical;
                 break;
             case ViewOrientation.Auto:
                 if (this.ViewModel.Gallery.Tags[ExClient.Tagging.Namespace.Misc].Any(t => t.Content.Content == "webtoon"))
-                    panel.Orientation = Orientation.Vertical;
+                    this.fv.ItemsPanel = this.iptVertical;
                 else
-                    panel.Orientation = Orientation.Horizontal;
+                    this.fv.ItemsPanel = this.iptHorizontal;
                 break;
             default:
-                panel.Orientation = Orientation.Horizontal;
+                this.fv.ItemsPanel = this.iptHorizontal;
                 break;
             }
         }

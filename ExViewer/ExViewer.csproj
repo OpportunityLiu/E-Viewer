@@ -20,7 +20,7 @@
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <PackageCertificateKeyFile>ExViewer_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
-    <AppxBundle>Always</AppxBundle>
+    <AppxBundle>Never</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <PackageCertificateThumbprint>54BBA9627EB2720D8CDF827F50F65A12CE885EDB</PackageCertificateThumbprint>
     <HockeyAppResourceId>9c09ca3908114a38a09c81ca8b68ee39</HockeyAppResourceId>
