@@ -36,7 +36,6 @@ namespace ExViewer.Views
         public GalleryPage()
         {
             this.InitializeComponent();
-            this.RegisterPropertyChangedCallback(VisibleBoundsProperty, (s, e) => ((GalleryPage)s).InvalidateMeasure());
         }
 
         private void spContent_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -148,11 +147,15 @@ namespace ExViewer.Views
 
         private double caculateGdPivotHeight(double pageHeight, Thickness vb)
         {
+            if (pageHeight <= 100)
+                return double.NaN;
             return pageHeight - 48 - vb.Top;
         }
 
         private double caculateGdInfoMaxHeight(double pageHeight, Thickness vb)
         {
+            if (pageHeight <= 100)
+                return double.NaN;
             var height = pageHeight - 48 - vb.Top;
             var infoH = height - vb.Bottom;
             if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
