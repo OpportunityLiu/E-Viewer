@@ -259,25 +259,20 @@
               SelectionChanged="fv_SelectionChanged"
               Margin="{x:Bind VisibleBounds, Mode=OneWay}"
               ItemTemplate="{StaticResource FlipViewItemTemplate}">
-      <!--<FlipView.Resources>
+      <FlipView.Resources>
         <ItemsPanelTemplate x:Name="iptHorizontal">
           <VirtualizingStackPanel Orientation="Horizontal" />
         </ItemsPanelTemplate>
         <ItemsPanelTemplate x:Name="iptVertical">
           <VirtualizingStackPanel Orientation="Vertical"/>
         </ItemsPanelTemplate>
-      </FlipView.Resources>-->
+      </FlipView.Resources>
       <FlipView.ItemContainerStyle>
         <Style TargetType="FlipViewItem">
           <Setter Property="IsTabStop"
                   Value="False" />
         </Style>
       </FlipView.ItemContainerStyle>
-      <FlipView.ItemsPanel>
-        <ItemsPanelTemplate>
-          <VirtualizingStackPanel />
-        </ItemsPanelTemplate>
-      </FlipView.ItemsPanel>
     </FlipView>
     <Border x:Name="bdTop"
             Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
