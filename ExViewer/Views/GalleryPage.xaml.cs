@@ -155,7 +155,7 @@ namespace ExViewer.Views
         private double caculateGdInfoMaxHeight(double pageHeight, Thickness vb)
         {
             if (pageHeight <= 100)
-                return double.NaN;
+                return 360;
             var height = pageHeight - 48 - vb.Top;
             var infoH = height - vb.Bottom;
             if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
