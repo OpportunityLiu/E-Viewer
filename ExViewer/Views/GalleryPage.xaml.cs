@@ -7,6 +7,7 @@ using Microsoft.Toolkit.Uwp.UI.Animations;
 using Microsoft.Toolkit.Uwp.UI.Animations.Expressions;
 using Opportunity.MvvmUniverse.Views;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -89,10 +90,10 @@ namespace ExViewer.Views
 
         private void pv_Content_Loaded(object sender, RoutedEventArgs e)
         {
-            var fe_Content = (FrameworkElement)sender;
-            var sv_Content = fe_Content.Descendants<ScrollViewer>().First();
-            sv_Content.ViewChanging += this.pv_Content_ViewChanging;
-            fe_Content.Loaded -= this.pv_Content_Loaded;
+            var feContent = (FrameworkElement)sender;
+            var svContent = feContent.Descendants<ScrollViewer>().First();
+            svContent.ViewChanging += this.pv_Content_ViewChanging;
+            feContent.Loaded -= this.pv_Content_Loaded;
         }
 
         private int sizeChanging;
@@ -101,13 +102,12 @@ namespace ExViewer.Views
             this.sizeChanging++;
             await Dispatcher.YieldIdle();
             this.sizeChanging--;
-            if (this.sizeChanging == 0)
-            {
-                var state = this.isGdInfoHide;
-                if (this.tracker != null)
-                    this.tracker.MaxPosition = new System.Numerics.Vector3(0, (float)this.gdInfo.ActualHeight, 0);
-                changeViewTo(state, true);
-            }
+            if (this.sizeChanging != 0)
+                return;
+            var state = this.isGdInfoHide;
+            if (this.tracker != null)
+                this.tracker.MaxPosition = new System.Numerics.Vector3(0, (float)this.gdInfo.ActualHeight, 0);
+            changeViewTo(state, true);
         }
 
         private void spContent_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -218,6 +218,7 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            Debug.Assert(e.Parameter != null, "e.Parameter != null");
             base.OnNavigatedTo(e);
             var reset = e.NavigationMode == NavigationMode.New;
             var restore = e.NavigationMode == NavigationMode.Back;
@@ -237,7 +238,6 @@ namespace ExViewer.Views
             {
                 changeViewTo(true, true);
                 this.gv.ScrollIntoView(this.ViewModel.View.CurrentItem);
-                var container = default(Control);
                 var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
                 if (animation != null)
                 {
@@ -247,8 +247,7 @@ namespace ExViewer.Views
                         animation.Cancel();
                 }
                 await Dispatcher.YieldIdle();
-                if (container == null)
-                    container = (Control)this.gv.ContainerFromIndex(idx);
+                var container = (Control)this.gv.ContainerFromIndex(idx);
                 if (container != null && this.pv.SelectedIndex == 0)
                 {
                     container.Focus(FocusState.Programmatic);
@@ -366,9 +365,9 @@ namespace ExViewer.Views
             case VirtualKey.Application:
                 if (this.cb_top.IsOpen = !this.cb_top.IsOpen)
                 {
-                    if (this.btn_MoreButton == null)
-                        this.btn_MoreButton = this.cb_top.Descendants<Button>("MoreButton").FirstOrDefault();
-                    this.btn_MoreButton?.Focus(FocusState.Programmatic);
+                    if (this.btnMoreButton == null)
+                        this.btnMoreButton = this.cb_top.Descendants<Button>("MoreButton").FirstOrDefault();
+                    this.btnMoreButton?.Focus(FocusState.Programmatic);
                 }
                 break;
             default:
@@ -377,7 +376,7 @@ namespace ExViewer.Views
             }
         }
 
-        private Button btn_MoreButton;
+        private Button btnMoreButton;
         public void CloseAll()
         {
             this.cb_top.IsOpen = false;

@@ -1,6 +1,6 @@
 ﻿namespace ExViewer.Views
 {
-    interface IHasAppBar
+    internal interface IHasAppBar
     {
         void CloseAll();
     }

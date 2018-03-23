@@ -1,20 +1,20 @@
 ﻿{
   "Boolean": {
-    "YesNo": {
-      "True": "Yes",
-      "False": "No"
-    },
     "EnabledDisabled": {
-      "True": "Enabled",
-      "False": "Disabled"
+      "False": "Disabled",
+      "True": "Enabled"
     },
     "OnOff": {
-      "True": "On",
-      "False": "Off"
+      "False": "Off",
+      "True": "On"
     },
     "TrueFalse": {
-      "True": "True",
-      "False": "False"
+      "False": "False",
+      "True": "True"
+    },
+    "YesNo": {
+      "False": "No",
+      "True": "Yes"
     }
   }
 }
