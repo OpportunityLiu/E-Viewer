@@ -1,6 +1,7 @@
 ﻿using ExViewer.Controls;
 using ExViewer.ViewModels;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -94,6 +95,7 @@ namespace ExViewer.Views
                 return null;
             }
             var deferral = e.GetDeferral();
+            Debug.Assert(e.DragUIOverride != null, "e.DragUIOverride != null");
             try
             {
                 var info = Strings.Resources.Views.FileSearchDialog;
