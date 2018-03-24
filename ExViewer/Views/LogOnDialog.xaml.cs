@@ -3,6 +3,7 @@ using ExViewer.Controls;
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -19,12 +20,13 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
-        private void reset()
+        private async void reset()
         {
-            this.wv.NavigateToString("");
-            this.wv.Navigate(Client.LogOnUri);
             this.tempUserName = null;
             this.tempPassword = null;
+            this.wv.NavigateToString("");
+            await Dispatcher.YieldIdle();
+            this.wv.Navigate(Client.LogOnUri);
         }
 
         private async Task injectLogOnPage()
