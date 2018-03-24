@@ -7,6 +7,7 @@ using Opportunity.MvvmUniverse.Services;
 using Opportunity.MvvmUniverse.Services.Navigation;
 using Opportunity.MvvmUniverse.Views;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
@@ -48,6 +49,7 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            Debug.Assert(e.Parameter != null, "e.Parameter != null");
             Navigator.GetForCurrentView().Handlers.Add(this);
 
             base.OnNavigatedTo(e);

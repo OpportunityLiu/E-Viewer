@@ -35,7 +35,7 @@
       <Image x:Name="img_Thumb"
              Source="{x:Bind Image.Thumb, Mode=OneWay}" />
       <Image x:Name="img_Content"
-             Source="{x:Bind xb:Image.OfStorageFile(Image.ImageFile), Mode=OneWay, FallbackValue={x:Null}}"
+             Source="{x:Bind xb:Image.OfStorageFile(Image.ImageFile), Mode=OneWay, FallbackValue=' '}"
              Visibility="{x:Bind Image.ImageFile, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}, FallbackValue=Collapsed}" />
     </Grid>
   </ScrollViewer>

@@ -192,26 +192,12 @@ namespace ExViewer.Views
             this.isGdInfoHideDef = hideGdInfo;
             if (disableAnimation)
             {
-                if (hideGdInfo)
-                {
-                    this.tracker.TryUpdatePosition(this.tracker.MaxPosition);
-                }
-                else
-                {
-                    this.tracker.TryUpdatePosition(this.tracker.MinPosition);
-                }
+                this.tracker.TryUpdatePosition(hideGdInfo ? this.tracker.MaxPosition : this.tracker.MinPosition);
             }
             else
             {
                 var ani = this.compositor.CreateVector3KeyFrameAnimation();
-                if (hideGdInfo)
-                {
-                    ani.InsertKeyFrame(1, this.tracker.MaxPosition);
-                }
-                else
-                {
-                    ani.InsertKeyFrame(1, this.tracker.MinPosition);
-                }
+                ani.InsertKeyFrame(1, hideGdInfo ? this.tracker.MaxPosition : this.tracker.MinPosition);
                 this.tracker.TryUpdatePositionWithAnimation(ani);
             }
         }
