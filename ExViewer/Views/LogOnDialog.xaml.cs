@@ -24,7 +24,14 @@ namespace ExViewer.Views
         {
             this.tempUserName = null;
             this.tempPassword = null;
-            this.wv.NavigateToString("");
+            this.wv.NavigateToString($@"
+<html>
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
+</head>
+<body style='background:{Color((SolidColorBrush)this.Background)};'>
+</body>
+</html>");
             await Dispatcher.YieldIdle();
             this.wv.Navigate(Client.LogOnUri);
         }
