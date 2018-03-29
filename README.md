@@ -1,5 +1,5 @@
 # ExViewer
-[![AppVeyor](https://img.shields.io/appveyor/ci/OpportunityLiu/exviewer.svg)](https://ci.appveyor.com/project/OpportunityLiu/exviewer)
+[![Build status](https://ci.appveyor.com/api/projects/status/fcfmss6sltiub0sb?svg=true)](https://ci.appveyor.com/project/OpportunityLiu/exviewer)
 
 A Client for e-hentai.org on Windows 10.    
 用于 WIndows 10 的 E-站 UWP 应用。
