@@ -380,8 +380,8 @@
     <Content Include="Assets\Store.scale-200.png" />
     <Content Include="Assets\Store.scale-400.png" />
     <Content Include="Assets\TaskBar.scale-100.png" />
-    <Content Include="Assets\Taskbar.scale-200.png" />
-    <Content Include="Assets\Taskbar.scale-400.png" />
+    <Content Include="Assets\TaskBar.scale-200.png" />
+    <Content Include="Assets\TaskBar.scale-400.png" />
     <Content Include="Assets\TaskBar.targetsize-256.png" />
     <Content Include="Assets\TaskBar.targetsize-256_altform-unplated.png" />
     <Content Include="Assets\Wide.scale-100.png" />
