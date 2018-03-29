@@ -20,3 +20,7 @@ Please download `.appxbundle` or `.appx` file to install.
 ## How To Install / 安装
 see wiki [here](https://github.com/OpportunityLiu/ExViewer/wiki/How-to-Install)    
 参考[此处](https://github.com/OpportunityLiu/ExViewer/wiki/安装说明)的说明
+
+## Connection Issues / 连接问题
+see wiki [here](https://github.com/OpportunityLiu/ExViewer/wiki/Resolve-Connection-Issues)    
+参考[此处](https://github.com/OpportunityLiu/ExViewer/wiki/解决连接问题)的说明
