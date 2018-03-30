@@ -2,8 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <!--  neutral  -->
   <!--  Override key-value pairs in this dictionary for language specific properties.  -->
-  <x:String x:Key="GuestUserNameString">Guest</x:String>
-
   <SolidColorBrush x:Key="VoteUpTagBrush">#00cc30</SolidColorBrush>
   <SolidColorBrush x:Key="SlaveVoteUpTagBrush">#9900cc30</SolidColorBrush>
   <SolidColorBrush x:Key="VoteDownTagBrush">#FF3333</SolidColorBrush>
