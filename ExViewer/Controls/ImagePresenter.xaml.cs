@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -18,22 +19,23 @@ namespace ExViewer.Controls
 {
     public sealed partial class ImagePresenter : UserControl
     {
-        private static readonly BitmapImage defaultImage = new BitmapImage();
-
-        static ImagePresenter()
-        {
-            DispatcherHelper.BeginInvokeOnUIThread(async () =>
-            {
-                using (var img = await StorageHelper.GetIconOfExtension("jpg"))
-                {
-                    await defaultImage.SetSourceAsync(img);
-                }
-            });
-        }
+        [ThreadStatic]
+        private static BitmapImage defaultImage;
 
         public ImagePresenter()
         {
             this.InitializeComponent();
+            if (defaultImage is null)
+            {
+                defaultImage = new BitmapImage();
+                Dispatcher.BeginIdle(async p =>
+                {
+                    using (var img = await StorageHelper.GetIconOfExtension("jpg"))
+                    {
+                        await defaultImage.SetSourceAsync(img);
+                    }
+                });
+            }
         }
 
         public GalleryImage Image

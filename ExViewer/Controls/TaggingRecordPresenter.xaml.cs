@@ -2,6 +2,7 @@
 using ExClient.Tagging;
 using System;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -59,9 +60,10 @@ namespace ExViewer.Controls
                     if (asyncStatus != AsyncStatus.Completed)
                         return;
                     var dispValue = op.GetResults();
-                    Opportunity.MvvmUniverse.DispatcherHelper.BeginInvokeOnUIThread(() =>
+                    var t = $"{data.Tag.Namespace.ToFriendlyNameString()}: {dispValue}";
+                    this.Dispatcher.Begin(() =>
                     {
-                        this.tbTag.Text = $"{data.Tag.Namespace.ToFriendlyNameString()}: {dispValue}";
+                        this.tbTag.Text = t;
                     });
                 };
             }

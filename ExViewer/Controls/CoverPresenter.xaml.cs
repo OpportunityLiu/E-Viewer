@@ -1,6 +1,7 @@
 ﻿using Opportunity.MvvmUniverse;
 using System;
 using Windows.System.Power;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -47,7 +48,7 @@ namespace ExViewer.Controls
 
         private async void setEffectStatus(object sender, object args)
         {
-            await DispatcherHelper.YieldIdle();
+            await this.Dispatcher.YieldIdle();
             if (uiSettings.AdvancedEffectsEnabled && PowerManager.EnergySaverStatus != EnergySaverStatus.On)
             {
                 FindName(nameof(this.BackgroundImage));

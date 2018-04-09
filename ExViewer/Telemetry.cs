@@ -6,6 +6,7 @@ using Opportunity.MvvmUniverse;
 using System;
 using System.Linq;
 using System.Text;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 
 namespace ExViewer
@@ -44,7 +45,7 @@ namespace ExViewer
             sb.AppendLine();
             sb.AppendLine("--------Other Info--------");
             sb.AppendLine($"Page: {RootControl.RootController.CurrentPageName}");
-            DispatcherHelper.RunAsyncOnUIThread(() =>
+            RootControl.RootController.Frame.Dispatcher.RunAsync(() =>
             {
                 var page = RootControl.RootController.Frame?.Content;
                 switch (page)
