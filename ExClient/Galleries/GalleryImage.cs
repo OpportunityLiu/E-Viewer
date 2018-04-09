@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Data.Html;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -26,7 +27,7 @@ namespace ExClient.Galleries
     {
         static GalleryImage()
         {
-            DispatcherHelper.BeginInvokeOnUIThread(() =>
+            CoreApplication.MainView.Dispatcher.Begin(() =>
             {
                 display = DisplayInformation.GetForCurrentView();
                 DefaultThumb = new BitmapImage();
@@ -153,7 +154,7 @@ namespace ExClient.Galleries
 
         private void loadThumb()
         {
-            DispatcherHelper.BeginInvokeOnUIThread(async () =>
+            CoreApplication.MainView.Dispatcher.Begin(async () =>
             {
                 var img = new BitmapImage();
                 await img.Dispatcher.YieldIdle();

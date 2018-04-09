@@ -25,6 +25,7 @@ using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Streams;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
@@ -116,7 +117,7 @@ namespace ExViewer.ViewModels
                     if (load.Status != AsyncStatus.Completed)
                         RootControl.RootController.TrackAsyncAction(load, async (s, e) =>
                         {
-                            await DispatcherHelper.YieldIdle();
+                            await RootControl.RootController.Frame.Dispatcher.YieldIdle();
                             await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
                         });
                     else
