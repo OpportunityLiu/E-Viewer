@@ -373,7 +373,7 @@
             Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
   </Style>
 
-  <Style TargetType="tk:PullToRefreshIndicator">
+  <Style TargetType="controls:PullToRefreshIndicator">
     <Setter Property="Height"
             Value="100" />
     <Setter Property="Width"
@@ -382,7 +382,7 @@
             Value="False" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="tk:PullToRefreshIndicator">
+        <ControlTemplate TargetType="controls:PullToRefreshIndicator">
           <Grid>
             <Grid.RowDefinitions>
               <RowDefinition />

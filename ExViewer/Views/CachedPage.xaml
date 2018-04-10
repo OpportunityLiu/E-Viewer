@@ -8,6 +8,7 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 NavigationCacheMode="Enabled"
                 x:Name="page"
+                xmlns:controls="using:ExViewer.Controls"
                 mc:Ignorable="d">
   <Page.Resources>
     <MenuFlyout x:Name="mf_Gallery"
@@ -42,7 +43,7 @@
                               ContextRequested="lv_ContextRequested"
                               ContextCanceled="lv_ContextCanceled">
       <tk:PullToRefreshListView.RefreshIndicatorContent>
-        <tk:PullToRefreshIndicator />
+        <controls:PullToRefreshIndicator />
       </tk:PullToRefreshListView.RefreshIndicatorContent>
       <tk:PullToRefreshListView.ItemTemplate>
         <DataTemplate xmlns:c="using:ExClient.Galleries"
