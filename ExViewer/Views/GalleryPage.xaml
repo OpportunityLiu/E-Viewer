@@ -262,6 +262,7 @@
       <StackPanel x:Name="spContent"
                   Background="Transparent"
                   GotFocus="spContent_GotFocus"
+                  PointerPressed="spContent_PointerPressed"
                   PointerWheelChanged="spContent_PointerWheelChanged">
         <Grid x:Name="gdInfo"
               Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"

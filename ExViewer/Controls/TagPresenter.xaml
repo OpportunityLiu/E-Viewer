@@ -122,6 +122,7 @@
           <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Column="0"
+                   IsHitTestVisible="False"
                    Padding="2,0"
                    HorizontalAlignment="Right"
                    Text="{x:Bind tagging:NamespaceExtention.ToFriendlyNameString(Namespace)}" />

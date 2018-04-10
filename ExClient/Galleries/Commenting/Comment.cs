@@ -14,7 +14,7 @@ using Windows.Web.Http;
 
 namespace ExClient.Galleries.Commenting
 {
-    [DebuggerDisplay(@"[{Author,nq}: {Content.GetInnerText(),nq}]")]
+    [DebuggerDisplay(@"[{Author,nq}: {Content.InnerText,nq}]")]
     public sealed class Comment : ObservableObject
     {
         internal static IEnumerable<Comment> AnalyzeDocument(CommentCollection owner, HtmlDocument document)
