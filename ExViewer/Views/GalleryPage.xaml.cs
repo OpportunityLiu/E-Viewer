@@ -37,7 +37,6 @@ namespace ExViewer.Views
         public GalleryPage()
         {
             this.InitializeComponent();
-            this.spContent.AddHandler(PointerPressedEvent, new PointerEventHandler(this.spContent_PointerPressed), true);
         }
 
         private void spContent_PointerWheelChanged(object sender, PointerRoutedEventArgs e)

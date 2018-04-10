@@ -12,26 +12,26 @@
                           Opened="MyContentDialog_Opened"
                           RequiresPointer="WhenFocused"
                           mc:Ignorable="d">
-    <controls:MyContentDialog.TitleTemplate>
-        <DataTemplate x:DataType="x:String">
-            <ScrollViewer VerticalScrollBarVisibility="Hidden"
-                          VerticalScrollMode="Disabled"
-                          HorizontalScrollBarVisibility="Hidden"
-                          HorizontalScrollMode="Auto">
-                <TextBlock Text="{x:Bind}"
-                           IsTextSelectionEnabled="True" />
-            </ScrollViewer>
-        </DataTemplate>
-    </controls:MyContentDialog.TitleTemplate>
-    <Grid>
-        <Border Width="500" />
-        <WebView x:Name="wv"
-                 DefaultBackgroundColor="{ThemeResource SystemChromeMediumLowColor}"
-                 NavigationStarting="wv_NavigationStarting"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 Visibility="Collapsed" />
-        <ProgressBar x:Name="pb"
-                     VerticalAlignment="Top"
-                     IsIndeterminate="True" />
-    </Grid>
+  <controls:MyContentDialog.TitleTemplate>
+    <DataTemplate x:DataType="x:String">
+      <ScrollViewer VerticalScrollBarVisibility="Hidden"
+                    VerticalScrollMode="Disabled"
+                    HorizontalScrollBarVisibility="Hidden"
+                    HorizontalScrollMode="Auto">
+        <TextBlock Text="{x:Bind}"
+                   IsTextSelectionEnabled="True" />
+      </ScrollViewer>
+    </DataTemplate>
+  </controls:MyContentDialog.TitleTemplate>
+  <Grid>
+    <Border Width="500" />
+    <WebView x:Name="wv"
+             DefaultBackgroundColor="{ThemeResource SystemChromeMediumLowColor}"
+             NavigationStarting="wv_NavigationStarting"
+             ScrollViewer.VerticalScrollBarVisibility="Auto"
+             Visibility="Collapsed" />
+    <ProgressBar x:Name="pb"
+                 VerticalAlignment="Top"
+                 IsIndeterminate="True" />
+  </Grid>
 </controls:MyContentDialog>
