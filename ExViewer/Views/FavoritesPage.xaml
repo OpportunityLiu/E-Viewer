@@ -49,7 +49,7 @@
                               ContextRequested="lv_ContextRequested"
                               ContextCanceled="lv_ContextCanceled">
       <tk:PullToRefreshListView.RefreshIndicatorContent>
-        <tk:PullToRefreshIndicator />
+        <controls:PullToRefreshIndicator />
       </tk:PullToRefreshListView.RefreshIndicatorContent>
       <ListView.ItemTemplate>
         <DataTemplate xmlns:c="using:ExClient.Galleries"

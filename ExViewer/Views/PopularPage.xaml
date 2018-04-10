@@ -31,7 +31,7 @@
                               Style="{StaticResource GalleryListViewStyle}"
                               ItemClick="lv_ItemClick">
       <tk:PullToRefreshListView.RefreshIndicatorContent>
-        <tk:PullToRefreshIndicator />
+        <controls:PullToRefreshIndicator />
       </tk:PullToRefreshListView.RefreshIndicatorContent>
       <tk:PullToRefreshListView.ItemTemplate>
         <DataTemplate xmlns:c="using:ExClient.Galleries"

@@ -49,7 +49,7 @@
                               Style="{StaticResource GalleryListViewStyle}"
                               ItemClick="lv_ItemClick">
       <tk:PullToRefreshListView.RefreshIndicatorContent>
-        <tk:PullToRefreshIndicator />
+        <controls:PullToRefreshIndicator />
       </tk:PullToRefreshListView.RefreshIndicatorContent>
       <ListView.ItemTemplate>
         <DataTemplate xmlns:c="using:ExClient.Galleries"
@@ -60,12 +60,16 @@
         </DataTemplate>
       </ListView.ItemTemplate>
       <ListView.Header>
-        <TextBlock x:Uid="Views/SearchPage/EmptyTextBlock"
-                   HorizontalAlignment="Center"
-                   Margin="12"
-                   Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(ViewModel.SearchResult.Count, ViewModel.SearchResult.HasMoreItems), FallbackValue=Collapsed, Mode=OneWay}"
-                   Text="No hits found" />
+        <tk:ScrollHeader>
+          <StackPanel>
+            <TextBlock x:Uid="Views/SearchPage/EmptyTextBlock"
+                       HorizontalAlignment="Center"
+                       Margin="12"
+                       Style="{StaticResource BaseTextBlockStyle}"
+                       Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(ViewModel.SearchResult.Count, ViewModel.SearchResult.HasMoreItems), FallbackValue=Collapsed, Mode=OneWay}"
+                       Text="No hits found" />
+          </StackPanel>
+        </tk:ScrollHeader>
       </ListView.Header>
       <ListView.Footer>
         <TextBlock x:Uid="Views/SearchPage/LoadingMoreTextBlock"
