@@ -5,6 +5,7 @@
                 xmlns:local="using:ExViewer.Views"
                 xmlns:controls="using:ExViewer.Controls"
                 Loading="page_Loading"
+                xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                 NavigationCacheMode="Enabled"
                 xmlns:xb="using:Opportunity.Converters.XBind"
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -143,6 +144,7 @@
                Header="OVERVIEW">
       <ListView SelectionMode="None"
                 Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                 Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                 ItemsSource="{x:Bind ViewModel.Status.Toplists, Mode=OneWay}"
                 ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}">
@@ -354,6 +356,7 @@
     <PivotItem x:Uid="Views/InfoPage/TaggingPivotItem"
                Header="TAGGING">
       <ListView x:Name="lvTagging"
+                ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                 Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                 Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                 SelectionMode="None"

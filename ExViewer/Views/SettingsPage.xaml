@@ -7,6 +7,7 @@
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:ExClient="using:ExClient"
+                xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                 xmlns:settings="using:ApplicationDataManager.Settings"
                 x:Class="ExViewer.Views.SettingsPage"
                 x:Name="page"
@@ -46,6 +47,7 @@
         <ListView ItemTemplateSelector="{StaticResource SettingTemplateSelector}"
                   ItemsSource="{x:Bind}"
                   Padding="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                  ext:ScrollViewerEx.VerticalScrollBarMargin="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
                   Margin="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}">
           <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">

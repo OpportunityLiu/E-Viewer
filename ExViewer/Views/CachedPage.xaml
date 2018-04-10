@@ -9,6 +9,7 @@
                 NavigationCacheMode="Enabled"
                 x:Name="page"
                 xmlns:controls="using:ExViewer.Controls"
+                xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                 mc:Ignorable="d">
   <Page.Resources>
     <MenuFlyout x:Name="mf_Gallery"
@@ -32,6 +33,7 @@
     <tk:PullToRefreshListView x:Name="lv"
                               Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                               Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                              ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                               RefreshCommand="{x:Bind ViewModel.Refresh}"
                               RelativePanel.AlignBottomWithPanel="True"
                               RelativePanel.AlignLeftWithPanel="True"
