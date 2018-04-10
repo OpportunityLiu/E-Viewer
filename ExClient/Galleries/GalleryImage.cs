@@ -108,32 +108,23 @@ namespace ExClient.Galleries
         {
             return Run(async token =>
             {
-                var loadPageUri = default(Uri);
-                if (this.failToken != null)
-                    loadPageUri = new Uri(this.PageUri, $"?{this.failToken}");
-                else
-                    loadPageUri = this.PageUri;
+                var loadPageUri = this.failToken is null
+                    ? this.PageUri
+                    : new Uri(this.PageUri, $"?{this.failToken}");
+
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri);
 
                 this.imageUri = doc.GetElementbyId("img").GetAttribute("src", default(Uri));
-                var originalNode = doc.GetElementbyId("i7").Element("a");
-                if (originalNode == null)
-                {
-                    this.originalImageUri = null;
-                }
-                else
-                {
-                    this.originalImageUri = originalNode.GetAttribute("href", default(Uri));
-                }
+                this.originalImageUri = doc.GetElementbyId("i7").Element("a")?.GetAttribute("href", default(Uri));
                 var hashNode = doc.GetElementbyId("i6").Element("a");
                 this.ImageHash = SHA1Value.Parse(hashMatcher.Match(hashNode.GetAttribute("href", "")).Groups[1].Value);
                 var loadFail = doc.GetElementbyId("loadfail").GetAttribute("onclick", "");
                 var oft = this.failToken;
                 var nft = failTokenMatcher.Match(loadFail).Groups[1].Value;
                 if (oft == null)
-                    this.failToken = $"nl={nft}";
+                    this.failToken = "nl=" + nft;
                 else
-                    this.failToken = $"{oft}&nl={nft}";
+                    this.failToken = oft + "&nl=" + nft;
             });
         }
 
@@ -147,8 +138,6 @@ namespace ExClient.Galleries
         }
 
         private Uri thumbUri;
-
-        private readonly WeakReference<ImageSource> thumb = new WeakReference<ImageSource>(null);
 
         protected static HttpClient ThumbClient { get; } = new HttpClient();
 
@@ -190,6 +179,7 @@ namespace ExClient.Galleries
             });
         }
 
+        private readonly WeakReference<ImageSource> thumb = new WeakReference<ImageSource>(null);
         public virtual ImageSource Thumb
         {
             get
@@ -212,9 +202,12 @@ namespace ExClient.Galleries
             => this.imageKey == 0 ? null : new Uri(Client.Current.Uris.RootUri, $"s/{this.imageKey.ToTokenString()}/{Owner.ID}-{PageID}");
 
         private ulong imageKey;
-        public ulong ImageKey { get => this.imageKey; set => Set(nameof(PageUri), ref this.imageKey, value); }
+        public ulong ImageKey { get => this.imageKey; private set => Set(nameof(PageUri), ref this.imageKey, value); }
 
         private SHA1Value imageHash;
+        /// <summary>
+        /// SHA-1 value for original image file.
+        /// </summary>
         public SHA1Value ImageHash
         {
             get => this.imageHash;

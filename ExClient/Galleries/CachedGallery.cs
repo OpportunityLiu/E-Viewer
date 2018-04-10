@@ -82,7 +82,6 @@ namespace ExClient.Galleries
         {
             return Task.Run(async () =>
             {
-                var lc = 0;
                 using (var db = new GalleryDb())
                 {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -94,15 +93,8 @@ namespace ExClient.Galleries
                     {
                         await this[item.PageId - 1].PopulateCachedImageAsync(item, item.Image);
                         this.LoadedItems[item.PageId - 1] = true;
-                        lc++;
                     }
                 }
-                if (lc == Count)
-                    try
-                    {
-                        await RefreshMetaDataAsync();
-                    }
-                    catch { }
             }).AsAsyncAction();
         }
 

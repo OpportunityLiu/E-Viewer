@@ -42,7 +42,7 @@ namespace ExViewer.Controls
             public Visibility IsVoteDownVisible(TagState state) => CanVoteDown(state) ? Visibility.Visible : Visibility.Collapsed;
             public Visibility IsVoteWithdrawVisible(TagState state) => CanVoteWithdraw(state) ? Visibility.Visible : Visibility.Collapsed;
 
-            public Command<string> CopyContent { get; } = Command.Create<string>((s, c) =>
+            public Command<string> CopyContent { get; } = Command<string>.Create((s, c) =>
             {
                 var data = new DataPackage();
                 data.SetText(c);
@@ -51,30 +51,30 @@ namespace ExViewer.Controls
             }, (s, c) => !string.IsNullOrEmpty(c));
 
             public AsyncCommand<GalleryTag> VoteUp { get; }
-                = AsyncCommand.Create<GalleryTag>((s, t) => t.VoteAsync(VoteState.Up), (s, t) => t != null);
+                = AsyncCommand<GalleryTag>.Create((s, t) => t.VoteAsync(VoteState.Up), (s, t) => t != null);
 
             public AsyncCommand<GalleryTag> VoteDown { get; }
-                = AsyncCommand.Create<GalleryTag>((s, t) => t.VoteAsync(VoteState.Down), (s, t) => t != null);
+                = AsyncCommand<GalleryTag>.Create((s, t) => t.VoteAsync(VoteState.Down), (s, t) => t != null);
 
             public AsyncCommand<GalleryTag> VoteWithdraw { get; }
-                = AsyncCommand.Create<GalleryTag>((s, t) => t.VoteAsync(VoteState.Default), (s, t) => t != null);
+                = AsyncCommand<GalleryTag>.Create((s, t) => t.VoteAsync(VoteState.Default), (s, t) => t != null);
 
             private static EhWikiDialog ewd;
-            public Command<GalleryTag> GoToDefination { get; } = Command.Create<GalleryTag>(async (s, t) =>
+            public Command<GalleryTag> GoToDefination { get; } = Command<GalleryTag>.Create(async (s, t) =>
             {
                 var dialog = System.Threading.LazyInitializer.EnsureInitialized(ref ewd);
                 dialog.WikiTag = t.Content;
                 await dialog.ShowAsync();
             }, (s, t) => t?.Content.Content != null);
 
-            public Command<GalleryTag> Search { get; } = Command.Create<GalleryTag>(async (s, t) =>
+            public Command<GalleryTag> Search { get; } = Command<GalleryTag>.Create(async (s, t) =>
             {
                 var vm = SearchVM.GetVM(t.Content.Search());
                 await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery.ToString());
             }, (s, t) => t?.Content.Content != null);
 
             private static readonly char[] commas = ",՝،߸፣᠂⸲⸴⹁꘍꛵᠈꓾ʻʽ、﹐，﹑､︐︑".ToCharArray();
-            public AsyncCommand<string> SubmitTag { get; } = AsyncCommand.Create<string>(async (sender, text) =>
+            public AsyncCommand<string> SubmitTag { get; } = AsyncCommand<string>.Create(async (sender, text) =>
             {
                 var that = (TagVM)sender.Tag;
                 var tagc = that.Tags;
@@ -131,7 +131,7 @@ namespace ExViewer.Controls
             if (this.asbNewTags != null)
                 this.asbNewTags.Visibility = Visibility.Collapsed;
             this.btnStartNew.Visibility = Visibility.Visible;
-            if (this.asbNewTags == null) 
+            if (this.asbNewTags == null)
                 return;
             this.asbNewTags.Text = "";
             TagSuggestionService.IncreaseStateCode(this.asbNewTags);

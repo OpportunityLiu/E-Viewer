@@ -51,7 +51,7 @@ namespace ExViewer.ViewModels
         private SearchVM(CategorySearchResult searchResult)
             : base(searchResult) { }
 
-        public override Command<string> Search { get; } = Command.Create<string>(async (sender, queryText) =>
+        public override Command<string> Search { get; } = Command<string>.Create(async (sender, queryText) =>
         {
             var that = (SearchVM)sender.Tag;
             if (SettingCollection.Current.SaveLastSearch)

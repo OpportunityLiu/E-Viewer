@@ -88,8 +88,8 @@ namespace ExViewer.Settings
                 SetRoaming(value);
                 Client.Current.Settings.PropertyChanged -= this.ClientSettings_PropertyChanged;
                 Client.Current.Host = value ? HostType.ExHentai : HostType.EHentai;
-                Client.Current.Settings.PropertyChanged += this.ClientSettings_PropertyChanged;
                 this.ClientSettings_PropertyChanged(Client.Current.Settings, new System.ComponentModel.PropertyChangedEventArgs(null));
+                Client.Current.Settings.PropertyChanged += this.ClientSettings_PropertyChanged;
             }
         }
 
