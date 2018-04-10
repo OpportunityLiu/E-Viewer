@@ -231,7 +231,7 @@ namespace ExViewer.Views
                     return;
                 if (content == null)
                     throw new ArgumentNullException(nameof(content));
-                DispatcherHelper.BeginInvokeOnUIThread(() =>
+                root.Dispatcher.Begin(() =>
                 {
                     if (source != null && source != root.fm_inner.Content?.GetType())
                         return;
@@ -275,7 +275,7 @@ namespace ExViewer.Views
             {
                 return Run(async token =>
                 {
-                    await DispatcherHelper.Yield();
+                    await CoreApplication.MainView.Dispatcher.YieldIdle();
                     var succeed = await new LogOnDialog().ShowAsync() == ContentDialogResult.Primary && !Client.Current.NeedLogOn;
                     Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (succeed ? "Succeed" : "Failed") });
                     UpdateUserInfo(succeed);
@@ -312,7 +312,7 @@ namespace ExViewer.Views
             public static void TrackAsyncAction(IAsyncAction action)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(EnableView);
+                action.Completed = (s, e) => root.Dispatcher.Begin(EnableView);
             }
 
             public static void TrackAsyncAction(IAsyncActionWithProgress<double> action)
@@ -323,14 +323,14 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<TProgress>(IAsyncActionWithProgress<TProgress> action, Func<TProgress, double> progressConverter)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(EnableView);
-                action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
+                action.Completed = (s, e) => root.Dispatcher.Begin(EnableView);
+                action.Progress = (s, p) => root.Dispatcher.Begin(() => DisableView(progressConverter(p)));
             }
 
             public static void TrackAsyncAction<T>(IAsyncOperation<T> action)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(EnableView);
+                action.Completed = (s, e) => root.Dispatcher.Begin(EnableView);
             }
 
             public static void TrackAsyncAction<T>(IAsyncOperationWithProgress<T, double> action)
@@ -341,14 +341,14 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<T, TProgress>(IAsyncOperationWithProgress<T, TProgress> action, Func<TProgress, double> progressConverter)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(EnableView);
-                action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
+                action.Completed = (s, e) => root.Dispatcher.Begin(EnableView);
+                action.Progress = (s, p) => root.Dispatcher.Begin(() => DisableView(progressConverter(p)));
             }
 
             public static void TrackAsyncAction(IAsyncAction action, AsyncActionCompletedHandler completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(() =>
+                action.Completed = (s, e) => root.Dispatcher.Begin(() =>
                 {
                     EnableView();
                     completed(s, e);
@@ -363,18 +363,18 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<TProgress>(IAsyncActionWithProgress<TProgress> action, Func<TProgress, double> progressConverter, AsyncActionWithProgressCompletedHandler<TProgress> completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(() =>
+                action.Completed = (s, e) => root.Dispatcher.Begin(() =>
                 {
                     EnableView();
                     completed(s, e);
                 });
-                action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
+                action.Progress = (s, p) => root.Dispatcher.Begin(() => DisableView(progressConverter(p)));
             }
 
             public static void TrackAsyncAction<T>(IAsyncOperation<T> action, AsyncOperationCompletedHandler<T> completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(() =>
+                action.Completed = (s, e) => root.Dispatcher.Begin(() =>
                 {
                     EnableView();
                     completed(s, e);
@@ -389,12 +389,12 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<T, TProgress>(IAsyncOperationWithProgress<T, TProgress> action, Func<TProgress, double> progressConverter, AsyncOperationWithProgressCompletedHandler<T, TProgress> completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => DispatcherHelper.BeginInvokeOnUIThread(() =>
+                action.Completed = (s, e) => root.Dispatcher.Begin(() =>
                 {
                     EnableView();
                     completed(s, e);
                 });
-                action.Progress = (s, p) => DispatcherHelper.BeginInvokeOnUIThread(() => DisableView(progressConverter(p)));
+                action.Progress = (s, p) => root.Dispatcher.Begin(() => DisableView(progressConverter(p)));
             }
 
             public static bool ViewEnabled { get; private set; } = true;

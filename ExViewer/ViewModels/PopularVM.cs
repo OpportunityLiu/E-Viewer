@@ -21,7 +21,7 @@ namespace ExViewer.ViewModels
 
         public Command Refresh { get; } = Command.Create(sender => ((PopularVM)sender.Tag).Galleries.Clear());
 
-        public Command<Gallery> Open { get; } = Command.Create<Gallery>(async (sender, g) =>
+        public Command<Gallery> Open { get; } = Command<Gallery>.Create(async (sender, g) =>
         {
             GalleryVM.GetVM(g);
             await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);

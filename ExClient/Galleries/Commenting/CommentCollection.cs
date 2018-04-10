@@ -20,11 +20,12 @@ namespace ExClient.Galleries.Commenting
         public Gallery Owner { get; }
 
         private bool isLoaded;
-
         public bool IsLoaded
         {
-            get => this.isLoaded;
-            private set => Set(nameof(IsEmpty), ref this.isLoaded, value);
+            get => this.isLoaded; private set
+            {
+                var r = Set(nameof(IsEmpty), ref this.isLoaded, value);
+            }
         }
 
         public bool IsEmpty => this.Count == 0 && this.IsLoaded;

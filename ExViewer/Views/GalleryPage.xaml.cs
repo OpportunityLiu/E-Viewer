@@ -112,7 +112,7 @@ namespace ExViewer.Views
 
         private void spContent_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch && this.interactionSource != null)
             {
                 this.interactionSource.TryRedirectForManipulation(e.GetCurrentPoint(this.spContent));
                 this.isGdInfoHideDef = null;

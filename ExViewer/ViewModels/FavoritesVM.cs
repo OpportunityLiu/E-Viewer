@@ -42,7 +42,7 @@ namespace ExViewer.ViewModels
         private FavoritesVM(FavoritesSearchResult searchResult)
             : base(searchResult) { }
 
-        public override Command<string> Search { get; } = Command.Create<string>(async (sender, queryText) =>
+        public override Command<string> Search { get; } = Command<string>.Create(async (sender, queryText) =>
         {
             var that = (FavoritesVM)sender.Tag;
             var cat = that.category;

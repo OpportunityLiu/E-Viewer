@@ -12,6 +12,7 @@
                 xmlns:db="using:ExViewer.Database"
                 xmlns:con="using:Opportunity.Converters"
                 xmlns:tcon="using:Opportunity.Converters.Typed"
+                xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                 Loading="root_Loading"
                 Unloaded="root_Unloaded"
                 mc:Ignorable="d"
@@ -32,7 +33,7 @@
                                           IsLabelVisible="True" />
     </DataTemplate>
   </Page.Resources>
-  <Grid >
+  <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition />
@@ -42,6 +43,7 @@
                               RefreshRequested="lv_RefreshRequested"
                               Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                               Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                              ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                               ItemsSource="{x:Bind ViewModel.SearchResult, Mode=OneWay}"
                               ContinuumNavigationTransitionInfo.ExitElementContainer="True"
                               Style="{StaticResource GalleryListViewStyle}"
@@ -49,7 +51,7 @@
                               ContextRequested="lv_ContextRequested"
                               ContextCanceled="lv_ContextCanceled">
       <tk:PullToRefreshListView.RefreshIndicatorContent>
-        <tk:PullToRefreshIndicator />
+        <controls:PullToRefreshIndicator />
       </tk:PullToRefreshListView.RefreshIndicatorContent>
       <ListView.ItemTemplate>
         <DataTemplate xmlns:c="using:ExClient.Galleries"
