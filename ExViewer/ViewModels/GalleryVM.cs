@@ -100,7 +100,7 @@ namespace ExViewer.ViewModels
                     rt.OnPropertyChanged(nameof(RatingStatus.UserScore));
                     throw;
                 }
-            }, (c, s) => ((GalleryVM)c.Tag).gallery?.Rating != null && s != Score.NotSet);
+            }, (c, s) => ((GalleryVM)c.Tag).gallery?.Rating != null && s != Score.NotSet && ((GalleryVM)c.Tag).gallery.Rating.UserScore != s);
             Commands[nameof(GoToLatestRevision)] = Command<RevisionCollection>.Create(async (sender, c) =>
             {
                 var info = c.DescendantsInfo.Last().Gallery;
