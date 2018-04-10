@@ -5,6 +5,7 @@ using ExViewer.ViewModels;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Security.Credentials.UI;
 using Windows.Storage;
 using Windows.UI.Core;
@@ -162,7 +163,7 @@ namespace ExViewer.Views
                 ExClient.HentaiVerse.HentaiVerseInfo.MonsterEncountered += (s, e) =>
                 {
                     if (SettingCollection.Current.OpenHVOnMonsterEncountered)
-                        Opportunity.MvvmUniverse.DispatcherHelper.BeginInvokeOnUIThread(async () =>
+                        CoreApplication.MainView.Dispatcher.Begin(async () =>
                         {
                             await Windows.System.Launcher.LaunchUriAsync(e.Uri);
                         });

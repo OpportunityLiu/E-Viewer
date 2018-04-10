@@ -27,11 +27,11 @@ namespace ExClient.Settings
             this.userList.VectorChanged += this.userList_VectorChanged;
         }
 
-
         public event BindableVectorChangedEventHandler VectorChanged;
         private void userList_VectorChanged(IBindableObservableVector vector, object e)
         {
             this.VectorChanged?.Invoke(this, e);
+            this.OnPropertyChanged(nameof(Count));
         }
 
         internal override void DataChanged(Dictionary<string, string> settings)

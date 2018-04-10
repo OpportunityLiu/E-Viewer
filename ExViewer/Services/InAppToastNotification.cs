@@ -19,7 +19,7 @@ namespace ExViewer.Services
     {
         public IAsyncOperation<bool> NotifyAsync(object data)
         {
-            if (RootControl.RootController.Available)
+            if (!RootControl.RootController.Available)
                 return AsyncOperation<bool>.CreateCompleted(false);
             switch (data)
             {

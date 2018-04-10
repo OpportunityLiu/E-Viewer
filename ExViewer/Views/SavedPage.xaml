@@ -7,6 +7,8 @@
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 NavigationCacheMode="Enabled"
+                xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+                xmlns:controls="using:ExViewer.Controls"
                 x:Name="page"
                 mc:Ignorable="d">
   <Page.Resources>
@@ -31,6 +33,7 @@
     <tk:PullToRefreshListView x:Name="lv"
                               Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                               Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                              ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                               RefreshCommand="{x:Bind ViewModel.Refresh}"
                               RelativePanel.AlignBottomWithPanel="True"
                               RelativePanel.AlignLeftWithPanel="True"
@@ -42,7 +45,7 @@
                               ContextCanceled="lv_ContextCanceled"
                               ContextRequested="lv_ContextRequested">
       <tk:PullToRefreshListView.RefreshIndicatorContent>
-        <tk:PullToRefreshIndicator />
+        <controls:PullToRefreshIndicator />
       </tk:PullToRefreshListView.RefreshIndicatorContent>
       <ListView.ItemTemplate>
         <DataTemplate xmlns:c="using:ExClient.Galleries"

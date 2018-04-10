@@ -26,7 +26,7 @@ namespace ExViewer.ViewModels
 
         public string SearchQuery => this.SearchResult.SearchUri.ToString();
 
-        public Command<Gallery> Open { get; } = Command.Create<Gallery>(async (sender, g) =>
+        public Command<Gallery> Open { get; } = Command<Gallery>.Create(async (sender, g) =>
         {
             var that = (SearchResultVM<T>)sender.Tag;
             that.SelectedGallery = g;
@@ -63,7 +63,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        internal Command<SearchHistory> DeleteHistory { get; } = Command.Create<SearchHistory>((sender, sh) =>
+        internal Command<SearchHistory> DeleteHistory { get; } = Command<SearchHistory>.Create((sender, sh) =>
         {
             using (var db = new SearchHistoryDb())
             {

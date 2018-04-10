@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Storage;
@@ -14,6 +15,7 @@ using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.UserProfile;
 using Windows.UI;
+using Windows.UI.Core;
 
 namespace ExViewer.Helpers
 {
@@ -162,7 +164,7 @@ namespace ExViewer.Helpers
                     , async operation =>
                     {
                         var uri = await operation.Data.GetWebLinkAsync();
-                        await DispatcherHelper.YieldIdle();
+                        await CoreApplication.MainView.Dispatcher.YieldIdle();
                         await Launcher.LaunchUriAsync(uri, new LauncherOptions { IgnoreAppUriHandlers = true });
                         operation.ReportCompleted();
                     });
@@ -174,7 +176,7 @@ namespace ExViewer.Helpers
                     {
                         var data = operation.Data;
                         var pac = await DataProviderProxy.CreateAsync(data);
-                        await DispatcherHelper.YieldIdle();
+                        await CoreApplication.MainView.Dispatcher.YieldIdle();
                         Clipboard.SetContent(pac.View);
                         RootControl.RootController.SendToast(Strings.Resources.Sharing.CopyedToClipboard, null);
                         operation.ReportCompleted();
@@ -200,7 +202,7 @@ namespace ExViewer.Helpers
                             return;
                         // Only files in localfolder can be set as background.
                         file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"Img_{file.Name}", NameCollisionOption.ReplaceExisting);
-                        await DispatcherHelper.YieldIdle();
+                        await CoreApplication.MainView.Dispatcher.YieldIdle();
                         var succeeded = await User​Profile​Personalization​Settings.Current.TrySetWallpaperImageAsync(file);
                         if (succeeded)
                             RootControl.RootController.SendToast(Strings.Resources.Sharing.SetWallpaperSucceeded, null);

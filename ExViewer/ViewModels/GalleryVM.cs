@@ -25,6 +25,7 @@ using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Streams;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
@@ -81,226 +82,212 @@ namespace ExViewer.ViewModels
             return Cache.GetOrCreateAsync(gInfo);
         }
 
-        private GalleryVM() { }
+        private GalleryVM()
+        {
+            Commands[nameof(Rate)] = AsyncCommand<Score>.Create(async (c, s) =>
+            {
+                var that = (GalleryVM)c.Tag;
+                var rt = that.gallery?.Rating;
+                if (rt is null || rt.UserScore == s)
+                    return;
+                try
+                {
+                    await rt.RatingAsync(s);
+                    return;
+                }
+                catch
+                {
+                    rt.OnPropertyChanged(nameof(RatingStatus.UserScore));
+                    throw;
+                }
+            }, (c, s) => ((GalleryVM)c.Tag).gallery?.Rating != null && s != Score.NotSet && ((GalleryVM)c.Tag).gallery.Rating.UserScore != s);
+            Commands[nameof(GoToLatestRevision)] = Command<RevisionCollection>.Create(async (sender, c) =>
+            {
+                var info = c.DescendantsInfo.Last().Gallery;
+                var load = GetVMAsync(info);
+                if (load.Status != AsyncStatus.Completed)
+                    RootControl.RootController.TrackAsyncAction(load, async (s, e) =>
+                    {
+                        await RootControl.RootController.Frame.Dispatcher.YieldIdle();
+                        await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
+                    });
+                else
+                    await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
+            }, (sender, c) => c != null && c.DescendantsInfo.Count != 0);
+            Commands[nameof(Share)] = Command<GalleryImage>.Create(async (sender, image) =>
+            {
+                var that = (GalleryVM)sender.Tag;
+                if (!ShareHandler.IsShareSupported)
+                {
+                    if (image == null)
+                        await Launcher.LaunchUriAsync(that.gallery.GalleryUri, new LauncherOptions { IgnoreAppUriHandlers = true });
+                    else
+                        await Launcher.LaunchUriAsync(image.PageUri, new LauncherOptions { IgnoreAppUriHandlers = true });
+                    return;
+                }
+                var gallery = that.gallery;
+                ShareHandler.Share(async (s, e) =>
+                {
+                    var deferral = e.Request.GetDeferral();
+                    try
+                    {
+                        var data = e.Request.Data;
+                        data.Properties.Title = gallery.GetDisplayTitle();
+                        data.Properties.Description = gallery.GetSecondaryTitle();
+                        if (image == null)
+                        {
+                            data.Properties.ContentSourceWebLink = gallery.GalleryUri;
+                            data.SetWebLink(gallery.GalleryUri);
+                            data.SetText(gallery.GalleryUri.ToString());
+                            if (gallery.Thumb != null)
+                            {
+                                var ms = new InMemoryRandomAccessStream();
+                                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
+                                encoder.SetSoftwareBitmap(gallery.Thumb);
+                                await encoder.FlushAsync();
+                                data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
+                                var firstImage = gallery.FirstOrDefault()?.ImageFile;
+                                if (firstImage != null)
+                                    data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
+                                else
+                                    data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
+                            }
+                            var imageFiles = gallery
+                                .Where(i => i.ImageFile != null)
+                                .Select(i => new { i.ImageFile, Name = $"{i.PageID}{i.ImageFile.FileType}" })
+                                .Where(f => f.ImageFile != null)
+                                .ToList();
+                            if (imageFiles.Count == 0)
+                                return;
+                            data.SetFolderProvider(imageFiles.Select(f => f.ImageFile), imageFiles.Select(f => f.Name), gallery.GetDisplayTitle());
+                        }
+                        else
+                        {
+                            data.Properties.ContentSourceWebLink = image.PageUri;
+                            data.SetWebLink(image.PageUri);
+                            data.SetText(image.PageUri.ToString());
+                            var imageFile = image.ImageFile;
+                            if (imageFile == null)
+                                return;
+                            var view = RandomAccessStreamReference.CreateFromFile(imageFile);
+                            data.SetBitmap(view);
+                            data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem));
+                            var fileName = $"{image.PageID}{imageFile.FileType}";
+                            data.SetFileProvider(imageFile, fileName);
+                        }
+                    }
+                    finally
+                    {
+                        deferral.Complete();
+                    }
+                });
+            }, (sender, image) => ((GalleryVM)sender.Tag).gallery != null);
+            Commands[nameof(Save)] = Command.Create(sender =>
+            {
+                var that = (GalleryVM)sender.Tag;
+                that.SaveStatus = OperationState.Started;
+                that.SaveProgress = -1;
+                var task = that.gallery.SaveAsync(SettingCollection.Current.GetStrategy());
+                task.Progress = (s, e) => that.SaveProgress = e.ImageLoaded * 100.0 / e.ImageCount;
+                task.Completed = (s, e) =>
+                {
+                    switch (e)
+                    {
+                    case AsyncStatus.Canceled:
+                    case AsyncStatus.Error:
+                        that.SaveStatus = OperationState.Failed;
+                        RootControl.RootController.SendToast(s.ErrorCode, null);
+                        break;
+                    case AsyncStatus.Completed:
+                        that.SaveStatus = OperationState.Completed;
+                        break;
+                    case AsyncStatus.Started:
+                        that.SaveStatus = OperationState.Started;
+                        break;
+                    }
+                    that.SaveProgress = 100;
+                };
+            }, sender => (sender.Tag is GalleryVM that) && that.SaveStatus != OperationState.Started && !(that.gallery is SavedGallery));
+            Commands[nameof(OpenImage)] = Command<GalleryImage>.Create(async (sender, image) =>
+            {
+                var that = (GalleryVM)sender.Tag;
+                that.View.MoveCurrentToPosition(image.PageID - 1);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), that.gallery.ID);
+            }, (sender, image) => image != null);
+            Commands[nameof(LoadOriginal)] = Command<GalleryImage>.Create(async (sender, image) =>
+            {
+                var that = (GalleryVM)sender.Tag;
+                try
+                {
+                    await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
+                }
+                catch (Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(ImagePage));
+                }
+            }, (sender, image) => image != null && !image.OriginalLoaded);
+            Commands[nameof(ReloadImage)] = Command<GalleryImage>.Create(async (sender, image) =>
+            {
+                var that = (GalleryVM)sender.Tag;
+                try
+                {
+                    if (image.OriginalLoaded)
+                        await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
+                    else
+                        await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), true);
+                }
+                catch (OperationCanceledException) { }
+                catch (Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(ImagePage));
+                }
+            }, (sender, image) => image != null);
+            Commands[nameof(SearchImage)] = Command<SHA1Value>.Create(async (sender, hash) =>
+            {
+                var that = (GalleryVM)sender.Tag;
+                var search = Client.Current.Search("", Category.All, Enumerable.Repeat(hash, 1), that.gallery.GetDisplayTitle());
+                var vm = SearchVM.GetVM(search);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
+            }, (sender, hash) => ((GalleryVM)sender.Tag).gallery != null && hash != default);
+            Commands[nameof(SearchUploader)] = Command.Create(async sender =>
+            {
+                var that = (GalleryVM)sender.Tag;
+                var search = Client.Current.Search(that.gallery.Uploader, null, SettingCollection.Current.DefaultSearchCategory);
+                var vm = SearchVM.GetVM(search);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
+            }, sender => ((GalleryVM)sender.Tag).gallery != null);
+            Commands[nameof(TorrentDownload)] = Command<TorrentInfo>.Create(async (sender, torrent) =>
+            {
+                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
+                try
+                {
+                    var file = await torrent.LoadTorrentAsync();
+                    if (torrentfolder == null)
+                        await loadTorrentFolder();
+                    await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
+                    if (!await Launcher.LaunchFileAsync(file))
+                        await Launcher.LaunchFolderAsync(torrentfolder);
+                    RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloaded(torrentfolder.Path), null);
+                }
+                catch (Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+                }
+            }, (sender, torrent) => torrent != null && torrent.TorrentUri != null);
+            Commands[nameof(AddComment)] = AsyncCommand.Create(async (sender) =>
+            {
+                var that = (GalleryVM)sender.Tag;
+                var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref GalleryVM.addCommentDialog);
+                addComment.Gallery = that.Gallery;
+                await addComment.ShowAsync();
+            }, sender => ((GalleryVM)sender.Tag).Gallery != null);
+        }
 
         private GalleryVM(Gallery gallery)
             : this()
         {
             this.Gallery = gallery;
         }
-
-        protected override IReadOnlyDictionary<string, System.Windows.Input.ICommand> Commands { get; }
-            = new Dictionary<string, System.Windows.Input.ICommand>
-            {
-                [nameof(Rate)] = AsyncCommand.Create<Score>(async (c, s) =>
-                {
-                    var that = (GalleryVM)c.Tag;
-                    var rt = that.gallery?.Rating;
-                    if (rt is null || rt.UserScore == s)
-                        return;
-                    try
-                    {
-                        await rt.RatingAsync(s);
-                        return;
-                    }
-                    catch
-                    {
-                        rt.OnPropertyChanged(nameof(RatingStatus.UserScore));
-                        throw;
-                    }
-                }, (c, s) => ((GalleryVM)c.Tag).gallery?.Rating != null),
-                [nameof(GoToLatestRevision)] = Command.Create<RevisionCollection>(async (sender, c) =>
-                {
-                    var info = c.DescendantsInfo.Last().Gallery;
-                    var load = GetVMAsync(info);
-                    if (load.Status != AsyncStatus.Completed)
-                        RootControl.RootController.TrackAsyncAction(load, async (s, e) =>
-                        {
-                            await DispatcherHelper.YieldIdle();
-                            await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
-                        });
-                    else
-                        await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
-                }, (sender, c) => c != null && c.DescendantsInfo.Count != 0),
-                [nameof(Share)] = Command.Create<GalleryImage>(async (sender, image) =>
-                {
-                    var that = (GalleryVM)sender.Tag;
-                    if (!ShareHandler.IsShareSupported)
-                    {
-                        if (image == null)
-                            await Launcher.LaunchUriAsync(that.gallery.GalleryUri, new LauncherOptions { IgnoreAppUriHandlers = true });
-                        else
-                            await Launcher.LaunchUriAsync(image.PageUri, new LauncherOptions { IgnoreAppUriHandlers = true });
-                        return;
-                    }
-                    var gallery = that.gallery;
-                    ShareHandler.Share(async (s, e) =>
-                    {
-                        var deferral = e.Request.GetDeferral();
-                        try
-                        {
-                            var data = e.Request.Data;
-                            data.Properties.Title = gallery.GetDisplayTitle();
-                            data.Properties.Description = gallery.GetSecondaryTitle();
-                            if (image == null)
-                            {
-                                data.Properties.ContentSourceWebLink = gallery.GalleryUri;
-                                data.SetWebLink(gallery.GalleryUri);
-                                data.SetText(gallery.GalleryUri.ToString());
-                                if (gallery.Thumb != null)
-                                {
-                                    var ms = new InMemoryRandomAccessStream();
-                                    var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
-                                    encoder.SetSoftwareBitmap(gallery.Thumb);
-                                    await encoder.FlushAsync();
-                                    data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
-                                    var firstImage = gallery.FirstOrDefault()?.ImageFile;
-                                    if (firstImage != null)
-                                        data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
-                                    else
-                                        data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
-                                }
-                                var imageFiles = gallery
-                                    .Where(i => i.ImageFile != null)
-                                    .Select(i => new { i.ImageFile, Name = $"{i.PageID}{i.ImageFile.FileType}" })
-                                    .Where(f => f.ImageFile != null)
-                                    .ToList();
-                                if (imageFiles.Count == 0)
-                                    return;
-                                data.SetFolderProvider(imageFiles.Select(f => f.ImageFile), imageFiles.Select(f => f.Name), gallery.GetDisplayTitle());
-                            }
-                            else
-                            {
-                                data.Properties.ContentSourceWebLink = image.PageUri;
-                                data.SetWebLink(image.PageUri);
-                                data.SetText(image.PageUri.ToString());
-                                var imageFile = image.ImageFile;
-                                if (imageFile == null)
-                                    return;
-                                var view = RandomAccessStreamReference.CreateFromFile(imageFile);
-                                data.SetBitmap(view);
-                                data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem));
-                                var fileName = $"{image.PageID}{imageFile.FileType}";
-                                data.SetFileProvider(imageFile, fileName);
-                            }
-                        }
-                        finally
-                        {
-                            deferral.Complete();
-                        }
-                    });
-                }, (sender, image) => ((GalleryVM)sender.Tag).gallery != null),
-                [nameof(Save)] = Command.Create(sender =>
-                {
-                    var that = (GalleryVM)sender.Tag;
-                    that.SaveStatus = OperationState.Started;
-                    that.SaveProgress = -1;
-                    var task = that.gallery.SaveAsync(SettingCollection.Current.GetStrategy());
-                    task.Progress = (s, e) =>
-                    {
-                        that.SaveProgress = e.ImageLoaded * 100.0 / e.ImageCount;
-                    };
-                    task.Completed = (s, e) =>
-                    {
-                        switch (e)
-                        {
-                        case AsyncStatus.Canceled:
-                        case AsyncStatus.Error:
-                            that.SaveStatus = OperationState.Failed;
-                            RootControl.RootController.SendToast(s.ErrorCode, null);
-                            break;
-                        case AsyncStatus.Completed:
-                            that.SaveStatus = OperationState.Completed;
-                            break;
-                        case AsyncStatus.Started:
-                            that.SaveStatus = OperationState.Started;
-                            break;
-                        }
-                        that.SaveProgress = 100;
-                    };
-                }, sender =>
-                {
-                    var that = (GalleryVM)sender.Tag;
-                    if (that.SaveStatus == OperationState.Started)
-                        return false;
-                    if (that.gallery is SavedGallery)
-                        return false;
-                    return true;
-                }),
-                [nameof(OpenImage)] = Command.Create<GalleryImage>(async (sender, image) =>
-                {
-                    var that = (GalleryVM)sender.Tag;
-                    that.View.MoveCurrentToPosition(image.PageID - 1);
-                    await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), that.gallery.ID);
-                }, (sender, image) => image != null),
-                [nameof(LoadOriginal)] = Command.Create<GalleryImage>(async (sender, image) =>
-                {
-                    var that = (GalleryVM)sender.Tag;
-                    try
-                    {
-                        await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        RootControl.RootController.SendToast(ex, typeof(ImagePage));
-                    }
-                }, (sender, image) => image != null && !image.OriginalLoaded),
-                [nameof(ReloadImage)] = Command.Create<GalleryImage>(async (sender, image) =>
-                {
-                    var that = (GalleryVM)sender.Tag;
-                    try
-                    {
-                        if (image.OriginalLoaded)
-                            await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
-                        else
-                            await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), true);
-                    }
-                    catch (OperationCanceledException) { }
-                    catch (Exception ex)
-                    {
-                        RootControl.RootController.SendToast(ex, typeof(ImagePage));
-                    }
-                }, (sender, image) => image != null),
-                [nameof(SearchImage)] = Command.Create<SHA1Value>(async (sender, hash) =>
-                {
-                    var that = (GalleryVM)sender.Tag;
-                    var search = Client.Current.Search("", Category.All, Enumerable.Repeat(hash, 1), that.gallery.GetDisplayTitle());
-                    var vm = SearchVM.GetVM(search);
-                    await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
-                }, (sender, hash) => ((GalleryVM)sender.Tag).gallery != null && hash != default),
-                [nameof(SearchUploader)] = Command.Create(async sender =>
-                {
-                    var that = (GalleryVM)sender.Tag;
-                    var search = Client.Current.Search(that.gallery.Uploader, null, SettingCollection.Current.DefaultSearchCategory);
-                    var vm = SearchVM.GetVM(search);
-                    await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
-                }, sender => ((GalleryVM)sender.Tag).gallery != null),
-                [nameof(TorrentDownload)] = Command.Create<TorrentInfo>(async (sender, torrent) =>
-                {
-                    RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
-                    try
-                    {
-                        var file = await torrent.LoadTorrentAsync();
-                        if (torrentfolder == null)
-                            await loadTorrentFolder();
-                        await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
-                        if (!await Launcher.LaunchFileAsync(file))
-                            await Launcher.LaunchFolderAsync(torrentfolder);
-                        RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloaded(torrentfolder.Path), null);
-                    }
-                    catch (Exception ex)
-                    {
-                        RootControl.RootController.SendToast(ex, typeof(GalleryPage));
-                    }
-                }, (sender, torrent) => torrent != null && torrent.TorrentUri != null),
-                [nameof(AddComment)] = AsyncCommand.Create(async (sender) =>
-                {
-                    var that = (GalleryVM)sender.Tag;
-                    var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref GalleryVM.addCommentDialog);
-                    addComment.Gallery = that.Gallery;
-                    await addComment.ShowAsync();
-                }, sender => ((GalleryVM)sender.Tag).Gallery != null),
-            };
 
         private static AddCommentDialog addCommentDialog;
 
@@ -409,7 +396,7 @@ namespace ExViewer.ViewModels
             PrimaryButtonCommand = Opportunity.MvvmUniverse.Commands.Predefined.DataTransferCommands.SetClipboard,
             CloseButtonText = Strings.Resources.Views.QRCodeDialog.CloseButtonText,
         };
-        public Command<string> OpenQRCode { get; } = Command.Create<string>(async (sender, code) =>
+        public Command<string> OpenQRCode { get; } = Command<string>.Create(async (sender, code) =>
         {
             var opened = false;
             try

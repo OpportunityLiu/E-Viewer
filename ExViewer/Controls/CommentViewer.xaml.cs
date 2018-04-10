@@ -51,23 +51,23 @@ namespace ExViewer.Controls
                 }
             }
 
-            public AsyncCommand<Comment> Translate { get; } = AsyncCommand.Create<Comment>(async (s, c) =>
+            public AsyncCommand<Comment> Translate { get; } = AsyncCommand<Comment>.Create(async (s, c) =>
             {
                 var r = await c.TranslateAsync(Settings.SettingCollection.Current.CommentTranslationCode);
                 ((CommentVM)s.Tag).TranslatedContent = r;
             }, (s, c) => c != null && ((CommentVM)s.Tag).translated == null);
 
             public AsyncCommand<Comment> VoteUp { get; }
-                = AsyncCommand.Create<Comment>((s, c) => c.VoteAsync(ExClient.Api.VoteState.Up), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteUp(c.Status));
+                = AsyncCommand<Comment>.Create((s, c) => c.VoteAsync(ExClient.Api.VoteState.Up), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteUp(c.Status));
 
             public AsyncCommand<Comment> VoteDown { get; }
-                = AsyncCommand.Create<Comment>((s, c) => c.VoteAsync(ExClient.Api.VoteState.Down), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteDown(c.Status));
+                = AsyncCommand<Comment>.Create((s, c) => c.VoteAsync(ExClient.Api.VoteState.Down), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteDown(c.Status));
 
             public AsyncCommand<Comment> VoteWithdraw { get; }
-                = AsyncCommand.Create<Comment>((s, c) => c.VoteAsync(ExClient.Api.VoteState.Default), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteWithdraw(c.Status));
+                = AsyncCommand<Comment>.Create((s, c) => c.VoteAsync(ExClient.Api.VoteState.Default), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteWithdraw(c.Status));
 
             private static EditCommentDialog editDialog;
-            public Command<Comment> Edit { get; } = Command.Create<Comment>(async (s, c) =>
+            public Command<Comment> Edit { get; } = Command<Comment>.Create(async (s, c) =>
             {
                 var dialog = System.Threading.LazyInitializer.EnsureInitialized(ref editDialog);
                 dialog.EditableComment = c;
@@ -75,7 +75,7 @@ namespace ExViewer.Controls
             }, (s, c) => c != null && c.CanEdit);
 
             private static ReplyCommentDialog replyDialog;
-            public Command<Comment> Reply { get; } = Command.Create<Comment>(async (s, c) =>
+            public Command<Comment> Reply { get; } = Command<Comment>.Create(async (s, c) =>
             {
                 var dialog = System.Threading.LazyInitializer.EnsureInitialized(ref replyDialog);
                 dialog.ReplyingComment = c;

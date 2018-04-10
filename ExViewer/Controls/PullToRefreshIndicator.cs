@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using Microsoft.Toolkit.Uwp.UI.Controls;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace Microsoft.Toolkit.Uwp.UI.Controls
+namespace ExViewer.Controls
 {
     public class PullToRefreshIndicator : Control
     {
@@ -37,7 +38,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Controls
             }
         }
 
-        private void PullToRefreshIndicator_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void PullToRefreshIndicator_Unloaded(object sender, RoutedEventArgs e)
         {
             ((PullToRefreshIndicator)sender).parent = null;
         }
