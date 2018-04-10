@@ -261,7 +261,6 @@
     <Border Grid.Row="1">
       <StackPanel x:Name="spContent"
                   Background="Transparent"
-                  PointerPressed="spContent_PointerPressed"
                   GotFocus="spContent_GotFocus"
                   PointerWheelChanged="spContent_PointerWheelChanged">
         <Grid x:Name="gdInfo"

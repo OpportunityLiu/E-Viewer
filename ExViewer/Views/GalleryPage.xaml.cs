@@ -37,6 +37,7 @@ namespace ExViewer.Views
         public GalleryPage()
         {
             this.InitializeComponent();
+            this.spContent.AddHandler(PointerPressedEvent, new PointerEventHandler(this.spContent_PointerPressed), true);
         }
 
         private void spContent_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -112,7 +113,7 @@ namespace ExViewer.Views
 
         private void spContent_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch && this.interactionSource != null)
             {
                 this.interactionSource.TryRedirectForManipulation(e.GetCurrentPoint(this.spContent));
                 this.isGdInfoHideDef = null;

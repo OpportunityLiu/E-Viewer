@@ -273,9 +273,9 @@ namespace ExViewer.Views
 
             public static IAsyncOperation<bool> RequestLogOn()
             {
-                return root.Dispatcher.RunAsync(async () =>
+                return Run(async token =>
                 {
-                    await root.Dispatcher.Yield();
+                    await CoreApplication.MainView.Dispatcher.YieldIdle();
                     var succeed = await new LogOnDialog().ShowAsync() == ContentDialogResult.Primary && !Client.Current.NeedLogOn;
                     Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (succeed ? "Succeed" : "Failed") });
                     UpdateUserInfo(succeed);

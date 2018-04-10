@@ -170,7 +170,11 @@ namespace ExViewer.Views
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            this.wv.MinWidth = Math.Min(availableSize.Width - 144, 700);
+            var ww = Window.Current.Bounds.Width;
+            if (ww > 400)
+                this.wv.MinWidth = Math.Min(availableSize.Width - 144, 700);
+            else
+                this.wv.MinWidth = 0;
             return base.MeasureOverride(availableSize);
         }
 
