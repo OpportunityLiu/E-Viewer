@@ -213,27 +213,51 @@ namespace ExViewer.Views
             if (reset)
             {
                 changeViewTo(false, true);
-                this.gv.ScrollIntoView(this.ViewModel.Gallery.FirstOrDefault());
-                this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
+
+                this.gv.ScrollIntoView(this.ViewModel.Gallery.First());
+
+                if (this.ViewModel.Gallery.Comments.IsLoaded)
+                    this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
+                else
+                {
+                    void handler(object s, System.ComponentModel.PropertyChangedEventArgs args)
+                    {
+                        var sender = (ExClient.Galleries.Commenting.CommentCollection)s;
+                        if (string.IsNullOrEmpty(args.PropertyName) || args.PropertyName == nameof(sender.IsLoaded))
+                        {
+                            sender.PropertyChanged -= handler;
+                            if (!sender.IsEmpty)
+                                this.lv_Comments.ScrollIntoView(sender[0]);
+                        }
+                    }
+                    this.ViewModel.Gallery.Comments.PropertyChanged += handler;
+                }
+
                 this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
+
                 await Task.Delay(33);
+
                 this.pv.Focus(FocusState.Programmatic);
                 this.pv.SelectedIndex = 0;
             }
             else if (restore)
             {
-                changeViewTo(true, true);
-                this.gv.ScrollIntoView(this.ViewModel.View.CurrentItem);
                 var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
+                changeViewTo(true, true);
+                if (this.ViewModel.View.CurrentItem is null)
+                    this.ViewModel.View.MoveCurrentToFirst();
+                this.gv.ScrollIntoView(this.ViewModel.View.CurrentItem, ScrollIntoViewAlignment.Leading);
+                await Dispatcher.Yield(CoreDispatcherPriority.Low);
+                var container = (Control)this.gv.ContainerFromIndex(idx);
                 if (animation != null)
                 {
-                    if (this.pv.SelectedIndex == 0)
+                    if (this.pv.SelectedIndex == 0 && container != null)
                         await this.gv.TryStartConnectedAnimationAsync(animation, this.ViewModel.View.CurrentItem, "Image");
                     else
                         animation.Cancel();
                 }
                 await Dispatcher.YieldIdle();
-                var container = (Control)this.gv.ContainerFromIndex(idx);
+                container = (Control)this.gv.ContainerFromIndex(idx);
                 if (container != null && this.pv.SelectedIndex == 0)
                 {
                     container.Focus(FocusState.Programmatic);

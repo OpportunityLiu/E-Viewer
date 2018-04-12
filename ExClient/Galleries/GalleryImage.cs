@@ -143,10 +143,9 @@ namespace ExClient.Galleries
 
         private void loadThumb()
         {
-            CoreApplication.MainView.Dispatcher.Begin(async () =>
+            CoreApplication.MainView.Dispatcher.BeginIdle(async d =>
             {
                 var img = new BitmapImage();
-                await img.Dispatcher.YieldIdle();
                 try
                 {
                     if (this.imageFile != null)
