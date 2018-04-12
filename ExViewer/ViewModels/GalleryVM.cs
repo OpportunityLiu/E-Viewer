@@ -323,6 +323,7 @@ namespace ExViewer.ViewModels
                 View = value?.CreateView();
                 if (View != null)
                 {
+                    View.MoveCurrentToPrevious();
                     View.CurrentChanged += this.View_CurrentChanged;
                 }
                 Set(nameof(View), ref this.gallery, value);

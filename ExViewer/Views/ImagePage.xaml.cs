@@ -54,13 +54,17 @@ namespace ExViewer.Views
 
             base.OnNavigatedTo(e);
 
+            var oldView = this.ViewModel?.View;
+            var oldIndex = oldView?.CurrentPosition ?? default;
+
             this.ViewModel = GalleryVM.GetVM((long)e.Parameter);
 
             var index = this.ViewModel.View.CurrentPosition;
             if (index < 0)
+            {
+                this.ViewModel.View.MoveCurrentToFirst();
                 index = 0;
-            this.fv.ItemsSource = this.ViewModel.View;
-            this.fv.SelectedIndex = index;
+            }
             this.imgConnect.Source = this.ViewModel.Gallery[index].Thumb;
             var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
             var animationSucceed = false;
@@ -75,6 +79,8 @@ namespace ExViewer.Views
             }
 
             await Dispatcher.YieldIdle();
+            this.fv.ItemsSource = this.ViewModel.View;
+            oldView?.MoveCurrentToPosition(oldIndex);
             this.fv.SelectedIndex = index;
             setScale();
             if (!animationSucceed)
@@ -95,7 +101,6 @@ namespace ExViewer.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             this.GetNavigator().Handlers.Remove(this);
-
             base.OnNavigatingFrom(e);
 
             if (!this.cbVisible)

@@ -23,6 +23,7 @@
                 Loaded="page_Loaded"
                 Unloaded="page_Unloaded"
                 NavigationCacheMode="Enabled"
+                ext:FrameworkElementExtensions.EnableActualSizeBinding="True"
                 mc:Ignorable="d">
   <Page.Transitions>
     <TransitionCollection>
@@ -270,7 +271,7 @@
               Background="{ThemeResource CommandBarBackground}"
               SizeChanged="gdInfo_SizeChanged"
               MinHeight="100"
-              MaxHeight="{x:Bind caculateGdInfoMaxHeight(ActualHeight, VisibleBounds), Mode=OneWay}">
+              MaxHeight="{x:Bind caculateGdInfoMaxHeight(page.(ext:FrameworkElementExtensions.ActualHeight), VisibleBounds), Mode=OneWay}">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
@@ -308,7 +309,7 @@
           </Grid>
         </Grid>
         <Grid x:Name="gd_Pivot"
-              Height="{x:Bind caculateGdPivotHeight(ActualHeight, VisibleBounds), Mode=OneWay}">
+              Height="{x:Bind caculateGdPivotHeight(page.(ext:FrameworkElementExtensions.ActualHeight), VisibleBounds), Mode=OneWay}">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
