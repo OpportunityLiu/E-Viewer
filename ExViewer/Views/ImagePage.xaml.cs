@@ -75,6 +75,7 @@ namespace ExViewer.Views
             }
 
             await Dispatcher.YieldIdle();
+            this.fv.SelectedIndex = index;
             setScale();
             if (!animationSucceed)
                 Animation_Completed(null, null);
