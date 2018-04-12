@@ -854,6 +854,8 @@
             Value="True" />
     <Setter Property="FocusVisualMargin"
             Value="-4,-2" />
+    <Setter Property="AllowFocusWhenDisabled"
+            Value="True" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:Rating">

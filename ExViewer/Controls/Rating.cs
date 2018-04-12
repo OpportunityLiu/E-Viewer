@@ -82,6 +82,8 @@ namespace ExViewer.Controls
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             base.OnKeyUp(e);
+            if (!IsEnabled)
+                return;
             e.Handled = true;
             switch (e.OriginalKey)
             {
@@ -144,7 +146,7 @@ namespace ExViewer.Controls
             if (pp < -0.5) pp = -1;
             else if (pp < 0) pp = 0;
             else if (pp > 1) pp = 1;
-            if (pp < 0)
+            if (pp < 0 || !IsEnabled)
                 this.actualUserRating = this.UserRatingValue;
             else
                 this.actualUserRating = (Score)Math.Max((byte)Math.Round(pp * 10), (byte)1);
@@ -164,6 +166,8 @@ namespace ExViewer.Controls
         protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {
             base.OnPointerPressed(e);
+            if (!IsEnabled)
+                return;
             if (FocusState == FocusState.Keyboard)
                 return;
             e.Handled = true;
@@ -177,7 +181,13 @@ namespace ExViewer.Controls
             if (FocusState == FocusState.Keyboard)
                 return;
             e.Handled = true;
-            this.UserRatingValue = this.actualUserRating;
+            if (IsEnabled)
+                this.UserRatingValue = this.actualUserRating;
+            else
+            {
+                this.actualUserRating = this.UserRatingValue;
+                draw();
+            }
         }
 
         protected override void OnApplyTemplate()

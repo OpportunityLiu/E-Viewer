@@ -147,9 +147,10 @@ namespace ExViewer.Views
 
         private double caculateGdPivotHeight(double pageHeight, Thickness vb)
         {
-            if (pageHeight <= 100)
+            var r = pageHeight - 48 - vb.Top;
+            if (r <= 100)
                 return double.NaN;
-            return pageHeight - 48 - vb.Top;
+            return r;
         }
 
         private double caculateGdInfoMaxHeight(double pageHeight, Thickness vb)
@@ -165,7 +166,7 @@ namespace ExViewer.Views
                 if (this.gdPvContentHeaderPresenter != null)
                     infoH -= this.gdPvContentHeaderPresenter.ActualHeight + this.btn_Scroll.ActualHeight;
             }
-            return Math.Min(infoH, 360);
+            return Math.Max(Math.Min(infoH, 360), 120);
         }
 
         private bool? isGdInfoHideDef = false;
@@ -204,6 +205,8 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            var oldView = this.ViewModel?.View;
+            var oldIndex = oldView?.CurrentPosition ?? default;
             Debug.Assert(e.Parameter != null, "e.Parameter != null");
             base.OnNavigatedTo(e);
             var reset = e.NavigationMode == NavigationMode.New;
@@ -245,7 +248,10 @@ namespace ExViewer.Views
                 var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
                 changeViewTo(true, true);
                 if (this.ViewModel.View.CurrentItem is null)
+                {
                     this.ViewModel.View.MoveCurrentToFirst();
+                    idx = 0;
+                }
                 this.gv.ScrollIntoView(this.ViewModel.View.CurrentItem, ScrollIntoViewAlignment.Leading);
                 await Dispatcher.Yield(CoreDispatcherPriority.Low);
                 var container = (Control)this.gv.ContainerFromIndex(idx);
@@ -263,6 +269,7 @@ namespace ExViewer.Views
                     container.Focus(FocusState.Programmatic);
                 }
             }
+            oldView?.MoveCurrentToPosition(oldIndex);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
