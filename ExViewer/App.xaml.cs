@@ -27,6 +27,7 @@ namespace ExViewer
         public App()
         {
             this.InitializeComponent();
+            this.RequiresPointerMode = ApplicationRequiresPointerMode.WhenRequested;
             this.Suspending += this.OnSuspending;
             this.Resuming += this.OnResuming;
             this.UnhandledException += this.App_UnhandledException;
