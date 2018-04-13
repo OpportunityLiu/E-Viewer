@@ -5,20 +5,11 @@ namespace ExViewer.Views
 {
     class DeviceTrigger : StateTriggerBase
     {
-        public static string DeviceType
-        {
-            get;
-        } = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily;
+        public static string DeviceType { get; } = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily;
 
-        public static bool IsMobile
-        {
-            get;
-        } = DeviceType == "Windows.Mobile";
-
-        public static bool IsDesktop
-        {
-            get;
-        } = DeviceType == "Windows.Desktop";
+        public static bool IsXbox { get; } = DeviceType == "Windows.Xbox";
+        public static bool IsMobile { get; } = DeviceType == "Windows.Mobile";
+        public static bool IsDesktop { get; } = DeviceType == "Windows.Desktop";
 
         public string ActiveType
         {
