@@ -32,6 +32,7 @@ namespace ExViewer
             this.Resuming += this.OnResuming;
             this.UnhandledException += this.App_UnhandledException;
             this.RequestedTheme = Settings.SettingCollection.Current.Theme;
+            //ElementSoundPlayer.State = ElementSoundPlayerState.On;
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)

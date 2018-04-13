@@ -79,6 +79,12 @@ namespace ExViewer.Controls
             draw();
         }
 
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            ElementSoundPlayer.Play(ElementSoundKind.Focus);
+            base.OnGotFocus(e);
+        }
+
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             base.OnKeyUp(e);
@@ -94,7 +100,7 @@ namespace ExViewer.Controls
                 {
                     this.actualUserRating++;
                 }
-
+                ElementSoundPlayer.Play(ElementSoundKind.Focus);
                 draw();
                 break;
             case Windows.System.VirtualKey.Left:
@@ -114,6 +120,7 @@ namespace ExViewer.Controls
                     this.actualUserRating--;
                 }
 
+                ElementSoundPlayer.Play(ElementSoundKind.Focus);
                 draw();
                 break;
             case Windows.System.VirtualKey.Space:
@@ -124,7 +131,15 @@ namespace ExViewer.Controls
                     UserRatingValue = this.actualUserRating;
                 }
 
+                ElementSoundPlayer.Play(ElementSoundKind.Invoke);
                 RemoveFocusEngagement();
+                break;
+            case Windows.System.VirtualKey.Escape:
+            case Windows.System.VirtualKey.GamepadB:
+                this.actualUserRating = UserRatingValue;
+                ElementSoundPlayer.Play(ElementSoundKind.Focus);
+                RemoveFocusEngagement();
+                draw();
                 break;
             default:
                 e.Handled = false;
