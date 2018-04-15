@@ -154,6 +154,7 @@ namespace ExViewer.Views
             this.cbCategory.Visibility = Visibility.Collapsed;
             this.asb.Visibility = Visibility.Collapsed;
             this.GetNavigator().UpdateProperties();
+            ElementSoundPlayer.Play(ElementSoundKind.Invoke);
             return true;
         }
 
@@ -167,6 +168,7 @@ namespace ExViewer.Views
             this.cbCategory.Visibility = Visibility.Visible;
             this.asb.Visibility = Visibility.Visible;
             this.GetNavigator().UpdateProperties();
+            ElementSoundPlayer.Play(ElementSoundKind.GoBack);
             return true;
         }
 
@@ -203,7 +205,6 @@ namespace ExViewer.Views
             {
                 var i = this.lv.ItemFromContainer(item);
                 this.lv.SelectedItem = i;
-                ElementSoundPlayer.Play(ElementSoundKind.Invoke);
             }
         }
 

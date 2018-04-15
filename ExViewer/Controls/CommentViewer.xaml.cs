@@ -93,6 +93,17 @@ namespace ExViewer.Controls
                 if (ex != null)
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
             };
+            this.FocusEngaged += this.CommentViewer_FocusEngaged;
+            this.FocusDisengaged += this.CommentViewer_FocusDisengaged;
+        }
+
+        private void CommentViewer_FocusDisengaged(Control sender, FocusDisengagedEventArgs args)
+        {
+            ElementSoundPlayer.Play(ElementSoundKind.GoBack);
+        }
+        private void CommentViewer_FocusEngaged(Control sender, FocusEngagedEventArgs args)
+        {
+            ElementSoundPlayer.Play(ElementSoundKind.Invoke);
         }
 
         private readonly CommentVM VM = new CommentVM();
