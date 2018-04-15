@@ -15,6 +15,21 @@ namespace ExViewer.Controls
         public Rating()
         {
             DefaultStyleKey = typeof(Rating);
+            this.FocusEngaged += this.Rating_FocusEngaged;
+            this.FocusDisengaged += this.Rating_FocusDisengaged;
+        }
+
+        private void Rating_FocusDisengaged(Control sender, FocusDisengagedEventArgs args)
+        {
+            ElementSoundPlayer.Play(ElementSoundKind.GoBack);
+        }
+
+        private void Rating_FocusEngaged(Control sender, FocusEngagedEventArgs args)
+        {
+            if (this.actualUserRating == Score.NotSet)
+                this.actualUserRating = this.PlaceholderValue.ToScore();
+            ElementSoundPlayer.Play(ElementSoundKind.Invoke);
+            draw();
         }
 
         public double PlaceholderValue
@@ -137,7 +152,6 @@ namespace ExViewer.Controls
             case Windows.System.VirtualKey.Escape:
             case Windows.System.VirtualKey.GamepadB:
                 this.actualUserRating = UserRatingValue;
-                ElementSoundPlayer.Play(ElementSoundKind.Focus);
                 RemoveFocusEngagement();
                 draw();
                 break;
