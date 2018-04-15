@@ -153,10 +153,10 @@
       <Version>6.0.8</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.3.3</Version>
+      <Version>1.3.5</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
-      <Version>2.6.0</Version>
+      <Version>2.6.1</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
       <Version>1.3.7</Version>
