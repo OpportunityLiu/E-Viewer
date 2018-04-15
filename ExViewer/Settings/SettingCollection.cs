@@ -8,6 +8,7 @@ using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Windows.Security.Credentials.UI;
 
 namespace ExViewer.Settings
 {
@@ -75,7 +76,38 @@ namespace ExViewer.Settings
         public bool NeedVerify
         {
             get => GetLocal(false);
-            set => SetLocal(value);
+            set
+            {
+                SetLocal(value);
+                if (!value)
+                    return;
+                var test = UserConsentVerifier.CheckAvailabilityAsync();
+                test.Completed = (s, e) =>
+                {
+                    var result = s.GetResults();
+                    switch (result)
+                    {
+                    case UserConsentVerifierAvailability.DeviceNotPresent:
+                        Views.RootControl.RootController.SendToast(Strings.Resources.Verify.DeviceNotPresent, null);
+                        break;
+                    case UserConsentVerifierAvailability.NotConfiguredForUser:
+                        Views.RootControl.RootController.SendToast(Strings.Resources.Verify.NotConfigured, null);
+                        break;
+                    case UserConsentVerifierAvailability.DisabledByPolicy:
+                        Views.RootControl.RootController.SendToast(Strings.Resources.Verify.Disabled, null);
+                        break;
+                    case UserConsentVerifierAvailability.DeviceBusy:
+                        Views.RootControl.RootController.SendToast(Strings.Resources.Verify.DeviceBusy, null);
+                        break;
+                    default:
+                        Views.RootControl.RootController.SendToast(Strings.Resources.Verify.OtherFailure, null);
+                        break;
+                    case UserConsentVerifierAvailability.Available:
+                        return;
+                    }
+                    SetLocal(false, nameof(NeedVerify));
+                };
+            }
         }
 
         [Setting("Global", Index = 300)]

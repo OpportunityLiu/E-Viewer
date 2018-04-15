@@ -124,6 +124,7 @@
   "Verify": {
     "Canceled": "您已取消驗證。",
     "DeviceBusy": "裝置忙，請稍後重試。",
+    "DeviceNotPresent": "沒有可用的 Windows Hello 裝置。",
     "Dialog": {
       "Content": "需要使用 Windows Hello 驗證身份。"
     },
