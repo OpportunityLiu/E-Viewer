@@ -39,7 +39,7 @@
                                    RangeEnd="100"
                                    IncludeEnd="True"
                                    InRangeResult="False" />
-    
+
     <Style x:Key="TorrentNameTextBlockStyle"
            TargetType="TextBlock">
       <Setter Property="FontWeight"
@@ -261,17 +261,16 @@
       </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
     <Border Grid.Row="1">
-      <StackPanel x:Name="spContent"
-                  Background="Transparent"
-                  GotFocus="spContent_GotFocus"
-                  PointerPressed="spContent_PointerPressed"
-                  PointerWheelChanged="spContent_PointerWheelChanged">
+      <local:GalleryPagePanel x:Name="spContent"
+                              Background="Transparent"
+                              GotFocus="spContent_GotFocus"
+                              PointerPressed="spContent_PointerPressed"
+                              PointerWheelChanged="spContent_PointerWheelChanged">
         <Grid x:Name="gdInfo"
               Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
               Background="{ThemeResource CommandBarBackground}"
               SizeChanged="gdInfo_SizeChanged"
-              MinHeight="100"
-              MaxHeight="{x:Bind caculateGdInfoMaxHeight(page.(ext:FrameworkElementExtensions.ActualHeight), VisibleBounds), Mode=OneWay}">
+              MinHeight="100">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
@@ -308,8 +307,7 @@
                                    Tags="{x:Bind ViewModel.Gallery.Tags, Mode=OneWay}" />
           </Grid>
         </Grid>
-        <Grid x:Name="gd_Pivot"
-              Height="{x:Bind caculateGdPivotHeight(page.(ext:FrameworkElementExtensions.ActualHeight), VisibleBounds), Mode=OneWay}">
+        <Grid x:Name="gd_Pivot">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -509,7 +507,7 @@
             </PivotItem>
           </Pivot>
         </Grid>
-      </StackPanel>
+      </local:GalleryPagePanel>
     </Border>
     <CommandBar x:Name="cb_top"
                 Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"

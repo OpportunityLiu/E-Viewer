@@ -37,6 +37,12 @@ namespace ExViewer.Views
         public GalleryPage()
         {
             this.InitializeComponent();
+            this.RegisterPropertyChangedCallback(VisibleBoundsProperty, OnVisibleBoundsPropertyChanged);
+        }
+
+        private void OnVisibleBoundsPropertyChanged(DependencyObject sender, DependencyProperty dp)
+        {
+            this.spContent.InvalidateMeasure();
         }
 
         private void spContent_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -141,32 +147,6 @@ namespace ExViewer.Views
                 else if (trans.Y < -68)
                     changeViewTo(true, false);
             }
-        }
-
-        private Grid gdPvContentHeaderPresenter;
-
-        private double caculateGdPivotHeight(double pageHeight, Thickness vb)
-        {
-            var r = pageHeight - 48 - vb.Top;
-            if (r <= 100)
-                return double.NaN;
-            return r;
-        }
-
-        private double caculateGdInfoMaxHeight(double pageHeight, Thickness vb)
-        {
-            if (pageHeight <= 100)
-                return 360;
-            var height = pageHeight - 48 - vb.Top;
-            var infoH = height - vb.Bottom;
-            if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
-            {
-                if (this.gdPvContentHeaderPresenter == null)
-                    this.gdPvContentHeaderPresenter = this.pv.Descendants<Grid>("HeaderPresenter").FirstOrDefault();
-                if (this.gdPvContentHeaderPresenter != null)
-                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight + this.btn_Scroll.ActualHeight;
-            }
-            return Math.Max(Math.Min(infoH, 360), 120);
         }
 
         private bool? isGdInfoHideDef = false;
@@ -473,5 +453,38 @@ namespace ExViewer.Views
         private static readonly Brush opStarted = (Brush)Application.Current.Resources["SystemControlHighlightAccentBrush"];
         private static readonly Brush opFailed = new SolidColorBrush(Colors.Red);
         private static readonly Brush opCompleted = new SolidColorBrush(Colors.Green);
+    }
+
+    internal sealed class GalleryPagePanel : Panel
+    {
+        private Grid gdPvContentHeaderPresenter;
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            var height = availableSize.Height;
+            var width = availableSize.Width;
+            var infoH = height - this.Ancestors<GalleryPage>().First().VisibleBounds.Bottom;
+            if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
+            {
+                if (this.gdPvContentHeaderPresenter == null)
+                    this.gdPvContentHeaderPresenter = this.Children[1].Descendants<Grid>("HeaderPresenter").FirstOrDefault();
+                if (this.gdPvContentHeaderPresenter != null)
+                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
+            }
+            infoH = Math.Min(infoH, 360);
+            this.Children[0].Measure(new Size(width, infoH));
+            this.Children[1].Measure(availableSize);
+            return new Size(width, this.Children[0].DesiredSize.Height + height);
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            var width = finalSize.Width;
+            var height = finalSize.Height;
+            var infoH = this.Children[0].DesiredSize.Height;
+            this.Children[0].Arrange(new Rect(0, 0, width, infoH));
+            this.Children[1].Arrange(new Rect(0, infoH, width, finalSize.Height - infoH));
+            return finalSize;
+        }
     }
 }
