@@ -193,13 +193,17 @@ namespace ExViewer.Views
 
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
-            args.Handled = startSelectMode();
+            var r = startSelectMode();
+            if (!r)
+                return;
+
+            args.Handled = true;
             var item = ((DependencyObject)args.OriginalSource).AncestorsAndSelf<ListViewItem>().FirstOrDefault();
             if (item != null)
             {
-                args.Handled = true;
                 var i = this.lv.ItemFromContainer(item);
                 this.lv.SelectedItem = i;
+                ElementSoundPlayer.Play(ElementSoundKind.Invoke);
             }
         }
 
