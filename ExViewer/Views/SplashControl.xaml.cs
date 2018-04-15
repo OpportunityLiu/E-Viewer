@@ -88,6 +88,11 @@ namespace ExViewer.Views
             else
             {
                 var l = this.splashScreen.ImageLocation;
+                if (DeviceTrigger.IsXbox)
+                {
+                    // Xbox has a 200% scale
+                    l = new Windows.Foundation.Rect(l.X / 2, l.Y / 2, l.Width / 2, l.Height / 2);
+                }
                 this.gd_Foreground.Margin = new Thickness(0, l.Top, 0, 0);
                 this.gd_Foreground.Height = l.Height;
                 this.img_pic.Height = l.Height / 300 * 136;
@@ -247,6 +252,8 @@ namespace ExViewer.Views
                 succeed = true;
                 break;
             case UserConsentVerificationResult.DeviceNotPresent:
+                info = Strings.Resources.Verify.DeviceNotPresent;
+                break;
             case UserConsentVerificationResult.NotConfiguredForUser:
                 info = Strings.Resources.Verify.NotConfigured;
                 break;

@@ -124,6 +124,7 @@
   "Verify": {
     "Canceled": "The verification has been canceled.",
     "DeviceBusy": "Device is busy. Please try again later.",
+    "DeviceNotPresent": "No Windows Hello devices are present.",
     "Dialog": {
       "Content": "Because of your settings, we need to request the verification."
     },

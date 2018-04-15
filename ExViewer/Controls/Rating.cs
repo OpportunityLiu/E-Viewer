@@ -15,6 +15,21 @@ namespace ExViewer.Controls
         public Rating()
         {
             DefaultStyleKey = typeof(Rating);
+            this.FocusEngaged += this.Rating_FocusEngaged;
+            this.FocusDisengaged += this.Rating_FocusDisengaged;
+        }
+
+        private void Rating_FocusDisengaged(Control sender, FocusDisengagedEventArgs args)
+        {
+            ElementSoundPlayer.Play(ElementSoundKind.GoBack);
+        }
+
+        private void Rating_FocusEngaged(Control sender, FocusEngagedEventArgs args)
+        {
+            if (this.actualUserRating == Score.NotSet)
+                this.actualUserRating = this.PlaceholderValue.ToScore();
+            ElementSoundPlayer.Play(ElementSoundKind.Invoke);
+            draw();
         }
 
         public double PlaceholderValue
@@ -79,6 +94,12 @@ namespace ExViewer.Controls
             draw();
         }
 
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            ElementSoundPlayer.Play(ElementSoundKind.Focus);
+            base.OnGotFocus(e);
+        }
+
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
             base.OnKeyUp(e);
@@ -96,7 +117,7 @@ namespace ExViewer.Controls
                 {
                     this.actualUserRating++;
                 }
-
+                ElementSoundPlayer.Play(ElementSoundKind.Focus);
                 draw();
                 break;
             case Windows.System.VirtualKey.Left:
@@ -116,6 +137,7 @@ namespace ExViewer.Controls
                     this.actualUserRating--;
                 }
 
+                ElementSoundPlayer.Play(ElementSoundKind.Focus);
                 draw();
                 break;
             case Windows.System.VirtualKey.Space:
@@ -126,7 +148,14 @@ namespace ExViewer.Controls
                     UserRatingValue = this.actualUserRating;
                 }
 
+                ElementSoundPlayer.Play(ElementSoundKind.Invoke);
                 RemoveFocusEngagement();
+                break;
+            case Windows.System.VirtualKey.Escape:
+            case Windows.System.VirtualKey.GamepadB:
+                this.actualUserRating = UserRatingValue;
+                RemoveFocusEngagement();
+                draw();
                 break;
             default:
                 e.Handled = false;

@@ -154,6 +154,7 @@ namespace ExViewer.Views
             this.cbCategory.Visibility = Visibility.Collapsed;
             this.asb.Visibility = Visibility.Collapsed;
             this.GetNavigator().UpdateProperties();
+            ElementSoundPlayer.Play(ElementSoundKind.Invoke);
             return true;
         }
 
@@ -167,6 +168,7 @@ namespace ExViewer.Views
             this.cbCategory.Visibility = Visibility.Visible;
             this.asb.Visibility = Visibility.Visible;
             this.GetNavigator().UpdateProperties();
+            ElementSoundPlayer.Play(ElementSoundKind.GoBack);
             return true;
         }
 
@@ -193,11 +195,14 @@ namespace ExViewer.Views
 
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
-            args.Handled = startSelectMode();
+            var r = startSelectMode();
+            if (!r)
+                return;
+
+            args.Handled = true;
             var item = ((DependencyObject)args.OriginalSource).AncestorsAndSelf<ListViewItem>().FirstOrDefault();
             if (item != null)
             {
-                args.Handled = true;
                 var i = this.lv.ItemFromContainer(item);
                 this.lv.SelectedItem = i;
             }
