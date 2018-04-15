@@ -206,8 +206,10 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
     <TextBlock x:Uid="Controls/AboutControl/TagDatabaseTextBlock"
                Text="Tag database"
                Style="{StaticResource AboutControlSubheaderTextBlockStyle}" />
-    <HyperlinkButton NavigateUri="https://e-hentai.org/tools.php?act=taggroup"
-                     Style="{StaticResource AboutControlHyperLinkButtonStyle}">
+    <HyperlinkButton x:Name="hbDatabaseEt"
+                     NavigateUri="https://e-hentai.org/tools.php?act=taggroup"
+                     Style="{StaticResource AboutControlHyperLinkButtonStyle}"
+                     XYFocusDown="{x:Bind btnUpdateEt}">
       <StackPanel Orientation="Horizontal">
         <Image Source="ms-appx:///Images/EH.png"
                Width="20"
@@ -225,6 +227,8 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
                  Style="{StaticResource AboutControlCaptionTextBlockStyle}" />
       <Button x:Name="btnUpdateEt"
               x:Uid="Controls/AboutControl/UpdateButton"
+              XYFocusUp="{x:Bind hbDatabaseEt}"
+              XYFocusDown="{x:Bind hbDatabaseEht}"
               Content="Update"
               Command="{x:Bind local:AboutControl.UpdateEhWiki}"
               Style="{StaticResource AboutControlCaptionButtonStyle}" />
@@ -234,7 +238,10 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
     <TextBlock x:Uid="Controls/AboutControl/ChineseTagProviderTextBlock"
                Text="Chinese translation of tags"
                Style="{StaticResource AboutControlSubheaderTextBlockStyle}" />
-    <HyperlinkButton x:Uid="Controls/AboutControl/ChineseTagProviderHyperlinkButton"
+    <HyperlinkButton x:Name="hbDatabaseEht"
+                     x:Uid="Controls/AboutControl/ChineseTagProviderHyperlinkButton"
+                     XYFocusUp="{x:Bind btnUpdateEt}"
+                     XYFocusDown="{x:Bind btnUpdateEht}"
                      Content="Mapaler / EhTagTranslator @ Github.com"
                      NavigateUri="https://github.com/Mapaler/EhTagTranslator"
                      Style="{StaticResource AboutControlHyperLinkButtonStyle}" />
@@ -244,6 +251,8 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
                  Style="{StaticResource AboutControlCaptionTextBlockStyle}" />
       <Button x:Name="btnUpdateEht"
               x:Uid="Controls/AboutControl/UpdateButton"
+              XYFocusUp="{x:Bind hbDatabaseEht}"
+              XYFocusDown="{x:Bind hbDatabaseEhw}"
               Content="Update"
               Command="{x:Bind local:AboutControl.UpdateETT}"
               Style="{StaticResource AboutControlCaptionButtonStyle}" />
@@ -253,7 +262,8 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
     <TextBlock x:Uid="Controls/AboutControl/JapaneseTagProviderTextBlock"
                Text="Japanese translation of tags"
                Style="{StaticResource AboutControlSubheaderTextBlockStyle}" />
-    <HyperlinkButton NavigateUri="https://ehwiki.org/"
+    <HyperlinkButton x:Name="hbDatabaseEhw"
+                     NavigateUri="https://ehwiki.org/"
                      Style="{StaticResource AboutControlHyperLinkButtonStyle}">
       <StackPanel Orientation="Vertical">
         <Image Source="ms-appx:///Images/EHWiki.png"

@@ -92,6 +92,7 @@ namespace ExViewer.Views
         {
             this.imgConnect.Visibility = Visibility.Collapsed;
             this.imgConnect.Source = null;
+            this.fv.ItemsSource = this.ViewModel.View;
             this.fv.IsEnabled = true;
             this.fv.Opacity = 1;
             this.fv.Focus(FocusState.Programmatic);
@@ -172,13 +173,9 @@ namespace ExViewer.Views
 
         private void setScale()
         {
-            foreach (var item in this.fv.Descendants<FlipViewItem>())
+            foreach (var item in this.fv.Descendants<ImagePresenter>())
             {
-                var inner = (Grid)item.ContentTemplateRoot;
-                if (inner == null)
-                    continue;
-                var ip = (ImagePresenter)inner.FindName("ip");
-                ip.ResetZoom(true);
+                item.ResetZoom(true);
             }
         }
 
@@ -306,7 +303,7 @@ namespace ExViewer.Views
                 if (!changeCbVisibility())
                     this.fv.Focus(FocusState.Programmatic);
                 else
-                    this.abb_fullScreen.Focus(FocusState.Programmatic);
+                    this.cb_top.Focus(FocusState.Programmatic);
                 break;
             default:
                 e.Handled = false;

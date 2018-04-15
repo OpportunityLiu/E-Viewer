@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sys="using:System"
+             xmlns:obj="using:Opportunity.Helpers.ObjectModel"
              xmlns:tagging="using:ExClient.Tagging"
              mc:Ignorable="d"
              d:DesignHeight="300"
@@ -30,7 +31,7 @@
       </Style>
     </GridView.ItemContainerStyle>
     <GridView.ItemTemplate>
-      <DataTemplate x:DataType="sys:IBox">
+      <DataTemplate x:DataType="obj:IBox">
         <CheckBox Content="{x:Bind tagging:NamespaceExtention.ToFriendlyNameString((tagging:Namespace)Value)}"
                   Checked="CheckBox_Checked"
                   Unchecked="CheckBox_Unchecked"

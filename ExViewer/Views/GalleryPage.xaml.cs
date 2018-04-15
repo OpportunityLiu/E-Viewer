@@ -141,6 +141,14 @@ namespace ExViewer.Views
         {
             if (e.OriginalSource is Control ele && ele.FocusState == FocusState.Keyboard)
             {
+                foreach (var item in ele.Ancestors<ListViewBase>())
+                {
+                    if (item == this.gv || item == this.lv_Comments || item == this.lv_Torrents)
+                    {
+                        changeViewTo(true, false);
+                        return;
+                    }
+                }
                 var trans = this.spContent.TransformToVisual(ele).TransformPoint(new Point(0, this.gdInfo.ActualHeight));
                 if (trans.Y > 0)
                     changeViewTo(false, false);
@@ -235,6 +243,10 @@ namespace ExViewer.Views
                 this.gv.ScrollIntoView(this.ViewModel.View.CurrentItem, ScrollIntoViewAlignment.Leading);
                 await Dispatcher.Yield(CoreDispatcherPriority.Low);
                 var container = (Control)this.gv.ContainerFromIndex(idx);
+                if (container != null && this.pv.SelectedIndex == 0)
+                {
+                    container.Focus(FocusState.Programmatic);
+                }
                 if (animation != null)
                 {
                     if (this.pv.SelectedIndex == 0 && container != null)
