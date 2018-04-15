@@ -11,7 +11,6 @@
                           PrimaryButtonText="Reset"
                           PrimaryButtonClick="MyContentDialog_PrimaryButtonClick"
                           CloseButtonText="?"
-                          RequiresPointer="WhenFocused"
                           CloseButtonClick="MyContentDialog_CloseButtonClick"
                           Opened="ContentDialog_Opened"
                           FullSizeDesired="True">
