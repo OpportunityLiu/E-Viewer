@@ -40,16 +40,17 @@ namespace ExViewer.ViewModels
         }
 
         private FavoritesVM(FavoritesSearchResult searchResult)
-            : base(searchResult) { }
-
-        public override Command<string> Search { get; } = Command<string>.Create(async (sender, queryText) =>
+            : base(searchResult)
         {
-            var that = (FavoritesVM)sender.Tag;
-            var cat = that.category;
-            var search = cat == null ? Client.Current.Favorites.Search(queryText) : cat.Search(queryText);
-            var vm = GetVM(search);
-            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), vm.SearchQuery);
-        });
+            this.Commands[nameof(Search)] = Command<string>.Create(async (sender, queryText) =>
+            {
+                var that = (FavoritesVM)sender.Tag;
+                var cat = that.category;
+                var search = cat == null ? Client.Current.Favorites.Search(queryText) : cat.Search(queryText);
+                var vm = GetVM(search);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), vm.SearchQuery);
+            });
+        }
 
         public override void SetQueryWithSearchResult()
         {
