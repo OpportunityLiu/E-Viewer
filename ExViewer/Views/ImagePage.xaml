@@ -13,6 +13,7 @@
                 xmlns:g="using:ExClient.Galleries"
                 x:Name="page"
                 xmlns:xb="using:Opportunity.Converters.XBind"
+                xmlns:helper="using:Opportunity.Helpers.Universal"
                 Loading="page_Loading"
                 Loaded="page_Loaded"
                 Unloaded="page_Unloaded"
@@ -29,7 +30,8 @@
     <DataTemplate x:Key="FlipViewItemTemplate"
                   x:DataType="g:GalleryImage">
       <Grid DoubleTapped="fvi_DoubleTapped"
-            Tapped="fvi_Tapped">
+            Tapped="fvi_Tapped"
+            Margin="{Binding VisibleBounds, ElementName=page}">
         <Grid.RowDefinitions>
           <RowDefinition Height="48" />
           <RowDefinition />
@@ -37,8 +39,7 @@
         <controls:ImagePresenter x:Name="ip"
                                  Grid.RowSpan="2"
                                  Image="{x:Bind Mode=OneWay}" />
-        <ProgressBar Grid.Row="1"
-                     Padding="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}"
+        <ProgressBar Grid.Row="1" 
                      Margin="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x0'}"
                      VerticalAlignment="Top"
                      Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(State), Mode=OneWay, FallbackValue=Yellow}"
@@ -258,7 +259,6 @@
               RelativePanel.AlignRightWithPanel="True"
               RelativePanel.AlignTopWithPanel="True"
               SelectionChanged="fv_SelectionChanged"
-              Margin="{x:Bind VisibleBounds, Mode=OneWay}"
               ItemTemplate="{StaticResource FlipViewItemTemplate}">
       <FlipView.ItemContainerStyle>
         <Style TargetType="FlipViewItem">
@@ -357,6 +357,7 @@
         <AppBarButton x:Name="abb_fullScreen"
                       x:Uid="Views/ImagePage/FullScreenAppBarButton"
                       Click="abb_fullScreen_Click"
+                      Visibility="{x:Bind xb:Visibility.OfBooleanInv(helper:ApiInfo.IsXbox)}"
                       Icon="FullScreen"
                       Label="Full screen"
                       ToolTipService.ToolTip="{x:Bind abb_fullScreen.Label, Mode=OneWay}" />

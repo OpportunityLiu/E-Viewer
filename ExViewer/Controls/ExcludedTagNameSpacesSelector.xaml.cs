@@ -1,5 +1,6 @@
 ﻿using ExClient.Tagging;
 using Opportunity.Helpers;
+using Opportunity.Helpers.ObjectModel;
 using System;
 using System.Linq;
 using Windows.UI.Xaml;
@@ -14,7 +15,7 @@ namespace ExViewer.Controls
         public ExcludedTagNamespacesSelector()
         {
             this.InitializeComponent();
-            foreach (var item in EnumHelper.GetDefinedValues<Namespace>())
+            foreach (var item in EnumExtension.GetDefinedValues<Namespace>())
             {
                 if (item.Value == Namespace.Unknown || item.Value >= Namespace.Misc)
                     continue;

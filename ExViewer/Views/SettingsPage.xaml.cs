@@ -3,8 +3,13 @@ using ExViewer.Settings;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
@@ -22,12 +27,24 @@ namespace ExViewer.Views
             this.pv_root.ItemsSource = SettingCollection.Current.GroupedSettings;
         }
 
+        private void SettingsPage_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
+        {
+            if (!(FocusManager.GetFocusedElement() is FrameworkElement dp))
+                return;
+            dp.StartBringIntoView(new BringIntoViewOptions
+            {
+                AnimationDesired = true,
+                TargetRect = new Windows.Foundation.Rect(0, 0, dp.ActualWidth, dp.ActualHeight + VisibleBounds.Bottom)
+            });
+        }
+
         private Stack<int> navigateStack = new Stack<int>();
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             await Dispatcher.YieldIdle();
+            InputPane.GetForCurrentView().Showing += this.SettingsPage_Showing;
             switch (e.NavigationMode)
             {
             case NavigationMode.New:
@@ -43,6 +60,7 @@ namespace ExViewer.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
+            InputPane.GetForCurrentView().Showing -= this.SettingsPage_Showing;
             switch (e.NavigationMode)
             {
             case NavigationMode.New:

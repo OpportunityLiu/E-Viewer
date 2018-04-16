@@ -323,6 +323,7 @@ namespace ExViewer.ViewModels
                 View = value?.CreateView();
                 if (View != null)
                 {
+                    View.MoveCurrentToPrevious();
                     View.CurrentChanged += this.View_CurrentChanged;
                 }
                 Set(nameof(View), ref this.gallery, value);
@@ -339,7 +340,7 @@ namespace ExViewer.ViewModels
             QRCodeResult = null;
         }
 
-        public ICollectionView View { get; private set; }
+        public CollectionView<GalleryImage> View { get; private set; }
 
         private string currentInfo;
         public string CurrentInfo { get => this.currentInfo; private set => Set(ref this.currentInfo, value); }
