@@ -54,17 +54,11 @@ namespace ExViewer.Views
 
             base.OnNavigatedTo(e);
 
-            var oldView = this.ViewModel?.View;
-            var oldIndex = oldView?.CurrentPosition ?? default;
-
             this.ViewModel = GalleryVM.GetVM((long)e.Parameter);
 
             var index = this.ViewModel.View.CurrentPosition;
             if (index < 0)
-            {
-                this.ViewModel.View.MoveCurrentToFirst();
                 index = 0;
-            }
             this.imgConnect.Source = this.ViewModel.Gallery[index].Thumb;
             var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
             var animationSucceed = false;
@@ -80,7 +74,7 @@ namespace ExViewer.Views
 
             await Dispatcher.YieldIdle();
             this.fv.ItemsSource = this.ViewModel.View;
-            oldView?.MoveCurrentToPosition(oldIndex);
+            this.ViewModel.View.IsCurrentPositionLocked = false;
             this.fv.SelectedIndex = index;
             setScale();
             if (!animationSucceed)
@@ -103,6 +97,7 @@ namespace ExViewer.Views
         {
             this.GetNavigator().Handlers.Remove(this);
             base.OnNavigatingFrom(e);
+            this.ViewModel.View.IsCurrentPositionLocked = true;
 
             if (!this.cbVisible)
                 changeCbVisibility();
