@@ -29,7 +29,7 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for InputScope.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty InputScopeProperty =
-            DependencyProperty.RegisterAttached("InputScope", typeof(InputScope), typeof(AutoSuggestBox), new PropertyMetadata(null, InputScopePropertyChanged));
+            DependencyProperty.RegisterAttached("InputScope", typeof(InputScope), typeof(TagSuggestionService), new PropertyMetadata(null, InputScopePropertyChanged));
 
         private static async void InputScopePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -69,7 +69,7 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsEnabledProperty =
-            DependencyProperty.RegisterAttached("IsEnabled", typeof(bool), typeof(AutoSuggestBox), new PropertyMetadata(false, IsEnabledPropertyChanged));
+            DependencyProperty.RegisterAttached("IsEnabled", typeof(bool), typeof(TagSuggestionService), new PropertyMetadata(false, IsEnabledPropertyChanged));
 
         private static void IsEnabledPropertyChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
         {
@@ -104,7 +104,7 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for Separator.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SeparatorProperty =
-            DependencyProperty.RegisterAttached("Separator", typeof(string), typeof(AutoSuggestBox), new PropertyMetadata(" "));
+            DependencyProperty.RegisterAttached("Separator", typeof(string), typeof(TagSuggestionService), new PropertyMetadata(" "));
 
         public static bool GetUseHistory(DependencyObject obj)
         {
@@ -118,7 +118,7 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for UseHistory.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty UseHistoryProperty =
-            DependencyProperty.RegisterAttached("UseHistory", typeof(bool), typeof(AutoSuggestBox), new PropertyMetadata(true));
+            DependencyProperty.RegisterAttached("UseHistory", typeof(bool), typeof(TagSuggestionService), new PropertyMetadata(true));
 
         public static ICommand GetSubmitCommand(DependencyObject obj)
         {
@@ -132,7 +132,7 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for SubmitCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SubmitCommandProperty =
-            DependencyProperty.RegisterAttached("SubmitCommand", typeof(ICommand), typeof(AutoSuggestBox), new PropertyMetadata(null));
+            DependencyProperty.RegisterAttached("SubmitCommand", typeof(ICommand), typeof(TagSuggestionService), new PropertyMetadata(null));
 
         public static int GetStateCode(DependencyObject obj)
         {
@@ -150,7 +150,7 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for StateCode.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StateCodeProperty =
-            DependencyProperty.RegisterAttached("StateCode", typeof(int), typeof(AutoSuggestBox), new PropertyMetadata(0));
+            DependencyProperty.RegisterAttached("StateCode", typeof(int), typeof(TagSuggestionService), new PropertyMetadata(0));
 
         private static async void asb_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
