@@ -37,6 +37,12 @@ namespace ExViewer.Views
         public GalleryPage()
         {
             this.InitializeComponent();
+            this.RegisterPropertyChangedCallback(VisibleBoundsProperty, OnVisibleBoundsPropertyChanged);
+        }
+
+        private void OnVisibleBoundsPropertyChanged(DependencyObject sender, DependencyProperty dp)
+        {
+            this.spContent.InvalidateMeasure();
         }
 
         private void spContent_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -135,37 +141,20 @@ namespace ExViewer.Views
         {
             if (e.OriginalSource is Control ele && ele.FocusState == FocusState.Keyboard)
             {
+                foreach (var item in ele.Ancestors<ListViewBase>())
+                {
+                    if (item == this.gv || item == this.lv_Comments || item == this.lv_Torrents)
+                    {
+                        changeViewTo(true, false);
+                        return;
+                    }
+                }
                 var trans = this.spContent.TransformToVisual(ele).TransformPoint(new Point(0, this.gdInfo.ActualHeight));
                 if (trans.Y > 0)
                     changeViewTo(false, false);
                 else if (trans.Y < -68)
                     changeViewTo(true, false);
             }
-        }
-
-        private Grid gdPvContentHeaderPresenter;
-
-        private double caculateGdPivotHeight(double pageHeight, Thickness vb)
-        {
-            if (pageHeight <= 100)
-                return double.NaN;
-            return pageHeight - 48 - vb.Top;
-        }
-
-        private double caculateGdInfoMaxHeight(double pageHeight, Thickness vb)
-        {
-            if (pageHeight <= 100)
-                return 360;
-            var height = pageHeight - 48 - vb.Top;
-            var infoH = height - vb.Bottom;
-            if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
-            {
-                if (this.gdPvContentHeaderPresenter == null)
-                    this.gdPvContentHeaderPresenter = this.pv.Descendants<Grid>("HeaderPresenter").FirstOrDefault();
-                if (this.gdPvContentHeaderPresenter != null)
-                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight + this.btn_Scroll.ActualHeight;
-            }
-            return Math.Min(infoH, 360);
         }
 
         private bool? isGdInfoHideDef = false;
@@ -210,35 +199,73 @@ namespace ExViewer.Views
             var restore = e.NavigationMode == NavigationMode.Back;
             this.ViewModel = GalleryVM.GetVM((long)e.Parameter);
             var idx = this.ViewModel.View.CurrentPosition;
+            this.ViewModel.View.IsCurrentPositionLocked = false;
             if (reset)
             {
                 changeViewTo(false, true);
-                this.gv.ScrollIntoView(this.ViewModel.Gallery.FirstOrDefault());
-                this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
+
+                this.gv.ScrollIntoView(this.ViewModel.Gallery.First());
+
+                if (this.ViewModel.Gallery.Comments.IsLoaded)
+                    this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
+                else
+                {
+                    void handler(object s, System.ComponentModel.PropertyChangedEventArgs args)
+                    {
+                        var sender = (ExClient.Galleries.Commenting.CommentCollection)s;
+                        if (string.IsNullOrEmpty(args.PropertyName) || args.PropertyName == nameof(sender.IsLoaded))
+                        {
+                            sender.PropertyChanged -= handler;
+                            if (!sender.IsEmpty)
+                                this.lv_Comments.ScrollIntoView(sender[0]);
+                        }
+                    }
+                    this.ViewModel.Gallery.Comments.PropertyChanged += handler;
+                }
+
                 this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
+
                 await Task.Delay(33);
+
                 this.pv.Focus(FocusState.Programmatic);
                 this.pv.SelectedIndex = 0;
             }
             else if (restore)
             {
-                changeViewTo(true, true);
-                this.gv.ScrollIntoView(this.ViewModel.View.CurrentItem);
                 var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
-                if (animation != null)
+                changeViewTo(true, true);
+                if (this.ViewModel.View.CurrentItem is null)
                 {
-                    if (this.pv.SelectedIndex == 0)
-                        await this.gv.TryStartConnectedAnimationAsync(animation, this.ViewModel.View.CurrentItem, "Image");
-                    else
-                        animation.Cancel();
+                    this.ViewModel.View.MoveCurrentToFirst();
+                    idx = 0;
                 }
-                await Dispatcher.YieldIdle();
+                this.gv.ScrollIntoView(this.ViewModel.View.CurrentItem, ScrollIntoViewAlignment.Leading);
+                await Dispatcher.Yield(CoreDispatcherPriority.Low);
                 var container = (Control)this.gv.ContainerFromIndex(idx);
                 if (container != null && this.pv.SelectedIndex == 0)
                 {
                     container.Focus(FocusState.Programmatic);
                 }
+                if (animation != null)
+                {
+                    if (this.pv.SelectedIndex == 0 && container != null)
+                        await this.gv.TryStartConnectedAnimationAsync(animation, this.ViewModel.View.CurrentItem, "Image");
+                    else
+                        animation.Cancel();
+                }
+                await Dispatcher.YieldIdle();
+                container = (Control)this.gv.ContainerFromIndex(idx);
+                if (container != null && this.pv.SelectedIndex == 0)
+                {
+                    container.Focus(FocusState.Programmatic);
+                }
             }
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            this.ViewModel.View.IsCurrentPositionLocked = true;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -442,5 +469,38 @@ namespace ExViewer.Views
         private static readonly Brush opStarted = (Brush)Application.Current.Resources["SystemControlHighlightAccentBrush"];
         private static readonly Brush opFailed = new SolidColorBrush(Colors.Red);
         private static readonly Brush opCompleted = new SolidColorBrush(Colors.Green);
+    }
+
+    internal sealed class GalleryPagePanel : Panel
+    {
+        private Grid gdPvContentHeaderPresenter;
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            var height = availableSize.Height;
+            var width = availableSize.Width;
+            var infoH = height - this.Ancestors<GalleryPage>().First().VisibleBounds.Bottom;
+            if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
+            {
+                if (this.gdPvContentHeaderPresenter == null)
+                    this.gdPvContentHeaderPresenter = this.Children[1].Descendants<Grid>("HeaderPresenter").FirstOrDefault();
+                if (this.gdPvContentHeaderPresenter != null)
+                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
+            }
+            infoH = Math.Min(infoH, 360);
+            this.Children[0].Measure(new Size(width, infoH));
+            this.Children[1].Measure(availableSize);
+            return new Size(width, this.Children[0].DesiredSize.Height + height);
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            var width = finalSize.Width;
+            var height = finalSize.Height;
+            var infoH = this.Children[0].DesiredSize.Height;
+            this.Children[0].Arrange(new Rect(0, 0, width, infoH));
+            this.Children[1].Arrange(new Rect(0, infoH, width, finalSize.Height - infoH));
+            return finalSize;
+        }
     }
 }

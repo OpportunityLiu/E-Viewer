@@ -49,19 +49,20 @@ namespace ExViewer.ViewModels
         }
 
         private SearchVM(CategorySearchResult searchResult)
-            : base(searchResult) { }
-
-        public override Command<string> Search { get; } = Command<string>.Create(async (sender, queryText) =>
+            : base(searchResult)
         {
-            var that = (SearchVM)sender.Tag;
-            if (SettingCollection.Current.SaveLastSearch)
+            this.Commands[nameof(Search)] = Command<string>.Create(async (sender, queryText) =>
             {
-                SettingCollection.Current.DefaultSearchCategory = that.category;
-                SettingCollection.Current.DefaultSearchString = queryText;
-            }
-            var vm = GetVM(Client.Current.Search(queryText, that.category, that.advancedSearch));
-            await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
-        });
+                var that = (SearchVM)sender.Tag;
+                if (SettingCollection.Current.SaveLastSearch)
+                {
+                    SettingCollection.Current.DefaultSearchCategory = that.category;
+                    SettingCollection.Current.DefaultSearchString = queryText;
+                }
+                var vm = GetVM(Client.Current.Search(queryText, that.category, that.advancedSearch));
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
+            });
+        }
 
         public override void SetQueryWithSearchResult()
         {

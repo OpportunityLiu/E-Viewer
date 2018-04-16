@@ -25,7 +25,7 @@ namespace ExViewer.Views
         public SplashControl(SplashScreen splashScreen)
         {
             InitializeComponent();
-            if (DeviceTrigger.IsMobile)
+            if (Opportunity.Helpers.Universal.ApiInfo.IsMobile)
             {
                 this.gd_Foreground.VerticalAlignment = VerticalAlignment.Stretch;
             }
@@ -71,7 +71,7 @@ namespace ExViewer.Views
 
         private void splash_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (DeviceTrigger.IsMobile)
+            if (Opportunity.Helpers.Universal.ApiInfo.IsMobile)
             {
                 var s = e.NewSize;
                 if (s.Height >= s.Width)
@@ -88,7 +88,7 @@ namespace ExViewer.Views
             else
             {
                 var l = this.splashScreen.ImageLocation;
-                if (DeviceTrigger.IsXbox)
+                if (Opportunity.Helpers.Universal.ApiInfo.IsXbox)
                 {
                     // Xbox has a 200% scale
                     l = new Windows.Foundation.Rect(l.X / 2, l.Y / 2, l.Width / 2, l.Height / 2);

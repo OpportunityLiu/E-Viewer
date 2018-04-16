@@ -18,23 +18,29 @@ namespace ExViewer.ViewModels
         protected SearchResultVM(T searchResult)
         {
             this.searchResult = searchResult;
-            this.Open.Tag = this;
-            this.DeleteHistory.Tag = this;
-            this.Search.Tag = this;
             SetQueryWithSearchResult();
+            this.Commands[nameof(Open)] = Command<Gallery>.Create(async (sender, g) =>
+            {
+                var that = (SearchResultVM<T>)sender.Tag;
+                that.SelectedGallery = g;
+                GalleryVM.GetVM(g);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
+            }, (sender, g) => g != null);
+            this.Commands[nameof(DeleteHistory)] = Command<SearchHistory>.Create((sender, sh) =>
+            {
+                using (var db = new SearchHistoryDb())
+                {
+                    db.SearchHistorySet.Remove(sh);
+                    db.SaveChanges();
+                }
+            }, (sender, sh) => sh != null);
         }
 
         public string SearchQuery => this.SearchResult.SearchUri.ToString();
 
-        public Command<Gallery> Open { get; } = Command<Gallery>.Create(async (sender, g) =>
-        {
-            var that = (SearchResultVM<T>)sender.Tag;
-            that.SelectedGallery = g;
-            GalleryVM.GetVM(g);
-            await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
-        }, (sender, g) => g != null);
+        public Command<Gallery> Open => GetCommand<Command<Gallery>>();
 
-        public abstract Command<string> Search { get; }
+        public Command<string> Search => GetCommand<Command<string>>();
 
         private T searchResult;
         public T SearchResult
@@ -63,14 +69,7 @@ namespace ExViewer.ViewModels
             }
         }
 
-        internal Command<SearchHistory> DeleteHistory { get; } = Command<SearchHistory>.Create((sender, sh) =>
-        {
-            using (var db = new SearchHistoryDb())
-            {
-                db.SearchHistorySet.Remove(sh);
-                db.SaveChanges();
-            }
-        }, (sender, sh) => sh != null);
+        internal Command<SearchHistory> DeleteHistory => GetCommand<Command<SearchHistory>>();
 
         public IAsyncAction ClearHistoryAsync()
         {

@@ -59,8 +59,6 @@ namespace ExViewer.Views
             var index = this.ViewModel.View.CurrentPosition;
             if (index < 0)
                 index = 0;
-            this.fv.ItemsSource = this.ViewModel.View;
-            this.fv.SelectedIndex = index;
             this.imgConnect.Source = this.ViewModel.Gallery[index].Thumb;
             var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
             var animationSucceed = false;
@@ -75,6 +73,9 @@ namespace ExViewer.Views
             }
 
             await Dispatcher.YieldIdle();
+            this.fv.ItemsSource = this.ViewModel.View;
+            this.ViewModel.View.IsCurrentPositionLocked = false;
+            this.fv.SelectedIndex = index;
             setScale();
             if (!animationSucceed)
                 Animation_Completed(null, null);
@@ -85,6 +86,7 @@ namespace ExViewer.Views
         {
             this.imgConnect.Visibility = Visibility.Collapsed;
             this.imgConnect.Source = null;
+            this.fv.ItemsSource = this.ViewModel.View;
             this.fv.IsEnabled = true;
             this.fv.Opacity = 1;
             this.fv.Focus(FocusState.Programmatic);
@@ -94,8 +96,8 @@ namespace ExViewer.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             this.GetNavigator().Handlers.Remove(this);
-
             base.OnNavigatingFrom(e);
+            this.ViewModel.View.IsCurrentPositionLocked = true;
 
             if (!this.cbVisible)
                 changeCbVisibility();
@@ -166,13 +168,9 @@ namespace ExViewer.Views
 
         private void setScale()
         {
-            foreach (var item in this.fv.Descendants<FlipViewItem>())
+            foreach (var item in this.fv.Descendants<ImagePresenter>())
             {
-                var inner = (Grid)item.ContentTemplateRoot;
-                if (inner == null)
-                    continue;
-                var ip = (ImagePresenter)inner.FindName("ip");
-                ip.ResetZoom(true);
+                item.ResetZoom(true);
             }
         }
 
@@ -300,7 +298,7 @@ namespace ExViewer.Views
                 if (!changeCbVisibility())
                     this.fv.Focus(FocusState.Programmatic);
                 else
-                    this.abb_fullScreen.Focus(FocusState.Programmatic);
+                    this.cb_top.Focus(FocusState.Programmatic);
                 break;
             default:
                 e.Handled = false;
