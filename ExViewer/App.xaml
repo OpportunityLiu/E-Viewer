@@ -14,13 +14,13 @@
       </ResourceDictionary.MergedDictionaries>
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark"
-                                    Source="Themes/Dark.xaml" />
+                            Source="Themes/Dark.xaml" />
         <ResourceDictionary x:Key="Light"
-                                    Source="Themes/Light.xaml" />
+                            Source="Themes/Light.xaml" />
       </ResourceDictionary.ThemeDictionaries>
       <Color x:Key="SplashColor">#ffe7dfca</Color>
       <SolidColorBrush x:Key="SplashBrush"
-                             Color="{StaticResource SplashColor}" />
+                       Color="{StaticResource SplashColor}" />
     </ResourceDictionary>
   </Application.Resources>
 </Application>
