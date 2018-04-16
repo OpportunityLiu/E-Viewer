@@ -17,10 +17,24 @@ Please download `.appxbundle` or `.appx` file to install.
 下载 `.appxbundle` 或 `.appx` 安装包来安装。
 `.appxsym` 文件是用于调试的符号信息。
 
-## How To Install / 安装
-see wiki [here](https://github.com/OpportunityLiu/ExViewer/wiki/How-to-Install)    
-参考[此处](https://github.com/OpportunityLiu/ExViewer/wiki/安装说明)的说明
+## FAQ / 常见问题
+1. [How to install](https://github.com/OpportunityLiu/ExViewer/wiki/How-to-Install)  
+   [如何安装](https://github.com/OpportunityLiu/ExViewer/wiki/安装说明)
 
-## Connection Issues / 连接问题
-see wiki [here](https://github.com/OpportunityLiu/ExViewer/wiki/Resolve-Connection-Issues)    
-参考[此处](https://github.com/OpportunityLiu/ExViewer/wiki/解决连接问题)的说明
+2. [How to enable network proxy for UWP applications](https://github.com/OpportunityLiu/ExViewer/wiki/Resolve-Connection-Issues)  
+   [如何解决 UWP 无法使用代理的问题](https://github.com/OpportunityLiu/ExViewer/wiki/解决连接问题)
+
+3. [Tips for keyboard or xbox controller users](https://github.com/OpportunityLiu/ExViewer/wiki/Tips)  
+   [如何使用键盘或 Xbox 控制器操作](https://github.com/OpportunityLiu/ExViewer/wiki/提示)
+
+# Build
+## Prerequisite
+- Visual Studio 2017 15.6
+- Windows SDK 10.0.15063
+- Windows SDK 10.0.16299
+## Procedure
+- Clone the repository to local
+- Open `ExViewer.sln`
+- Restore nuget packages
+- Run `Convert-Resource` in **Package Manager** (See [OpportunityLiu/ResourceGenerator](https://github.com/OpportunityLiu/ResourceGenerator))
+- Build and run
