@@ -193,14 +193,13 @@ namespace ExViewer.Views
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            var oldView = this.ViewModel?.View;
-            var oldIndex = oldView?.CurrentPosition ?? default;
             Debug.Assert(e.Parameter != null, "e.Parameter != null");
             base.OnNavigatedTo(e);
             var reset = e.NavigationMode == NavigationMode.New;
             var restore = e.NavigationMode == NavigationMode.Back;
             this.ViewModel = GalleryVM.GetVM((long)e.Parameter);
             var idx = this.ViewModel.View.CurrentPosition;
+            this.ViewModel.View.IsCurrentPositionLocked = false;
             if (reset)
             {
                 changeViewTo(false, true);
@@ -261,7 +260,12 @@ namespace ExViewer.Views
                     container.Focus(FocusState.Programmatic);
                 }
             }
-            oldView?.MoveCurrentToPosition(oldIndex);
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            this.ViewModel.View.IsCurrentPositionLocked = true;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
