@@ -69,6 +69,7 @@ namespace ExViewer.Settings
                 SetLocal(value);
                 Window.Current.Content.Parent<FrameworkElement>().RequestedTheme = value.ToElementTheme();
                 Themes.ThemeExtention.SetTitleBar();
+                Themes.ThemeExtention.SetDefaltImage();
             }
         }
 

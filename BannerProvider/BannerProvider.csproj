@@ -120,12 +120,12 @@
     <EmbeddedResource Include="Properties\BannerProvider.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\Background.scale-100.png" />
-    <Content Include="Images\Background.scale-200.png" />
-    <Content Include="Images\Background.scale-400.png" />
-    <Content Include="Images\Default.scale-100.png" />
-    <Content Include="Images\Default.scale-200.png" />
-    <Content Include="Images\Default.scale-400.png" />
+    <Content Include="Assets\Background.scale-100.png" />
+    <Content Include="Assets\Background.scale-200.png" />
+    <Content Include="Assets\Background.scale-400.png" />
+    <Content Include="Assets\Default.scale-100.png" />
+    <Content Include="Assets\Default.scale-200.png" />
+    <Content Include="Assets\Default.scale-400.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">

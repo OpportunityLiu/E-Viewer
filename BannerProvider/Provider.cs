@@ -15,9 +15,9 @@ namespace BannerProvider
         private static StorageFolder bannerFolder;
         private const string LAST_UPDATE = "BannerProvider.LastUpdate";
 
-        public static Uri DefaultBanner { get; } = new Uri($"ms-appx:///BannerProvider/Images/Default.png");
+        public static Uri DefaultBanner { get; } = new Uri($"ms-appx:///BannerProvider/Assets/Default.png");
 
-        public static Uri BannerBackground { get; } = new Uri($"ms-appx:///BannerProvider/Images/Background.png");
+        public static Uri BannerBackground { get; } = new Uri($"ms-appx:///BannerProvider/Assets/Background.png");
 
         public static DateTimeOffset LastUpdate
         {

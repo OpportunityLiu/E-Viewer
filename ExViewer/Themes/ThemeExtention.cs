@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ExClient.Galleries;
+using System;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace ExViewer.Themes
 {
@@ -19,7 +21,7 @@ namespace ExViewer.Themes
             var SystemChromeDisabledLowColor = helper.SystemChromeDisabledLowColor;
             var view = ApplicationView.GetForCurrentView();
             var tb = view.TitleBar;
-            if(tb != null)
+            if (tb != null)
             {
                 tb.BackgroundColor = Colors.Transparent;
                 tb.InactiveBackgroundColor = Colors.Transparent;
@@ -35,7 +37,7 @@ namespace ExViewer.Themes
                 tb.ButtonInactiveForegroundColor = SystemChromeDisabledLowColor;
                 tb.ButtonPressedForegroundColor = SystemBaseMediumHighColor;
             }
-            if(ApiInfo.StatusBarSupported)
+            if (ApiInfo.StatusBarSupported)
             {
                 sb.BackgroundOpacity = 0;
                 sb.ProgressIndicator.ProgressValue = 0;
@@ -46,9 +48,9 @@ namespace ExViewer.Themes
 
         public static async void SetStatusBarInfoVisibility(Visibility visibility)
         {
-            if(ApiInfo.StatusBarSupported)
+            if (ApiInfo.StatusBarSupported)
             {
-                switch(visibility)
+                switch (visibility)
                 {
                 case Visibility.Visible:
                     await sb.ProgressIndicator.HideAsync();
@@ -59,6 +61,19 @@ namespace ExViewer.Themes
                 default:
                     break;
                 }
+            }
+        }
+
+        public static void SetDefaltImage()
+        {
+            switch (Settings.SettingCollection.Current.Theme)
+            {
+            case ApplicationTheme.Light:
+                GalleryImage.DefaultThumb = new BitmapImage(new Uri("ms-appx:///Assets/Theme/Light/ImageLoading.png"));
+                break;
+            default:
+                GalleryImage.DefaultThumb = new BitmapImage(new Uri("ms-appx:///Assets/Theme/Dark/ImageLoading.png"));
+                break;
             }
         }
     }
