@@ -28,7 +28,7 @@ namespace ExViewer.Helpers
             if (!IsShareSupported)
                 return;
             new ShareHandlerStorage(handler);
-            DataTransferManager.ShowShareUI();
+            DataTransferManager.ShowShareUI(new ShareUIOptions { Theme = Settings.SettingCollection.Current.Theme == Windows.UI.Xaml.ApplicationTheme.Dark ? ShareUITheme.Dark : ShareUITheme.Light });
         }
 
         private static void PrepareFileShare(DataPackage package, List<IStorageFile> files)
@@ -159,7 +159,7 @@ namespace ExViewer.Helpers
             }
             public ShareProvider OpenLinkProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.OpenInBrowser
-                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Images/MicrosoftEdge.png"))
+                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Assets/ShareTarget/MicrosoftEdge.png"))
                     , (Color)Windows.UI.Xaml.Application.Current.Resources["SystemAccentColor"]
                     , async operation =>
                     {
@@ -170,7 +170,7 @@ namespace ExViewer.Helpers
                     });
             public ShareProvider CopyProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.CopyToClipboard
-                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Images/CopyToClipboard.png"))
+                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Assets/ShareTarget/CopyToClipboard.png"))
                     , (Color)Windows.UI.Xaml.Application.Current.Resources["SystemAccentColor"]
                     , async operation =>
                     {
@@ -183,7 +183,7 @@ namespace ExViewer.Helpers
                     });
             public ShareProvider SetWallpaperProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.SetWallpaper
-                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Images/Settings.png"))
+                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Assets/ShareTarget/Settings.png"))
                     , (Color)Windows.UI.Xaml.Application.Current.Resources["SystemAccentColor"]
                     , async operation =>
                     {

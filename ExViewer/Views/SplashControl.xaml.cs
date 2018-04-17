@@ -51,6 +51,7 @@ namespace ExViewer.Views
         private void splash_Loading(FrameworkElement sender, object args)
         {
             Themes.ThemeExtention.SetTitleBar();
+            Themes.ThemeExtention.SetDefaltImage();
         }
 
         private void ShowPic_Completed(object sender, object e)

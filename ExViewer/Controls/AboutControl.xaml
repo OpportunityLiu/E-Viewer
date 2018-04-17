@@ -71,7 +71,7 @@
               Height="40"
               SelectionChanged="fv_Banners_SelectionChanged">
       <FlipView.Background>
-        <ImageBrush ImageSource="ms-appx:///BannerProvider/Images/Background.png"
+        <ImageBrush ImageSource="ms-appx:///BannerProvider/Assets/Background.png"
                     Stretch="Fill" />
       </FlipView.Background>
       <FlipView.ItemTemplate>
@@ -211,7 +211,7 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
                      Style="{StaticResource AboutControlHyperLinkButtonStyle}"
                      XYFocusDown="{x:Bind btnUpdateEt}">
       <StackPanel Orientation="Horizontal">
-        <Image Source="ms-appx:///Images/EH.png"
+        <Image Source="ms-appx:///Assets/About/EH.png"
                Width="20"
                Margin="0,0,8,0" />
         <TextBlock x:Uid="Controls/AboutControl/EHTextBlock"
@@ -266,7 +266,7 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
                      NavigateUri="https://ehwiki.org/"
                      Style="{StaticResource AboutControlHyperLinkButtonStyle}">
       <StackPanel Orientation="Vertical">
-        <Image Source="ms-appx:///Images/EHWiki.png"
+        <Image Source="ms-appx:///Assets/About/EHWiki.png"
                Width="50"
                Margin="0,0,0,4" />
         <TextBlock x:Uid="Controls/AboutControl/EHWikiTextBlock"

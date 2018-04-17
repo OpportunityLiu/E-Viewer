@@ -30,15 +30,35 @@ namespace ExClient.Galleries
             CoreApplication.MainView.Dispatcher.Begin(() =>
             {
                 display = DisplayInformation.GetForCurrentView();
-                DefaultThumb = new BitmapImage();
-                DefaultThumb.Dispatcher.BeginIdle(async a =>
-                {
-                    using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
-                    {
-                        await DefaultThumb.SetSourceAsync(stream);
-                    }
-                });
+                createDefaultThumb();
             });
+        }
+
+        private static void createDefaultThumb()
+        {
+            CoreApplication.MainView.Dispatcher.Begin(async () =>
+            {
+                var b = new BitmapImage();
+                defaultThumb = b;
+                await b.Dispatcher.YieldIdle();
+                using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
+                {
+                    await b.SetSourceAsync(stream);
+                }
+            });
+        }
+
+        private static ImageSource defaultThumb;
+        public static ImageSource DefaultThumb
+        {
+            get => defaultThumb;
+            set
+            {
+                if (value is null)
+                    createDefaultThumb();
+                else
+                    defaultThumb = value;
+            }
         }
 
         private static DisplayInformation display;
@@ -66,8 +86,6 @@ namespace ExClient.Galleries
                 return temp2;
             });
         }
-
-        protected static BitmapImage DefaultThumb { get; private set; }
 
         internal IAsyncAction PopulateCachedImageAsync(GalleryImageModel galleryImageModel, ImageModel imageModel)
         {
