@@ -8,12 +8,12 @@ A Client for e-hentai.org on Windows 10.
 | dev    | [![Build status](https://ci.appveyor.com/api/projects/status/fcfmss6sltiub0sb/branch/dev?svg=true)](https://ci.appveyor.com/project/OpportunityLiu/exviewer/branch/dev) |
 
 ## Releases / 发布
-|[Latest Release / 最新版本](https://github.com/OpportunityLiu/ExViewer/releases/latest)|[![Github Latest Release](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/latest/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases/latest)|
-|:---|---:|
-|[**All Releases / 所有版本**](https://github.com/OpportunityLiu/ExViewer/releases)|[![Github All Releases](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases)|
+| [Latest Release / 最新版本](https://github.com/OpportunityLiu/ExViewer/releases/latest) | [![Github Latest Release](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/latest/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases/latest) |
+| :--- | ---: |
+| [**All Releases / 所有版本**](https://github.com/OpportunityLiu/ExViewer/releases) | [![Github All Releases](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases) |
 
-Install dependencies [[x86](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/ARM.zip)] and signature (`.cer` file) first.     
-首先安装依赖包 [[x86](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/ARM.zip)] 和证书（`.cer` 文件）。
+Install dependencies ([x86](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/ARM.zip)) and signature (`.cer` file) first.     
+首先安装依赖包 ([x86](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/ExViewer/Dependencies/ARM.zip)) 和证书（`.cer` 文件）。
 
 Please download `.appxbundle` or `.appx` file to install.
 `.appxsym` files are symbol files for debugging.    
@@ -30,14 +30,21 @@ Please download `.appxbundle` or `.appx` file to install.
 3. [Tips for keyboard or xbox controller users](https://github.com/OpportunityLiu/ExViewer/wiki/Tips)  
    [如何使用键盘或 Xbox 控制器操作](https://github.com/OpportunityLiu/ExViewer/wiki/提示)
 
-# Build
-## Prerequisite
+## Build
+Here is a simple introduction for those who would like to build this project by themselves.
+
+### Prerequisite
 - Visual Studio 2017 15.6
 - Windows SDK 10.0.15063
 - Windows SDK 10.0.16299
-## Procedure
+
+### Procedure
 - Clone the repository to local
 - Open `ExViewer.sln`
 - Restore nuget packages
 - Run `Convert-Resource` in **Package Manager** (See [OpportunityLiu/ResourceGenerator](https://github.com/OpportunityLiu/ResourceGenerator))
 - Build and run
+
+## Translate
+If you would like to help me translate this project into other languages,
+just fork this project, translate resources in `*/Strings/` folders and open pull requests.

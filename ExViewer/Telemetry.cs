@@ -13,6 +13,17 @@ namespace ExViewer
 {
     public static class Telemetry
     {
+        private static long[] keySections = new[]
+        {
+            0x4b9c5e4f,
+            0xebf5,
+            0x46ed,
+            0x9ee8,
+            0x72e5de8e0236,
+        };
+
+        public static string AppCenterKey => string.Join("-", keySections.Select(i => i.ToString("x")));
+
         public static string LogException(Exception ex)
         {
             string toRaw(string value)
