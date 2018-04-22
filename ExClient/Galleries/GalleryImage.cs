@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Data.Html;
@@ -39,7 +40,9 @@ namespace ExClient.Galleries
             CoreApplication.MainView.Dispatcher.Begin(async () =>
             {
                 var b = new BitmapImage();
-                defaultThumb = b;
+                var old = Interlocked.CompareExchange(ref defaultThumb, b, null);
+                if (old != null)
+                    return;
                 await b.Dispatcher.YieldIdle();
                 using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
                 {
