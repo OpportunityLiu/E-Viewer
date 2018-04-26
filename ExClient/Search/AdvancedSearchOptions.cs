@@ -249,7 +249,7 @@ namespace ExClient.Search
 
         public bool Equals(AdvancedSearchOptions other)
         {
-            if (other == null)
+            if (other is null)
                 return false;
             return this.data == other.data;
         }

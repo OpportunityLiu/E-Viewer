@@ -83,7 +83,7 @@ namespace ExViewer.Views
         private async void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
             var file = await this.picker.PickSingleFileAsync();
-            if (file == null)
+            if (file is null)
                 return;
             this.SearchFile = file;
         }

@@ -36,7 +36,7 @@ namespace EhWikiClient
                 var record = db.Table.AsNoTracking().SingleOrDefault(r => r.Title == title);
                 if (record != null && record.IsValid)
                     return AsyncOperation<Record>.CreateCompleted(record);
-                if (record == null || record.LastUpdate.AddDays(7) < DateTimeOffset.Now)
+                if (record is null || record.LastUpdate.AddDays(7) < DateTimeOffset.Now)
                     return FetchAsync(title);
                 return AsyncOperation<Record>.CreateCompleted(default);
             }
@@ -68,7 +68,7 @@ namespace EhWikiClient
                 using (var db = new WikiDb())
                 {
                     var oldrecord = db.Table.SingleOrDefault(r => r.Title == title);
-                    if (oldrecord == null)
+                    if (oldrecord is null)
                         db.Table.Add(record);
                     else
                     {

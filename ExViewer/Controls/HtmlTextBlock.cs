@@ -142,7 +142,7 @@ namespace ExViewer.Controls
         {
             var presenter = this.Presenter;
             var htmlContent = this.HtmlContent;
-            if (presenter == null)
+            if (presenter is null)
                 return;
             if (this.HasHyperlinks)
             {
@@ -171,7 +171,7 @@ namespace ExViewer.Controls
                 }
             }
             presenter.Blocks.Clear();
-            if (htmlContent == null)
+            if (htmlContent is null)
             {
                 this.HasHyperlinks = false;
                 this.FirstLink = null;

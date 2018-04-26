@@ -133,7 +133,7 @@ namespace ExViewer.Views
 
         private async void btnFileSearch_Click(object sender, RoutedEventArgs e)
         {
-            if (this.dlgFileSearch == null)
+            if (this.dlgFileSearch is null)
                 this.dlgFileSearch = new FileSearchDialog();
             CloseAll();
             await this.dlgFileSearch.ShowAsync();

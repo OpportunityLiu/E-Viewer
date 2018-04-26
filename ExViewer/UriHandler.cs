@@ -21,7 +21,7 @@ namespace ExViewer
 
         private static bool isPrivateProtocal(Uri uri)
         {
-            if (uri == null)
+            if (uri is null)
                 return false;
             return uri.Scheme == "e-viewer-data";
         }
@@ -40,7 +40,7 @@ namespace ExViewer
         /// <returns>表示是否在应用内处理</returns>
         public static bool Handle(Uri uri)
         {
-            if (uri == null)
+            if (uri is null)
                 return true;
             var p = isPrivateProtocal(uri);
             uri = reform(uri);

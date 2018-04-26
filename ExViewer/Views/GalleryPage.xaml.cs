@@ -164,7 +164,7 @@ namespace ExViewer.Views
             {
                 if (this.isGdInfoHideDef is bool va)
                     return va;
-                if (this.tracker == null)
+                if (this.tracker is null)
                     return false;
                 var current = this.tracker.Position.Y;
                 var max = this.tracker.MaxPosition.Y;
@@ -176,7 +176,7 @@ namespace ExViewer.Views
         {
             if (this.isGdInfoHide == hideGdInfo && !disableAnimation)
                 return;
-            if (this.tracker == null)
+            if (this.tracker is null)
                 return;
             this.isGdInfoHideDef = hideGdInfo;
             if (disableAnimation)
@@ -301,7 +301,7 @@ namespace ExViewer.Views
                     await this.ViewModel.LoadComments();
                 break;
             case 2://Torrents
-                if (this.ViewModel.Torrents == null)
+                if (this.ViewModel.Torrents is null)
                     await this.ViewModel.LoadTorrents();
                 // finish the add animation
                 await Task.Delay(150);
@@ -324,7 +324,7 @@ namespace ExViewer.Views
             foreach (var item in e.RemovedItems)
             {
                 var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(item);
-                if (con == null)
+                if (con is null)
                     continue;
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
                 gd.Visibility = Visibility.Collapsed;
@@ -333,7 +333,7 @@ namespace ExViewer.Views
             if (added != null)
             {
                 var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(added);
-                if (con == null)
+                if (con is null)
                     return;
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
                 gd.Visibility = Visibility.Visible;
@@ -378,7 +378,7 @@ namespace ExViewer.Views
             case VirtualKey.Application:
                 if (this.cb_top.IsOpen = !this.cb_top.IsOpen)
                 {
-                    if (this.btnMoreButton == null)
+                    if (this.btnMoreButton is null)
                         this.btnMoreButton = this.cb_top.Descendants<Button>("MoreButton").FirstOrDefault();
                     this.btnMoreButton?.Focus(FocusState.Programmatic);
                 }
@@ -437,7 +437,7 @@ namespace ExViewer.Views
 
         private static string favoriteCategoryToName(FavoriteCategory cat)
         {
-            if (cat == null || cat.Index < 0)
+            if (cat is null || cat.Index < 0)
                 return Strings.Resources.Views.GalleryPage.FavoritesAppBarButton.Text;
             return cat.Name;
         }
@@ -482,7 +482,7 @@ namespace ExViewer.Views
             var infoH = height - this.Ancestors<GalleryPage>().First().VisibleBounds.Bottom;
             if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
             {
-                if (this.gdPvContentHeaderPresenter == null)
+                if (this.gdPvContentHeaderPresenter is null)
                     this.gdPvContentHeaderPresenter = this.Children[1].Descendants<Grid>("HeaderPresenter").FirstOrDefault();
                 if (this.gdPvContentHeaderPresenter != null)
                     infoH -= this.gdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;

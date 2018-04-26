@@ -40,7 +40,7 @@ namespace ApplicationDataManager.Settings
             this.ValueRepresent = info.GetCustomAttribute<ValueRepresentAttribute>();
 
             var pType = info.PropertyType;
-            if (this.ValueRepresent == null)
+            if (this.ValueRepresent is null)
             {
                 if (!typeDic.TryGetValue(pType, out this.type))
                 {
@@ -89,7 +89,7 @@ namespace ApplicationDataManager.Settings
             get => this.PropertyInfo.GetValue(this.settingCollection);
             set
             {
-                if (value == null)
+                if (value is null)
                     return;
                 this.PropertyInfo.SetValue(this.settingCollection, value);
             }

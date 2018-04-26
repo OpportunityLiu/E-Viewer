@@ -22,7 +22,7 @@ namespace ExClient.Galleries.Metadata
         internal static Language Parse(Gallery gallery)
         {
             var tags = gallery.Tags;
-            if (tags == null)
+            if (tags is null)
                 return default(Language);
             var modi = LanguageModifier.None;
             var language = new List<LanguageName>(1);
@@ -31,26 +31,26 @@ namespace ExClient.Galleries.Metadata
             {
                 switch (item.Content.Content)
                 {
-                    case "rewrite":
-                        modi = LanguageModifier.Rewrite;
-                        continue;
-                    case "translated":
-                        modi = LanguageModifier.Translated;
-                        continue;
-                    default:
-                        if (naTags.Contains(item.Content.Content))
-                        {
-                            language.Clear();
-                            lanNA = true;
-                        }
-                        else if (!lanNA)
-                        {
-                            if (Enum.TryParse<LanguageName>(item.Content.Content, true, out var lan))
-                                language.Add(lan);
-                            else
-                                language.Add(LanguageName.Other);
-                        }
-                        continue;
+                case "rewrite":
+                    modi = LanguageModifier.Rewrite;
+                    continue;
+                case "translated":
+                    modi = LanguageModifier.Translated;
+                    continue;
+                default:
+                    if (naTags.Contains(item.Content.Content))
+                    {
+                        language.Clear();
+                        lanNA = true;
+                    }
+                    else if (!lanNA)
+                    {
+                        if (Enum.TryParse<LanguageName>(item.Content.Content, true, out var lan))
+                            language.Add(lan);
+                        else
+                            language.Add(LanguageName.Other);
+                    }
+                    continue;
                 }
             }
             if (!lanNA && language.Count == 0)
@@ -62,7 +62,7 @@ namespace ExClient.Galleries.Metadata
         public Language(IEnumerable<LanguageName> names, LanguageModifier modifier)
         {
             Modifier = modifier;
-            if (names == null)
+            if (names is null)
             {
                 this.names = null;
                 return;
@@ -92,12 +92,12 @@ namespace ExClient.Galleries.Metadata
                 name = string.Join(", ", this.Names.Select(LanguageNameExtension.ToFriendlyNameString));
             switch (Modifier)
             {
-                case LanguageModifier.Translated:
-                    return $"{name} {LocalizedStrings.Language.Modifiers.Translated}";
-                case LanguageModifier.Rewrite:
-                    return $"{name} {LocalizedStrings.Language.Modifiers.Rewrite}";
-                default:
-                    return name;
+            case LanguageModifier.Translated:
+                return $"{name} {LocalizedStrings.Language.Modifiers.Translated}";
+            case LanguageModifier.Rewrite:
+                return $"{name} {LocalizedStrings.Language.Modifiers.Rewrite}";
+            default:
+                return name;
             }
         }
 
@@ -105,13 +105,13 @@ namespace ExClient.Galleries.Metadata
         {
             if (this.Modifier != other.Modifier)
                 return false;
-            if (this.names == null)
+            if (this.names is null)
             {
-                if (other.names == null)
+                if (other.names is null)
                     return true;
                 return false;
             }
-            if (other.names == null)
+            if (other.names is null)
                 return false;
             return this.names.SequenceEqual(other.names);
         }
