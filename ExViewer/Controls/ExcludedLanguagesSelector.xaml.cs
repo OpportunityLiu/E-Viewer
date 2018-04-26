@@ -53,8 +53,6 @@ namespace ExViewer.Controls
         public static readonly DependencyProperty ExcludedLanguagesProperty =
             DependencyProperty.Register("ExcludedLanguages", typeof(string), typeof(ExcludedLanguagesSelector), new PropertyMetadata("", excludedLanguagesChanged));
 
-        private static char[] split = ", ".ToCharArray();
-
         private static void excludedLanguagesChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var oldS = e.OldValue.ToString();
