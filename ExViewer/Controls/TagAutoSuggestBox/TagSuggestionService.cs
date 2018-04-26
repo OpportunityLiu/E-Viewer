@@ -169,7 +169,7 @@ namespace ExViewer.Controls
         private static async void asb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             sender.ItemsSource = null;
-            if (args.ChosenSuggestion == null || autoCompleteFinished(args.ChosenSuggestion))
+            if (args.ChosenSuggestion is null || autoCompleteFinished(args.ChosenSuggestion))
             {
                 var command = GetSubmitCommand(sender);
                 if (command.CanExecute(args.QueryText))

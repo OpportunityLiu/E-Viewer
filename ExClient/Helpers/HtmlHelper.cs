@@ -13,14 +13,14 @@ namespace HtmlAgilityPack
 
         public static IEnumerable<HtmlNode> Elements(this HtmlNode node, string name, string className)
         {
-            if (node == null)
+            if (node is null)
                 throw new ArgumentNullException(nameof(node));
             return node.Elements(name).Where(n => n.HasClass(className));
         }
 
         public static string GetAttribute(this HtmlNode node, string attributeName, string def = null)
         {
-            if (node == null)
+            if (node is null)
                 throw new ArgumentNullException(nameof(node));
             return HtmlEntity.DeEntitize(node.GetAttributeValue(attributeName, null)) ?? def;
         }
@@ -28,7 +28,7 @@ namespace HtmlAgilityPack
         public static int GetAttribute(this HtmlNode node, string attributeName, int def = default)
         {
             var r = node.GetAttribute(attributeName, default(string));
-            if (r == null)
+            if (r is null)
                 return def;
             if (int.TryParse(r, out var intP))
                 return intP;
@@ -38,7 +38,7 @@ namespace HtmlAgilityPack
         public static bool GetAttribute(this HtmlNode node, string attributeName, bool def = default)
         {
             var r = node.GetAttribute(attributeName, default(string));
-            if (r == null)
+            if (r is null)
                 return def;
             return true;
         }
@@ -49,7 +49,7 @@ namespace HtmlAgilityPack
         public static Uri GetAttribute(this HtmlNode node, string attributeName, Uri baseUri, Uri def = default)
         {
             var r = node.GetAttribute(attributeName, default(string));
-            if (r == null)
+            if (r is null)
                 return def;
             return new Uri(baseUri, r);
         }
@@ -57,14 +57,14 @@ namespace HtmlAgilityPack
         public static T GetAttribute<T>(this HtmlNode node, string attributeName, T def = default)
         {
             var r = node.GetAttribute(attributeName, default(string));
-            if (r == null)
+            if (r is null)
                 return def;
             return (T)Convert.ChangeType(r, typeof(T));
         }
 
         public static string GetInnerText(this HtmlNode node)
         {
-            if (node == null)
+            if (node is null)
                 throw new ArgumentNullException(nameof(node));
             return HtmlEntity.DeEntitize(node.InnerText);
         }

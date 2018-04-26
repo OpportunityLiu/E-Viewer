@@ -117,7 +117,7 @@ namespace ExClient.Galleries.Metadata
         {
             return Run(async token =>
             {
-                if (this.TorrentUri == null)
+                if (this.TorrentUri is null)
                     throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
                 using (var client = new HttpClient())
                 {

@@ -67,15 +67,15 @@ namespace ExViewer.Views
 
         private async void MyContentDialog_Loading(FrameworkElement sender, object args)
         {
-            if (this.Gallery == null)
+            if (this.Gallery is null)
                 throw new InvalidOperationException("Property AddToFavoritesDialog.Gallery is null.");
-            var galleryInFavorites = this.Gallery.FavoriteCategory == null ? null : (bool?)(this.Gallery.FavoriteCategory.Index >= 0);
+            var galleryInFavorites = this.Gallery.FavoriteCategory is null ? null : (bool?)(this.Gallery.FavoriteCategory.Index >= 0);
             this.tbInfo.Text = "";
             this.tbNote.Text = this.Gallery.FavoriteNote ?? "";
             this.cbCategory.SelectedItem = this.cbCategory.Items.FirstOrDefault();
             this.Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
             await Dispatcher.YieldIdle();
-            if (galleryInFavorites == null)
+            if (galleryInFavorites is null)
             {
                 if (!await loadNotesAsync())
                     return;
@@ -87,7 +87,7 @@ namespace ExViewer.Views
                 if (this.categories.Count == 10)
                     this.categories.Add(FavoriteCategory.Removed);
                 this.cbCategory.SelectedIndex = this.Gallery.FavoriteCategory.Index;
-                if (this.Gallery.FavoriteNote == null)
+                if (this.Gallery.FavoriteNote is null)
                     await loadNotesAsync();
             }
             else

@@ -21,7 +21,7 @@ namespace ExClient.Models
             this.FileSize = toCache.FileSize;
             this.Expunged = toCache.Expunged;
             this.Rating = toCache.Rating.AverageScore;
-            if (toCache.Tags == null || toCache.Tags.Items.Count == 0)
+            if (toCache.Tags is null || toCache.Tags.Items.Count == 0)
                 this.Tags = "[]";
             else
                 this.Tags = JsonConvert.SerializeObject(toCache.Tags.Items.Select(tag => tag.Content.ToString()));

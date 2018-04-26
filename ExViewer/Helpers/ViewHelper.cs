@@ -9,7 +9,7 @@ namespace ExViewer.Views
     {
         public static async Task<bool> ScrollAndFocus(ListViewBase listView, object item)
         {
-            if (item == null || listView == null)
+            if (item is null || listView is null)
                 return false;
             for (var i = 0; i < 5; i++)
             {

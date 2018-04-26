@@ -35,7 +35,7 @@ namespace ExViewer.Controls
         {
             var o = (string)e.OldValue;
             var n = (string)e.NewValue;
-            if (n == null)
+            if (n is null)
                 throw new ArgumentNullException(nameof(Text));
             if (o == n)
                 return;
@@ -89,7 +89,7 @@ namespace ExViewer.Controls
 
         private void reload()
         {
-            if (this.Presenter == null)
+            if (this.Presenter is null)
                 return;
             this.Presenter.Text = "";
             this.Presenter.Inlines.Clear();

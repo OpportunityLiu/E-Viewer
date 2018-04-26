@@ -37,7 +37,7 @@ namespace ExViewer.Views
 
         private async void loadBanner(StorageFile banner)
         {
-            if (banner == null)
+            if (banner is null)
             {
                 ((BitmapImage)this.img_pic.Source).UriSource = BannerProvider.Provider.DefaultBanner;
                 return;

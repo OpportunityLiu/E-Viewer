@@ -85,7 +85,7 @@ namespace ExViewer
             }
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
-            if (currentContent == null)
+            if (currentContent is null)
             {
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
