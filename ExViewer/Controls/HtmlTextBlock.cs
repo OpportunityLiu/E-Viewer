@@ -29,16 +29,14 @@ namespace ExViewer.Controls
                 return;
             var u = this.XYFocusUp;
             var d = this.XYFocusDown;
-            var l = this.XYFocusLeft;
-            var r = this.XYFocusRight;
             var begin = this.FirstLink;
             switch (begin)
             {
             case Hyperlink hl:
-                hl.XYFocusUp = this.XYFocusUp;
+                hl.XYFocusUp = u;
                 break;
             case HyperlinkButton hlb:
-                hlb.XYFocusUp = this.XYFocusUp;
+                hlb.XYFocusUp = u;
                 break;
             default:
                 throw new InvalidOperationException();
@@ -47,10 +45,10 @@ namespace ExViewer.Controls
             switch (end)
             {
             case Hyperlink hl:
-                hl.XYFocusDown = this.XYFocusDown;
+                hl.XYFocusDown = d;
                 break;
             case HyperlinkButton hlb:
-                hlb.XYFocusDown = this.XYFocusDown;
+                hlb.XYFocusDown = d;
                 break;
             default:
                 throw new InvalidOperationException();
@@ -58,16 +56,18 @@ namespace ExViewer.Controls
             var o = begin;
             while (o != null)
             {
+                var l = this.XYFocusLeft;
+                var r = this.XYFocusRight;
                 switch (o)
                 {
                 case Hyperlink hl:
-                    hl.XYFocusLeft = this.XYFocusLeft;
-                    hl.XYFocusRight = this.XYFocusRight;
+                    hl.XYFocusLeft = l;
+                    hl.XYFocusRight = r;
                     o = hl.XYFocusDown;
                     break;
                 case HyperlinkButton hlb:
-                    hlb.XYFocusLeft = this.XYFocusLeft;
-                    hlb.XYFocusRight = this.XYFocusRight;
+                    hlb.XYFocusLeft = l;
+                    hlb.XYFocusRight = r;
                     o = hlb.XYFocusDown;
                     break;
                 default:
