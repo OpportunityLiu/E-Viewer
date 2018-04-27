@@ -17,7 +17,7 @@ namespace ExClient.Search
 
         internal static FavoritesSearchResult Search(string keyword, FavoriteCategory category)
         {
-            if (category == null || category.Index < 0)
+            if (category is null || category.Index < 0)
                 category = FavoriteCategory.All;
             var result = new FavoritesSearchResult(keyword, category);
             return result;
@@ -74,9 +74,9 @@ namespace ExClient.Search
 
         public IAsyncAction AddToCategoryAsync(IReadOnlyList<ItemIndexRange> items, FavoriteCategory categoty)
         {
-            if (categoty == null)
+            if (categoty is null)
                 throw new ArgumentNullException(nameof(categoty));
-            if (items == null || items.Count == 0)
+            if (items is null || items.Count == 0)
                 return AsyncAction.CreateCompleted();
             return AsyncInfo.Run(async token =>
             {

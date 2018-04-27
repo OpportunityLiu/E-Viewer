@@ -78,7 +78,7 @@ namespace ExViewer.Controls
             {
                 var that = (TagVM)sender.Tag;
                 var tagc = that.Tags;
-                if (tagc == null)
+                if (tagc is null)
                     return;
                 var tags = text.Split(commas, StringSplitOptions.RemoveEmptyEntries)
                     .Where(s => !string.IsNullOrWhiteSpace(s))
@@ -131,7 +131,7 @@ namespace ExViewer.Controls
             if (this.asbNewTags != null)
                 this.asbNewTags.Visibility = Visibility.Collapsed;
             this.btnStartNew.Visibility = Visibility.Visible;
-            if (this.asbNewTags == null)
+            if (this.asbNewTags is null)
                 return;
             this.asbNewTags.Text = "";
             TagSuggestionService.IncreaseStateCode(this.asbNewTags);
@@ -140,7 +140,7 @@ namespace ExViewer.Controls
         private void btnStartNew_Click(object sender, RoutedEventArgs e)
         {
             resetNewTagState();
-            if (this.asbNewTags == null)
+            if (this.asbNewTags is null)
                 FindName(nameof(this.asbNewTags));
             this.asbNewTags.Visibility = Visibility.Visible;
             this.btnStartNew.Visibility = Visibility.Collapsed;

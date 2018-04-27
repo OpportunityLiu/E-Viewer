@@ -183,7 +183,7 @@ namespace ExViewer.Views
             if (index < 0)
                 return;
             var g = this.ViewModel?.Gallery;
-            if (g == null)
+            if (g is null)
                 return;
             setScale();
         }

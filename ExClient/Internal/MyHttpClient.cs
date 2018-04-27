@@ -158,12 +158,12 @@ namespace ExClient.Internal
                     if (response.StatusCode != HttpStatusCode.NotFound)
                         break;
                     var title = rootNode.Element("html").Element("head").Element("title");
-                    if (title == null)
+                    if (title is null)
                         break;
                     if (!title.GetInnerText().StartsWith("Gallery Not Available - "))
                         break;
                     var error = rootNode.Element("html").Element("body")?.Element("div")?.Element("p");
-                    if (error == null)
+                    if (error is null)
                         break;
                     var msg = error.GetInnerText();
                     switch (msg)
@@ -194,7 +194,7 @@ namespace ExClient.Internal
             reformUri(ref uri);
             return Run<string, HttpProgress>(async (token, progress) =>
             {
-                var op = PostAsync(uri, content == null ? null : new HttpStringContent(content));
+                var op = PostAsync(uri, content is null ? null : new HttpStringContent(content));
                 token.Register(op.Cancel);
                 op.Progress = (sender, value) => progress.Report(value);
                 var res = await op;

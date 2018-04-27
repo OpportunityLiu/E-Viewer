@@ -62,7 +62,7 @@ namespace EhWikiClient
         internal static Record Load(string json)
         {
             var res = JsonConvert.DeserializeObject<Response>(json);
-            if (res.parse == null)
+            if (res.parse is null)
                 return new Record(false);
             var str = Windows.Data.Html.HtmlUtilities.ConvertToText(res.parse.text.Str);
             var match = reg.Matches(str);
@@ -80,15 +80,15 @@ namespace EhWikiClient
                 {
                     switch (item.Value)
                     {
-                        case "Tag": type |= TagType.Fetish; break;
-                        case "Series_Tag": type |= TagType.Series; break;
-                        case "Language_Tag": type |= TagType.Language; break;
-                        case "Character_Tag": type |= TagType.Character; break;
-                        case "Creator_Tag": type |= TagType.Creator; break;
+                    case "Tag": type |= TagType.Fetish; break;
+                    case "Series_Tag": type |= TagType.Series; break;
+                    case "Language_Tag": type |= TagType.Language; break;
+                    case "Character_Tag": type |= TagType.Character; break;
+                    case "Creator_Tag": type |= TagType.Creator; break;
                     }
                 }
             }
-           return new Record(res.parse.title, j, d, res.parse.text.Str, type);
+            return new Record(res.parse.title, j, d, res.parse.text.Str, type);
         }
 
         internal void Update(Record record)

@@ -57,7 +57,7 @@ namespace ExClient.Search
                 .FirstOrDefault(node => node.HasClass("ip"));
             var pttNode = idoNode.Descendants("table")
                 .FirstOrDefault(node => node.HasClass("ptt"));
-            if (rcNode == null || pttNode == null)
+            if (rcNode is null || pttNode is null)
             {
                 this.RecordCount = 0;
             }
@@ -107,7 +107,7 @@ namespace ExClient.Search
         {
             var isList = true;
             var dataRoot = doc.DocumentNode.Descendants("table").SingleOrDefault(node => node.HasClass("itg"));
-            if (dataRoot == null)
+            if (dataRoot is null)
             {
                 isList = false;
                 dataRoot = doc.DocumentNode.Descendants("div").SingleOrDefault(node => node.HasClass("itg"));

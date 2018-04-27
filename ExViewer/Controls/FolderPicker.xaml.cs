@@ -76,7 +76,7 @@ namespace ExViewer.Controls
             };
             p.FileTypeFilter.Add(".");
             var f = await p.PickSingleFolderAsync();
-            if (f == null)
+            if (f is null)
                 return;
             this.FolderToken = StorageApplicationPermissions.FutureAccessList.Add(f);
         }

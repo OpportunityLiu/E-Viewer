@@ -119,7 +119,7 @@ namespace ExViewer.ViewModels
                 var that = (GalleryVM)sender.Tag;
                 if (!ShareHandler.IsShareSupported)
                 {
-                    if (image == null)
+                    if (image is null)
                         await Launcher.LaunchUriAsync(that.gallery.GalleryUri, new LauncherOptions { IgnoreAppUriHandlers = true });
                     else
                         await Launcher.LaunchUriAsync(image.PageUri, new LauncherOptions { IgnoreAppUriHandlers = true });
@@ -134,7 +134,7 @@ namespace ExViewer.ViewModels
                         var data = e.Request.Data;
                         data.Properties.Title = gallery.GetDisplayTitle();
                         data.Properties.Description = gallery.GetSecondaryTitle();
-                        if (image == null)
+                        if (image is null)
                         {
                             data.Properties.ContentSourceWebLink = gallery.GalleryUri;
                             data.SetWebLink(gallery.GalleryUri);
@@ -167,7 +167,7 @@ namespace ExViewer.ViewModels
                             data.SetWebLink(image.PageUri);
                             data.SetText(image.PageUri.ToString());
                             var imageFile = image.ImageFile;
-                            if (imageFile == null)
+                            if (imageFile is null)
                                 return;
                             var view = RandomAccessStreamReference.CreateFromFile(imageFile);
                             data.SetBitmap(view);
@@ -262,7 +262,7 @@ namespace ExViewer.ViewModels
                 try
                 {
                     var file = await torrent.LoadTorrentAsync();
-                    if (torrentfolder == null)
+                    if (torrentfolder is null)
                         await loadTorrentFolder();
                     await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
                     if (!await Launcher.LaunchFileAsync(file))
@@ -361,7 +361,7 @@ namespace ExViewer.ViewModels
         {
             var current = (GalleryImage)this.View.CurrentItem;
             var imageFile = current?.ImageFile;
-            if (imageFile == null)
+            if (imageFile is null)
             {
                 this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
                 this.QRCodeResult = null;
@@ -483,10 +483,10 @@ namespace ExViewer.ViewModels
                         torrentfolder = null;
                     }
                 }
-                if (torrentfolder == null)
+                if (torrentfolder is null)
                 {
                     torrentfolder = await DownloadsFolder.CreateFolderAsync("Torrents", CreationCollisionOption.GenerateUniqueName);
-                    if (ftoken == null)
+                    if (ftoken is null)
                         ftoken = StorageApplicationPermissions.FutureAccessList.Add(torrentfolder);
                     else
                         StorageApplicationPermissions.FutureAccessList.AddOrReplace(ftoken, torrentfolder);

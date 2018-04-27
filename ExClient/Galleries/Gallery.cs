@@ -42,9 +42,9 @@ namespace ExClient.Galleries
                     db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
                     var cm = db.SavedSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.GalleryModelId == galleryId);
-                    if (gm == null)
+                    if (gm is null)
                         return null;
-                    var r = (cm == null) ?
+                    var r = (cm is null) ?
                          new Gallery(gm) :
                          new SavedGallery(gm);
                     await r.InitAsync();
@@ -55,7 +55,7 @@ namespace ExClient.Galleries
 
         public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
         {
-            if (galleryInfo == null)
+            if (galleryInfo is null)
                 throw new ArgumentNullException(nameof(galleryInfo));
             if (galleryInfo.Count <= 0)
                 return AsyncOperation<IList<Gallery>>.CreateCompleted(Array.Empty<Gallery>());
@@ -139,7 +139,7 @@ namespace ExClient.Galleries
                 {
                     var gid = this.ID;
                     var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == gid);
-                    if (myModel == null)
+                    if (myModel is null)
                     {
                         db.SavedSet.Add(new SavedGalleryModel().Update(this));
                     }
@@ -239,7 +239,7 @@ namespace ExClient.Galleries
                 {
                     var gid = this.ID;
                     var myModel = db.GallerySet.SingleOrDefault(model => model.GalleryModelId == gid);
-                    if (myModel == null)
+                    if (myModel is null)
                     {
                         db.GallerySet.Add(new GalleryModel().Update(this));
                     }
@@ -306,7 +306,7 @@ namespace ExClient.Galleries
                         if (asyncStatus != AsyncStatus.Completed)
                             return;
                         var r = asyncInfo.GetResults();
-                        if (r == null)
+                        if (r is null)
                             return;
                         if (this.thumbImage.TryGetTarget(out var img2))
                         {
@@ -381,7 +381,7 @@ namespace ExClient.Galleries
                 this.FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
             }
             this.Rating.AnalyzeDocument(doc);
-            if (this.Revisions == null)
+            if (this.Revisions is null)
                 this.Revisions = new RevisionCollection(this, doc);
             this.Tags.Update(doc);
         }
@@ -404,7 +404,7 @@ namespace ExClient.Galleries
                     {
                         var nodeA = page.Element("a");
                         var thumb = nodeA.Element("img").GetAttribute("src", default(Uri));
-                        if (thumb == null)
+                        if (thumb is null)
                             continue;
                         var tokens = nodeA.GetAttribute("href", "").Split(new[] { '/', '-' });
                         if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s")
@@ -523,7 +523,7 @@ namespace ExClient.Galleries
                             var file = default(StorageFile);
                             if (i < this.Count)
                                 file = this[i].ImageFile;
-                            if (file == null)
+                            if (file is null)
                             {
                                 var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
                                 file = await folder.TryGetFileAsync(item.Image.FileName);

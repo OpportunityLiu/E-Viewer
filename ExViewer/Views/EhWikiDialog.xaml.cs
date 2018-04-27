@@ -58,7 +58,7 @@ namespace ExViewer.Views
             this.loadRecord?.Cancel();
             this.wv.Visibility = Visibility.Collapsed;
             this.pb.Visibility = Visibility.Visible;
-            if (tag.Content == null)
+            if (tag.Content is null)
             {
                 this.Title = "";
                 this.wv.NavigateToString("");
@@ -72,7 +72,7 @@ namespace ExViewer.Views
                     this.loadRecord = tag.FetchEhWikiRecordAsync();
                     var record = await this.loadRecord;
                     this.loadRecord = null;
-                    if (record?.DetialHtml == null)
+                    if (record?.DetialHtml is null)
                         str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
                     else
                         str = record.DetialHtml;
@@ -90,7 +90,7 @@ namespace ExViewer.Views
                 {
                     this.navigate(new Uri(ew, HtmlAgilityPack.HtmlEntity.DeEntitize(redirect.Groups[1].Value)));
                 }
-                if (this.style == null)
+                if (this.style is null)
                     this.initStyle();
                 this.wv.NavigateToString(this.style + str);
 

@@ -79,8 +79,7 @@ namespace EhTagTranslatorClient
                 throw new InvalidOperationException();
             if (r1.Namespace != r2.Namespace)
                 throw new InvalidOperationException();
-            string original, translated, intro;
-            original = r1.Original;
+            string translated, intro;
             if (r1.TranslatedRaw == r2.TranslatedRaw)
             {
                 translated = r1.TranslatedRaw;

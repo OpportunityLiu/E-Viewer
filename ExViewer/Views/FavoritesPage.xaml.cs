@@ -139,7 +139,7 @@ namespace ExViewer.Views
                 return false;
             this.lv.SelectionMode = ListViewSelectionMode.Multiple;
             this.lv.IsItemClickEnabled = false;
-            if (this.cbActions == null)
+            if (this.cbActions is null)
             {
                 this.FindName(nameof(this.cbActions));
                 var l = new List<FavoriteCategory>(11)
