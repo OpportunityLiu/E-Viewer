@@ -51,7 +51,7 @@ namespace ExClient.Search
             {
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(DomainProvider.Eh.RootUri);
                 var pp = doc.GetElementbyId("pp");
-                if (pp == null) // Disabled popular
+                if (pp is null) // Disabled popular
                 {
                     if (reIn)
                     {

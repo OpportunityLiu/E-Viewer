@@ -23,17 +23,17 @@ namespace ExViewer.Controls
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if(item != null)
+            if (item != null)
             {
-                foreach(var template in this.Templates)
+                foreach (var template in this.Templates)
                 {
-                    if(template.KeyType == null)
+                    if (template.KeyType is null)
                         continue;
-                    if(template.KeyType.IsInstanceOfType(item))
+                    if (template.KeyType.IsInstanceOfType(item))
                         return template.Value;
                 }
             }
-            if(this.DefaultTemplate != null)
+            if (this.DefaultTemplate != null)
                 return this.DefaultTemplate;
             return base.SelectTemplateCore(item);
         }
@@ -90,7 +90,7 @@ namespace ExViewer.Controls
         {
             var sender = (DataTemplateKeyValuePair)d;
             var n = e.NewValue.ToString();
-            if(string.IsNullOrWhiteSpace(n))
+            if (string.IsNullOrWhiteSpace(n))
             {
                 sender.KeyType = null;
                 return;

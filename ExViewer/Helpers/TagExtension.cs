@@ -48,7 +48,7 @@ namespace ExClient.Tagging
 
         private static bool match(Tag tag, EhWikiClient.Record wiki)
         {
-            if (wiki == null)
+            if (wiki is null)
                 return false;
             if (tag.Namespace == Namespace.Unknown)
                 return true;

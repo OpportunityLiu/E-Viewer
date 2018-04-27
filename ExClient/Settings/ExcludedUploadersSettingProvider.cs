@@ -63,7 +63,7 @@ namespace ExClient.Settings
 
         private static string checkUser(object value)
         {
-            if (value == null)
+            if (value is null)
                 throw new ArgumentNullException(nameof(value));
             var s = value.ToString().Trim();
             if (string.IsNullOrEmpty(s))

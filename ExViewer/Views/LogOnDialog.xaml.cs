@@ -119,7 +119,7 @@ namespace ExViewer.Views
         private async void wv_DOMContentLoaded(WebView sender, WebViewDOMContentLoadedEventArgs args)
         {
             System.Diagnostics.Debug.WriteLine(args.Uri?.ToString() ?? "local string", "WebView");
-            if (args.Uri == null)
+            if (args.Uri is null)
                 return;
             if (args.Uri == Client.LogOnUri)
                 await injectLogOnPage();

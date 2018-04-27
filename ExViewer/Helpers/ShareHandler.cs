@@ -43,7 +43,7 @@ namespace ExViewer.Helpers
 
         public static void SetFileProvider(this DataPackage package, IStorageFile file, string fileName)
         {
-            if (file == null)
+            if (file is null)
                 throw new ArgumentNullException(nameof(file));
             fileName = StorageHelper.ToValidFileName(fileName);
             var fileList = new List<IStorageFile> { file };
@@ -189,16 +189,16 @@ namespace ExViewer.Helpers
                     {
                         var files = (await operation.Data.GetStorageItemsAsync()).FirstOrDefault();
                         var file = files as StorageFile;
-                        if (file == null)
+                        if (file is null)
                         {
                             var folder = files as StorageFolder;
-                            if (folder == null)
+                            if (folder is null)
                             {
                                 return;
                             }
                             file = (await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).FirstOrDefault();
                         }
-                        if (file == null)
+                        if (file is null)
                             return;
                         // Only files in localfolder can be set as background.
                         file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"Img_{file.Name}", NameCollisionOption.ReplaceExisting);
@@ -217,7 +217,7 @@ namespace ExViewer.Helpers
             {
                 public static IAsyncOperation<DataProviderProxy> CreateAsync(DataPackageView viewToProxy)
                 {
-                    if (viewToProxy == null)
+                    if (viewToProxy is null)
                         throw new ArgumentNullException(nameof(viewToProxy));
                     var proxy = new DataProviderProxy(viewToProxy);
                     return proxy.initAsync();

@@ -40,7 +40,7 @@ namespace ExViewer.Views
             await Dispatcher.YieldIdle();
             if (e.NavigationMode != NavigationMode.Back)
             {
-                if (this.ViewModel.Galleries == null)
+                if (this.ViewModel.Galleries is null)
                 {
                     this.ViewModel.Refresh.Execute();
                     this.abb_Refresh.Focus(FocusState.Programmatic);
@@ -107,7 +107,7 @@ namespace ExViewer.Views
         private void lv_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
             var lvi = (args.OriginalSource as DependencyObject)?.AncestorsAndSelf<ListViewItem>()?.FirstOrDefault();
-            if (lvi == null)
+            if (lvi is null)
                 return;
             var dc = lvi.Content;
             this.mfi_DeleteGallery.CommandParameter = dc;

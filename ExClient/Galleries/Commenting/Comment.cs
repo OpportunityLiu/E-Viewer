@@ -20,7 +20,7 @@ namespace ExClient.Galleries.Commenting
         internal static IEnumerable<Comment> AnalyzeDocument(CommentCollection owner, HtmlDocument document)
         {
             var commentNodes = document?.GetElementbyId("cdiv")?.ChildNodes;
-            if (commentNodes == null)
+            if (commentNodes is null)
                 yield break;
             for (var i = 0; i < commentNodes.Count; i += 2)
             {
@@ -194,7 +194,7 @@ namespace ExClient.Galleries.Commenting
                 var r = await request.GetResponseAsync();
                 var doc = HtmlNode.CreateNode(r.Editable.Trim());
                 var textArea = doc.Descendants("textarea").FirstOrDefault();
-                if (textArea == null)
+                if (textArea is null)
                     return "";
                 return textArea.GetInnerText();
             });

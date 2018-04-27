@@ -95,7 +95,7 @@ namespace ExViewer.Views
             /// <returns>表示是否在应用内处理</returns>
             public static bool HandleUriLaunch(Uri uri)
             {
-                if (uri == null)
+                if (uri is null)
                     return true;
                 if (Available)
                 {
@@ -216,7 +216,7 @@ namespace ExViewer.Views
 
             public static void SendToast(Exception ex, Type source)
             {
-                if (ex == null)
+                if (ex is null)
                     throw new ArgumentNullException(nameof(ex));
                 var sourceString = source?.ToString() ?? "null";
 #if DEBUG
@@ -229,7 +229,7 @@ namespace ExViewer.Views
             {
                 if (!Available)
                     return;
-                if (content == null)
+                if (content is null)
                     throw new ArgumentNullException(nameof(content));
                 root.Dispatcher.Begin(() =>
                 {

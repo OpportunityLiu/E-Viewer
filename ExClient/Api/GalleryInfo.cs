@@ -190,7 +190,7 @@ namespace ExClient.Api
     {
         public static GalleryInfo ToGalleryInfo(this Gallery gallery)
         {
-            if (gallery == null)
+            if (gallery is null)
                 throw new ArgumentNullException(nameof(gallery));
             return new GalleryInfo(gallery.ID, gallery.Token);
         }
