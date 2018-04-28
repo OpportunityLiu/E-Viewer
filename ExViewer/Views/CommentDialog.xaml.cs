@@ -90,14 +90,14 @@ namespace ExViewer.Views
                 this.tbContent.Select(sS, currentSelected.Length + end.Length);
                 currentSelected = this.tbContent.SelectedText;
             }
-            if (startsWith == null && endsWith == false)
+            if (startsWith is null && endsWith == false)
             {
                 startsWith = false;
                 sS += begin.Length;
                 this.tbContent.Select(sS, currentSelected.Length - begin.Length);
                 currentSelected = this.tbContent.SelectedText;
             }
-            else if (startsWith == false && endsWith == null)
+            else if (startsWith == false && endsWith is null)
             {
                 endsWith = false;
                 this.tbContent.Select(sS, currentSelected.Length - end.Length);
@@ -230,7 +230,7 @@ namespace ExViewer.Views
 
         private void AddCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            if (Gallery == null)
+            if (Gallery is null)
                 throw new InvalidOperationException();
             this.tbContent.Text = "";
             this.tbContent.Focus(FocusState.Programmatic);
@@ -286,7 +286,7 @@ namespace ExViewer.Views
         private async void EditCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
             this.tbContent.Text = "";
-            if (EditableComment == null)
+            if (EditableComment is null)
                 throw new InvalidOperationException();
             try
             {
@@ -349,7 +349,7 @@ namespace ExViewer.Views
         private void ReplyCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
             this.tbContent.Text = "";
-            if (ReplyingComment == null)
+            if (ReplyingComment is null)
                 throw new InvalidOperationException();
             try
             {

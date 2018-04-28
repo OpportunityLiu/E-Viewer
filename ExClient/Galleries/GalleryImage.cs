@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Data.Html;
@@ -30,15 +31,37 @@ namespace ExClient.Galleries
             CoreApplication.MainView.Dispatcher.Begin(() =>
             {
                 display = DisplayInformation.GetForCurrentView();
-                DefaultThumb = new BitmapImage();
-                DefaultThumb.Dispatcher.BeginIdle(async a =>
-                {
-                    using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
-                    {
-                        await DefaultThumb.SetSourceAsync(stream);
-                    }
-                });
+                createDefaultThumb();
             });
+        }
+
+        private static void createDefaultThumb()
+        {
+            CoreApplication.MainView.Dispatcher.Begin(async () =>
+            {
+                var b = new BitmapImage();
+                var old = Interlocked.CompareExchange(ref defaultThumb, b, null);
+                if (old != null)
+                    return;
+                await b.Dispatcher.YieldIdle();
+                using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
+                {
+                    await b.SetSourceAsync(stream);
+                }
+            });
+        }
+
+        private static ImageSource defaultThumb;
+        public static ImageSource DefaultThumb
+        {
+            get => defaultThumb;
+            set
+            {
+                if (value is null)
+                    createDefaultThumb();
+                else
+                    defaultThumb = value;
+            }
         }
 
         private static DisplayInformation display;
@@ -58,7 +81,7 @@ namespace ExClient.Galleries
             return Run(async token =>
             {
                 var temp2 = imageFolder;
-                if (temp2 == null)
+                if (temp2 is null)
                 {
                     temp2 = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
                     imageFolder = temp2;
@@ -66,8 +89,6 @@ namespace ExClient.Galleries
                 return temp2;
             });
         }
-
-        protected static BitmapImage DefaultThumb { get; private set; }
 
         internal IAsyncAction PopulateCachedImageAsync(GalleryImageModel galleryImageModel, ImageModel imageModel)
         {
@@ -121,7 +142,7 @@ namespace ExClient.Galleries
                 var loadFail = doc.GetElementbyId("loadfail").GetAttribute("onclick", "");
                 var oft = this.failToken;
                 var nft = failTokenMatcher.Match(loadFail).Groups[1].Value;
-                if (oft == null)
+                if (oft is null)
                     this.failToken = "nl=" + nft;
                 else
                     this.failToken = oft + "&nl=" + nft;
@@ -218,7 +239,7 @@ namespace ExClient.Galleries
         public virtual IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
             var previousAction = this.loadImageAction;
-            var previousEnded = previousAction == null || previousAction.Status != AsyncStatus.Started;
+            var previousEnded = previousAction is null || previousAction.Status != AsyncStatus.Started;
             switch (this.state)
             {
             case ImageLoadingState.Loading:
@@ -250,7 +271,7 @@ namespace ExClient.Galleries
             {
                 try
                 {
-                    if (this.PageUri == null)
+                    if (this.PageUri is null)
                         await Owner.LoadItemsAsync(this.PageID - 1, 1);
                     var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
                     var folder = ImageFolder ?? await GetImageFolderAsync();
@@ -268,7 +289,7 @@ namespace ExClient.Galleries
                         {
                             // Try load local file
                             var file = await folder.TryGetFileAsync(imageModel.FileName);
-                            if (file == null)
+                            if (file is null)
                             {
                                 // Failed
                                 break;
@@ -278,7 +299,7 @@ namespace ExClient.Galleries
 
                             var giModel = db.GalleryImageSet
                                 .SingleOrDefault(model => model.GalleryId == this.Owner.ID && model.PageId == this.PageID);
-                            if (giModel == null)
+                            if (giModel is null)
                                 db.GalleryImageSet.Add(new GalleryImageModel().Update(this));
                             else
                                 giModel.Update(this);
@@ -300,7 +321,7 @@ namespace ExClient.Galleries
                         else
                         {
                             imgUri = this.imageUri;
-                            this.OriginalLoaded = (this.originalImageUri == null);
+                            this.OriginalLoaded = (this.originalImageUri is null);
                         }
                         this.State = ImageLoadingState.Loading;
 
@@ -312,7 +333,7 @@ namespace ExClient.Galleries
                                 httpAsyncInfo.Cancel();
                                 return;
                             }
-                            if (httpProgress.TotalBytesToReceive == null || httpProgress.TotalBytesToReceive == 0)
+                            if (httpProgress.TotalBytesToReceive is null || httpProgress.TotalBytesToReceive == 0)
                                 this.Progress = 0;
                             else
                             {
@@ -339,9 +360,9 @@ namespace ExClient.Galleries
                         var myModel = db.GalleryImageSet
                             .Include(model => model.Image)
                             .SingleOrDefault(model => model.GalleryId == this.Owner.ID && model.PageId == this.PageID);
-                        if (myModel == null)
+                        if (myModel is null)
                         {
-                            if (imageModel == null)
+                            if (imageModel is null)
                                 db.ImageSet.Add(new ImageModel().Update(this));
                             else
                                 imageModel.Update(this);

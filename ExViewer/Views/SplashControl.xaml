@@ -41,7 +41,7 @@
         <Image x:Name="img_splash"
                VerticalAlignment="Center"
                RenderTransformOrigin="0.5,0.5"
-               Source="ms-appx:///Assets/SplashScreen.png">
+               Source="ms-appx:///Assets/Application/SplashScreen.png">
           <Image.RenderTransform>
             <CompositeTransform />
           </Image.RenderTransform>

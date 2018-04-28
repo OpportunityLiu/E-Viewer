@@ -49,7 +49,7 @@ namespace ExClient.Api
 
         protected override void CheckResponseOverride(ApiRequest request)
         {
-            if (Error == null)
+            if (Error is null)
                 return;
             var validMatch = tagNotValid.Match(Error);
             if (validMatch.Success)

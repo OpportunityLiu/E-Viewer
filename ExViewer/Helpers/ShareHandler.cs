@@ -28,7 +28,7 @@ namespace ExViewer.Helpers
             if (!IsShareSupported)
                 return;
             new ShareHandlerStorage(handler);
-            DataTransferManager.ShowShareUI();
+            DataTransferManager.ShowShareUI(new ShareUIOptions { Theme = Settings.SettingCollection.Current.Theme == Windows.UI.Xaml.ApplicationTheme.Dark ? ShareUITheme.Dark : ShareUITheme.Light });
         }
 
         private static void PrepareFileShare(DataPackage package, List<IStorageFile> files)
@@ -43,7 +43,7 @@ namespace ExViewer.Helpers
 
         public static void SetFileProvider(this DataPackage package, IStorageFile file, string fileName)
         {
-            if (file == null)
+            if (file is null)
                 throw new ArgumentNullException(nameof(file));
             fileName = StorageHelper.ToValidFileName(fileName);
             var fileList = new List<IStorageFile> { file };
@@ -159,7 +159,7 @@ namespace ExViewer.Helpers
             }
             public ShareProvider OpenLinkProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.OpenInBrowser
-                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Images/MicrosoftEdge.png"))
+                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Assets/ShareTarget/MicrosoftEdge.png"))
                     , (Color)Windows.UI.Xaml.Application.Current.Resources["SystemAccentColor"]
                     , async operation =>
                     {
@@ -170,7 +170,7 @@ namespace ExViewer.Helpers
                     });
             public ShareProvider CopyProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.CopyToClipboard
-                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Images/CopyToClipboard.png"))
+                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Assets/ShareTarget/CopyToClipboard.png"))
                     , (Color)Windows.UI.Xaml.Application.Current.Resources["SystemAccentColor"]
                     , async operation =>
                     {
@@ -183,22 +183,22 @@ namespace ExViewer.Helpers
                     });
             public ShareProvider SetWallpaperProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.SetWallpaper
-                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Images/Settings.png"))
+                    , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Assets/ShareTarget/Settings.png"))
                     , (Color)Windows.UI.Xaml.Application.Current.Resources["SystemAccentColor"]
                     , async operation =>
                     {
                         var files = (await operation.Data.GetStorageItemsAsync()).FirstOrDefault();
                         var file = files as StorageFile;
-                        if (file == null)
+                        if (file is null)
                         {
                             var folder = files as StorageFolder;
-                            if (folder == null)
+                            if (folder is null)
                             {
                                 return;
                             }
                             file = (await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).FirstOrDefault();
                         }
-                        if (file == null)
+                        if (file is null)
                             return;
                         // Only files in localfolder can be set as background.
                         file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"Img_{file.Name}", NameCollisionOption.ReplaceExisting);
@@ -217,7 +217,7 @@ namespace ExViewer.Helpers
             {
                 public static IAsyncOperation<DataProviderProxy> CreateAsync(DataPackageView viewToProxy)
                 {
-                    if (viewToProxy == null)
+                    if (viewToProxy is null)
                         throw new ArgumentNullException(nameof(viewToProxy));
                     var proxy = new DataProviderProxy(viewToProxy);
                     return proxy.initAsync();

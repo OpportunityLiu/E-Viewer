@@ -74,11 +74,13 @@ namespace ExViewer.Views
 
             await Dispatcher.YieldIdle();
             this.fv.ItemsSource = this.ViewModel.View;
-            this.ViewModel.View.IsCurrentPositionLocked = false;
             this.fv.SelectedIndex = index;
             setScale();
             if (!animationSucceed)
+            {
+                await Dispatcher.YieldIdle();
                 Animation_Completed(null, null);
+            }
             RootControl.RootController.SetFullScreen(StatusCollection.Current.FullScreenInImagePage);
         }
 
@@ -87,6 +89,7 @@ namespace ExViewer.Views
             this.imgConnect.Visibility = Visibility.Collapsed;
             this.imgConnect.Source = null;
             this.fv.ItemsSource = this.ViewModel.View;
+            this.ViewModel.View.IsCurrentPositionLocked = false;
             this.fv.IsEnabled = true;
             this.fv.Opacity = 1;
             this.fv.Focus(FocusState.Programmatic);
@@ -180,7 +183,7 @@ namespace ExViewer.Views
             if (index < 0)
                 return;
             var g = this.ViewModel?.Gallery;
-            if (g == null)
+            if (g is null)
                 return;
             setScale();
         }

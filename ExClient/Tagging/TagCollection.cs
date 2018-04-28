@@ -43,7 +43,7 @@ namespace ExClient.Tagging
         public TagCollection(Gallery owner, IEnumerable<Tag> items)
         {
             this.Owner = owner;
-            if (items == null)
+            if (items is null)
                 throw new ArgumentNullException(nameof(items));
             initOrReset(items.Select(t => (t, TagState.NormalPower)));
         }
@@ -119,7 +119,7 @@ namespace ExClient.Tagging
         bool ICollection.IsSynchronized => false;
 
         object ICollection.SyncRoot => this;
-        
+
         object IList.this[int index] { get => this[index]; set => throw new InvalidOperationException(); }
 
         public NamespaceTagCollection this[int index]
@@ -131,7 +131,7 @@ namespace ExClient.Tagging
                 return new NamespaceTagCollection(this, index);
             }
         }
-        
+
         public RangedListView<GalleryTag> this[Namespace key]
         {
             get
@@ -150,7 +150,7 @@ namespace ExClient.Tagging
         private RangedListView<GalleryTag> getValue(Namespace key)
         {
             var i = getIndexOfKey(key);
-            if (i >= 0) 
+            if (i >= 0)
                 return getValue(i);
             if (!key.IsDefined())
                 throw new ArgumentOutOfRangeException(nameof(key));
@@ -171,7 +171,7 @@ namespace ExClient.Tagging
 
         public IAsyncAction VoteAsync(IEnumerable<Tag> tags, VoteState command)
         {
-            if (tags == null)
+            if (tags is null)
                 throw new ArgumentNullException(nameof(tags));
             if (command != VoteState.Down && command != VoteState.Up)
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
@@ -194,10 +194,10 @@ namespace ExClient.Tagging
         internal void Update(HtmlDocument doc)
         {
             var tablecontainer = doc.GetElementbyId("taglist");
-            if (tablecontainer == null)
+            if (tablecontainer is null)
                 return;
             var tableNode = tablecontainer.Element("table");
-            if (tableNode == null)
+            if (tableNode is null)
                 return;
             updateCore(tableNode);
         }

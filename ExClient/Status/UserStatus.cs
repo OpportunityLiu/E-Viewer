@@ -24,7 +24,7 @@ namespace ExClient.Status
         private void analyzeToplists(HtmlNode toplistsDiv)
         {
             var table = toplistsDiv.Element("table").Descendants("table").FirstOrDefault();
-            if (table == null)
+            if (table is null)
             {
                 this.toplists.Clear();
                 return;
@@ -34,7 +34,7 @@ namespace ExClient.Status
             {
                 var rankNode = toplistRecord.Descendants("strong").FirstOrDefault();
                 var listNode = toplistRecord.Descendants("a").FirstOrDefault();
-                if (rankNode == null || listNode == null)
+                if (rankNode is null || listNode is null)
                     continue;
                 if (!int.TryParse(rankNode.GetInnerText().TrimStart('#'), out var rank))
                     continue;
@@ -88,7 +88,7 @@ namespace ExClient.Status
 
         private bool analyzeDoc(HtmlDocument doc)
         {
-            if (doc == null)
+            if (doc is null)
                 return false;
             var contentDivs = doc.DocumentNode
                .Element("html").Element("body").Element("div")

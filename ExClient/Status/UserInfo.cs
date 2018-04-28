@@ -21,7 +21,7 @@ namespace ExClient.Status
             {
                 var document = await Current.HttpClient.GetDocumentAsync(new Uri(ForumsUri, $"index.php?showuser={userID}"));
                 var profileName = document.GetElementbyId("profilename");
-                if (profileName == null)
+                if (profileName is null)
                     return null;
                 var profileRoot = profileName.ParentNode;
                 var profiles = profileRoot.ChildNodes.Where(n => n.Name == "div").ToList();
@@ -44,7 +44,7 @@ namespace ExClient.Status
                     DisplayName = profileName.GetInnerText(),
                     UserID = userID,
                     Infomation = (info.ChildNodes.Count == 1 && info.ChildNodes[0].Name == "i" && info.InnerText == "No Information") ? null : info.GetInnerText(),
-                    Avatar = (avatar == null) ? null : new Uri(ForumsUri, avatar.Attributes["src"].Value),
+                    Avatar = (avatar is null) ? null : new Uri(ForumsUri, avatar.Attributes["src"].Value),
                     MemberGroup = groupAndJoin.FirstChild.GetInnerText().Trim().Substring(14),
                     RegisterDate = register
                 };
@@ -66,11 +66,11 @@ namespace ExClient.Status
             return Run(async token =>
             {
                 var file = await ApplicationData.Current.LocalFolder.TryGetFileAsync("UserInfo");
-                if (file == null)
+                if (file is null)
                     return null;
                 var str = await FileIO.ReadTextAsync(file);
                 var obj = JsonConvert.DeserializeObject<UserInfo>(str);
-                if (obj == null)
+                if (obj is null)
                     return null;
                 return obj;
             });

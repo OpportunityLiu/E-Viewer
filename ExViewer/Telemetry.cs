@@ -13,6 +13,17 @@ namespace ExViewer
 {
     public static class Telemetry
     {
+        private static long[] keySections = new[]
+        {
+            0x4b9c5e4f,
+            0xebf5,
+            0x46ed,
+            0x9ee8,
+            0x72e5de8e0236,
+        };
+
+        public static string AppCenterKey => string.Join("-", keySections.Select(i => i.ToString("x")));
+
         public static string LogException(Exception ex)
         {
             string toRaw(string value)
@@ -32,7 +43,7 @@ namespace ExViewer
                 foreach (var item in ex.Data.Keys)
                 {
                     var value = ex.Data[item];
-                    if (value == null)
+                    if (value is null)
                         sb.AppendLine($"    [{item}]: null");
                     else
                         sb.AppendLine($"    [{item}]: Type={value.GetType()}, ToString=@\"{toRaw(value.ToString())}\"");
@@ -80,42 +91,42 @@ namespace ExViewer
 
         private static void AddtionalInfo(StringBuilder sb, SavedPage svp)
         {
-            if (svp.ViewModel == null)
+            if (svp.ViewModel is null)
                 return;
             AddtionalInfo(sb, svp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, CachedPage cp)
         {
-            if (cp.ViewModel == null)
+            if (cp.ViewModel is null)
                 return;
             AddtionalInfo(sb, cp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, PopularPage pp)
         {
-            if (pp.ViewModel == null)
+            if (pp.ViewModel is null)
                 return;
             AddtionalInfo(sb, pp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, FavoritesPage fp)
         {
-            if (fp.ViewModel == null)
+            if (fp.ViewModel is null)
                 return;
             AddtionalInfo(sb, fp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, SearchPage sp)
         {
-            if (sp.ViewModel == null)
+            if (sp.ViewModel is null)
                 return;
             AddtionalInfo(sb, sp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, GalleryPage gp)
         {
-            if (gp.ViewModel == null)
+            if (gp.ViewModel is null)
                 return;
             var pv = gp.Descendants<Windows.UI.Xaml.Controls.Pivot>("pv").FirstOrDefault();
             if (pv != null)
@@ -125,7 +136,7 @@ namespace ExViewer
 
         private static void AddtionalInfo(StringBuilder sb, ImagePage ip)
         {
-            if (ip.ViewModel == null)
+            if (ip.ViewModel is null)
                 return;
             var fv = ip.Descendants<Windows.UI.Xaml.Controls.FlipView>("fv").FirstOrDefault();
             if (fv != null)
@@ -137,7 +148,7 @@ namespace ExViewer
             where T : SearchResult
         {
             var s = srVM.SearchResult;
-            if (s == null)
+            if (s is null)
                 return;
             sb.AppendLine($"SearchResult: Type={s.GetType()}, Uri={s.SearchUri}");
         }
@@ -146,7 +157,7 @@ namespace ExViewer
             where T : Gallery
         {
             var gl = glVM.Galleries;
-            if (gl == null)
+            if (gl is null)
                 return;
             sb.AppendLine($"GalleryList: Type={gl.GetType()}, Count={gl.Count}");
             sb.AppendLine($"Gallery: Type={typeof(T)}");
@@ -155,7 +166,7 @@ namespace ExViewer
         private static void AddtionalInfo(StringBuilder sb, GalleryVM gVM)
         {
             var g = gVM.Gallery;
-            if (g == null)
+            if (g is null)
                 return;
             sb.AppendLine($"Gallery: Type={g.GetType()}, ID={g.ID}, Token={g.Token:x10}");
         }
@@ -163,7 +174,7 @@ namespace ExViewer
         private static void AddtionalInfo(StringBuilder sb, PopularVM VM)
         {
             var c = VM.Galleries;
-            if (c == null)
+            if (c is null)
                 return;
             sb.AppendLine($"PopularCollection: Type={c.GetType()}, Count={c.Count}");
         }

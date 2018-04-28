@@ -17,7 +17,7 @@ namespace ExClient
         public bool NeedLogOn
             => this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).Count(isLogOnCookie) < 3
             || this.UserID <= 0
-            || this.PassHash == null;
+            || this.PassHash is null;
 
         internal static class CookieNames
         {
@@ -79,7 +79,7 @@ namespace ExClient
 
         public void RestoreLogOnInfo(LogOnInfo info)
         {
-            if (info == null)
+            if (info is null)
                 throw new ArgumentNullException(nameof(info));
             ClearLogOnInfo();
             foreach (var item in info.Cookies)
@@ -164,7 +164,7 @@ namespace ExClient
             get
             {
                 var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.MemberID);
-                if (cookie == null)
+                if (cookie is null)
                     return -1;
                 return long.Parse(cookie.Value);
             }
@@ -175,7 +175,7 @@ namespace ExClient
             get
             {
                 var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.PassHash);
-                if (cookie == null)
+                if (cookie is null)
                     return null;
                 return cookie.Value;
             }

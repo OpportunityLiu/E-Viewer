@@ -9,7 +9,7 @@ namespace ExViewer.Database
 
         static SearchHistoryDb()
         {
-            using(var db = new SearchHistoryDb())
+            using (var db = new SearchHistoryDb())
             {
                 db.Database.Migrate();
             }
@@ -83,7 +83,7 @@ namespace ExViewer.Database
 
         public override bool Equals(object obj)
         {
-            if(obj == null || GetType() != obj.GetType())
+            if (obj is null || GetType() != obj.GetType())
             {
                 return false;
             }

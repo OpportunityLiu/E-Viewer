@@ -81,13 +81,13 @@ namespace ExClient.Settings
                 doc.LoadHtml(html);
             }
             var settings = doc.GetElementbyId("settings_outer");
-            if (settings == null)
+            if (settings is null)
                 return;
             Settings.Clear();
             foreach (var item in settings.Descendants("input").Concat(settings.Descendants("textarea")))
             {
                 var name = item.GetAttribute("name", default(string));
-                if (name == null)
+                if (name is null)
                     continue;
                 switch (item.GetAttribute("type", default(string)))
                 {

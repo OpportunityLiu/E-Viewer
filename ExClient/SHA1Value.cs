@@ -27,7 +27,7 @@ namespace ExClient
 
         public static IAsyncOperation<SHA1Value> ComputeAsync(IRandomAccessStream stream)
         {
-            if (stream == null)
+            if (stream is null)
                 throw new ArgumentNullException(nameof(stream));
             return Task.Run(async () =>
             {
@@ -40,7 +40,7 @@ namespace ExClient
 
         public static IAsyncOperation<SHA1Value> ComputeAsync(IRandomAccessStreamReference stream)
         {
-            if (stream == null)
+            if (stream is null)
                 throw new ArgumentNullException(nameof(stream));
             return AsyncInfo.Run(async token =>
             {
@@ -138,16 +138,16 @@ namespace ExClient
             var fmt = string.IsNullOrEmpty(format) ? 'x' : format[0];
             switch (fmt)
             {
-                case 'x':
-                    return toStringL(HASH_SIZE);
-                case 'X':
-                    return toStringU(HASH_SIZE);
-                case 't':
-                    return toStringL(TokenExtension.TOKEN_LENGTH);
-                case 'T':
-                    return toStringU(TokenExtension.TOKEN_LENGTH);
-                default:
-                    throw new FormatException("Unknown format specifier.");
+            case 'x':
+                return toStringL(HASH_SIZE);
+            case 'X':
+                return toStringU(HASH_SIZE);
+            case 't':
+                return toStringL(TokenExtension.TOKEN_LENGTH);
+            case 'T':
+                return toStringU(TokenExtension.TOKEN_LENGTH);
+            default:
+                throw new FormatException("Unknown format specifier.");
             }
         }
 

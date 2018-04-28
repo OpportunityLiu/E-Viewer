@@ -38,10 +38,10 @@ namespace ExViewer.Controls
             if (labelVisible)
             {
                 var label = this.Label;
-                if (label == null)
+                if (label is null)
                 {
                     label = GetTemplateChild("Label") as TextBlock;
-                    if (label == null)
+                    if (label is null)
                         return;
                     else
                         this.Label = label;
@@ -51,7 +51,7 @@ namespace ExViewer.Controls
             }
             else
             {
-                if (this.Label == null)
+                if (this.Label is null)
                     return;
                 this.Label.Visibility = Visibility.Collapsed;
             }
@@ -78,7 +78,7 @@ namespace ExViewer.Controls
             if (dp.loaded && n != null)
                 n.PropertyChanged += dp.category_PropertyChanged;
             dp.set(n, dp.IsLabelVisible);
-            if (n == null)
+            if (n is null)
             {
                 dp.ClearValue(CategoryProperty);
                 return;
