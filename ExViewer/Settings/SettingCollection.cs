@@ -265,7 +265,7 @@ namespace ExViewer.Settings
         [EnumRepresent("ViewOrientation")]
         public ViewOrientation ImageViewOrientation
         {
-            get => GetLocal(ViewOrientation.Auto);
+            get => GetLocal(ViewOrientation.Horizontal);
             set => SetLocal(value);
         }
 
