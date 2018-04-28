@@ -69,6 +69,7 @@ namespace ExViewer.Settings
                 SetLocal(value);
                 Window.Current.Content.Parent<FrameworkElement>().RequestedTheme = value.ToElementTheme();
                 Themes.ThemeExtention.SetTitleBar();
+                Themes.ThemeExtention.SetDefaltImage();
             }
         }
 
@@ -264,7 +265,7 @@ namespace ExViewer.Settings
         [EnumRepresent("ViewOrientation")]
         public ViewOrientation ImageViewOrientation
         {
-            get => GetLocal(ViewOrientation.Auto);
+            get => GetLocal(ViewOrientation.Horizontal);
             set => SetLocal(value);
         }
 

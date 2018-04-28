@@ -59,7 +59,7 @@ namespace ExClient.Galleries.Rating
         internal void AnalyzeNode(HtmlNode ratingImageDivNode)
         {
             var divClass = ratingImageDivNode?.GetAttributeValue("class", null);
-            if (divClass == null)
+            if (divClass is null)
                 return;
             if (!divClass.Contains("ir"))
                 return;

@@ -56,7 +56,7 @@ namespace ExViewer.Views
             this.GotFocus += (s, e) =>
             {
                 var focus = FocusManager.GetFocusedElement();
-                if (focus == null)
+                if (focus is null)
                     return;
                 var fe = focus as FrameworkElement;
                 var con = fe as Control;
@@ -125,7 +125,7 @@ namespace ExViewer.Views
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             var content = this.fm_inner.Content;
-            if (content == null)
+            if (content is null)
                 return;
             var pageType = content.GetType();
             if (this.pages.TryGetValue(pageType, out var tab))

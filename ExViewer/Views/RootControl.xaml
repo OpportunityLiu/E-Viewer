@@ -161,7 +161,7 @@
                      Stretch="UniformToFill">
               <Ellipse.Fill>
                 <ImageBrush Stretch="Uniform"
-                            ImageSource="ms-appx:///Images/DefaultUser.png" />
+                            ImageSource="ms-appx:///Assets/DefaultUser.png" />
               </Ellipse.Fill>
             </Ellipse>
             <Ellipse x:Name="eps_Avatar"
@@ -170,7 +170,7 @@
               <Ellipse.Fill>
                 <ImageBrush Stretch="Uniform">
                   <ImageBrush.ImageSource>
-                    <BitmapImage UriSource="{x:Bind UserInfo.Avatar, Mode=OneWay, TargetNullValue='ms-appx:///Images/DefaultUser.png'}" />
+                    <BitmapImage UriSource="{x:Bind UserInfo.Avatar, Mode=OneWay, TargetNullValue='x'}" />
                   </ImageBrush.ImageSource>
                 </ImageBrush>
               </Ellipse.Fill>

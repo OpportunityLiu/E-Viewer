@@ -122,11 +122,11 @@ namespace ExClient.Galleries
                         .Where(gi => gi.GalleryId == gId)
                         .OrderBy(gi => gi.PageId)
                         .FirstOrDefault();
-                    if (imageModel == null)
+                    if (imageModel is null)
                         return null;
                     var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
                     var file = await folder.TryGetFileAsync(imageModel.Image.FileName);
-                    if (file == null)
+                    if (file is null)
                         return null;
                     try
                     {

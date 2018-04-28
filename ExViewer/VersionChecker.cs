@@ -54,7 +54,7 @@ namespace ExViewer
                         doc.LoadHtml(await r.Content.ReadAsStringAsync());
 
                         var releaseNode = doc.DocumentNode.Descendants("div").Where(n => n.HasClass("release-body")).SingleOrDefault();
-                        if (releaseNode == null)
+                        if (releaseNode is null)
                             return null;
 
                         var title = HtmlEntity.DeEntitize(releaseNode.Descendants("h1").Where(n => n.HasClass("release-title")).SingleOrDefault()?.InnerText ?? "").Trim();

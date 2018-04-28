@@ -55,7 +55,7 @@ namespace ExViewer.Controls
             {
                 var r = await c.TranslateAsync(Settings.SettingCollection.Current.CommentTranslationCode);
                 ((CommentVM)s.Tag).TranslatedContent = r;
-            }, (s, c) => c != null && ((CommentVM)s.Tag).translated == null);
+            }, (s, c) => c != null && ((CommentVM)s.Tag).translated is null);
 
             public AsyncCommand<Comment> VoteUp { get; }
                 = AsyncCommand<Comment>.Create((s, c) => c.VoteAsync(ExClient.Api.VoteState.Up), (s, c) => c != null && ((CommentVM)s.Tag).CanVoteUp(c.Status));
@@ -132,7 +132,7 @@ namespace ExViewer.Controls
 
         private static double toOpacity(HtmlAgilityPack.HtmlNode val)
         {
-            if (val == null)
+            if (val is null)
                 return 1;
             return 0.7;
         }

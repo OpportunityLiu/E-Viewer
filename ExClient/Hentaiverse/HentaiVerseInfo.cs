@@ -25,10 +25,10 @@ namespace ExClient.HentaiVerse
         internal static void AnalyzePage(HtmlDocument doc)
         {
             var eventPane = doc.GetElementbyId("eventpane");
-            if (eventPane == null)
+            if (eventPane is null)
                 return;
             var div1 = eventPane.Element("div");
-            if (div1 == null)
+            if (div1 is null)
                 return;
             var a = eventPane.Descendants("a").FirstOrDefault();
             if (a != null && MonsterEncountered != null)

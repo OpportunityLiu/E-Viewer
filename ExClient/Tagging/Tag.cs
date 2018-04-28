@@ -137,6 +137,6 @@ namespace ExClient.Tagging
             return this.Content.CompareTo(other.Content);
         }
 
-        int IComparable.CompareTo(object obj) => obj == null ? 1 : CompareTo((Tag)obj);
+        int IComparable.CompareTo(object obj) => obj is null ? 1 : CompareTo((Tag)obj);
     }
 }

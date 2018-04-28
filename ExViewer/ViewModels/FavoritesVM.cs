@@ -46,7 +46,7 @@ namespace ExViewer.ViewModels
             {
                 var that = (FavoritesVM)sender.Tag;
                 var cat = that.category;
-                var search = cat == null ? Client.Current.Favorites.Search(queryText) : cat.Search(queryText);
+                var search = cat is null ? Client.Current.Favorites.Search(queryText) : cat.Search(queryText);
                 var vm = GetVM(search);
                 await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), vm.SearchQuery);
             });

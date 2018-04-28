@@ -20,7 +20,7 @@ namespace ExClient
             var idx = cat?.Index ?? -1;
             if (idx < 0)
                 return (Brush)favoritesBrushes["FavoriteCategoryNone"];
-            return (Brush)favoritesBrushes[$"FavoriteCategory{cat.Index}"];
+            return (Brush)favoritesBrushes[$"FavoriteCategory{idx}"];
         }
     }
 }
