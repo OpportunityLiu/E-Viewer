@@ -27,7 +27,7 @@ namespace ExViewer.Views
             {
                 RootController.root = root;
 
-                if (ApiInfo.StatusBarSupported)
+                if (ExApiInfo.StatusBarSupported)
                 {
                     StatusBar = StatusBar.GetForCurrentView();
                     av_VisibleBoundsChanged(ApplicationView, null);
@@ -121,7 +121,7 @@ namespace ExViewer.Views
             private static void av_VisibleBoundsChanged(ApplicationView sender, object args)
             {
 #if !DEBUG_BOUNDS
-                if (ApiInfo.StatusBarSupported)
+                if (ExApiInfo.StatusBarSupported)
                 {
                     if (sender.Orientation == ApplicationViewOrientation.Landscape)
                     {

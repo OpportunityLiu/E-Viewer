@@ -195,9 +195,9 @@ namespace ExViewer.Views
             try
             {
                 var ver = await VersionChecker.CheckAsync();
-                if (ver is VersionChecker.VersionInfo v)
+                if (ver is VersionChecker.GitHubRelease v)
                 {
-                    var dialog = new UpdateDialog { Version = v };
+                    var dialog = new UpdateDialog(v);
                     await dialog.ShowAsync();
                 }
             }

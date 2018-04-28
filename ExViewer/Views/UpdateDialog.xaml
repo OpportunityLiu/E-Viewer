@@ -3,21 +3,46 @@
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:local="using:ExViewer.Views"
                      xmlns:con="using:ExViewer.Controls"
+                     xmlns:exv="using:ExViewer"
+                     xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      mc:Ignorable="d"
                      x:Uid="Views/UpdateDialog/ContentDialog"
                      Title="NEW VERSION"
                      PrimaryButtonText="Update now"
+                     SecondaryButtonText="View in GitHub"
                      CloseButtonText="Remind me next time"
-                     PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
-  <StackPanel>
+                     Closing="MyContentDialog_Closing"
+                     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+                     SecondaryButtonClick="MyContentDialog_SecondaryButtonClick">
+  <StackPanel x:Name="spRoot">
     <TextBlock x:Name="tbVersion"
+               Text="{x:Bind exv:Strings.Resources.Views.UpdateDialog.ContentTemplate(release.Version.Major, release.Version.Minor, release.Version.Build, release.Version.Revision)}"
                Style="{ThemeResource CaptionTextBlockStyle}" />
     <TextBlock x:Name="tbTitle"
-               Style="{ThemeResource  SubtitleTextBlockStyle}"
+               Text="{x:Bind release.name}"
+               Style="{ThemeResource SubtitleTextBlockStyle}"
                Padding="0,8" />
-    <TextBlock x:Name="tbContent"
-               Style="{ThemeResource BodyTextBlockStyle}" />
+    <tk:MarkdownTextBlock x:Name="tbContent"
+                          Text="{x:Bind release.body}" />
+    <RelativePanel x:Name="rpDownload"
+                   x:Load="False"
+                   Margin="0,12,0,0">
+      <ProgressBar x:Name="pb"
+                   IsIndeterminate="True"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.AlignRightWithPanel="True" />
+      <TextBlock x:Name="tbCurrent"
+                 RelativePanel.LeftOf="tbSep"
+                 RelativePanel.AlignVerticalCenterWith="tbSep" />
+      <TextBlock x:Name="tbSep"
+                 Text=" / "
+                 RelativePanel.LeftOf="tbTotal"
+                 RelativePanel.AlignVerticalCenterWith="tbTotal" />
+      <TextBlock x:Name="tbTotal"
+                 RelativePanel.Below="pb"
+                 RelativePanel.AlignRightWithPanel="True" />
+    </RelativePanel>
   </StackPanel>
 </con:MyContentDialog>

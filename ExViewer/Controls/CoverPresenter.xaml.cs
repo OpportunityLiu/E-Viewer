@@ -31,7 +31,7 @@ namespace ExViewer.Controls
 
         private void UserControl_Loading(FrameworkElement sender, object args)
         {
-            if (!ApiInfo.RS3)
+            if (!ExApiInfo.RS3)
                 return;
             setEffectStatus(uiSettings, null);
             PowerManager.EnergySaverStatusChanged += this.setEffectStatus;
@@ -40,7 +40,7 @@ namespace ExViewer.Controls
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (!ApiInfo.RS3)
+            if (!ExApiInfo.RS3)
                 return;
             PowerManager.EnergySaverStatusChanged -= this.setEffectStatus;
             uiSettings.AdvancedEffectsEnabledChanged -= this.setEffectStatus;

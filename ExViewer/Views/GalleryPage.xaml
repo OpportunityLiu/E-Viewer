@@ -175,7 +175,7 @@
           <TextBlock Grid.Row="5"
                      Grid.Column="2"
                      Style="{StaticResource ValueTextBlockStyle}"
-                     Text="{x:Bind xb:String.OfByteSizeBinary(Size)}" />
+                     Text="{x:Bind xb:ByteSize.ToBinaryString(Size)}" />
         </Grid>
       </Grid>
     </DataTemplate>
