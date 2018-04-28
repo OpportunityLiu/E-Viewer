@@ -15,7 +15,6 @@
       "LastUpdate": "最後更新時間：{0}",
       "LicenceTextBlock/Text": "協議",
       "OnlineContentsTextBlock/Text": "線上內容",
-      "RateHyperlinkButton/Content": "打分和評價",
       "SourceCodeHyperlinkButton/Content": "反饋和原始碼",
       "TagDatabaseTextBlock/Text": "標籤資料庫",
       "UpdateButton/Content": "立即更新"
@@ -338,9 +337,10 @@
     "UpdateDialog": {
       "$ContentTemplate": "版本 {major}.{minor}.{build}.{revision} 已釋出。",
       "ContentDialog": {
-        "Title": "新版本",
+        "CloseButtonText": "下次提醒",
         "PrimaryButtonText": "現在升級",
-        "CloseButtonText": "下次提醒"
+        "SecondaryButtonText": "在 GitHub 上檢視",
+        "Title": "新版本"
       }
     }
   }

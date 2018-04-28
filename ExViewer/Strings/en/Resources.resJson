@@ -15,7 +15,6 @@
       "LastUpdate": "Last update: {0}",
       "LicenceTextBlock/Text": "License",
       "OnlineContentsTextBlock/Text": "Online contents",
-      "RateHyperlinkButton/Content": "Rate and review",
       "SourceCodeHyperlinkButton/Content": "Feedback & source code",
       "TagDatabaseTextBlock/Text": "Tag database",
       "UpdateButton/Content": "Update now"
@@ -338,9 +337,10 @@
     "UpdateDialog": {
       "$ContentTemplate": "Version {major}.{minor}.{build}.{revision} has released.",
       "ContentDialog": {
-        "Title": "NEW VERSION",
+        "CloseButtonText": "Remind me next time",
         "PrimaryButtonText": "Update now",
-        "CloseButtonText": "Remind me next time"
+        "SecondaryButtonText": "View in GitHub",
+        "Title": "NEW VERSION"
       }
     }
   }

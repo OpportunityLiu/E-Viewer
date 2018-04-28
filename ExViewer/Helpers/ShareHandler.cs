@@ -153,7 +153,7 @@ namespace ExViewer.Helpers
 
             private static CustomHandlers create()
             {
-                if (!ApiInfo.ShareProviderSupported)
+                if (!ExApiInfo.ShareProviderSupported)
                     return null;
                 return new CustomHandlers();
             }
