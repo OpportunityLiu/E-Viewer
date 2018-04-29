@@ -21,10 +21,12 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
-        private void reset()
+        private async void reset()
         {
             this.tempUserName = null;
             this.tempPassword = null;
+            this.wv.NavigateToString("");
+            await Dispatcher.YieldIdle();
             this.wv.Navigate(Client.LogOnUri);
         }
 
