@@ -7,13 +7,17 @@ using Opportunity.Helpers.Universal;
 using Opportunity.MvvmUniverse;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Email;
 using Windows.ApplicationModel.Resources.Core;
+using Windows.Security.Cryptography;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
@@ -198,36 +202,28 @@ namespace ExViewer
             var q = new StringBuilder();
             foreach (var item in ResourceContext.GetForCurrentView().QualifierValues)
             {
-                q.Append(item.Key);
-                q.Append('=');
-                q.Append(item.Value);
-                q.Append(", ");
+                q.Append(item.Key)
+                 .Append('=')
+                 .Append(item.Value)
+                 .Append(", ");
             }
-            await EmailManager.ShowComposeNewEmailAsync(new EmailMessage
+            var s = new StringBuilder();
+            foreach (var item in ExClient.Client.Current.Settings.RawSettings)
             {
-                Subject = "Crash log for ExViewer",
-                To =
-                {
-                    new EmailRecipient("opportunity@live.in", "Opportunity"),
-                },
-                Attachments =
-                {
-                    new EmailAttachment(LOG_FILE, logFile),
-                },
-                Body = $@"
-
-
-Please check following infomation and attchments, and remove anything that you wouldn't like to send.
---------------------
--- Account Info --
+                s.Append(item.Key)
+                 .Append('=')
+                 .Append(item.Value)
+                 .Append(", ");
+            }
+            var aInfo = await createStreamRef($@"
 UserId: {ExClient.Client.Current.UserId}
-Config: {JsonConvert.SerializeObject(ExClient.Client.Current.Settings)}
--- Package Info --
+Config: {s}");
+            var pInfo = await createStreamRef($@"
 PackageFullName: {Package.Current.Id.FullName}
 PackageVersion: {Package.Current.Id.Version.ToVersion()}
 PackageArchitecture: {Package.Current.Id.Architecture}
-PackageNeedsRemediation: {Package.Current.Status.NeedsRemediation}
--- Device Info --
+PackageNeedsRemediation: {Package.Current.Status.NeedsRemediation}");
+            var dInfo = await createStreamRef($@"
 Qualifiers: {q}
 DeviceForm: {AnalyticsInfo.DeviceForm}
 DeviceFamily: {AnalyticsInfo.VersionInfo.DeviceFamily}
@@ -238,10 +234,33 @@ SystemFirmwareVersion: {eascdi.SystemFirmwareVersion}
 SystemHardwareVersion: {eascdi.SystemHardwareVersion}
 SystemManufacturer: {eascdi.SystemManufacturer}
 SystemProductName: {eascdi.SystemProductName}
-SystemSku: {eascdi.SystemSku}
---------------------
+SystemSku: {eascdi.SystemSku}");
+            var email = new EmailMessage
+            {
+                Subject = "Crash log for ExViewer",
+                To =
+                {
+                    new EmailRecipient("opportunity@live.in", "Opportunity"),
+                },
+                Attachments =
+                {
+                    new EmailAttachment(LOG_FILE, logFile),
+                    new EmailAttachment("AccountInfo.log", aInfo),
+                    new EmailAttachment("DeviceInfo.log", dInfo),
+                    new EmailAttachment("PackageInfo.log", pInfo),
+                },
+                Body = $@"
+Please check attchments, and remove anything that you wouldn't like to send.
 "
-            });
+            };
+            await EmailManager.ShowComposeNewEmailAsync(email);
+
+            async Task<RandomAccessStreamReference> createStreamRef(string content)
+            {
+                var stream = new InMemoryRandomAccessStream();
+                await stream.WriteAsync(CryptographicBuffer.ConvertStringToBinary(content, BinaryStringEncoding.Utf8));
+                return RandomAccessStreamReference.CreateFromStream(stream);
+            }
         }
 
         private static System.Threading.SemaphoreSlim semaphore = new System.Threading.SemaphoreSlim(1, 1);

@@ -21,19 +21,10 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
-        private async void reset()
+        private void reset()
         {
             this.tempUserName = null;
             this.tempPassword = null;
-            this.wv.NavigateToString($@"
-<html>
-<head>
-    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
-</head>
-<body style='background:{Color((SolidColorBrush)this.Background)};'>
-</body>
-</html>");
-            await Dispatcher.YieldIdle();
             this.wv.Navigate(Client.LogOnUri);
         }
 
@@ -108,7 +99,7 @@ namespace ExViewer.Views
             await logOnAsync(data[0], data[1]);
         }
 
-        private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
+        private void cd_Loaded(object sender, RoutedEventArgs e)
         {
             if (Client.Current.NeedLogOn)
             {
@@ -120,7 +111,7 @@ namespace ExViewer.Views
             }
         }
 
-        private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        private void cd_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
             this.logOnInfoBackup = Client.Current.GetLogOnInfo();
             reset();
@@ -204,13 +195,13 @@ namespace ExViewer.Views
             return base.MeasureOverride(availableSize);
         }
 
-        private void MyContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void cd_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             reset();
             args.Cancel = true;
         }
 
-        private void MyContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void cd_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             if (this.logOnInfoBackup != null)
             {
