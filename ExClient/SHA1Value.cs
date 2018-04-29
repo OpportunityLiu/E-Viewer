@@ -64,9 +64,25 @@ namespace ExClient
             return new SHA1Value(CryptographicBuffer.DecodeFromHexString(imageHash));
         }
 
-        private unsafe struct DataPack
+        private unsafe struct DataPack : IEquatable<DataPack>
         {
             public fixed byte Data[HASH_SIZE];
+
+            public unsafe bool Equals(DataPack other)
+            {
+                fixed (byte* pThis = this.Data)
+                {
+                    var pOther = other.Data;
+                    for (var i = 0; i < HASH_SIZE; i++)
+                    {
+                        if (pThis[i] != pOther[i])
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
         }
 
         private readonly DataPack data;
@@ -112,21 +128,9 @@ namespace ExClient
             }
         }
 
-        public unsafe bool Equals(SHA1Value other)
+        public bool Equals(SHA1Value other)
         {
-            fixed (void* pThis = &this)
-            {
-                var pCurrent = (byte*)pThis;
-                var pOther = (byte*)&other;
-                for (var i = 0; i < HASH_SIZE; i++)
-                {
-                    if (pCurrent[i] != pOther[i])
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            return this.data.Equals(other.data);
         }
 
         public override bool Equals(object obj)
@@ -135,7 +139,6 @@ namespace ExClient
             {
                 return this.Equals(sha);
             }
-
             return false;
         }
 
