@@ -13,6 +13,7 @@
                           PrimaryButtonText="OK"
                           PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
                           CloseButtonText="Cancel"
+                          CloseButtonClick="ContentDialog_CloseButtonClick"
                           IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}">
   <ContentControl.Resources>
     <rs3:Style x:Key="ToolBarAppBarButtonStyle"
