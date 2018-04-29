@@ -7,9 +7,15 @@ namespace ExViewer.Settings
         public static ConnectionStrategy GetStrategy(this SettingCollection @this)
         {
             if(@this.LoadLofiOnAllInternetConnection)
+            {
                 return ConnectionStrategy.AllLofi;
-            if(@this.LoadLofiOnMeteredInternetConnection)
+            }
+
+            if (@this.LoadLofiOnMeteredInternetConnection)
+            {
                 return ConnectionStrategy.LofiOnMetered;
+            }
+
             return ConnectionStrategy.AllFull;
         }
     }

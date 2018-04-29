@@ -50,13 +50,18 @@ namespace ExViewer.Views
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (e.Parameter != null)
+                {
                     this.ViewModel.SearchResult.Reset();
+                }
+
                 this.cbCategory.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
                 if (!await ViewHelper.ScrollAndFocus(this.lv, this.ViewModel.SelectedGallery))
+                {
                     this.cbCategory.Focus(FocusState.Programmatic);
+                }
             }
         }
 
@@ -93,9 +98,14 @@ namespace ExViewer.Views
             {
             case Windows.System.VirtualKey.GamepadY:
                 if (this.lv.SelectionMode == ListViewSelectionMode.None)
+                {
                     this.cbCategory.Focus(FocusState.Keyboard);
+                }
                 else
+                {
                     this.cbCategory2.Focus(FocusState.Keyboard);
+                }
+
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
@@ -117,9 +127,13 @@ namespace ExViewer.Views
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
+            {
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
+            }
             else
+            {
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
+            }
         }
 
         private void root_Loading(FrameworkElement sender, object args)
@@ -136,7 +150,10 @@ namespace ExViewer.Views
         private bool startSelectMode()
         {
             if (!this.lv.IsItemClickEnabled)
+            {
                 return false;
+            }
+
             this.lv.SelectionMode = ListViewSelectionMode.Multiple;
             this.lv.IsItemClickEnabled = false;
             if (this.cbActions is null)
@@ -161,7 +178,10 @@ namespace ExViewer.Views
         private bool exitSelectMode()
         {
             if (this.lv.IsItemClickEnabled)
+            {
                 return false;
+            }
+
             this.lv.SelectionMode = ListViewSelectionMode.None;
             this.lv.IsItemClickEnabled = true;
             this.cbActions.Visibility = Visibility.Collapsed;
@@ -180,7 +200,10 @@ namespace ExViewer.Views
         public IAsyncOperation<bool> GoBackAsync()
         {
             if (!CanGoBack)
+            {
                 return AsyncOperation<bool>.CreateCompleted(false);
+            }
+
             exitSelectMode();
             return AsyncOperation<bool>.CreateCompleted(true);
         }
@@ -197,7 +220,9 @@ namespace ExViewer.Views
         {
             var r = startSelectMode();
             if (!r)
+            {
                 return;
+            }
 
             args.Handled = true;
             var item = ((DependencyObject)args.OriginalSource).AncestorsAndSelf<ListViewItem>().FirstOrDefault();
@@ -230,7 +255,9 @@ namespace ExViewer.Views
             RootControl.RootController.TrackAsyncAction(task, (s, args) =>
             {
                 if (args == Windows.Foundation.AsyncStatus.Completed)
+                {
                     exitSelectMode();
+                }
                 else
                 {
                     RootControl.RootController.SendToast(s.ErrorCode, this.GetType());

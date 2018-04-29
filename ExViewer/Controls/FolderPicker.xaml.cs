@@ -56,14 +56,24 @@ namespace ExViewer.Controls
             var oldValue = (string)e.OldValue;
             var newValue = (string)e.NewValue;
             if (oldValue == newValue)
+            {
                 return;
+            }
+
             var sender = (FolderPicker)dp;
             if (!string.IsNullOrEmpty(oldValue))
+            {
                 StorageApplicationPermissions.FutureAccessList.Remove(oldValue);
+            }
+
             if (string.IsNullOrEmpty(newValue))
+            {
                 sender.Folder = null;
+            }
             else
+            {
                 sender.Folder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(newValue);
+            }
         }
 
         private async void SelectButton_Click(object sender, RoutedEventArgs e)
@@ -77,7 +87,10 @@ namespace ExViewer.Controls
             p.FileTypeFilter.Add(".");
             var f = await p.PickSingleFolderAsync();
             if (f is null)
+            {
                 return;
+            }
+
             this.FolderToken = StorageApplicationPermissions.FutureAccessList.Add(f);
         }
 
@@ -89,7 +102,9 @@ namespace ExViewer.Controls
         private async void FolderButton_Click(object sender, RoutedEventArgs e)
         {
             if (this.Folder != null)
+            {
                 await Launcher.LaunchFolderAsync(this.Folder);
+            }
         }
     }
 }

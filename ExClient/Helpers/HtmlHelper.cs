@@ -14,14 +14,20 @@ namespace HtmlAgilityPack
         public static IEnumerable<HtmlNode> Elements(this HtmlNode node, string name, string className)
         {
             if (node is null)
+            {
                 throw new ArgumentNullException(nameof(node));
+            }
+
             return node.Elements(name).Where(n => n.HasClass(className));
         }
 
         public static string GetAttribute(this HtmlNode node, string attributeName, string def = null)
         {
             if (node is null)
+            {
                 throw new ArgumentNullException(nameof(node));
+            }
+
             return HtmlEntity.DeEntitize(node.GetAttributeValue(attributeName, null)) ?? def;
         }
 
@@ -29,9 +35,15 @@ namespace HtmlAgilityPack
         {
             var r = node.GetAttribute(attributeName, default(string));
             if (r is null)
+            {
                 return def;
+            }
+
             if (int.TryParse(r, out var intP))
+            {
                 return intP;
+            }
+
             return def;
         }
 
@@ -39,7 +51,10 @@ namespace HtmlAgilityPack
         {
             var r = node.GetAttribute(attributeName, default(string));
             if (r is null)
+            {
                 return def;
+            }
+
             return true;
         }
 
@@ -50,7 +65,10 @@ namespace HtmlAgilityPack
         {
             var r = node.GetAttribute(attributeName, default(string));
             if (r is null)
+            {
                 return def;
+            }
+
             return new Uri(baseUri, r);
         }
 
@@ -58,14 +76,20 @@ namespace HtmlAgilityPack
         {
             var r = node.GetAttribute(attributeName, default(string));
             if (r is null)
+            {
                 return def;
+            }
+
             return (T)Convert.ChangeType(r, typeof(T));
         }
 
         public static string GetInnerText(this HtmlNode node)
         {
             if (node is null)
+            {
                 throw new ArgumentNullException(nameof(node));
+            }
+
             return HtmlEntity.DeEntitize(node.InnerText);
         }
     }

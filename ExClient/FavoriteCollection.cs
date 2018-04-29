@@ -15,14 +15,23 @@ namespace ExClient
         internal FavoriteCategory GetCategory(HtmlNode favoriteIconNode)
         {
             if (favoriteIconNode is null)
+            {
                 return FavoriteCategory.Removed;
+            }
+
             var favName = favoriteIconNode.GetAttribute("title", "");
             if (favName is null)
+            {
                 return FavoriteCategory.Removed;
+            }
+
             var favStyle = favoriteIconNode.GetAttribute("style", "");
             var mat = favStyleMatcher.Match(favStyle);
             if (!mat.Success)
+            {
                 return FavoriteCategory.Removed;
+            }
+
             var favImgOffset = int.Parse(mat.Groups[1].Value);
             var favIdx = favImgOffset / 19;
             var fav = this[favIdx];

@@ -32,7 +32,10 @@ namespace EhTagClient
             get
             {
                 if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
+                {
                     return (DateTimeOffset)r;
+                }
+
                 return DateTimeOffset.MinValue;
             }
             private set => ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;

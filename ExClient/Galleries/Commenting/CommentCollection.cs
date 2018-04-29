@@ -58,7 +58,7 @@ namespace ExClient.Galleries.Commenting
             lock (this.syncroot)
             {
                 var newValues = Comment.AnalyzeDocument(this, doc).ToList();
-                this.Update(newValues, (x, y) => x.ID - y.ID, (o, n) =>
+                this.Update(newValues, (x, y) => x.Id - y.Id, (o, n) =>
                 {
                     o.Score = n.Score;
                     o.Status = n.Status;
@@ -81,11 +81,16 @@ namespace ExClient.Galleries.Commenting
             content = (content ?? "").Trim();
             content = content.Replace("\r\n", "\n").Replace('\r', '\n');
             if (string.IsNullOrEmpty(content))
+            {
                 throw new ArgumentException(LocalizedStrings.Resources.EmptyComment);
+            }
+
             if (content.Length < 10)
             {
                 if (encoding.GetByteCount(content) < 10)
+                {
                     throw new ArgumentException(LocalizedStrings.Resources.ShortComment);
+                }
             }
             return AsyncInfo.Run(async token =>
             {
@@ -94,7 +99,7 @@ namespace ExClient.Galleries.Commenting
                     yield return new KeyValuePair<string, string>("commenttext", content);
                     if (editable != null && editable.Status == CommentStatus.Editable)
                     {
-                        yield return new KeyValuePair<string, string>("edit_comment", editable.ID.ToString());
+                        yield return new KeyValuePair<string, string>("edit_comment", editable.Id.ToString());
                         yield return new KeyValuePair<string, string>("postcomment", "Edit Comment");
                     }
                     else

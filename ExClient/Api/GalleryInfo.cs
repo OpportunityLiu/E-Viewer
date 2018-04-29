@@ -22,7 +22,10 @@ namespace ExClient.Api
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
                 if (reader.TokenType != JsonToken.StartObject)
+                {
                     return null;
+                }
+
                 long gid = 0;
                 ulong token = 0;
                 reader.Read();
@@ -105,6 +108,7 @@ namespace ExClient.Api
                         break;
                     default:
                         if (data.Queries.TryGetValue("act", out var action))
+                        {
                             switch (action)
                             {
                             case "addfav":
@@ -117,6 +121,8 @@ namespace ExClient.Api
                                 type = GalleryLaunchStatus.Rename;
                                 break;
                             }
+                        }
+
                         break;
                     }
                     return true;
@@ -131,9 +137,14 @@ namespace ExClient.Api
         {
             var data = new UriHandlerData(uri);
             if (TryParseGallery(data, out info))
+            {
                 return true;
+            }
+
             if (TryParseGalleryPopup(data, out info, out _))
+            {
                 return true;
+            }
 
             info = default;
             return false;
@@ -142,7 +153,10 @@ namespace ExClient.Api
         public static GalleryInfo Parse(Uri uri)
         {
             if (TryParse(uri, out var r))
+            {
                 return r;
+            }
+
             throw new FormatException();
         }
 
@@ -172,7 +186,10 @@ namespace ExClient.Api
         public override bool Equals(object obj)
         {
             if (obj is GalleryInfo info)
+            {
                 return Equals(info);
+            }
+
             return false;
         }
 
@@ -191,7 +208,10 @@ namespace ExClient.Api
         public static GalleryInfo ToGalleryInfo(this Gallery gallery)
         {
             if (gallery is null)
+            {
                 throw new ArgumentNullException(nameof(gallery));
+            }
+
             return new GalleryInfo(gallery.ID, gallery.Token);
         }
     }

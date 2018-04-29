@@ -229,7 +229,10 @@ namespace ApplicationDataManager.Settings
         public string GetFriendlyNameOf(string name)
         {
             if (ReferenceEquals(this, Default))
+            {
                 return name;
+            }
+
             return StringLoader.GetString($"{this.ResourcePrefix}/{name}");
         }
 

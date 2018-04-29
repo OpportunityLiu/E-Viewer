@@ -53,7 +53,10 @@ namespace ExClient.Tagging
             foreach (var ii in this)
             {
                 if (ii == item)
+                {
                     return i;
+                }
+
                 i++;
             }
             return -1;
@@ -69,9 +72,15 @@ namespace ExClient.Tagging
         public void CopyTo(Array array, int index)
         {
             if (!(array is GalleryTag[] arr))
+            {
                 throw new ArgumentException("Wrong type of array", nameof(array));
+            }
+
             if (index + Count > arr.Length)
+            {
                 throw new ArgumentException("Not enough space for copying", nameof(array));
+            }
+
             foreach (var item in this)
             {
                 arr[index] = item;

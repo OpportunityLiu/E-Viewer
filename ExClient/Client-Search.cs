@@ -14,12 +14,20 @@ namespace ExClient
         public AdvancedSearchResult Search(string uploader, string keyword, Category category, AdvancedSearchOptions advancedSearch)
         {
             if (string.IsNullOrWhiteSpace(uploader))
+            {
                 throw new ArgumentNullException(nameof(uploader));
+            }
+
             uploader = uploader.Trim();
             if (uploader.IndexOf(' ') >= 0)
+            {
                 keyword = $"uploader:\"{uploader}\" " + keyword;
+            }
             else
+            {
                 keyword = $"uploader:{uploader} " + keyword;
+            }
+
             return Search(keyword, category, advancedSearch);
         }
 

@@ -36,10 +36,14 @@ namespace ExViewer.Controls
             var o = (string)e.OldValue;
             var n = (string)e.NewValue;
             if (n is null)
+            {
                 throw new ArgumentNullException(nameof(Text));
+            }
+
             if (o == n)
+            {
                 return;
-            ((HighlightTextBlock)sender).reload();
+            } ((HighlightTextBlock)sender).reload();
         }
 
         public string HighlightText
@@ -56,8 +60,9 @@ namespace ExViewer.Controls
             var o = (string)e.OldValue;
             var n = (string)e.NewValue;
             if (o == n)
+            {
                 return;
-            ((HighlightTextBlock)sender).reload();
+            } ((HighlightTextBlock)sender).reload();
         }
 
         public StringComparison Comparison
@@ -74,8 +79,9 @@ namespace ExViewer.Controls
             var o = (StringComparison)e.OldValue;
             var n = (StringComparison)e.NewValue;
             if (o == n)
+            {
                 return;
-            ((HighlightTextBlock)sender).reload();
+            } ((HighlightTextBlock)sender).reload();
         }
 
         public Style TextBlockStyle
@@ -90,13 +96,18 @@ namespace ExViewer.Controls
         private void reload()
         {
             if (this.Presenter is null)
+            {
                 return;
+            }
+
             this.Presenter.Text = "";
             this.Presenter.Inlines.Clear();
             var text = this.Text;
             var highlightText = this.HighlightText;
             if (string.IsNullOrEmpty(highlightText))
+            {
                 this.Presenter.Text = text;
+            }
             else
             {
                 var matchIndex = -1;
@@ -104,12 +115,17 @@ namespace ExViewer.Controls
                 while ((matchIndex = text.IndexOf(highlightText, currentIndex, Comparison)) != -1)
                 {
                     if (matchIndex != currentIndex)
+                    {
                         this.Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex, matchIndex - currentIndex)));
+                    }
+
                     this.Presenter.Inlines.Add(CreateBold(text.Substring(matchIndex, highlightText.Length)));
                     currentIndex = matchIndex + highlightText.Length;
                 }
                 if (currentIndex != text.Length)
+                {
                     this.Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex)));
+                }
             }
         }
     }

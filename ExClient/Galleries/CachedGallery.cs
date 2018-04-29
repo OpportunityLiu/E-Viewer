@@ -66,7 +66,10 @@ namespace ExClient.Galleries
                     {
                         var file = await folder.TryGetFileAsync(item.FileName);
                         if (file != null)
+                        {
                             await file.DeleteAsync();
+                        }
+
                         progress.Report(++i / count);
                     }
                     db.ImageSet.RemoveRange(todelete);
@@ -104,7 +107,10 @@ namespace ExClient.Galleries
             {
                 var r = await base.GetThumbAsync();
                 if (r != null)
+                {
                     return r;
+                }
+
                 return await GetThumbLocalilyAsync();
             });
         }
@@ -123,11 +129,17 @@ namespace ExClient.Galleries
                         .OrderBy(gi => gi.PageId)
                         .FirstOrDefault();
                     if (imageModel is null)
+                    {
                         return null;
+                    }
+
                     var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
                     var file = await folder.TryGetFileAsync(imageModel.Image.FileName);
                     if (file is null)
+                    {
                         return null;
+                    }
+
                     try
                     {
                         using (var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))

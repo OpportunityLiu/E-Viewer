@@ -25,7 +25,9 @@ namespace ExViewer.Views
             this.release = release;
             this.InitializeComponent();
             if (!(ApiInfo.IsDesktop || ApiInfo.IsMobile))
+            {
                 this.PrimaryButtonText = "";
+            }
         }
 
         private long currentDownloaded = 0;
@@ -47,7 +49,9 @@ namespace ExViewer.Views
             {
                 var arch = Package.Current.Id.Architecture.ToString();
                 if (this.release.assets.IsNullOrEmpty())
+                {
                     throw new InvalidOperationException("Find appx file failed.");
+                }
 
                 var assets = (from asset in this.release.assets
                               where asset.name.IndexOf(arch, StringComparison.OrdinalIgnoreCase) > 0 && downloadExt.Any(e => asset.name.EndsWith(e))
@@ -82,7 +86,9 @@ namespace ExViewer.Views
                     finally
                     {
                         if (!await Launcher.LaunchFolderAsync(folder))
+                        {
                             throw new InvalidOperationException("Launch appx file failed.");
+                        }
                     }
                 }
             }
@@ -126,7 +132,9 @@ namespace ExViewer.Views
         private void MyContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
         {
             if (this.rpDownload != null)
+            {
                 args.Cancel = true;
+            }
         }
     }
 }

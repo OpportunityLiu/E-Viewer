@@ -39,13 +39,19 @@ namespace ExViewer.Views
             if (e.NavigationMode == NavigationMode.Back)
             {
                 if (await ViewHelper.ScrollAndFocus(this.lv, this.opened))
+                {
                     return;
+                }
             }
             await Dispatcher.YieldIdle();
             if (this.lv.Items.Count != 0)
+            {
                 this.lv.Focus(FocusState.Programmatic);
+            }
             else
+            {
                 this.cb_top.Focus(FocusState.Programmatic);
+            }
         }
 
         private Gallery opened;

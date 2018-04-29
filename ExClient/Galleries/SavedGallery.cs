@@ -82,7 +82,10 @@ namespace ExClient.Galleries
             {
                 var r = await GetThumbLocalilyAsync();
                 if (r != null)
+                {
                     return r;
+                }
+
                 return await base.GetThumbAsync();
             });
         }

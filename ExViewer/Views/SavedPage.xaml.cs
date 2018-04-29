@@ -46,12 +46,16 @@ namespace ExViewer.Views
                     this.abb_Refresh.Focus(FocusState.Programmatic);
                 }
                 else
+                {
                     this.lv.Focus(FocusState.Programmatic);
+                }
             }
             else
             {
                 if (!await ViewHelper.ScrollAndFocus(this.lv, this.opened))
+                {
                     this.lv.Focus(FocusState.Programmatic);
+                }
             }
         }
 
@@ -108,7 +112,10 @@ namespace ExViewer.Views
         {
             var lvi = (args.OriginalSource as DependencyObject)?.AncestorsAndSelf<ListViewItem>()?.FirstOrDefault();
             if (lvi is null)
+            {
                 return;
+            }
+
             var dc = lvi.Content;
             this.mfi_DeleteGallery.CommandParameter = dc;
             this.mf_Gallery.ShowAt(lvi);

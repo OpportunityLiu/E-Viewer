@@ -69,12 +69,18 @@ namespace ExViewer.Controls
         private void RefreshTimer_Tick(object sender, object e)
         {
             this.fv_Banners_Counter++;
-            if (this.fv_Banners_Counter <= 7) 
+            if (this.fv_Banners_Counter <= 7)
+            {
                 return;
+            }
+
             var c = this.fv_Banners.SelectedIndex;
             c++;
             if (((ICollection)this.fv_Banners.ItemsSource).Count <= c)
+            {
                 c = 0;
+            }
+
             this.fv_Banners.SelectedIndex = c;
         }
 
@@ -86,8 +92,11 @@ namespace ExViewer.Controls
         {
             this.fv_Banners_Counter = 0;
             var data = (ICollection)this.fv_Banners.ItemsSource;
-            if (data.Count < 4) 
+            if (data.Count < 4)
+            {
                 return;
+            }
+
             if (data.Count == this.fv_Banners.SelectedIndex + 1)
             {
                 await Task.Delay(500);

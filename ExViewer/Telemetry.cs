@@ -212,11 +212,16 @@ namespace ExViewer
 
 
 Please check following infomation and attchments, and remove anything that you wouldn't like to send.
-----------
+--------------------
+-- Account Info --
+UserId: {ExClient.Client.Current.UserId}
+Config: {JsonConvert.SerializeObject(ExClient.Client.Current.Settings)}
+-- Package Info --
 PackageFullName: {Package.Current.Id.FullName}
 PackageVersion: {Package.Current.Id.Version.ToVersion()}
 PackageArchitecture: {Package.Current.Id.Architecture}
 PackageNeedsRemediation: {Package.Current.Status.NeedsRemediation}
+-- Device Info --
 Qualifiers: {q}
 DeviceForm: {AnalyticsInfo.DeviceForm}
 DeviceFamily: {AnalyticsInfo.VersionInfo.DeviceFamily}
@@ -228,7 +233,7 @@ SystemHardwareVersion: {eascdi.SystemHardwareVersion}
 SystemManufacturer: {eascdi.SystemManufacturer}
 SystemProductName: {eascdi.SystemProductName}
 SystemSku: {eascdi.SystemSku}
-----------
+--------------------
 "
             });
         }

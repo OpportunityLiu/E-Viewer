@@ -53,16 +53,23 @@ namespace EhTagTranslatorClient
             foreach (var match in matches.Cast<Match>())
             {
                 if (currentPos != match.Index)
+                {
                     yield return new MarkdownString(this.RawString.Substring(currentPos, match.Index - currentPos));
+                }
+
                 var alt = match.Groups["alt"].Value;
                 var url = match.Groups["url"].Value;
                 var title = match.Groups["title"].Value;
                 if (match.Groups["image"].Success)
                 {
                     if (url == "#" && !string.IsNullOrEmpty(title))
+                    {
                         yield return new MarkdownImage(alt, title);
+                    }
                     else
+                    {
                         yield return new MarkdownImage(alt, url);
+                    }
                 }
                 else
                 {
@@ -71,7 +78,9 @@ namespace EhTagTranslatorClient
                 currentPos = match.Index + match.Length;
             }
             if (currentPos != this.RawString.Length)
+            {
                 yield return new MarkdownString(this.RawString.Substring(currentPos));
+            }
         }
     }
 

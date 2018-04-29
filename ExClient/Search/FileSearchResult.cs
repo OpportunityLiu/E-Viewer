@@ -18,7 +18,10 @@ namespace ExClient.Search
         internal static IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
         {
             if (file is null)
+            {
                 throw new ArgumentNullException(nameof(file));
+            }
+
             if (searchSimilar)
             {
                 return AsyncInfo.Run<FileSearchResult, HttpProgress>(async (token, progress) =>
@@ -68,7 +71,10 @@ namespace ExClient.Search
         internal static FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName, bool searchSimilarUriFlag, bool onlyCovers, bool searchExpunged)
         {
             if (fileHashes is null)
+            {
                 throw new ArgumentNullException(nameof(fileHashes));
+            }
+
             return new FileSearchResult(keyword, category, fileHashes, fileName, searchSimilarUriFlag, onlyCovers, searchExpunged);
         }
 

@@ -57,7 +57,10 @@ namespace ExViewer.Views
             {
                 var focus = FocusManager.GetFocusedElement();
                 if (focus is null)
+                {
                     return;
+                }
+
                 var fe = focus as FrameworkElement;
                 var con = fe as Control;
                 Debug.WriteLine($"{(fe?.Name ?? focus.ToString())}({focus.GetType()}) {con?.FocusState}", "Focus state");
@@ -126,7 +129,10 @@ namespace ExViewer.Views
         {
             var content = this.fm_inner.Content;
             if (content is null)
+            {
                 return;
+            }
+
             var pageType = content.GetType();
             if (this.pages.TryGetValue(pageType, out var tab))
             {
@@ -138,7 +144,10 @@ namespace ExViewer.Views
         {
             var s = (Controls.SplitViewTab)sender;
             if (s.IsChecked)
+            {
                 return;
+            }
+
             RootController.SwitchSplitView(false);
             await this.manager.NavigateAsync(this.tabs[s]);
         }
@@ -165,7 +174,10 @@ namespace ExViewer.Views
         private AcrylicBackgroundSource abPaneBackgroundBind(bool value, SplitViewDisplayMode mode)
         {
             if (mode == SplitViewDisplayMode.Overlay)
+            {
                 return AcrylicBackgroundSource.Backdrop;
+            }
+
             return value ? AcrylicBackgroundSource.Backdrop : AcrylicBackgroundSource.HostBackdrop;
         }
 

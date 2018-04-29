@@ -24,7 +24,10 @@ namespace BannerProvider
             get
             {
                 if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
+                {
                     return (DateTimeOffset)r;
+                }
+
                 return DateTimeOffset.MinValue;
             }
             private set => ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;
@@ -33,7 +36,10 @@ namespace BannerProvider
         private static async Task init()
         {
             if (bannerFolder != null)
+            {
                 return;
+            }
+
             bannerFolder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Banners", CreationCollisionOption.OpenIfExists);
         }
 

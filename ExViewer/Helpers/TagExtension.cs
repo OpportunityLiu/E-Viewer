@@ -11,7 +11,10 @@ namespace ExClient.Tagging
         {
             var r = GetDisplayContentAsync(tag);
             if (r.Status == AsyncStatus.Completed)
+            {
                 return r.GetResults();
+            }
+
             return tag.Content;
         }
 
@@ -22,7 +25,9 @@ namespace ExClient.Tagging
             {
                 var r = tag.GetEhTagTranslatorRecord();
                 if (r != null)
+                {
                     return AsyncOperation<string>.CreateCompleted(r.Translated.Text);
+                }
             }
             if (settings.UseJapaneseTagTranslation)
             {
@@ -32,9 +37,13 @@ namespace ExClient.Tagging
                     {
                         var r = action.GetResults();
                         if (!match(tag, r))
+                        {
                             return tag.Content;
+                        }
                         else
+                        {
                             return r.Japanese ?? tag.Content;
+                        }
                     }
                     else
                     {
@@ -49,11 +58,20 @@ namespace ExClient.Tagging
         private static bool match(Tag tag, EhWikiClient.Record wiki)
         {
             if (wiki is null)
+            {
                 return false;
+            }
+
             if (tag.Namespace == Namespace.Unknown)
+            {
                 return true;
+            }
+
             if (wiki.Type == EhWikiClient.TagType.Unknown)
+            {
                 return true;
+            }
+
             switch (tag.Namespace)
             {
             case Namespace.Reclass:

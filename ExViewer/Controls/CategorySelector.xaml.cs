@@ -39,7 +39,9 @@ namespace ExViewer.Controls
             foreach (var item in this.filter)
             {
                 if (item.IsChecked)
+                {
                     category |= item.Category;
+                }
             }
             this.SelectedCategory = category;
         }
@@ -60,7 +62,10 @@ namespace ExViewer.Controls
             var oldValue = (Category)e.OldValue;
             var newValue = (Category)e.NewValue;
             if (oldValue == newValue)
+            {
                 return;
+            }
+
             foreach (var item in s.filter)
             {
                 item.IsChecked = newValue.HasFlag(item.Category);

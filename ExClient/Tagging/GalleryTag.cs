@@ -24,9 +24,13 @@ namespace ExClient.Tagging
             if (command == Api.VoteState.Default)
             {
                 if (this.state.HasFlag(TagState.Downvoted))
+                {
                     return this.owner.VoteAsync(this.Content, Api.VoteState.Up);
+                }
                 else if (this.state.HasFlag(TagState.Upvoted))
+                {
                     return this.owner.VoteAsync(this.Content, Api.VoteState.Down);
+                }
             }
             return this.owner.VoteAsync(this.Content, command);
         }

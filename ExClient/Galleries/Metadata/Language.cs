@@ -23,7 +23,10 @@ namespace ExClient.Galleries.Metadata
         {
             var tags = gallery.Tags;
             if (tags is null)
+            {
                 return default(Language);
+            }
+
             var modi = LanguageModifier.None;
             var language = new List<LanguageName>(1);
             var lanNA = false;
@@ -46,17 +49,25 @@ namespace ExClient.Galleries.Metadata
                     else if (!lanNA)
                     {
                         if (Enum.TryParse<LanguageName>(item.Content.Content, true, out var lan))
+                        {
                             language.Add(lan);
+                        }
                         else
+                        {
                             language.Add(LanguageName.Other);
+                        }
                     }
                     continue;
                 }
             }
             if (!lanNA && language.Count == 0)
+            {
                 return new Language(null, modi);
+            }
             else
+            {
                 return new Language(language, modi);
+            }
         }
 
         public Language(IEnumerable<LanguageName> names, LanguageModifier modifier)
@@ -84,12 +95,20 @@ namespace ExClient.Galleries.Metadata
         public override string ToString()
         {
             if (this.Names.Count == 0) // 0.9% cases
+            {
                 return LocalizedStrings.Language.Names.NotApplicable;
+            }
+
             string name;
             if (this.Names.Count == 1) // 99% cases
+            {
                 name = this.Names[0].ToFriendlyNameString();
+            }
             else // 0.1% cases
+            {
                 name = string.Join(", ", this.Names.Select(LanguageNameExtension.ToFriendlyNameString));
+            }
+
             switch (Modifier)
             {
             case LanguageModifier.Translated:
@@ -104,22 +123,34 @@ namespace ExClient.Galleries.Metadata
         public bool Equals(Language other)
         {
             if (this.Modifier != other.Modifier)
+            {
                 return false;
+            }
+
             if (this.names is null)
             {
                 if (other.names is null)
+                {
                     return true;
+                }
+
                 return false;
             }
             if (other.names is null)
+            {
                 return false;
+            }
+
             return this.names.SequenceEqual(other.names);
         }
 
         public override bool Equals(object obj)
         {
             if (obj is Language l)
+            {
                 return Equals(l);
+            }
+
             return false;
         }
 

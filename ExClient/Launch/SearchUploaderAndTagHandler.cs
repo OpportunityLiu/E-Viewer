@@ -12,7 +12,10 @@ namespace ExClient.Launch
         public override bool CanHandle(UriHandlerData data)
         {
             if (data.Paths.Count != 2)
+            {
                 return false;
+            }
+
             switch (data.Path0)
             {
             case "tag":

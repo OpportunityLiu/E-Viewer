@@ -11,7 +11,7 @@ namespace ExClient.Api
             : base(comment.Owner.Owner)
         {
             var gallery = comment.Owner.Owner;
-            this.Id = comment.ID;
+            this.Id = comment.Id;
         }
 
         [JsonProperty("comment_id")]

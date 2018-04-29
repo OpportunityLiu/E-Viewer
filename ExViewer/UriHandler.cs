@@ -15,21 +15,30 @@ namespace ExViewer
         private static Uri reform(Uri uri)
         {
             if (isPrivateProtocal(uri))
+            {
                 return new Uri("https://exhentai.org/" + uri.PathAndQuery.TrimStart('/', '\\', ' ', '\t'));
+            }
+
             return uri;
         }
 
         private static bool isPrivateProtocal(Uri uri)
         {
             if (uri is null)
+            {
                 return false;
+            }
+
             return uri.Scheme == "e-viewer-data";
         }
 
         public static bool CanHandleInApp(Uri uri)
         {
             if (isPrivateProtocal(uri))
+            {
                 return true;
+            }
+
             return UriLauncher.CanHandle(reform(uri));
         }
 
@@ -41,14 +50,20 @@ namespace ExViewer
         public static bool Handle(Uri uri)
         {
             if (uri is null)
+            {
                 return true;
+            }
+
             var p = isPrivateProtocal(uri);
             uri = reform(uri);
             if (!CanHandleInApp(uri))
             {
                 if (p)
+                {
                     // private protocal, handled by doing nothing
                     return true;
+                }
+
                 var ignore = Launcher.LaunchUriAsync(uri, new LauncherOptions
                 {
                     DesiredRemainingView = Windows.UI.ViewManagement.ViewSizePreference.UseMore,

@@ -44,7 +44,7 @@ namespace ExClient.Galleries.Commenting
             this.Owner = owner;
             var culture = System.Globalization.CultureInfo.InvariantCulture;
             var document = commentNode.OwnerDocument;
-            this.ID = id;
+            this.Id = id;
 
             var contentHtml = document.GetElementbyId($"comment_{id}").OuterHtml.Replace("://forums.exhentai.org", "://forums.e-hentai.org");
             this.Content = HtmlNode.CreateNode(contentHtml);
@@ -115,11 +115,11 @@ namespace ExClient.Galleries.Commenting
 
         public CommentCollection Owner { get; }
 
-        public int ID { get; }
+        public int Id { get; }
 
         public string Author { get; }
 
-        public bool IsUploaderComment => this.ID == 0;
+        public bool IsUploaderComment => this.Id == 0;
 
         public DateTimeOffset Posted { get; }
 

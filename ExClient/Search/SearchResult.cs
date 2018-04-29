@@ -69,13 +69,18 @@ namespace ExClient.Search
                     this.PageCount = pttNode.Descendants("td").Select(node =>
                     {
                         if (!int.TryParse(node.GetInnerText(), out var i))
+                        {
                             i = -1;
+                        }
+
                         return i;
                     }).Max();
                     this.RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
                 }
                 else
+                {
                     this.RecordCount = 0;
+                }
             }
         }
 
@@ -166,22 +171,32 @@ namespace ExClient.Search
                 var list = await loadlistTask;
                 token.ThrowIfCancellationRequested();
                 if (this.Count == 0)
+                {
                     goto defaultRet;
+                }
+
                 var lastID = this[this.Count - 1].ID;
                 var index = list.Count - 1;
                 for (; index >= 0; index--)
                 {
                     if (list[index].ID == lastID)
+                    {
                         break;
+                    }
                 }
                 if (index < 0)
+                {
                     goto defaultRet;
+                }
+
                 var listStart = this.Count - index - 1;
                 var i = this.Count - 1;
                 for (; index >= 0; index--, i--)
                 {
                     if (list[index].ID != this[i].ID)
+                    {
                         goto defaultRet;
+                    }
                 }
                 this.lpc++;
                 return LoadItemsResult.Create(listStart, list, false);

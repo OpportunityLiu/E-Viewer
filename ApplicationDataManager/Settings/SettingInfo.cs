@@ -45,11 +45,17 @@ namespace ApplicationDataManager.Settings
                 if (!typeDic.TryGetValue(pType, out this.type))
                 {
                     if (pType == typeof(bool))
+                    {
                         this.ValueRepresent = ToggleSwitchRepresentAttribute.Default;
+                    }
                     else if (pType.GetTypeInfo().IsEnum)
+                    {
                         this.ValueRepresent = EnumRepresentAttribute.Default;
+                    }
                     else
+                    {
                         throw new InvalidOperationException($"Unsupported property type: {{{pType}}}");
+                    }
                 }
             }
             settingCollection.PropertyChanged += this.settingsChanged;
@@ -90,7 +96,10 @@ namespace ApplicationDataManager.Settings
             set
             {
                 if (value is null)
+                {
                     return;
+                }
+
                 this.PropertyInfo.SetValue(this.settingCollection, value);
             }
         }

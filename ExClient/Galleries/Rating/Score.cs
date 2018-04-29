@@ -27,21 +27,30 @@ namespace ExClient.Galleries.Rating
         {
             var score = (Score)(byte)Math.Round(value * 2);
             if (!score.IsDefined())
+            {
                 throw new ArgumentOutOfRangeException(nameof(value));
+            }
+
             return score;
         }
         public static Score ToScore(this float value)
         {
             var score = (Score)(byte)Math.Round(value * 2);
             if (!score.IsDefined())
+            {
                 throw new ArgumentOutOfRangeException(nameof(value));
+            }
+
             return score;
         }
         public static Score ToScore(this decimal value)
         {
             var score = (Score)(byte)Math.Round(value * 2);
             if (!score.IsDefined())
+            {
                 throw new ArgumentOutOfRangeException(nameof(value));
+            }
+
             return score;
         }
     }

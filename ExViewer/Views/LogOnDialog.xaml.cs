@@ -79,7 +79,10 @@ namespace ExViewer.Views
         private async Task injectOtherPage()
         {
             if (this.loggingOn)
+            {
                 return;
+            }
+
             var r = await this.wv.InvokeScriptAsync("eval", new[] { @"
 (function ()
 {
@@ -98,16 +101,23 @@ namespace ExViewer.Views
 " });
             var data = r.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             if (data.Length != 2)
+            {
                 return;
+            }
+
             await logOnAsync(data[0], data[1]);
         }
 
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
             if (Client.Current.NeedLogOn)
+            {
                 this.CloseButtonText = Strings.Resources.General.Exit;
+            }
             else
+            {
                 this.CloseButtonText = Strings.Resources.General.Cancel;
+            }
         }
 
         private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
@@ -120,16 +130,23 @@ namespace ExViewer.Views
         {
             System.Diagnostics.Debug.WriteLine(args.Uri?.ToString() ?? "local string", "WebView");
             if (args.Uri is null)
+            {
                 return;
+            }
+
             if (args.Uri == Client.LogOnUri)
+            {
                 await injectLogOnPage();
+            }
             else if (args.Uri.ToString().StartsWith(Client.LogOnUri.ToString()))
             {
                 await injectLogOnPage();
                 await injectOtherPage();
             }
             else if (args.Uri.Host == Client.LogOnUri.Host)
+            {
                 await injectOtherPage();
+            }
         }
 
         private void wv_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
@@ -162,7 +179,10 @@ namespace ExViewer.Views
             if (e.CallingUri.ToString().StartsWith(Client.LogOnUri.ToString()))
             {
                 if (data.Length != 2)
+                {
                     return;
+                }
+
                 this.tempUserName = data[0];
                 this.tempPassword = data[1];
                 return;
@@ -173,9 +193,14 @@ namespace ExViewer.Views
         {
             var ww = Window.Current.Bounds.Width;
             if (ww > 400)
+            {
                 this.wv.MinWidth = Math.Min(availableSize.Width - 144, 700);
+            }
             else
+            {
                 this.wv.MinWidth = 0;
+            }
+
             return base.MeasureOverride(availableSize);
         }
 
@@ -188,7 +213,10 @@ namespace ExViewer.Views
         private void MyContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             if (this.logOnInfoBackup != null)
+            {
                 Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
+            }
+
             if (Client.Current.NeedLogOn)
             {
                 Application.Current.Exit();
@@ -202,7 +230,10 @@ namespace ExViewer.Views
             try
             {
                 if (!long.TryParse(id, out var uid))
+                {
                     return;
+                }
+
                 try
                 {
                     await Client.Current.LogOnAsync(uid, hash);
@@ -212,7 +243,10 @@ namespace ExViewer.Views
                     return;
                 }
                 if (!string.IsNullOrEmpty(this.tempUserName) && !string.IsNullOrEmpty(this.tempPassword))
+                {
                     AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
+                }
+
                 this.Hide();
             }
             finally
