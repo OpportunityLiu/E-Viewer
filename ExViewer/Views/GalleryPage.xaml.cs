@@ -341,8 +341,6 @@ namespace ExViewer.Views
                     this.lv_Torrents.SelectedIndex = 0;
                 }
                 break;
-            default:
-                break;
             }
         }
 
@@ -421,7 +419,7 @@ namespace ExViewer.Views
             case VirtualKey.GamepadMenu:
             case VirtualKey.Application:
                 this.cb_top.IsOpen = !this.cb_top.IsOpen;
-                if (this.cb_top.IsOpen && this.btnMoreButton is null)
+                if (this.cb_top.IsOpen && (this.btnMoreButton is null))
                 {
                     this.btnMoreButton = this.cb_top.Descendants<Button>("MoreButton").FirstOrDefault();
                     this.btnMoreButton?.Focus(FocusState.Programmatic);

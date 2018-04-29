@@ -49,8 +49,7 @@ namespace ExClient.Api
     internal class CommentResponse : ApiResponse
     {
         [JsonProperty("comment_id")]
-        public int ID { get; set; }
-
+        public int Id { get; set; }
     }
 
     internal sealed class CommentVoteResponse : CommentResponse
@@ -62,9 +61,9 @@ namespace ExClient.Api
 
         protected override void CheckResponseOverride(ApiRequest request)
         {
-            if (!Vote.IsDefined())
+            if (this.Id != ((CommentVoteRequest)request).Id || !Vote.IsDefined())
             {
-                throw new InvalidOperationException($"Unexpected result from api request {JsonConvert.SerializeObject(request)}");
+                throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
             }
         }
     }

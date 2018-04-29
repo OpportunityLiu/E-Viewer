@@ -279,7 +279,7 @@ namespace ExViewer.Controls
             if (node is HtmlTextNode)
             {
                 var text = HtmlEntity.DeEntitize(node.InnerText);
-                if (detectLink && linkDetector.Matches(text) is MatchCollection matches && matches.Count > 0)
+                if (detectLink && (linkDetector.Matches(text) is MatchCollection matches) && matches.Count > 0)
                 {
                     var t = new Span();
                     var currentPos = 0;
