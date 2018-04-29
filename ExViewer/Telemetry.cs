@@ -111,7 +111,7 @@ namespace ExViewer
             try
             {
                 var time = DateTimeOffset.Now;
-                await semaphore.WaitAsync();
+                await semaphore.WaitAsync().ConfigureAwait(false);
                 if (logFile is null)
                     logFile = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("AppLog", CreationCollisionOption.OpenIfExists);
                 await FileIO.AppendTextAsync(logFile, $"----[{time:u}]----------------------------------\r\n{data}\r\n\r\n");
@@ -130,7 +130,7 @@ namespace ExViewer
         {
             try
             {
-                await semaphore.WaitAsync();
+                await semaphore.WaitAsync().ConfigureAwait(false);
                 if (logFile is null)
                     logFile = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("AppLog", CreationCollisionOption.OpenIfExists);
             }
