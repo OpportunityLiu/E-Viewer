@@ -166,12 +166,6 @@ namespace ExViewer.Views
 
             public static Frame Frame => root?.fm_inner;
 
-            public static string CurrentPageName
-            {
-                get;
-                private set;
-            }
-
             private static RootControl root;
 
             public static RootControl Parent => root;
@@ -211,7 +205,6 @@ namespace ExViewer.Views
 
             private static void Frame_Navigated(object sender, NavigationEventArgs e)
             {
-                CurrentPageName = Frame.Content.GetType().ToString();
                 Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Navigated", new Dictionary<string, string> { ["Type"] = e.SourcePageType.ToString() });
             }
 
