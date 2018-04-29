@@ -24,7 +24,9 @@ namespace ExClient.Api
             : base(comment)
         {
             if (vote != VoteState.Down && vote != VoteState.Up)
+            {
                 throw new ArgumentOutOfRangeException(nameof(vote));
+            }
             this.Vote = vote;
         }
 
@@ -57,6 +59,14 @@ namespace ExClient.Api
         public int Score { get; set; }
         [JsonProperty("comment_vote")]
         public VoteState Vote { get; set; }
+
+        protected override void CheckResponseOverride(ApiRequest request)
+        {
+            if (!Vote.IsDefined())
+            {
+                throw new InvalidOperationException($"Unexpected result from api request {JsonConvert.SerializeObject(request)}");
+            }
+        }
     }
 
     internal sealed class CommentEditResponse : CommentResponse
