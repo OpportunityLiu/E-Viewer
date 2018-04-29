@@ -55,7 +55,10 @@ namespace ExViewer.Controls
             var oldValue = (GalleryImage)e.OldValue;
             var newValue = (GalleryImage)e.NewValue;
             if (oldValue == newValue)
+            {
                 return;
+            }
+
             var sender = (ImagePresenter)dp;
             if (newValue != null)
             {
@@ -69,7 +72,9 @@ namespace ExViewer.Controls
                 }
             }
             else
+            {
                 sender.img_Thumb.Source = defaultImage;
+            }
         }
 
         protected override void OnDisconnectVisualChildren()
@@ -134,20 +139,35 @@ namespace ExViewer.Controls
         public void ZoomTo(Point point, float factor)
         {
             if (factor > this.sv.MaxZoomFactor)
+            {
                 factor = this.sv.MaxZoomFactor;
+            }
             else if (factor < this.sv.MinZoomFactor)
+            {
                 factor = this.sv.MinZoomFactor;
+            }
+
             var pi = point;
             var psX = point.X * this.sv.ZoomFactor;
             var psY = point.Y * this.sv.ZoomFactor;
             if (this.sv.ScrollableWidth > 0)
+            {
                 psX -= this.sv.HorizontalOffset;
+            }
             else
+            {
                 psX += (this.sv.ActualWidth - this.sv.ExtentWidth) / 2;
+            }
+
             if (this.sv.ScrollableHeight > 0)
+            {
                 psY -= this.sv.VerticalOffset;
+            }
             else
+            {
                 psY += (this.sv.ActualHeight - this.sv.ExtentHeight) / 2;
+            }
+
             this.sv.ChangeView(pi.X * factor - psX, pi.Y * factor - psY, factor);
         }
 
@@ -160,22 +180,36 @@ namespace ExViewer.Controls
         {
             double w, h;
             if (this.sv.ScrollableWidth > 0)
+            {
                 w = (this.sv.ActualWidth / 2 + this.sv.HorizontalOffset) / this.sv.ZoomFactor;
+            }
             else
+            {
                 w = this.gd_ContentRoot.ActualWidth / 2;
+            }
+
             if (this.sv.ScrollableHeight > 0)
+            {
                 h = (this.sv.ActualHeight / 2 + this.sv.VerticalOffset) / this.sv.ZoomFactor;
+            }
             else
+            {
                 h = this.gd_ContentRoot.ActualHeight / 2;
+            }
+
             this.ZoomTo(new Point(w, h), factor);
         }
 
         private void Zoom(Point p)
         {
             if (this.sv.ZoomFactor > 1.001)
+            {
                 ResetZoom(false);
+            }
             else
+            {
                 this.ZoomTo(p);
+            }
         }
 
         public void ResetZoom(bool disableAnimation)
@@ -188,7 +222,10 @@ namespace ExViewer.Controls
             base.OnDoubleTapped(e);
             var point = e.GetPosition(this.gd_ContentRoot);
             if (e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
+            {
                 await Task.Delay(100);
+            }
+
             this.Zoom(point);
         }
 
@@ -209,16 +246,24 @@ namespace ExViewer.Controls
             case Windows.System.VirtualKey.Up:
             case Windows.System.VirtualKey.Down:
                 if (this.sv.ScrollableHeight < 1)
+                {
                     e.Handled = false;
+                }
+
                 break;
             case Windows.System.VirtualKey.Left:
             case Windows.System.VirtualKey.Right:
                 if (this.sv.ScrollableWidth < 1)
+                {
                     e.Handled = false;
+                }
+
                 break;
             case Windows.System.VirtualKey.Space:
                 if (this.spacePressed)
+                {
                     e.Handled = false;
+                }
                 else
                 {
                     Zoom(new Point(this.gd_ContentRoot.ActualWidth / 2, this.gd_ContentRoot.ActualHeight / 2));

@@ -42,7 +42,10 @@ namespace EhTagTranslatorClient
             get
             {
                 if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
+                {
                     return (DateTimeOffset)r;
+                }
+
                 return DateTimeOffset.MinValue;
             }
             private set => ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;
@@ -55,7 +58,10 @@ namespace EhTagTranslatorClient
             get
             {
                 if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_COMMIT, out var r))
+                {
                     return (DateTimeOffset)r;
+                }
+
                 return DateTimeOffset.MinValue.AddDays(1);
             }
             private set => ApplicationData.Current.LocalSettings.Values[LAST_COMMIT] = value;
@@ -144,7 +150,9 @@ namespace EhTagTranslatorClient
                                 {
 #if DEBUG
                                     if (System.Diagnostics.Debugger.IsAttached)
+                                    {
                                         System.Diagnostics.Debugger.Break();
+                                    }
 #endif
                                     existed = Record.Combine(existed, item);
                                 }

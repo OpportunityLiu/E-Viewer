@@ -35,7 +35,9 @@ namespace ExClient.Tagging
             for (var i = 0; i < this.Keys.Length; i++)
             {
                 if (this.Keys[i] == key)
+                {
                     return i;
+                }
             }
             return -1;
         }
@@ -44,7 +46,10 @@ namespace ExClient.Tagging
         {
             this.Owner = owner;
             if (items is null)
+            {
                 throw new ArgumentNullException(nameof(items));
+            }
+
             initOrReset(items.Select(t => (t, TagState.NormalPower)));
         }
 
@@ -77,7 +82,10 @@ namespace ExClient.Tagging
             {
                 var cns = data[i].Namespace;
                 if (currentNs == cns)
+                {
                     continue;
+                }
+
                 currentNs = cns;
                 keys[currentIdx] = currentNs;
                 offset[currentIdx] = i;
@@ -127,7 +135,10 @@ namespace ExClient.Tagging
             get
             {
                 if (unchecked((uint)index >= (uint)Count))
+                {
                     throw new IndexOutOfRangeException();
+                }
+
                 return new NamespaceTagCollection(this, index);
             }
         }
@@ -151,9 +162,15 @@ namespace ExClient.Tagging
         {
             var i = getIndexOfKey(key);
             if (i >= 0)
+            {
                 return getValue(i);
+            }
+
             if (!key.IsDefined())
+            {
                 throw new ArgumentOutOfRangeException(nameof(key));
+            }
+
             return RangedListView<GalleryTag>.Empty;
         }
 
@@ -165,19 +182,31 @@ namespace ExClient.Tagging
         public IAsyncAction VoteAsync(Tag tag, VoteState command)
         {
             if (command != VoteState.Down && command != VoteState.Up)
+            {
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
+            }
+
             return voteAsync(new TagRequest(this, tag, command));
         }
 
         public IAsyncAction VoteAsync(IEnumerable<Tag> tags, VoteState command)
         {
             if (tags is null)
+            {
                 throw new ArgumentNullException(nameof(tags));
+            }
+
             if (command != VoteState.Down && command != VoteState.Up)
+            {
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
+            }
+
             var req = new TagRequest(this, tags, command);
             if (string.IsNullOrWhiteSpace(req.Tags))
+            {
                 return AsyncAction.CreateCompleted();
+            }
+
             return voteAsync(req);
         }
 
@@ -195,10 +224,16 @@ namespace ExClient.Tagging
         {
             var tablecontainer = doc.GetElementbyId("taglist");
             if (tablecontainer is null)
+            {
                 return;
+            }
+
             var tableNode = tablecontainer.Element("table");
             if (tableNode is null)
+            {
                 return;
+            }
+
             updateCore(tableNode);
         }
 
@@ -210,22 +245,34 @@ namespace ExClient.Tagging
                     var state = default(TagState);
 
                     if (node.HasClass("gt"))
+                    {
                         state |= TagState.HighPower;
+                    }
                     else if (node.HasClass("gtw"))
+                    {
                         state |= TagState.LowPower;
+                    }
                     else // if(node.HasClass("gtl")
+                    {
                         state |= TagState.NormalPower;
+                    }
 
                     var divstyle = node.GetAttribute("style", "opacity:1.0");
                     if (divstyle.Contains("opacity:0.4"))
+                    {
                         state |= TagState.Slave;
+                    }
                     //else if(divstyle.Contains("opacity:1.0"))
 
                     var a = node.Element("a");
                     if (a.HasClass("tup"))
+                    {
                         state |= TagState.Upvoted;
+                    }
                     else if (a.HasClass("tdn"))
+                    {
                         state |= TagState.Downvoted;
+                    }
 
                     var tag = node.Id.Substring(3).Replace('_', ' ');
                     return (Tag.Parse(tag), state);
@@ -251,11 +298,20 @@ namespace ExClient.Tagging
                 get
                 {
                     if (this.version != this.parent.Version)
+                    {
                         throw new InvalidOperationException("Collection changed.");
+                    }
+
                     if (this.i < 0)
+                    {
                         throw new InvalidOperationException("Enumeration hasn't started.");
+                    }
+
                     if (this.i >= this.parent.Keys.Length)
+                    {
                         throw new InvalidOperationException("Enumeration has ended.");
+                    }
+
                     return new NamespaceTagCollection(this.parent, this.i);
                 }
             }
@@ -265,10 +321,16 @@ namespace ExClient.Tagging
             public bool MoveNext()
             {
                 if (this.version != this.parent.Version)
+                {
                     throw new InvalidOperationException("Collection changed.");
+                }
+
                 var end = this.parent.Keys.Length;
                 if (this.i >= end)
+                {
                     return false;
+                }
+
                 this.i++;
                 return this.i < end;
             }

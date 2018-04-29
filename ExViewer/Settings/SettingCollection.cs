@@ -81,7 +81,10 @@ namespace ExViewer.Settings
             {
                 SetLocal(value);
                 if (!value)
+                {
                     return;
+                }
+
                 var test = UserConsentVerifier.CheckAvailabilityAsync();
                 test.Completed = (s, e) =>
                 {
@@ -176,9 +179,14 @@ namespace ExViewer.Settings
             set
             {
                 if (value)
+                {
                     Client.Current.Settings.FavoritesOrder = FavoritesOrder.ByFavoritedTime;
+                }
                 else
+                {
                     Client.Current.Settings.FavoritesOrder = FavoritesOrder.ByLastUpdatedTime;
+                }
+
                 update();
             }
         }
@@ -304,9 +312,13 @@ namespace ExViewer.Settings
             set
             {
                 if (this.LoadLofiOnAllInternetConnection)
+                {
                     ForceSetLocal(true);
+                }
                 else
+                {
                     ForceSetLocal(value);
+                }
             }
         }
 
@@ -319,7 +331,9 @@ namespace ExViewer.Settings
             {
                 SetLocal(value);
                 if (value)
+                {
                     this.LoadLofiOnMeteredInternetConnection = true;
+                }
             }
         }
 
@@ -336,7 +350,9 @@ namespace ExViewer.Settings
                 async void setAsync(string token)
                 {
                     if (string.IsNullOrEmpty(token))
+                    {
                         GalleryImage.ImageFolder = null;
+                    }
                     else
                     {
                         try

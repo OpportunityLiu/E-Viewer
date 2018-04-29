@@ -77,7 +77,10 @@ namespace ExViewer.Controls
             var oldValue = (bool)e.OldValue;
             var newValue = (bool)e.NewValue;
             if (oldValue == newValue)
+            {
                 return;
+            }
+
             if (newValue)
             {
                 sender.TextChanged += asb_TextChanged;
@@ -173,7 +176,9 @@ namespace ExViewer.Controls
             {
                 var command = GetSubmitCommand(sender);
                 if (command.CanExecute(args.QueryText))
+                {
                     command.Execute(args.QueryText);
+                }
             }
             else
             {
@@ -265,9 +270,14 @@ namespace ExViewer.Controls
             {
                 var index = input.LastIndexOf(sep);
                 if (index < 0)
+                {
                     index = 0;
+                }
                 else
+                {
                     index += sep.Length;
+                }
+
                 lastterm = input.Substring(index);
                 previous = input.Substring(0, input.Length - lastterm.Length);
             }
@@ -334,7 +344,10 @@ namespace ExViewer.Controls
             else
             {
                 if (!NamespaceExtention.TryParse(splited[0], out lastwordNs))
+                {
                     lastwordNs = Namespace.Unknown;
+                }
+
                 lastword = splited[1];
             }
             lastword = lastword.Trim(wordTrim);
@@ -346,7 +359,10 @@ namespace ExViewer.Controls
         private static bool autoCompleteFinished(object selectedSuggestion)
         {
             if (selectedSuggestion is SearchHistory)
+            {
                 return true;
+            }
+
             return false;
         }
     }

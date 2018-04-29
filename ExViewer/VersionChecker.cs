@@ -87,11 +87,15 @@ namespace ExViewer
                         client.DefaultRequestHeaders.UserAgent.Add(new Windows.Web.Http.Headers.HttpProductInfoHeaderValue(Package.Current.Id.Name, currentVersion.ToVersion().ToString()));
                         var release = JsonConvert.DeserializeObject<GitHubRelease>(await client.GetStringAsync(ReleaseUri));
                         if (release is null || release.draft || release.prerelease)
+                        {
                             return null;
+                        }
                         var version = new string(release.tag_name.Select(c => char.IsDigit(c) ? c : ' ').ToArray());
                         var subver = version.Split(default(char[]), StringSplitOptions.RemoveEmptyEntries).Select(s => ushort.Parse(s)).ToArray();
                         if (subver.Length != 3 && subver.Length != 4)
+                        {
                             return null;
+                        }
                         release.Version = new PackageVersion
                         {
                             Major = subver[0],
@@ -100,7 +104,9 @@ namespace ExViewer
                             Revision = subver.Length == 4 ? subver[3] : (ushort)0
                         };
                         if (release.Version.CompareTo(currentVersion) > 0)
+                        {
                             return release;
+                        }
                         return null;
                     }
                 }

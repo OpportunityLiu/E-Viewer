@@ -47,18 +47,27 @@ namespace ApplicationDataManager.Settings.Xaml
                 var large = small * 10;
 
                 if(!double.IsNaN(range.Small))
+                {
                     small = range.Small;
-                if(!double.IsNaN(range.Large))
+                }
+
+                if (!double.IsNaN(range.Large))
+                {
                     large = range.Large;
+                }
 
                 s.SmallChange = small;
                 s.LargeChange = large;
                 s.StepFrequency = small;
 
                 if(!double.IsNaN(range.Tick))
+                {
                     s.TickFrequency = range.Tick;
+                }
                 else
+                {
                     s.ClearValue(TickFrequencyProperty);
+                }
 
                 s.ValueChanged += s.valueChangedCallback;
                 nv.PropertyChanged += s.settingInfoPropertyChanged;
@@ -79,7 +88,10 @@ namespace ApplicationDataManager.Settings.Xaml
         private void settingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName != nameof(Value))
+            {
                 return;
+            }
+
             var s = (SettingInfo)sender;
             this.Value = Convert.ToDouble(s.Value);
         }

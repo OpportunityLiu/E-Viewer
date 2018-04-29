@@ -11,7 +11,7 @@ namespace ExClient.HentaiVerse
     {
         public static Uri RootUri { get; } = new Uri("http://hentaiverse.org/");
 
-        public static Uri LogOnUri => new Uri(RootUri, $"login.php?ipb_member_id={Client.Current.UserID}&ipb_pass_hash={Client.Current.PassHash}");
+        public static Uri LogOnUri => new Uri(RootUri, $"login.php?ipb_member_id={Client.Current.UserId}&ipb_pass_hash={Client.Current.PassHash}");
 
         public static event EventHandler<MonsterEncounteredEventArgs> MonsterEncountered;
 
@@ -26,10 +26,16 @@ namespace ExClient.HentaiVerse
         {
             var eventPane = doc.GetElementbyId("eventpane");
             if (eventPane is null)
+            {
                 return;
+            }
+
             var div1 = eventPane.Element("div");
             if (div1 is null)
+            {
                 return;
+            }
+
             var a = eventPane.Descendants("a").FirstOrDefault();
             if (a != null && MonsterEncountered != null)
             {

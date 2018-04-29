@@ -30,7 +30,10 @@ namespace ExViewer.Views
         private void SettingsPage_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
         {
             if (!(FocusManager.GetFocusedElement() is FrameworkElement dp))
+            {
                 return;
+            }
+
             dp.StartBringIntoView(new BringIntoViewOptions
             {
                 AnimationDesired = true,
@@ -85,9 +88,13 @@ namespace ExViewer.Views
         private void setSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
+            {
                 this.bdSplitViewPlaceholder.Width = 48;
+            }
             else
+            {
                 this.bdSplitViewPlaceholder.Width = 0;
+            }
         }
     }
 }

@@ -40,7 +40,10 @@ namespace ExViewer.Controls
             var oldValue = (TaggingRecord)e.OldValue;
             var newValue = (TaggingRecord)e.NewValue;
             if (oldValue == newValue)
+            {
                 return;
+            }
+
             var sender = (TaggingRecordPresenter)dp;
             sender.update(newValue);
         }
@@ -58,7 +61,10 @@ namespace ExViewer.Controls
                 dc.Completed = (IAsyncOperation<string> op, AsyncStatus asyncStatus) =>
                 {
                     if (asyncStatus != AsyncStatus.Completed)
+                    {
                         return;
+                    }
+
                     var dispValue = op.GetResults();
                     var t = $"{data.Tag.Namespace.ToFriendlyNameString()}: {dispValue}";
                     this.Dispatcher.Begin(() =>
@@ -69,19 +75,32 @@ namespace ExViewer.Controls
             }
 
             if (data.Score > 0)
+            {
                 this.tbTag.Foreground = upBrush;
+            }
             else if (data.Score < 0)
+            {
                 this.tbTag.Foreground = downBrush;
+            }
             else
+            {
                 this.tbTag.ClearValue(TextBlock.ForegroundProperty);
+            }
 
             var indicators = "";
             if (data.IsBlocked && data.IsSlaved)
+            {
                 indicators = BlockedAndSlavedIndicator;
+            }
             else if (data.IsBlocked)
+            {
                 indicators = BlockedIndicator;
+            }
             else if (data.IsSlaved)
+            {
                 indicators = SlavedIndicator;
+            }
+
             this.tbStatus.Text = indicators;
         }
 

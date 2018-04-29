@@ -71,7 +71,9 @@ namespace ExViewer.Services
         public IAsyncOperation<bool> NotifyAsync(object data)
         {
             if (this.isopen || !(data is ContentDialogNotificationData notificationData))
+            {
                 return AsyncOperation<bool>.CreateCompleted(false);
+            }
 
             this.Title = notificationData.Title;
             this.Content = notificationData.Content;

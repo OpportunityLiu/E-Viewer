@@ -21,7 +21,9 @@ namespace ExClient.Internal
         private void checkIPBanStatus(string responseString)
         {
             if (responseString.StartsWith(IP_BANNED_OF_PAGE_LOAD))
+            {
                 throw new InvalidOperationException(LocalizedStrings.Resources.IPBannedOfPageLoad);
+            }
         }
 
         public MyHttpClient(Client owner, HttpClient inner)
@@ -57,7 +59,10 @@ namespace ExClient.Internal
             reformUri(ref uri);
             var request = this.inner.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             if (completionOption == HttpCompletionOption.ResponseHeadersRead)
+            {
                 return request;
+            }
+
             return Run<HttpResponseMessage, HttpProgress>(async (token, progress) =>
             {
                 token.Register(request.Cancel);
@@ -65,15 +70,22 @@ namespace ExClient.Internal
                 var response = await request;
                 checkSadPanda(response);
                 if (checkStatusCode)
+                {
                     response.EnsureSuccessStatusCode();
+                }
+
                 var buffer = response.Content.BufferAllAsync();
                 if (!response.Content.TryComputeLength(out var length))
                 {
                     var contentLength = response.Content.Headers.ContentLength;
                     if (contentLength.HasValue)
+                    {
                         length = contentLength.Value;
+                    }
                     else
+                    {
                         length = ulong.MaxValue;
+                    }
                 }
                 buffer.Progress = (t, p) =>
                 {
@@ -152,19 +164,34 @@ namespace ExClient.Internal
                 }
                 var rootNode = doc.DocumentNode;
                 if (rootNode.ChildNodes.Count == 1 && rootNode.FirstChild.NodeType == HtmlNodeType.Text)
+                {
                     this.checkIPBanStatus(rootNode.FirstChild.InnerText);
+                }
+
                 do
                 {
                     if (response.StatusCode != HttpStatusCode.NotFound)
+                    {
                         break;
+                    }
+
                     var title = rootNode.Element("html").Element("head").Element("title");
                     if (title is null)
+                    {
                         break;
+                    }
+
                     if (!title.GetInnerText().StartsWith("Gallery Not Available - "))
+                    {
                         break;
+                    }
+
                     var error = rootNode.Element("html").Element("body")?.Element("div")?.Element("p");
                     if (error is null)
+                    {
                         break;
+                    }
+
                     var msg = error.GetInnerText();
                     switch (msg)
                     {
@@ -178,7 +205,10 @@ namespace ExClient.Internal
                 } while (false);
                 response.EnsureSuccessStatusCode();
                 if (HentaiVerseInfo.IsEnabled)
+                {
                     HentaiVerseInfo.AnalyzePage(doc);
+                }
+
                 return doc;
             });
         }

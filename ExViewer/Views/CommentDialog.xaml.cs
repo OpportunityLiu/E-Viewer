@@ -56,16 +56,25 @@ namespace ExViewer.Views
                 start = 0;
             }
             if (length < 0)
+            {
                 return "";
+            }
+
             if (start + length > str.Length)
+            {
                 return str.Substring(start);
+            }
+
             return str.Substring(start, length);
         }
 
         private void handleTag(string tag)
         {
             if (this.tbContent.IsReadOnly)
+            {
                 return;
+            }
+
             if (tag == "url")
             {
                 handleUrl();
@@ -121,7 +130,9 @@ namespace ExViewer.Views
             this.tbContent.SelectedText = replaced;
             var s = this.tbContent.SelectionStart;
             if (currentSelected.Length == 0)
+            {
                 this.tbContent.Select(s + replaced.Length - end.Length, 0);
+            }
         }
 
         private static Regex urlRegex = new Regex(@"^\[url(?:=[^\]]*?)?\](.*)\[/url\]$", RegexOptions.Compiled);
@@ -152,7 +163,9 @@ namespace ExViewer.Views
                 this.tbContent.SelectedText = replaced;
                 var s = this.tbContent.SelectionStart;
                 if (currentSelected.Length == 0)
+                {
                     this.tbContent.Select(s + replaced.Length - end.Length, 0);
+                }
             }
         }
 
@@ -179,7 +192,10 @@ namespace ExViewer.Views
             }
             base.OnKeyUp(e);
             if (e.Handled || !this.ctrlDown)
+            {
                 return;
+            }
+
             e.Handled = true;
             switch (e.OriginalKey)
             {
@@ -240,7 +256,10 @@ namespace ExViewer.Views
         private void AddCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
             if (Gallery is null)
+            {
                 throw new InvalidOperationException();
+            }
+
             this.tbContent.Text = "";
             this.tbContent.Focus(FocusState.Programmatic);
         }
@@ -289,14 +308,19 @@ namespace ExViewer.Views
             var sender = (EditCommentDialog)d;
             var newValue = (Comment)e.NewValue;
             if (newValue != null && !newValue.CanEdit)
+            {
                 throw new InvalidOperationException();
+            }
         }
 
         private async void EditCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
             this.tbContent.Text = "";
             if (EditableComment is null)
+            {
                 throw new InvalidOperationException();
+            }
+
             try
             {
                 this.pbLoading.IsIndeterminate = true;
@@ -359,7 +383,10 @@ namespace ExViewer.Views
         {
             this.tbContent.Text = "";
             if (ReplyingComment is null)
+            {
                 throw new InvalidOperationException();
+            }
+
             try
             {
                 this.pbLoading.IsIndeterminate = true;

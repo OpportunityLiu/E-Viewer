@@ -11,9 +11,13 @@
         {
             var remainRecordCount = recordCount - pageIndex * pageSize;
             if (remainRecordCount < pageSize)
+            {
                 return remainRecordCount;
+            }
             else
+            {
                 return pageSize;
+            }
         }
 
         public static int GetPageIndexOfRecord(int pageSize, int recordIndex)

@@ -58,7 +58,10 @@ namespace ExViewer.Controls
             var oldS = e.OldValue.ToString();
             var newS = e.NewValue.ToString();
             if (string.Equals(oldS, newS))
+            {
                 return;
+            }
+
             var el = ExcludedLanguagesSettingProvider.FromString(newS).OrderByDescending(k => k).ToList();
             var s = (ExcludedLanguagesSelector)sender;
             s.changing = true;
@@ -75,7 +78,10 @@ namespace ExViewer.Controls
                 foreach (var item in fs)
                 {
                     if (el.Count == 0)
+                    {
                         break;
+                    }
+
                     var lan = item.Language;
                     var last = el[el.Count - 1];
                     if (lan + offset == last)
@@ -92,7 +98,10 @@ namespace ExViewer.Controls
                 foreach (var item in fs)
                 {
                     if (el.Count == 0)
+                    {
                         break;
+                    }
+
                     var lan = item.Language;
                     var last = el[el.Count - 1];
                     if (lan + offset == last)
@@ -109,7 +118,10 @@ namespace ExViewer.Controls
                 foreach (var item in fs)
                 {
                     if (el.Count == 0)
+                    {
                         break;
+                    }
+
                     var lan = item.Language;
                     var last = el[el.Count - 1];
                     if (lan + offset == last)
@@ -134,18 +146,32 @@ namespace ExViewer.Controls
         private void filter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (this.changing)
+            {
                 return;
+            }
+
             if (e.PropertyName == nameof(ExcludedLanguageFilter.All))
+            {
                 return;
+            }
+
             var r = new List<ExcludedLanguage>();
             foreach (var item in this.filters)
             {
                 if (item.Original)
+                {
                     r.Add(item.Language);
+                }
+
                 if (item.Translated)
+                {
                     r.Add(item.Language + 1024);
+                }
+
                 if (item.Rewrite)
+                {
                     r.Add(item.Language + 2048);
+                }
             }
             this.ExcludedLanguages = ExcludedLanguagesSettingProvider.ToString(r);
         }
@@ -211,7 +237,9 @@ namespace ExViewer.Controls
         {
             var oldAll = this.All;
             if (Set(ref field, value, propName) && oldAll != this.All)
+            {
                 OnPropertyChanged(nameof(All));
+            }
         }
 
         public bool All
@@ -219,15 +247,24 @@ namespace ExViewer.Controls
             get
             {
                 if (Language != ExcludedLanguage.Default)
+                {
                     return this.original && this.translated && this.rewrite;
+                }
+
                 return this.translated && this.rewrite;
             }
             set
             {
                 if (value == this.All)
+                {
                     return;
+                }
+
                 if (Language != ExcludedLanguage.Default)
+                {
                     this.original = value;
+                }
+
                 this.translated = value;
                 this.rewrite = value;
                 OnPropertyChanged(default(string));

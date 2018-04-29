@@ -42,17 +42,27 @@ namespace ExViewer.Views
                 Controls.AboutControl.UpdateEhWiki.Executed += (s, e) =>
                 {
                     if (e.Exception != null)
+                    {
                         SendToast(Strings.Resources.Database.EhTagClient.Update.Failed, null);
+                    }
                     else
+                    {
                         SendToast(Strings.Resources.Database.EhTagClient.Update.Succeeded, null);
+                    }
+
                     e.Handled = true;
                 };
                 Controls.AboutControl.UpdateETT.Executed += (s, e) =>
                 {
                     if (e.Exception != null)
+                    {
                         SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Failed, null);
+                    }
                     else
+                    {
                         SendToast(Strings.Resources.Database.EhTagTranslatorClient.Update.Succeeded, null);
+                    }
+
                     e.Handled = true;
                 };
             }
@@ -63,7 +73,10 @@ namespace ExViewer.Views
             {
                 var old = SplitViewButtonPlaceholderVisibility;
                 if (old == visible)
+                {
                     return;
+                }
+
                 SplitViewButtonPlaceholderVisibility = visible;
                 SplitViewButtonPlaceholderVisibilityChanged?.Invoke(root, visible);
                 SetSplitViewButtonOpacity(tbtPaneOpacity);
@@ -80,9 +93,13 @@ namespace ExViewer.Views
                 {
                     root.tbtPane.Opacity = TbtPaneOpacity;
                     if (TbtPaneOpacity < 0.6)
+                    {
                         Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
+                    }
                     else
+                    {
                         Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
+                    }
                 }
             }
 
@@ -97,7 +114,10 @@ namespace ExViewer.Views
             public static bool HandleUriLaunch(Uri uri)
             {
                 if (uri is null)
+                {
                     return true;
+                }
+
                 if (Available)
                 {
                     return UriHandler.Handle(uri);
@@ -173,10 +193,16 @@ namespace ExViewer.Views
             private static Storyboard sbInitializer(ref Storyboard storage, EventHandler<object> completed, [CallerMemberName]string name = null)
             {
                 if (storage != null)
+                {
                     return storage;
+                }
+
                 var sb = (Storyboard)root.Resources[name];
                 if (completed != null)
+                {
                     sb.Completed += completed;
+                }
+
                 return storage = sb;
             }
 
@@ -192,9 +218,14 @@ namespace ExViewer.Views
                 CloseSplitViewPane.Begin();
                 root.CloseSplitViewPaneBtnPane.To = TbtPaneOpacity;
                 if (TbtPaneOpacity < 0.6)
+                {
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
+                }
                 else
+                {
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
+                }
+
                 root.manager.IsBackEnabled = true;
             }
 
@@ -211,7 +242,10 @@ namespace ExViewer.Views
             public static void SendToast(Exception ex, Type source)
             {
                 if (ex is null)
+                {
                     throw new ArgumentNullException(nameof(ex));
+                }
+
                 var sourceString = source?.ToString() ?? "null";
 #if DEBUG
                 Debug.WriteLine(ex, "Exception");
@@ -223,13 +257,22 @@ namespace ExViewer.Views
             public static void SendToast(string content, Type source)
             {
                 if (!Available)
+                {
                     return;
+                }
+
                 if (content is null)
+                {
                     throw new ArgumentNullException(nameof(content));
+                }
+
                 root.Dispatcher.Begin(() =>
                 {
                     if (source != null && source != root.fm_inner.Content?.GetType())
+                    {
                         return;
+                    }
+
                     root.FindName(nameof(root.bd_Toast));
                     root.tb_Toast.Text = content;
                     root.bd_Toast.Visibility = Visibility.Visible;
@@ -245,10 +288,16 @@ namespace ExViewer.Views
             public static void SwitchSplitView(bool? open)
             {
                 if (!Available)
+                {
                     return;
+                }
+
                 var currentState = root.sv_root.IsPaneOpen;
                 if (open == currentState)
+                {
                     return;
+                }
+
                 var targetState = open ?? !currentState;
                 if (targetState)
                 {
@@ -275,7 +324,10 @@ namespace ExViewer.Views
                     Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (succeed ? "Succeed" : "Failed") });
                     UpdateUserInfo(succeed);
                     if (succeed)
+                    {
                         Settings.SettingCollection.Current.Apply();
+                    }
+
                     return succeed;
                 });
             }
@@ -286,8 +338,11 @@ namespace ExViewer.Views
                 {
                     root.UserInfo = null;
                 }
-                if (Client.Current.UserID == -1)
+                if (Client.Current.UserId == -1)
+                {
                     return;
+                }
+
                 var info = default(UserInfo);
                 try
                 {
@@ -412,7 +467,9 @@ namespace ExViewer.Views
                 {
                     root.pb_Disable.IsIndeterminate = indeterminate;
                     if (!indeterminate)
+                    {
                         root.pb_Disable.Value = progress.Value;
+                    }
                 }
             }
 

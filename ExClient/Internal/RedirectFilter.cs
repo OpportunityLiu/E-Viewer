@@ -25,8 +25,11 @@ namespace ExClient.Internal
             private void current_Completed(IHttpAsyncOperation asyncInfo, AsyncStatus asyncStatus)
             {
                 if(asyncInfo != this.current)
+                {
                     return;
-                if(asyncStatus == AsyncStatus.Completed)
+                }
+
+                if (asyncStatus == AsyncStatus.Completed)
                 {
                     var response = asyncInfo.GetResults();
                     if(needRedirect(response))
@@ -53,7 +56,10 @@ namespace ExClient.Internal
             private void current_Progress(IHttpAsyncOperation asyncInfo, HttpProgress progressInfo)
             {
                 if(asyncInfo != this.current)
+                {
                     return;
+                }
+
                 this.Progress?.Invoke(this, progressInfo);
             }
 
@@ -69,10 +75,15 @@ namespace ExClient.Internal
                 var newRequest = new HttpRequestMessage { RequestUri = response.Headers.Location };
                 var oldRequest = this.request;
                 if((response.StatusCode == HttpStatusCode.Found || response.StatusCode == HttpStatusCode.SeeOther) && oldRequest.Method == HttpMethod.Post)
+                {
                     newRequest.Method = HttpMethod.Get;
+                }
                 else
+                {
                     newRequest.Method = oldRequest.Method;
-                foreach(var item in oldRequest.Headers.ToList())
+                }
+
+                foreach (var item in oldRequest.Headers.ToList())
                 {
                     newRequest.Headers.Add(item);
                 }

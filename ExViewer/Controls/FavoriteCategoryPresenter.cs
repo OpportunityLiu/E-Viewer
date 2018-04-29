@@ -42,9 +42,13 @@ namespace ExViewer.Controls
                 {
                     label = GetTemplateChild("Label") as TextBlock;
                     if (label is null)
+                    {
                         return;
+                    }
                     else
+                    {
                         this.Label = label;
+                    }
                 }
                 label.Visibility = Visibility.Visible;
                 label.Text = category.Name ?? "";
@@ -52,7 +56,10 @@ namespace ExViewer.Controls
             else
             {
                 if (this.Label is null)
+                {
                     return;
+                }
+
                 this.Label.Visibility = Visibility.Collapsed;
             }
         }
@@ -74,9 +81,15 @@ namespace ExViewer.Controls
             var o = (FavoriteCategory)e.OldValue;
             var n = (FavoriteCategory)e.NewValue;
             if (o != null)
+            {
                 o.PropertyChanged -= dp.category_PropertyChanged;
+            }
+
             if (dp.loaded && n != null)
+            {
                 n.PropertyChanged += dp.category_PropertyChanged;
+            }
+
             dp.set(n, dp.IsLabelVisible);
             if (n is null)
             {
@@ -117,7 +130,10 @@ namespace ExViewer.Controls
             var o = (bool)e.OldValue;
             var n = (bool)e.NewValue;
             if (o == n)
+            {
                 return;
+            }
+
             var dp = (FavoriteCategoryPresenter)sender;
             dp.set(dp.Category, n);
         }

@@ -26,12 +26,19 @@ namespace ExViewer.Helpers
         public static void Share(TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler)
         {
             if (!IsShareSupported)
+            {
                 return;
+            }
+
             new ShareHandlerStorage(handler);
             if (ExApiInfo.RS3)
+            {
                 DataTransferManager.ShowShareUI(new ShareUIOptions { Theme = Settings.SettingCollection.Current.Theme == Windows.UI.Xaml.ApplicationTheme.Dark ? ShareUITheme.Dark : ShareUITheme.Light });
+            }
             else
+            {
                 DataTransferManager.ShowShareUI();
+            }
         }
 
         private static void PrepareFileShare(DataPackage package, List<IStorageFile> files)
@@ -40,14 +47,19 @@ namespace ExViewer.Helpers
             foreach (var item in files.Select(f => f.FileType).Distinct())
             {
                 if (item != null)
+                {
                     package.Properties.FileTypes.Add(item);
+                }
             }
         }
 
         public static void SetFileProvider(this DataPackage package, IStorageFile file, string fileName)
         {
             if (file is null)
+            {
                 throw new ArgumentNullException(nameof(file));
+            }
+
             fileName = StorageHelper.ToValidFileName(fileName);
             var fileList = new List<IStorageFile> { file };
             PrepareFileShare(package, fileList);
@@ -73,7 +85,10 @@ namespace ExViewer.Helpers
             var fileList = files.ToList();
             var nameList = fileNames.Select(StorageHelper.ToValidFileName).ToList();
             if (fileList.Count != nameList.Count)
+            {
                 throw new ArgumentException("files count != fileNames count");
+            }
+
             PrepareFileShare(package, fileList);
             package.SetDataProvider(StandardDataFormats.StorageItems, async req =>
             {
@@ -121,7 +136,9 @@ namespace ExViewer.Helpers
                 var t = DataTransferManager.GetForCurrentView();
                 t.DataRequested += this.T_DataRequested;
                 if (CustomHandlers.Instance != null)
+                {
                     t.ShareProvidersRequested += this.T_ShareProvidersRequested;
+                }
             }
 
             private void T_ShareProvidersRequested(DataTransferManager sender, ShareProvidersRequestedEventArgs args)
@@ -131,10 +148,14 @@ namespace ExViewer.Helpers
                 args.Providers.Add(CustomHandlers.Instance.CopyProvider);
 
                 if (args.Data.Contains(StandardDataFormats.WebLink))
+                {
                     args.Providers.Add(CustomHandlers.Instance.OpenLinkProvider);
+                }
 
                 if (args.Data.Contains(StandardDataFormats.StorageItems))
+                {
                     args.Providers.Add(CustomHandlers.Instance.SetWallpaperProvider);
+                }
             }
 
             private TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler;
@@ -157,7 +178,10 @@ namespace ExViewer.Helpers
             private static CustomHandlers create()
             {
                 if (!ExApiInfo.ShareProviderSupported)
+                {
                     return null;
+                }
+
                 return new CustomHandlers();
             }
             public ShareProvider OpenLinkProvider { get; }
@@ -202,15 +226,22 @@ namespace ExViewer.Helpers
                             file = (await folder.GetFilesAsync(Windows.Storage.Search.CommonFileQuery.DefaultQuery, 0, 1)).FirstOrDefault();
                         }
                         if (file is null)
+                        {
                             return;
+                        }
                         // Only files in localfolder can be set as background.
                         file = await file.CopyAsync(ApplicationData.Current.LocalFolder, $"Img_{file.Name}", NameCollisionOption.ReplaceExisting);
                         await CoreApplication.MainView.Dispatcher.YieldIdle();
                         var succeeded = await User​Profile​Personalization​Settings.Current.TrySetWallpaperImageAsync(file);
                         if (succeeded)
+                        {
                             RootControl.RootController.SendToast(Strings.Resources.Sharing.SetWallpaperSucceeded, null);
+                        }
                         else
+                        {
                             RootControl.RootController.SendToast(Strings.Resources.Sharing.SetWallpaperFailed, null);
+                        }
+
                         await Task.Delay(10000).ConfigureAwait(false);
                         await file.DeleteAsync();
                         operation.ReportCompleted();
@@ -221,7 +252,10 @@ namespace ExViewer.Helpers
                 public static IAsyncOperation<DataProviderProxy> CreateAsync(DataPackageView viewToProxy)
                 {
                     if (viewToProxy is null)
+                    {
                         throw new ArgumentNullException(nameof(viewToProxy));
+                    }
+
                     var proxy = new DataProviderProxy(viewToProxy);
                     return proxy.initAsync();
                 }
@@ -249,7 +283,10 @@ namespace ExViewer.Helpers
                         foreach (var formatId in this.viewToProxy.AvailableFormats)
                         {
                             if (!view.Properties.FileTypes.Contains(formatId))
+                            {
                                 view.Properties.FileTypes.Add(formatId);
+                            }
+
                             view.SetDataProvider(formatId, this.dataProvider);
                         }
                         return this;

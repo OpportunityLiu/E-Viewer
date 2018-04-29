@@ -44,7 +44,9 @@ namespace ExViewer
                 break;
             default:
                 if (RootControl.RootController.Available)
+                {
                     RootControl.RootController.SendToast(ex, null);
+                }
                 break;
             }
             e.Handled = true;
@@ -96,7 +98,9 @@ namespace ExViewer
             if (currentContent is SplashControl sc)
             {
                 if (!prelaunchActivated)
+                {
                     sc.EnableGoToContent();
+                }
             }
             else
             {
@@ -115,10 +119,14 @@ namespace ExViewer
                 if (!needHandleInApp
                     && e.PreviousExecutionState != ApplicationExecutionState.Running
                     && e.PreviousExecutionState != ApplicationExecutionState.Suspended)
+                {
                     Exit();
+                }
                 lanunchCore(args, false);
                 if (needHandleInApp)
+                {
                     Analytics.TrackEvent("Launched by uri", new Dictionary<string, string> { ["Uri"] = e.Uri.ToString() });
+                }
             }
             else
             {

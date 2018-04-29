@@ -26,10 +26,15 @@ namespace ExClient.Api
         {
             var mUid = regUid.Match(html);
             if (mUid.Success)
+            {
                 UserID = long.Parse(mUid.Groups[1].Value);
+            }
+
             var mKey = regKey.Match(html);
             if (mKey.Success)
+            {
                 ApiKey = mKey.Groups[1].Value;
+            }
         }
     }
 

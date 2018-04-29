@@ -22,34 +22,74 @@ namespace ExClient.Launch
                 switch (item.Key)
                 {
                 case "f_doujinshi":
-                    if (b) category |= Category.Doujinshi;
+                    if (b)
+                    {
+                        category |= Category.Doujinshi;
+                    }
+
                     break;
                 case "f_manga":
-                    if (b) category |= Category.Manga;
+                    if (b)
+                    {
+                        category |= Category.Manga;
+                    }
+
                     break;
                 case "f_artistcg":
-                    if (b) category |= Category.ArtistCG;
+                    if (b)
+                    {
+                        category |= Category.ArtistCG;
+                    }
+
                     break;
                 case "f_gamecg":
-                    if (b) category |= Category.GameCG;
+                    if (b)
+                    {
+                        category |= Category.GameCG;
+                    }
+
                     break;
                 case "f_western":
-                    if (b) category |= Category.Western;
+                    if (b)
+                    {
+                        category |= Category.Western;
+                    }
+
                     break;
                 case "f_non-h":
-                    if (b) category |= Category.NonH;
+                    if (b)
+                    {
+                        category |= Category.NonH;
+                    }
+
                     break;
                 case "f_imageset":
-                    if (b) category |= Category.ImageSet;
+                    if (b)
+                    {
+                        category |= Category.ImageSet;
+                    }
+
                     break;
                 case "f_cosplay":
-                    if (b) category |= Category.Cosplay;
+                    if (b)
+                    {
+                        category |= Category.Cosplay;
+                    }
+
                     break;
                 case "f_asianporn":
-                    if (b) category |= Category.AsianPorn;
+                    if (b)
+                    {
+                        category |= Category.AsianPorn;
+                    }
+
                     break;
                 case "f_misc":
-                    if (b) category |= Category.Misc;
+                    if (b)
+                    {
+                        category |= Category.Misc;
+                    }
+
                     break;
                 }
             }
@@ -59,7 +99,10 @@ namespace ExClient.Launch
         protected static string GetKeyword(UriHandlerData data)
         {
             if (!data.Queries.TryGetValue("f_search", out var r))
+            {
                 r = "";
+            }
+
             return UnescapeKeyword(r);
         }
     }

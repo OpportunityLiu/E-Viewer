@@ -43,7 +43,10 @@ namespace ExClient.Galleries
                     var cm = db.SavedSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.GalleryModelId == galleryId);
                     if (gm is null)
+                    {
                         return null;
+                    }
+
                     var r = (cm is null) ?
                          new Gallery(gm) :
                          new SavedGallery(gm);
@@ -56,9 +59,15 @@ namespace ExClient.Galleries
         public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
         {
             if (galleryInfo is null)
+            {
                 throw new ArgumentNullException(nameof(galleryInfo));
+            }
+
             if (galleryInfo.Count <= 0)
+            {
                 return AsyncOperation<IList<Gallery>>.CreateCompleted(Array.Empty<Gallery>());
+            }
+
             if (galleryInfo.Count <= 25)
             {
                 return Run<IList<Gallery>>(async token =>
@@ -214,7 +223,10 @@ namespace ExClient.Galleries
             this.Title = HtmlEntity.DeEntitize(title);
             this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
             if (!categoriesForRestApi.TryGetValue(category, out var ca))
+            {
                 ca = Category.Unspecified;
+            }
+
             this.Category = ca;
             this.Uploader = HtmlEntity.DeEntitize(uploader);
             this.Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, NumberStyles.Integer, CultureInfo.InvariantCulture));
@@ -297,17 +309,26 @@ namespace ExClient.Galleries
             get
             {
                 if (this.thumbImage.TryGetTarget(out var img))
+                {
                     return img;
+                }
+
                 var load = GetThumbAsync();
                 load.Completed = (asyncInfo, asyncStatus) =>
                 {
                     try
                     {
                         if (asyncStatus != AsyncStatus.Completed)
+                        {
                             return;
+                        }
+
                         var r = asyncInfo.GetResults();
                         if (r is null)
+                        {
                             return;
+                        }
+
                         if (this.thumbImage.TryGetTarget(out var img2))
                         {
                             img2.Dispose();
@@ -382,7 +403,10 @@ namespace ExClient.Galleries
             }
             this.Rating.AnalyzeDocument(doc);
             if (this.Revisions is null)
+            {
                 this.Revisions = new RevisionCollection(this, doc);
+            }
+
             this.Tags.Update(doc);
         }
 
@@ -405,10 +429,16 @@ namespace ExClient.Galleries
                         var nodeA = page.Element("a");
                         var thumb = nodeA.Element("img").GetAttribute("src", default(Uri));
                         if (thumb is null)
+                        {
                             continue;
+                        }
+
                         var tokens = nodeA.GetAttribute("href", "").Split(new[] { '/', '-' });
                         if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s")
+                        {
                             continue;
+                        }
+
                         var pId = int.Parse(tokens[tokens.Length - 1], NumberStyles.Integer);
                         var imageKey = tokens[tokens.Length - 3].ToToken();
                         var gId = this.ID;
@@ -425,9 +455,14 @@ namespace ExClient.Galleries
                             this[pId - 1].Init(imageKey, thumb);
                         }
                         if (pId - 1 < start)
+                        {
                             start = pId - 1;
+                        }
+
                         if (pId > end)
+                        {
                             end = pId;
+                        }
                     }
                 }
                 return LoadItemsResult.Create(start, this.Skip(start).Take(end - start), false);
@@ -446,7 +481,10 @@ namespace ExClient.Galleries
                         this.Comments.AnalyzeDocument(doc);
                     }
                     if (reIn)
+                    {
                         return doc;
+                    }
+
                     var rows = doc.GetElementbyId("gdo2").Elements("div", "ths").Last().GetInnerText();
                     rows = rows.Substring(0, rows.IndexOf(' '));
                     var rowCount = int.Parse(rows);
@@ -522,14 +560,20 @@ namespace ExClient.Galleries
                             var i = item.PageId - 1;
                             var file = default(StorageFile);
                             if (i < this.Count)
+                            {
                                 file = this[i].ImageFile;
+                            }
+
                             if (file is null)
                             {
                                 var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
                                 file = await folder.TryGetFileAsync(item.Image.FileName);
                             }
                             if (file != null)
+                            {
                                 await file.DeleteAsync();
+                            }
+
                             db.ImageSet.Remove(item.Image);
                         }
                         db.GalleryImageSet.Remove(item);

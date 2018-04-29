@@ -118,7 +118,10 @@ namespace ExClient.Galleries.Metadata
             return Run(async token =>
             {
                 if (this.TorrentUri is null)
+                {
                     throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
+                }
+
                 using (var client = new HttpClient())
                 {
                     var loadT = client.GetBufferAsync(this.TorrentUri);

@@ -16,9 +16,15 @@ namespace ExClient
                 var cost = netProfile.GetConnectionCost();
                 var lofi = false;
                 if(cost.NetworkCostType != NetworkCostType.Unrestricted)
+                {
                     lofi = true;
-                if(cost.OverDataLimit || cost.ApproachingDataLimit)
+                }
+
+                if (cost.OverDataLimit || cost.ApproachingDataLimit)
+                {
                     lofi = true;
+                }
+
                 return lofi;
             case ConnectionStrategy.AllFull:
                 return false;

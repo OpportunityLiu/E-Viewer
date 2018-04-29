@@ -30,10 +30,16 @@ namespace ExViewer.Controls
             set
             {
                 if (this.p != null)
+                {
                     this.p.PullProgressChanged -= this.Parent_PullProgressChanged;
+                }
+
                 this.p = value;
                 if (this.p != null)
+                {
                     this.p.PullProgressChanged += this.Parent_PullProgressChanged;
+                }
+
                 this.ClearValue(PullProgressProperty);
             }
         }
@@ -62,9 +68,13 @@ namespace ExViewer.Controls
         {
             var s = (PullToRefreshIndicator)sender;
             if ((double)e.NewValue == 1.0)
+            {
                 VisualStateManager.GoToState(s, "Actived", true);
+            }
             else
+            {
                 VisualStateManager.GoToState(s, "Normal", true);
+            }
         }
     }
 }

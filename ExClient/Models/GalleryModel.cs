@@ -22,9 +22,14 @@ namespace ExClient.Models
             this.Expunged = toCache.Expunged;
             this.Rating = toCache.Rating.AverageScore;
             if (toCache.Tags is null || toCache.Tags.Items.Count == 0)
+            {
                 this.Tags = "[]";
+            }
             else
+            {
                 this.Tags = JsonConvert.SerializeObject(toCache.Tags.Items.Select(tag => tag.Content.ToString()));
+            }
+
             this.RecordCount = toCache.Count;
             this.ThumbUri = toCache.ThumbUri.ToString();
             return this;

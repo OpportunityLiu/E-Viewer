@@ -63,16 +63,25 @@ namespace EhWikiClient
         {
             var res = JsonConvert.DeserializeObject<Response>(json);
             if (res.parse is null)
+            {
                 return new Record(false);
+            }
+
             var str = Windows.Data.Html.HtmlUtilities.ConvertToText(res.parse.text.Str);
             var match = reg.Matches(str);
             var j = (string)null;
             if (match.Count > 0)
+            {
                 j = string.Join(" | ", match.Cast<Match>().Select(m => m.Groups["Value"].Value).Distinct());
+            }
+
             var matchd = regd.Match(str);
             var d = (string)null;
             if (matchd.Success)
+            {
                 d = matchd.Groups["Value"].Value;
+            }
+
             var type = TagType.Unknown;
             if (res.parse.categories != null)
             {
