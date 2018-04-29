@@ -28,7 +28,10 @@ namespace ExViewer.Helpers
             if (!IsShareSupported)
                 return;
             new ShareHandlerStorage(handler);
-            DataTransferManager.ShowShareUI(new ShareUIOptions { Theme = Settings.SettingCollection.Current.Theme == Windows.UI.Xaml.ApplicationTheme.Dark ? ShareUITheme.Dark : ShareUITheme.Light });
+            if (ExApiInfo.RS3)
+                DataTransferManager.ShowShareUI(new ShareUIOptions { Theme = Settings.SettingCollection.Current.Theme == Windows.UI.Xaml.ApplicationTheme.Dark ? ShareUITheme.Dark : ShareUITheme.Light });
+            else
+                DataTransferManager.ShowShareUI();
         }
 
         private static void PrepareFileShare(DataPackage package, List<IStorageFile> files)
