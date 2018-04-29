@@ -21,13 +21,17 @@ namespace ExClient.Galleries.Commenting
         {
             var commentNodes = document?.GetElementbyId("cdiv")?.ChildNodes;
             if (commentNodes is null)
+            {
                 yield break;
+            }
             for (var i = 0; i < commentNodes.Count; i += 2)
             {
                 var headerNode = commentNodes[i];
                 var commentNode = commentNodes[i + 1];
                 if (headerNode.Name != "a" || commentNode.Name != "div")
+                {
                     break;
+                }
                 var id = int.Parse(headerNode.GetAttribute("name", "c0").Substring(1));
                 yield return new Comment(owner, id, commentNode);
             }
@@ -47,7 +51,10 @@ namespace ExClient.Galleries.Commenting
 
             var editNode = commentNode.Descendants("div").FirstOrDefault(node => node.HasClass("c8"));
             if (editNode != null)
+            {
                 this.Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
+            }
+
             var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.HasClass("c3"));
             this.Author = postedAndAuthorNode.Element("a").GetInnerText();
             this.Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
@@ -63,11 +70,17 @@ namespace ExClient.Galleries.Commenting
                     if (vuNode != null && vdNode != null)
                     {
                         if (vuNode.GetAttribute("style", "").Contains("color:blue"))
+                        {
                             this.status = CommentStatus.VotedUp;
+                        }
                         else if (vdNode.GetAttribute("style", "").Contains("color:blue"))
+                        {
                             this.status = CommentStatus.VotedDown;
+                        }
                         else
+                        {
                             this.status = CommentStatus.Votable;
+                        }
                     }
                     else if (actionNode.InnerText == "[Edit]")
                     {
@@ -147,25 +160,37 @@ namespace ExClient.Galleries.Commenting
             {
                 // Withdraw votes
                 if (this.status == CommentStatus.VotedDown)
+                {
                     command = VoteState.Down;
+                }
                 else if (this.status == CommentStatus.VotedUp)
+                {
                     command = VoteState.Up;
+                }
             }
             if (command != VoteState.Down && command != VoteState.Up)
+            {
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
+            }
             if (!this.CanVote)
             {
                 if (this.IsUploaderComment)
+                {
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteStateUploader);
+                }
                 else
+                {
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteState);
+                }
             }
             var request = new CommentVoteRequest(this, command);
             return AsyncInfo.Run(async token =>
             {
                 var r = await request.GetResponseAsync();
                 if (this.ID != r.ID)
+                {
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
+                }
                 switch (r.Vote)
                 {
                 case VoteState.Default:
@@ -177,6 +202,8 @@ namespace ExClient.Galleries.Commenting
                 case VoteState.Down:
                     this.Status = CommentStatus.VotedDown;
                     break;
+                default:
+                    break;
                 }
                 this.Score = r.Score;
             });
@@ -187,7 +214,9 @@ namespace ExClient.Galleries.Commenting
         public IAsyncOperation<string> FetchEditableAsync()
         {
             if (!this.CanEdit)
+            {
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
+            }
             var request = new CommentEditRequest(this);
             return AsyncInfo.Run(async token =>
             {
@@ -195,7 +224,9 @@ namespace ExClient.Galleries.Commenting
                 var doc = HtmlNode.CreateNode(r.Editable.Trim());
                 var textArea = doc.Descendants("textarea").FirstOrDefault();
                 if (textArea is null)
+                {
                     return "";
+                }
                 return textArea.GetInnerText();
             });
         }
@@ -203,7 +234,9 @@ namespace ExClient.Galleries.Commenting
         public IAsyncAction EditAsync(string content)
         {
             if (!this.CanEdit)
+            {
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
+            }
             return this.Owner.PostFormAsync(content, this);
         }
 
