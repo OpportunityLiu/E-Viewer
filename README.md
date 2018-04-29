@@ -4,6 +4,7 @@ A Client for e-hentai.org on Windows 10.
 
 | Barnch | Build status |
 | ------ | ------------ |
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8d82e4d640ce4493ae11c0a5e6ea9cee)](https://app.codacy.com/app/OpportunityLiu/ExViewer?utm_source=github.com&utm_medium=referral&utm_content=OpportunityLiu/ExViewer&utm_campaign=badger)
 | master | [![Build status](https://ci.appveyor.com/api/projects/status/fcfmss6sltiub0sb/branch/master?svg=true)](https://ci.appveyor.com/project/OpportunityLiu/exviewer/branch/master) |
 | dev    | [![Build status](https://ci.appveyor.com/api/projects/status/fcfmss6sltiub0sb/branch/dev?svg=true)](https://ci.appveyor.com/project/OpportunityLiu/exviewer/branch/dev) |
 
