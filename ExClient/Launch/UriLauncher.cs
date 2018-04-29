@@ -24,9 +24,15 @@ namespace ExClient.Launch
         public static bool CanHandle(Uri uri)
         {
             if (uri is null)
+            {
                 return false;
+            }
+
             if (uri.Host != DomainProvider.Eh.RootUri.Host && uri.Host != DomainProvider.Ex.RootUri.Host)
+            {
                 return false;
+            }
+
             var data = new UriHandlerData(uri);
             foreach (var item in handlers)
             {
@@ -52,7 +58,9 @@ namespace ExClient.Launch
             foreach (var item in handlers)
             {
                 if (item.CanHandle(data))
+                {
                     return item.HandleAsync(data);
+                }
             }
             throw new NotSupportedException("Unsupported uri.");
         }

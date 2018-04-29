@@ -27,7 +27,10 @@ namespace ExClient.Search
             : base(keyword)
         {
             if (category == Category.Unspecified)
+            {
                 category = DefaultFliter;
+            }
+
             this.Category = category;
         }
 

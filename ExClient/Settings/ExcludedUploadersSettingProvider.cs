@@ -15,7 +15,10 @@ namespace ExClient.Settings
         public static string[] FromString(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
+            {
                 return Array.Empty<string>();
+            }
+
             return value.Split(crlf, StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -64,12 +67,21 @@ namespace ExClient.Settings
         private static string checkUser(object value)
         {
             if (value is null)
+            {
                 throw new ArgumentNullException(nameof(value));
+            }
+
             var s = value.ToString().Trim();
             if (string.IsNullOrEmpty(s))
+            {
                 throw new ArgumentException("Should not be empty", nameof(value));
+            }
+
             if (s.IndexOfAny(crlf) >= 0)
+            {
                 throw new ArgumentException("Should not contain CR or LF", nameof(value));
+            }
+
             return s;
         }
 

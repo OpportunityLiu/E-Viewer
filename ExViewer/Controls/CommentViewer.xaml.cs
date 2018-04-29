@@ -47,7 +47,9 @@ namespace ExViewer.Controls
                 private set
                 {
                     if (Set(ref this.translated, value))
+                    {
                         Translate.OnCanExecuteChanged();
+                    }
                 }
             }
 
@@ -91,7 +93,9 @@ namespace ExViewer.Controls
                 var ex = e.Exception;
                 e.Handled = true;
                 if (ex != null)
+                {
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+                }
             };
             this.FocusEngaged += this.CommentViewer_FocusEngaged;
             this.FocusDisengaged += this.CommentViewer_FocusDisengaged;
@@ -133,7 +137,10 @@ namespace ExViewer.Controls
         private static double toOpacity(HtmlAgilityPack.HtmlNode val)
         {
             if (val is null)
+            {
                 return 1;
+            }
+
             return 0.7;
         }
     }

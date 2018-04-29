@@ -48,25 +48,72 @@ namespace ExClient.Search
         internal string ToSearchQuery()
         {
             if (this.data == default)
+            {
                 return "&advsearch=1&f_sname=1&f_stags=1";
+            }
+
             var builder = new StringBuilder(128);
-            if (SkipMasterTags) append(SkipMasterTagsTag);
+            if (SkipMasterTags)
+            {
+                append(SkipMasterTagsTag);
+            }
+
             append(AdvancedSearchOptionsTag);
-            if (SearchName) append(SearchNameTag);
-            if (SearchTags) append(SearchTagsTag);
-            if (SearchDescription) append(SearchDescriptionTag);
-            if (SearchTorrentFilenames) append(SearchTorrentFilenamesTag);
-            if (GalleriesWithTorrentsOnly) append(GalleriesWithTorrentsOnlyTag);
-            if (SearchLowPowerTags) append(SearchLowPowerTagsTag);
-            if (SearchDownvotedTags) append(SearchDownvotedTagsTag);
-            if (ShowExpungedGalleries) append(ShowExpungedGalleriesTag);
+            if (SearchName)
+            {
+                append(SearchNameTag);
+            }
+
+            if (SearchTags)
+            {
+                append(SearchTagsTag);
+            }
+
+            if (SearchDescription)
+            {
+                append(SearchDescriptionTag);
+            }
+
+            if (SearchTorrentFilenames)
+            {
+                append(SearchTorrentFilenamesTag);
+            }
+
+            if (GalleriesWithTorrentsOnly)
+            {
+                append(GalleriesWithTorrentsOnlyTag);
+            }
+
+            if (SearchLowPowerTags)
+            {
+                append(SearchLowPowerTagsTag);
+            }
+
+            if (SearchDownvotedTags)
+            {
+                append(SearchDownvotedTagsTag);
+            }
+
+            if (ShowExpungedGalleries)
+            {
+                append(ShowExpungedGalleriesTag);
+            }
+
             if (SearchMinimumRating)
             {
                 append(SearchMinimumRatingTag);
                 append(MinimumRatingTag, MinimumRating);
             }
-            if (DisableDefaultLanguageFilters) append(DisableDefaultLanguageFiltersTag);
-            if (DisableDefaultUploaderFilters) append(DisableDefaultUploaderFiltersTag);
+            if (DisableDefaultLanguageFilters)
+            {
+                append(DisableDefaultLanguageFiltersTag);
+            }
+
+            if (DisableDefaultUploaderFilters)
+            {
+                append(DisableDefaultUploaderFiltersTag);
+            }
+
             return builder.ToString();
             void append(string key, int value = 1)
             {
@@ -222,9 +269,14 @@ namespace ExClient.Search
             set
             {
                 if (value > 5)
+                {
                     value = 5;
+                }
                 else if (value < 2)
+                {
                     value = 2;
+                }
+
                 value -= 2;
                 unchecked
                 {
@@ -237,7 +289,10 @@ namespace ExClient.Search
         public override bool Equals(object obj)
         {
             if (obj is AdvancedSearchOptions other)
+            {
                 return this.Equals(other);
+            }
+
             return false;
         }
 
@@ -250,7 +305,10 @@ namespace ExClient.Search
         public bool Equals(AdvancedSearchOptions other)
         {
             if (other is null)
+            {
                 return false;
+            }
+
             return this.data == other.data;
         }
     }

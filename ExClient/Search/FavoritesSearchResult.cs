@@ -18,7 +18,10 @@ namespace ExClient.Search
         internal static FavoritesSearchResult Search(string keyword, FavoriteCategory category)
         {
             if (category is null || category.Index < 0)
+            {
                 category = FavoriteCategory.All;
+            }
+
             var result = new FavoritesSearchResult(keyword, category);
             return result;
         }
@@ -51,9 +54,13 @@ namespace ExClient.Search
                 var favNode = dataNode.ChildNodes[2].LastChild;
                 var favNote = favNode.GetInnerText();
                 if (favNote.StartsWith("Note: "))
+                {
                     gallery.FavoriteNote = favNote.Substring(6);
+                }
                 else
+                {
                     gallery.FavoriteNote = "";
+                }
             }
         }
 
@@ -75,16 +82,27 @@ namespace ExClient.Search
         public IAsyncAction AddToCategoryAsync(IReadOnlyList<ItemIndexRange> items, FavoriteCategory categoty)
         {
             if (categoty is null)
+            {
                 throw new ArgumentNullException(nameof(categoty));
+            }
+
             if (items is null || items.Count == 0)
+            {
                 return AsyncAction.CreateCompleted();
+            }
+
             return AsyncInfo.Run(async token =>
             {
                 var ddact = default(string);
                 if (categoty.Index < 0)
+                {
                     ddact = "delete";
+                }
                 else
+                {
                     ddact = $"fav{categoty.Index}";
+                }
+
                 var post = Client.Current.HttpClient.PostAsync(this.SearchUri, new HttpFormUrlEncodedContent(getParameters()));
                 token.Register(post.Cancel);
                 var r = await post;

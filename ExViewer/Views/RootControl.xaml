@@ -170,7 +170,7 @@
               <Ellipse.Fill>
                 <ImageBrush Stretch="Uniform">
                   <ImageBrush.ImageSource>
-                    <BitmapImage UriSource="{x:Bind UserInfo.Avatar, Mode=OneWay, TargetNullValue='x'}" />
+                    <BitmapImage UriSource="{x:Bind UserInfo.Avatar, Mode=OneWay, TargetNullValue='ms-appx:///Assets/DefaultUser.png'}" />
                   </ImageBrush.ImageSource>
                 </ImageBrush>
               </Ellipse.Fill>

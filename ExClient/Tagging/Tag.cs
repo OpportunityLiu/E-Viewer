@@ -13,9 +13,13 @@ namespace ExClient.Tagging
         {
             var splited = content.Split(split, 2);
             if (splited.Length == 2)
+            {
                 return new Tag(NamespaceExtention.Parse(splited[0]), splited[1]);
+            }
             else
+            {
                 return new Tag(Namespace.Misc, content);
+            }
         }
 
         public static bool TryParse(string content, out Tag result)
@@ -49,9 +53,15 @@ namespace ExClient.Tagging
         public Tag(Namespace @namespace, string content)
         {
             if (!@namespace.IsDefined())
+            {
                 throw new ArgumentOutOfRangeException(nameof(@namespace));
+            }
+
             if (string.IsNullOrWhiteSpace(content))
+            {
                 throw new ArgumentNullException(nameof(content));
+            }
+
             this.Namespace = @namespace;
             this.Content = content.Trim().ToLowerInvariant();
         }
@@ -65,17 +75,24 @@ namespace ExClient.Tagging
             if (Namespace != Namespace.Misc)
             {
                 if (Content.IndexOf(' ') == -1)
+                {
                     return $"{Namespace.ToSearchString()}:{Content}$";
+                }
                 else
+                {
                     return $"{Namespace.ToSearchString()}:\"{Content}$\"";
+                }
             }
             else
             {
                 if (Content.IndexOf(' ') == -1)
+                {
                     return $"{Content}$";
+                }
                 else
+                {
                     return $"\"{Content}$\"";
-
+                }
             }
         }
 
@@ -104,7 +121,10 @@ namespace ExClient.Tagging
         public override string ToString()
         {
             if (Namespace == Namespace.Misc)
+            {
                 return Content;
+            }
+
             return $"{Namespace.ToShortString()}:{Content}";
         }
 
@@ -117,7 +137,10 @@ namespace ExClient.Tagging
         public override bool Equals(object obj)
         {
             if (obj is Tag o)
+            {
                 return this.Equals(o);
+            }
+
             return false;
         }
 
@@ -133,7 +156,10 @@ namespace ExClient.Tagging
         {
             var c1 = this.Namespace - other.Namespace;
             if (c1 != 0)
+            {
                 return c1;
+            }
+
             return this.Content.CompareTo(other.Content);
         }
 

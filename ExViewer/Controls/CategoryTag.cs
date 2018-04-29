@@ -44,12 +44,17 @@ namespace ExViewer.Controls
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
                 if (this.TextPresenter != null)
+                {
                     this.TextPresenter.Text = "TESTVALUE";
+                }
+
                 return;
             }
 #endif
             if (this.TextPresenter != null)
+            {
                 this.TextPresenter.Text = cat.ToFriendlyNameString().ToUpper();
+            }
         }
 
         private TextBlock TextPresenter;
@@ -70,7 +75,10 @@ namespace ExViewer.Controls
             var oldValue = (Category)e.OldValue;
             var newValue = (Category)e.NewValue;
             if (oldValue == newValue)
+            {
                 return;
+            }
+
             sender.setValue(newValue);
 #if DEBUG
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)

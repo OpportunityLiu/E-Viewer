@@ -35,12 +35,21 @@ namespace ExClient.Status
                 var rankNode = toplistRecord.Descendants("strong").FirstOrDefault();
                 var listNode = toplistRecord.Descendants("a").FirstOrDefault();
                 if (rankNode is null || listNode is null)
+                {
                     continue;
+                }
+
                 if (!int.TryParse(rankNode.GetInnerText().TrimStart('#'), out var rank))
+                {
                     continue;
+                }
+
                 var link = listNode.GetAttribute("href", default(Uri));
                 if (!int.TryParse(link.Query.Split('=').Last(), out var listID))
+                {
                     continue;
+                }
+
                 newList.Add(new ToplistItem(rank, (ToplistName)listID));
             }
             this.toplists.Update(newList);
@@ -89,12 +98,17 @@ namespace ExClient.Status
         private bool analyzeDoc(HtmlDocument doc)
         {
             if (doc is null)
+            {
                 return false;
+            }
+
             var contentDivs = doc.DocumentNode
                .Element("html").Element("body").Element("div")
                .Elements("div", "homebox").ToList();
             if (contentDivs.Count != 5)
+            {
                 return false;
+            }
 
             analyzeImageLimit(contentDivs[0]);
             var ehTrackerDiv = contentDivs[1];
@@ -138,7 +152,9 @@ namespace ExClient.Status
                 var doc = new HtmlDocument();
                 doc.LoadHtml(html);
                 if (!analyzeDoc(doc))
+                {
                     await RefreshAsync();
+                }
             });
         }
         #endregion

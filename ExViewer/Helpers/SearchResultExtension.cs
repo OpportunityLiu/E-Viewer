@@ -9,9 +9,13 @@ namespace ExClient
         public static Visibility IsEmptyVisible(int count, bool hasMoreItems)
         {
             if (count == 0 && !hasMoreItems)
+            {
                 return Visibility.Visible;
+            }
             else
+            {
                 return Visibility.Collapsed;
+            }
         }
     }
 }

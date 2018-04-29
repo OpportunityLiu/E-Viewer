@@ -14,16 +14,17 @@ namespace ExViewer
 
         public static string GetMessage(this Exception ex)
         {
-            if (ex.InnerException != null)
+            if (ex.InnerException != null && (ex is System.Reflection.TargetInvocationException || ex is AggregateException))
             {
-                if (ex is System.Reflection.TargetInvocationException)
-                    ex = ex.InnerException;
-                else if (ex is AggregateException)
-                    ex = ex.InnerException;
+                // the outer exception is meaningless.
+                ex = ex.InnerException;
             }
             var localizedMsg = Strings.Exceptions.GetValue(ex.HResult.ToString("X8"));
             if (!string.IsNullOrEmpty(localizedMsg))
+            {
                 return localizedMsg;
+            }
+
             var msg = (ex.Message ?? $"Error: {ex.HResult:X8}").TrimStart();
             foreach (var prefix in prefixes)
             {

@@ -21,9 +21,13 @@ namespace ApplicationDataManager.Settings
         {
             var i = (SettingInfo)item;
             if(i.Type == ValueType.Custom)
+            {
                 return (DataTemplate)this.CustomTemplateDictionary[((CustomTemplateAttribute)i.ValueRepresent).TemplateName];
+            }
             else
+            {
                 return this.PrimitiveTypeTemplateProvider.GetTemplateOf(i.Type) ?? base.SelectTemplateCore(item);
+            }
         }
     }
 }

@@ -36,12 +36,16 @@ namespace ExClient.Galleries.Rating
             var avgS = 0d;
             var avg = regAvg.Match(doc.DocumentNode.OuterHtml);
             if (avg.Success)
+            {
                 avgS = double.Parse(avg.Groups[1].Value);
+            }
 
             var disp = regDisp.Match(doc.DocumentNode.OuterHtml);
             var dispS = 0d;
             if (disp.Success)
+            {
                 dispS = double.Parse(disp.Groups[1].Value);
+            }
 
             var rImage = doc.GetElementbyId("rating_image");
             var rImageClass = rImage?.GetAttributeValue("class", null);
@@ -49,7 +53,9 @@ namespace ExClient.Galleries.Rating
             var ratingCount = -1L;
             var rCount = doc.GetElementbyId("rating_count");
             if (rCount != null && uint.TryParse(rCount.GetInnerText(), out var c))
+            {
                 ratingCount = c;
+            }
 
             analyzeData(avgS, dispS, rImageClass, ratingCount);
         }
@@ -60,15 +66,27 @@ namespace ExClient.Galleries.Rating
         {
             var divClass = ratingImageDivNode?.GetAttributeValue("class", null);
             if (divClass is null)
+            {
                 return;
+            }
+
             if (!divClass.Contains("ir"))
+            {
                 return;
+            }
+
             if (!userRated(divClass))
+            {
                 return;
+            }
+
             var style = ratingImageDivNode.GetAttributeValue("style", "");
             var pos = regPos.Match(style);
             if (!pos.Success)
+            {
                 return;
+            }
+
             var x = int.Parse(pos.Groups[1].Value);
             var y = int.Parse(pos.Groups[2].Value);
             this.UserScore = (Score)((x + 80) / 8 - (y < -10 ? 1 : 0));
@@ -83,9 +101,13 @@ namespace ExClient.Galleries.Rating
             this.RatingCount = ratingCount;
 
             if (ratingImageClass != null && userRated(ratingImageClass))
+            {
                 this.UserScore = displayScore.ToScore();
+            }
             else
+            {
                 this.UserScore = Score.NotSet;
+            }
         }
 
         public IAsyncAction RatingAsync(Score rating)

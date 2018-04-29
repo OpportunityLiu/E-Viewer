@@ -14,10 +14,14 @@ namespace ExClient.Api
         public void CheckResponse(ApiRequest request)
         {
             if (LogIn != null)
+            {
                 throw new InvalidOperationException("Need login");
+            }
             CheckResponseOverride(request);
             if (Error != null)
+            {
                 throw new InvalidOperationException(Error);
+            }
         }
 
         protected virtual void CheckResponseOverride(ApiRequest request) { }

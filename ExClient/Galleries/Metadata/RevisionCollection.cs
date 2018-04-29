@@ -28,7 +28,10 @@ namespace ExClient.Galleries.Metadata
             var gdd = doc.GetElementbyId("gdd");
             var parentNode = gdd.FirstChild.ChildNodes[1].Descendants("a").FirstOrDefault();
             if (parentNode != null)
+            {
                 this.ParentInfo = GalleryInfo.Parse(parentNode.GetAttribute("href", default(Uri)));
+            }
+
             var descendantsNode = doc.GetElementbyId("gnd");
             if (descendantsNode != null)
             {
@@ -45,7 +48,9 @@ namespace ExClient.Galleries.Metadata
                 this.DescendantsInfo = descendants;
             }
             else
+            {
                 this.DescendantsInfo = Array.Empty<RevisionInfo>();
+            }
         }
 
         internal Gallery Owner { get; }
@@ -55,14 +60,20 @@ namespace ExClient.Galleries.Metadata
         public IAsyncOperation<Gallery> FetchParentAsync()
         {
             if (!(this.ParentInfo is GalleryInfo i))
+            {
                 return AsyncOperation<Gallery>.CreateCompleted(null);
+            }
+
             return i.FetchGalleryAsync();
         }
 
         public IAsyncOperation<Gallery> FetchLatestRevisionAsync()
         {
             if (this.DescendantsInfo.Count == 0)
+            {
                 return AsyncOperation<Gallery>.CreateCompleted(this.Owner);
+            }
+
             return this.DescendantsInfo.Last().Gallery.FetchGalleryAsync();
         }
     }

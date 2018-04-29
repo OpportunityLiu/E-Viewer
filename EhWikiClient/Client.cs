@@ -25,7 +25,10 @@ namespace EhWikiClient
         {
             var task = GetAsync(title);
             if (task.Status == AsyncStatus.Completed)
+            {
                 return task.GetResults();
+            }
+
             return null;
         }
 
@@ -35,9 +38,15 @@ namespace EhWikiClient
             {
                 var record = db.Table.AsNoTracking().SingleOrDefault(r => r.Title == title);
                 if (record != null && record.IsValid)
+                {
                     return AsyncOperation<Record>.CreateCompleted(record);
+                }
+
                 if (record is null || record.LastUpdate.AddDays(7) < DateTimeOffset.Now)
+                {
                     return FetchAsync(title);
+                }
+
                 return AsyncOperation<Record>.CreateCompleted(default);
             }
         }
@@ -69,7 +78,9 @@ namespace EhWikiClient
                 {
                     var oldrecord = db.Table.SingleOrDefault(r => r.Title == title);
                     if (oldrecord is null)
+                    {
                         db.Table.Add(record);
+                    }
                     else
                     {
                         oldrecord.Update(record);

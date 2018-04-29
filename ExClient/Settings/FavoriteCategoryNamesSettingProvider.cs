@@ -24,7 +24,10 @@ namespace ExClient.Settings
             for (var i = 0; i < this.data.Length; i++)
             {
                 if (!settings.TryGetValue("favorite_" + i, out var name))
+                {
                     name = "Favorite " + i;
+                }
+
                 this[i] = name;
             }
         }
@@ -40,7 +43,9 @@ namespace ExClient.Settings
                     this.CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, old, index));
                     var fav = Client.Current?.Favorites;
                     if (fav != null)
+                    {
                         fav[index].OnNameChanged();
+                    }
                 }
             }
         }

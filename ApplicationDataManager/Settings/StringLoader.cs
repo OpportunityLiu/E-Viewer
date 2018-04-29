@@ -12,9 +12,13 @@ namespace ApplicationDataManager.Settings
         public static string GetString(string resourceKey)
         {
             if(cache.TryGetValue(resourceKey, out var value))
+            {
                 return value;
+            }
             else
+            {
                 return cache[resourceKey] = loader.GetString(resourceKey);
+            }
         }
 
         public static void ClearCache()

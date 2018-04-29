@@ -26,7 +26,9 @@ namespace ExViewer.Controls
         private void XYPropertyChanged(DependencyObject sender, DependencyProperty e)
         {
             if (!this.HasHyperlinks)
+            {
                 return;
+            }
             var u = this.XYFocusUp;
             var d = this.XYFocusDown;
             var begin = this.FirstLink;
@@ -134,7 +136,9 @@ namespace ExViewer.Controls
             var o = (bool)e.OldValue;
             var n = (bool)e.NewValue;
             if (o == n)
+            {
                 return;
+            }
             s.reload();
         }
 
@@ -143,7 +147,9 @@ namespace ExViewer.Controls
             var presenter = this.Presenter;
             var htmlContent = this.HtmlContent;
             if (presenter is null)
+            {
                 return;
+            }
             if (this.HasHyperlinks)
             {
                 var l = this.FirstLink;
@@ -221,6 +227,8 @@ namespace ExViewer.Controls
                     o1h.XYFocusDown = o2b;
                     o2b.XYFocusUp = o1h;
                     break;
+                default:
+                    throw new InvalidOperationException();
                 }
                 break;
             case HyperlinkButton o1b:
@@ -234,8 +242,12 @@ namespace ExViewer.Controls
                     o1b.XYFocusDown = o2b;
                     o2b.XYFocusUp = o1b;
                     break;
+                default:
+                    throw new InvalidOperationException();
                 }
                 break;
+            default:
+                throw new InvalidOperationException();
             }
         }
 
@@ -267,8 +279,7 @@ namespace ExViewer.Controls
             if (node is HtmlTextNode)
             {
                 var text = HtmlEntity.DeEntitize(node.InnerText);
-                MatchCollection matches;
-                if (detectLink && (matches = linkDetector.Matches(text)).Count > 0)
+                if (detectLink && (linkDetector.Matches(text) is MatchCollection matches) && matches.Count > 0)
                 {
                     var t = new Span();
                     var currentPos = 0;
@@ -279,9 +290,13 @@ namespace ExViewer.Controls
                         try
                         {
                             if (match.Groups["implict"].Success)
+                            {
                                 uri = new Uri($"http://{match.Value}");
+                            }
                             else if (match.Groups["explict"].Success)
+                            {
                                 uri = new Uri(match.Value);
+                            }
                         }
                         catch (UriFormatException) { }
                         if (uri != null)
@@ -318,22 +333,30 @@ namespace ExViewer.Controls
             case "strong"://[b]
                 var b = new Bold();
                 foreach (var item in createChildNodes(node, hyperlinks, detectLink))
+                {
                     b.Inlines.Add(item);
+                }
                 return b;
             case "em"://[i]
                 var i = new Italic();
                 foreach (var item in createChildNodes(node, hyperlinks, detectLink))
+                {
                     i.Inlines.Add(item);
+                }
                 return i;
             case "span"://[u]
                 var u = new Underline();
                 foreach (var item in createChildNodes(node, hyperlinks, detectLink))
+                {
                     u.Inlines.Add(item);
+                }
                 return u;
             case "del"://[s]
                 var s = new Span() { Foreground = (Brush)this.Resources["SystemControlBackgroundChromeMediumBrush"] };
                 foreach (var item in createChildNodes(node, hyperlinks, detectLink))
+                {
                     s.Inlines.Add(item);
+                }
                 return s;
             case "a"://[url]
                 var container = (Span)null;
@@ -350,9 +373,13 @@ namespace ExViewer.Controls
                 try
                 {
                     foreach (var item in createChildNodes(node, hyperlinks, false))
+                    {
                         container.Inlines.Add(item);
+                    }
                     if (container is Hyperlink)
+                    {
                         hyperlinks.Add(container);
+                    }
                     return container;
                 }
                 catch (ArgumentException)// has InlineUIContainer in childnodes, eg: images

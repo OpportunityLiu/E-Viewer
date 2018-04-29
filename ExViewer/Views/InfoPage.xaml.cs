@@ -27,7 +27,10 @@ namespace ExViewer.Views
         private double percent(double value)
         {
             if (double.IsNaN(value))
+            {
                 return 0;
+            }
+
             return value;
         }
 
@@ -51,9 +54,13 @@ namespace ExViewer.Views
         private void setSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
+            {
                 this.bdSplitViewPlaceholder.Width = 48;
+            }
             else
+            {
                 this.bdSplitViewPlaceholder.Width = 0;
+            }
         }
 
         private void pv_root_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -108,7 +115,9 @@ namespace ExViewer.Views
             foreach (var item in this.mfTaggingRecord.Items)
             {
                 if (item is MenuFlyoutItem mfi)
+                {
                     mfi.CommandParameter = e.ClickedItem;
+                }
             }
             this.mfTaggingRecord.ShowAt(this.lvTagging.ContainerFromItem(e.ClickedItem).Cast<FrameworkElement>());
         }

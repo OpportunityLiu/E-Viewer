@@ -11,7 +11,10 @@ namespace ExClient.Api
             : base(gallery)
         {
             if (!rating.IsDefined())
+            {
                 throw new ArgumentOutOfRangeException(nameof(rating));
+            }
+
             this.Rating = rating;
         }
 

@@ -21,7 +21,10 @@ namespace ExClient.Status
         public override bool Equals(object obj)
         {
             if (obj is ToplistItem t)
+            {
                 return this.Equals(t);
+            }
+
             return false;
         }
 
@@ -74,7 +77,10 @@ namespace ExClient.Status
         public static Uri Uri(this ToplistName topList)
         {
             if (!topList.IsDefined())
+            {
                 return null;
+            }
+
             return new Uri(Internal.DomainProvider.Eh.RootUri, $"toplist.php?tl={(int)topList}");
         }
 

@@ -47,7 +47,10 @@ namespace ApplicationDataManager.Settings
                 if (container.TryGetValue(key, out var v))
                 {
                     if (@default is Enum)
+                    {
                         return (T)Enum.Parse(typeof(T), v.ToString());
+                    }
+
                     return (T)v;
                 }
             }
@@ -61,11 +64,19 @@ namespace ApplicationDataManager.Settings
         private void set<T>(IPropertySet container, T value, string key, bool forceRaiseEvent)
         {
             if (!forceRaiseEvent && hasValue(container, key) && Equals(get(container, value, key), value))
+            {
                 return;
+            }
+
             if (value is Enum)
+            {
                 container[key] = value.ToString();
+            }
             else
+            {
                 container[key] = value;
+            }
+
             OnPropertyChanged(key);
         }
 

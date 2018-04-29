@@ -80,7 +80,10 @@ namespace ExClient.Galleries.Renaming
         private void analyze(HtmlDocument doc)
         {
             if (doc.DocumentNode.ChildNodes.Count == 1 && doc.DocumentNode.FirstChild.NodeType == HtmlNodeType.Text)
+            {
                 throw new InvalidOperationException(doc.DocumentNode.FirstChild.InnerText);
+            }
+
             var tables = doc.DocumentNode.Descendants("table").ToList();
             IReadOnlyList<RenameRecord> romanRec, japaneseRec;
             (this.CurrentRomanID, romanRec, this.OriginalRomanTitle) = analyzeTable(tables[0]);
@@ -93,7 +96,9 @@ namespace ExClient.Galleries.Renaming
                 var original = default(string);
                 var text = tableNode.Element("tr").LastChild.FirstChild;
                 if (text.NodeType == HtmlNodeType.Text)
+                {
                     original = text.GetInnerText();
+                }
 
                 var trecords = tableNode.Elements("tr").Skip(1).ToList();
                 var records = new List<RenameRecord>();
@@ -105,7 +110,10 @@ namespace ExClient.Galleries.Renaming
                     var recId = input.GetAttribute("value", -1);
                     var check = input.GetAttribute("checked", false);
                     if (check)
+                    {
                         currentID = recId;
+                    }
+
                     if (recId > 0)
                     {
                         var powStr = rec.ChildNodes[1].GetInnerText();
@@ -150,7 +158,10 @@ namespace ExClient.Galleries.Renaming
         private static RenameRecord generateTempRenameRecord(string title)
         {
             if (string.IsNullOrWhiteSpace(title))
+            {
                 return new RenameRecord(-1, "", -1);
+            }
+
             return new RenameRecord(0, title.Trim(), 0);
         }
     }

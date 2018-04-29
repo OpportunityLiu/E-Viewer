@@ -47,7 +47,10 @@ namespace ExViewer.Views
             var o = (Tag)e.OldValue;
             var n = (Tag)e.NewValue;
             if (n.Equals(o))
+            {
                 return;
+            }
+
             sender.refresh(n);
         }
 
@@ -73,9 +76,13 @@ namespace ExViewer.Views
                     var record = await this.loadRecord;
                     this.loadRecord = null;
                     if (record?.DetialHtml is null)
+                    {
                         str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
+                    }
                     else
+                    {
                         str = record.DetialHtml;
+                    }
                 }
                 catch (System.Threading.Tasks.TaskCanceledException)
                 {
@@ -91,7 +98,10 @@ namespace ExViewer.Views
                     this.navigate(new Uri(ew, HtmlAgilityPack.HtmlEntity.DeEntitize(redirect.Groups[1].Value)));
                 }
                 if (this.style is null)
+                {
                     this.initStyle();
+                }
+
                 this.wv.NavigateToString(this.style + str);
 
             }

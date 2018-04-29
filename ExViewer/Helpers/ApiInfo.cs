@@ -3,7 +3,7 @@ using Windows.System.Profile;
 
 namespace ExViewer
 {
-    public static class ApiInfo
+    public static class ExApiInfo
     {
         public static bool RS3 { get; } = IsApiContractPresent("Windows.Foundation.UniversalApiContract", 5);
 

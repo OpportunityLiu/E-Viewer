@@ -42,7 +42,10 @@ namespace ExClient.Galleries
                 var b = new BitmapImage();
                 var old = Interlocked.CompareExchange(ref defaultThumb, b, null);
                 if (old != null)
+                {
                     return;
+                }
+
                 await b.Dispatcher.YieldIdle();
                 using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
                 {
@@ -58,9 +61,13 @@ namespace ExClient.Galleries
             set
             {
                 if (value is null)
+                {
                     createDefaultThumb();
+                }
                 else
+                {
                     defaultThumb = value;
+                }
             }
         }
 
@@ -77,7 +84,10 @@ namespace ExClient.Galleries
         {
             var temp = imageFolder;
             if (temp != null)
+            {
                 return AsyncOperation<StorageFolder>.CreateCompleted(temp);
+            }
+
             return Run(async token =>
             {
                 var temp2 = imageFolder;
@@ -143,9 +153,13 @@ namespace ExClient.Galleries
                 var oft = this.failToken;
                 var nft = failTokenMatcher.Match(loadFail).Groups[1].Value;
                 if (oft is null)
+                {
                     this.failToken = "nl=" + nft;
+                }
                 else
+                {
                     this.failToken = oft + "&nl=" + nft;
+                }
             });
         }
 
@@ -195,7 +209,9 @@ namespace ExClient.Galleries
                 }
                 this.thumb.SetTarget(img);
                 if (img != null)
+                {
                     OnPropertyChanged(nameof(Thumb));
+                }
             });
         }
 
@@ -205,7 +221,10 @@ namespace ExClient.Galleries
             get
             {
                 if (this.thumb.TryGetTarget(out var thb))
+                {
                     return thb;
+                }
+
                 loadThumb();
                 return DefaultThumb;
             }
@@ -247,18 +266,26 @@ namespace ExClient.Galleries
                 if (!reload)
                 {
                     if (previousEnded)
+                    {
                         return AsyncAction.CreateCompleted();
+                    }
+
                     return PollingAsyncWrapper.Wrap(previousAction, 1500);
                 }
                 else
                 {
                     if (!previousEnded)
+                    {
                         previousAction?.Cancel();
+                    }
                 }
                 break;
             case ImageLoadingState.Preparing:
                 if (previousEnded)
+                {
                     return AsyncAction.CreateCompleted();
+                }
+
                 return PollingAsyncWrapper.Wrap(previousAction, 1500);
             }
             return this.loadImageAction = startLoadImageAsync(reload, strategy, throwIfFailed);
@@ -272,7 +299,10 @@ namespace ExClient.Galleries
                 try
                 {
                     if (this.PageUri is null)
+                    {
                         await Owner.LoadItemsAsync(this.PageID - 1, 1);
+                    }
+
                     var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
                     var folder = ImageFolder ?? await GetImageFolderAsync();
                     this.Progress = 0;
@@ -300,9 +330,14 @@ namespace ExClient.Galleries
                             var giModel = db.GalleryImageSet
                                 .SingleOrDefault(model => model.GalleryId == this.Owner.ID && model.PageId == this.PageID);
                             if (giModel is null)
+                            {
                                 db.GalleryImageSet.Add(new GalleryImageModel().Update(this));
+                            }
                             else
+                            {
                                 giModel.Update(this);
+                            }
+
                             db.SaveChanges();
                             this.Progress = 100;
                             this.State = ImageLoadingState.Loaded;
@@ -310,7 +345,9 @@ namespace ExClient.Galleries
                         }
                         token.ThrowIfCancellationRequested();
                         if (this.imageUri.LocalPath.EndsWith("/509.gif"))
+                        {
                             throw new InvalidOperationException(LocalizedStrings.Resources.ExceedLimits);
+                        }
 
                         var imgUri = default(Uri);
                         if (loadFull)
@@ -334,7 +371,9 @@ namespace ExClient.Galleries
                                 return;
                             }
                             if (httpProgress.TotalBytesToReceive is null || httpProgress.TotalBytesToReceive == 0)
+                            {
                                 this.Progress = 0;
+                            }
                             else
                             {
                                 var pro = (int)(httpProgress.BytesReceived * 100 / ((ulong)httpProgress.TotalBytesToReceive));
@@ -348,9 +387,13 @@ namespace ExClient.Galleries
                         {
                             var error = HtmlUtilities.ConvertToText(imageLoadResponse.Content.ToString());
                             if (error.StartsWith("You have exceeded your image viewing limits."))
+                            {
                                 throw new InvalidOperationException(LocalizedStrings.Resources.ExceedLimits);
+                            }
                             else
+                            {
                                 throw new InvalidOperationException(error);
+                            }
                         }
 
                         await this.deleteImageFileAsync();
@@ -363,9 +406,14 @@ namespace ExClient.Galleries
                         if (myModel is null)
                         {
                             if (imageModel is null)
+                            {
                                 db.ImageSet.Add(new ImageModel().Update(this));
+                            }
                             else
+                            {
                                 imageModel.Update(this);
+                            }
+
                             db.GalleryImageSet.Add(new GalleryImageModel().Update(this));
                         }
                         else
@@ -383,7 +431,9 @@ namespace ExClient.Galleries
                     this.Progress = 100;
                     this.State = ImageLoadingState.Failed;
                     if (throwIfFailed)
+                    {
                         throw;
+                    }
                 }
             });
         }

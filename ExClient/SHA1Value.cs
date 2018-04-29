@@ -28,7 +28,10 @@ namespace ExClient
         public static IAsyncOperation<SHA1Value> ComputeAsync(IRandomAccessStream stream)
         {
             if (stream is null)
+            {
                 throw new ArgumentNullException(nameof(stream));
+            }
+
             return Task.Run(async () =>
             {
                 stream.Seek(0);
@@ -41,13 +44,18 @@ namespace ExClient
         public static IAsyncOperation<SHA1Value> ComputeAsync(IRandomAccessStreamReference stream)
         {
             if (stream is null)
+            {
                 throw new ArgumentNullException(nameof(stream));
+            }
+
             return AsyncInfo.Run(async token =>
             {
                 var st = stream.OpenReadAsync();
                 token.Register(st.Cancel);
                 using (var s = await st)
+                {
                     return await ComputeAsync(s);
+                }
             });
         }
 
@@ -56,9 +64,25 @@ namespace ExClient
             return new SHA1Value(CryptographicBuffer.DecodeFromHexString(imageHash));
         }
 
-        private unsafe struct DataPack
+        private unsafe struct DataPack : IEquatable<DataPack>
         {
             public fixed byte Data[HASH_SIZE];
+
+            public unsafe bool Equals(DataPack other)
+            {
+                fixed (byte* pThis = this.Data)
+                {
+                    var pOther = other.Data;
+                    for (var i = 0; i < HASH_SIZE; i++)
+                    {
+                        if (pThis[i] != pOther[i])
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
         }
 
         private readonly DataPack data;
@@ -69,7 +93,10 @@ namespace ExClient
             {
                 var values = new byte[HASH_SIZE];
                 fixed (void* pThis = &this, pValue = &values[0])
+                {
                     System.Buffer.MemoryCopy(pThis, pValue, HASH_SIZE, HASH_SIZE);
+                }
+
                 return values;
             }
         }
@@ -91,30 +118,27 @@ namespace ExClient
         public unsafe SHA1Value(byte[] values)
         {
             if ((values ?? throw new ArgumentNullException(nameof(values))).Length != HASH_SIZE)
+            {
                 throw new ArgumentException($"Length must be {HASH_SIZE}.", nameof(values));
+            }
+
             fixed (void* pThis = &this, pValue = &values[0])
+            {
                 System.Buffer.MemoryCopy(pValue, pThis, HASH_SIZE, HASH_SIZE);
+            }
         }
 
-        public unsafe bool Equals(SHA1Value other)
+        public bool Equals(SHA1Value other)
         {
-            fixed (void* pThis = &this)
-            {
-                var pCurrent = (byte*)pThis;
-                var pOther = (byte*)&other;
-                for (var i = 0; i < HASH_SIZE; i++)
-                {
-                    if (pCurrent[i] != pOther[i])
-                        return false;
-                }
-            }
-            return true;
+            return this.data.Equals(other.data);
         }
 
         public override bool Equals(object obj)
         {
             if (obj is SHA1Value sha)
+            {
                 return this.Equals(sha);
+            }
             return false;
         }
 
@@ -188,17 +212,25 @@ namespace ExClient
         private unsafe static void getHexValueL(char* p, int i)
         {
             if (i < 10)
+            {
                 *p = (char)(i + '0');
+            }
             else
+            {
                 *p = (char)(i - 10 + 'a');
+            }
         }
 
         private unsafe static void getHexValueU(char* p, int i)
         {
             if (i < 10)
+            {
                 *p = (char)(i + '0');
+            }
             else
+            {
                 *p = (char)(i - 10 + 'A');
+            }
         }
 
         public override string ToString() => toStringL(HASH_SIZE);

@@ -109,10 +109,14 @@ namespace ExViewer.Views
             await Dispatcher.YieldIdle();
             this.sizeChanging--;
             if (this.sizeChanging != 0)
+            {
                 return;
+            }
             var state = this.isGdInfoHide;
             if (this.tracker != null)
+            {
                 this.tracker.MaxPosition = new System.Numerics.Vector3(0, (float)this.gdInfo.ActualHeight, 0);
+            }
             changeViewTo(state, true);
         }
 
@@ -151,9 +155,13 @@ namespace ExViewer.Views
                 }
                 var trans = this.spContent.TransformToVisual(ele).TransformPoint(new Point(0, this.gdInfo.ActualHeight));
                 if (trans.Y > 0)
+                {
                     changeViewTo(false, false);
+                }
                 else if (trans.Y < -68)
+                {
                     changeViewTo(true, false);
+                }
             }
         }
 
@@ -163,9 +171,13 @@ namespace ExViewer.Views
             get
             {
                 if (this.isGdInfoHideDef is bool va)
+                {
                     return va;
+                }
                 if (this.tracker is null)
+                {
                     return false;
+                }
                 var current = this.tracker.Position.Y;
                 var max = this.tracker.MaxPosition.Y;
                 return current > max / 2;
@@ -175,9 +187,13 @@ namespace ExViewer.Views
         private void changeViewTo(bool hideGdInfo, bool disableAnimation)
         {
             if (this.isGdInfoHide == hideGdInfo && !disableAnimation)
+            {
                 return;
+            }
             if (this.tracker is null)
+            {
                 return;
+            }
             this.isGdInfoHideDef = hideGdInfo;
             if (disableAnimation)
             {
@@ -207,7 +223,9 @@ namespace ExViewer.Views
                 this.gv.ScrollIntoView(this.ViewModel.Gallery.First());
 
                 if (this.ViewModel.Gallery.Comments.IsLoaded)
+                {
                     this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
+                }
                 else
                 {
                     void handler(object s, System.ComponentModel.PropertyChangedEventArgs args)
@@ -217,7 +235,9 @@ namespace ExViewer.Views
                         {
                             sender.PropertyChanged -= handler;
                             if (!sender.IsEmpty)
+                            {
                                 this.lv_Comments.ScrollIntoView(sender[0]);
+                            }
                         }
                     }
                     this.ViewModel.Gallery.Comments.PropertyChanged += handler;
@@ -249,9 +269,13 @@ namespace ExViewer.Views
                 if (animation != null)
                 {
                     if (this.pv.SelectedIndex == 0 && container != null)
+                    {
                         await this.gv.TryStartConnectedAnimationAsync(animation, this.ViewModel.View.CurrentItem, "Image");
+                    }
                     else
+                    {
                         animation.Cancel();
+                    }
                 }
                 await Dispatcher.YieldIdle();
                 container = (Control)this.gv.ContainerFromIndex(idx);
@@ -272,7 +296,9 @@ namespace ExViewer.Views
         {
             base.OnNavigatedFrom(e);
             if (e.SourcePageType == typeof(ImagePage))
+            {
                 changeViewTo(true, true);
+            }
         }
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
@@ -298,11 +324,15 @@ namespace ExViewer.Views
             {
             case 1://Comments
                 if (!this.ViewModel.Gallery.Comments.IsLoaded)
+                {
                     await this.ViewModel.LoadComments();
+                }
                 break;
             case 2://Torrents
                 if (this.ViewModel.Torrents is null)
+                {
                     await this.ViewModel.LoadTorrents();
+                }
                 // finish the add animation
                 await Task.Delay(150);
                 if (this.lv_Torrents.Items.Count > 0)
@@ -325,7 +355,9 @@ namespace ExViewer.Views
             {
                 var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(item);
                 if (con is null)
+                {
                     continue;
+                }
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
                 gd.Visibility = Visibility.Collapsed;
             }
@@ -334,7 +366,9 @@ namespace ExViewer.Views
             {
                 var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(added);
                 if (con is null)
+                {
                     return;
+                }
                 var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
                 gd.Visibility = Visibility.Visible;
             }
@@ -365,21 +399,29 @@ namespace ExViewer.Views
                 if ((this.pv.SelectedItem as PivotItem)?.Content is ListViewBase lvb)
                 {
                     if (lvb.Items.Count == 0)
+                    {
                         this.pv.Focus(FocusState.Keyboard);
+                    }
                     else if (lvb.ContainerFromIndex(lvb.SelectedIndex) is Control c)
+                    {
                         c.Focus(FocusState.Keyboard);
+                    }
                     else
+                    {
                         lvb.Focus(FocusState.Keyboard);
+                    }
                 }
                 else
+                {
                     this.pv.Focus(FocusState.Keyboard);
+                }
                 break;
             case VirtualKey.GamepadMenu:
             case VirtualKey.Application:
-                if (this.cb_top.IsOpen = !this.cb_top.IsOpen)
+                this.cb_top.IsOpen = !this.cb_top.IsOpen;
+                if (this.cb_top.IsOpen && (this.btnMoreButton is null))
                 {
-                    if (this.btnMoreButton is null)
-                        this.btnMoreButton = this.cb_top.Descendants<Button>("MoreButton").FirstOrDefault();
+                    this.btnMoreButton = this.cb_top.Descendants<Button>("MoreButton").FirstOrDefault();
                     this.btnMoreButton?.Focus(FocusState.Programmatic);
                 }
                 break;
@@ -430,24 +472,26 @@ namespace ExViewer.Views
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
+            {
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
+            }
             else
+            {
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
+            }
         }
 
         private static string favoriteCategoryToName(FavoriteCategory cat)
         {
             if (cat is null || cat.Index < 0)
+            {
                 return Strings.Resources.Views.GalleryPage.FavoritesAppBarButton.Text;
+            }
             return cat.Name;
         }
         private static Visibility operationStateToVisibility(OperationState value)
-        {
-            if (value == OperationState.NotStarted)
-                return Visibility.Collapsed;
-            else
-                return Visibility.Visible;
-        }
+            => value == OperationState.NotStarted ? Visibility.Collapsed : Visibility.Visible;
+
         private static Brush operationStateToBrush(OperationState value)
         {
             switch (value)
@@ -460,9 +504,12 @@ namespace ExViewer.Views
                 return opFailed;
             case OperationState.Completed:
                 return opCompleted;
+            default:
+                return null;
             }
-            return null;
         }
+
+        // for function binding with bindback
         private static Score score(Score score) => score;
 
         private static readonly Brush opNotStarted = new SolidColorBrush(Colors.Transparent);
@@ -483,9 +530,13 @@ namespace ExViewer.Views
             if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
             {
                 if (this.gdPvContentHeaderPresenter is null)
+                {
                     this.gdPvContentHeaderPresenter = this.Children[1].Descendants<Grid>("HeaderPresenter").FirstOrDefault();
+                }
                 if (this.gdPvContentHeaderPresenter != null)
+                {
                     infoH -= this.gdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
+                }
             }
             infoH = Math.Min(infoH, 360);
             this.Children[0].Measure(new Size(width, infoH));
