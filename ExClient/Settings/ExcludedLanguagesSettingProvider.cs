@@ -106,7 +106,7 @@ namespace ExClient.Settings
 
         public IEnumerator<ExcludedLanguage> GetEnumerator() => this.items.Select(i => (ExcludedLanguage)i).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => this.items.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         internal override void DataChanged(Dictionary<string, string> settings)
         {
