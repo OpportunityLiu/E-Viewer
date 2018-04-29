@@ -187,10 +187,6 @@ namespace ExClient.Galleries.Commenting
             return AsyncInfo.Run(async token =>
             {
                 var r = await request.GetResponseAsync();
-                if (this.ID != r.ID)
-                {
-                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
-                }
                 switch (r.Vote)
                 {
                 case VoteState.Default:
@@ -203,6 +199,7 @@ namespace ExClient.Galleries.Commenting
                     this.Status = CommentStatus.VotedDown;
                     break;
                 default:
+                    Debug.Assert(false);
                     break;
                 }
                 this.Score = r.Score;
