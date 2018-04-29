@@ -30,7 +30,17 @@ namespace BannerProvider
 
                 return DateTimeOffset.MinValue;
             }
-            private set => ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;
+            private set
+            {
+                if (value == DateTimeOffset.MinValue)
+                {
+                    ApplicationData.Current.LocalSettings.Values.Remove(LAST_UPDATE);
+                }
+                else
+                {
+                    ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;
+                }
+            }
         }
 
         private static async Task init()
