@@ -202,14 +202,16 @@ namespace ExViewer
                 Subject = "Crash log for ExViewer",
                 To =
                 {
-                    new EmailRecipient("opportunity@live.in","Opportunity"),
+                    new EmailRecipient("opportunity@live.in", "Opportunity"),
                 },
                 Attachments =
                 {
-                    new EmailAttachment("AppLog", logFile),
+                    new EmailAttachment(LOG_FILE, logFile),
                 },
                 Body = $@"
-Please check following infomation and remove anything that you wouldn't like to send.
+
+
+Please check following infomation and attchments, and remove anything that you wouldn't like to send.
 ----------
 PackageFullName: {Package.Current.Id.FullName}
 PackageVersion: {Package.Current.Id.Version.ToVersion()}
