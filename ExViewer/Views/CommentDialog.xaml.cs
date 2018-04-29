@@ -3,6 +3,7 @@ using ExClient.Galleries.Commenting;
 using ExViewer.Controls;
 using System;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -31,6 +32,14 @@ namespace ExViewer.Views
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+        }
+
+        private async void ContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            // resize the dialog.
+            var d = args.GetDeferral();
+            await Task.Delay(33);
+            d.Complete();
         }
 
         private void abb_Click(object sender, RoutedEventArgs e)

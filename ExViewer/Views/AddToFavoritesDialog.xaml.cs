@@ -131,5 +131,13 @@ namespace ExViewer.Views
         {
             this.tbInfo.Text = "";
         }
+
+        private async void MyContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            // resize the dialog.
+            var d = args.GetDeferral();
+            await Task.Delay(33);
+            d.Complete();
+        }
     }
 }
