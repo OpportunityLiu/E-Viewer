@@ -2,12 +2,19 @@
 using ExClient.Search;
 using ExViewer.ViewModels;
 using ExViewer.Views;
+using Newtonsoft.Json;
+using Opportunity.Helpers.Universal;
 using Opportunity.MvvmUniverse;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel.Email;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.Storage;
+using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 
@@ -117,6 +124,58 @@ namespace ExViewer
             {
                 semaphore.Release();
             }
+        }
+
+        public static async void SendLog()
+        {
+            try
+            {
+                await semaphore.WaitAsync();
+                if (logFile is null)
+                    logFile = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("AppLog", CreationCollisionOption.OpenIfExists);
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+            var eascdi = new Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation();
+            var q = "";
+            foreach (var item in ResourceContext.GetForCurrentView().QualifierValues)
+            {
+                q += $"`{item.Key}`=`{item.Value}` ";
+            }
+            await EmailManager.ShowComposeNewEmailAsync(new EmailMessage
+            {
+                Subject = "Crash log for ExViewer",
+                To =
+                {
+                    new EmailRecipient("opportunity@live.in","Opportunity"),
+                },
+                Attachments =
+                {
+                    new EmailAttachment("AppLog", logFile),
+                },
+                Body = $@"
+Please check following infomation and remove anything that you wouldn't like to send.
+----------
+PackageFullName: {Package.Current.Id.FullName}
+PackageVersion: {Package.Current.Id.Version.ToVersion()}
+PackageArchitecture: {Package.Current.Id.Architecture}
+PackageNeedsRemediation: {Package.Current.Status.NeedsRemediation}
+Qualifiers: {q}
+DeviceForm: {AnalyticsInfo.DeviceForm}
+DeviceFamily: {AnalyticsInfo.VersionInfo.DeviceFamily}
+DeviceFamilyVersion: {ApiInfo.DeviceFamilyVersion}
+DeviceId: {eascdi.Id}
+OperatingSystem: {eascdi.OperatingSystem}
+SystemFirmwareVersion: {eascdi.SystemFirmwareVersion}
+SystemHardwareVersion: {eascdi.SystemHardwareVersion}
+SystemManufacturer: {eascdi.SystemManufacturer}
+SystemProductName: {eascdi.SystemProductName}
+SystemSku: {eascdi.SystemSku}
+----------
+"
+            });
         }
 
         private static System.Threading.SemaphoreSlim semaphore = new System.Threading.SemaphoreSlim(1, 1);

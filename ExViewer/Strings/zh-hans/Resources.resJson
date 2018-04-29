@@ -15,6 +15,7 @@
       "LastUpdate": "最后更新时间：{0}",
       "LicenceTextBlock/Text": "协议",
       "OnlineContentsTextBlock/Text": "在线内容",
+      "SendLogHyperlinkButton/Content": "通过电子邮件发送错误日志",
       "SourceCodeHyperlinkButton/Content": "反馈和源代码",
       "TagDatabaseTextBlock/Text": "标签数据库",
       "UpdateButton/Content": "立即更新"

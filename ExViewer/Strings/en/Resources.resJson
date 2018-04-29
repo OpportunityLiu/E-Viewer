@@ -15,6 +15,7 @@
       "LastUpdate": "Last update: {0}",
       "LicenceTextBlock/Text": "License",
       "OnlineContentsTextBlock/Text": "Online contents",
+      "SendLogHyperlinkButton/Content": "Send crash log via email",
       "SourceCodeHyperlinkButton/Content": "Feedback & source code",
       "TagDatabaseTextBlock/Text": "Tag database",
       "UpdateButton/Content": "Update now"
