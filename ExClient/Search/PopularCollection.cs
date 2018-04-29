@@ -25,14 +25,18 @@ namespace ExClient.Search
         {
             base.InsertItem(index, item);
             if (Count == 1)
+            {
                 OnPropertyChanged(nameof(HasMoreItems));
+            }
         }
 
         protected override void RemoveItem(int index)
         {
             base.RemoveItem(index);
             if (Count == 0)
+            {
                 OnPropertyChanged(nameof(HasMoreItems));
+            }
         }
 
         public override bool HasMoreItems => this.Count == 0;

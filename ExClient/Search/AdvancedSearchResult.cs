@@ -15,7 +15,10 @@ namespace ExClient.Search
             : base(keyword, category)
         {
             if (advancedSearch != null)
+            {
                 this.advSearchData = advancedSearch.Data;
+            }
+
             this.SearchUri = this.advSearchData == default
                 ? base.SearchUri
                 : new Uri(base.SearchUri.OriginalString + getQueryString());

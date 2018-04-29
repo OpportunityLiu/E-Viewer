@@ -29,9 +29,12 @@ namespace ExClient.Status
         {
             return AsyncInfo.Run(async token => await Task.Run(async () =>
             {
-                var uid = Client.Current.UserID;
+                var uid = Client.Current.UserId;
                 if (uid < 0)
+                {
                     throw new InvalidOperationException("Hasn't log in");
+                }
+
                 this.records.Clear();
                 var getPage = Client.Current.HttpClient.GetDocumentAsync(new Uri($"https://e-hentai.org/tools.php?act=taglist&uid={uid}"));
                 token.Register(getPage.Cancel);
@@ -64,9 +67,15 @@ namespace ExClient.Status
         private static double parsePercetage(string str)
         {
             if (string.IsNullOrWhiteSpace(str))
+            {
                 return double.NaN;
+            }
+
             if (str.EndsWith("%") && double.TryParse(str.Substring(0, str.Length - 1), out var r))
+            {
                 return r / 100;
+            }
+
             return double.NaN;
         }
     }

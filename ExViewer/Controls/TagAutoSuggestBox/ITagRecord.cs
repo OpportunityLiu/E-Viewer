@@ -95,17 +95,25 @@ namespace ExViewer.Controls.TagSuggestion
             if (io != -1)
             {
                 if (io == 0)
+                {
                     score = highlight.Length * 65536 * 16 / tag.Original.Length;
+                }
                 else
+                {
                     score = highlight.Length * 65536 / tag.Original.Length;
+                }
             }
             var to = tag.TranslatedStr.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
             if (to != -1)
             {
                 if (to == 0)
+                {
                     score = Math.Max(score, highlight.Length * 65536 * 16 / tag.TranslatedStr.Length);
+                }
                 else
+                {
                     score = Math.Max(score, highlight.Length * 65536 / tag.TranslatedStr.Length);
+                }
             }
             score *= nsFactor[tag.Namespace];
             return new TagRecord(highlight, tag.ToTag(), score);
@@ -119,9 +127,13 @@ namespace ExViewer.Controls.TagSuggestion
             if (io != -1)
             {
                 if (io == 0)
+                {
                     score = highlight.Length * 65536 * 16 / c.Length;
+                }
                 else
+                {
                     score = highlight.Length * 65536 / c.Length;
+                }
             }
             score *= nsFactor[tag.TagNamespace];
             return new TagRecord(highlight, tag.AsTag(), score);
@@ -133,16 +145,21 @@ namespace ExViewer.Controls.TagSuggestion
             {
                 var r = default(List<TransRecord>);
                 if (ns == Namespace.Unknown || ns == Namespace.Misc)
+                {
                     r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
                                           WHERE Original LIKE {0} COLLATE nocase 
                                             Or TranslatedStr LIKE {0} COLLATE nocase", $"%{highlight}%")
                         .ToList();
+                }
                 else
+                {
                     r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
                                           WHERE Original LIKE {0} COLLATE nocase 
                                             Or TranslatedStr LIKE {0} COLLATE nocase", $"%{highlight}%")
                         .Where(t => t.Namespace == ns)
                         .ToList();
+                }
+
                 return r.Select(t => getRecord(t, highlight));
             }
         }
@@ -153,14 +170,19 @@ namespace ExViewer.Controls.TagSuggestion
             {
                 var r = default(List<EhTagClient.TagRecord>);
                 if (ns == Namespace.Unknown || ns == Namespace.Misc)
+                {
                     r = db.Tags.FromSql(@"SELECT * FROM 'TagTable' 
                                           WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")
                                .ToList();
+                }
                 else
+                {
                     r = db.Tags.FromSql(@"SELECT * FROM 'TagTable' 
                                           WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")
                                .Where(t => t.TagNamespace == ns)
                                .ToList();
+                }
+
                 return r.Select(t => getRecord(t, highlight));
             }
         }

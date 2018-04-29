@@ -16,7 +16,9 @@ namespace ExViewer.Controls
         {
             var nextTheme = Settings.SettingCollection.Current.Theme.ToElementTheme();
             if (sender.RequestedTheme != nextTheme)
+            {
                 sender.RequestedTheme = nextTheme;
+            }
         }
     }
 }

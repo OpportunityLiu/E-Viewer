@@ -24,7 +24,10 @@ namespace ExViewer.Controls
         private static void OnIsCheckedChangedStatic(object sender, DependencyPropertyChangedEventArgs args)
         {
             if(args.OldValue == args.NewValue)
+            {
                 return;
+            }
+
             var s = (SplitViewTab)sender;
             s.updateState(true);
             s.OnIsCheckedChanged(args);

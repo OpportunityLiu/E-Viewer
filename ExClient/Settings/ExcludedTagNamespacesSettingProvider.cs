@@ -37,7 +37,9 @@ namespace ExClient.Settings
             {
                 var check = (Namespace)(1 << (i - 1));
                 if ((value & check) == check)
+                {
                     settings["xn_" + i] = "on";
+                }
             }
         }
 

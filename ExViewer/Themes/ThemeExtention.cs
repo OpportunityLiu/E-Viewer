@@ -10,7 +10,7 @@ namespace ExViewer.Themes
     static class ThemeExtention
     {
         private static ThemeHelperControl helper = new ThemeHelperControl();
-        private static StatusBar sb = ApiInfo.StatusBarSupported ? StatusBar.GetForCurrentView() : null;
+        private static StatusBar sb = ExApiInfo.StatusBarSupported ? StatusBar.GetForCurrentView() : null;
 
         public static void SetTitleBar()
         {
@@ -37,7 +37,7 @@ namespace ExViewer.Themes
                 tb.ButtonInactiveForegroundColor = SystemChromeDisabledLowColor;
                 tb.ButtonPressedForegroundColor = SystemBaseMediumHighColor;
             }
-            if (ApiInfo.StatusBarSupported)
+            if (ExApiInfo.StatusBarSupported)
             {
                 sb.BackgroundOpacity = 0;
                 sb.ProgressIndicator.ProgressValue = 0;
@@ -48,7 +48,7 @@ namespace ExViewer.Themes
 
         public static async void SetStatusBarInfoVisibility(Visibility visibility)
         {
-            if (ApiInfo.StatusBarSupported)
+            if (ExApiInfo.StatusBarSupported)
             {
                 switch (visibility)
                 {

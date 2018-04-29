@@ -37,7 +37,10 @@ namespace ExClient.Galleries
         {
             this.models.RemoveAt(index);
             if (this[index] != null)
+            {
                 this.loadedCount--;
+            }
+
             base.RemoveItem(index);
         }
 
@@ -51,13 +54,22 @@ namespace ExClient.Galleries
             var start = ranges.Min(r => r.FirstIndex);
             var end = ranges.Max(r => r.LastIndex) + 1;
             if (start < 0)
+            {
                 start = 0;
+            }
+
             if (end > this.Count)
+            {
                 end = this.Count;
+            }
+
             for (var i = start; i < end; i++)
             {
                 if (this[i] != null)
+                {
                     continue;
+                }
+
                 this[i] = Load(this.models[i]);
                 this.models[i] = default(TModel);
                 this.loadedCount++;

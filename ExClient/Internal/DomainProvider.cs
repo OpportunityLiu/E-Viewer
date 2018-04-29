@@ -14,7 +14,7 @@ namespace ExClient.Internal
             Type = type;
             RootUri = new Uri(root);
             ApiUri = new Uri(api);
-            Settings = new ExClient.Settings.SettingCollection(this);
+            Settings = new Settings.SettingCollection(this);
         }
 
         public static DomainProvider Ex { get; }

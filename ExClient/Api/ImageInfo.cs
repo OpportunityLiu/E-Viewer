@@ -54,7 +54,10 @@ namespace ExClient.Api
         {
             var data = new UriHandlerData(uri);
             if (TryParse(data, out info))
+            {
                 return true;
+            }
+
             info = default(ImageInfo);
             return false;
         }
@@ -62,7 +65,10 @@ namespace ExClient.Api
         public static ImageInfo Parse(Uri uri)
         {
             if (TryParse(uri, out var r))
+            {
                 return r;
+            }
+
             throw new FormatException();
         }
 
@@ -97,7 +103,10 @@ namespace ExClient.Api
         public override bool Equals(object obj)
         {
             if (obj is ImageInfo info)
+            {
                 return Equals(info);
+            }
+
             return false;
         }
 

@@ -12,9 +12,14 @@ namespace ExClient.Launch
             this.Uri = uri;
             this.Paths = uri.AbsolutePath.Split(split0, StringSplitOptions.RemoveEmptyEntries);
             if (this.Paths.Count != 0)
+            {
                 this.Path0 = this.Paths[0].ToLowerInvariant();
+            }
             else
+            {
                 this.Path0 = "";
+            }
+
             this.queriesLoader = new Lazy<IReadOnlyDictionary<string, string>>(this.getQueries);
         }
 
@@ -34,7 +39,10 @@ namespace ExClient.Launch
         {
             var query = this.Uri.Query;
             if (string.IsNullOrWhiteSpace(query) || query.Length <= 1 || query[0] != '?')
+            {
                 return empty;
+            }
+
             query = query.Substring(1);
             var divided = query.Split(split1, StringSplitOptions.RemoveEmptyEntries);
             return new ReadOnlyDictionary<string, string>((from item in divided

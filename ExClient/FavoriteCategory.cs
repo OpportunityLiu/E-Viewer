@@ -37,9 +37,13 @@ namespace ExClient
             get
             {
                 if (this.Index < 0)
+                {
                     return this.name;
+                }
                 else
+                {
                     return Client.Current.Settings.FavoriteCategoryNames[this.Index];
+                }
             }
         }
 
@@ -54,9 +58,15 @@ namespace ExClient
                 yield return new KeyValuePair<string, string>("apply", "Apply+Changes");
                 var cat = this.Index.ToString();
                 if (ReferenceEquals(this, All))
+                {
                     cat = "0";
+                }
+
                 if (ReferenceEquals(this, Removed))
+                {
                     cat = "favdel";
+                }
+
                 yield return new KeyValuePair<string, string>("favcat", cat);
                 yield return new KeyValuePair<string, string>("favnote", note);
                 yield return new KeyValuePair<string, string>("update", "1");
@@ -77,9 +87,14 @@ namespace ExClient
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var match = favNoteMatcher.Match(responseContent, 1300);
                 if (match.Success)
+                {
                     gallery.FavoriteNote = HtmlEntity.DeEntitize(match.Groups[1].Value);
+                }
                 else
+                {
                     gallery.FavoriteNote = null;
+                }
+
                 if (this.Index >= 0)
                 {
                     var match2 = favNameMatcher.Match(responseContent, 1300);

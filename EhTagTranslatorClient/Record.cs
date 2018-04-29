@@ -35,9 +35,13 @@ namespace EhTagTranslatorClient
                 if (r != null)
                 {
                     if (skipcount >= 2)
+                    {
                         yield return r;
+                    }
                     else
+                    {
                         skipcount++;
+                    }
                 }
             }
         }
@@ -46,10 +50,16 @@ namespace EhTagTranslatorClient
         {
             var match = lineRegex.Match(line);
             if (!match.Success)
+            {
                 return null;
+            }
+
             var ori = match.Groups[nameof(Original)].Value;
             if (string.IsNullOrEmpty(ori))
+            {
                 return null;
+            }
+
             var tra = match.Groups[nameof(Translated)].Value;
             var intro = match.Groups[nameof(Introduction)].Value;
             var link = match.Groups[nameof(ExternalLinks)].Value;
@@ -76,9 +86,15 @@ namespace EhTagTranslatorClient
         internal static Record Combine(Record r1, Record r2)
         {
             if (r1.Original != r2.Original)
+            {
                 throw new InvalidOperationException();
+            }
+
             if (r1.Namespace != r2.Namespace)
+            {
                 throw new InvalidOperationException();
+            }
+
             string translated, intro;
             if (r1.TranslatedRaw == r2.TranslatedRaw)
             {
@@ -89,11 +105,18 @@ namespace EhTagTranslatorClient
                 translated = $@"{r1.TranslatedRaw} | {r2.TranslatedRaw}";
             }
             if (string.IsNullOrWhiteSpace(r1.IntroductionRaw))
+            {
                 intro = r2.IntroductionRaw;
+            }
             else if (string.IsNullOrWhiteSpace(r2.IntroductionRaw))
+            {
                 intro = r1.IntroductionRaw;
+            }
             else
+            {
                 intro = $"{r1.IntroductionRaw}<hr>{r2.IntroductionRaw}";
+            }
+
             return new Record(r1.Namespace, r1.Original, translated, intro, $"{r1.ExternalLinksRaw} {r2.ExternalLinksRaw}");
         }
 

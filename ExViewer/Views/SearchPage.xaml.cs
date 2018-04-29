@@ -39,13 +39,18 @@ namespace ExViewer.Views
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (e.Parameter != null) // for the pre-load page
+                {
                     this.ViewModel.SearchResult.Reset();
+                }
+
                 this.btnExpandButton?.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
                 if (!await ViewHelper.ScrollAndFocus(this.lv, this.ViewModel.SelectedGallery))
+                {
                     this.btnExpandButton?.Focus(FocusState.Programmatic);
+                }
             }
         }
 
@@ -113,9 +118,13 @@ namespace ExViewer.Views
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
+            {
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
+            }
             else
+            {
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
+            }
         }
 
         private void root_Loading(FrameworkElement sender, object args)
@@ -134,7 +143,10 @@ namespace ExViewer.Views
         private async void btnFileSearch_Click(object sender, RoutedEventArgs e)
         {
             if (this.dlgFileSearch is null)
+            {
                 this.dlgFileSearch = new FileSearchDialog();
+            }
+
             CloseAll();
             await this.dlgFileSearch.ShowAsync();
         }
@@ -142,10 +154,16 @@ namespace ExViewer.Views
         private double caculateGdAbMaxHeight(Thickness visibleBounds, double rootHeight)
         {
             if (rootHeight <= 50)
+            {
                 return double.PositiveInfinity;
+            }
+
             var r = rootHeight - visibleBounds.Top - visibleBounds.Bottom;
             if (r <= 0)
+            {
                 return double.PositiveInfinity;
+            }
+
             return r;
         }
     }

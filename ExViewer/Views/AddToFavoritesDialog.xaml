@@ -12,7 +12,8 @@
                           CloseButtonText="Cancel"
                           IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
                           PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-                          Loading="MyContentDialog_Loading">
+                          Loading="MyContentDialog_Loading"
+                          CloseButtonClick="MyContentDialog_CloseButtonClick">
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />

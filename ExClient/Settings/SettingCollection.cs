@@ -68,7 +68,10 @@ namespace ExClient.Settings
             var value = r + "";
             Settings.Clear();
             if (string.IsNullOrEmpty(value))
+            {
                 return;
+            }
+
             JsonConvert.PopulateObject(value, Settings);
         }
 
@@ -82,22 +85,34 @@ namespace ExClient.Settings
             }
             var settings = doc.GetElementbyId("settings_outer");
             if (settings is null)
+            {
                 return;
+            }
+
             Settings.Clear();
             foreach (var item in settings.Descendants("input").Concat(settings.Descendants("textarea")))
             {
                 var name = item.GetAttribute("name", default(string));
                 if (name is null)
+                {
                     continue;
+                }
+
                 switch (item.GetAttribute("type", default(string)))
                 {
                 case "radio":
                     if (item.GetAttribute("checked", "") == "checked")
+                    {
                         Settings[name] = item.GetAttribute("value", "");
+                    }
+
                     break;
                 case "checkbox":
                     if (item.GetAttribute("checked", "") == "checked")
+                    {
                         Settings[name] = item.GetAttribute("value", "on");
+                    }
+
                     break;
                 //case "text":
                 //case "hidden":
@@ -145,7 +160,10 @@ namespace ExClient.Settings
                 try
                 {
                     if (this.Settings.Count == 0)
+                    {
                         await FetchAsync();
+                    }
+
                     var postDic = new Dictionary<string, string>(this.Settings);
                     foreach (var item in this.items.Values)
                     {
@@ -223,7 +241,9 @@ namespace ExClient.Settings
                 settings["ts"] = "1";
                 // Popular Right Now - Display
                 if (this.Owner.owner.Type == HostType.EHentai)
+                {
                     settings["pp"] = "0";
+                }
 
                 settings["xr"] = ((int)this.ResampledImageSize).ToString();
                 settings["cs"] = ((int)this.CommentsOrder).ToString();
@@ -233,19 +253,31 @@ namespace ExClient.Settings
             internal override void DataChanged(Dictionary<string, string> settings)
             {
                 if (settings.TryGetValue("xr", out var xr))
+                {
                     this.ResampledImageSize = (ImageSize)int.Parse(xr);
+                }
                 else
+                {
                     this.ResampledImageSize = ImageSize.Auto;
+                }
 
                 if (settings.TryGetValue("cs", out var cs))
+                {
                     this.CommentsOrder = (CommentsOrder)int.Parse(cs);
+                }
                 else
+                {
                     this.CommentsOrder = CommentsOrder.ByTimeAscending;
+                }
 
                 if (settings.TryGetValue("fs", out var fs))
+                {
                     this.FavoritesOrder = (FavoritesOrder)int.Parse(fs);
+                }
                 else
+                {
                     this.FavoritesOrder = FavoritesOrder.ByLastUpdatedTime;
+                }
             }
 
             public ImageSize ResampledImageSize;

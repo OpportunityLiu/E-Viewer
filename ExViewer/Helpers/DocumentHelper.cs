@@ -46,7 +46,10 @@ namespace ExViewer.Helpers
                 ToolTipService.SetToolTip(u, navigateUri.ToString());
             }
             if(text != null)
+            {
                 u.Inlines.Add(new Run { Text = text });
+            }
+
             return u;
         }
 

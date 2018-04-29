@@ -63,7 +63,10 @@ namespace ApplicationDataManager.Settings.Xaml
         private void settingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName != nameof(SettingInfo.Value))
+            {
                 return;
+            }
+
             var s = (SettingInfo)sender;
             this.SelectedItem = ((IEnumerable<EnumSelection>)this.ItemsSource).Single(sel => sel.EnumName == s.Value.ToString());
         }

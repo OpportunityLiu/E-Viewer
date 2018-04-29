@@ -79,13 +79,19 @@ namespace ExViewer.Controls
                 var that = (TagVM)sender.Tag;
                 var tagc = that.Tags;
                 if (tagc is null)
+                {
                     return;
+                }
+
                 var tags = text.Split(commas, StringSplitOptions.RemoveEmptyEntries)
                     .Where(s => !string.IsNullOrWhiteSpace(s))
                     .Select(ExClient.Tagging.Tag.Parse)
                     .Distinct().ToList();
                 if (that.Tags.Count == 0)
+                {
                     return;
+                }
+
                 await tagc.VoteAsync(tags, VoteState.Up);
             });
         }
@@ -129,10 +135,16 @@ namespace ExViewer.Controls
         private void resetNewTagState()
         {
             if (this.asbNewTags != null)
+            {
                 this.asbNewTags.Visibility = Visibility.Collapsed;
+            }
+
             this.btnStartNew.Visibility = Visibility.Visible;
             if (this.asbNewTags is null)
+            {
                 return;
+            }
+
             this.asbNewTags.Text = "";
             TagSuggestionService.IncreaseStateCode(this.asbNewTags);
         }
@@ -141,7 +153,10 @@ namespace ExViewer.Controls
         {
             resetNewTagState();
             if (this.asbNewTags is null)
+            {
                 FindName(nameof(this.asbNewTags));
+            }
+
             this.asbNewTags.Visibility = Visibility.Visible;
             this.btnStartNew.Visibility = Visibility.Collapsed;
             focus_asbNewTags();
@@ -156,13 +171,17 @@ namespace ExViewer.Controls
         private void asbNewTags_LostFocus(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(this.asbNewTags.Text))
+            {
                 resetNewTagState();
+            }
         }
 
         private void btnStartNew_GotFocus(object sender, RoutedEventArgs e)
         {
             if (this.btnStartNew.FocusState == FocusState.Keyboard)
+            {
                 btnStartNew_Click(sender, e);
+            }
         }
 
         private async void tbContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
@@ -173,7 +192,10 @@ namespace ExViewer.Controls
             args.Handled = true;
 
             if (oldValue == newValue)
+            {
                 return;
+            }
+
             s.Tag = newValue;
             var dc = newValue.Content.GetDisplayContentAsync();
             if (dc.Status == AsyncStatus.Completed)

@@ -106,7 +106,10 @@ namespace ExViewer.Views
         private async void goToContent()
         {
             if (SettingCollection.Current.NeedVerify)
+            {
                 await verify();
+            }
+
             this.ccHided.Content = null;
             Window.Current.Content = this.rootControl;
             this.rootControl = null;
@@ -116,17 +119,25 @@ namespace ExViewer.Views
         private void setLoadingFinished()
         {
             if (this.goToContentEnabled)
+            {
                 goToContent();
+            }
             else
+            {
                 this.loadingFinished = true;
+            }
         }
 
         public void EnableGoToContent()
         {
             if (this.loadingFinished)
+            {
                 goToContent();
+            }
             else
+            {
                 this.goToContentEnabled = true;
+            }
         }
 
         private bool loadingFinished, goToContentEnabled;
@@ -139,9 +150,13 @@ namespace ExViewer.Views
             Window.Current.Activate();
             this.ShowPic.Begin();
             if (this.applicationLoaded)
+            {
                 setLoadingFinished();
+            }
             else
+            {
                 this.effectLoaded = true;
+            }
         }
 
         private async void loadApplication()
@@ -169,10 +184,12 @@ namespace ExViewer.Views
                 ExClient.HentaiVerse.HentaiVerseInfo.MonsterEncountered += (s, e) =>
                 {
                     if (SettingCollection.Current.OpenHVOnMonsterEncountered)
+                    {
                         CoreApplication.MainView.Dispatcher.Begin(async () =>
                         {
                             await Windows.System.Launcher.LaunchUriAsync(e.Uri);
                         });
+                    }
                 };
             });
             await Dispatcher.YieldIdle();
@@ -185,9 +202,13 @@ namespace ExViewer.Views
                 await RootControl.RootController.RequestLogOn();
             }
             if (this.effectLoaded)
+            {
                 setLoadingFinished();
+            }
             else
+            {
                 this.applicationLoaded = true;
+            }
         }
 
         private async void afterActions()
@@ -195,9 +216,9 @@ namespace ExViewer.Views
             try
             {
                 var ver = await VersionChecker.CheckAsync();
-                if (ver is VersionChecker.VersionInfo v)
+                if (ver is VersionChecker.GitHubRelease v)
                 {
-                    var dialog = new UpdateDialog { Version = v };
+                    var dialog = new UpdateDialog(v);
                     await dialog.ShowAsync();
                 }
             }

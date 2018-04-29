@@ -24,16 +24,32 @@ namespace BannerProvider
             get
             {
                 if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
+                {
                     return (DateTimeOffset)r;
+                }
+
                 return DateTimeOffset.MinValue;
             }
-            private set => ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;
+            private set
+            {
+                if (value == DateTimeOffset.MinValue)
+                {
+                    ApplicationData.Current.LocalSettings.Values.Remove(LAST_UPDATE);
+                }
+                else
+                {
+                    ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;
+                }
+            }
         }
 
         private static async Task init()
         {
             if (bannerFolder != null)
+            {
                 return;
+            }
+
             bannerFolder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Banners", CreationCollisionOption.OpenIfExists);
         }
 

@@ -52,7 +52,10 @@ namespace ExClient.Status
         public override bool Equals(object obj)
         {
             if (obj is TaggingRecord other)
+            {
                 return this.Equals(other);
+            }
+
             return false;
         }
 

@@ -13,7 +13,10 @@ namespace ExClient.Api
         {
             this.Vote = vote;
             if (tags.Length >= 200)
+            {
                 throw new ArgumentException(LocalizedStrings.Resources.TagsTooLong, nameof(tags));
+            }
+
             this.Tags = tags;
         }
 
@@ -50,7 +53,10 @@ namespace ExClient.Api
         protected override void CheckResponseOverride(ApiRequest request)
         {
             if (Error is null)
+            {
                 return;
+            }
+
             var validMatch = tagNotValid.Match(Error);
             if (validMatch.Success)
             {
@@ -61,7 +67,10 @@ namespace ExClient.Api
             {
                 var ns = needNsMatch.Groups[2].Value.Split(tagNeedNsSplit, StringSplitOptions.RemoveEmptyEntries);
                 for (var i = 0; i < ns.Length; i++)
+                {
                     ns[i] = ns[i].Trim();
+                }
+
                 var tag = needNsMatch.Groups[1].Value;
                 switch (ns.Length)
                 {
@@ -94,9 +103,14 @@ namespace ExClient.Api
                 throw new InvalidOperationException(LocalizedStrings.Resources.TagInBlackList(blacklistMatch.Groups[1].Value));
             }
             if (tagCantVote.IsMatch(Error))
+            {
                 throw new InvalidOperationException(LocalizedStrings.Resources.TagNoVotePremition);
+            }
+
             if (tagsEmpty.IsMatch(Error))
+            {
                 throw new InvalidOperationException(LocalizedStrings.Resources.TagVoteCollectionEmpty);
+            }
         }
     }
 }

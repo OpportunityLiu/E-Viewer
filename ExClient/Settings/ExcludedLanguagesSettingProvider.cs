@@ -20,7 +20,9 @@ namespace ExClient.Settings
             foreach (var item in (value ?? "").Split(", ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
             {
                 if (Enum.TryParse<ExcludedLanguage>(item, out var r))
+                {
                     yield return r;
+                }
             }
         }
 
@@ -34,7 +36,10 @@ namespace ExClient.Settings
             foreach (var item in items)
             {
                 if (!item.IsDefined())
+                {
                     throw new ArgumentOutOfRangeException(nameof(item));
+                }
+
                 this.items.Add((ushort)item);
             }
             OnPropertyChanged(nameof(Count));
@@ -48,7 +53,10 @@ namespace ExClient.Settings
         public void Add(ExcludedLanguage item)
         {
             if (!item.IsDefined())
+            {
                 throw new ArgumentOutOfRangeException(nameof(item));
+            }
+
             if (this.items.Add((ushort)item))
             {
                 OnPropertyChanged(nameof(Count));
@@ -59,7 +67,10 @@ namespace ExClient.Settings
         public void Clear()
         {
             if (this.items.Count == 0)
+            {
                 return;
+            }
+
             this.items.Clear();
             OnPropertyChanged(nameof(Count));
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
@@ -73,7 +84,10 @@ namespace ExClient.Settings
             foreach (var item in this)
             {
                 if (i >= array.Length)
+                {
                     break;
+                }
+
                 array[i] = item;
                 i++;
             }

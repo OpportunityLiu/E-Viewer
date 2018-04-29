@@ -27,7 +27,10 @@ namespace ExViewer.Controls
         private void Rating_FocusEngaged(Control sender, FocusEngagedEventArgs args)
         {
             if (this.actualUserRating == Score.NotSet)
+            {
                 this.actualUserRating = this.PlaceholderValue.ToScore();
+            }
+
             ElementSoundPlayer.Play(ElementSoundKind.Invoke);
             draw();
         }
@@ -49,10 +52,16 @@ namespace ExViewer.Controls
             var oldValue = (double)e.OldValue;
             var newValue = (double)e.NewValue;
             if (oldValue == newValue)
+            {
                 return;
+            }
+
             var sender = (Rating)dp;
             if (double.IsNaN(newValue) || newValue > 5 || newValue < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(PlaceholderValue));
+            }
+
             sender.draw();
         }
 
@@ -73,7 +82,10 @@ namespace ExViewer.Controls
             var oldValue = (Score)e.OldValue;
             var newValue = (Score)e.NewValue;
             if (oldValue == newValue)
+            {
                 return;
+            }
+
             var sender = (Rating)dp;
             sender.actualUserRating = newValue;
             sender.draw();
@@ -104,7 +116,10 @@ namespace ExViewer.Controls
         {
             base.OnKeyUp(e);
             if (!IsEnabled)
+            {
                 return;
+            }
+
             e.Handled = true;
             switch (e.OriginalKey)
             {
@@ -112,7 +127,10 @@ namespace ExViewer.Controls
             case Windows.System.VirtualKey.GamepadDPadRight:
             case Windows.System.VirtualKey.GamepadLeftThumbstickRight:
                 if (this.actualUserRating == Score.NotSet)
+                {
                     this.actualUserRating = this.PlaceholderValue.ToScore();
+                }
+
                 if (this.actualUserRating != Score.Score_5_0)
                 {
                     this.actualUserRating++;
@@ -127,9 +145,13 @@ namespace ExViewer.Controls
                 {
                     var a = this.PlaceholderValue;
                     if (a <= 0.5)
+                    {
                         this.actualUserRating = Score.Score_0_5;
+                    }
                     else
+                    {
                         this.actualUserRating = a.ToScore();
+                    }
                 }
 
                 if (this.actualUserRating != Score.Score_0_5)
@@ -167,18 +189,36 @@ namespace ExViewer.Controls
         {
             base.OnPointerMoved(e);
             if (FocusState == FocusState.Keyboard)
+            {
                 return;
+            }
+
             e.Handled = true;
             var p = e.GetCurrentPoint(this);
             var pp = p.Position.X / ActualWidth;
 
-            if (pp < -0.5) pp = -1;
-            else if (pp < 0) pp = 0;
-            else if (pp > 1) pp = 1;
+            if (pp < -0.5)
+            {
+                pp = -1;
+            }
+            else if (pp < 0)
+            {
+                pp = 0;
+            }
+            else if (pp > 1)
+            {
+                pp = 1;
+            }
+
             if (pp < 0 || !IsEnabled)
+            {
                 this.actualUserRating = this.UserRatingValue;
+            }
             else
+            {
                 this.actualUserRating = (Score)Math.Max((byte)Math.Round(pp * 10), (byte)1);
+            }
+
             draw();
         }
 
@@ -186,7 +226,10 @@ namespace ExViewer.Controls
         {
             base.OnPointerExited(e);
             if (FocusState == FocusState.Keyboard)
+            {
                 return;
+            }
+
             e.Handled = true;
             this.actualUserRating = this.UserRatingValue;
             draw();
@@ -196,9 +239,15 @@ namespace ExViewer.Controls
         {
             base.OnPointerPressed(e);
             if (!IsEnabled)
+            {
                 return;
+            }
+
             if (FocusState == FocusState.Keyboard)
+            {
                 return;
+            }
+
             e.Handled = true;
             CapturePointer(e.Pointer);
         }
@@ -208,10 +257,15 @@ namespace ExViewer.Controls
             base.OnPointerReleased(e);
             ReleasePointerCapture(e.Pointer);
             if (FocusState == FocusState.Keyboard)
+            {
                 return;
+            }
+
             e.Handled = true;
             if (IsEnabled)
+            {
                 this.UserRatingValue = this.actualUserRating;
+            }
             else
             {
                 this.actualUserRating = this.UserRatingValue;
@@ -243,16 +297,26 @@ namespace ExViewer.Controls
             if (ur > 0)
             {
                 if (this.rgPlaceholderClip != null)
+                {
                     this.rgPlaceholderClip.Rect = Rect.Empty;
+                }
+
                 if (this.rgUserRatingClip != null)
+                {
                     this.rgUserRatingClip.Rect = new Rect(0, 0, size.Width / 5 * ur.ToDouble(), size.Height);
+                }
             }
             else
             {
                 if (this.rgPlaceholderClip != null)
+                {
                     this.rgPlaceholderClip.Rect = new Rect(0, 0, size.Width / 5 * ph, size.Height);
+                }
+
                 if (this.rgUserRatingClip != null)
+                {
                     this.rgUserRatingClip.Rect = Rect.Empty;
+                }
             }
         }
     }

@@ -84,7 +84,10 @@ namespace ExViewer.Views
         {
             var file = await this.picker.PickSingleFileAsync();
             if (file is null)
+            {
                 return;
+            }
+
             this.SearchFile = file;
         }
 

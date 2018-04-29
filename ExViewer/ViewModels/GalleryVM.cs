@@ -89,7 +89,10 @@ namespace ExViewer.ViewModels
                 var that = (GalleryVM)c.Tag;
                 var rt = that.gallery?.Rating;
                 if (rt is null || rt.UserScore == s)
+                {
                     return;
+                }
+
                 try
                 {
                     await rt.RatingAsync(s);
@@ -106,13 +109,17 @@ namespace ExViewer.ViewModels
                 var info = c.DescendantsInfo.Last().Gallery;
                 var load = GetVMAsync(info);
                 if (load.Status != AsyncStatus.Completed)
+                {
                     RootControl.RootController.TrackAsyncAction(load, async (s, e) =>
                     {
                         await RootControl.RootController.Frame.Dispatcher.YieldIdle();
                         await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
                     });
+                }
                 else
+                {
                     await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
+                }
             }, (sender, c) => c != null && c.DescendantsInfo.Count != 0);
             Commands[nameof(Share)] = Command<GalleryImage>.Create(async (sender, image) =>
             {
@@ -120,9 +127,14 @@ namespace ExViewer.ViewModels
                 if (!ShareHandler.IsShareSupported)
                 {
                     if (image is null)
+                    {
                         await Launcher.LaunchUriAsync(that.gallery.GalleryUri, new LauncherOptions { IgnoreAppUriHandlers = true });
+                    }
                     else
+                    {
                         await Launcher.LaunchUriAsync(image.PageUri, new LauncherOptions { IgnoreAppUriHandlers = true });
+                    }
+
                     return;
                 }
                 var gallery = that.gallery;
@@ -148,9 +160,13 @@ namespace ExViewer.ViewModels
                                 data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
                                 var firstImage = gallery.FirstOrDefault()?.ImageFile;
                                 if (firstImage != null)
+                                {
                                     data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
+                                }
                                 else
+                                {
                                     data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
+                                }
                             }
                             var imageFiles = gallery
                                 .Where(i => i.ImageFile != null)
@@ -158,7 +174,10 @@ namespace ExViewer.ViewModels
                                 .Where(f => f.ImageFile != null)
                                 .ToList();
                             if (imageFiles.Count == 0)
+                            {
                                 return;
+                            }
+
                             data.SetFolderProvider(imageFiles.Select(f => f.ImageFile), imageFiles.Select(f => f.Name), gallery.GetDisplayTitle());
                         }
                         else
@@ -168,7 +187,10 @@ namespace ExViewer.ViewModels
                             data.SetText(image.PageUri.ToString());
                             var imageFile = image.ImageFile;
                             if (imageFile is null)
+                            {
                                 return;
+                            }
+
                             var view = RandomAccessStreamReference.CreateFromFile(imageFile);
                             data.SetBitmap(view);
                             data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem));
@@ -232,9 +254,13 @@ namespace ExViewer.ViewModels
                 try
                 {
                     if (image.OriginalLoaded)
+                    {
                         await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
+                    }
                     else
+                    {
                         await image.LoadImageAsync(true, SettingCollection.Current.GetStrategy(), true);
+                    }
                 }
                 catch (OperationCanceledException) { }
                 catch (Exception ex)
@@ -263,10 +289,16 @@ namespace ExViewer.ViewModels
                 {
                     var file = await torrent.LoadTorrentAsync();
                     if (torrentfolder is null)
+                    {
                         await loadTorrentFolder();
+                    }
+
                     await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
                     if (!await Launcher.LaunchFileAsync(file))
+                    {
                         await Launcher.LaunchFolderAsync(torrentfolder);
+                    }
+
                     RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloaded(torrentfolder.Path), null);
                 }
                 catch (Exception ex)
@@ -373,11 +405,15 @@ namespace ExViewer.ViewModels
                 var imageProp = await imageFile.Properties.GetImagePropertiesAsync();
                 this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfo(
                     fileType: imageFile.DisplayType,
-                    size: Opportunity.Converters.Typed.ByteSizeToStringConverter.ByteSizeToString((long)prop.Size, Opportunity.Converters.Typed.UnitPrefix.Binary),
-                    width: imageProp.Width, height: imageProp.Height);
+                    size: Opportunity.Converters.XBind.ByteSize.ToBinaryString((long)prop.Size),
+                    width: imageProp.Width,
+                    height: imageProp.Height);
                 var newQRHash = prop.Size.GetHashCode() ^ imageFile.Name.GetHashCode();
                 if (newQRHash == this.qrCodeHash)
+                {
                     return;
+                }
+
                 using (var stream = await imageFile.OpenReadAsync())
                 {
                     var decoder = await BitmapDecoder.CreateAsync(stream);
@@ -410,7 +446,10 @@ namespace ExViewer.ViewModels
             }
 
             if (opened)
+            {
                 return;
+            }
+
             if (!(qrCodeDialog.Content is TextBlock tb))
             {
                 tb = new TextBlock { IsTextSelectionEnabled = true, TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap };
@@ -487,9 +526,13 @@ namespace ExViewer.ViewModels
                 {
                     torrentfolder = await DownloadsFolder.CreateFolderAsync("Torrents", CreationCollisionOption.GenerateUniqueName);
                     if (ftoken is null)
+                    {
                         ftoken = StorageApplicationPermissions.FutureAccessList.Add(torrentfolder);
+                    }
                     else
+                    {
                         StorageApplicationPermissions.FutureAccessList.AddOrReplace(ftoken, torrentfolder);
+                    }
                 }
                 StatusCollection.Current.TorrentFolderToken = ftoken;
             });

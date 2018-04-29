@@ -58,7 +58,10 @@ namespace ExViewer.Views
 
             var index = this.ViewModel.View.CurrentPosition;
             if (index < 0)
+            {
                 index = 0;
+            }
+
             this.imgConnect.Source = this.ViewModel.Gallery[index].Thumb;
             var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
             var animationSucceed = false;
@@ -69,7 +72,9 @@ namespace ExViewer.Views
                     this.cb_top, this.bdLeft, this.bdRight, this.bdTop
                 });
                 if (animationSucceed)
+                {
                     animation.Completed += this.Animation_Completed;
+                }
             }
 
             await Dispatcher.YieldIdle();
@@ -103,11 +108,15 @@ namespace ExViewer.Views
             this.ViewModel.View.IsCurrentPositionLocked = true;
 
             if (!this.cbVisible)
+            {
                 changeCbVisibility();
+            }
 
             var container = this.fv.ContainerFromIndex(this.fv.SelectedIndex);
             if (container != null)
+            {
                 ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ImageAnimation", container.Descendants<Image>().First());
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -155,7 +164,10 @@ namespace ExViewer.Views
         {
             var currentState = RootControl.RootController.IsFullScreen;
             if (currentState == this.isFullScreen)
+            {
                 return;
+            }
+
             if (currentState)
             {
                 this.abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
@@ -181,10 +193,16 @@ namespace ExViewer.Views
         {
             var index = this.fv.SelectedIndex;
             if (index < 0)
+            {
                 return;
+            }
+
             var g = this.ViewModel?.Gallery;
             if (g is null)
+            {
                 return;
+            }
+
             setScale();
         }
 
@@ -198,7 +216,10 @@ namespace ExViewer.Views
             await Task.Delay((int)uiSettings.DoubleClickTime, this.changingCbVisibility.Token).ContinueWith(async t =>
             {
                 if (t.IsCanceled)
+                {
                     return;
+                }
+
                 await Dispatcher.Yield();
                 this.changingCbVisibility.Cancel();
                 changeCbVisibility();
@@ -238,9 +259,13 @@ namespace ExViewer.Views
             if (this.changingCbVisibility != null)
             {
                 if (this.changingCbVisibility.IsCancellationRequested)
+                {
                     changeCbVisibility();
+                }
                 else
+                {
                     this.changingCbVisibility.Cancel();
+                }
             }
             e.Handled = true;
         }
@@ -299,9 +324,14 @@ namespace ExViewer.Views
             case VirtualKey.Application:
             case VirtualKey.GamepadMenu:
                 if (!changeCbVisibility())
+                {
                     this.fv.Focus(FocusState.Programmatic);
+                }
                 else
+                {
                     this.cb_top.Focus(FocusState.Programmatic);
+                }
+
                 break;
             default:
                 e.Handled = false;
@@ -326,7 +356,10 @@ namespace ExViewer.Views
             var backColor = this.scbBack.Color;
             var needColor = this.scbNeed.Color;
             if (this.currentBackColor == backColor && this.currentNeedColor == needColor)
+            {
                 return;
+            }
+
             this.currentBackColor = backColor;
             this.currentNeedColor = needColor;
 
@@ -374,7 +407,10 @@ namespace ExViewer.Views
             this.fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
                 FlowDirection.RightToLeft : FlowDirection.LeftToRight;
             if (!(this.fv.ItemsPanelRoot is VirtualizingStackPanel panel))
+            {
                 return;
+            }
+
             switch (SettingCollection.Current.ImageViewOrientation)
             {
             case ViewOrientation.Vertical:
@@ -382,9 +418,14 @@ namespace ExViewer.Views
                 break;
             case ViewOrientation.Auto:
                 if (this.ViewModel.Gallery.Tags[ExClient.Tagging.Namespace.Misc].Any(t => t.Content.Content == "webtoon"))
+                {
                     panel.Orientation = Orientation.Vertical;
+                }
                 else
+                {
                     panel.Orientation = Orientation.Horizontal;
+                }
+
                 break;
             default:
                 panel.Orientation = Orientation.Horizontal;
@@ -407,15 +448,22 @@ namespace ExViewer.Views
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
+            {
                 this.cdSplitViewPlaceholder.Width = new GridLength(48);
+            }
             else
+            {
                 this.cdSplitViewPlaceholder.Width = new GridLength(0);
+            }
         }
 
         private void cb_top_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (this.cb_top.IsOpen)
+            {
                 return;
+            }
+
             if (e.OriginalKey == VirtualKey.GamepadDPadDown || e.OriginalKey == VirtualKey.GamepadLeftThumbstickDown)
             {
                 e.Handled = true;
@@ -429,25 +477,37 @@ namespace ExViewer.Views
         private static Brush loadStateToPbForeground(ImageLoadingState state)
         {
             if (state == ImageLoadingState.Failed)
+            {
                 return pbFailed;
+            }
             else
+            {
                 return pbLoading;
+            }
         }
 
         private static bool loadStateToPbIsIndeterminate(ImageLoadingState state)
         {
             if (state == ImageLoadingState.Waiting || state == ImageLoadingState.Preparing)
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
 
         private static Visibility loadStateToPbVisibility(ImageLoadingState state)
         {
             if (state == ImageLoadingState.Loaded)
+            {
                 return Visibility.Collapsed;
+            }
             else
+            {
                 return Visibility.Visible;
+            }
         }
 
         private static GalleryImage loadOriginalCommandParameter(GalleryImage image, bool originalLoaded) => image;

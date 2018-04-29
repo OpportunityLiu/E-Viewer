@@ -28,13 +28,21 @@ namespace ExViewer.Controls
                 foreach (var template in this.Templates)
                 {
                     if (template.KeyType is null)
+                    {
                         continue;
+                    }
+
                     if (template.KeyType.IsInstanceOfType(item))
+                    {
                         return template.Value;
+                    }
                 }
             }
             if (this.DefaultTemplate != null)
+            {
                 return this.DefaultTemplate;
+            }
+
             return base.SelectTemplateCore(item);
         }
     }

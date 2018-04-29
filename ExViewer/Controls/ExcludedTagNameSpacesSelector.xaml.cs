@@ -18,7 +18,10 @@ namespace ExViewer.Controls
             foreach (var item in EnumExtension.GetDefinedValues<Namespace>())
             {
                 if (item.Value == Namespace.Unknown || item.Value >= Namespace.Misc)
+                {
                     continue;
+                }
+
                 this.gv.Items.Add(new Box<Namespace> { Value = item.Value });
             }
         }
@@ -48,7 +51,9 @@ namespace ExViewer.Controls
                 var n = value.HasFlag(item.Value);
                 var cb = ((CheckBox)((GridViewItem)this.gv.ContainerFromItem(item))?.ContentTemplateRoot);
                 if (cb != null)
+                {
                     cb.IsChecked = n;
+                }
             }
             this.changing = false;
         }
@@ -58,7 +63,10 @@ namespace ExViewer.Controls
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             if (this.changing)
+            {
                 return;
+            }
+
             var v = ((IBox<Namespace>)((FrameworkElement)sender).DataContext).Value;
             this.ExcludedTagNamespaces |= v;
         }
@@ -66,7 +74,10 @@ namespace ExViewer.Controls
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             if (this.changing)
+            {
                 return;
+            }
+
             var v = ((IBox<Namespace>)((FrameworkElement)sender).DataContext).Value;
             this.ExcludedTagNamespaces &= ~v;
         }

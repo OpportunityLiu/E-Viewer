@@ -68,7 +68,10 @@ namespace ExViewer.Views
         private async void MyContentDialog_Loading(FrameworkElement sender, object args)
         {
             if (this.Gallery is null)
+            {
                 throw new InvalidOperationException("Property AddToFavoritesDialog.Gallery is null.");
+            }
+
             var galleryInFavorites = this.Gallery.FavoriteCategory is null ? null : (bool?)(this.Gallery.FavoriteCategory.Index >= 0);
             this.tbInfo.Text = "";
             this.tbNote.Text = this.Gallery.FavoriteNote ?? "";
@@ -78,22 +81,33 @@ namespace ExViewer.Views
             if (galleryInFavorites is null)
             {
                 if (!await loadNotesAsync())
+                {
                     return;
+                }
+
                 galleryInFavorites = this.Gallery.FavoriteCategory.Index >= 0;
                 this.Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
             }
             if (galleryInFavorites == true)
             {
                 if (this.categories.Count == 10)
+                {
                     this.categories.Add(FavoriteCategory.Removed);
+                }
+
                 this.cbCategory.SelectedIndex = this.Gallery.FavoriteCategory.Index;
                 if (this.Gallery.FavoriteNote is null)
+                {
                     await loadNotesAsync();
+                }
             }
             else
             {
                 if (this.categories.Count == 11)
+                {
                     this.categories.RemoveAt(10);
+                }
+
                 this.cbCategory.SelectedIndex = 0;
             }
         }
@@ -130,6 +144,14 @@ namespace ExViewer.Views
         private void cbCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.tbInfo.Text = "";
+        }
+
+        private async void MyContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            // resize the dialog.
+            var d = args.GetDeferral();
+            await Task.Delay(33);
+            d.Complete();
         }
     }
 }

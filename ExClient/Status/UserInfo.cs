@@ -16,13 +16,19 @@ namespace ExClient.Status
         public static IAsyncOperation<UserInfo> FeachAsync(long userID)
         {
             if (userID <= 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(userID));
+            }
+
             return Run(async token => await Task.Run(async () =>
             {
                 var document = await Current.HttpClient.GetDocumentAsync(new Uri(ForumsUri, $"index.php?showuser={userID}"));
                 var profileName = document.GetElementbyId("profilename");
                 if (profileName is null)
+                {
                     return null;
+                }
+
                 var profileRoot = profileName.ParentNode;
                 var profiles = profileRoot.ChildNodes.Where(n => n.Name == "div").ToList();
                 var info = profiles[2];
@@ -35,9 +41,13 @@ namespace ExClient.Status
                         out var register))
                 {
                     if (groupAndJoin.LastChild.InnerText.Contains("Today"))
+                    {
                         register = DateTimeOffset.UtcNow;
+                    }
                     else if (groupAndJoin.LastChild.InnerText.Contains("Yesterday"))
+                    {
                         register = DateTimeOffset.UtcNow.AddDays(-1);
+                    }
                 }
                 return new UserInfo
                 {
@@ -67,11 +77,17 @@ namespace ExClient.Status
             {
                 var file = await ApplicationData.Current.LocalFolder.TryGetFileAsync("UserInfo");
                 if (file is null)
+                {
                     return null;
+                }
+
                 var str = await FileIO.ReadTextAsync(file);
                 var obj = JsonConvert.DeserializeObject<UserInfo>(str);
                 if (obj is null)
+                {
                     return null;
+                }
+
                 return obj;
             });
         }
