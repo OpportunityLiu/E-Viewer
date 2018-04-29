@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" IgnorableNamespaces="uap mp uap3">
-  <Identity Name="2289Opportunity.E-Viewer" Publisher="CN=Opportunity" Version="2018.4.28.0" />
+  <Identity Name="2289Opportunity.E-Viewer" Publisher="CN=Opportunity" Version="2018.4.30.0" />
   <mp:PhoneIdentity PhoneProductId="b0e97c45-19f9-4a1b-9836-fa1508c91c7e" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:///Resources/AppDisplayName</DisplayName>
