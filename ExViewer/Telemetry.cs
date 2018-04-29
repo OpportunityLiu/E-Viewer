@@ -16,6 +16,7 @@ using Windows.ApplicationModel.Resources.Core;
 using Windows.Storage;
 using Windows.System.Profile;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
 namespace ExViewer
@@ -113,17 +114,22 @@ namespace ExViewer
             void addInfo()
             {
                 sb.AppendLine($"Package: {Package.Current.Id.FullName}");
+                if (!(RootControl.RootController.Frame is Frame frame))
+                {
+                    return;
+                }
+
                 sb.AppendLine($"FrameStack:");
-                foreach (var item in RootControl.RootController.Frame.BackStack)
+                foreach (var item in frame.BackStack)
                 {
                     sb.AppendLine($"  {item.SourcePageType}, {item.Parameter}");
                 }
-                sb.AppendLine($"  >> {RootControl.RootController.Frame.CurrentSourcePageType}");
-                foreach (var item in RootControl.RootController.Frame.ForwardStack)
+                sb.AppendLine($"  >> {frame.CurrentSourcePageType}");
+                foreach (var item in frame.ForwardStack)
                 {
                     sb.AppendLine($"  {item.SourcePageType}, {item.Parameter}");
                 }
-                switch (RootControl.RootController.Frame?.Content)
+                switch (frame.Content)
                 {
                 case GalleryPage gp:
                     AddtionalInfo(sb, gp);

@@ -245,13 +245,11 @@ namespace ExViewer.Views
                 {
                     throw new ArgumentNullException(nameof(ex));
                 }
-
-                var sourceString = source?.ToString() ?? "null";
+                Telemetry.LogException(ex);
 #if DEBUG
                 Debug.WriteLine(ex, "Exception");
 #endif
                 SendToast(ex.GetMessage(), source);
-                Telemetry.LogException(ex);
             }
 
             public static void SendToast(string content, Type source)
