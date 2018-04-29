@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
+using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -223,6 +224,7 @@ namespace ExViewer.Views
                 Debug.WriteLine(ex, "Exception");
 #endif
                 SendToast(ex.GetMessage(), source);
+                Telemetry.LogException(ex);
             }
 
             public static void SendToast(string content, Type source)

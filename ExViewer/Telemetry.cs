@@ -6,6 +6,8 @@ using Opportunity.MvvmUniverse;
 using System;
 using System.Linq;
 using System.Text;
+using Windows.ApplicationModel.Core;
+using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 
@@ -56,38 +58,69 @@ namespace ExViewer
             sb.AppendLine();
             sb.AppendLine("--------Other Info--------");
             sb.AppendLine($"Page: {RootControl.RootController.CurrentPageName}");
-            RootControl.RootController.Frame.Dispatcher.RunAsync(() =>
-            {
-                var page = RootControl.RootController.Frame?.Content;
-                switch (page)
-                {
-                case GalleryPage gp:
-                    AddtionalInfo(sb, gp);
-                    break;
-                case ImagePage ip:
-                    AddtionalInfo(sb, ip);
-                    break;
-                case SearchPage sp:
-                    AddtionalInfo(sb, sp);
-                    break;
-                case FavoritesPage fp:
-                    AddtionalInfo(sb, fp);
-                    break;
-                case PopularPage pp:
-                    AddtionalInfo(sb, pp);
-                    break;
-                case CachedPage cp:
-                    AddtionalInfo(sb, cp);
-                    break;
-                case SavedPage svp:
-                    AddtionalInfo(sb, svp);
-                    break;
-                default:
-                    break;
-                }
-            }).AsTask().Wait();
-            return sb.ToString();
+            var dp = CoreApplication.MainView.Dispatcher;
+            if (dp.HasThreadAccess)
+                addInfo(sb);
+            else
+                dp.RunAsync(() => addInfo(sb)).GetAwaiter().GetResult();
+            var r = sb.ToString();
+            log(r);
+            return r;
         }
+
+        private static void addInfo(StringBuilder sb)
+        {
+            var page = RootControl.RootController.Frame?.Content;
+            switch (page)
+            {
+            case GalleryPage gp:
+                AddtionalInfo(sb, gp);
+                break;
+            case ImagePage ip:
+                AddtionalInfo(sb, ip);
+                break;
+            case SearchPage sp:
+                AddtionalInfo(sb, sp);
+                break;
+            case FavoritesPage fp:
+                AddtionalInfo(sb, fp);
+                break;
+            case PopularPage pp:
+                AddtionalInfo(sb, pp);
+                break;
+            case CachedPage cp:
+                AddtionalInfo(sb, cp);
+                break;
+            case SavedPage svp:
+                AddtionalInfo(sb, svp);
+                break;
+            default:
+                break;
+            }
+        }
+
+        private static async void log(string data)
+        {
+            try
+            {
+                var time = DateTimeOffset.Now;
+                await semaphore.WaitAsync();
+                if (logFile is null)
+                    logFile = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("AppLog", CreationCollisionOption.OpenIfExists);
+                await FileIO.AppendTextAsync(logFile, $"----[{time:u}]----------------------------------\r\n{data}\r\n\r\n");
+            }
+            catch
+            {
+                // ignore
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+
+        private static System.Threading.SemaphoreSlim semaphore = new System.Threading.SemaphoreSlim(1, 1);
+        private static StorageFile logFile;
 
         private static void AddtionalInfo(StringBuilder sb, SavedPage svp)
         {
