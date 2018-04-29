@@ -7,12 +7,13 @@
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           mc:Ignorable="d"
                           x:Uid="Views/LogOnDialog/ContentDialog"
-                          Loaded="ContentDialog_Loaded"
+                          x:Name="cd"
+                          Loaded="cd_Loaded"
+                          Opened="cd_Opened"
                           PrimaryButtonText="Reset"
-                          PrimaryButtonClick="MyContentDialog_PrimaryButtonClick"
+                          PrimaryButtonClick="cd_PrimaryButtonClick"
                           CloseButtonText="?"
-                          CloseButtonClick="MyContentDialog_CloseButtonClick"
-                          Opened="ContentDialog_Opened"
+                          CloseButtonClick="cd_CloseButtonClick"
                           FullSizeDesired="True">
   <ContentDialog.Title>
     <Grid>
@@ -30,6 +31,7 @@
   </ContentDialog.Title>
   <Grid x:Name="gdContentRoot">
     <WebView x:Name="wv"
+             DefaultBackgroundColor="{x:Bind ((SolidColorBrush)cd.Background).Color, Mode=OneWay}"
              DOMContentLoaded="wv_DOMContentLoaded"
              NavigationFailed="wv_NavigationFailed"
              ScriptNotify="wv_ScriptNotify" />
