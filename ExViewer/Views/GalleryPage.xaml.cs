@@ -124,7 +124,11 @@ namespace ExViewer.Views
         {
             if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch && this.interactionSource != null)
             {
-                this.interactionSource.TryRedirectForManipulation(e.GetCurrentPoint(this.spContent));
+                try
+                {
+                    this.interactionSource.TryRedirectForManipulation(e.GetCurrentPoint(this.spContent));
+                }
+                catch (UnauthorizedAccessException) { }
                 this.isGdInfoHideDef = null;
             }
         }
