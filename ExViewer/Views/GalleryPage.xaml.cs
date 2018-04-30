@@ -542,7 +542,7 @@ namespace ExViewer.Views
                     infoH -= this.gdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
                 }
             }
-            infoH = Math.Min(infoH, 360);
+            infoH = Math.Max(80, Math.Min(infoH, 360));
             this.Children[0].Measure(new Size(width, infoH));
             this.Children[1].Measure(availableSize);
             return new Size(width, this.Children[0].DesiredSize.Height + height);
