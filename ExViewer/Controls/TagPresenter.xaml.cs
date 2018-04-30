@@ -149,23 +149,18 @@ namespace ExViewer.Controls
             TagSuggestionService.IncreaseStateCode(this.asbNewTags);
         }
 
-        private void btnStartNew_Click(object sender, RoutedEventArgs e)
+        private async void btnStartNew_Click(object sender, RoutedEventArgs e)
         {
             resetNewTagState();
             if (this.asbNewTags is null)
             {
                 FindName(nameof(this.asbNewTags));
             }
-
             this.asbNewTags.Visibility = Visibility.Visible;
-            this.btnStartNew.Visibility = Visibility.Collapsed;
-            focus_asbNewTags();
-        }
-
-        private async void focus_asbNewTags()
-        {
             await this.Dispatcher.YieldIdle();
             this.asbNewTags.Focus(FocusState.Programmatic);
+            await this.Dispatcher.YieldIdle();
+            this.btnStartNew.Visibility = Visibility.Collapsed;
         }
 
         private void asbNewTags_LostFocus(object sender, RoutedEventArgs e)

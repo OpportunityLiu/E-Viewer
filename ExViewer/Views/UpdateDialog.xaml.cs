@@ -62,6 +62,7 @@ namespace ExViewer.Views
                     throw new InvalidOperationException("Find appx file failed.");
                 }
                 var files = new List<StorageFile>();
+                var fileLaunched = false;
                 using (var client = new HttpClient())
                 {
                     try
@@ -80,14 +81,14 @@ namespace ExViewer.Views
                         }
                         foreach (var item in files)
                         {
-                            await Launcher.LaunchFileAsync(item);
+                            fileLaunched = fileLaunched || await Launcher.LaunchFileAsync(item);
                         }
                     }
                     finally
                     {
-                        if (!await Launcher.LaunchFolderAsync(folder))
+                        if ((assets.Count > 1 || !fileLaunched) && !await Launcher.LaunchFolderAsync(folder))
                         {
-                            throw new InvalidOperationException("Launch appx file failed.");
+                            throw new InvalidOperationException("Launch download folder failed.");
                         }
                     }
                 }
@@ -116,15 +117,8 @@ namespace ExViewer.Views
 
         private async void MyContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            var def = args.GetDeferral();
-            try
-            {
-                await Launcher.LaunchUriAsync(new Uri(this.release.html_url));
-            }
-            finally
-            {
-                def.Complete();
-            }
+            args.Cancel = true;
+            await Launcher.LaunchUriAsync(new Uri(this.release.html_url));
         }
 
         private readonly VersionChecker.GitHubRelease release;
