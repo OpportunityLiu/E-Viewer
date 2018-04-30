@@ -53,12 +53,14 @@ namespace ExClient.Settings
             loadSettingsDic();
         }
 
-        internal Dictionary<string, string> Settings { get; } = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> settings = new Dictionary<string, string>();
+
+        public IReadOnlyDictionary<string, string> RawSettings => this.settings;
 
         internal void StoreCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values[this.owner.Type + "SettingsCache"] = JsonConvert.SerializeObject(Settings);
+            storage.Values[this.owner.Type + "SettingsCache"] = JsonConvert.SerializeObject(this.settings);
         }
 
         private void loadCache()
@@ -66,13 +68,12 @@ namespace ExClient.Settings
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
             storage.Values.TryGetValue(this.owner.Type + "SettingsCache", out var r);
             var value = r + "";
-            Settings.Clear();
+            this.settings.Clear();
             if (string.IsNullOrEmpty(value))
             {
                 return;
             }
-
-            JsonConvert.PopulateObject(value, Settings);
+            JsonConvert.PopulateObject(value, this.settings);
         }
 
         private void updateSettingsDic(HtmlDocument doc)
@@ -89,7 +90,7 @@ namespace ExClient.Settings
                 return;
             }
 
-            Settings.Clear();
+            this.settings.Clear();
             foreach (var item in settings.Descendants("input").Concat(settings.Descendants("textarea")))
             {
                 var name = item.GetAttribute("name", default(string));
@@ -103,14 +104,14 @@ namespace ExClient.Settings
                 case "radio":
                     if (item.GetAttribute("checked", "") == "checked")
                     {
-                        Settings[name] = item.GetAttribute("value", "");
+                        this.settings[name] = item.GetAttribute("value", "");
                     }
 
                     break;
                 case "checkbox":
                     if (item.GetAttribute("checked", "") == "checked")
                     {
-                        Settings[name] = item.GetAttribute("value", "on");
+                        this.settings[name] = item.GetAttribute("value", "on");
                     }
 
                     break;
@@ -119,7 +120,7 @@ namespace ExClient.Settings
                 //case "submit":
                 //textarea
                 default:
-                    Settings[name] = item.GetAttribute("value", item.GetInnerText());
+                    this.settings[name] = item.GetAttribute("value", item.GetInnerText());
                     break;
                 }
             }
@@ -147,7 +148,7 @@ namespace ExClient.Settings
         {
             foreach (var item in this.items.Values)
             {
-                item.DataChanged(this.Settings);
+                item.DataChanged(this.settings);
             }
             StoreCache();
             OnPropertyChanged("");
@@ -159,12 +160,12 @@ namespace ExClient.Settings
             {
                 try
                 {
-                    if (this.Settings.Count == 0)
+                    if (this.settings.Count == 0)
                     {
                         await FetchAsync();
                     }
 
-                    var postDic = new Dictionary<string, string>(this.Settings);
+                    var postDic = new Dictionary<string, string>(this.settings);
                     foreach (var item in this.items.Values)
                     {
                         item.ApplyChanges(postDic);
