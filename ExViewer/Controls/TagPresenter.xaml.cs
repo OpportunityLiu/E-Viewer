@@ -134,17 +134,10 @@ namespace ExViewer.Controls
 
         private void resetNewTagState()
         {
-            if (this.asbNewTags != null)
-            {
-                this.asbNewTags.Visibility = Visibility.Collapsed;
-            }
-
             this.btnStartNew.Visibility = Visibility.Visible;
             if (this.asbNewTags is null)
-            {
                 return;
-            }
-
+            this.asbNewTags.Visibility = Visibility.Collapsed;
             this.asbNewTags.Text = "";
             TagSuggestionService.IncreaseStateCode(this.asbNewTags);
         }
@@ -153,14 +146,11 @@ namespace ExViewer.Controls
         {
             resetNewTagState();
             if (this.asbNewTags is null)
-            {
                 FindName(nameof(this.asbNewTags));
-            }
             this.asbNewTags.Visibility = Visibility.Visible;
             await this.Dispatcher.YieldIdle();
-            this.asbNewTags.Focus(FocusState.Programmatic);
-            await this.Dispatcher.YieldIdle();
             this.btnStartNew.Visibility = Visibility.Collapsed;
+            this.asbNewTags.Focus(FocusState.Programmatic);
         }
 
         private void asbNewTags_LostFocus(object sender, RoutedEventArgs e)
