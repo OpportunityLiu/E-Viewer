@@ -92,7 +92,7 @@ namespace ExViewer.Views
             {
                 if (this.categories.Count == 10)
                 {
-                    this.categories.Add(FavoriteCategory.Removed);
+                    this.categories.Add(Client.Current.Favorites.Removed);
                 }
 
                 this.cbCategory.SelectedIndex = this.Gallery.FavoriteCategory.Index;

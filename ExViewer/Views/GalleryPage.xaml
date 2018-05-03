@@ -550,7 +550,7 @@
                       Label="{x:Bind local:GalleryPage.favoriteCategoryToName(ViewModel.Gallery.FavoriteCategory), Mode=OneWay}"
                       Foreground="{x:Bind client:FavoriteExtension.GetThemeBrush(ViewModel.Gallery.FavoriteCategory), Mode=OneWay}"
                       ToolTipService.ToolTip="{x:Bind local:GalleryPage.favoriteCategoryToName(ViewModel.Gallery.FavoriteCategory), Mode=OneWay}"
-                      Click="abbFavorites_Click" />
+                      Command="{x:Bind ViewModel.AddToFavorites, Mode=OneWay}" />
         <AppBarButton x:Name="abbComment"
                       x:Uid="Views/GalleryPage/AppBarButtonAddComment"
                       Icon="Add"

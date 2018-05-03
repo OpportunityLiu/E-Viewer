@@ -1,10 +1,13 @@
-﻿using ExClient.Search;
+﻿using ExClient.Api;
+using ExClient.Galleries;
+using ExClient.Search;
 using HtmlAgilityPack;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Windows.Foundation;
 
 namespace ExClient
 {
@@ -15,22 +18,16 @@ namespace ExClient
         internal FavoriteCategory GetCategory(HtmlNode favoriteIconNode)
         {
             if (favoriteIconNode is null)
-            {
-                return FavoriteCategory.Removed;
-            }
+                return Removed;
 
             var favName = favoriteIconNode.GetAttribute("title", "");
             if (favName is null)
-            {
-                return FavoriteCategory.Removed;
-            }
+                return Removed;
 
             var favStyle = favoriteIconNode.GetAttribute("style", "");
             var mat = favStyleMatcher.Match(favStyle);
             if (!mat.Success)
-            {
-                return FavoriteCategory.Removed;
-            }
+                return Removed;
 
             var favImgOffset = int.Parse(mat.Groups[1].Value);
             var favIdx = favImgOffset / 19;
@@ -50,12 +47,11 @@ namespace ExClient
             }
         }
 
-        public FavoritesSearchResult Search(string keyword)
-        {
-            return FavoritesSearchResult.Search(keyword, null);
-        }
+        public FavoriteCategory Removed { get; } = new FavoriteCategory(-1, LocalizedStrings.Resources.RemoveFromFavorites);
 
-        private FavoriteCategory[] data;
+        public FavoriteCategory All { get; } = new FavoriteCategory(-1, LocalizedStrings.Resources.AllFavorites);
+
+        private readonly FavoriteCategory[] data;
 
         public int Count => this.data.Length;
 

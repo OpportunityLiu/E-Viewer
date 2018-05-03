@@ -18,9 +18,7 @@ namespace ExClient.Search
         internal static FavoritesSearchResult Search(string keyword, FavoriteCategory category)
         {
             if (category is null || category.Index < 0)
-            {
-                category = FavoriteCategory.All;
-            }
+                category = Client.Current.Favorites.All;
 
             var result = new FavoritesSearchResult(keyword, category);
             return result;

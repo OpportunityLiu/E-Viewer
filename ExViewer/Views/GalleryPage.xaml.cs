@@ -452,15 +452,6 @@ namespace ExViewer.Views
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
         }
 
-        private AddToFavoritesDialog addToFavorites;
-
-        private async void abbFavorites_Click(object sender, RoutedEventArgs e)
-        {
-            var addToFavorites = System.Threading.LazyInitializer.EnsureInitialized(ref this.addToFavorites);
-            addToFavorites.Gallery = this.ViewModel.Gallery;
-            await addToFavorites.ShowAsync();
-        }
-
         private void cb_top_Opening(object sender, object e)
         {
             this.tbGalleryName.MaxLines = 0;

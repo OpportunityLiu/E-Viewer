@@ -446,23 +446,15 @@ namespace ExClient.Galleries
                             .Include(gi => gi.Image)
                             .FirstOrDefault(gi => gi.GalleryId == gId && gi.PageId == pId);
                         if (imageModel != null)
-                        {
                             // Load cache
                             await this[pId - 1].PopulateCachedImageAsync(imageModel, imageModel.Image);
-                        }
                         else
-                        {
                             this[pId - 1].Init(imageKey, thumb);
-                        }
-                        if (pId - 1 < start)
-                        {
-                            start = pId - 1;
-                        }
 
+                        if (pId - 1 < start)
+                            start = pId - 1;
                         if (pId > end)
-                        {
                             end = pId;
-                        }
                     }
                 }
                 return LoadItemsResult.Create(start, this.Skip(start).Take(end - start), false);
@@ -533,7 +525,7 @@ namespace ExClient.Galleries
                 }
                 else
                 {
-                    this.FavoriteCategory = FavoriteCategory.Removed;
+                    this.FavoriteCategory = Client.Current.Favorites.Removed;
                     this.FavoriteNote = "";
                 }
                 return this.FavoriteNote;
