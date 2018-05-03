@@ -7,10 +7,12 @@ using ExViewer.Helpers;
 using ExViewer.Services;
 using ExViewer.Settings;
 using ExViewer.Views;
+using Opportunity.Helpers.ObjectModel;
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
+using Opportunity.MvvmUniverse.Commands.ReentrancyHandlers;
 using Opportunity.MvvmUniverse.Services.Notification;
 using Opportunity.MvvmUniverse.Views;
 using System;
@@ -104,6 +106,13 @@ namespace ExViewer.ViewModels
                     throw;
                 }
             }, (c, s) => ((GalleryVM)c.Tag).gallery?.Rating != null && s != Score.NotSet && ((GalleryVM)c.Tag).gallery.Rating.UserScore != s);
+            Commands[nameof(AddToFavorites)] = AsyncCommand.Create(async (c, s) =>
+            {
+                var addToFavorites = ThreadLocalSingleton.GetOrCreate<AddToFavoritesDialog>();
+                addToFavorites.Gallery = this.Gallery;
+                await addToFavorites.ShowAsync();
+            });
+            AddToFavorites.ReentrancyHandler = ReentrancyHandler.LastQueued();
             Commands[nameof(GoToLatestRevision)] = Command<RevisionCollection>.Create(async (sender, c) =>
             {
                 var info = c.DescendantsInfo.Last().Gallery;
@@ -309,10 +318,11 @@ namespace ExViewer.ViewModels
             Commands[nameof(AddComment)] = AsyncCommand.Create(async (sender) =>
             {
                 var that = (GalleryVM)sender.Tag;
-                var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref GalleryVM.addCommentDialog);
+                var addComment = ThreadLocalSingleton.GetOrCreate<AddCommentDialog>();
                 addComment.Gallery = that.Gallery;
                 await addComment.ShowAsync();
             }, sender => ((GalleryVM)sender.Tag).Gallery != null);
+            AddComment.ReentrancyHandler = ReentrancyHandler.LastQueued();
         }
 
         private GalleryVM(Gallery gallery)
@@ -321,9 +331,9 @@ namespace ExViewer.ViewModels
             this.Gallery = gallery;
         }
 
-        private static AddCommentDialog addCommentDialog;
-
         public AsyncCommand<Score> Rate => GetCommand<AsyncCommand<Score>>();
+
+        public AsyncCommand AddToFavorites => GetCommand<AsyncCommand>();
 
         public Command<RevisionCollection> GoToLatestRevision => GetCommand<Command<RevisionCollection>>();
 

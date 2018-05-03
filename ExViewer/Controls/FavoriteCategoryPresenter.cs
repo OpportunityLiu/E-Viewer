@@ -28,7 +28,7 @@ namespace ExViewer.Controls
 
         private void set(FavoriteCategory category, bool labelVisible)
         {
-            category = category ?? FavoriteCategory.All;
+            category = category ?? Client.Current.Favorites.All;
             var icon = this.Icon;
             if (icon != null)
             {
@@ -66,12 +66,13 @@ namespace ExViewer.Controls
 
         public FavoriteCategory Category
         {
-            get => (FavoriteCategory)GetValue(CategoryProperty); set => SetValue(CategoryProperty, value);
+            get => (FavoriteCategory)GetValue(CategoryProperty);
+            set => SetValue(CategoryProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Category.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CategoryProperty =
-            DependencyProperty.Register("Category", typeof(FavoriteCategory), typeof(FavoriteCategoryPresenter), new PropertyMetadata(FavoriteCategory.All, categoryPropertyChanged));
+            DependencyProperty.Register("Category", typeof(FavoriteCategory), typeof(FavoriteCategoryPresenter), new PropertyMetadata(null, categoryPropertyChanged));
 
         private bool loaded;
 
