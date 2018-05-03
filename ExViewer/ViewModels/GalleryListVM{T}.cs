@@ -15,18 +15,6 @@ namespace ExViewer.ViewModels
     {
         protected GalleryListVM()
         {
-            Commands[nameof(Delete)] = Command<Gallery>.Create(async (sender, g) =>
-            {
-                GalleryVM.RemoveVM(g.ID);
-                await g.DeleteAsync();
-                ((GalleryListVM<T>)sender.Tag).Galleries?.Remove(g);
-                RootControl.RootController.SendToast(Strings.Resources.Views.CachedPage.GalleryDeleted, null);
-            }, (sender, g) => g != null);
-            Commands[nameof(Open)] = Command<Gallery>.Create(async (sender, g) =>
-             {
-                 GalleryVM.GetVM(g);
-                 await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
-             }, (sender, g) => g != null);
         }
 
         private ObservableList<Gallery> galleries;
@@ -36,12 +24,24 @@ namespace ExViewer.ViewModels
             protected set => Set(ref this.galleries, value);
         }
 
-        public abstract AsyncCommand Refresh { get; }
+        public AsyncCommand Refresh => Commands.Get<AsyncCommand>();
 
-        public abstract Command Clear { get; }
+        public Command Clear => Commands.Get<Command>();
 
-        public Command<Gallery> Delete => GetCommand<Command<Gallery>>();
+        public Command<Gallery> Delete => Commands.GetOrAdd(() =>
+            Command<Gallery>.Create(async (sender, g) =>
+            {
+                GalleryVM.RemoveVM(g.ID);
+                await g.DeleteAsync();
+                ((GalleryListVM<T>)sender.Tag).Galleries?.Remove(g);
+                RootControl.RootController.SendToast(Strings.Resources.Views.CachedPage.GalleryDeleted, null);
+            }, (sender, g) => g != null));
 
-        public Command<Gallery> Open => GetCommand<Command<Gallery>>();
+        public Command<Gallery> Open => Commands.GetOrAdd(() =>
+            Command<Gallery>.Create(async (sender, g) =>
+            {
+                GalleryVM.GetVM(g);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
+            }, (sender, g) => g != null));
     }
 }

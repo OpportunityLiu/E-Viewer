@@ -1,17 +1,10 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace ExViewer
 {
     internal static class ExceptionHandler
     {
-        private static string[] prefixes = new string[]
-        {
-            "无法找到与此错误代码关联的文本。",
-            "找不到與此錯誤碼關聯的文字。",
-            "The text associated with this error code could not be found.",
-            "No se pudo encontrar el texto asociado a este código de error."
-        };
-
         public static string GetMessage(this Exception ex)
         {
             if (ex.InnerException != null && (ex is System.Reflection.TargetInvocationException || ex is AggregateException))
@@ -19,22 +12,21 @@ namespace ExViewer
                 // the outer exception is meaningless.
                 ex = ex.InnerException;
             }
+
             var localizedMsg = Strings.Exceptions.GetValue(ex.HResult.ToString("X8"));
             if (!string.IsNullOrEmpty(localizedMsg))
-            {
                 return localizedMsg;
-            }
 
-            var msg = (ex.Message ?? $"Error: {ex.HResult:X8}").TrimStart();
-            foreach (var prefix in prefixes)
-            {
-                if (msg.StartsWith(prefix))
-                {
-                    msg = msg.Substring(prefix.Length);
-                    break;
-                }
-            }
-            return msg.Trim();
+            if (ex is COMException
+                && ex.Data.Contains("RestrictedDescription")
+                && ex.Data["RestrictedDescription"] is string rinfo
+                && !rinfo.IsNullOrWhiteSpace())
+                return rinfo.Trim();
+
+            if (!ex.Message.IsNullOrWhiteSpace())
+                return ex.Message.Trim();
+
+            return $"HResult: {ex.HResult:X8}, {ex.GetType()}";
         }
     }
 }

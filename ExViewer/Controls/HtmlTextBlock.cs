@@ -270,7 +270,7 @@ namespace ExViewer.Controls
                 target.Inlines.Add(tbNode);
                 await Task.Yield();
             }
-            target.Inlines.Add(new Run { Text = eof });
+            target.Inlines.Add(CreateRun(eof));
             return hyperlinks;
         }
 
