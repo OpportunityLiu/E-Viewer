@@ -19,28 +19,20 @@ namespace ExViewer.ViewModels
         {
             this.searchResult = searchResult;
             SetQueryWithSearchResult();
-            this.Commands[nameof(Open)] = Command<Gallery>.Create(async (sender, g) =>
+        }
+
+        public string SearchQuery => this.SearchResult.SearchUri.ToString();
+
+        public Command<Gallery> Open => Commands.GetOrAdd(() =>
+            Command<Gallery>.Create(async (sender, g) =>
             {
                 var that = (SearchResultVM<T>)sender.Tag;
                 that.SelectedGallery = g;
                 GalleryVM.GetVM(g);
                 await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
-            }, (sender, g) => g != null);
-            this.Commands[nameof(DeleteHistory)] = Command<SearchHistory>.Create((sender, sh) =>
-            {
-                using (var db = new SearchHistoryDb())
-                {
-                    db.SearchHistorySet.Remove(sh);
-                    db.SaveChanges();
-                }
-            }, (sender, sh) => sh != null);
-        }
+            }, (sender, g) => g != null));
 
-        public string SearchQuery => this.SearchResult.SearchUri.ToString();
-
-        public Command<Gallery> Open => GetCommand<Command<Gallery>>();
-
-        public Command<string> Search => GetCommand<Command<string>>();
+        public Command<string> Search => Commands.Get<Command<string>>();
 
         private T searchResult;
         public T SearchResult
@@ -69,7 +61,15 @@ namespace ExViewer.ViewModels
             }
         }
 
-        internal Command<SearchHistory> DeleteHistory => GetCommand<Command<SearchHistory>>();
+        internal Command<SearchHistory> DeleteHistory => Commands.GetOrAdd(() =>
+            Command<SearchHistory>.Create((sender, sh) =>
+            {
+                using (var db = new SearchHistoryDb())
+                {
+                    db.SearchHistorySet.Remove(sh);
+                    db.SaveChanges();
+                }
+            }, (sender, sh) => sh != null));
 
         public IAsyncAction ClearHistoryAsync()
         {

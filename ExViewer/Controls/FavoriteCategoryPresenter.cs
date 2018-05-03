@@ -107,14 +107,16 @@ namespace ExViewer.Controls
         private void favoriteCategoryPresenter_Loaded(object sender, RoutedEventArgs e)
         {
             this.loaded = true;
-            this.Category.PropertyChanged += this.category_PropertyChanged;
+            if (this.Category != null)
+                this.Category.PropertyChanged += this.category_PropertyChanged;
             this.set(this.Category, this.IsLabelVisible);
         }
 
         private void favoriteCategoryPresenter_Unloaded(object sender, RoutedEventArgs e)
         {
             this.loaded = false;
-            this.Category.PropertyChanged -= this.category_PropertyChanged;
+            if (this.Category != null)
+                this.Category.PropertyChanged -= this.category_PropertyChanged;
         }
 
         public bool IsLabelVisible

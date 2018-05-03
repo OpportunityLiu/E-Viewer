@@ -19,12 +19,13 @@ namespace ExViewer.ViewModels
 
         public PopularCollection Galleries => Client.Current.Popular;
 
-        public Command Refresh { get; } = Command.Create(sender => ((PopularVM)sender.Tag).Galleries.Clear());
+        public Command Refresh => Commands.GetOrAdd(() => Command.Create(sender => ((PopularVM)sender.Tag).Galleries.Clear()));
 
-        public Command<Gallery> Open { get; } = Command<Gallery>.Create(async (sender, g) =>
-        {
-            GalleryVM.GetVM(g);
-            await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
-        }, (sender, g) => g != null);
+        public Command<Gallery> Open => Commands.GetOrAdd(() =>
+            Command<Gallery>.Create(async (sender, g) =>
+            {
+                GalleryVM.GetVM(g);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
+            }, (sender, g) => g != null));
     }
 }
