@@ -71,10 +71,8 @@ namespace ExViewer.Views
 
         private async Task injectOtherPage()
         {
-            if (this.loggingOn)
-            {
+            if (this.bdProgress.Visibility == Visibility.Visible)
                 return;
-            }
 
             var r = await this.wv.InvokeScriptAsync("eval", new[] { @"
 (function ()
@@ -216,10 +214,9 @@ namespace ExViewer.Views
             }
         }
 
-        private bool loggingOn = false;
         private async Task logOnAsync(string id, string hash)
         {
-            this.loggingOn = true;
+            this.bdProgress.Visibility = Visibility.Visible;
             try
             {
                 if (!long.TryParse(id, out var uid))
@@ -244,7 +241,7 @@ namespace ExViewer.Views
             }
             finally
             {
-                this.loggingOn = false;
+                this.bdProgress.Visibility = Visibility.Collapsed;
             }
         }
     }

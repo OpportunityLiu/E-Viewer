@@ -5,8 +5,6 @@ using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
 using Opportunity.MvvmUniverse.Views;
 using System;
-using System.Collections.Generic;
-using ICommand = System.Windows.Input.ICommand;
 
 namespace ExViewer.ViewModels
 {
