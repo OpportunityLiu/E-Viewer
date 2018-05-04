@@ -102,13 +102,9 @@ namespace ExViewer.Views
         private void cd_Loaded(object sender, RoutedEventArgs e)
         {
             if (Client.Current.NeedLogOn)
-            {
                 this.CloseButtonText = Strings.Resources.General.Exit;
-            }
             else
-            {
                 this.CloseButtonText = Strings.Resources.General.Cancel;
-            }
         }
 
         private void cd_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
@@ -121,9 +117,7 @@ namespace ExViewer.Views
         {
             System.Diagnostics.Debug.WriteLine(args.Uri?.ToString() ?? "local string", "WebView");
             if (args.Uri is null)
-            {
                 return;
-            }
 
             if (args.Uri == Client.LogOnUri)
             {
@@ -184,13 +178,9 @@ namespace ExViewer.Views
         {
             var ww = Window.Current.Bounds.Width;
             if (ww > 400)
-            {
                 this.wv.MinWidth = Math.Min(availableSize.Width - 144, 700);
-            }
             else
-            {
                 this.wv.MinWidth = 0;
-            }
 
             return base.MeasureOverride(availableSize);
         }
@@ -203,20 +193,38 @@ namespace ExViewer.Views
 
         private void cd_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            if (this.logOnInfoBackup != null)
+            if (loggingOn)
             {
-                Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
+                args.Cancel = true;
+                return;
             }
-
+            if (this.logOnInfoBackup != null)
+                Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
             if (Client.Current.NeedLogOn)
-            {
                 Application.Current.Exit();
+        }
+
+        private bool loggingOn
+        {
+            get => !this.IsPrimaryButtonEnabled;
+            set
+            {
+                if (value)
+                {
+                    this.bdProgress.Visibility = Visibility.Visible;
+                    this.IsPrimaryButtonEnabled = false;
+                }
+                else
+                {
+                    this.bdProgress.Visibility = Visibility.Collapsed;
+                    this.IsPrimaryButtonEnabled = true;
+                }
             }
         }
 
         private async Task logOnAsync(string id, string hash)
         {
-            this.bdProgress.Visibility = Visibility.Visible;
+            loggingOn = true;
             try
             {
                 if (!long.TryParse(id, out var uid))
@@ -241,8 +249,10 @@ namespace ExViewer.Views
             }
             finally
             {
-                this.bdProgress.Visibility = Visibility.Collapsed;
+                loggingOn = false;
             }
         }
+
+
     }
 }
