@@ -208,7 +208,6 @@
       "CommentsEmptyTextBlock/Text": "沒有評論",
       "CommentsLoadingTextBlock/Text": "正在載入評論…",
       "FavoritesAppBarButton/Text": "新增至收藏",
-      "ImagesLoadingMoreTextBlock/Text": "正在載入更多…",
       "PivotHeaderCommentsTextBlock/Text": "評論",
       "PivotHeaderImagesTextBlock/Text": "圖片",
       "PivotHeaderTorrentsTextBlock/Text": "種子",
@@ -289,18 +288,13 @@
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "快取的畫廊",
-      "CachedSplitViewTab/ToolTipService/ToolTip": "快取的畫廊",
       "DisableInfoTextBlock/Text": "少女祈禱中…",
       "FavoritesSplitViewTab/Content": "收藏",
-      "FavoritesSplitViewTab/ToolTipService/ToolTip": "收藏",
       "PopularSplitViewTab/Content": "熱門",
-      "PopularSplitViewTab/ToolTipService/ToolTip": "熱門",
       "SavedSplitViewTab/Content": "儲存的畫廊",
-      "SavedSplitViewTab/ToolTipService/ToolTip": "儲存的畫廊",
       "SearchSplitViewTab/Content": "搜尋",
-      "SearchSplitViewTab/ToolTipService/ToolTip": "搜尋",
       "SettingsSplitViewTab/Content": "設定",
-      "SettingsSplitViewTab/ToolTipService/ToolTip": "設定",
+      "ToplistSplitViewTab/Content": "榜單",
       "UserInfoButton/ToolTipService/ToolTip": "使用者資訊"
     },
     "SavedPage": {
@@ -334,6 +328,10 @@
       "SkipMasterTagsCheckBox/Content": "忽略主標籤",
       "TagsCheckBox/Content": "搜尋畫廊標籤",
       "TorrentNamesCheckBox/Content": "搜尋種子檔名"
+    },
+    "ToplistPage": {
+      "LoadingMoreTextBlock/Text": "正在載入更多畫廊…",
+      "RefreshAppBarButton/Label": "重新整理"
     },
     "UpdateDialog": {
       "$ContentTemplate": "版本 {major}.{minor}.{build}.{revision} 已釋出。",

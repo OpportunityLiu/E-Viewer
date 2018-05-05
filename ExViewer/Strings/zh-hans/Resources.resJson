@@ -208,7 +208,6 @@
       "CommentsEmptyTextBlock/Text": "没有评论",
       "CommentsLoadingTextBlock/Text": "正在加载评论…",
       "FavoritesAppBarButton/Text": "添加至收藏",
-      "ImagesLoadingMoreTextBlock/Text": "正在加载更多…",
       "PivotHeaderCommentsTextBlock/Text": "评论",
       "PivotHeaderImagesTextBlock/Text": "图片",
       "PivotHeaderTorrentsTextBlock/Text": "种子",
@@ -289,18 +288,13 @@
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "缓存的画廊",
-      "CachedSplitViewTab/ToolTipService/ToolTip": "缓存的画廊",
       "DisableInfoTextBlock/Text": "少女祈祷中…",
       "FavoritesSplitViewTab/Content": "收藏",
-      "FavoritesSplitViewTab/ToolTipService/ToolTip": "收藏",
       "PopularSplitViewTab/Content": "热门",
-      "PopularSplitViewTab/ToolTipService/ToolTip": "热门",
       "SavedSplitViewTab/Content": "保存的画廊",
-      "SavedSplitViewTab/ToolTipService/ToolTip": "保存的画廊",
       "SearchSplitViewTab/Content": "搜索",
-      "SearchSplitViewTab/ToolTipService/ToolTip": "搜索",
       "SettingsSplitViewTab/Content": "设置",
-      "SettingsSplitViewTab/ToolTipService/ToolTip": "设置",
+      "ToplistSplitViewTab/Content": "榜单",
       "UserInfoButton/ToolTipService/ToolTip": "用户信息"
     },
     "SavedPage": {
@@ -334,6 +328,10 @@
       "SkipMasterTagsCheckBox/Content": "忽略主标签",
       "TagsCheckBox/Content": "搜索画廊标签",
       "TorrentNamesCheckBox/Content": "搜索种子文件名"
+    },
+    "ToplistPage": {
+      "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
+      "RefreshAppBarButton/Label": "刷新"
     },
     "UpdateDialog": {
       "$ContentTemplate": "版本 {major}.{minor}.{build}.{revision} 已发布。",
