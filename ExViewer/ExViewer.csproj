@@ -290,6 +290,7 @@
     <Compile Include="Controls\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ToplistVM.cs" />
     <Compile Include="Views\AddToFavoritesDialog.xaml.cs">
       <DependentUpon>AddToFavoritesDialog.xaml</DependentUpon>
     </Compile>
@@ -311,6 +312,9 @@
     </Compile>
     <Compile Include="Views\PopularPage.xaml.cs">
       <DependentUpon>PopularPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ToplistPage.xaml.cs">
+      <DependentUpon>ToplistPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SavedPage.xaml.cs">
       <DependentUpon>SavedPage.xaml</DependentUpon>
@@ -549,6 +553,10 @@
     <Page Include="Views\PopularPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ToplistPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SavedPage.xaml">
       <SubType>Designer</SubType>
