@@ -318,15 +318,13 @@ namespace ExViewer.Views
                 return Run(async token =>
                 {
                     await CoreApplication.MainView.Dispatcher.YieldIdle();
-                    var succeed = await new LogOnDialog().ShowAsync() == ContentDialogResult.Primary && !Client.Current.NeedLogOn;
-                    Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (succeed ? "Succeed" : "Failed") });
-                    UpdateUserInfo(succeed);
-                    if (succeed)
-                    {
+                    var dialog = new LogOnDialog();
+                    await dialog.ShowAsync();
+                    Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Log on requested", new Dictionary<string, string> { ["Result"] = (dialog.Succeed ? "Succeed" : "Failed") });
+                    UpdateUserInfo(dialog.Succeed);
+                    if (dialog.Succeed)
                         Settings.SettingCollection.Current.Apply();
-                    }
-
-                    return succeed;
+                    return dialog.Succeed;
                 });
             }
 

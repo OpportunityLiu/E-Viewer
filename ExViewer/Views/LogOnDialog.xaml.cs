@@ -21,8 +21,11 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
+        public bool Succeed { get; private set; }
+
         private async void reset()
         {
+            this.Succeed = false;
             this.tempUserName = null;
             this.tempPassword = null;
             this.wv.NavigateToString("");
@@ -245,6 +248,7 @@ namespace ExViewer.Views
                     AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
                 }
 
+                this.Succeed = true;
                 this.Hide();
             }
             finally
