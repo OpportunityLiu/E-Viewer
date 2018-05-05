@@ -1,4 +1,5 @@
 ﻿using ExClient.Galleries;
+using ExClient.Search;
 using ExViewer.Controls;
 using ExViewer.Services;
 using ExViewer.ViewModels;
@@ -92,6 +93,13 @@ namespace ExViewer.Views
         public void CloseAll()
         {
             this.cb_top.IsOpen = false;
+        }
+
+        private void lv_RefreshRequested(object sender, EventArgs e)
+        {
+            var s = (ListView)sender;
+            var g = (GalleryToplist)s.ItemsSource;
+            ViewModel.Refresh.Execute(g);
         }
     }
 }
