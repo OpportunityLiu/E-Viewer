@@ -580,7 +580,7 @@
     </CommandBar>
     <ProgressBar x:Name="pb_save"
                  Grid.Row="1"
-                 Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
+                 Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                  IsIndeterminate="{x:Bind ViewModel.SaveProgress, Converter={StaticResource SaveProgressToIsIndeterminateConverter}, Mode=OneWay}"
                  VerticalAlignment="Top"
                  IsHitTestVisible="False"
