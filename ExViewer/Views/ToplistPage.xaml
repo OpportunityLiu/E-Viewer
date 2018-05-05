@@ -50,7 +50,7 @@
                                   Margin="{Binding VisibleBounds, ElementName=page, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0', Mode=OneWay}"
                                   Padding="{Binding VisibleBounds, ElementName=page, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1', Mode=OneWay}"
                                   ext:ScrollViewerEx.VerticalScrollBarMargin="{Binding VisibleBounds, ElementName=page, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1', Mode=OneWay}"
-                                  RefreshRequested="{x:Bind Clear}"
+                                  RefreshRequested="lv_RefreshRequested"
                                   ItemsSource="{x:Bind}"
                                   Style="{StaticResource GalleryListViewStyle}"
                                   ItemClick="lv_ItemClick">
