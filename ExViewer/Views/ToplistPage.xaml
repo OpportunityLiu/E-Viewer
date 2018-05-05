@@ -6,6 +6,8 @@
                 xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                Loading="page_Loading"
+                Unloaded="page_Unloaded"
                 NavigationCacheMode="Enabled"
                 xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                 xmlns:ecs="using:ExClient.Search"
@@ -24,12 +26,17 @@
          BorderThickness="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
          BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
          ItemsSource="{x:Bind ViewModel.Toplists}">
+    <Pivot.LeftHeader>
+      <Border x:Name="bdSplitViewPlaceholder"
+              Height="48"
+              Width="0" />
+    </Pivot.LeftHeader>
     <Pivot.RightHeader>
       <CommandBar x:Name="cb_top"
                   DefaultLabelPosition="Right"
                   HorizontalContentAlignment="Stretch">
         <CommandBar.PrimaryCommands>
-          <AppBarButton x:Uid="Views/SavedPage/RefreshAppBarButton"
+          <AppBarButton x:Uid="Views/ToplistPage/RefreshAppBarButton"
                         x:Name="abb_Refresh"
                         Command="{x:Bind ViewModel.Refresh}"
                         CommandParameter="{x:Bind pvRoot.SelectedItem, Mode=OneWay}"
@@ -66,7 +73,7 @@
             </DataTemplate>
           </ListView.ItemTemplate>
           <ListView.Footer>
-            <TextBlock x:Uid="Views/SearchPage/LoadingMoreTextBlock"
+            <TextBlock x:Uid="Views/ToplistPage/LoadingMoreTextBlock"
                        HorizontalAlignment="Center"
                        Margin="12"
                        Style="{StaticResource BaseTextBlockStyle}"
@@ -77,52 +84,4 @@
       </DataTemplate>
     </Pivot.ItemTemplate>
   </Pivot>
-  <!--<RelativePanel>
-    <tk:PullToRefreshListView x:Name="lv"
-                              Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
-                              Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
-                              ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
-                              RefreshCommand="{x:Bind ViewModel.Refresh}"
-                              RelativePanel.AlignBottomWithPanel="True"
-                              RelativePanel.AlignLeftWithPanel="True"
-                              RelativePanel.AlignRightWithPanel="True"
-                              RelativePanel.Below="cb_top"
-                              ItemsSource="{x:Bind ViewModel.Galleries, Mode=OneWay}"
-                              Style="{StaticResource GalleryListViewStyle}"
-                              ItemClick="lv_ItemClick"
-                              ContextCanceled="lv_ContextCanceled"
-                              ContextRequested="lv_ContextRequested">
-      <tk:PullToRefreshListView.RefreshIndicatorContent>
-        <controls:PullToRefreshIndicator />
-      </tk:PullToRefreshListView.RefreshIndicatorContent>
-      <ListView.ItemTemplate>
-        <DataTemplate xmlns:c="using:ExClient.Galleries"
-                      xmlns:controls="using:ExViewer.Controls"
-                      x:DataType="c:Gallery">
-          <controls:GalleryViewer x:Name="gv_Gallery"
-                                  Gallery="{x:Bind}" />
-        </DataTemplate>
-      </ListView.ItemTemplate>
-      <ListView.Footer>
-        <TextBlock x:Uid="Views/SavedPage/LoadingMoreTextBlock"
-                   HorizontalAlignment="Center"
-                   Margin="12"
-                   Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind ViewModel.Galleries, FallbackValue=Visible, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
-                   Text="Loading more galleries..." />
-      </ListView.Footer>
-      <ListView.Header>
-        <TextBlock x:Uid="Views/SavedPage/EmptyTextBlock"
-                   HorizontalAlignment="Center"
-                   Margin="12"
-                   Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind ViewModel.Galleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
-                   Text="No saved galleries" />
-      </ListView.Header>
-    </tk:PullToRefreshListView>
-    <Border Style="{ThemeResource TopBarPlaceholderBorderStyle}"
-            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,48,x1,x0'), Mode=OneWay}"
-            RelativePanel.AlignLeftWithPanel="True"
-            RelativePanel.AlignRightWithPanel="True" />
-  </RelativePanel>-->
 </views:MvvmPage>

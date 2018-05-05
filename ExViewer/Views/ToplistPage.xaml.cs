@@ -38,6 +38,25 @@ namespace ExViewer.Views
             set => base.ViewModel = value;
         }
 
+        private void page_Loading(FrameworkElement sender, object args)
+        {
+            this.setSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.setSplitViewButtonPlaceholderVisibility;
+        }
+
+        private void page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.setSplitViewButtonPlaceholderVisibility;
+        }
+
+        private void setSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
+        {
+            if (visible)
+                this.bdSplitViewPlaceholder.Width = 48;
+            else
+                this.bdSplitViewPlaceholder.Width = 0;
+        }
+
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -46,7 +65,7 @@ namespace ExViewer.Views
             {
                 foreach (var item in this.pvRoot.Descendants<ListView>())
                 {
-                    item.ScrollIntoView(((GalleryToplist)item.ItemsSource).FirstOrDefault());
+                    item.ScrollIntoView(((GalleryToplist)item.ItemsSource)?.FirstOrDefault());
                 }
                 this.pvRoot.SelectedIndex = 0;
                 await Task.Delay(33);
@@ -65,7 +84,7 @@ namespace ExViewer.Views
             {
                 if (!await ViewHelper.ScrollAndFocus(this.openedLv, this.opened))
                 {
-                    this.openedLv.Focus(FocusState.Programmatic);
+                    this.pvRoot.Focus(FocusState.Programmatic);
                 }
             }
         }
