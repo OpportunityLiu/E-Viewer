@@ -6,6 +6,7 @@ using Opportunity.MvvmUniverse.Services.Notification;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -38,10 +39,10 @@ namespace ExViewer.Views
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            await Dispatcher.YieldIdle();
             if (e.NavigationMode != NavigationMode.Back)
             {
-                if (this.ViewModel.Galleries is null)
+                await Task.Delay(33);
+                if (this.ViewModel.Galleries.IsNullOrEmpty())
                 {
                     this.ViewModel.Refresh.Execute();
                     this.abb_Refresh.Focus(FocusState.Programmatic);

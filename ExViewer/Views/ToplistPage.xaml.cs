@@ -3,10 +3,13 @@ using ExClient.Search;
 using ExViewer.Controls;
 using ExViewer.Services;
 using ExViewer.ViewModels;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Opportunity.MvvmUniverse.Services.Notification;
 using Opportunity.MvvmUniverse.Views;
 using System;
+using System.Collections;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -39,28 +42,36 @@ namespace ExViewer.Views
         {
             base.OnNavigatedTo(e);
             await Dispatcher.YieldIdle();
-            //if (e.NavigationMode != NavigationMode.Back)
-            //{
-            //    if (this.ViewModel.Galleries is null)
-            //    {
-            //        this.ViewModel.Refresh.Execute();
-            //        this.abb_Refresh.Focus(FocusState.Programmatic);
-            //    }
-            //    else
-            //    {
-            //        this.lv.Focus(FocusState.Programmatic);
-            //    }
-            //}
-            //else
-            //{
-            //    if (!await ViewHelper.ScrollAndFocus(this.lv, this.opened))
-            //    {
-            //        this.lv.Focus(FocusState.Programmatic);
-            //    }
-            //}
+            if (e.NavigationMode != NavigationMode.Back)
+            {
+                foreach (var item in this.pvRoot.Descendants<ListView>())
+                {
+                    item.ScrollIntoView(((GalleryToplist)item.ItemsSource).FirstOrDefault());
+                }
+                this.pvRoot.SelectedIndex = 0;
+                await Task.Delay(33);
+                this.pvRoot.SelectedIndex = 0;
+                if (this.ViewModel.Toplists[0].IsEmpty())
+                {
+                    this.abb_Refresh.Focus(FocusState.Programmatic);
+                }
+                else
+                {
+                    var lv = ((PivotItem)this.pvRoot.ContainerFromIndex(0)).ContentTemplateRoot as ListView;
+                    lv?.Focus(FocusState.Programmatic);
+                }
+            }
+            else
+            {
+                if (!await ViewHelper.ScrollAndFocus(this.openedLv, this.opened))
+                {
+                    this.openedLv.Focus(FocusState.Programmatic);
+                }
+            }
         }
 
         private Gallery opened;
+        private ListView openedLv;
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
         {
@@ -87,6 +98,7 @@ namespace ExViewer.Views
             if (this.ViewModel.Open.Execute(item))
             {
                 this.opened = item;
+                this.openedLv = (ListView)sender;
             }
         }
 
