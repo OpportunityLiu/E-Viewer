@@ -77,9 +77,9 @@
       <Setter Property="FontWeight"
               Value="SemiLight" />
     </Style>
-    <DataTemplate xmlns:c="using:ExClient.Galleries.Metadata"
+    <DataTemplate xmlns:s="using:ExClient.Services"
                   x:Key="TorrentTemplate"
-                  x:DataType="c:TorrentInfo">
+                  x:DataType="s:TorrentInfo">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="1*" />

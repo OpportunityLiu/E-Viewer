@@ -63,22 +63,7 @@ namespace ExViewer.Views
             await Dispatcher.YieldIdle();
             if (e.NavigationMode != NavigationMode.Back)
             {
-                foreach (var item in this.pvRoot.Descendants<ListView>())
-                {
-                    item.ScrollIntoView(((GalleryToplist)item.ItemsSource)?.FirstOrDefault());
-                }
-                this.pvRoot.SelectedIndex = 0;
-                await Task.Delay(33);
-                this.pvRoot.SelectedIndex = 0;
-                if (this.ViewModel.Toplists[0].IsEmpty())
-                {
-                    this.abb_Refresh.Focus(FocusState.Programmatic);
-                }
-                else
-                {
-                    var lv = ((PivotItem)this.pvRoot.ContainerFromIndex(0)).ContentTemplateRoot as ListView;
-                    lv?.Focus(FocusState.Programmatic);
-                }
+                this.pvRoot.Focus(FocusState.Programmatic);
             }
             else
             {

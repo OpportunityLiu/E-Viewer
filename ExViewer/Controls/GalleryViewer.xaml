@@ -83,7 +83,7 @@
                          Category="{x:Bind Gallery.Category, Mode=OneWay}" />
       <TextBlock x:Name="LanguageTextBlock"
                  RelativePanel.Above="Rating"
-                 Text="{x:Bind Gallery.Language, Mode=OneWay, Converter={StaticResource FormatConverter}}"
+                 Text="{x:Bind galleryLanguage(Gallery), Mode=OneWay}"
                  Style="{StaticResource DetailTextBlockStyle}" />
       <local:Rating x:Name="Rating"
                     IsEnabled="False"

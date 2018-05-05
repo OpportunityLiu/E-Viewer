@@ -16,7 +16,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -364,8 +363,6 @@ namespace ExClient.Galleries
 
         public TagCollection Tags { get; }
 
-        public Language Language => Language.Parse(this);
-
         private FavoriteCategory favoriteCategory;
         public FavoriteCategory FavoriteCategory
         {
@@ -496,9 +493,6 @@ namespace ExClient.Galleries
             }, token));
         }
 
-        public IAsyncOperation<ReadOnlyCollection<TorrentInfo>> FetchTorrnetsAsync()
-            => TorrentInfo.LoadTorrentsAsync(this);
-
         public IAsyncOperation<string> FetchFavoriteNoteAsync()
         {
             return Run(async token =>
@@ -578,8 +572,5 @@ namespace ExClient.Galleries
                 }
             }).AsAsyncAction();
         }
-
-        public IAsyncOperation<Renaming.RenameInfo> FetchRenameInfoAsync()
-            => Renaming.RenameInfo.FetchAsync(this.ToGalleryInfo());
     }
 }

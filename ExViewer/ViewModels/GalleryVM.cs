@@ -3,6 +3,7 @@ using ExClient.Api;
 using ExClient.Galleries;
 using ExClient.Galleries.Metadata;
 using ExClient.Galleries.Rating;
+using ExClient.Services;
 using ExViewer.Helpers;
 using ExViewer.Services;
 using ExViewer.Settings;
@@ -531,17 +532,13 @@ namespace ExViewer.ViewModels
                 RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
                 try
                 {
-                    var file = await torrent.LoadTorrentAsync();
+                    var file = await torrent.DownloadTorrentAsync();
                     if (torrentfolder is null)
-                    {
                         await loadTorrentFolder();
-                    }
 
                     await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
                     if (!await Launcher.LaunchFileAsync(file))
-                    {
                         await Launcher.LaunchFolderAsync(torrentfolder);
-                    }
 
                     RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloaded(torrentfolder.Path), null);
                 }
