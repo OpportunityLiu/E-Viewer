@@ -1,4 +1,4 @@
-﻿namespace ExClient.Galleries.Metadata
+﻿namespace ExClient.Services
 {
     public enum LanguageModifier
     {

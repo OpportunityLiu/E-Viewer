@@ -136,13 +136,12 @@
     <Compile Include="Api\Rating.cs" />
     <Compile Include="Api\Tagging.cs" />
     <Compile Include="Api\VoteState.cs" />
-    <Compile Include="Galleries\Metadata\LanguageModifier.cs" />
-    <Compile Include="Galleries\Metadata\LanguageName.cs" />
-    <Compile Include="Galleries\Metadata\LanguageNameExtension.cs" />
+    <Compile Include="Services\LanguageModifier.cs" />
+    <Compile Include="Services\LanguageName.cs" />
     <Compile Include="Galleries\Rating\RatingStatus.cs" />
     <Compile Include="Galleries\Rating\Score.cs" />
-    <Compile Include="Galleries\Renaming\RenameInfo.cs" />
-    <Compile Include="Galleries\Renaming\RenameRecord.cs" />
+    <Compile Include="Services\RenameInfo.cs" />
+    <Compile Include="Services\RenameRecord.cs" />
     <Compile Include="Hentaiverse\HentaiVerseInfo.cs" />
     <Compile Include="Hentaiverse\MonsterEncounteredEventArgs.cs" />
     <Compile Include="Internal\DomainProvider.cs" />
@@ -176,7 +175,7 @@
     <Compile Include="HostType.cs" />
     <Compile Include="Galleries\ImageLoadingState.cs" />
     <Compile Include="Internal\TokenExtension.cs" />
-    <Compile Include="Galleries\Metadata\Language.cs" />
+    <Compile Include="Services\Language.cs" />
     <Compile Include="Launch\FavoritesSearchHandler.cs" />
     <Compile Include="Launch\GalleryHandler.cs" />
     <Compile Include="Launch\GalleryImageHandler.cs" />
@@ -227,7 +226,7 @@
     <Compile Include="Tagging\NamespaceTagCollection.cs" />
     <Compile Include="Tagging\Tag.cs" />
     <Compile Include="Tagging\TagCollection.cs" />
-    <Compile Include="Galleries\Metadata\TorrentInfo.cs" />
+    <Compile Include="Services\TorrentInfo.cs" />
     <Compile Include="Launch\UriLauncher.cs" />
     <Compile Include="Status\TaggingRecord.cs" />
     <Compile Include="Status\TaggingStatistics.cs" />

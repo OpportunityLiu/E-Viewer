@@ -77,7 +77,7 @@ namespace ExClient.Api
                     return true;
                 }
             }
-            info = default(GalleryInfo);
+            info = default;
             return false;
         }
 
@@ -137,14 +137,9 @@ namespace ExClient.Api
         {
             var data = new UriHandlerData(uri);
             if (TryParseGallery(data, out info))
-            {
                 return true;
-            }
-
             if (TryParseGalleryPopup(data, out info, out _))
-            {
                 return true;
-            }
 
             info = default;
             return false;
@@ -153,10 +148,7 @@ namespace ExClient.Api
         public static GalleryInfo Parse(Uri uri)
         {
             if (TryParse(uri, out var r))
-            {
                 return r;
-            }
-
             throw new FormatException();
         }
 
@@ -186,10 +178,7 @@ namespace ExClient.Api
         public override bool Equals(object obj)
         {
             if (obj is GalleryInfo info)
-            {
                 return Equals(info);
-            }
-
             return false;
         }
 
@@ -201,17 +190,11 @@ namespace ExClient.Api
 
         public static bool operator !=(GalleryInfo left, GalleryInfo right)
             => !(left == right);
-    }
 
-    public static class GalleryInfoExtension
-    {
-        public static GalleryInfo ToGalleryInfo(this Gallery gallery)
+        public static implicit operator GalleryInfo(Gallery gallery)
         {
             if (gallery is null)
-            {
-                throw new ArgumentNullException(nameof(gallery));
-            }
-
+                return default;
             return new GalleryInfo(gallery.ID, gallery.Token);
         }
     }

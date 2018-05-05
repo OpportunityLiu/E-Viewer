@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
+using ExClient.Services;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -31,6 +32,8 @@ namespace ExViewer.Controls
             ClearValue(GalleryProperty);
             base.OnDisconnectVisualChildren();
         }
+
+        private string galleryLanguage(Gallery g) => g.GetLanguage().ToString();
 
         protected override Size MeasureOverride(Size availableSize)
         {
