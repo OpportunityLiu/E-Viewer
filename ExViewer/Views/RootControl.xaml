@@ -236,6 +236,17 @@
                             Height="32" />
                 </controls:SplitViewTab.Icon>
               </controls:SplitViewTab>
+              <controls:SplitViewTab x:Uid="Views/RootControl/ToplistSplitViewTab"
+                                     x:Name="svt_Toplist"
+                                     Content="Toplist"
+                                     Click="svt_Click"
+                                     AccessKey="T">
+                <controls:SplitViewTab.Icon>
+                  <PathIcon Data="M9,10 L9,19 L11,19 L11,21.2891 L13.28906,19 L23,19 L23,10 z M8,9 L24,9 L24,20 L13.71094,20 L10,23.7109 L10,20 L8,20 z M13,14 h2 l1,-2.2 l1,2.2 h2 l-1.5,1.4 l0.4,2.2 l-1.9,-1 l-1.9,1 l0.4,-2.2z"
+                            Width="32"
+                            Height="32" />
+                </controls:SplitViewTab.Icon>
+              </controls:SplitViewTab>
               <controls:SplitViewTab x:Uid="Views/RootControl/SavedSplitViewTab"
                                      x:Name="svt_Saved"
                                      Content="Saved galleries"
