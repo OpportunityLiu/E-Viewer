@@ -189,6 +189,7 @@
     <Compile Include="Launch\UriHandlerData.cs" />
     <Compile Include="Launch\UriHelper.cs" />
     <Compile Include="Search\FileSearchResult.cs" />
+    <Compile Include="Search\GalleryToplist.cs" />
     <Compile Include="Search\SearchResult.cs" />
     <Compile Include="Settings\ExcludedLanguage.cs" />
     <Compile Include="Settings\ExcludedUploadersSettingProvider.cs" />
