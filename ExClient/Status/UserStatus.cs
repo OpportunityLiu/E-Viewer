@@ -10,7 +10,7 @@ using Windows.Web.Http;
 
 namespace ExClient.Status
 {
-    public class UserStatus : ObservableObject
+    public sealed class UserStatus : ObservableObject
     {
         private static readonly Uri infoUri = new Uri(Internal.DomainProvider.Eh.RootUri, "home.php");
 
@@ -81,6 +81,7 @@ namespace ExClient.Status
             this.ModerationPowerForumActivity = values[5];
             this.ModerationPowerUploadsAndHatH = values[6];
             this.ModerationPowerAccountAge = values[7];
+            this.ModerationPowerCaculated = values.Take(3).Sum() + Math.Min(values.Skip(3).Take(5).Sum(), 25);
         }
 
         public IAsyncAction RefreshAsync()
@@ -125,19 +126,19 @@ namespace ExClient.Status
         private int imageUsageResetCost;
         public int ImageUsage
         {
-            get => this.imageUsage; set => Set(ref this.imageUsage, value);
+            get => this.imageUsage; private set => Set(ref this.imageUsage, value);
         }
         public int ImageUsageLimit
         {
-            get => this.imageUsageLimit; set => Set(ref this.imageUsageLimit, value);
+            get => this.imageUsageLimit; private set => Set(ref this.imageUsageLimit, value);
         }
         public int ImageUsageRegenerateRatePerMinute
         {
-            get => this.imageUsageRegenerateRatePerMinute; set => Set(ref this.imageUsageRegenerateRatePerMinute, value);
+            get => this.imageUsageRegenerateRatePerMinute; private set => Set(ref this.imageUsageRegenerateRatePerMinute, value);
         }
         public int ImageUsageResetCost
         {
-            get => this.imageUsageResetCost; set => Set(ref this.imageUsageResetCost, value);
+            get => this.imageUsageResetCost; private set => Set(ref this.imageUsageResetCost, value);
         }
 
         public IAsyncAction ResetImageUsageAsync()
@@ -166,6 +167,7 @@ namespace ExClient.Status
 
         #region Moderation Power
         private double moderationPower = 1;
+        private double moderationPowerCaculated = 1;
         private double moderationPowerBase = 1;
         private double moderationPowerAwards;
         private double moderationPowerTagging;
@@ -176,39 +178,43 @@ namespace ExClient.Status
         private double moderationPowerAccountAge;
         public double ModerationPower
         {
-            get => this.moderationPower; set => Set(ref this.moderationPower, value);
+            get => this.moderationPower; private set => Set(ref this.moderationPower, value);
+        }
+        public double ModerationPowerCaculated
+        {
+            get => this.moderationPowerCaculated; private set => Set(ref this.moderationPowerCaculated, value);
         }
         public double ModerationPowerBase
         {
-            get => this.moderationPowerBase; set => Set(ref this.moderationPowerBase, value);
+            get => this.moderationPowerBase; private set => Set(ref this.moderationPowerBase, value);
         }
         public double ModerationPowerAwards
         {
-            get => this.moderationPowerAwards; set => Set(ref this.moderationPowerAwards, value);
+            get => this.moderationPowerAwards; private set => Set(ref this.moderationPowerAwards, value);
         }
         public double ModerationPowerTagging
         {
-            get => this.moderationPowerTagging; set => Set(ref this.moderationPowerTagging, value);
+            get => this.moderationPowerTagging; private set => Set(ref this.moderationPowerTagging, value);
         }
         public double ModerationPowerLevel
         {
-            get => this.moderationPowerLevel; set => Set(ref this.moderationPowerLevel, value);
+            get => this.moderationPowerLevel; private set => Set(ref this.moderationPowerLevel, value);
         }
         public double ModerationPowerDonations
         {
-            get => this.moderationPowerDonations; set => Set(ref this.moderationPowerDonations, value);
+            get => this.moderationPowerDonations; private set => Set(ref this.moderationPowerDonations, value);
         }
         public double ModerationPowerForumActivity
         {
-            get => this.moderationPowerForumActivity; set => Set(ref this.moderationPowerForumActivity, value);
+            get => this.moderationPowerForumActivity; private set => Set(ref this.moderationPowerForumActivity, value);
         }
         public double ModerationPowerUploadsAndHatH
         {
-            get => this.moderationPowerUploadsAndHatH; set => Set(ref this.moderationPowerUploadsAndHatH, value);
+            get => this.moderationPowerUploadsAndHatH; private set => Set(ref this.moderationPowerUploadsAndHatH, value);
         }
         public double ModerationPowerAccountAge
         {
-            get => this.moderationPowerAccountAge; set => Set(ref this.moderationPowerAccountAge, value);
+            get => this.moderationPowerAccountAge; private set => Set(ref this.moderationPowerAccountAge, value);
         }
         #endregion
     }
