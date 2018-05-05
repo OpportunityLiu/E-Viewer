@@ -16,7 +16,7 @@
   <Page.Transitions>
     <TransitionCollection>
       <NavigationThemeTransition>
-        <CommonNavigationTransitionInfo />
+        <DrillInNavigationTransitionInfo />
       </NavigationThemeTransition>
     </TransitionCollection>
   </Page.Transitions>
@@ -61,26 +61,18 @@
             <DataTemplate xmlns:c="using:ExClient.Galleries"
                           xmlns:controls="using:ExViewer.Controls"
                           x:DataType="c:Gallery">
-              <controls:GalleryViewer x:Name="gv_Gallery"
-                                      Gallery="{x:Bind}" />
+              <controls:GalleryViewer Gallery="{x:Bind}"
+                                      ContinuumNavigationTransitionInfo.IsExitElement="True" />
             </DataTemplate>
           </ListView.ItemTemplate>
-          <!--<ListView.Footer>
-              <TextBlock x:Uid="Views/SavedPage/LoadingMoreTextBlock"
-                         HorizontalAlignment="Center"
-                         Margin="12"
-                         Style="{StaticResource BaseTextBlockStyle}"
-                         Visibility="{x:Bind ViewModel.Galleries, FallbackValue=Visible, Converter={StaticResource NullToVisibleConverter}, Mode=OneWay}"
-                         Text="Loading more galleries..." />
-            </ListView.Footer>
-            <ListView.Header>
-              <TextBlock x:Uid="Views/SavedPage/EmptyTextBlock"
-                         HorizontalAlignment="Center"
-                         Margin="12"
-                         Style="{StaticResource BaseTextBlockStyle}"
-                         Visibility="{x:Bind ViewModel.Galleries.Count, Mode=OneWay, Converter={StaticResource ZeroToVisibleConverter}, FallbackValue=Collapsed}"
-                         Text="No saved galleries" />
-            </ListView.Header>-->
+          <ListView.Footer>
+            <TextBlock x:Uid="Views/SearchPage/LoadingMoreTextBlock"
+                       HorizontalAlignment="Center"
+                       Margin="12"
+                       Style="{StaticResource BaseTextBlockStyle}"
+                       Visibility="{x:Bind xb:Visibility.OfBoolean(HasMoreItems), FallbackValue=Visible, Mode=OneWay}"
+                       Text="Loading more galleries..." />
+          </ListView.Footer>
         </tk:PullToRefreshListView>
       </DataTemplate>
     </Pivot.ItemTemplate>
