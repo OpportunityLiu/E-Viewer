@@ -30,8 +30,6 @@ namespace ExClient.Galleries
     [System.Diagnostics.DebuggerDisplay(@"\{ID = {ID} Count = {Count}\}")]
     public class Gallery : FixedIncrementalLoadingList<GalleryImage>
     {
-        private static HttpClient coverClient { get; } = new HttpClient();
-
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
             return Task.Run(async () =>
@@ -58,14 +56,9 @@ namespace ExClient.Galleries
         public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
         {
             if (galleryInfo is null)
-            {
                 throw new ArgumentNullException(nameof(galleryInfo));
-            }
-
             if (galleryInfo.Count <= 0)
-            {
                 return AsyncOperation<IList<Gallery>>.CreateCompleted(Array.Empty<Gallery>());
-            }
 
             if (galleryInfo.Count <= 25)
             {
@@ -251,13 +244,9 @@ namespace ExClient.Galleries
                     var gid = this.ID;
                     var myModel = db.GallerySet.SingleOrDefault(model => model.GalleryModelId == gid);
                     if (myModel is null)
-                    {
                         db.GallerySet.Add(new GalleryModel().Update(this));
-                    }
                     else
-                    {
                         myModel.Update(this);
-                    }
                     db.SaveChanges();
                 }
             }).AsAsyncAction();
@@ -265,6 +254,8 @@ namespace ExClient.Galleries
 
         protected override GalleryImage CreatePlaceholder(int index)
             => new GalleryImage(this, index + 1);
+
+        private static readonly HttpClient coverClient = new HttpClient();
 
         protected virtual IAsyncOperation<SoftwareBitmap> GetThumbAsync()
         {
