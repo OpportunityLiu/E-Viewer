@@ -92,7 +92,7 @@ namespace ExClient
             get
             {
                 var values = new byte[HASH_SIZE];
-                fixed (void* pThis = &this, pValue = &values[0])
+                fixed (void* pThis = this.data.Data, pValue = &values[0])
                 {
                     System.Buffer.MemoryCopy(pThis, pValue, HASH_SIZE, HASH_SIZE);
                 }
