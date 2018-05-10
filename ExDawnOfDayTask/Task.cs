@@ -8,6 +8,7 @@ using ExClient.HentaiVerse;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 using System.Threading;
+using System.Diagnostics;
 
 namespace ExDawnOfDayTask
 {
@@ -42,6 +43,9 @@ namespace ExDawnOfDayTask
             try
             {
                 HentaiVerseInfo.DawnOfDayRewardsAwarded += this.HentaiVerseInfo_DawnOfDayRewardsAwarded;
+#if DEBUG
+                HentaiVerseInfo_DawnOfDayRewardsAwarded(null, null);
+#endif
                 await HentaiVerseInfo.FetchAsync();
             }
             catch { }
@@ -52,8 +56,17 @@ namespace ExDawnOfDayTask
             }
         }
 
-        private void HentaiVerseInfo_DawnOfDayRewardsAwarded(object sender, DawnOfDayRewardsEventArgs e)
+        private static void sendToast(IReadOnlyDictionary<string, double> data)
         {
+            var format = default(Opportunity.ResourceGenerator.FormattableResourceString);
+            switch (data.Count)
+            {
+            case 1: format = Strings.Resources.DawnOfDayToast.Content1(); break;
+            case 2: format = Strings.Resources.DawnOfDayToast.Content2(); break;
+            case 3: format = Strings.Resources.DawnOfDayToast.Content3(); break;
+            case 4: format = Strings.Resources.DawnOfDayToast.Content4(); break;
+            default: return;
+            }
             var toastContent = new ToastContent()
             {
                 Visual = new ToastVisual()
@@ -64,11 +77,11 @@ namespace ExDawnOfDayTask
                         {
                             new AdaptiveText()
                             {
-                                Text = "It is the dawn of a new day!"
+                                Text = Strings.Resources.DawnOfDayToast.Title,
                             },
                             new AdaptiveText()
                             {
-                                Text = $"You gain {getStr("EXP")} EXP, {getStr("Credits")} Credits, {getStr("GP")} GP and {getStr("Hath")} Hath!"
+                                Text = string.Format(format.FormatString, data.Keys.Select(getStr).ToArray()),
                             }
                         }
                     }
@@ -76,18 +89,48 @@ namespace ExDawnOfDayTask
             };
             string getStr(string key)
             {
-                e.Data.TryGetValue(key, out var r);
-                if (r % 1 == 0)
-                    return r.ToString("N0");
-                return r.ToString("N");
+                data.TryGetValue(key, out var r);
+                var kstr = r % 1 == 0
+                    ? r.ToString("N0")
+                    : r.ToString("N");
+                switch (key)
+                {
+                case "EXP":
+                    return Strings.Resources.DawnOfDayToast.RewardExp(kstr);
+                case "Credits":
+                    return Strings.Resources.DawnOfDayToast.RewardCredits(kstr);
+                case "GP":
+                    return Strings.Resources.DawnOfDayToast.RewardGp(kstr);
+                case "Hath":
+                    return Strings.Resources.DawnOfDayToast.RewardHath(kstr);
+                default:
+                    Debug.Assert(false, "Invalid key!");
+                    break;
+                }
+                return "";
             }
             var toastNotif = new ToastNotification(toastContent.GetXml())
             {
-                ExpirationTime = DateTimeOffset.UtcNow.Date.AddDays(1),
                 Group = "DawnOfDay",
                 NotificationMirroring = NotificationMirroring.Allowed,
             };
             ToastNotificationManager.CreateToastNotifier().Show(toastNotif);
+        }
+
+        private void HentaiVerseInfo_DawnOfDayRewardsAwarded(object sender, DawnOfDayRewardsEventArgs e)
+        {
+#if DEBUG
+            if (e is null)
+            {
+                sendToast(new Dictionary<string, double>
+                {
+                    ["Hath"] = 12.1,
+                    ["EXP"] = 34567,
+                });
+                return;
+            }
+#endif
+            sendToast(e.Data);
         }
     }
 }
