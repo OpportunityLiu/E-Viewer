@@ -136,6 +136,7 @@
     <Compile Include="Api\Rating.cs" />
     <Compile Include="Api\Tagging.cs" />
     <Compile Include="Api\VoteState.cs" />
+    <Compile Include="Hentaiverse\EventArgs.cs" />
     <Compile Include="Services\LanguageModifier.cs" />
     <Compile Include="Services\LanguageName.cs" />
     <Compile Include="Galleries\Rating\RatingStatus.cs" />
@@ -143,7 +144,6 @@
     <Compile Include="Services\RenameInfo.cs" />
     <Compile Include="Services\RenameRecord.cs" />
     <Compile Include="Hentaiverse\HentaiVerseInfo.cs" />
-    <Compile Include="Hentaiverse\MonsterEncounteredEventArgs.cs" />
     <Compile Include="Internal\DomainProvider.cs" />
     <Compile Include="Launch\SearchHandlerBase.cs" />
     <Compile Include="LogOnInfo.cs" />

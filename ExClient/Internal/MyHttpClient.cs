@@ -204,11 +204,7 @@ namespace ExClient.Internal
                     }
                 } while (false);
                 response.EnsureSuccessStatusCode();
-                if (HentaiVerseInfo.IsEnabled)
-                {
-                    HentaiVerseInfo.AnalyzePage(doc);
-                }
-
+                HentaiVerseInfo.AnalyzePage(doc);
                 return doc;
             });
         }

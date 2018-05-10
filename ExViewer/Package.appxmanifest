@@ -26,17 +26,22 @@
         <uap:SplashScreen Image="Assets/Application/SplashScreen.png" BackgroundColor="#e7dfca" />
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.protocol">
-          <uap:Protocol Name="e-viewer-data">
-            <uap:DisplayName>E-Viewer 数据</uap:DisplayName>
-          </uap:Protocol>
-        </uap:Extension>
         <uap3:Extension Category="windows.appUriHandler">
           <uap3:AppUriHandler>
             <uap3:Host Name="exhentai.org" />
             <uap3:Host Name="e-hentai.org" />
           </uap3:AppUriHandler>
         </uap3:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="e-viewer-data">
+            <uap:DisplayName>E-Viewer 数据</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="ExDawnOfDayTask.Task">
+          <BackgroundTasks>
+            <Task Type="timer" />
+          </BackgroundTasks>
+        </Extension>
       </Extensions>
       <uap:ApplicationContentUriRules>
         <uap:Rule Match="https://forums.e-hentai.org" Type="include" WindowsRuntimeAccess="none" />
