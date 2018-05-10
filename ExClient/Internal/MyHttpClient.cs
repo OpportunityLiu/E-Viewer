@@ -40,8 +40,8 @@ namespace ExClient.Internal
             }
         }
 
-        private HttpClient inner;
-        private Client owner;
+        private readonly HttpClient inner;
+        private readonly Client owner;
 
         public HttpRequestHeaderCollection DefaultRequestHeaders => this.inner.DefaultRequestHeaders;
 
