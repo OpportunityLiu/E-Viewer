@@ -1,0 +1,13 @@
+﻿{
+  "DawnOfDayToast": {
+    "Title": "It is the dawn of a new day!",
+    "$Content1": "You gain {reward1}!",
+    "$Content2": "You gain {reward1} and {reward2}!",
+    "$Content3": "You gain {reward1}, {reward2} and {reward3}!",
+    "$Content4": "You gain {reward1}, {reward2}, {reward3} and {reward4}!",
+    "$RewardExp": "{value} EXP",
+    "$RewardCredits": "{value} Credits",
+    "$RewardGp": "{value} GP",
+    "$RewardHath": "{value} Hath"
+  }
+}
