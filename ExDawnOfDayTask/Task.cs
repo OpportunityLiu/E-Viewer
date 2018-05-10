@@ -44,7 +44,8 @@ namespace ExDawnOfDayTask
             {
                 HentaiVerseInfo.DawnOfDayRewardsAwarded += this.HentaiVerseInfo_DawnOfDayRewardsAwarded;
 #if DEBUG
-                HentaiVerseInfo_DawnOfDayRewardsAwarded(null, null);
+                if (Debugger.IsAttached)
+                    HentaiVerseInfo_DawnOfDayRewardsAwarded(null, null);
 #endif
                 await HentaiVerseInfo.FetchAsync();
             }
