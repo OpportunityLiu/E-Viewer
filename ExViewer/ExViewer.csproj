@@ -635,6 +635,10 @@
       <Project>{8875a248-ce2e-454b-9090-62ae609d7644}</Project>
       <Name>ExClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExDawnOfDayTask\ExDawnOfDayTask.csproj">
+      <Project>{81e40e54-b51e-44e5-90a5-2b1dcff56dfa}</Project>
+      <Name>ExDawnOfDayTask</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack">
