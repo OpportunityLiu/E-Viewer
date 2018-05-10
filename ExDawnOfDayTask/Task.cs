@@ -42,7 +42,6 @@ namespace ExDawnOfDayTask
             try
             {
                 HentaiVerseInfo.DawnOfDayRewardsAwarded += this.HentaiVerseInfo_DawnOfDayRewardsAwarded;
-                HentaiVerseInfo_DawnOfDayRewardsAwarded(null, null);
                 await HentaiVerseInfo.FetchAsync();
             }
             catch { }
@@ -77,8 +76,6 @@ namespace ExDawnOfDayTask
             };
             string getStr(string key)
             {
-                if (e == null)
-                    return new Random().Next().ToString("N0");
                 e.Data.TryGetValue(key, out var r);
                 if (r % 1 == 0)
                     return r.ToString("N0");
