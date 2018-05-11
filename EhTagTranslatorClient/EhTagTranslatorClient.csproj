@@ -153,7 +153,7 @@
       <Version>6.1.4</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.3.9</Version>
+      <Version>1.3.10</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
       <Version>4.4.0</Version>
