@@ -51,20 +51,14 @@ namespace ExClient.Tagging
         public static string ToSearchString(this Namespace that)
         {
             if (searchDic.TryGetValue(that, out var r))
-            {
                 return r;
-            }
-
             return null;
         }
 
         public static string ToShortString(this Namespace that)
         {
             if (searchDic.TryGetValue(that, out var r))
-            {
                 return r.Substring(0, 1);
-            }
-
             return null;
         }
 
@@ -74,10 +68,7 @@ namespace ExClient.Tagging
         public static Namespace Parse(string str)
         {
             if (TryParse(str, out var r))
-            {
                 return r;
-            }
-
             throw new FormatException(LocalizedStrings.Resources.InvalidNamespace);
         }
 
@@ -90,21 +81,12 @@ namespace ExClient.Tagging
             }
             str = str.Trim();
             if (parsingDic.TryGetValue(str, out result))
-            {
                 return true;
-            }
-
             var f = str.FirstOrDefault(char.IsLetter);
             if (f == default(char))
-            {
                 return false;
-            }
-
             if (parsingDic.TryGetValue(f.ToString(), out result))
-            {
                 return true;
-            }
-
             return false;
         }
     }

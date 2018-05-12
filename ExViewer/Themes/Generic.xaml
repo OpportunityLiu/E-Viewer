@@ -110,6 +110,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="controls:SplitViewTab">
           <Grid x:Name="RootGrid"
+                ToolTipService.ToolTip="{TemplateBinding Content}"
                 Background="{TemplateBinding Background}">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="48" />

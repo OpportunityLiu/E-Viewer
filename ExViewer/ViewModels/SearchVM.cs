@@ -51,7 +51,7 @@ namespace ExViewer.ViewModels
         private SearchVM(CategorySearchResult searchResult)
             : base(searchResult)
         {
-            this.Commands[nameof(Search)] = Command<string>.Create(async (sender, queryText) =>
+            this.Commands.Add(nameof(Search), Command<string>.Create(async (sender, queryText) =>
             {
                 var that = (SearchVM)sender.Tag;
                 if (SettingCollection.Current.SaveLastSearch)
@@ -61,7 +61,7 @@ namespace ExViewer.ViewModels
                 }
                 var vm = GetVM(Client.Current.Search(queryText, that.category, that.advancedSearch));
                 await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
-            });
+            }));
         }
 
         public override void SetQueryWithSearchResult()

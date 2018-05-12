@@ -236,6 +236,16 @@
                             Height="32" />
                 </controls:SplitViewTab.Icon>
               </controls:SplitViewTab>
+              <controls:SplitViewTab x:Uid="Views/RootControl/ToplistSplitViewTab"
+                                     x:Name="svt_Toplist"
+                                     Content="Toplist"
+                                     Click="svt_Click"
+                                     AccessKey="T">
+                <controls:SplitViewTab.Icon>
+                  <FontIcon FontFamily="Segoe MDL2 Assets"
+                            Glyph="&#xEC24;" />
+                </controls:SplitViewTab.Icon>
+              </controls:SplitViewTab>
               <controls:SplitViewTab x:Uid="Views/RootControl/SavedSplitViewTab"
                                      x:Name="svt_Saved"
                                      Content="Saved galleries"

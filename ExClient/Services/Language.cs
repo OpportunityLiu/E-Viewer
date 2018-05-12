@@ -1,37 +1,38 @@
-﻿using ExClient.Tagging;
+﻿using ExClient.Galleries;
+using ExClient.Tagging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ExClient.Galleries.Metadata
+namespace ExClient.Services
 {
-    public readonly struct Language : IEquatable<Language>
+    public static class LanguageExtension
     {
-        private static readonly string[] technicalTags = new string[]
+        private static readonly string[] technicalTags = new[]
         {
             "rewrite",
             "translated"
         };
 
-        private static readonly string[] naTags = new string[]
+        private static readonly string[] naTags = new[]
         {
             "speechless",
             "text cleaned"
         };
 
-        internal static Language Parse(Gallery gallery)
+        public static Language GetLanguage(this Gallery gallery)
         {
-            var tags = gallery.Tags;
+            var tags = gallery?.Tags;
             if (tags is null)
-            {
-                return default(Language);
-            }
+                return default;
 
             var modi = LanguageModifier.None;
             var language = new List<LanguageName>(1);
             var lanNA = false;
             foreach (var item in tags[Namespace.Language])
             {
+                if (item.State.GetPowerState() == TagState.LowPower)
+                    continue;
                 switch (item.Content.Content)
                 {
                 case "rewrite":
@@ -60,16 +61,17 @@ namespace ExClient.Galleries.Metadata
                     continue;
                 }
             }
-            if (!lanNA && language.Count == 0)
-            {
+            if (lanNA)
+                return new Language(Array.Empty<LanguageName>(), modi);
+            else if (language.IsEmpty())
                 return new Language(null, modi);
-            }
             else
-            {
                 return new Language(language, modi);
-            }
         }
+    }
 
+    public readonly struct Language : IEquatable<Language>
+    {
         public Language(IEnumerable<LanguageName> names, LanguageModifier modifier)
         {
             Modifier = modifier;
@@ -87,27 +89,18 @@ namespace ExClient.Galleries.Metadata
 
         public IReadOnlyList<LanguageName> Names => this.names ?? defaultLanguage;
 
-        public LanguageModifier Modifier
-        {
-            get;
-        }
+        public LanguageModifier Modifier { get; }
 
         public override string ToString()
         {
             if (this.Names.Count == 0) // 0.9% cases
-            {
                 return LocalizedStrings.Language.Names.NotApplicable;
-            }
 
             string name;
             if (this.Names.Count == 1) // 99% cases
-            {
                 name = this.Names[0].ToFriendlyNameString();
-            }
             else // 0.1% cases
-            {
                 name = string.Join(", ", this.Names.Select(LanguageNameExtension.ToFriendlyNameString));
-            }
 
             switch (Modifier)
             {
@@ -123,23 +116,11 @@ namespace ExClient.Galleries.Metadata
         public bool Equals(Language other)
         {
             if (this.Modifier != other.Modifier)
-            {
                 return false;
-            }
-
             if (this.names is null)
-            {
-                if (other.names is null)
-                {
-                    return true;
-                }
-
-                return false;
-            }
+                return (other.names is null);
             if (other.names is null)
-            {
                 return false;
-            }
 
             return this.names.SequenceEqual(other.names);
         }
@@ -147,10 +128,7 @@ namespace ExClient.Galleries.Metadata
         public override bool Equals(object obj)
         {
             if (obj is Language l)
-            {
                 return Equals(l);
-            }
-
             return false;
         }
 

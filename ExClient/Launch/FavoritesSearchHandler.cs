@@ -14,7 +14,7 @@ namespace ExClient.Launch
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
             var keyword = "";
-            var category = FavoriteCategory.All;
+            var category = Client.Current.Favorites.All;
             var ap = false;
             foreach (var item in data.Queries)
             {

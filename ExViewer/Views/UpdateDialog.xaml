@@ -16,17 +16,32 @@
                      Closing="MyContentDialog_Closing"
                      PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
                      SecondaryButtonClick="MyContentDialog_SecondaryButtonClick">
-  <StackPanel x:Name="spRoot">
+  <Grid x:Name="gdRoot">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
     <TextBlock x:Name="tbVersion"
+               Grid.Row="0"
                Text="{x:Bind exv:Strings.Resources.Views.UpdateDialog.ContentTemplate(release.Version.Major, release.Version.Minor, release.Version.Build, release.Version.Revision)}"
                Style="{ThemeResource CaptionTextBlockStyle}" />
     <TextBlock x:Name="tbTitle"
+               Grid.Row="1"
                Text="{x:Bind release.name}"
                Style="{ThemeResource SubtitleTextBlockStyle}"
                Padding="0,8" />
-    <tk:MarkdownTextBlock x:Name="tbContent"
-                          Text="{x:Bind release.body}" />
+    <ScrollViewer Grid.Row="2"
+                  HorizontalScrollMode="Auto"
+                  VerticalScrollMode="Enabled"
+                  HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto">
+      <tk:MarkdownTextBlock x:Name="tbContent"
+                            Text="{x:Bind release.body}" />
+    </ScrollViewer>
     <RelativePanel x:Name="rpDownload"
+                   Grid.Row="3"
                    x:Load="False"
                    Margin="0,12,0,0">
       <ProgressBar x:Name="pb"
@@ -37,12 +52,13 @@
                  RelativePanel.LeftOf="tbSep"
                  RelativePanel.AlignVerticalCenterWith="tbSep" />
       <TextBlock x:Name="tbSep"
-                 Text=" / "
+                 Text="/"
+                 Margin="4,0"
                  RelativePanel.LeftOf="tbTotal"
                  RelativePanel.AlignVerticalCenterWith="tbTotal" />
       <TextBlock x:Name="tbTotal"
                  RelativePanel.Below="pb"
                  RelativePanel.AlignRightWithPanel="True" />
     </RelativePanel>
-  </StackPanel>
+  </Grid>
 </con:MyContentDialog>

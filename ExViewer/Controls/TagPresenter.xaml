@@ -148,7 +148,8 @@
               ScrollViewer.IsVerticalScrollChainingEnabled="True"
               SelectionMode="None"
               ItemContainerStyle="{StaticResource StackPanelListViewItemStyle}"
-              ItemTemplate="{StaticResource TagGroupTemplate}">
+              ItemTemplate="{StaticResource TagGroupTemplate}"
+              XYFocusDown="{x:Bind btnStartNew}">
       <ListView.ItemContainerTransitions>
         <TransitionCollection />
       </ListView.ItemContainerTransitions>
@@ -173,7 +174,7 @@
             Grid.Row="1"
             Margin="18,2"
             Style="{ThemeResource TextBlockButtonStyle}"
-            HorizontalAlignment="Stretch"
+            HorizontalAlignment="Center"
             Content="Add new tags"
             GotFocus="btnStartNew_GotFocus"
             Click="btnStartNew_Click" />
