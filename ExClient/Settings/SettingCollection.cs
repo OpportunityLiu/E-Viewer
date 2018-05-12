@@ -170,7 +170,7 @@ namespace ExClient.Settings
                     {
                         item.ApplyChanges(postDic);
                     }
-                    var postData = Client.Current.HttpClient.PostAsync(this.configUri, new HttpFormUrlEncodedContent(postDic));
+                    var postData = Client.Current.HttpClient.PostAsync(this.configUri, postDic);
                     token.Register(postData.Cancel);
                     var r = await postData;
                     var doc = new HtmlDocument();

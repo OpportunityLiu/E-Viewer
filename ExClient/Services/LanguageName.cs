@@ -1,5 +1,13 @@
-﻿namespace ExClient.Galleries.Metadata
+﻿using System;
+
+namespace ExClient.Services
 {
+    public static class LanguageNameExtension
+    {
+        public static string ToFriendlyNameString(this LanguageName that)
+            => that.ToFriendlyNameString(LocalizedStrings.Language.Names.GetValue);
+    }
+
     public enum LanguageName
     {
         /// <summary>日语</summary>

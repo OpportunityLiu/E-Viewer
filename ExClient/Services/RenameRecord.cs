@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 
-namespace ExClient.Galleries.Renaming
+namespace ExClient.Services
 {
+    [DebuggerDisplay(@"{Power}% {Title}")]
     public readonly struct RenameRecord : IEquatable<RenameRecord>
     {
         public int ID { get; }
@@ -27,5 +29,7 @@ namespace ExClient.Galleries.Renaming
         public override bool Equals(object obj) => (obj is RenameRecord rec) ? Equals(rec) : false;
 
         public override int GetHashCode() => (this.ID * 17) ^ this.Title.GetHashCode() ^ (this.Power * 19260817);
+
+        public override string ToString() => Title;
     }
 }

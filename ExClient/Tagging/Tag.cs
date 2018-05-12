@@ -39,7 +39,7 @@ namespace ExClient.Tagging
             {
                 ns = Namespace.Misc;
             }
-            if (string.IsNullOrWhiteSpace(content))
+            if (content.IsNullOrWhiteSpace())
             {
                 return false;
             }
@@ -53,14 +53,9 @@ namespace ExClient.Tagging
         public Tag(Namespace @namespace, string content)
         {
             if (!@namespace.IsDefined())
-            {
                 throw new ArgumentOutOfRangeException(nameof(@namespace));
-            }
-
-            if (string.IsNullOrWhiteSpace(content))
-            {
+            if (content.IsNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(content));
-            }
 
             this.Namespace = @namespace;
             this.Content = content.Trim().ToLowerInvariant();
@@ -97,34 +92,22 @@ namespace ExClient.Tagging
         }
 
         public CategorySearchResult Search()
-        {
-            return Client.Current.Search(ToSearchTerm());
-        }
+            => Client.Current.Search(ToSearchTerm());
 
         public CategorySearchResult Search(Category filter)
-        {
-            return Client.Current.Search(ToSearchTerm(), filter);
-        }
+            => Client.Current.Search(ToSearchTerm(), filter);
 
         public CategorySearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
-        {
-            return Client.Current.Search(ToSearchTerm(), filter, advancedSearch);
-        }
+            => Client.Current.Search(ToSearchTerm(), filter, advancedSearch);
 
-        public static Uri WikiUri
-        {
-            get;
-        } = new Uri("https://ehwiki.org/wiki/");
+        public static Uri WikiUri { get; } = new Uri("https://ehwiki.org/wiki/");
 
         public Uri TagDefinitionUri => new Uri(WikiUri, Content);
 
         public override string ToString()
         {
             if (Namespace == Namespace.Misc)
-            {
                 return Content;
-            }
-
             return $"{Namespace.ToShortString()}:{Content}";
         }
 
@@ -137,10 +120,7 @@ namespace ExClient.Tagging
         public override bool Equals(object obj)
         {
             if (obj is Tag o)
-            {
                 return this.Equals(o);
-            }
-
             return false;
         }
 
@@ -156,10 +136,7 @@ namespace ExClient.Tagging
         {
             var c1 = this.Namespace - other.Namespace;
             if (c1 != 0)
-            {
                 return c1;
-            }
-
             return this.Content.CompareTo(other.Content);
         }
 

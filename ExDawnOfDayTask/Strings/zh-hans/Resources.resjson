@@ -1,0 +1,13 @@
+﻿{
+  "DawnOfDayToast": {
+    "$Content1": "你获得了 {reward1}！",
+    "$Content2": "你获得了 {reward1} 和 {reward2}！",
+    "$Content3": "你获得了 {reward1}、{reward2} 和 {reward3}！",
+    "$Content4": "你获得了 {reward1}、{reward2}、{reward3} 和 {reward4}！",
+    "$RewardCredits": "{value} 绅士币",
+    "$RewardExp": "{value} 经验值",
+    "$RewardGp": "{value} 画廊点数",
+    "$RewardHath": "{value} Hath",
+    "Title": "崭新的一天到来了！"
+  }
+}

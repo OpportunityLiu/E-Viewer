@@ -38,9 +38,7 @@ namespace ExClient.Tagging
         {
             var end = this.Owner.Offset[this.groupIndex + 1];
             for (var i = this.Owner.Offset[this.groupIndex]; i < end; i++)
-            {
                 yield return this.Owner.Data[i];
-            }
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -53,10 +51,7 @@ namespace ExClient.Tagging
             foreach (var ii in this)
             {
                 if (ii == item)
-                {
                     return i;
-                }
-
                 i++;
             }
             return -1;
@@ -71,16 +66,10 @@ namespace ExClient.Tagging
         void IList.RemoveAt(int index) => throw new InvalidOperationException();
         public void CopyTo(Array array, int index)
         {
-            if (!(array is GalleryTag[] arr))
-            {
+            if (!(array is object[] arr))
                 throw new ArgumentException("Wrong type of array", nameof(array));
-            }
-
             if (index + Count > arr.Length)
-            {
                 throw new ArgumentException("Not enough space for copying", nameof(array));
-            }
-
             foreach (var item in this)
             {
                 arr[index] = item;

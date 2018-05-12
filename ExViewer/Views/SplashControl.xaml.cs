@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExClient.Forums;
 using ExViewer.Controls;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
