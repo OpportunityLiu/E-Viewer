@@ -107,8 +107,7 @@ namespace ExClient.Galleries.Commenting
                         yield return new KeyValuePair<string, string>("postcomment", "Post Comment");
                     }
                 }
-                var request = new HttpFormUrlEncodedContent(getData());
-                var requestTask = Client.Current.HttpClient.PostAsync(this.Owner.GalleryUri, request);
+                var requestTask = Client.Current.HttpClient.PostAsync(this.Owner.GalleryUri, getData());
                 token.Register(requestTask.Cancel);
                 var response = await requestTask;
                 var responseStr = await response.Content.ReadAsStringAsync();

@@ -145,8 +145,7 @@ namespace ExClient.Status
         {
             return AsyncInfo.Run(async token =>
             {
-                var content = new HttpFormUrlEncodedContent(new[] { new KeyValuePair<string, string>("act", "limits") });
-                var p = Client.Current.HttpClient.PostAsync(infoUri, content);
+                var p = Client.Current.HttpClient.PostAsync(infoUri, new KeyValuePair<string, string>("act", "limits"));
                 token.Register(p.Cancel);
                 var r = await p;
                 var html = await r.Content.ReadAsStringAsync();

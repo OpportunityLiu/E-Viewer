@@ -27,16 +27,22 @@ namespace ExClient
 
         private async Task fetchSettings()
         {
-            try
+            if (!NeedLogOn)
             {
-                if (!NeedLogOn)
+                try
                 {
                     await DomainProvider.Eh.Settings.FetchAsync();
+                }
+                catch (Exception)
+                {
+                }
+                try
+                {
                     await DomainProvider.Ex.Settings.FetchAsync();
                 }
-            }
-            catch (System.Exception)
-            {
+                catch (Exception)
+                {
+                }
             }
         }
 

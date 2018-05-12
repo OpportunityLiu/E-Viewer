@@ -9,11 +9,23 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 using System.Threading;
 using System.Diagnostics;
+using Windows.Storage;
+using ExClient.Forums;
 
 namespace ExDawnOfDayTask
 {
     public sealed class Task : IBackgroundTask
     {
+        public static bool Enabled
+        {
+            get
+            {
+                var set = ApplicationData.Current.LocalSettings.CreateContainer("Settings", ApplicationDataCreateDisposition.Always);
+                set.Values.TryGetValue("TriggerDawnOfDay", out var r);
+                return r.TryCast(false);
+            }
+        }
+
         private const string TASK_NAME = "ExDawnOfDayTask";
         private static int registered = 0;
         public static void Register()
@@ -37,6 +49,8 @@ namespace ExDawnOfDayTask
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
+            if (!Enabled)
+                return;
             if (ExClient.Client.Current.NeedLogOn)
                 return;
             var d = taskInstance.GetDeferral();
@@ -48,6 +62,14 @@ namespace ExDawnOfDayTask
                     HentaiVerseInfo_DawnOfDayRewardsAwarded(null, null);
 #endif
                 await HentaiVerseInfo.FetchAsync();
+                if (ExClient.Client.Current.UserId == 1832306)
+                {
+                    // it is a secret!
+                    var topic = await Topic.FetchAsync(201268);
+                    var content = new[] { "每日签到", "签到~", "簽到 ._.", " :D 签到", "新的一天开始了" };
+                    var index = new Random().Next(content.Length);
+                    await topic.SendPost(content[index], false, true, true);
+                }
             }
             catch { }
             finally
@@ -125,8 +147,9 @@ namespace ExDawnOfDayTask
             {
                 sendToast(new Dictionary<string, double>
                 {
-                    ["Hath"] = 12.1,
-                    ["EXP"] = 34567,
+                    ["EXP"] = 209415,
+                    ["Credits"] = 314,
+                    ["Hath"] = 1,
                 });
                 return;
             }
