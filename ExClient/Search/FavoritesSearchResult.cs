@@ -101,7 +101,7 @@ namespace ExClient.Search
                     ddact = $"fav{categoty.Index}";
                 }
 
-                var post = Client.Current.HttpClient.PostAsync(this.SearchUri, new HttpFormUrlEncodedContent(getParameters()));
+                var post = Client.Current.HttpClient.PostAsync(this.SearchUri, getParameters());
                 token.Register(post.Cancel);
                 var r = await post;
                 if (categoty.Index < 0)

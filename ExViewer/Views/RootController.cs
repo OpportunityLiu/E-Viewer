@@ -1,4 +1,5 @@
 ﻿using ExClient;
+using ExClient.Forums;
 using ExClient.Status;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Services.Navigation;

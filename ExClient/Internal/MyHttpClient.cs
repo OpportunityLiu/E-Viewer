@@ -1,6 +1,7 @@
 ﻿using ExClient.HentaiVerse;
 using HtmlAgilityPack;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Windows.Foundation;
 using Windows.Storage.Streams;
@@ -213,6 +214,15 @@ namespace ExClient.Internal
         {
             reformUri(ref uri);
             return this.inner.PostAsync(uri, content);
+        }
+
+        public IHttpAsyncOperation PostAsync(Uri uri, params KeyValuePair<string, string>[] content)
+            => PostAsync(uri, (IEnumerable<KeyValuePair<string, string>>)content);
+
+        public IHttpAsyncOperation PostAsync(Uri uri, IEnumerable<KeyValuePair<string, string>> content)
+        {
+            reformUri(ref uri);
+            return this.inner.PostAsync(uri, new HttpFormUrlEncodedContent(content));
         }
 
         public IAsyncOperationWithProgress<string, HttpProgress> PostStringAsync(Uri uri, string content)

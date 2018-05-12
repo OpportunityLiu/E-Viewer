@@ -9,16 +9,14 @@ using Windows.Storage;
 using static ExClient.Client;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
-namespace ExClient.Status
+namespace ExClient.Forums
 {
     public class UserInfo
     {
         public static IAsyncOperation<UserInfo> FeachAsync(long userID)
         {
             if (userID <= 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(userID));
-            }
 
             return Run(async token => await Task.Run(async () =>
             {

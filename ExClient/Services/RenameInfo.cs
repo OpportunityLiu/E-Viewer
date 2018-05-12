@@ -142,14 +142,13 @@ namespace ExClient.Services
         {
             return AsyncInfo.Run(async token =>
             {
-                var post = Client.Current.HttpClient.PostAsync(apiUri, new Windows.Web.Http.HttpFormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("new_r",roman.Title),
-                    new KeyValuePair<string, string>("new_j",japanese.Title),
-                    new KeyValuePair<string, string>("nid_r",roman.ID.ToString()),
-                    new KeyValuePair<string, string>("nid_j",japanese.ID.ToString()),
-                    new KeyValuePair<string, string>("apply","Submit"),
-                }));
+                var post = Client.Current.HttpClient.PostAsync(apiUri,
+                    new KeyValuePair<string, string>("new_r", roman.Title),
+                    new KeyValuePair<string, string>("new_j", japanese.Title),
+                    new KeyValuePair<string, string>("nid_r", roman.ID.ToString()),
+                    new KeyValuePair<string, string>("nid_j", japanese.ID.ToString()),
+                    new KeyValuePair<string, string>("apply", "Submit")
+                );
                 token.Register(post.Cancel);
                 var res = await post;
                 using (var stm = (await res.Content.ReadAsInputStreamAsync()).AsStreamForRead())
