@@ -23,8 +23,8 @@ namespace ExClient.Api
             }
             catch(Exception ex)
             {
-                ex.Data["ApiRequest"] = JsonConvert.Serialize(request);
-                ex.Data["ApiResponse"] = JsonConvert.Serialize(this);
+                ex.Data["ApiRequest"] = JsonConvert.SerializeObject(request);
+                ex.Data["ApiResponse"] = JsonConvert.SerializeObject(this);
                 throw;
             }
         }
