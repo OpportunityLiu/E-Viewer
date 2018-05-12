@@ -54,13 +54,9 @@ namespace ExViewer.Views
         private void setSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
-            {
                 this.bdSplitViewPlaceholder.Width = 48;
-            }
             else
-            {
                 this.bdSplitViewPlaceholder.Width = 0;
-            }
         }
 
         private void pv_root_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -4,6 +4,7 @@ using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -27,13 +28,11 @@ namespace ExViewer.Views
             this.pv_root.ItemsSource = SettingCollection.Current.GroupedSettings;
         }
 
-        private void SettingsPage_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
+        private async void SettingsPage_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
         {
             if (!(FocusManager.GetFocusedElement() is FrameworkElement dp))
-            {
                 return;
-            }
-
+            await Dispatcher.YieldIdle();
             dp.StartBringIntoView(new BringIntoViewOptions
             {
                 AnimationDesired = true,

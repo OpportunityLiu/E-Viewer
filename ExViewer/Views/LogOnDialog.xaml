@@ -35,5 +35,13 @@
              DOMContentLoaded="wv_DOMContentLoaded"
              NavigationFailed="wv_NavigationFailed"
              ScriptNotify="wv_ScriptNotify" />
+    <Border x:Name="bdProgress"
+            Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"
+            Visibility="Collapsed">
+      <ProgressRing x:Name="pr"
+                    Width="40"
+                    Height="40"
+                    IsActive="True" />
+    </Border>
   </Grid>
 </controls:MyContentDialog>

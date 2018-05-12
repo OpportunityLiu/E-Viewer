@@ -149,6 +149,14 @@ namespace ExViewer.Settings
             set => SetRoaming(value);
         }
 
+        [Setting("Global", Index = 800)]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
+        public bool TriggerDawnOfDay
+        {
+            get => GetLocal(false);
+            set => SetLocal(value);
+        }
+
         [Setting("Searching", Index = 1100)]
         public string DefaultSearchString
         {

@@ -73,11 +73,7 @@ namespace ExViewer
                 sb.AppendLine($"{indentStr}Message: @\"{toRaw(exception.Message)}\"");
                 sb.AppendLine($"{indentStr}DisplayedMessage: @\"{toRaw(exception.GetMessage())}\"");
                 sb.AppendLine($"{indentStr}Source: {exception.Source}");
-                if (exception.Data is null)
-                {
-                    sb.AppendLine($"{indentStr}Data: null");
-                }
-                else if (exception.Data.Count == 0)
+                if (exception.Data.IsNullOrEmpty())
                 {
                     sb.AppendLine($"{indentStr}Data: empty");
                 }
@@ -128,7 +124,7 @@ namespace ExViewer
                 {
                     sb.AppendLine($"  {item.SourcePageType}, {item.Parameter}");
                 }
-                sb.AppendLine($"  >> {frame.CurrentSourcePageType}");
+                sb.AppendLine($"  >> {frame.CurrentSourcePageType} <<");
                 foreach (var item in frame.ForwardStack)
                 {
                     sb.AppendLine($"  {item.SourcePageType}, {item.Parameter}");

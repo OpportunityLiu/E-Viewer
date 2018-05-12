@@ -37,7 +37,8 @@
                  RelativePanel.LeftOf="tbSep"
                  RelativePanel.AlignVerticalCenterWith="tbSep" />
       <TextBlock x:Name="tbSep"
-                 Text=" / "
+                 Text="/"
+                 Margin="4,0"
                  RelativePanel.LeftOf="tbTotal"
                  RelativePanel.AlignVerticalCenterWith="tbTotal" />
       <TextBlock x:Name="tbTotal"

@@ -21,8 +21,11 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
+        public bool Succeed { get; private set; }
+
         private async void reset()
         {
+            this.Succeed = false;
             this.tempUserName = null;
             this.tempPassword = null;
             this.wv.NavigateToString("");
@@ -71,10 +74,8 @@ namespace ExViewer.Views
 
         private async Task injectOtherPage()
         {
-            if (this.loggingOn)
-            {
+            if (this.bdProgress.Visibility == Visibility.Visible)
                 return;
-            }
 
             var r = await this.wv.InvokeScriptAsync("eval", new[] { @"
 (function ()
@@ -104,13 +105,9 @@ namespace ExViewer.Views
         private void cd_Loaded(object sender, RoutedEventArgs e)
         {
             if (Client.Current.NeedLogOn)
-            {
                 this.CloseButtonText = Strings.Resources.General.Exit;
-            }
             else
-            {
                 this.CloseButtonText = Strings.Resources.General.Cancel;
-            }
         }
 
         private void cd_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
@@ -123,9 +120,7 @@ namespace ExViewer.Views
         {
             System.Diagnostics.Debug.WriteLine(args.Uri?.ToString() ?? "local string", "WebView");
             if (args.Uri is null)
-            {
                 return;
-            }
 
             if (args.Uri == Client.LogOnUri)
             {
@@ -186,13 +181,9 @@ namespace ExViewer.Views
         {
             var ww = Window.Current.Bounds.Width;
             if (ww > 400)
-            {
                 this.wv.MinWidth = Math.Min(availableSize.Width - 144, 700);
-            }
             else
-            {
                 this.wv.MinWidth = 0;
-            }
 
             return base.MeasureOverride(availableSize);
         }
@@ -205,21 +196,38 @@ namespace ExViewer.Views
 
         private void cd_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            if (this.logOnInfoBackup != null)
+            if (loggingOn)
             {
-                Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
+                args.Cancel = true;
+                return;
             }
-
+            if (this.logOnInfoBackup != null)
+                Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
             if (Client.Current.NeedLogOn)
-            {
                 Application.Current.Exit();
+        }
+
+        private bool loggingOn
+        {
+            get => !this.IsPrimaryButtonEnabled;
+            set
+            {
+                if (value)
+                {
+                    this.bdProgress.Visibility = Visibility.Visible;
+                    this.IsPrimaryButtonEnabled = false;
+                }
+                else
+                {
+                    this.bdProgress.Visibility = Visibility.Collapsed;
+                    this.IsPrimaryButtonEnabled = true;
+                }
             }
         }
 
-        private bool loggingOn = false;
         private async Task logOnAsync(string id, string hash)
         {
-            this.loggingOn = true;
+            loggingOn = true;
             try
             {
                 if (!long.TryParse(id, out var uid))
@@ -240,12 +248,15 @@ namespace ExViewer.Views
                     AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
                 }
 
+                this.Succeed = true;
                 this.Hide();
             }
             finally
             {
-                this.loggingOn = false;
+                loggingOn = false;
             }
         }
+
+
     }
 }

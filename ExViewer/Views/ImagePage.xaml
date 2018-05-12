@@ -31,7 +31,7 @@
                   x:DataType="g:GalleryImage">
       <Grid DoubleTapped="fvi_DoubleTapped"
             Tapped="fvi_Tapped"
-            Margin="{Binding VisibleBounds, ElementName=page}">
+            Margin="{Binding VisibleBounds, ElementName=page, Mode=OneWay}">
         <Grid.RowDefinitions>
           <RowDefinition Height="48" />
           <RowDefinition />
@@ -40,7 +40,6 @@
                                  Grid.RowSpan="2"
                                  Image="{x:Bind Mode=OneWay}" />
         <ProgressBar Grid.Row="1" 
-                     Margin="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x-1,x0'}"
                      VerticalAlignment="Top"
                      Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(State), Mode=OneWay, FallbackValue=Yellow}"
                      IsIndeterminate="{x:Bind local:ImagePage.loadStateToPbIsIndeterminate(State), Mode=OneWay, FallbackValue=True}"
