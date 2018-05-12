@@ -37,7 +37,7 @@ namespace ExViewer.Views
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            this.spRoot.Width = this.spRoot.ActualWidth;
+            this.gdRoot.Width = this.gdRoot.ActualWidth;
             var def = args.GetDeferral();
             this.PrimaryButtonText = "";
             this.SecondaryButtonText = "";
@@ -117,8 +117,16 @@ namespace ExViewer.Views
 
         private async void MyContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            args.Cancel = true;
-            await Launcher.LaunchUriAsync(new Uri(this.release.html_url));
+            var d = args.GetDeferral();
+            try
+            {
+                args.Cancel = true;
+                await Launcher.LaunchUriAsync(new Uri(this.release.html_url));
+            }
+            finally
+            {
+                d.Complete();
+            }
         }
 
         private readonly VersionChecker.GitHubRelease release;
