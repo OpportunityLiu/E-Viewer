@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" IgnorableNamespaces="uap mp uap3">
-  <Identity Name="2289Opportunity.E-Viewer" Publisher="CN=Opportunity" Version="2018.4.30.0" />
+  <Identity Name="2289Opportunity.E-Viewer" Publisher="CN=Opportunity" Version="2018.5.13.0" />
   <mp:PhoneIdentity PhoneProductId="b0e97c45-19f9-4a1b-9836-fa1508c91c7e" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:///Resources/AppDisplayName</DisplayName>
@@ -26,17 +26,22 @@
         <uap:SplashScreen Image="Assets/Application/SplashScreen.png" BackgroundColor="#e7dfca" />
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.protocol">
-          <uap:Protocol Name="e-viewer-data">
-            <uap:DisplayName>E-Viewer 数据</uap:DisplayName>
-          </uap:Protocol>
-        </uap:Extension>
         <uap3:Extension Category="windows.appUriHandler">
           <uap3:AppUriHandler>
             <uap3:Host Name="exhentai.org" />
             <uap3:Host Name="e-hentai.org" />
           </uap3:AppUriHandler>
         </uap3:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="e-viewer-data">
+            <uap:DisplayName>E-Viewer 数据</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="ExDawnOfDayTask.Task">
+          <BackgroundTasks>
+            <Task Type="timer" />
+          </BackgroundTasks>
+        </Extension>
       </Extensions>
       <uap:ApplicationContentUriRules>
         <uap:Rule Match="https://forums.e-hentai.org" Type="include" WindowsRuntimeAccess="none" />

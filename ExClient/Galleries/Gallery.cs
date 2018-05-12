@@ -16,7 +16,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -31,8 +30,6 @@ namespace ExClient.Galleries
     [System.Diagnostics.DebuggerDisplay(@"\{ID = {ID} Count = {Count}\}")]
     public class Gallery : FixedIncrementalLoadingList<GalleryImage>
     {
-        private static HttpClient coverClient { get; } = new HttpClient();
-
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
             return Task.Run(async () =>
@@ -59,14 +56,9 @@ namespace ExClient.Galleries
         public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
         {
             if (galleryInfo is null)
-            {
                 throw new ArgumentNullException(nameof(galleryInfo));
-            }
-
             if (galleryInfo.Count <= 0)
-            {
                 return AsyncOperation<IList<Gallery>>.CreateCompleted(Array.Empty<Gallery>());
-            }
 
             if (galleryInfo.Count <= 25)
             {
@@ -252,13 +244,9 @@ namespace ExClient.Galleries
                     var gid = this.ID;
                     var myModel = db.GallerySet.SingleOrDefault(model => model.GalleryModelId == gid);
                     if (myModel is null)
-                    {
                         db.GallerySet.Add(new GalleryModel().Update(this));
-                    }
                     else
-                    {
                         myModel.Update(this);
-                    }
                     db.SaveChanges();
                 }
             }).AsAsyncAction();
@@ -266,6 +254,8 @@ namespace ExClient.Galleries
 
         protected override GalleryImage CreatePlaceholder(int index)
             => new GalleryImage(this, index + 1);
+
+        private static readonly HttpClient coverClient = new HttpClient();
 
         protected virtual IAsyncOperation<SoftwareBitmap> GetThumbAsync()
         {
@@ -364,8 +354,6 @@ namespace ExClient.Galleries
 
         public TagCollection Tags { get; }
 
-        public Language Language => Language.Parse(this);
-
         private FavoriteCategory favoriteCategory;
         public FavoriteCategory FavoriteCategory
         {
@@ -446,23 +434,15 @@ namespace ExClient.Galleries
                             .Include(gi => gi.Image)
                             .FirstOrDefault(gi => gi.GalleryId == gId && gi.PageId == pId);
                         if (imageModel != null)
-                        {
                             // Load cache
                             await this[pId - 1].PopulateCachedImageAsync(imageModel, imageModel.Image);
-                        }
                         else
-                        {
                             this[pId - 1].Init(imageKey, thumb);
-                        }
-                        if (pId - 1 < start)
-                        {
-                            start = pId - 1;
-                        }
 
+                        if (pId - 1 < start)
+                            start = pId - 1;
                         if (pId > end)
-                        {
                             end = pId;
-                        }
                     }
                 }
                 return LoadItemsResult.Create(start, this.Skip(start).Take(end - start), false);
@@ -504,9 +484,6 @@ namespace ExClient.Galleries
             }, token));
         }
 
-        public IAsyncOperation<ReadOnlyCollection<TorrentInfo>> FetchTorrnetsAsync()
-            => TorrentInfo.LoadTorrentsAsync(this);
-
         public IAsyncOperation<string> FetchFavoriteNoteAsync()
         {
             return Run(async token =>
@@ -533,7 +510,7 @@ namespace ExClient.Galleries
                 }
                 else
                 {
-                    this.FavoriteCategory = FavoriteCategory.Removed;
+                    this.FavoriteCategory = Client.Current.Favorites.Removed;
                     this.FavoriteNote = "";
                 }
                 return this.FavoriteNote;
@@ -586,8 +563,5 @@ namespace ExClient.Galleries
                 }
             }).AsAsyncAction();
         }
-
-        public IAsyncOperation<Renaming.RenameInfo> FetchRenameInfoAsync()
-            => Renaming.RenameInfo.FetchAsync(this.ToGalleryInfo());
     }
 }

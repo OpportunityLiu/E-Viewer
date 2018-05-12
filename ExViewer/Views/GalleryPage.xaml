@@ -77,9 +77,9 @@
       <Setter Property="FontWeight"
               Value="SemiLight" />
     </Style>
-    <DataTemplate xmlns:c="using:ExClient.Galleries.Metadata"
+    <DataTemplate xmlns:s="using:ExClient.Services"
                   x:Key="TorrentTemplate"
-                  x:DataType="c:TorrentInfo">
+                  x:DataType="s:TorrentInfo">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="1*" />
@@ -550,7 +550,7 @@
                       Label="{x:Bind local:GalleryPage.favoriteCategoryToName(ViewModel.Gallery.FavoriteCategory), Mode=OneWay}"
                       Foreground="{x:Bind client:FavoriteExtension.GetThemeBrush(ViewModel.Gallery.FavoriteCategory), Mode=OneWay}"
                       ToolTipService.ToolTip="{x:Bind local:GalleryPage.favoriteCategoryToName(ViewModel.Gallery.FavoriteCategory), Mode=OneWay}"
-                      Click="abbFavorites_Click" />
+                      Command="{x:Bind ViewModel.AddToFavorites, Mode=OneWay}" />
         <AppBarButton x:Name="abbComment"
                       x:Uid="Views/GalleryPage/AppBarButtonAddComment"
                       Icon="Add"
@@ -580,7 +580,7 @@
     </CommandBar>
     <ProgressBar x:Name="pb_save"
                  Grid.Row="1"
-                 Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
+                 Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                  IsIndeterminate="{x:Bind ViewModel.SaveProgress, Converter={StaticResource SaveProgressToIsIndeterminateConverter}, Mode=OneWay}"
                  VerticalAlignment="Top"
                  IsHitTestVisible="False"

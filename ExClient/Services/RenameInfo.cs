@@ -1,17 +1,28 @@
 ﻿using ExClient.Api;
+using ExClient.Galleries;
 using ExClient.Internal;
 using HtmlAgilityPack;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 
-namespace ExClient.Galleries.Renaming
+namespace ExClient.Services
 {
+    public static class RenameExtensions
+    {
+        public static IAsyncOperation<RenameInfo> FetchRenameInfoAsync(this GalleryInfo galleryInfo)
+            => RenameInfo.FetchAsync(galleryInfo);
+        public static IAsyncOperation<RenameInfo> FetchRenameInfoAsync(this Gallery gallery)
+            => RenameInfo.FetchAsync(gallery);
+    }
+
     public sealed class RenameInfo : ObservableObject
     {
         public static IAsyncOperation<RenameInfo> FetchAsync(GalleryInfo galleryInfo)
@@ -22,6 +33,7 @@ namespace ExClient.Galleries.Renaming
                 var u = r.RefreshAsync();
                 token.Register(u.Cancel);
                 await u;
+                token.ThrowIfCancellationRequested();
                 return r;
             });
         }
@@ -33,9 +45,12 @@ namespace ExClient.Galleries.Renaming
         public ObservableListView<RenameRecord> RomanRecords => this.rmnRecords.AsReadOnly();
         public ObservableListView<RenameRecord> JapaneseRecords => this.jpnRecords.AsReadOnly();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ObservableList<RenameRecord> rmnRecords = new ObservableList<RenameRecord>();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ObservableList<RenameRecord> jpnRecords = new ObservableList<RenameRecord>();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string originalRmn;
         public string OriginalRomanTitle
         {
@@ -43,6 +58,7 @@ namespace ExClient.Galleries.Renaming
             private set => Set(ref this.originalRmn, value);
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string originalJpn;
         public string OriginalJapaneseTitle
         {
@@ -50,48 +66,46 @@ namespace ExClient.Galleries.Renaming
             private set => Set(ref this.originalJpn, value);
         }
 
-        private int currentRmn = -1;
-        public int CurrentRomanID
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private RenameRecord? votedRmn;
+        public RenameRecord? VotedRoman
         {
-            get => this.currentRmn;
-            private set => Set(ref this.currentRmn, value);
+            get => this.votedRmn;
+            private set => Set(ref this.votedRmn, value);
         }
 
-        private int currentJpn = -1;
-        public int CurrentJapaneseID
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private RenameRecord? votedJpn;
+        public RenameRecord? VotedJapanese
         {
-            get => this.currentJpn;
-            private set => Set(ref this.currentJpn, value);
+            get => this.votedJpn;
+            private set => Set(ref this.votedJpn, value);
         }
 
         private Uri apiUri => new Uri($"gallerypopups.php?gid={this.GalleryInfo.ID}&t={this.GalleryInfo.Token.ToTokenString()}&act=rename", UriKind.Relative);
 
         public IAsyncAction RefreshAsync()
         {
-            return AsyncInfo.Run(async token =>
+            return Task.Run(async () =>
             {
-                var get = Client.Current.HttpClient.GetDocumentAsync(apiUri);
-                token.Register(get.Cancel);
-                var doc = await get;
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(apiUri);
                 analyze(doc);
-            });
+            }).AsAsyncAction();
         }
 
         private void analyze(HtmlDocument doc)
         {
             if (doc.DocumentNode.ChildNodes.Count == 1 && doc.DocumentNode.FirstChild.NodeType == HtmlNodeType.Text)
-            {
                 throw new InvalidOperationException(doc.DocumentNode.FirstChild.InnerText);
-            }
 
             var tables = doc.DocumentNode.Descendants("table").ToList();
             IReadOnlyList<RenameRecord> romanRec, japaneseRec;
-            (this.CurrentRomanID, romanRec, this.OriginalRomanTitle) = analyzeTable(tables[0]);
-            (this.CurrentJapaneseID, japaneseRec, this.OriginalJapaneseTitle) = analyzeTable(tables[1]);
+            (this.VotedRoman, romanRec, this.OriginalRomanTitle) = analyzeTable(tables[0]);
+            (this.VotedJapanese, japaneseRec, this.OriginalJapaneseTitle) = analyzeTable(tables[1]);
             this.rmnRecords.Update(romanRec);
             this.jpnRecords.Update(japaneseRec);
 
-            (int currentID, IReadOnlyList<RenameRecord> records, string original) analyzeTable(HtmlNode tableNode)
+            (RenameRecord? current, IReadOnlyList<RenameRecord> records, string original) analyzeTable(HtmlNode tableNode)
             {
                 var original = default(string);
                 var text = tableNode.Element("tr").LastChild.FirstChild;
@@ -102,27 +116,25 @@ namespace ExClient.Galleries.Renaming
 
                 var trecords = tableNode.Elements("tr").Skip(1).ToList();
                 var records = new List<RenameRecord>();
-                var currentID = -1;
+                var current = default(RenameRecord?);
                 foreach (var rec in trecords)
                 {
                     var input = rec.Descendants("input").First();
                     // 0 for new; -1 for blank vote
                     var recId = input.GetAttribute("value", -1);
-                    var check = input.GetAttribute("checked", false);
-                    if (check)
-                    {
-                        currentID = recId;
-                    }
-
                     if (recId > 0)
                     {
                         var powStr = rec.ChildNodes[1].GetInnerText();
                         var power = int.Parse(powStr.Substring(0, powStr.Length - 1));
                         var title = rec.ChildNodes[2].GetInnerText();
-                        records.Add(new RenameRecord(recId, title, power));
+                        var record = new RenameRecord(recId, title, power);
+                        records.Add(record);
+                        if (input.GetAttribute("checked", false))
+                            current = record;
                     }
+
                 }
-                return (currentID, records, original);
+                return (current, records, original);
             }
         }
 
@@ -130,14 +142,13 @@ namespace ExClient.Galleries.Renaming
         {
             return AsyncInfo.Run(async token =>
             {
-                var post = Client.Current.HttpClient.PostAsync(apiUri, new Windows.Web.Http.HttpFormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("new_r",roman.Title),
-                    new KeyValuePair<string, string>("new_j",japanese.Title),
-                    new KeyValuePair<string, string>("nid_r",roman.ID.ToString()),
-                    new KeyValuePair<string, string>("nid_j",japanese.ID.ToString()),
-                    new KeyValuePair<string, string>("apply","Submit"),
-                }));
+                var post = Client.Current.HttpClient.PostAsync(apiUri,
+                    new KeyValuePair<string, string>("new_r", roman.Title),
+                    new KeyValuePair<string, string>("new_j", japanese.Title),
+                    new KeyValuePair<string, string>("nid_r", roman.ID.ToString()),
+                    new KeyValuePair<string, string>("nid_j", japanese.ID.ToString()),
+                    new KeyValuePair<string, string>("apply", "Submit")
+                );
                 token.Register(post.Cancel);
                 var res = await post;
                 using (var stm = (await res.Content.ReadAsInputStreamAsync()).AsStreamForRead())
@@ -157,11 +168,8 @@ namespace ExClient.Galleries.Renaming
 
         private static RenameRecord generateTempRenameRecord(string title)
         {
-            if (string.IsNullOrWhiteSpace(title))
-            {
+            if (title.IsNullOrWhiteSpace())
                 return new RenameRecord(-1, "", -1);
-            }
-
             return new RenameRecord(0, title.Trim(), 0);
         }
     }

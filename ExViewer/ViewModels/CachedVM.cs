@@ -14,24 +14,20 @@ namespace ExViewer.ViewModels
 
         private CachedVM()
         {
-            this.Clear.Tag = this;
-            this.Refresh.Tag = this;
-        }
-
-        public override AsyncCommand Refresh { get; } = AsyncCommand.Create(async (sender) =>
-        {
-            var that = (CachedVM)sender.Tag;
-            that.Galleries = null;
-            that.Galleries = await CachedGallery.LoadCachedGalleriesAsync();
-        });
-
-        public override Command Clear { get; } = Command.Create(sender =>
-        {
-            var that = (CachedVM)sender.Tag;
-            RootControl.RootController.TrackAsyncAction(CachedGallery.ClearCachedGalleriesAsync(), (s, e) =>
+            Commands.Add(nameof(Clear), Command.Create(sender =>
             {
-                that.Refresh.Execute();
-            });
-        });
+                var that = (CachedVM)sender.Tag;
+                RootControl.RootController.TrackAsyncAction(CachedGallery.ClearCachedGalleriesAsync(), (s, e) =>
+                {
+                    that.Refresh.Execute();
+                });
+            }));
+            Commands.Add(nameof(Refresh), AsyncCommand.Create(async (sender) =>
+            {
+                var that = (CachedVM)sender.Tag;
+                that.Galleries = null;
+                that.Galleries = await CachedGallery.LoadCachedGalleriesAsync();
+            }));
+        }
     }
 }

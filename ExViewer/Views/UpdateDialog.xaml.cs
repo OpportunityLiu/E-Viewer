@@ -37,7 +37,7 @@ namespace ExViewer.Views
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            this.spRoot.Width = this.spRoot.ActualWidth;
+            this.gdRoot.Width = this.gdRoot.ActualWidth;
             var def = args.GetDeferral();
             this.PrimaryButtonText = "";
             this.SecondaryButtonText = "";
@@ -62,6 +62,7 @@ namespace ExViewer.Views
                     throw new InvalidOperationException("Find appx file failed.");
                 }
                 var files = new List<StorageFile>();
+                var fileLaunched = false;
                 using (var client = new HttpClient())
                 {
                     try
@@ -80,14 +81,14 @@ namespace ExViewer.Views
                         }
                         foreach (var item in files)
                         {
-                            await Launcher.LaunchFileAsync(item);
+                            fileLaunched = fileLaunched || await Launcher.LaunchFileAsync(item);
                         }
                     }
                     finally
                     {
-                        if (!await Launcher.LaunchFolderAsync(folder))
+                        if ((assets.Count > 1 || !fileLaunched) && !await Launcher.LaunchFolderAsync(folder))
                         {
-                            throw new InvalidOperationException("Launch appx file failed.");
+                            throw new InvalidOperationException("Launch download folder failed.");
                         }
                     }
                 }
@@ -116,14 +117,15 @@ namespace ExViewer.Views
 
         private async void MyContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            var def = args.GetDeferral();
+            var d = args.GetDeferral();
             try
             {
+                args.Cancel = true;
                 await Launcher.LaunchUriAsync(new Uri(this.release.html_url));
             }
             finally
             {
-                def.Complete();
+                d.Complete();
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using ExClient.HentaiVerse;
 using HtmlAgilityPack;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Windows.Foundation;
 using Windows.Storage.Streams;
@@ -40,8 +41,8 @@ namespace ExClient.Internal
             }
         }
 
-        private HttpClient inner;
-        private Client owner;
+        private readonly HttpClient inner;
+        private readonly Client owner;
 
         public HttpRequestHeaderCollection DefaultRequestHeaders => this.inner.DefaultRequestHeaders;
 
@@ -204,11 +205,7 @@ namespace ExClient.Internal
                     }
                 } while (false);
                 response.EnsureSuccessStatusCode();
-                if (HentaiVerseInfo.IsEnabled)
-                {
-                    HentaiVerseInfo.AnalyzePage(doc);
-                }
-
+                HentaiVerseInfo.AnalyzePage(doc);
                 return doc;
             });
         }
@@ -217,6 +214,15 @@ namespace ExClient.Internal
         {
             reformUri(ref uri);
             return this.inner.PostAsync(uri, content);
+        }
+
+        public IHttpAsyncOperation PostAsync(Uri uri, params KeyValuePair<string, string>[] content)
+            => PostAsync(uri, (IEnumerable<KeyValuePair<string, string>>)content);
+
+        public IHttpAsyncOperation PostAsync(Uri uri, IEnumerable<KeyValuePair<string, string>> content)
+        {
+            reformUri(ref uri);
+            return this.inner.PostAsync(uri, new HttpFormUrlEncodedContent(content));
         }
 
         public IAsyncOperationWithProgress<string, HttpProgress> PostStringAsync(Uri uri, string content)

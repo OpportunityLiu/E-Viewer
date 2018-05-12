@@ -1,4 +1,5 @@
-﻿using ExClient.Status;
+﻿using ExClient.Forums;
+using ExClient.Status;
 using Opportunity.MvvmUniverse.Services.Navigation;
 using Opportunity.MvvmUniverse.Views;
 using System;
@@ -34,6 +35,7 @@ namespace ExViewer.Views
                 [this.svt_Search] = typeof(SearchPage),
                 [this.svt_Favorites] = typeof(FavoritesPage),
                 [this.svt_Popular] = typeof(PopularPage),
+                [this.svt_Toplist] = typeof(ToplistPage),
                 [this.svt_Settings] = typeof(SettingsPage)
             };
 
@@ -44,6 +46,7 @@ namespace ExViewer.Views
                 [typeof(SearchPage)] = this.svt_Search,
                 [typeof(FavoritesPage)] = this.svt_Favorites,
                 [typeof(PopularPage)] = this.svt_Popular,
+                [typeof(ToplistPage)] = this.svt_Toplist,
                 [typeof(SettingsPage)] = this.svt_Settings
             };
 

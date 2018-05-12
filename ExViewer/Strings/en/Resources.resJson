@@ -208,7 +208,6 @@
       "CommentsEmptyTextBlock/Text": "No comments",
       "CommentsLoadingTextBlock/Text": "Loading comments…",
       "FavoritesAppBarButton/Text": "Add to favorite",
-      "ImagesLoadingMoreTextBlock/Text": "Loading more items…",
       "PivotHeaderCommentsTextBlock/Text": "Comments",
       "PivotHeaderImagesTextBlock/Text": "Images",
       "PivotHeaderTorrentsTextBlock/Text": "Torrents",
@@ -289,18 +288,13 @@
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "Cached galleries",
-      "CachedSplitViewTab/ToolTipService/ToolTip": "Cached galleries",
       "DisableInfoTextBlock/Text": "Operation in progress, plaese wait…",
       "FavoritesSplitViewTab/Content": "Favorites",
-      "FavoritesSplitViewTab/ToolTipService/ToolTip": "Favorites",
       "PopularSplitViewTab/Content": "Popular galleries",
-      "PopularSplitViewTab/ToolTipService/ToolTip": "Popular galleries",
       "SavedSplitViewTab/Content": "Saved galleries",
-      "SavedSplitViewTab/ToolTipService/ToolTip": "Saved galleries",
       "SearchSplitViewTab/Content": "Search",
-      "SearchSplitViewTab/ToolTipService/ToolTip": "Search",
       "SettingsSplitViewTab/Content": "Settings",
-      "SettingsSplitViewTab/ToolTipService/ToolTip": "Settings",
+      "ToplistSplitViewTab/Content": "Toplists",
       "UserInfoButton/ToolTipService/ToolTip": "User info"
     },
     "SavedPage": {
@@ -334,6 +328,10 @@
       "SkipMasterTagsCheckBox/Content": "Skip master tags",
       "TagsCheckBox/Content": "Search gallery tags",
       "TorrentNamesCheckBox/Content": "Search torrent filenames"
+    },
+    "ToplistPage": {
+      "LoadingMoreTextBlock/Text": "Loading more galleries…",
+      "RefreshAppBarButton/Label": "Refresh"
     },
     "UpdateDialog": {
       "$ContentTemplate": "Version {major}.{minor}.{build}.{revision} has released.",

@@ -321,15 +321,22 @@
               <Grid x:Name="gdModPowerTotal"
                     Grid.Row="4"
                     Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
                 <TextBlock x:Uid="Views/InfoPage/ModPowerTextBlock"
                            Style="{StaticResource ModPowerKeyTextBlockStyle}"
                            FontWeight="Bold"
-                           Grid.Row="4"
                            Text="Total" />
                 <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Grid.Column="1"
                            FontWeight="Bold"
-                           Grid.Row="4"
                            Text="{x:Bind ViewModel.Status.ModerationPower, Mode=OneWay}" />
+                <TextBlock Style="{StaticResource ModPowerValueTextBlockStyle}"
+                           Grid.Column="2"
+                           Text="{x:Bind ViewModel.Status.ModerationPowerCaculated, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='({0})'}" />
               </Grid>
             </Grid>
             <TextBlock x:Uid="Views/InfoPage/ToplistsHeaderTextBlock"

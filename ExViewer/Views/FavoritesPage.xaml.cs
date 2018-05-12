@@ -32,7 +32,7 @@ namespace ExViewer.Views
             this.InitializeComponent();
             var l = new List<FavoriteCategory>(11)
             {
-                FavoriteCategory.All
+                Client.Current.Favorites.All
             };
             l.AddRange(Client.Current.Favorites);
             this.cbCategory.ItemsSource = l;
@@ -161,7 +161,7 @@ namespace ExViewer.Views
                 this.FindName(nameof(this.cbActions));
                 var l = new List<FavoriteCategory>(11)
                 {
-                    FavoriteCategory.Removed
+                    Client.Current.Favorites.Removed
                 };
                 l.AddRange(Client.Current.Favorites);
                 this.cbCategory2.ItemsSource = l;
@@ -249,12 +249,12 @@ namespace ExViewer.Views
 
         private void abbApply_Click(object sender, RoutedEventArgs e)
         {
-            var cat = (FavoriteCategory)this.cbCategory2.SelectedItem ?? FavoriteCategory.Removed;
+            var cat = (FavoriteCategory)this.cbCategory2.SelectedItem ?? Client.Current.Favorites.Removed;
             var task = this.ViewModel.SearchResult.AddToCategoryAsync(this.lv.SelectedRanges.ToList(), cat);
             this.lv.SelectionMode = ListViewSelectionMode.None;
             RootControl.RootController.TrackAsyncAction(task, (s, args) =>
             {
-                if (args == Windows.Foundation.AsyncStatus.Completed)
+                if (args == AsyncStatus.Completed)
                 {
                     exitSelectMode();
                 }

@@ -15,10 +15,6 @@ namespace ExClient
 {
     public sealed class FavoriteCategory : ObservableObject
     {
-        public static FavoriteCategory Removed { get; } = new FavoriteCategory(-1, LocalizedStrings.Resources.RemoveFromFavorites);
-
-        public static FavoriteCategory All { get; } = new FavoriteCategory(-1, LocalizedStrings.Resources.AllFavorites);
-
         internal FavoriteCategory(int index, string name)
         {
             this.Index = index;
@@ -51,29 +47,17 @@ namespace ExClient
 
         private readonly string name;
 
-        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> post(long gId, ulong gToken, string note)
+        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> postAddFav(long gId, ulong gToken, string note)
         {
             IEnumerable<KeyValuePair<string, string>> getInfo()
             {
                 yield return new KeyValuePair<string, string>("apply", "Apply+Changes");
-                var cat = this.Index.ToString();
-                if (ReferenceEquals(this, All))
-                {
-                    cat = "0";
-                }
-
-                if (ReferenceEquals(this, Removed))
-                {
-                    cat = "favdel";
-                }
-
-                yield return new KeyValuePair<string, string>("favcat", cat);
+                yield return new KeyValuePair<string, string>("favcat", this.Index < 0 ? "favdel" : this.Index.ToString());
                 yield return new KeyValuePair<string, string>("favnote", note);
                 yield return new KeyValuePair<string, string>("update", "1");
             }
             var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken.ToTokenString()}&act=addfav", UriKind.Relative);
-            var requestContent = new HttpFormUrlEncodedContent(getInfo());
-            return Client.Current.HttpClient.PostAsync(requestUri, requestContent);
+            return Client.Current.HttpClient.PostAsync(requestUri, getInfo());
         }
 
         private static readonly Regex favNoteMatcher = new Regex(@"fn\.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
@@ -83,7 +67,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var response = await this.post(gallery.ID, gallery.Token, note);
+                var response = await this.postAddFav(gallery.ID, gallery.Token, note);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var match = favNoteMatcher.Match(responseContent, 1300);
                 if (match.Success)
@@ -113,18 +97,8 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var response = await post(gallery.ID, gallery.Token, note);
+                var response = await postAddFav(gallery.ID, gallery.Token, note);
             });
-        }
-
-        public IAsyncAction RemoveAsync(Gallery gallery, string note)
-        {
-            return Removed.AddAsync(gallery, note);
-        }
-
-        public IAsyncAction RemoveAsync(GalleryInfo gallery, string note)
-        {
-            return Removed.AddAsync(gallery, note);
         }
 
         public override string ToString()

@@ -124,7 +124,11 @@ namespace ExViewer.Views
         {
             if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch && this.interactionSource != null)
             {
-                this.interactionSource.TryRedirectForManipulation(e.GetCurrentPoint(this.spContent));
+                try
+                {
+                    this.interactionSource.TryRedirectForManipulation(e.GetCurrentPoint(this.spContent));
+                }
+                catch (UnauthorizedAccessException) { }
                 this.isGdInfoHideDef = null;
             }
         }
@@ -448,15 +452,6 @@ namespace ExViewer.Views
             RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
         }
 
-        private AddToFavoritesDialog addToFavorites;
-
-        private async void abbFavorites_Click(object sender, RoutedEventArgs e)
-        {
-            var addToFavorites = System.Threading.LazyInitializer.EnsureInitialized(ref this.addToFavorites);
-            addToFavorites.Gallery = this.ViewModel.Gallery;
-            await addToFavorites.ShowAsync();
-        }
-
         private void cb_top_Opening(object sender, object e)
         {
             this.tbGalleryName.MaxLines = 0;
@@ -538,7 +533,7 @@ namespace ExViewer.Views
                     infoH -= this.gdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
                 }
             }
-            infoH = Math.Min(infoH, 360);
+            infoH = Math.Max(80, Math.Min(infoH, 360));
             this.Children[0].Measure(new Size(width, infoH));
             this.Children[1].Measure(availableSize);
             return new Size(width, this.Children[0].DesiredSize.Height + height);

@@ -3,14 +3,17 @@ using ExClient.Api;
 using ExClient.Galleries;
 using ExClient.Galleries.Metadata;
 using ExClient.Galleries.Rating;
+using ExClient.Services;
 using ExViewer.Helpers;
 using ExViewer.Services;
 using ExViewer.Settings;
 using ExViewer.Views;
+using Opportunity.Helpers.ObjectModel;
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
+using Opportunity.MvvmUniverse.Commands.ReentrancyHandlers;
 using Opportunity.MvvmUniverse.Services.Notification;
 using Opportunity.MvvmUniverse.Views;
 using System;
@@ -82,9 +85,13 @@ namespace ExViewer.ViewModels
             return Cache.GetOrCreateAsync(gInfo);
         }
 
-        private GalleryVM()
+        private GalleryVM(Gallery gallery)
         {
-            Commands[nameof(Rate)] = AsyncCommand<Score>.Create(async (c, s) =>
+            this.Gallery = gallery;
+        }
+
+        public AsyncCommand<Score> Rate => Commands.GetOrAdd(() =>
+            AsyncCommand<Score>.Create(async (c, s) =>
             {
                 var that = (GalleryVM)c.Tag;
                 var rt = that.gallery?.Rating;
@@ -103,8 +110,22 @@ namespace ExViewer.ViewModels
                     rt.OnPropertyChanged(nameof(RatingStatus.UserScore));
                     throw;
                 }
-            }, (c, s) => ((GalleryVM)c.Tag).gallery?.Rating != null && s != Score.NotSet && ((GalleryVM)c.Tag).gallery.Rating.UserScore != s);
-            Commands[nameof(GoToLatestRevision)] = Command<RevisionCollection>.Create(async (sender, c) =>
+            }, (c, s) => ((GalleryVM)c.Tag).gallery?.Rating != null && s != Score.NotSet && ((GalleryVM)c.Tag).gallery.Rating.UserScore != s));
+
+        public AsyncCommand AddToFavorites => Commands.GetOrAdd(() =>
+        {
+            var ac = AsyncCommand.Create(async (c, s) =>
+            {
+                var addToFavorites = ThreadLocalSingleton.GetOrCreate<AddToFavoritesDialog>();
+                addToFavorites.Gallery = this.Gallery;
+                await addToFavorites.ShowAsync();
+            });
+            ac.ReentrancyHandler = ReentrancyHandler.LastQueued();
+            return ac;
+        });
+
+        public Command<RevisionCollection> GoToLatestRevision => Commands.GetOrAdd(() =>
+            Command<RevisionCollection>.Create(async (sender, c) =>
             {
                 var info = c.DescendantsInfo.Last().Gallery;
                 var load = GetVMAsync(info);
@@ -120,8 +141,10 @@ namespace ExViewer.ViewModels
                 {
                     await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
                 }
-            }, (sender, c) => c != null && c.DescendantsInfo.Count != 0);
-            Commands[nameof(Share)] = Command<GalleryImage>.Create(async (sender, image) =>
+            }, (sender, c) => c != null && c.DescendantsInfo.Count != 0));
+
+        public Command<GalleryImage> Share => Commands.GetOrAdd(() =>
+            Command<GalleryImage>.Create(async (sender, image) =>
             {
                 var that = (GalleryVM)sender.Tag;
                 if (!ShareHandler.IsShareSupported)
@@ -203,8 +226,10 @@ namespace ExViewer.ViewModels
                         deferral.Complete();
                     }
                 });
-            }, (sender, image) => ((GalleryVM)sender.Tag).gallery != null);
-            Commands[nameof(Save)] = Command.Create(sender =>
+            }, (sender, image) => ((GalleryVM)sender.Tag).gallery != null));
+
+        public Command Save => Commands.GetOrAdd(() =>
+            Command.Create(sender =>
             {
                 var that = (GalleryVM)sender.Tag;
                 that.SaveStatus = OperationState.Started;
@@ -229,14 +254,18 @@ namespace ExViewer.ViewModels
                     }
                     that.SaveProgress = 100;
                 };
-            }, sender => (sender.Tag is GalleryVM that) && that.SaveStatus != OperationState.Started && !(that.gallery is SavedGallery));
-            Commands[nameof(OpenImage)] = Command<GalleryImage>.Create(async (sender, image) =>
+            }, sender => (sender.Tag is GalleryVM that) && that.SaveStatus != OperationState.Started && !(that.gallery is SavedGallery)));
+
+        public Command<GalleryImage> OpenImage => Commands.GetOrAdd(() =>
+            Command<GalleryImage>.Create(async (sender, image) =>
             {
                 var that = (GalleryVM)sender.Tag;
                 that.View.MoveCurrentToPosition(image.PageID - 1);
                 await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), that.gallery.ID);
-            }, (sender, image) => image != null);
-            Commands[nameof(LoadOriginal)] = Command<GalleryImage>.Create(async (sender, image) =>
+            }, (sender, image) => image != null));
+
+        public Command<GalleryImage> LoadOriginal => Commands.GetOrAdd(() =>
+            Command<GalleryImage>.Create(async (sender, image) =>
             {
                 var that = (GalleryVM)sender.Tag;
                 try
@@ -247,8 +276,10 @@ namespace ExViewer.ViewModels
                 {
                     RootControl.RootController.SendToast(ex, typeof(ImagePage));
                 }
-            }, (sender, image) => image != null && !image.OriginalLoaded);
-            Commands[nameof(ReloadImage)] = Command<GalleryImage>.Create(async (sender, image) =>
+            }, (sender, image) => image != null && !image.OriginalLoaded));
+
+        public Command<GalleryImage> ReloadImage => Commands.GetOrAdd(() =>
+            Command<GalleryImage>.Create(async (sender, image) =>
             {
                 var that = (GalleryVM)sender.Tag;
                 try
@@ -267,79 +298,25 @@ namespace ExViewer.ViewModels
                 {
                     RootControl.RootController.SendToast(ex, typeof(ImagePage));
                 }
-            }, (sender, image) => image != null);
-            Commands[nameof(SearchImage)] = Command<SHA1Value>.Create(async (sender, hash) =>
+            }, (sender, image) => image != null));
+
+        public Command<SHA1Value> SearchImage => Commands.GetOrAdd(() =>
+            Command<SHA1Value>.Create(async (sender, hash) =>
             {
                 var that = (GalleryVM)sender.Tag;
                 var search = Client.Current.Search("", Category.All, Enumerable.Repeat(hash, 1), that.gallery.GetDisplayTitle());
                 var vm = SearchVM.GetVM(search);
                 await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
-            }, (sender, hash) => ((GalleryVM)sender.Tag).gallery != null && hash != default);
-            Commands[nameof(SearchUploader)] = Command.Create(async sender =>
+            }, (sender, hash) => ((GalleryVM)sender.Tag).gallery != null && hash != default));
+
+        public Command SearchUploader => Commands.GetOrAdd(() =>
+            Command.Create(async sender =>
             {
                 var that = (GalleryVM)sender.Tag;
                 var search = Client.Current.Search(that.gallery.Uploader, null, SettingCollection.Current.DefaultSearchCategory);
                 var vm = SearchVM.GetVM(search);
                 await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
-            }, sender => ((GalleryVM)sender.Tag).gallery != null);
-            Commands[nameof(TorrentDownload)] = Command<TorrentInfo>.Create(async (sender, torrent) =>
-            {
-                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
-                try
-                {
-                    var file = await torrent.LoadTorrentAsync();
-                    if (torrentfolder is null)
-                    {
-                        await loadTorrentFolder();
-                    }
-
-                    await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
-                    if (!await Launcher.LaunchFileAsync(file))
-                    {
-                        await Launcher.LaunchFolderAsync(torrentfolder);
-                    }
-
-                    RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloaded(torrentfolder.Path), null);
-                }
-                catch (Exception ex)
-                {
-                    RootControl.RootController.SendToast(ex, typeof(GalleryPage));
-                }
-            }, (sender, torrent) => torrent != null && torrent.TorrentUri != null);
-            Commands[nameof(AddComment)] = AsyncCommand.Create(async (sender) =>
-            {
-                var that = (GalleryVM)sender.Tag;
-                var addComment = System.Threading.LazyInitializer.EnsureInitialized(ref GalleryVM.addCommentDialog);
-                addComment.Gallery = that.Gallery;
-                await addComment.ShowAsync();
-            }, sender => ((GalleryVM)sender.Tag).Gallery != null);
-        }
-
-        private GalleryVM(Gallery gallery)
-            : this()
-        {
-            this.Gallery = gallery;
-        }
-
-        private static AddCommentDialog addCommentDialog;
-
-        public AsyncCommand<Score> Rate => GetCommand<AsyncCommand<Score>>();
-
-        public Command<RevisionCollection> GoToLatestRevision => GetCommand<Command<RevisionCollection>>();
-
-        public Command<GalleryImage> Share => GetCommand<Command<GalleryImage>>();
-
-        public Command Save => GetCommand<Command>();
-
-        public Command<GalleryImage> OpenImage => GetCommand<Command<GalleryImage>>();
-
-        public Command<GalleryImage> LoadOriginal => GetCommand<Command<GalleryImage>>();
-
-        public Command<GalleryImage> ReloadImage => GetCommand<Command<GalleryImage>>();
-
-        public Command<SHA1Value> SearchImage => GetCommand<Command<SHA1Value>>();
-
-        public Command SearchUploader => GetCommand<Command>();
+            }, sender => ((GalleryVM)sender.Tag).gallery != null));
 
         private Gallery gallery;
 
@@ -482,7 +459,18 @@ namespace ExViewer.ViewModels
 
         #region Comments
 
-        public AsyncCommand AddComment => GetCommand<AsyncCommand>();
+        public AsyncCommand AddComment => Commands.GetOrAdd(() =>
+        {
+            var ac = AsyncCommand.Create(async (sender) =>
+            {
+                var that = (GalleryVM)sender.Tag;
+                var addComment = ThreadLocalSingleton.GetOrCreate<AddCommentDialog>();
+                addComment.Gallery = that.Gallery;
+                await addComment.ShowAsync();
+            }, sender => ((GalleryVM)sender.Tag).Gallery != null);
+            ac.ReentrancyHandler = ReentrancyHandler.LastQueued();
+            return ac;
+        });
 
         public IAsyncAction LoadComments()
         {
@@ -538,7 +526,27 @@ namespace ExViewer.ViewModels
             });
         }
 
-        public Command<TorrentInfo> TorrentDownload => GetCommand<Command<TorrentInfo>>();
+        public Command<TorrentInfo> TorrentDownload => Commands.GetOrAdd(() =>
+            Command<TorrentInfo>.Create(async (sender, torrent) =>
+            {
+                RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
+                try
+                {
+                    var file = await torrent.DownloadTorrentAsync();
+                    if (torrentfolder is null)
+                        await loadTorrentFolder();
+
+                    await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
+                    if (!await Launcher.LaunchFileAsync(file))
+                        await Launcher.LaunchFolderAsync(torrentfolder);
+
+                    RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloaded(torrentfolder.Path), null);
+                }
+                catch (Exception ex)
+                {
+                    RootControl.RootController.SendToast(ex, typeof(GalleryPage));
+                }
+            }, (sender, torrent) => torrent != null && torrent.TorrentUri != null));
 
         public IAsyncAction LoadTorrents()
         {
@@ -556,7 +564,6 @@ namespace ExViewer.ViewModels
         }
 
         private ReadOnlyCollection<TorrentInfo> torrents;
-
         public ReadOnlyCollection<TorrentInfo> Torrents
         {
             get => this.torrents;
