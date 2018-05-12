@@ -13,14 +13,19 @@ namespace ExClient.Api
 
         public void CheckResponse(ApiRequest request)
         {
-            if (LogIn != null)
+            try
             {
-                throw new InvalidOperationException("Need login");
+                if (!LogIn.IsNullOrEmpty())
+                    throw new InvalidOperationException("Need login");
+                CheckResponseOverride(request);
+                if (!Error.IsNullOrEmpty())
+                    throw new InvalidOperationException(Error);
             }
-            CheckResponseOverride(request);
-            if (Error != null)
+            catch(Exception ex)
             {
-                throw new InvalidOperationException(Error);
+                ex.Data["ApiRequest"] = JsonConvert.Serialize(request);
+                ex.Data["ApiResponse"] = JsonConvert.Serialize(this);
+                throw;
             }
         }
 
