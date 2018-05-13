@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Foundation;
@@ -31,6 +32,8 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExViewer.ViewModels
@@ -174,32 +177,29 @@ namespace ExViewer.ViewModels
                             data.Properties.ContentSourceWebLink = gallery.GalleryUri;
                             data.SetWebLink(gallery.GalleryUri);
                             data.SetText(gallery.GalleryUri.ToString());
-                            if (gallery.Thumb != null)
+                            var firstImage = gallery.FirstOrDefault()?.ImageFile;
+                            if (firstImage != null)
+                                data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
+                            try
                             {
-                                var ms = new InMemoryRandomAccessStream();
-                                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
-                                encoder.SetSoftwareBitmap(gallery.Thumb);
-                                await encoder.FlushAsync();
-                                data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
-                                var firstImage = gallery.FirstOrDefault()?.ImageFile;
-                                if (firstImage != null)
+                                using (var client = new HttpClient())
                                 {
-                                    data.SetBitmap(RandomAccessStreamReference.CreateFromFile(firstImage));
-                                }
-                                else
-                                {
-                                    data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
+                                    var buf = await client.GetBufferAsync(gallery.ThumbUri);
+                                    var ms = new InMemoryRandomAccessStream();
+                                    await ms.WriteAsync(buf);
+                                    data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(ms);
+                                    if (firstImage is null)
+                                        data.SetBitmap(RandomAccessStreamReference.CreateFromStream(ms));
                                 }
                             }
+                            catch { }
                             var imageFiles = gallery
                                 .Where(i => i.ImageFile != null)
                                 .Select(i => new { i.ImageFile, Name = $"{i.PageID}{i.ImageFile.FileType}" })
                                 .Where(f => f.ImageFile != null)
                                 .ToList();
                             if (imageFiles.Count == 0)
-                            {
                                 return;
-                            }
 
                             data.SetFolderProvider(imageFiles.Select(f => f.ImageFile), imageFiles.Select(f => f.Name), gallery.GetDisplayTitle());
                         }

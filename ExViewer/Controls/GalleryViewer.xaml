@@ -49,7 +49,7 @@
       <ColumnDefinition Width="2*" />
     </Grid.ColumnDefinitions>
     <local:CoverPresenter x:Name="Cover"
-                          Source="{x:Bind Gallery.Thumb, Mode=OneWay, Converter={StaticResource SoftwareBitmapToImageSourceConverter}}" />
+                          Source="{x:Bind Gallery.Thumb, Mode=OneWay}" />
     <local:FavoriteCategoryPresenter x:Name="fcpFavorite"
                                      Margin="-2"
                                      HorizontalAlignment="Right"

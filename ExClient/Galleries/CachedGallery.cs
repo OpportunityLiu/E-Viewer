@@ -6,9 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
+using Windows.UI.Core;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Galleries
@@ -101,23 +105,17 @@ namespace ExClient.Galleries
             }).AsAsyncAction();
         }
 
-        protected override IAsyncOperation<SoftwareBitmap> GetThumbAsync()
+        protected override IAsyncOperation<ImageSource> GetThumbAsync()
         {
             return Run(async token =>
             {
-                var r = await base.GetThumbAsync();
-                if (r != null)
-                {
-                    return r;
-                }
-
-                return await GetThumbLocalilyAsync();
+                return await base.GetThumbAsync() ?? await GetThumbLocalilyAsync();
             });
         }
 
-        protected IAsyncOperation<SoftwareBitmap> GetThumbLocalilyAsync()
+        protected IAsyncOperation<ImageSource> GetThumbLocalilyAsync()
         {
-            return Run(async token =>
+            return Run<ImageSource>(async token =>
             {
                 using (var db = new GalleryDb())
                 {
@@ -129,23 +127,19 @@ namespace ExClient.Galleries
                         .OrderBy(gi => gi.PageId)
                         .FirstOrDefault();
                     if (imageModel is null)
-                    {
                         return null;
-                    }
-
                     var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
                     var file = await folder.TryGetFileAsync(imageModel.Image.FileName);
                     if (file is null)
-                    {
                         return null;
-                    }
-
                     try
                     {
                         using (var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
                         {
-                            var decoder = await BitmapDecoder.CreateAsync(stream);
-                            return await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                            await CoreApplication.MainView.Dispatcher.Yield();
+                            var image = new BitmapImage();
+                            await image.SetSourceAsync(stream);
+                            return image;
                         }
                     }
                     catch (Exception)
