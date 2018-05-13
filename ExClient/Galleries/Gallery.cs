@@ -18,9 +18,13 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
+using Windows.UI.Core;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
@@ -257,17 +261,19 @@ namespace ExClient.Galleries
 
         private static readonly HttpClient coverClient = new HttpClient();
 
-        protected virtual IAsyncOperation<SoftwareBitmap> GetThumbAsync()
+        protected virtual IAsyncOperation<ImageSource> GetThumbAsync()
         {
-            return Run(async token =>
+            return Run<ImageSource>(async token =>
             {
                 try
                 {
                     var buffer = await coverClient.GetBufferAsync(this.ThumbUri);
                     using (var stream = buffer.AsRandomAccessStream())
                     {
-                        var decoder = await BitmapDecoder.CreateAsync(stream);
-                        return await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                        await CoreApplication.MainView.Dispatcher.Yield();
+                        var image = new BitmapImage();
+                        await image.SetSourceAsync(stream);
+                        return image;
                     }
                 }
                 catch (Exception)
@@ -293,36 +299,23 @@ namespace ExClient.Galleries
 
         public Category Category { get; protected set; }
 
-        private readonly WeakReference<SoftwareBitmap> thumbImage = new WeakReference<SoftwareBitmap>(null);
-        public SoftwareBitmap Thumb
+        private readonly WeakReference<ImageSource> thumbImage = new WeakReference<ImageSource>(null);
+        public ImageSource Thumb
         {
             get
             {
                 if (this.thumbImage.TryGetTarget(out var img))
-                {
                     return img;
-                }
-
                 var load = GetThumbAsync();
                 load.Completed = (asyncInfo, asyncStatus) =>
                 {
                     try
                     {
                         if (asyncStatus != AsyncStatus.Completed)
-                        {
                             return;
-                        }
-
                         var r = asyncInfo.GetResults();
                         if (r is null)
-                        {
                             return;
-                        }
-
-                        if (this.thumbImage.TryGetTarget(out var img2))
-                        {
-                            img2.Dispose();
-                        }
                         this.thumbImage.SetTarget(r);
                         OnPropertyChanged(nameof(Thumb));
                     }
@@ -331,7 +324,7 @@ namespace ExClient.Galleries
                         asyncInfo.Close();
                     }
                 };
-                return null;
+                return GalleryImage.DefaultThumb;
             }
         }
 
