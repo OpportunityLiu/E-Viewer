@@ -279,7 +279,7 @@
                  Grid.RowSpan="2"
                  Width="160"
                  Margin="8"
-                 Source="{x:Bind xb:Image.OfSoftwareBitmap(ViewModel.Gallery.Thumb), Mode=OneWay}" />
+                 Source="{x:Bind ViewModel.Gallery.Thumb, Mode=OneWay}" />
           <Grid Grid.Column="1"
                 VerticalAlignment="Center">
             <Grid.RowDefinitions>

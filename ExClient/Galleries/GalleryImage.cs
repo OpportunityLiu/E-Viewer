@@ -84,10 +84,7 @@ namespace ExClient.Galleries
         {
             var temp = imageFolder;
             if (temp != null)
-            {
                 return AsyncOperation<StorageFolder>.CreateCompleted(temp);
-            }
-
             return Run(async token =>
             {
                 var temp2 = imageFolder;
