@@ -27,28 +27,33 @@ namespace ExDawnOfDayTask
         }
 
         private const string TASK_NAME = "ExDawnOfDayTask";
-        private static int registered = 0;
+        private static readonly object syncRoot = new object();
+
         public static void Register()
         {
-            if (Interlocked.Exchange(ref registered, 1) != 0)
-                return;
-            foreach (var task in BackgroundTaskRegistration.AllTasks)
+            lock (syncRoot)
             {
-                if (task.Value.Name == TASK_NAME)
-                    return;
+                foreach (var task in BackgroundTaskRegistration.AllTasks)
+                {
+                    if (task.Value.Name == TASK_NAME)
+                        task.Value.Unregister(false);
+                }
+                var triggerTime = new DateTimeOffset(DateTimeOffset.UtcNow.Date.AddDays(1).AddMinutes(15), default);
+                var diff = triggerTime - DateTimeOffset.UtcNow;
+                var builder = new BackgroundTaskBuilder
+                {
+                    Name = TASK_NAME,
+                    TaskEntryPoint = "ExDawnOfDayTask.Task",
+                    IsNetworkRequested = true,
+                };
+                builder.SetTrigger(new TimeTrigger((uint)Math.Ceiling(diff.TotalMinutes), true));
+                builder.Register();
             }
-            var builder = new BackgroundTaskBuilder
-            {
-                Name = TASK_NAME,
-                TaskEntryPoint = "ExDawnOfDayTask.Task",
-                IsNetworkRequested = true,
-            };
-            builder.SetTrigger(new TimeTrigger(24 * 60, false));
-            builder.Register();
         }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
+            Register();
             if (!Enabled)
                 return;
             if (ExClient.Client.Current.NeedLogOn)
