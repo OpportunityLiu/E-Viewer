@@ -107,11 +107,13 @@
   },
   "General": {
     "Cancel": "Cancel",
+    "Close": "Close",
     "Exit": "Exit",
     // Use local language to replace "English"
     // see https://ctrlq.org/code/19899-google-translate-languages#languages
     "LanguageCode": "en",
-    "OK": "OK"
+    "OK": "OK",
+    "Submit": "Submit"
   },
   "Sharing": {
     "CopyedToClipboard": "Content has copied to clipboard.",

@@ -127,6 +127,14 @@ namespace ExViewer.ViewModels
             return ac;
         });
 
+        public AsyncCommand Rename => Commands.GetOrAdd(() =>
+            AsyncCommand.Create(async (c, s) =>
+            {
+                var rename = ThreadLocalSingleton.GetOrCreate<RenameGalleryDialog>();
+                rename.Gallery = this.Gallery;
+                await rename.ShowAsync();
+            }));
+
         public Command<RevisionCollection> GoToLatestRevision => Commands.GetOrAdd(() =>
             Command<RevisionCollection>.Create(async (sender, c) =>
             {

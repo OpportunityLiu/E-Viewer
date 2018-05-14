@@ -115,20 +115,14 @@ namespace ExViewer.Views
             public static bool HandleUriLaunch(Uri uri)
             {
                 if (uri is null)
-                {
                     return true;
-                }
-
-                if (Available)
-                {
+                if (Available && Window.Current.Content == root)
                     return UriHandler.Handle(uri);
-                }
                 if (!UriHandler.CanHandleInApp(uri))
                 {
                     UriHandler.Handle(uri);
                     return false;
                 }
-
                 launchUri = uri;
                 return true;
             }

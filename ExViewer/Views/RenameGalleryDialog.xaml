@@ -1,0 +1,106 @@
+﻿<controls:MyContentDialog x:Class="ExViewer.Views.RenameGalleryDialog"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="using:ExViewer.Views"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:controls="using:ExViewer.Controls"
+                          xmlns:client="using:ExClient"
+                          xmlns:services="using:ExClient.Services"
+                          mc:Ignorable="d"
+                          Title="RENAME GALLERY"
+                          PrimaryButtonText="Submit"
+                          CloseButtonText="Close"
+                          IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
+                          PrimaryButtonClick="MyContentDialog_PrimaryButtonClick"
+                          Loading="MyContentDialog_Loading"
+                          Unloaded="MyContentDialog_Unloaded">
+  <controls:MyContentDialog.Resources>
+    <DataTemplate x:Key="RecordDataTemplate"
+                  x:DataType="services:RenameRecord">
+      <Grid Margin="0,4">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="32" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{x:Bind Power, Mode=OneWay}" />
+        <TextBlock Grid.Column="1"
+                   Style="{ThemeResource BodyTextBlockStyle}"
+                   Text="{x:Bind Title}" />
+      </Grid>
+    </DataTemplate>
+    <Style x:Key="RenameTextBoxStyle"
+           TargetType="TextBox">
+      <Setter Property="TextWrapping"
+              Value="Wrap" />
+      <Setter Property="Margin"
+              Value="0,4" />
+    </Style>
+    <Style x:Key="RenameTypeTextBlockStyle"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource BaseTextBlockStyle}">
+      <Setter Property="Margin"
+              Value="0,4" />
+    </Style>
+  </controls:MyContentDialog.Resources>
+  <Grid Margin="0,-4">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <TextBlock Text="Roman Script"
+               Style="{ThemeResource RenameTypeTextBlockStyle}" />
+    <ListView x:Name="lvRoman"
+              Grid.Row="1"
+              SelectionChanged="lv_SelectionChanged"
+              ItemsSource="{x:Bind info.RomanRecords}"
+              ItemTemplate="{StaticResource RecordDataTemplate}">
+      <ListView.Header>
+        <TextBlock Text="{x:Bind info.OriginalRomanTitle, FallbackValue=''}"
+                   Style="{ThemeResource BodyTextBlockStyle}" />
+      </ListView.Header>
+      <ListView.Footer>
+        <TextBox x:Name="tbRoman"
+                 Style="{StaticResource RenameTextBoxStyle}"
+                 PlaceholderText="Input Roman title"
+                 TextChanged="tb_TextChanged"
+                 Text="{x:Bind info.VotedRoman, TargetNullValue='', Mode=OneWay}" />
+      </ListView.Footer>
+    </ListView>
+    <TextBlock Text="Japanese Script"
+               Grid.Row="2"
+               Style="{ThemeResource RenameTypeTextBlockStyle}" />
+    <ListView x:Name="lvJapanese"
+              Grid.Row="3"
+              SelectionChanged="lv_SelectionChanged"
+              ItemsSource="{x:Bind info.JapaneseRecords}"
+              ItemTemplate="{StaticResource RecordDataTemplate}">
+      <ListView.Header>
+        <TextBlock Text="{x:Bind info.OriginalJapaneseTitle, FallbackValue=''}"
+                   Style="{ThemeResource BodyTextBlockStyle}" />
+      </ListView.Header>
+      <ListView.Footer>
+        <TextBox x:Name="tbJapanese"
+                 Style="{StaticResource RenameTextBoxStyle}"
+                 PlaceholderText="Input Japanese title"
+                 TextChanged="tb_TextChanged"
+                 Text="{x:Bind info.VotedJapanese, TargetNullValue='', Mode=OneWay}" />
+      </ListView.Footer>
+    </ListView>
+    <Grid Margin="0,4"
+          MinHeight="4"
+          Grid.Row="4">
+      <TextBlock x:Name="tbInfo"
+                 HorizontalAlignment="Stretch"
+                 TextWrapping="WrapWholeWords"
+                 Foreground="Red"
+                 Visibility="{x:Bind tbInfo.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
+      <ProgressBar x:Name="pbLoading"
+                   VerticalAlignment="Top"
+                   Visibility="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}" />
+    </Grid>
+  </Grid>
+</controls:MyContentDialog>
