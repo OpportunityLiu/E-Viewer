@@ -213,6 +213,7 @@
       "PivotHeaderCommentsTextBlock/Text": "評論",
       "PivotHeaderImagesTextBlock/Text": "圖片",
       "PivotHeaderTorrentsTextBlock/Text": "種子",
+      "RenameAppBarButton/Label": "請求重新命名畫廊",
       "SaveAppBarButton/Label": "儲存此畫廊",
       "SearchUploaderAppBarButton/Label": "搜尋該上傳者的所有畫廊",
       "ShareAppBarButton/Label": "共享",
@@ -287,6 +288,15 @@
       "PrimaryButtonText": "複製",
       "CloseButtonText": "關閉",
       "Title": "QR 碼掃描結果"
+    },
+    "RenameGalleryDialog": {
+      "$PowerTemplate": "{power} %",
+      "ContentDialog/Title": "重新命名畫廊",
+      "JapaneseTextBox/PlaceholderText": "輸入日文標題",
+      "JapaneseTitleTextBlock/Text": "日文標題",
+      "PowerColumnDefinition/Width": "40",
+      "RomanTextBox/PlaceholderText": "輸入羅馬字標題",
+      "RomanTitleTextBlock/Text": "羅馬字標題"
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "快取的畫廊",

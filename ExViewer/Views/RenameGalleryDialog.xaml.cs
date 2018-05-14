@@ -45,8 +45,7 @@ namespace ExViewer.Views
             try
             {
                 await this.info.VoteAsync(this.tbRoman.Text, this.tbJapanese.Text);
-                this.tbRoman.Text = this.info.VotedRoman?.ToString() ?? "";
-                this.tbJapanese.Text = this.info.VotedJapanese?.ToString() ?? "";
+                this.info.OnPropertyChanged(nameof(this.info.VotedRoman), nameof(this.info.VotedJapanese));
             }
             catch (Exception ex)
             {
@@ -97,11 +96,13 @@ namespace ExViewer.Views
         {
             this.tbInfo.Text = "";
             var tb = (TextBox)sender;
+            var focused = tb.FocusState;
             var lv = tb.Ancestors<ListView>().First();
             var source = (IList<RenameRecord>)lv.ItemsSource;
             var item = source.FirstOrDefault(r => r.Title == tb.Text);
             lv.SelectedItem = item;
-            tb.Focus(FocusState.Programmatic);
+            if (focused != FocusState.Unfocused)
+                tb.Focus(focused);
         }
     }
 }
