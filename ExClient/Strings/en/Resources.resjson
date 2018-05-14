@@ -23,6 +23,7 @@
   "IPBannedOfPageLoad": "Your IP address has been temporarily banned for excessive pageloads which indicates that you are using automated mirroring/harvesting software.",
   "OnlyIpv4": "Only IPV4 address supported.",
   "RemoveFromFavorites": "Remove from favorites",
+  "RenameTitleTooShort": "New suggested title is too short.",
   "SadPanda": "We've got the sad panda from exhentai, this probably means that current account dose not have permittion for exhentai.",
   "ShortComment": "Your comment is too short.",
   "TagNoVotePremition": "Cannot vote for tag.",

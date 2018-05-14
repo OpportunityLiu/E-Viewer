@@ -107,11 +107,13 @@
   },
   "General": {
     "Cancel": "取消",
+    "Close": "关闭",
     "Exit": "退出",
     // Use local language to replace "English"
     // see https://ctrlq.org/code/19899-google-translate-languages#languages
     "LanguageCode": "zh-Hans",
-    "OK": "确定"
+    "OK": "确定",
+    "Submit": "提交"
   },
   "Sharing": {
     "CopyedToClipboard": "内容已经复制到剪贴板",

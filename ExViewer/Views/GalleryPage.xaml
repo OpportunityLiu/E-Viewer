@@ -572,10 +572,15 @@
                       Command="{x:Bind xb:Command.Delay(ViewModel.SearchUploader, 250), Mode=OneWay}"
                       Icon="ContactInfo"
                       Label="Search uploader" />
+        <AppBarButton Command="{x:Bind ViewModel.Rename, Mode=OneWay}"
+                      Icon="Rename"
+                      Label="Petition to rename" />
+        <AppBarSeparator />
         <AppBarButton x:Uid="Views/GalleryPage/SaveAppBarButton"
                       Command="{x:Bind ViewModel.Save, Mode=OneWay}"
                       Icon="Download"
                       Label="Save this gallery" />
+        
       </CommandBar.SecondaryCommands>
     </CommandBar>
     <ProgressBar x:Name="pb_save"
