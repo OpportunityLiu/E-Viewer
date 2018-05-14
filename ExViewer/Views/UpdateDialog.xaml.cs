@@ -22,6 +22,11 @@ namespace ExViewer.Views
     {
         internal UpdateDialog(VersionChecker.GitHubRelease release)
         {
+            //            release.body = @"* Show user rating  
+            //  ![image](https://user-images.githubusercontent.com/13471233/36630230-f487930e-199d-11e8-8336-5ab6515c419b.png)  
+            //* Scan QR code in gallery images  
+            //  ![image](https://user-images.githubusercontent.com/13471233/36630227-eceeb6f4-199d-11e8-8398-f34f4d36132f.png)
+            //* Bug fix & other improvements";
             this.release = release;
             this.InitializeComponent();
             if (!(ApiInfo.IsDesktop || ApiInfo.IsMobile))

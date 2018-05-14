@@ -29,31 +29,44 @@ namespace ExDawnOfDayTask
         private const string TASK_NAME = "ExDawnOfDayTask";
         private static readonly object syncRoot = new object();
 
-        public static void Register()
+        public static void Register() => register(false);
+
+        private static void register(bool unregister)
         {
             lock (syncRoot)
             {
                 foreach (var task in BackgroundTaskRegistration.AllTasks)
                 {
                     if (task.Value.Name == TASK_NAME)
-                        task.Value.Unregister(false);
+                    {
+                        if (unregister)
+                            task.Value.Unregister(false);
+                        else
+                            return;
+                    }
                 }
-                var triggerTime = new DateTimeOffset(DateTimeOffset.UtcNow.Date.AddDays(1).AddMinutes(15), default);
-                var diff = triggerTime - DateTimeOffset.UtcNow;
                 var builder = new BackgroundTaskBuilder
                 {
                     Name = TASK_NAME,
                     TaskEntryPoint = "ExDawnOfDayTask.Task",
                     IsNetworkRequested = true,
                 };
-                builder.SetTrigger(new TimeTrigger((uint)Math.Ceiling(diff.TotalMinutes), true));
+                builder.SetTrigger(new TimeTrigger(getRemainTime(), true));
                 builder.Register();
+            }
+
+            uint getRemainTime()
+            {
+                var currentTime = DateTimeOffset.UtcNow;
+                var triggerTime = new DateTimeOffset(currentTime.Date.AddDays(1).AddMinutes(20), default);
+                var diff = triggerTime - currentTime;
+                return (uint)Math.Ceiling(diff.TotalMinutes);
             }
         }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
-            Register();
+            register(true);
             if (!Enabled)
                 return;
             if (ExClient.Client.Current.NeedLogOn)
