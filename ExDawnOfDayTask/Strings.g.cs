@@ -135,190 +135,190 @@ namespace ExDawnOfDayTask
     {
 
         [global::System.Diagnostics.DebuggerBrowsableAttribute(global::System.Diagnostics.DebuggerBrowsableState.Never)]
-        private static global::ExDawnOfDayTask.ResourceInfo.IResources Resources__AJUXmtL7;
+        private static global::ExDawnOfDayTask.ResourceInfo.IResources Resources__0nElYILr;
         internal static global::ExDawnOfDayTask.ResourceInfo.IResources Resources 
-            => global::System.Threading.LazyInitializer.EnsureInitialized(ref Resources__AJUXmtL7, () => new global::ExDawnOfDayTask.Strings.Resources__LLBa6oN1());
+            => global::System.Threading.LazyInitializer.EnsureInitialized(ref Resources__0nElYILr, () => new global::ExDawnOfDayTask.Strings.Resources__GxZK2xSh());
 
         [global::System.Diagnostics.DebuggerTypeProxyAttribute(typeof(global::Opportunity.ResourceGenerator.DebuggerDisplay))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Opportunity.ResourceGenerator", "1.3.8.0")]
-        private sealed class Resources__LLBa6oN1 : global::Opportunity.ResourceGenerator.ResourceProviderBase, global::ExDawnOfDayTask.ResourceInfo.IResources
+        private sealed class Resources__GxZK2xSh : global::Opportunity.ResourceGenerator.ResourceProviderBase, global::ExDawnOfDayTask.ResourceInfo.IResources
         {
-            public Resources__LLBa6oN1() : base("ms-resource:///ExDawnOfDayTask/Resources/") { }
+            public Resources__GxZK2xSh() : base("ms-resource:///ExDawnOfDayTask/Resources/") { }
 
 
             [global::System.Diagnostics.DebuggerBrowsableAttribute(global::System.Diagnostics.DebuggerBrowsableState.Never)]
-            private global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast DawnOfDayToast___zFM3asE;
+            private global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast DawnOfDayToast__xx9raFZc;
             [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast")]
             global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast global::ExDawnOfDayTask.ResourceInfo.IResources.DawnOfDayToast 
-                => global::System.Threading.LazyInitializer.EnsureInitialized(ref this.DawnOfDayToast___zFM3asE, () => new global::ExDawnOfDayTask.Strings.Resources__LLBa6oN1.DawnOfDayToast__Tpxissxe());
+                => global::System.Threading.LazyInitializer.EnsureInitialized(ref this.DawnOfDayToast__xx9raFZc, () => new global::ExDawnOfDayTask.Strings.Resources__GxZK2xSh.DawnOfDayToast__XwpRQFj3());
 
             [global::System.Diagnostics.DebuggerTypeProxyAttribute(typeof(global::Opportunity.ResourceGenerator.DebuggerDisplay))]
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Opportunity.ResourceGenerator", "1.3.8.0")]
-            private sealed class DawnOfDayToast__Tpxissxe : global::Opportunity.ResourceGenerator.ResourceProviderBase, global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast
+            private sealed class DawnOfDayToast__XwpRQFj3 : global::Opportunity.ResourceGenerator.ResourceProviderBase, global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast
             {
-                public DawnOfDayToast__Tpxissxe() : base("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/") { }
+                public DawnOfDayToast__XwpRQFj3() : base("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/") { }
 
-                global::Opportunity.ResourceGenerator.FormattableResourceString Content1__2BtsWyNg;
+                global::Opportunity.ResourceGenerator.FormattableResourceString Content1__Uu9Y78YQ;
                 [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content1")]
                 global::Opportunity.ResourceGenerator.FormattableResourceString global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content1()
                 {
-                    if (Content1__2BtsWyNg == null)
-                        Content1__2BtsWyNg = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content1"));
-                    return Content1__2BtsWyNg;
+                    if (Content1__Uu9Y78YQ == null)
+                        Content1__Uu9Y78YQ = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content1"));
+                    return Content1__Uu9Y78YQ;
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content1(object reward1)
                 {
-                    if (Content1__2BtsWyNg == null)
-                        Content1__2BtsWyNg = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content1"));
-                    return string.Format(Content1__2BtsWyNg.FormatString, reward1);
+                    if (Content1__Uu9Y78YQ == null)
+                        Content1__Uu9Y78YQ = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content1"));
+                    return string.Format(Content1__Uu9Y78YQ.FormatString, reward1);
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content1(global::System.IFormatProvider provider, object reward1)
                 {
-                    if (Content1__2BtsWyNg == null)
-                        Content1__2BtsWyNg = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content1"));
-                    return string.Format(provider, Content1__2BtsWyNg.FormatString, reward1);
+                    if (Content1__Uu9Y78YQ == null)
+                        Content1__Uu9Y78YQ = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content1"));
+                    return string.Format(provider, Content1__Uu9Y78YQ.FormatString, reward1);
                 }
-                global::Opportunity.ResourceGenerator.FormattableResourceString Content2__rY_5Frqa;
+                global::Opportunity.ResourceGenerator.FormattableResourceString Content2__xfp6pQEa;
                 [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content2")]
                 global::Opportunity.ResourceGenerator.FormattableResourceString global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content2()
                 {
-                    if (Content2__rY_5Frqa == null)
-                        Content2__rY_5Frqa = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content2"));
-                    return Content2__rY_5Frqa;
+                    if (Content2__xfp6pQEa == null)
+                        Content2__xfp6pQEa = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content2"));
+                    return Content2__xfp6pQEa;
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content2(object reward1, object reward2)
                 {
-                    if (Content2__rY_5Frqa == null)
-                        Content2__rY_5Frqa = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content2"));
-                    return string.Format(Content2__rY_5Frqa.FormatString, reward1, reward2);
+                    if (Content2__xfp6pQEa == null)
+                        Content2__xfp6pQEa = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content2"));
+                    return string.Format(Content2__xfp6pQEa.FormatString, reward1, reward2);
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content2(global::System.IFormatProvider provider, object reward1, object reward2)
                 {
-                    if (Content2__rY_5Frqa == null)
-                        Content2__rY_5Frqa = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content2"));
-                    return string.Format(provider, Content2__rY_5Frqa.FormatString, reward1, reward2);
+                    if (Content2__xfp6pQEa == null)
+                        Content2__xfp6pQEa = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content2"));
+                    return string.Format(provider, Content2__xfp6pQEa.FormatString, reward1, reward2);
                 }
-                global::Opportunity.ResourceGenerator.FormattableResourceString Content3__9E0Rr26k;
+                global::Opportunity.ResourceGenerator.FormattableResourceString Content3__vVhLMXfc;
                 [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content3")]
                 global::Opportunity.ResourceGenerator.FormattableResourceString global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content3()
                 {
-                    if (Content3__9E0Rr26k == null)
-                        Content3__9E0Rr26k = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content3"));
-                    return Content3__9E0Rr26k;
+                    if (Content3__vVhLMXfc == null)
+                        Content3__vVhLMXfc = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content3"));
+                    return Content3__vVhLMXfc;
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content3(object reward1, object reward2, object reward3)
                 {
-                    if (Content3__9E0Rr26k == null)
-                        Content3__9E0Rr26k = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content3"));
-                    return string.Format(Content3__9E0Rr26k.FormatString, reward1, reward2, reward3);
+                    if (Content3__vVhLMXfc == null)
+                        Content3__vVhLMXfc = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content3"));
+                    return string.Format(Content3__vVhLMXfc.FormatString, reward1, reward2, reward3);
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content3(global::System.IFormatProvider provider, object reward1, object reward2, object reward3)
                 {
-                    if (Content3__9E0Rr26k == null)
-                        Content3__9E0Rr26k = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content3"));
-                    return string.Format(provider, Content3__9E0Rr26k.FormatString, reward1, reward2, reward3);
+                    if (Content3__vVhLMXfc == null)
+                        Content3__vVhLMXfc = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content3"));
+                    return string.Format(provider, Content3__vVhLMXfc.FormatString, reward1, reward2, reward3);
                 }
-                global::Opportunity.ResourceGenerator.FormattableResourceString Content4__zHY0aLr9;
+                global::Opportunity.ResourceGenerator.FormattableResourceString Content4__Xlr0YXaF;
                 [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content4")]
                 global::Opportunity.ResourceGenerator.FormattableResourceString global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content4()
                 {
-                    if (Content4__zHY0aLr9 == null)
-                        Content4__zHY0aLr9 = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content4"));
-                    return Content4__zHY0aLr9;
+                    if (Content4__Xlr0YXaF == null)
+                        Content4__Xlr0YXaF = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content4"));
+                    return Content4__Xlr0YXaF;
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content4(object reward1, object reward2, object reward3, object reward4)
                 {
-                    if (Content4__zHY0aLr9 == null)
-                        Content4__zHY0aLr9 = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content4"));
-                    return string.Format(Content4__zHY0aLr9.FormatString, reward1, reward2, reward3, reward4);
+                    if (Content4__Xlr0YXaF == null)
+                        Content4__Xlr0YXaF = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content4"));
+                    return string.Format(Content4__Xlr0YXaF.FormatString, reward1, reward2, reward3, reward4);
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Content4(global::System.IFormatProvider provider, object reward1, object reward2, object reward3, object reward4)
                 {
-                    if (Content4__zHY0aLr9 == null)
-                        Content4__zHY0aLr9 = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content4"));
-                    return string.Format(provider, Content4__zHY0aLr9.FormatString, reward1, reward2, reward3, reward4);
+                    if (Content4__Xlr0YXaF == null)
+                        Content4__Xlr0YXaF = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$Content4"));
+                    return string.Format(provider, Content4__Xlr0YXaF.FormatString, reward1, reward2, reward3, reward4);
                 }
-                global::Opportunity.ResourceGenerator.FormattableResourceString RewardCredits__pWV0nt48;
+                global::Opportunity.ResourceGenerator.FormattableResourceString RewardCredits__O_K8gtD7;
                 [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardCredits")]
                 global::Opportunity.ResourceGenerator.FormattableResourceString global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardCredits()
                 {
-                    if (RewardCredits__pWV0nt48 == null)
-                        RewardCredits__pWV0nt48 = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardCredits"));
-                    return RewardCredits__pWV0nt48;
+                    if (RewardCredits__O_K8gtD7 == null)
+                        RewardCredits__O_K8gtD7 = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardCredits"));
+                    return RewardCredits__O_K8gtD7;
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardCredits(object value)
                 {
-                    if (RewardCredits__pWV0nt48 == null)
-                        RewardCredits__pWV0nt48 = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardCredits"));
-                    return string.Format(RewardCredits__pWV0nt48.FormatString, value);
+                    if (RewardCredits__O_K8gtD7 == null)
+                        RewardCredits__O_K8gtD7 = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardCredits"));
+                    return string.Format(RewardCredits__O_K8gtD7.FormatString, value);
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardCredits(global::System.IFormatProvider provider, object value)
                 {
-                    if (RewardCredits__pWV0nt48 == null)
-                        RewardCredits__pWV0nt48 = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardCredits"));
-                    return string.Format(provider, RewardCredits__pWV0nt48.FormatString, value);
+                    if (RewardCredits__O_K8gtD7 == null)
+                        RewardCredits__O_K8gtD7 = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardCredits"));
+                    return string.Format(provider, RewardCredits__O_K8gtD7.FormatString, value);
                 }
-                global::Opportunity.ResourceGenerator.FormattableResourceString RewardExp__K08FVRJo;
+                global::Opportunity.ResourceGenerator.FormattableResourceString RewardExp__ULK_7okl;
                 [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardExp")]
                 global::Opportunity.ResourceGenerator.FormattableResourceString global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardExp()
                 {
-                    if (RewardExp__K08FVRJo == null)
-                        RewardExp__K08FVRJo = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardExp"));
-                    return RewardExp__K08FVRJo;
+                    if (RewardExp__ULK_7okl == null)
+                        RewardExp__ULK_7okl = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardExp"));
+                    return RewardExp__ULK_7okl;
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardExp(object value)
                 {
-                    if (RewardExp__K08FVRJo == null)
-                        RewardExp__K08FVRJo = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardExp"));
-                    return string.Format(RewardExp__K08FVRJo.FormatString, value);
+                    if (RewardExp__ULK_7okl == null)
+                        RewardExp__ULK_7okl = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardExp"));
+                    return string.Format(RewardExp__ULK_7okl.FormatString, value);
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardExp(global::System.IFormatProvider provider, object value)
                 {
-                    if (RewardExp__K08FVRJo == null)
-                        RewardExp__K08FVRJo = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardExp"));
-                    return string.Format(provider, RewardExp__K08FVRJo.FormatString, value);
+                    if (RewardExp__ULK_7okl == null)
+                        RewardExp__ULK_7okl = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardExp"));
+                    return string.Format(provider, RewardExp__ULK_7okl.FormatString, value);
                 }
-                global::Opportunity.ResourceGenerator.FormattableResourceString RewardGp__CKVytu1D;
+                global::Opportunity.ResourceGenerator.FormattableResourceString RewardGp__SeKqFJuH;
                 [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardGp")]
                 global::Opportunity.ResourceGenerator.FormattableResourceString global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardGp()
                 {
-                    if (RewardGp__CKVytu1D == null)
-                        RewardGp__CKVytu1D = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardGp"));
-                    return RewardGp__CKVytu1D;
+                    if (RewardGp__SeKqFJuH == null)
+                        RewardGp__SeKqFJuH = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardGp"));
+                    return RewardGp__SeKqFJuH;
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardGp(object value)
                 {
-                    if (RewardGp__CKVytu1D == null)
-                        RewardGp__CKVytu1D = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardGp"));
-                    return string.Format(RewardGp__CKVytu1D.FormatString, value);
+                    if (RewardGp__SeKqFJuH == null)
+                        RewardGp__SeKqFJuH = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardGp"));
+                    return string.Format(RewardGp__SeKqFJuH.FormatString, value);
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardGp(global::System.IFormatProvider provider, object value)
                 {
-                    if (RewardGp__CKVytu1D == null)
-                        RewardGp__CKVytu1D = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardGp"));
-                    return string.Format(provider, RewardGp__CKVytu1D.FormatString, value);
+                    if (RewardGp__SeKqFJuH == null)
+                        RewardGp__SeKqFJuH = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardGp"));
+                    return string.Format(provider, RewardGp__SeKqFJuH.FormatString, value);
                 }
-                global::Opportunity.ResourceGenerator.FormattableResourceString RewardHath__ATfix75_;
+                global::Opportunity.ResourceGenerator.FormattableResourceString RewardHath__cbkJNoMA;
                 [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardHath")]
                 global::Opportunity.ResourceGenerator.FormattableResourceString global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardHath()
                 {
-                    if (RewardHath__ATfix75_ == null)
-                        RewardHath__ATfix75_ = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardHath"));
-                    return RewardHath__ATfix75_;
+                    if (RewardHath__cbkJNoMA == null)
+                        RewardHath__cbkJNoMA = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardHath"));
+                    return RewardHath__cbkJNoMA;
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardHath(object value)
                 {
-                    if (RewardHath__ATfix75_ == null)
-                        RewardHath__ATfix75_ = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardHath"));
-                    return string.Format(RewardHath__ATfix75_.FormatString, value);
+                    if (RewardHath__cbkJNoMA == null)
+                        RewardHath__cbkJNoMA = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardHath"));
+                    return string.Format(RewardHath__cbkJNoMA.FormatString, value);
                 }
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.RewardHath(global::System.IFormatProvider provider, object value)
                 {
-                    if (RewardHath__ATfix75_ == null)
-                        RewardHath__ATfix75_ = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardHath"));
-                    return string.Format(provider, RewardHath__ATfix75_.FormatString, value);
+                    if (RewardHath__cbkJNoMA == null)
+                        RewardHath__cbkJNoMA = new global::Opportunity.ResourceGenerator.FormattableResourceString(global::Opportunity.Helpers.Universal.LocalizedStrings.GetValue("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/$RewardHath"));
+                    return string.Format(provider, RewardHath__cbkJNoMA.FormatString, value);
                 }
                 [global::Opportunity.ResourceGenerator.ResourcePathAttribute("ms-resource:///ExDawnOfDayTask/Resources/DawnOfDayToast/Title")]
                 string global::ExDawnOfDayTask.ResourceInfo.Resources.IDawnOfDayToast.Title

@@ -560,6 +560,16 @@
                       Command="{x:Bind ViewModel.AddComment, Mode=OneWay}" />
       </CommandBar.PrimaryCommands>
       <CommandBar.SecondaryCommands>
+        <!--Wait 250ms for command bar close animation-->
+        <AppBarButton x:Uid="Views/GalleryPage/SearchUploaderAppBarButton"
+                      Command="{x:Bind xb:Command.Delay(ViewModel.SearchUploader, 250), Mode=OneWay}"
+                      Icon="ContactInfo"
+                      Label="Search uploader" />
+        <AppBarButton x:Uid="Views/GalleryPage/RenameAppBarButton"
+                      Command="{x:Bind ViewModel.Rename, Mode=OneWay}"
+                      Icon="Rename"
+                      Label="Petition to rename" />
+        <AppBarSeparator />
         <AppBarButton x:Uid="Views/GalleryPage/ShareAppBarButton"
                       Command="{x:Bind ViewModel.Share, Mode=OneWay}"
                       Label="Share">
@@ -567,15 +577,6 @@
             <FontIcon Glyph="&#xE72D;" />
           </AppBarButton.Icon>
         </AppBarButton>
-        <!--Wait 250ms for command bar close animation-->
-        <AppBarButton x:Uid="Views/GalleryPage/SearchUploaderAppBarButton"
-                      Command="{x:Bind xb:Command.Delay(ViewModel.SearchUploader, 250), Mode=OneWay}"
-                      Icon="ContactInfo"
-                      Label="Search uploader" />
-        <AppBarButton Command="{x:Bind ViewModel.Rename, Mode=OneWay}"
-                      Icon="Rename"
-                      Label="Petition to rename" />
-        <AppBarSeparator />
         <AppBarButton x:Uid="Views/GalleryPage/SaveAppBarButton"
                       Command="{x:Bind ViewModel.Save, Mode=OneWay}"
                       Icon="Download"
