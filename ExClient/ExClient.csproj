@@ -269,13 +269,13 @@
       <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.3.11</Version>
+      <Version>1.3.12</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
-      <Version>2.6.11</Version>
+      <Version>2.6.12</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
-      <Version>1.3.8</Version>
+      <Version>1.3.9</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
       <Version>4.4.0</Version>
