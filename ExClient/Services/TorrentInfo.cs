@@ -5,12 +5,12 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Web.Http;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Services
 {
@@ -92,26 +92,41 @@ namespace ExClient.Services
 
         public Uri TorrentUri { get; private set; }
 
+        public bool IsExpunged => TorrentUri is null;
+
         public IAsyncOperation<StorageFile> DownloadTorrentAsync()
         {
-            return Run(async token =>
+            if (IsExpunged)
+                throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
+            return AsyncInfo.Run(async token =>
             {
-                if (this.TorrentUri is null)
-                    throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
-
                 using (var client = new HttpClient())
                 {
                     var loadT = client.GetBufferAsync(this.TorrentUri);
                     var filename = StorageHelper.ToValidFileName(this.Name + ".torrent");
-                    var folder = await StorageHelper.CreateTempFolderAsync();
                     var buf = await loadT;
                     try
                     {
-                        return await folder.SaveFileAsync(filename, CreationCollisionOption.ReplaceExisting, buf);
+                        return await StorageFile.CreateStreamedFileAsync(filename, dataRequested, null);
                     }
                     catch (Exception)
                     {
-                        return await folder.SaveFileAsync("gallery.torrent", CreationCollisionOption.ReplaceExisting, buf);
+                        return await StorageFile.CreateStreamedFileAsync("gallery.torrent", dataRequested, null);
+                    }
+
+                    async void dataRequested(StreamedFileDataRequest stream)
+                    {
+                        try
+                        {
+                            await stream.WriteAsync(buf);
+                            await stream.FlushAsync();
+                            stream.Dispose();
+                        }
+                        catch
+                        {
+                            stream.FailAndClose(StreamedFileFailureMode.Failed);
+                            throw;
+                        }
                     }
                 }
             });

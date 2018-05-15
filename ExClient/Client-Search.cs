@@ -11,85 +11,63 @@ namespace ExClient
     {
         public PopularCollection Popular { get; } = new PopularCollection();
 
+        #region Keyword search
+        public AdvancedSearchResult Search(string keyword)
+            => Search(keyword, Category.Unspecified);
+
+        public AdvancedSearchResult Search(string keyword, Category category)
+            => Search(keyword, category, default(AdvancedSearchOptions));
+
+        public AdvancedSearchResult Search(string keyword, Category category, AdvancedSearchOptions advancedSearch)
+            => AdvancedSearchResult.Search(keyword, category, advancedSearch);
+        #endregion Keyword search
+
+        #region Uploader search
+        public AdvancedSearchResult Search(string uploader, string keyword)
+            => Search(uploader, keyword, default);
+
+        public AdvancedSearchResult Search(string uploader, string keyword, Category category)
+            => Search(uploader, keyword, category, default);
+
         public AdvancedSearchResult Search(string uploader, string keyword, Category category, AdvancedSearchOptions advancedSearch)
         {
             if (string.IsNullOrWhiteSpace(uploader))
-            {
                 throw new ArgumentNullException(nameof(uploader));
-            }
             uploader = uploader.Trim();
             var formarttedUploader = uploader.IndexOf(' ') >= 0 ? $"uploader:\"{uploader}\" " : $"uploader:{uploader} ";
             return Search(formarttedUploader + keyword, category, advancedSearch);
         }
+        #endregion Uploader search
 
-        public AdvancedSearchResult Search(string uploader, string keyword, Category category)
-        {
-            return Search(uploader, keyword, category, default(AdvancedSearchOptions));
-        }
-
-        public AdvancedSearchResult Search(string uploader, string keyword)
-        {
-            return Search(uploader, keyword, default(Category));
-        }
-
-        public AdvancedSearchResult Search(string keyword, Category category, AdvancedSearchOptions advancedSearch)
-        {
-            return AdvancedSearchResult.Search(keyword, category, advancedSearch);
-        }
-
-        public AdvancedSearchResult Search(string keyword, Category category)
-        {
-            return Search(keyword, category, default(AdvancedSearchOptions));
-        }
-
-        public AdvancedSearchResult Search(string keyword)
-        {
-            return Search(keyword, Category.Unspecified);
-        }
-
-        public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
-        {
-            return FileSearchResult.SearchAsync(keyword, category, file, searchSimilar, onlyCovers, searchExpunged);
-        }
-
+        #region File search
         public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(string keyword, Category category, StorageFile file)
-        {
-            return SearchAsync(keyword, category, file, true, false, false);
-        }
-
-        public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
-        {
-            return FileSearchResult.SearchAsync(null, default, file, searchSimilar, onlyCovers, searchExpunged);
-        }
+            => SearchAsync(keyword, category, file, true, false, false);
 
         public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(StorageFile file)
-        {
-            return SearchAsync(null, default, file);
-        }
+            => SearchAsync(null, default, file);
 
-        public FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName, bool onlyCovers, bool searchExpunged)
-        {
-            return FileSearchResult.Search(keyword, category, fileHashes, fileName, false, onlyCovers, searchExpunged);
-        }
+        public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
+            => SearchAsync(null, default, file, searchSimilar, onlyCovers, searchExpunged);
 
-        public FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName)
-        {
-            return Search(keyword, category, fileHashes, fileName, false, false);
-        }
+        public IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
+            => FileSearchResult.SearchAsync(keyword, category, file, searchSimilar, onlyCovers, searchExpunged);
+        #endregion File search
 
-        public FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes)
-        {
-            return Search(keyword, category, fileHashes, null);
-        }
+        #region File hash search
+        public FileSearchResult Search(IEnumerable<SHA1Value> fileHashes)
+            => Search(fileHashes, null);
 
         public FileSearchResult Search(IEnumerable<SHA1Value> fileHashes, string fileName)
-        {
-            return Search(null, default, fileHashes, fileName);
-        }
+            => Search(null, default, fileHashes, fileName);
 
-        public FileSearchResult Search(IEnumerable<SHA1Value> fileHashes)
-        {
-            return Search(fileHashes, null);
-        }
+        public FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes)
+            => Search(keyword, category, fileHashes, null);
+
+        public FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName)
+            => Search(keyword, category, fileHashes, fileName, false, false);
+
+        public FileSearchResult Search(string keyword, Category category, IEnumerable<SHA1Value> fileHashes, string fileName, bool onlyCovers, bool searchExpunged)
+            => FileSearchResult.Search(keyword, category, fileHashes, fileName, false, onlyCovers, searchExpunged);
+        #endregion File hash search
     }
 }
