@@ -101,7 +101,7 @@
                    Foreground="Red"
                    Style="{StaticResource TorrentNameTextBlockStyle}"
                    Text="Expunged"
-                   Visibility="{x:Bind TorrentUri, Converter={StaticResource NullToVisibleConverter}}" />
+                   Visibility="{x:Bind IsExpunged}" />
         <Button x:Uid="Views/GalleryPage/TorrentDownloadButton"
                 Grid.RowSpan="2"
                 Grid.Column="2"

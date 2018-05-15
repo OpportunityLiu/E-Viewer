@@ -99,10 +99,7 @@ namespace ExViewer.ViewModels
                 var that = (GalleryVM)c.Tag;
                 var rt = that.gallery?.Rating;
                 if (rt is null || rt.UserScore == s)
-                {
                     return;
-                }
-
                 try
                 {
                     await rt.RatingAsync(s);
@@ -544,7 +541,7 @@ namespace ExViewer.ViewModels
                     if (torrentfolder is null)
                         await loadTorrentFolder();
 
-                    await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
+                    await file.CopyAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
                     if (!await Launcher.LaunchFileAsync(file))
                         await Launcher.LaunchFolderAsync(torrentfolder);
 

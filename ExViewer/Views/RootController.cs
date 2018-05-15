@@ -116,7 +116,7 @@ namespace ExViewer.Views
             {
                 if (uri is null)
                     return true;
-                if (Available && Window.Current.Content == root)
+                if (Available)
                     return UriHandler.Handle(uri);
                 if (!UriHandler.CanHandleInApp(uri))
                 {
@@ -127,7 +127,7 @@ namespace ExViewer.Views
                 return true;
             }
 
-            public static bool Available => root != null;
+            public static bool Available => root != null && Window.Current.Content == root;
 
             public static StatusBar StatusBar { get; private set; }
 
@@ -250,14 +250,9 @@ namespace ExViewer.Views
             public static void SendToast(string content, Type source)
             {
                 if (!Available)
-                {
                     return;
-                }
-
                 if (content is null)
-                {
                     throw new ArgumentNullException(nameof(content));
-                }
 
                 root.Dispatcher.Begin(() =>
                 {
@@ -281,15 +276,11 @@ namespace ExViewer.Views
             public static void SwitchSplitView(bool? open)
             {
                 if (!Available)
-                {
                     return;
-                }
 
                 var currentState = root.sv_root.IsPaneOpen;
                 if (open == currentState)
-                {
                     return;
-                }
 
                 var targetState = open ?? !currentState;
                 if (targetState)
@@ -326,13 +317,9 @@ namespace ExViewer.Views
             public static async void UpdateUserInfo(bool setNull)
             {
                 if (Available && setNull)
-                {
                     root.UserInfo = null;
-                }
-                if (Client.Current.UserId == -1)
-                {
+                if (Client.Current.UserId < 0)
                     return;
-                }
 
                 var info = default(UserInfo);
                 try
@@ -345,9 +332,7 @@ namespace ExViewer.Views
                     info = await UserInfo.LoadFromCache();
                 }
                 if (Available)
-                {
                     root.UserInfo = info;
-                }
             }
 
             public static void TrackAsyncAction(IAsyncAction action)

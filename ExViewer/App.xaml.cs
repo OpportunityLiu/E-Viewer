@@ -44,10 +44,7 @@ namespace ExViewer
             case OperationCanceledException _:
                 break;
             default:
-                if (RootControl.RootController.Available)
-                {
-                    RootControl.RootController.SendToast(ex, null);
-                }
+                RootControl.RootController.SendToast(ex, null);
                 break;
             }
             e.Handled = true;
