@@ -58,7 +58,7 @@ namespace ExViewer
             }
             else
             {
-                dp.RunAsync((DispatchedHandler)addInfo).GetAwaiter().GetResult();
+                dp.RunAsync(addInfo).GetAwaiter().GetResult();
             }
             var r = sb.ToString();
             log(r);
