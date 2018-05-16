@@ -277,6 +277,7 @@ namespace ExViewer.ViewModels
                 {
                     await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
                 }
+                catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
                     RootControl.RootController.SendToast(ex, typeof(ImagePage));
