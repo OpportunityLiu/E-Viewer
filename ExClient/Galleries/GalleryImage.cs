@@ -263,18 +263,13 @@ namespace ExClient.Galleries
                 if (!reload)
                 {
                     if (previousEnded)
-                    {
                         return AsyncAction.CreateCompleted();
-                    }
-
                     return PollingAsyncWrapper.Wrap(previousAction, 1500);
                 }
                 else
                 {
                     if (!previousEnded)
-                    {
                         previousAction?.Cancel();
-                    }
                 }
                 break;
             case ImageLoadingState.Preparing:

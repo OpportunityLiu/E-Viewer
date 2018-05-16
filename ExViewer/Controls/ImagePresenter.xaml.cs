@@ -66,6 +66,7 @@ namespace ExViewer.Controls
                 {
                     await newValue.LoadImageAsync(false, SettingCollection.Current.GetStrategy(), false);
                 }
+                catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
                     Views.RootControl.RootController.SendToast(ex, null);
