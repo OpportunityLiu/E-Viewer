@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -26,16 +27,22 @@ namespace ExViewer.Controls
             if (!"release".Equals(config.Configuration, StringComparison.OrdinalIgnoreCase))
             {
                 FindName(nameof(this.tb_VersionInfoTag));
+                FindName(nameof(this.hlbOpenData));
                 this.tb_VersionInfoTag.Text = config.Configuration;
             }
             this.tb_AppAuthor.Text = Package.Current.PublisherDisplayName;
             this.tb_AppDescription.Text = Package.Current.Description;
             this.refreshTimer.Tick += RefreshTimer_Tick;
             this.hlbHV.NavigateUri = ExClient.HentaiVerse.HentaiVerseInfo.LogOnUri;
-            this.hb_GithubVersion.NavigateUri = new Uri($"https://github.com/OpportunityLiu/ExViewer/tree/{Github.COMMIT}");
+            this.hlb_GithubVersion.NavigateUri = new Uri($"https://github.com/OpportunityLiu/ExViewer/tree/{Github.COMMIT}");
             this.tb_GithubVersion.Text = Strings.Resources.Controls.AboutControl.GithubVersionFormat(Github.BRANCH, Github.COMMIT.Substring(0, 8));
             UpdateEhWiki.Executed += (s, e) => this.Bindings.Update();
             UpdateETT.Executed += (s, e) => this.Bindings.Update();
+        }
+
+        private async void hlbOpenData_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchFolderAsync(ApplicationData.Current.LocalCacheFolder);
         }
 
         private async void init()
