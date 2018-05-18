@@ -113,7 +113,7 @@ namespace ExViewer
 
             void addInfo()
             {
-                sb.AppendLine($"Package: {Package.Current.Id.FullName}");
+                sb.AppendLine($"Package: {Package.Current.Id.FullName} @ {Github.COMMIT}");
                 if (!(RootControl.RootController.Frame is Frame frame))
                 {
                     return;
@@ -218,7 +218,9 @@ Config: {s}");
 PackageFullName: {Package.Current.Id.FullName}
 PackageVersion: {Package.Current.Id.Version.ToVersion()}
 PackageArchitecture: {Package.Current.Id.Architecture}
-PackageNeedsRemediation: {Package.Current.Status.NeedsRemediation}");
+PackageNeedsRemediation: {Package.Current.Status.NeedsRemediation}
+GithubBranch: {Github.BRANCH}
+GithubCommit: {Github.COMMIT}");
             var dInfo = await createStreamRef($@"
 Qualifiers: {q}
 DeviceForm: {AnalyticsInfo.DeviceForm}
@@ -313,7 +315,7 @@ Please check attchments, and remove anything that you wouldn't like to send.
             {
                 return;
             }
-            var pv = gp.Descendants<Windows.UI.Xaml.Controls.Pivot>("pv").FirstOrDefault();
+            var pv = gp.Descendants<Pivot>("pv").FirstOrDefault();
             if (pv != null)
             {
                 sb.AppendLine($"Pivot: SelectedIndex={pv.SelectedIndex}");
@@ -327,7 +329,7 @@ Please check attchments, and remove anything that you wouldn't like to send.
             {
                 return;
             }
-            var fv = ip.Descendants<Windows.UI.Xaml.Controls.FlipView>("fv").FirstOrDefault();
+            var fv = ip.Descendants<FlipView>("fv").FirstOrDefault();
             if (fv != null)
             {
                 sb.AppendLine($"FlipView: SelectedIndex={fv.SelectedIndex}");

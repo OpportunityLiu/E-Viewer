@@ -96,7 +96,8 @@
                Text="AppVersion"
                Style="{StaticResource AboutControlBaseTextBlockStyle}" />
     <HyperlinkButton x:Name="hb_GithubVersion"
-                     Padding="0">
+                     Padding="0"
+                     ToolTipService.ToolTip="{x:Bind viewer:Github.COMMIT}">
       <TextBlock x:Name="tb_GithubVersion"
                  Style="{StaticResource AboutControlBaseTextBlockStyle}" />
     </HyperlinkButton>
