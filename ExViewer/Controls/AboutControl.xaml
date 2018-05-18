@@ -96,8 +96,10 @@
                Text="AppVersion"
                Style="{StaticResource AboutControlBaseTextBlockStyle}" />
     <HyperlinkButton x:Name="hb_GithubVersion"
-                     Content="{x:Bind viewer:Strings.Resources.Controls.AboutControl.GithubVersionFormat(viewer:Github.BRANCH, viewer:Github.COMMIT)}"
-                     Style="{StaticResource AboutControlHyperLinkButtonStyle}" />
+                     Padding="0">
+      <TextBlock x:Name="tb_GithubVersion"
+                 Style="{StaticResource AboutControlBaseTextBlockStyle}" />
+    </HyperlinkButton>
     <TextBlock x:Name="tb_AppDescription"
                Style="{StaticResource AboutControlBodyTextBlockStyle}"
                Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor sagittis laoreet. Proin posuere dapibus eros, ut condimentum arcu pharetra vel. Cras hendrerit ipsum sed odio pellentesque, sed scelerisque dui finibus. Fusce volutpat, odio eu volutpat mattis, enim tortor aliquam quam, sed aliquam arcu arcu sit amet velit." />
