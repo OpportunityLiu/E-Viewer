@@ -31,11 +31,7 @@ namespace ExClient.Status
             {
                 var uid = Client.Current.UserId;
                 if (uid < 0)
-                {
                     throw new InvalidOperationException("Hasn't log in");
-                }
-
-                this.records.Clear();
                 var getPage = Client.Current.HttpClient.GetDocumentAsync(new Uri($"https://e-hentai.org/tools.php?act=taglist&uid={uid}"));
                 token.Register(getPage.Cancel);
                 var page = await getPage;
@@ -54,12 +50,7 @@ namespace ExClient.Status
 
                 var table = body.Element("table");
                 if (table != null)
-                {
-                    foreach (var item in table.Elements("tr").Skip(1))
-                    {
-                        this.records.Add(new TaggingRecord(item));
-                    }
-                }
+                    this.records.Update(table.Elements("tr").Skip(1).Select(item => new TaggingRecord(item)).ToList());
                 OnPropertyChanged(default(string));
             }, token));
         }

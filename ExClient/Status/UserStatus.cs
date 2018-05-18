@@ -35,21 +35,12 @@ namespace ExClient.Status
                 var rankNode = toplistRecord.Descendants("strong").FirstOrDefault();
                 var listNode = toplistRecord.Descendants("a").FirstOrDefault();
                 if (rankNode is null || listNode is null)
-                {
                     continue;
-                }
-
                 if (!int.TryParse(rankNode.GetInnerText().TrimStart('#'), out var rank))
-                {
                     continue;
-                }
-
                 var link = listNode.GetAttribute("href", default(Uri));
                 if (!int.TryParse(link.Query.Split('=').Last(), out var listID))
-                {
                     continue;
-                }
-
                 newList.Add(new ToplistItem(rank, (ToplistName)listID));
             }
             this.toplists.Update(newList);
@@ -88,7 +79,6 @@ namespace ExClient.Status
         {
             return AsyncInfo.Run(async token =>
             {
-                this.toplists.Clear();
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(infoUri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;

@@ -97,21 +97,6 @@ namespace ExClient.Services
         {
             if (doc.DocumentNode.ChildNodes.Count == 1 && doc.DocumentNode.FirstChild.NodeType == HtmlNodeType.Text)
                 throw new InvalidOperationException(doc.DocumentNode.FirstChild.GetInnerText());
-            var errorNode = doc.DocumentNode.SelectSingleNode("//p[@class='br']");
-            if (errorNode != null)
-            {
-                var error = errorNode.GetInnerText();
-                switch (error)
-                {
-                case "New suggested title is too short.":
-                    error = LocalizedStrings.Resources.RenameTitleTooShort;
-                    break;
-                //localize;
-                default:
-                    break;
-                }
-                throw new InvalidOperationException(error);
-            }
             var tables = doc.DocumentNode.Descendants("table").ToList();
             IReadOnlyList<RenameRecord> romanRec, japaneseRec;
             RenameRecord romanV, japaneseV;
@@ -121,6 +106,29 @@ namespace ExClient.Services
             this.jpnRecords.Update(japaneseRec, default(IEqualityComparer<RenameRecord>), (o, n) => o.Power = n.Power);
             this.VotedRoman = romanV;
             this.VotedJapanese = japaneseV;
+
+            var errorNode = doc.DocumentNode.SelectSingleNode("//p[@class='br']");
+            if (errorNode != null)
+            {
+                var error = errorNode.GetInnerText();
+                switch (error)
+                {
+                case "New suggested title is too short.":
+                case "New suggested title is too short.New suggested title is too short.":
+                    error = LocalizedStrings.Resources.RenameTitleTooShort;
+                    break;
+                //localize;
+                default:
+                    break;
+                }
+                throw new InvalidOperationException(error)
+                {
+                    Data =
+                    {
+                        ["Document"] = doc.Text,
+                    }
+                };
+            }
 
             (RenameRecord current, IReadOnlyList<RenameRecord> records, string original) analyzeTable(HtmlNode tableNode)
             {
