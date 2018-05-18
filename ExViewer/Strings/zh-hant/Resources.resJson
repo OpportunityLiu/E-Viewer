@@ -4,7 +4,7 @@
   "Controls": {
     "AboutControl": {
       "$GithubVersionFormat": "GitHub 分支：{branch} / 提交：{commit}",
-      "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ Github.com",
+      "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ GitHub.com",
       "ChineseTagProviderTextBlock/Text": "標籤中文翻譯",
       "DataProvidersTextBlock/Text": "資料提供方",
       "EHTextBlock/Text": "E-Hentai.org",
