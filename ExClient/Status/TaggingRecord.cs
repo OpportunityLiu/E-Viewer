@@ -39,29 +39,18 @@ namespace ExClient.Status
         public static bool operator !=(TaggingRecord left, TaggingRecord right) => !left.Equals(right);
 
         public bool Equals(TaggingRecord other)
-        {
-            return this.Tag == other.Tag
-                && this.GalleryInfo == other.GalleryInfo
-                && this.Timestamp == other.Timestamp
-                && this.Score == other.Score
-                && this.UsageCount == other.UsageCount
-                && this.IsBlocked == other.IsBlocked
-                && this.IsSlaved == other.IsSlaved;
-        }
+            => this.Tag == other.Tag &&
+               this.GalleryInfo == other.GalleryInfo &&
+               this.Timestamp == other.Timestamp &&
+               this.Score == other.Score &&
+               this.UsageCount == other.UsageCount &&
+               this.IsBlocked == other.IsBlocked &&
+               this.IsSlaved == other.IsSlaved;
 
         public override bool Equals(object obj)
-        {
-            if (obj is TaggingRecord other)
-            {
-                return this.Equals(other);
-            }
-
-            return false;
-        }
+            => obj is TaggingRecord other && this.Equals(other);
 
         public override int GetHashCode()
-        {
-            return Timestamp.GetHashCode() * 17 ^ Tag.GetHashCode();
-        }
+            => Timestamp.GetHashCode() * 17 ^ Tag.GetHashCode();
     }
 }

@@ -14,24 +14,13 @@ namespace ExClient.Status
         public ToplistName Name { get; }
 
         public bool Equals(ToplistItem other)
-        {
-            return this.Name == other.Name && this.Rank == other.Rank;
-        }
+            => this.Name == other.Name && this.Rank == other.Rank;
 
         public override bool Equals(object obj)
-        {
-            if (obj is ToplistItem t)
-            {
-                return this.Equals(t);
-            }
-
-            return false;
-        }
+            => obj is ToplistItem t && this.Equals(t);
 
         public override int GetHashCode()
-        {
-            return Rank << 16 ^ (int)Name;
-        }
+            => Rank << 16 ^ (int)Name;
     }
 
     public enum ToplistName
@@ -77,10 +66,7 @@ namespace ExClient.Status
         public static Uri Uri(this ToplistName topList)
         {
             if (!topList.IsDefined())
-            {
-                return null;
-            }
-
+                return new Uri(Internal.DomainProvider.Eh.RootUri, $"toplist.php"); ;
             return new Uri(Internal.DomainProvider.Eh.RootUri, $"toplist.php?tl={(int)topList}");
         }
 
