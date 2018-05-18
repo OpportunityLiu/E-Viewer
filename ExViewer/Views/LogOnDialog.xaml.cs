@@ -231,22 +231,18 @@ namespace ExViewer.Views
             try
             {
                 if (!long.TryParse(id, out var uid))
-                {
                     return;
-                }
-
                 try
                 {
                     await Client.Current.LogOnAsync(uid, hash);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Telemetry.LogException(ex);
                     return;
                 }
                 if (!string.IsNullOrEmpty(this.tempUserName) && !string.IsNullOrEmpty(this.tempPassword))
-                {
                     AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
-                }
 
                 this.Succeed = true;
                 this.Hide();
@@ -256,7 +252,5 @@ namespace ExViewer.Views
                 loggingOn = false;
             }
         }
-
-
     }
 }

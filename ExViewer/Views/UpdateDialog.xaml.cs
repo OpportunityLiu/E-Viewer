@@ -54,18 +54,13 @@ namespace ExViewer.Views
             {
                 var arch = Package.Current.Id.Architecture.ToString();
                 if (this.release.assets.IsNullOrEmpty())
-                {
                     throw new InvalidOperationException("Find appx file failed.");
-                }
-
                 var assets = (from asset in this.release.assets
                               where asset.name.IndexOf(arch, StringComparison.OrdinalIgnoreCase) > 0 && downloadExt.Any(e => asset.name.EndsWith(e))
                               select asset).ToList();
 
                 if (assets.IsEmpty())
-                {
                     throw new InvalidOperationException("Find appx file failed.");
-                }
                 var files = new List<StorageFile>();
                 var fileLaunched = false;
                 using (var client = new HttpClient())

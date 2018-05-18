@@ -147,10 +147,7 @@ namespace ExViewer.Views
         {
             var s = (Controls.SplitViewTab)sender;
             if (s.IsChecked)
-            {
                 return;
-            }
-
             RootController.SwitchSplitView(false);
             await this.manager.NavigateAsync(this.tabs[s]);
         }
@@ -177,10 +174,7 @@ namespace ExViewer.Views
         private AcrylicBackgroundSource abPaneBackgroundBind(bool value, SplitViewDisplayMode mode)
         {
             if (mode == SplitViewDisplayMode.Overlay)
-            {
                 return AcrylicBackgroundSource.Backdrop;
-            }
-
             return value ? AcrylicBackgroundSource.Backdrop : AcrylicBackgroundSource.HostBackdrop;
         }
 

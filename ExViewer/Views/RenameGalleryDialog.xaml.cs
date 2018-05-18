@@ -50,6 +50,7 @@ namespace ExViewer.Views
             catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
+                Telemetry.LogException(ex);
             }
             finally
             {
@@ -62,11 +63,19 @@ namespace ExViewer.Views
         {
             if (this.Gallery is null)
                 throw new InvalidOperationException("Property RenameGalleryDialog.Gallery is null.");
+            this.tbORoman.Text = this.Gallery.Title ?? "";
+            this.tbOJapanese.Text = this.Gallery.TitleJpn ?? "";
+            await Dispatcher.YieldIdle();
             try
             {
                 this.pbLoading.IsIndeterminate = true;
                 this.info = await this.Gallery.FetchRenameInfoAsync();
                 this.Bindings.Update();
+            }
+            catch (Exception ex)
+            {
+                this.tbInfo.Text = ex.GetMessage();
+                Telemetry.LogException(ex);
             }
             finally
             {
@@ -81,6 +90,8 @@ namespace ExViewer.Views
             this.lvJapanese.ItemsSource = null;
             this.lvRoman.ItemsSource = null;
             this.tbInfo.Text = "";
+            this.tbJapanese.Text = "";
+            this.tbRoman.Text = "";
         }
 
         private void lv_SelectionChanged(object sender, SelectionChangedEventArgs e)
