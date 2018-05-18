@@ -95,7 +95,7 @@
     <TextBlock x:Name="tb_AppVersion"
                Text="AppVersion"
                Style="{StaticResource AboutControlBaseTextBlockStyle}" />
-    <HyperlinkButton x:Name="hb_GithubVersion"
+    <HyperlinkButton x:Name="hlb_GithubVersion"
                      Padding="0"
                      ToolTipService.ToolTip="{x:Bind viewer:Github.COMMIT}">
       <TextBlock x:Name="tb_GithubVersion"
@@ -309,5 +309,10 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
                      x:Name="hlbHV"
                      Content="HentaiVerse"
                      NavigateUri="https://hentaiverse.org/" />
+    <HyperlinkButton x:Load="False"
+                     Style="{StaticResource AboutControlHyperLinkButtonStyle}"
+                     x:Name="hlbOpenData"
+                     Content="Open app data folder"
+                     Click="hlbOpenData_Click"/>
   </StackPanel>
 </UserControl>
