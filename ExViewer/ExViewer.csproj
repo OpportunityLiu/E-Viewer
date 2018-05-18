@@ -228,6 +228,7 @@
     <Compile Include="Controls\TagPresenter.xaml.cs">
       <DependentUpon>TagPresenter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Github.cs" />
     <Compile Include="Helpers\AccountManager.cs" />
     <Compile Include="Helpers\ApiInfo.cs" />
     <Compile Include="Helpers\DocumentHelper.cs" />

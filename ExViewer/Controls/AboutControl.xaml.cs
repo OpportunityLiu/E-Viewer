@@ -32,6 +32,7 @@ namespace ExViewer.Controls
             this.tb_AppDescription.Text = Package.Current.Description;
             this.refreshTimer.Tick += RefreshTimer_Tick;
             this.hlbHV.NavigateUri = ExClient.HentaiVerse.HentaiVerseInfo.LogOnUri;
+            this.hb_GithubVersion.NavigateUri = new Uri($"https://github.com/OpportunityLiu/ExViewer/tree/{Github.COMMIT}");
             UpdateEhWiki.Executed += (s, e) => this.Bindings.Update();
             UpdateETT.Executed += (s, e) => this.Bindings.Update();
         }

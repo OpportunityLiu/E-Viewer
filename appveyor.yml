@@ -1,0 +1,70 @@
+version: Build - {build}
+skip_tags: true
+image: Visual Studio 2017
+configuration: Release
+platform:
+- x86
+- x64
+- ARM
+environment:
+  GITHUB_USER: OpportunityLiu
+  GITHUB_PASS:
+    secure: jamZ7Amcuj5QZeiKqfmrig==
+install:
+- ps: >-
+    $pfxpath = "${Env:APPVEYOR_BUILD_FOLDER}/ExViewer/ExViewer_TemporaryKey.pfx"
+
+    $password = $Env:GITHUB_PASS
+
+
+    Add-Type -AssemblyName System.Security
+
+    $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
+
+    $cert.Import($pfxpath, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]"PersistKeySet")
+
+    $store = new-object system.security.cryptography.X509Certificates.X509Store -argumentlist "MY", CurrentUser
+
+    $store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]"ReadWrite")
+
+    $store.Add($cert)
+
+    $store.Close()
+before_build:
+- ps: >-
+    nuget restore
+
+    $NugetPackage = nuget locals global-packages -list
+
+    $NugetPackage = $NugetPackage.SubString(17)
+
+    $ToolVersions = (Get-ChildItem (Join-Path $NugetPackage 'Opportunity.ResourceGenerator') | Sort-Object Name -Descending)[0]
+
+    $ToolPath = Join-Path $ToolVersions.FullName '/tools/Opportunity.ResourceGenerator.Generator.exe'
+
+    &$ToolPath "$Env:APPVEYOR_BUILD_FOLDER/ExViewer.sln"
+
+    @"
+
+    namespace ExViewer { class GitHub {
+    
+    public const string BRANCH = "${Env:APPVEYOR_REPO_BRANCH}";
+
+    public const string COMMIT = "${Env:APPVEYOR_REPO_COMMIT}";
+    
+    }}
+
+    "@ > $Env:APPVEYOR_BUILD_FOLDER/ExViewer/Github.cs
+build:
+  verbosity: minimal
+artifacts:
+- path: /ExViewer/AppPackages/*/*.appx*
+- path: /ExViewer/AppPackages/*/*.cer
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: IsMNo4t2eagMYlnJeueWImMY3HznseoxPeJRxCby4BqmwVdstnxAwuNRhJnhk7lJ
+  draft: true
+  force_update: true
+  on:
+    branch: master
