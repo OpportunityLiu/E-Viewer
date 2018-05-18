@@ -46,7 +46,7 @@ before_build:
 
     @"
 
-    namespace ExViewer { class GitHub {
+    namespace ExViewer { class Github {
     
     public const string BRANCH = "${Env:APPVEYOR_REPO_BRANCH}";
 
