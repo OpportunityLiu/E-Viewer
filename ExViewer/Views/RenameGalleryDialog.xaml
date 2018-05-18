@@ -73,7 +73,8 @@
                   ItemsSource="{x:Bind info.RomanRecords}"
                   ItemTemplate="{StaticResource RecordDataTemplate}">
           <ListView.Header>
-            <TextBlock Text="{x:Bind info.OriginalRomanTitle, FallbackValue=''}"
+            <TextBlock x:Name="tbORoman"
+                       Text="{x:Bind info.OriginalRomanTitle, FallbackValue=''}"
                        Style="{ThemeResource UploaderTitleTextBlockStyle}" />
           </ListView.Header>
           <ListView.Footer>
@@ -93,7 +94,8 @@
                   ItemsSource="{x:Bind info.JapaneseRecords}"
                   ItemTemplate="{StaticResource RecordDataTemplate}">
           <ListView.Header>
-            <TextBlock Text="{x:Bind info.OriginalJapaneseTitle, FallbackValue=''}"
+            <TextBlock x:Name="tbOJapanese"
+                       Text="{x:Bind info.OriginalJapaneseTitle, FallbackValue=''}"
                        Style="{ThemeResource UploaderTitleTextBlockStyle}" />
           </ListView.Header>
           <ListView.Footer>

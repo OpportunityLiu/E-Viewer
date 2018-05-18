@@ -256,9 +256,7 @@ namespace ExViewer.Views
         private void AddCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
             if (Gallery is null)
-            {
-                throw new InvalidOperationException();
-            }
+                throw new InvalidOperationException("Gallery is null");
 
             this.tbContent.Text = "";
             this.tbContent.Focus(FocusState.Programmatic);
@@ -275,6 +273,7 @@ namespace ExViewer.Views
             catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
+                Telemetry.LogException(ex);
                 args.Cancel = true;
             }
             finally
@@ -317,10 +316,7 @@ namespace ExViewer.Views
         {
             this.tbContent.Text = "";
             if (EditableComment is null)
-            {
-                throw new InvalidOperationException();
-            }
-
+                throw new InvalidOperationException("EditableComment is null");
             try
             {
                 this.pbLoading.IsIndeterminate = true;
@@ -332,6 +328,7 @@ namespace ExViewer.Views
             {
                 this.tbContent.Text = "";
                 this.tbInfo.Text = ex.GetMessage();
+                Telemetry.LogException(ex);
             }
             finally
             {
@@ -351,6 +348,7 @@ namespace ExViewer.Views
             catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
+                Telemetry.LogException(ex);
                 args.Cancel = true;
             }
             finally
@@ -383,10 +381,7 @@ namespace ExViewer.Views
         {
             this.tbContent.Text = "";
             if (ReplyingComment is null)
-            {
-                throw new InvalidOperationException();
-            }
-
+                throw new InvalidOperationException("ReplyingComment is null");
             try
             {
                 this.pbLoading.IsIndeterminate = true;
@@ -412,6 +407,7 @@ namespace ExViewer.Views
             catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
+                Telemetry.LogException(ex);
                 args.Cancel = true;
             }
             finally
