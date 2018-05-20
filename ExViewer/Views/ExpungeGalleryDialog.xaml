@@ -1,0 +1,117 @@
+﻿<controls:MyContentDialog x:Class="ExViewer.Views.ExpungeGalleryDialog"
+                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:local="using:ExViewer.Views"
+                          xmlns:viewer="using:ExViewer"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:controls="using:ExViewer.Controls"
+                          xmlns:client="using:ExClient"
+                          xmlns:sys="using:System"
+                          xmlns:services="using:ExClient.Services"
+                          mc:Ignorable="d"
+                          x:Uid="Views/ExpungeGalleryDialog/ContentDialog"
+                          Title="EXPUNGE GALLERY"
+                          PrimaryButtonText="Submit"
+                          CloseButtonText="Close"
+                          CloseButtonClick="MyContentDialog_CloseButtonClick"
+                          IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
+                          PrimaryButtonClick="MyContentDialog_PrimaryButtonClick"
+                          Loading="MyContentDialog_Loading"
+                          Unloaded="MyContentDialog_Unloaded">
+  <controls:MyContentDialog.Resources>
+    <DataTemplate x:Key="RecordDataTemplate"
+                  x:DataType="services:ExpungeRecord">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="40" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Rectangle Fill="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   StrokeThickness="0"
+                   Grid.ColumnSpan="999" />
+        <TextBlock Text="{x:Bind Power, Mode=OneWay}"
+                   Margin="8,4"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center" />
+        <TextBlock Margin="8,4"
+                   Grid.Column="1"
+                   Style="{ThemeResource BodyTextBlockStyle}"
+                   TextTrimming="CharacterEllipsis"
+                   Text="{x:Bind local:ExpungeGalleryDialog.format(Reason, Posted, Author)}" />
+        <TextBlock Grid.Row="1"
+                   Grid.ColumnSpan="999"
+                   Margin="8,4,8,8"
+                   Style="{ThemeResource BodyTextBlockStyle}"
+                   Text="{x:Bind Explanation}" />
+      </Grid>
+    </DataTemplate>
+  </controls:MyContentDialog.Resources>
+  <Grid Margin="0,-4">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <ListView x:Name="lvRecords"
+              Margin="0,4"
+              SelectionMode="None"
+              IsItemClickEnabled="True"
+              ItemClick="lvRecords_ItemClick"
+              ItemsSource="{x:Bind info.Records}"
+              ItemContainerStyle="{ThemeResource ListViewItemStyle}"
+              ItemTemplate="{StaticResource RecordDataTemplate}">
+    </ListView>
+    <Grid Grid.Row="1"
+          Margin="0,4">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="8" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <ListView x:Name="lvReason"
+                HorizontalAlignment="Stretch"
+                SelectionChanged="lvReason_SelectionChanged"
+                ItemContainerStyle="{ThemeResource ListViewItemStyle}">
+        <ListView.ItemTemplate>
+          <DataTemplate x:DataType="services:ExpungeReason">
+            <TextBlock Text="{x:Bind}"
+                       ToolTipService.ToolTip="{x:Bind}"
+                       Margin="4"
+                       HorizontalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"/>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.ItemsPanel>
+          <ItemsPanelTemplate>
+            <controls:SegmentPanel />
+          </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+      </ListView>
+      <TextBox x:Name="tbExpl"
+               TextChanged="tbExpl_TextChanged"
+               Grid.Row="999"
+               AcceptsReturn="True"
+               TextWrapping="Wrap"
+               PlaceholderText="Explanation for the expunction" />
+    </Grid>
+    <Grid Margin="0,4"
+          MinHeight="4"
+          Grid.Row="999">
+      <TextBlock x:Name="tbInfo"
+                 HorizontalAlignment="Stretch"
+                 TextWrapping="WrapWholeWords"
+                 Foreground="Red"
+                 Visibility="{x:Bind tbInfo.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
+      <ProgressBar x:Name="pbLoading"
+                   VerticalAlignment="Top"
+                   Visibility="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}" />
+    </Grid>
+  </Grid>
+</controls:MyContentDialog>

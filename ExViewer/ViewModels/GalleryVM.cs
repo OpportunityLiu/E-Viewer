@@ -132,6 +132,14 @@ namespace ExViewer.ViewModels
                 await rename.ShowAsync();
             }));
 
+        public AsyncCommand Expunge => Commands.GetOrAdd(() =>
+            AsyncCommand.Create(async (c, s) =>
+            {
+                var expunge = ThreadLocalSingleton.GetOrCreate<ExpungeGalleryDialog>();
+                expunge.Gallery = this.Gallery;
+                await expunge.ShowAsync();
+            }));
+
         public Command<RevisionCollection> GoToLatestRevision => Commands.GetOrAdd(() =>
             Command<RevisionCollection>.Create(async (sender, c) =>
             {

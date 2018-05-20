@@ -67,6 +67,11 @@ namespace ExClient.Services
                         throw new InvalidOperationException("Form id=`galpop` not found.");
                     }
                     var votes = form.SelectNodes("descendant::div[@class='c1']");
+                    if (votes is null)
+                    {
+                        this.records.Clear();
+                        return;
+                    }
                     var data = new List<ExpungeRecord>();
                     foreach (var item in votes)
                     {

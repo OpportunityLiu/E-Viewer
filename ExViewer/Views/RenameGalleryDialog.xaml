@@ -13,6 +13,7 @@
                           Title="RENAME GALLERY"
                           PrimaryButtonText="Submit"
                           CloseButtonText="Close"
+                          CloseButtonClick="MyContentDialog_CloseButtonClick"
                           IsEnabled="{x:Bind pbLoading.IsIndeterminate, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
                           PrimaryButtonClick="MyContentDialog_PrimaryButtonClick"
                           Loading="MyContentDialog_Loading"

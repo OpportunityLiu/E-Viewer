@@ -221,6 +221,7 @@
     <Compile Include="Controls\MyContentDialog.cs" />
     <Compile Include="Controls\PullToRefreshIndicator.cs" />
     <Compile Include="Controls\Rating.cs" />
+    <Compile Include="Controls\SegmentPanel.cs" />
     <Compile Include="Controls\TagAutoSuggestBox\TagSuggestionService.cs" />
     <Compile Include="Controls\TaggingRecordPresenter.xaml.cs">
       <DependentUpon>TaggingRecordPresenter.xaml</DependentUpon>
@@ -292,6 +293,9 @@
       <DependentUpon>AboutControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ToplistVM.cs" />
+    <Compile Include="Views\ExpungeGalleryDialog.xaml.cs">
+      <DependentUpon>ExpungeGalleryDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RenameGalleryDialog.xaml.cs">
       <DependentUpon>RenameGalleryDialog.xaml</DependentUpon>
     </Compile>
@@ -529,6 +533,10 @@
     <Page Include="Controls\AboutControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ExpungeGalleryDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\RenameGalleryDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
