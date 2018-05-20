@@ -16,13 +16,14 @@ using Windows.UI.Xaml.Media;
 
 namespace ExViewer.Views
 {
-    public sealed partial class RenameGalleryDialog : MyContentDialog
+    public sealed partial class ExpungeGalleryDialog : MyContentDialog
     {
-        public RenameGalleryDialog()
+        public ExpungeGalleryDialog()
         {
             this.InitializeComponent();
             this.PrimaryButtonText = Strings.Resources.General.Submit;
             this.CloseButtonText = Strings.Resources.General.Close;
+            this.lvReason.ItemsSource = EnumExtension.GetDefinedValues<ExpungeReason>().Select(kvp => kvp.Value).ToArray();
         }
 
         public Gallery Gallery
@@ -30,11 +31,17 @@ namespace ExViewer.Views
             get => (Gallery)GetValue(GalleryProperty); set => SetValue(GalleryProperty, value);
         }
 
-        private RenameInfo info;
+        private ExpungeInfo info;
 
         // Using a DependencyProperty as the backing store for Gallery.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GalleryProperty =
             DependencyProperty.Register("Gallery", typeof(Gallery), typeof(AddToFavoritesDialog), new PropertyMetadata(null));
+
+        private void resetVote()
+        {
+            this.lvReason.SelectedIndex = 0;
+            this.tbExpl.Text = "";
+        }
 
         private async void MyContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -46,9 +53,10 @@ namespace ExViewer.Views
                 this.tbInfo.Text = "";
                 await Dispatcher.YieldIdle();
                 if (this.info is null)
-                    this.info = await this.Gallery.FetchRenameInfoAsync();
-                await this.info.VoteAsync(this.tbRoman.Text, this.tbJapanese.Text);
+                    this.info = await this.Gallery.FetchExpungeInfoAsync();
+                await this.info.VoteAsync((ExpungeReason)this.lvReason.SelectedItem, this.tbExpl.Text);
                 this.Bindings.Update();
+                resetVote();
             }
             catch (Exception ex)
             {
@@ -70,9 +78,8 @@ namespace ExViewer.Views
             {
                 this.pbLoading.IsIndeterminate = true;
                 await Dispatcher.YieldIdle();
-                this.tbORoman.Text = this.Gallery.Title ?? "";
-                this.tbOJapanese.Text = this.Gallery.TitleJpn ?? "";
-                this.info = await this.Gallery.FetchRenameInfoAsync();
+                resetVote();
+                this.info = await this.Gallery.FetchExpungeInfoAsync();
                 this.Bindings.Update();
             }
             catch (Exception ex)
@@ -94,37 +101,37 @@ namespace ExViewer.Views
             d.Complete();
         }
 
+        private void lvRecords_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var item = (ExpungeRecord)e.ClickedItem;
+            this.lvReason.SelectedItem = item.Reason;
+            this.tbExpl.Text = item.Explanation;
+        }
+
         private void MyContentDialog_Unloaded(object sender, RoutedEventArgs e)
         {
             this.info = null;
             this.Bindings.Update();
-            this.lvJapanese.ItemsSource = null;
-            this.lvRoman.ItemsSource = null;
+            this.lvRecords.ItemsSource = null;
             this.tbInfo.Text = "";
-            this.tbJapanese.Text = "";
-            this.tbRoman.Text = "";
+            this.lvReason.SelectedIndex = 0;
+            this.tbExpl.Text = "";
         }
 
-        private void lv_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void lvReason_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.tbInfo.Text = "";
-            var lv = (ListView)sender;
-            var tb = lv.Descendants<TextBox>().First();
-            if (lv.SelectedItem is RenameRecord r)
-                tb.Text = r.Title;
         }
 
-        private void tb_TextChanged(object sender, TextChangedEventArgs e)
+        private void tbExpl_TextChanged(object sender, TextChangedEventArgs e)
         {
             this.tbInfo.Text = "";
-            var tb = (TextBox)sender;
-            var focused = tb.FocusState;
-            var lv = tb.Ancestors<ListView>().First();
-            var source = (IList<RenameRecord>)lv.ItemsSource;
-            var item = source.FirstOrDefault(r => r.Title == tb.Text);
-            lv.SelectedItem = item;
-            if (focused != FocusState.Unfocused)
-                tb.Focus(focused);
+        }
+
+
+        static string format(object a, object b, object c)
+        {
+            return string.Format("{0} on {1} by {2}", a, b, c);
         }
     }
 }

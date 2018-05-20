@@ -569,6 +569,14 @@
                       Command="{x:Bind ViewModel.Rename, Mode=OneWay}"
                       Icon="Rename"
                       Label="Petition to rename" />
+        <AppBarButton x:Uid="Views/GalleryPage/ExpungeAppBarButton"
+                      Command="{x:Bind ViewModel.Expunge, Mode=OneWay}"
+                      Label="Petition to expunge">
+          <AppBarButton.Icon>
+            <FontIcon FontFamily="Segoe MDL2 Assets"
+                      Glyph="&#xE7BA;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
         <AppBarSeparator />
         <AppBarButton x:Uid="Views/GalleryPage/ShareAppBarButton"
                       Command="{x:Bind ViewModel.Share, Mode=OneWay}"
