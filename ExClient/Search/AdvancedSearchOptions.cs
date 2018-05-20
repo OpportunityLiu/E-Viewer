@@ -42,12 +42,12 @@ namespace ExClient.Search
 
         internal AdvancedSearchOptions(ulong data)
         {
-            this.data = data;
+            this.Data = data;
         }
 
         internal string ToSearchQuery()
         {
-            if (this.data == default)
+            if (this.Data == default)
             {
                 return "&advsearch=1&f_sname=1&f_stags=1";
             }
@@ -148,15 +148,13 @@ namespace ExClient.Search
             return advanced;
         }
 
-        private ulong data;
-
-        internal ulong Data => this.data;
+        internal ulong Data { get; private set; }
 
         private bool getData(int pos)
         {
             unchecked
             {
-                return ((this.data >> (pos + offset)) & 1UL) == 1UL;
+                return ((this.Data >> (pos + offset)) & 1UL) == 1UL;
             }
         }
 
@@ -167,11 +165,11 @@ namespace ExClient.Search
                 pos += offset;
                 if (value)
                 {
-                    this.data |= 1UL << pos;
+                    this.Data |= 1UL << pos;
                 }
                 else
                 {
-                    this.data &= ~(1UL << pos);
+                    this.Data &= ~(1UL << pos);
                 }
             }
         }
@@ -265,7 +263,7 @@ namespace ExClient.Search
         private const string MinimumRatingTag = "f_srdd";
         public int MinimumRating
         {
-            get => (int)(this.data & 0b11UL) + 2;
+            get => (int)(this.Data & 0b11UL) + 2;
             set
             {
                 if (value > 5)
@@ -280,36 +278,15 @@ namespace ExClient.Search
                 value -= 2;
                 unchecked
                 {
-                    this.data &= ~0b11UL;
-                    this.data |= (uint)value;
+                    this.Data &= ~0b11UL;
+                    this.Data |= (uint)value;
                 }
             }
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is AdvancedSearchOptions other)
-            {
-                return this.Equals(other);
-            }
+        public override bool Equals(object obj) => obj is AdvancedSearchOptions op && this.Data == op.Data;
+        public bool Equals(AdvancedSearchOptions other) => other is AdvancedSearchOptions op && this.Data == op.Data;
 
-            return false;
-        }
-
-        // override object.GetHashCode
-        public override int GetHashCode()
-        {
-            return this.data.GetHashCode();
-        }
-
-        public bool Equals(AdvancedSearchOptions other)
-        {
-            if (other is null)
-            {
-                return false;
-            }
-
-            return this.data == other.data;
-        }
+        public override int GetHashCode() => this.Data.GetHashCode();
     }
 }

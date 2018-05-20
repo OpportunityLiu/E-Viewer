@@ -33,9 +33,9 @@
   "UnsupportedMonotone": "上传的文件是单色图，仅支持精确搜索。",
   "VoteOutOfRange": "投票必须为 -1 或 1。",
   "WrongAccountInfo": "登录令牌错误。",
+  "WrongApiResponse": "服务器返回结果有误。",
   "WrongEditState": "你只能编辑自己的评论。",
   "WrongGalleryState": "当前画廊处于非活动状态，无法添加评论。",
-  "WrongVoteResponse": "服务器返回结果有误。",
   "WrongVoteState": "发表评论后无法投票。",
   "WrongVoteStateUploader": "无法对上传者评论投票。"
 }

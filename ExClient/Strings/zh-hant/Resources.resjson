@@ -33,9 +33,9 @@
   "UnsupportedMonotone": "上傳的檔案是單色圖，僅支援精確搜尋。",
   "VoteOutOfRange": "投票必須為 -1 或 1。",
   "WrongAccountInfo": "登入令牌錯誤。",
+  "WrongApiResponse": "伺服器返回結果有誤。",
   "WrongEditState": "你只能編輯自己的評論。",
   "WrongGalleryState": "當前畫廊處於非活動狀態，無法新增評論。",
-  "WrongVoteResponse": "伺服器返回結果有誤。",
   "WrongVoteState": "發表評論後無法投票。",
   "WrongVoteStateUploader": "無法對上傳者評論投票。"
 }

@@ -112,20 +112,13 @@ namespace ExClient.Tagging
         }
 
         public bool Equals(Tag other)
-        {
-            return this.Namespace == other.Namespace
-                && this.Content == other.Content;
-        }
+            => this.Namespace == other.Namespace
+            && this.Content == other.Content;
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Tag o)
-                return this.Equals(o);
-            return false;
-        }
+        public override bool Equals(object obj) => obj is Tag t && Equals(t);
 
-        public static bool operator ==(Tag left, Tag right) => left.Equals(right);
-        public static bool operator !=(Tag left, Tag right) => !left.Equals(right);
+        public static bool operator ==(in Tag left, in Tag right) => left.Equals(right);
+        public static bool operator !=(in Tag left, in Tag right) => !left.Equals(right);
 
         public override int GetHashCode()
         {

@@ -37,7 +37,7 @@ namespace ExClient.Galleries.Commenting
             }
         }
 
-        private static Regex voteRegex = new Regex(@"^(.+?)\s+([+-]\d+)$", RegexOptions.Compiled | RegexOptions.Singleline);
+        private static readonly Regex voteRegex = new Regex(@"^(.+?)\s+([+-]\d+)$", RegexOptions.Compiled | RegexOptions.Singleline);
 
         private Comment(CommentCollection owner, int id, HtmlNode commentNode)
         {
@@ -145,7 +145,6 @@ namespace ExClient.Galleries.Commenting
         }
 
         private int score;
-
         public int Score
         {
             get => this.score;

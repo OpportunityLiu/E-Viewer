@@ -35,22 +35,20 @@ namespace ExClient.Status
 
         public bool IsSlaved { get; }
 
-        public static bool operator ==(TaggingRecord left, TaggingRecord right) => left.Equals(right);
-        public static bool operator !=(TaggingRecord left, TaggingRecord right) => !left.Equals(right);
+        public static bool operator ==(in TaggingRecord left, in TaggingRecord right) => left.Equals(right);
+        public static bool operator !=(in TaggingRecord left, in TaggingRecord right) => !left.Equals(right);
 
         public bool Equals(TaggingRecord other)
-            => this.Tag == other.Tag &&
-               this.GalleryInfo == other.GalleryInfo &&
-               this.Timestamp == other.Timestamp &&
-               this.Score == other.Score &&
-               this.UsageCount == other.UsageCount &&
-               this.IsBlocked == other.IsBlocked &&
-               this.IsSlaved == other.IsSlaved;
+            => this.Tag == other.Tag
+            && this.GalleryInfo == other.GalleryInfo
+            && this.Timestamp == other.Timestamp
+            && this.Score == other.Score
+            && this.UsageCount == other.UsageCount
+            && this.IsBlocked == other.IsBlocked
+            && this.IsSlaved == other.IsSlaved;
 
-        public override bool Equals(object obj)
-            => obj is TaggingRecord other && this.Equals(other);
+        public override bool Equals(object obj) => obj is TaggingRecord other && this.Equals(other);
 
-        public override int GetHashCode()
-            => Timestamp.GetHashCode() * 17 ^ Tag.GetHashCode();
+        public override int GetHashCode() => Timestamp.GetHashCode() * 17 ^ Tag.GetHashCode();
     }
 }

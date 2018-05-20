@@ -16,12 +16,12 @@ namespace ExClient.Api
             try
             {
                 if (!LogIn.IsNullOrEmpty())
-                    throw new InvalidOperationException("Need login");
+                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
                 CheckResponseOverride(request);
                 if (!Error.IsNullOrEmpty())
                     throw new InvalidOperationException(Error);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ex.Data["ApiRequest"] = JsonConvert.SerializeObject(request);
                 ex.Data["ApiResponse"] = JsonConvert.SerializeObject(this);
