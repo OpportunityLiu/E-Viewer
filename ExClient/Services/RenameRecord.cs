@@ -23,14 +23,12 @@ namespace ExClient.Services
         }
 
         public bool Equals(RenameRecord other)
-        {
-            return this.ID == other.ID
-                && this.Title == other.Title;
-        }
+            => this.ID == other.ID
+            && this.Title == other.Title;
 
-        public override bool Equals(object obj) => (obj is RenameRecord rec) ? Equals(rec) : false;
+        public override bool Equals(object obj) => obj is RenameRecord rec && Equals(rec);
 
-        public override int GetHashCode() => (this.ID * 17) ^ this.Title.GetHashCode();
+        public override int GetHashCode() => unchecked((this.ID * 17) ^ this.Title.GetHashCode());
 
         public override string ToString() => Title;
     }

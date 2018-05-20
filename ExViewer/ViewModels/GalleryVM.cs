@@ -552,7 +552,7 @@ namespace ExViewer.ViewModels
                 {
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
                 }
-            }, (sender, torrent) => torrent != null && torrent.TorrentUri != null));
+            }, (sender, torrent) => !torrent.IsExpunged));
 
         public IAsyncAction LoadTorrents()
         {

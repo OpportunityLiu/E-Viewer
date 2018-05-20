@@ -23,7 +23,7 @@ namespace ExClient.Services
             => TorrentInfo.FetchAsync(gallery);
     }
 
-    public sealed class TorrentInfo
+    public readonly struct TorrentInfo
     {
         private static readonly Regex infoMatcher = new Regex(@"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+", RegexOptions.Compiled);
 
@@ -40,57 +40,67 @@ namespace ExClient.Services
                             let reg = infoMatcher.Match(n.GetInnerText())
                             let name = n.Descendants("tr").Last()
                             let link = name.Descendants("a").SingleOrDefault()
-                            select new TorrentInfo()
-                            {
-                                Name = name.GetInnerText().Trim(),
-                                Posted = DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
-                                Size = parseSize(reg.Groups[2].Value),
-                                Seeds = int.Parse(reg.Groups[3].Value),
-                                Peers = int.Parse(reg.Groups[4].Value),
-                                Downloads = int.Parse(reg.Groups[5].Value),
-                                Uploader = reg.Groups[6].Value,
-                                TorrentUri = link?.GetAttribute("href", default(Uri)),
-                            };
+                            select new TorrentInfo(
+                                name.GetInnerText().Trim(),
+                                DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
+                                parseSize(reg.Groups[2].Value),
+                                int.Parse(reg.Groups[3].Value),
+                                int.Parse(reg.Groups[4].Value),
+                                int.Parse(reg.Groups[5].Value),
+                                reg.Groups[6].Value,
+                                link?.GetAttribute("href", default(Uri))
+                            );
                 return nodes.ToList().AsReadOnly();
+
+                long parseSize(string sizeStr)
+                {
+                    var s = sizeStr.Split(' ');
+                    var value = double.Parse(s[0]);
+                    switch (s[1])
+                    {
+                    case "B":
+                        return (long)value;
+                    case "KB":
+                        return (long)(value * (1 << 10));
+                    case "MB":
+                        return (long)(value * (1 << 20));
+                    case "GB":
+                        return (long)(value * (1 << 30));
+                    default:
+                        return 0;
+                    }
+                }
             }).AsAsyncOperation();
         }
 
-        private static long parseSize(string sizeStr)
+
+        internal TorrentInfo(string name, DateTimeOffset posted, long size, int seeds, int peers, int downloads, string uploader, Uri torrentUri)
         {
-            var s = sizeStr.Split(' ');
-            var value = double.Parse(s[0]);
-            switch (s[1])
-            {
-            case "B":
-                return (long)value;
-            case "KB":
-                return (long)(value * (1 << 10));
-            case "MB":
-                return (long)(value * (1 << 20));
-            case "GB":
-                return (long)(value * (1 << 30));
-            default:
-                return 0;
-            }
+            this.Name = name;
+            this.Posted = posted;
+            this.Size = size;
+            this.Seeds = seeds;
+            this.Peers = peers;
+            this.Downloads = downloads;
+            this.Uploader = uploader;
+            this.TorrentUri = torrentUri;
         }
 
-        private TorrentInfo() { }
+        public string Name { get; }
 
-        public string Name { get; private set; }
+        public DateTimeOffset Posted { get; }
 
-        public DateTimeOffset Posted { get; private set; }
+        public long Size { get; }
 
-        public long Size { get; private set; }
+        public int Seeds { get; }
 
-        public int Seeds { get; private set; }
+        public int Peers { get; }
 
-        public int Peers { get; private set; }
+        public int Downloads { get; }
 
-        public int Downloads { get; private set; }
+        public string Uploader { get; }
 
-        public string Uploader { get; private set; }
-
-        public Uri TorrentUri { get; private set; }
+        public Uri TorrentUri { get; }
 
         public bool IsExpunged => TorrentUri is null;
 
@@ -98,12 +108,14 @@ namespace ExClient.Services
         {
             if (IsExpunged)
                 throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
+            var uri = this.TorrentUri;
+            var name = this.Name + ".torrent";
             return AsyncInfo.Run(async token =>
             {
                 using (var client = new HttpClient())
                 {
-                    var loadT = client.GetBufferAsync(this.TorrentUri);
-                    var filename = StorageHelper.ToValidFileName(this.Name + ".torrent");
+                    var loadT = client.GetBufferAsync(uri);
+                    var filename = StorageHelper.ToValidFileName(name);
                     var buf = await loadT;
                     try
                     {

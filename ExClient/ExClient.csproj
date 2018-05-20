@@ -138,6 +138,9 @@
     <Compile Include="Api\VoteState.cs" />
     <Compile Include="Forums\Topic.cs" />
     <Compile Include="Hentaiverse\EventArgs.cs" />
+    <Compile Include="Services\ExpungeInfo.cs" />
+    <Compile Include="Services\ExpungeReason.cs" />
+    <Compile Include="Services\ExpungeRecord.cs" />
     <Compile Include="Services\LanguageModifier.cs" />
     <Compile Include="Services\LanguageName.cs" />
     <Compile Include="Galleries\Rating\RatingStatus.cs" />
@@ -223,7 +226,6 @@
     <Compile Include="Settings\SettingProvider.cs" />
     <Compile Include="Settings\ExcludedTagNamespacesSettingProvider.cs" />
     <Compile Include="Strings\LocalizedStrings.g.cs" />
-    <Compile Include="Tagging\NamespaceExtention.cs" />
     <Compile Include="Tagging\NamespaceTagCollection.cs" />
     <Compile Include="Tagging\Tag.cs" />
     <Compile Include="Tagging\TagCollection.cs" />

@@ -63,7 +63,7 @@ namespace ExClient.Api
         {
             if (this.Id != ((CommentVoteRequest)request).Id || !Vote.IsDefined())
             {
-                throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteResponse);
+                throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse);
             }
         }
     }

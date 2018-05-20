@@ -175,21 +175,15 @@ namespace ExClient.Api
         public override int GetHashCode()
             => this.ID.GetHashCode() * 19 ^ this.Token.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            if (obj is GalleryInfo info)
-                return Equals(info);
-            return false;
-        }
+        public override bool Equals(object obj) => obj is GalleryInfo info && Equals(info);
 
         public bool Equals(GalleryInfo other)
-            => this == other;
+            => this.ID == other.ID
+            && this.Token == other.Token;
 
-        public static bool operator ==(GalleryInfo left, GalleryInfo right)
-            => left.ID == right.ID && left.Token == right.Token;
+        public static bool operator ==(in GalleryInfo left, in GalleryInfo right) => left.Equals(right);
 
-        public static bool operator !=(GalleryInfo left, GalleryInfo right)
-            => !(left == right);
+        public static bool operator !=(in GalleryInfo left, in GalleryInfo right) => !left.Equals(right);
 
         public static implicit operator GalleryInfo(Gallery gallery)
         {

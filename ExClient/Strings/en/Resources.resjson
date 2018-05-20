@@ -33,9 +33,9 @@
   "UnsupportedMonotone": "The uploaded file was detected as monotone. Only exact file matches are displayed.",
   "VoteOutOfRange": "Vote must be -1 or 1.",
   "WrongAccountInfo": "Incorrect log on token.",
+  "WrongApiResponse": "The response of the server can't be analyzed.",
   "WrongEditState": "Can only edit own comment.",
   "WrongGalleryState": "You can only add comments for active galleries.",
-  "WrongVoteResponse": "The response of the server can't be analyzed.",
   "WrongVoteState": "Can't vote when you had posted a comment.",
   "WrongVoteStateUploader": "Can't vote to an uploader comment."
 }

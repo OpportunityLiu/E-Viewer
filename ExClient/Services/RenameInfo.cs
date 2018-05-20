@@ -96,7 +96,14 @@ namespace ExClient.Services
         private void analyze(HtmlDocument doc)
         {
             if (doc.DocumentNode.ChildNodes.Count == 1 && doc.DocumentNode.FirstChild.NodeType == HtmlNodeType.Text)
-                throw new InvalidOperationException(doc.DocumentNode.FirstChild.GetInnerText());
+                throw new InvalidOperationException(doc.DocumentNode.FirstChild.GetInnerText())
+                {
+                    Data =
+                    {
+                        ["Uri"] = apiUri.ToString(),
+                        ["Document"] = doc.Text,
+                    }
+                };
             var tables = doc.DocumentNode.Descendants("table").ToList();
             IReadOnlyList<RenameRecord> romanRec, japaneseRec;
             RenameRecord romanV, japaneseV;
@@ -125,6 +132,7 @@ namespace ExClient.Services
                 {
                     Data =
                     {
+                        ["Uri"] = apiUri.ToString(),
                         ["Document"] = doc.Text,
                     }
                 };

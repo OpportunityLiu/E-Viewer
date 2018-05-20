@@ -14,13 +14,15 @@ namespace ExClient.Status
         public ToplistName Name { get; }
 
         public bool Equals(ToplistItem other)
-            => this.Name == other.Name && this.Rank == other.Rank;
+            => this.Name == other.Name
+            && this.Rank == other.Rank;
 
-        public override bool Equals(object obj)
-            => obj is ToplistItem t && this.Equals(t);
+        public override bool Equals(object obj) => obj is ToplistItem t && this.Equals(t);
 
-        public override int GetHashCode()
-            => Rank << 16 ^ (int)Name;
+        public override int GetHashCode() => Rank << 16 ^ (int)Name;
+
+        public static bool operator ==(in ToplistItem left, in ToplistItem right) => left.Equals(right);
+        public static bool operator !=(in ToplistItem left, in ToplistItem right) => !left.Equals(right);
     }
 
     public enum ToplistName
