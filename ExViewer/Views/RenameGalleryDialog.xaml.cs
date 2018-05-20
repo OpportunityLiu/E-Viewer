@@ -38,12 +38,13 @@ namespace ExViewer.Views
 
         private async void MyContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            this.pbLoading.IsIndeterminate = true;
-            this.tbInfo.Text = "";
-            args.Cancel = true;
             var def = args.GetDeferral();
+            args.Cancel = true;
             try
             {
+                this.pbLoading.IsIndeterminate = true;
+                this.tbInfo.Text = "";
+                await Dispatcher.YieldIdle();
                 await this.info.VoteAsync(this.tbRoman.Text, this.tbJapanese.Text);
                 this.info.OnPropertyChanged(nameof(this.info.VotedRoman), nameof(this.info.VotedJapanese));
             }
@@ -63,12 +64,12 @@ namespace ExViewer.Views
         {
             if (this.Gallery is null)
                 throw new InvalidOperationException("Property RenameGalleryDialog.Gallery is null.");
-            this.tbORoman.Text = this.Gallery.Title ?? "";
-            this.tbOJapanese.Text = this.Gallery.TitleJpn ?? "";
-            await Dispatcher.YieldIdle();
             try
             {
                 this.pbLoading.IsIndeterminate = true;
+                await Dispatcher.YieldIdle();
+                this.tbORoman.Text = this.Gallery.Title ?? "";
+                this.tbOJapanese.Text = this.Gallery.TitleJpn ?? "";
                 this.info = await this.Gallery.FetchRenameInfoAsync();
                 this.Bindings.Update();
             }

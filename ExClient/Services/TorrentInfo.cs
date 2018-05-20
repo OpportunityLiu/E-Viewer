@@ -23,7 +23,7 @@ namespace ExClient.Services
             => TorrentInfo.FetchAsync(gallery);
     }
 
-    public readonly struct TorrentInfo
+    public readonly struct TorrentInfo : IEquatable<TorrentInfo>
     {
         private static readonly Regex infoMatcher = new Regex(@"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+", RegexOptions.Compiled);
 
@@ -72,7 +72,6 @@ namespace ExClient.Services
                 }
             }).AsAsyncOperation();
         }
-
 
         internal TorrentInfo(string name, DateTimeOffset posted, long size, int seeds, int peers, int downloads, string uploader, Uri torrentUri)
         {
@@ -143,5 +142,22 @@ namespace ExClient.Services
                 }
             });
         }
+
+        public bool Equals(TorrentInfo other)
+            => this.Posted == other.Posted
+            && this.Size == other.Size
+            && this.Seeds == other.Seeds
+            && this.Peers == other.Peers
+            && this.Downloads == other.Downloads
+            && this.TorrentUri == other.TorrentUri
+            && this.Name == other.Name
+            && this.Uploader == other.Uploader;
+
+        public override bool Equals(object obj) => obj is TorrentInfo i && Equals(i);
+
+        public override int GetHashCode() => unchecked(Posted.GetHashCode() ^ Size.GetHashCode() * 3);
+
+        public static bool operator ==(in TorrentInfo left, in TorrentInfo right) => left.Equals(right);
+        public static bool operator !=(in TorrentInfo left, in TorrentInfo right) => !left.Equals(right);
     }
 }
