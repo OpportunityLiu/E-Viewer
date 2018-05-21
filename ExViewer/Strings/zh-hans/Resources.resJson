@@ -209,6 +209,7 @@
       "AppBarButtonLatestRevision/Label": "转到最新版本",
       "CommentsEmptyTextBlock/Text": "没有评论",
       "CommentsLoadingTextBlock/Text": "正在加载评论…",
+      "ExpungeAppBarButton/Label": "请求删除画廊",
       "FavoritesAppBarButton/Text": "添加至收藏",
       "PivotHeaderCommentsTextBlock/Text": "评论",
       "PivotHeaderImagesTextBlock/Text": "图片",

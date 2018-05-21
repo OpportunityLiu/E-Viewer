@@ -209,6 +209,7 @@
       "AppBarButtonLatestRevision/Label": "Go to latest revision",
       "CommentsEmptyTextBlock/Text": "No comments",
       "CommentsLoadingTextBlock/Text": "Loading comments…",
+      "ExpungeAppBarButton/Label": "Petition to expunge",
       "FavoritesAppBarButton/Text": "Add to favorite",
       "PivotHeaderCommentsTextBlock/Text": "Comments",
       "PivotHeaderImagesTextBlock/Text": "Images",
