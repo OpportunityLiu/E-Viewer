@@ -23,11 +23,10 @@
     },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "檢視更多",
-      "AuthorFormatString": "{0}",
       "EditedFormatString": "最後編輯於 {0}",
       "EditMenuFlyoutItem/Text": "編輯",
       "IsUploaderCommentTextBlock/Text": "上傳者評論",
-      "PostedFormatString": "釋出於 {0}",
+      "PostedFormatString": "發表於 {0}",
       "ReplyMenuFlyoutItem/Text": "回覆",
       "ScoreFormatString": "評分 {0:+#0;-#0}",
       "TranslateMenuFlyoutItem/Text": "翻譯",
@@ -173,7 +172,7 @@
       "AppBarButtonUnderline/Label": "下劃線",
       "AppBarButtonUnderline/ToolTipService/ToolTip": "下劃線 (Ctrl + U)",
       "ContentDialog": {
-        "PrimaryButtonText": "釋出",
+        "PrimaryButtonText": "發表",
         "CloseButtonText": "取消"
       },
       "EditTitle": "編輯評論"

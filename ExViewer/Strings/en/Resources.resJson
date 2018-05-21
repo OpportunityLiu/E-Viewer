@@ -23,7 +23,6 @@
     },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "See more",
-      "AuthorFormatString": "By {0}",
       "EditedFormatString": "Last edited on {0}",
       "EditMenuFlyoutItem/Text": "Edit",
       "IsUploaderCommentTextBlock/Text": "Uploader Comment",

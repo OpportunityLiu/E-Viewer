@@ -28,6 +28,7 @@
           <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <TextBlock Text="{x:Bind viewer:Strings.Resources.Views.RenameGalleryDialog.PowerTemplate(Power), Mode=OneWay}"
+                   Style="{ThemeResource BaseTextBlockStyle}"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Center" />
         <TextBlock Margin="8,0,0,0"
@@ -45,15 +46,15 @@
     </Style>
     <Style x:Key="RenameTypeTextBlockStyle"
            TargetType="TextBlock"
-           BasedOn="{StaticResource BaseTextBlockStyle}">
+           BasedOn="{StaticResource BodyTextBlockStyle}">
       <Setter Property="Margin"
-              Value="0,4" />
+              Value="0,8,0,0" />
     </Style>
     <Style x:Key="UploaderTitleTextBlockStyle"
            TargetType="TextBlock"
            BasedOn="{StaticResource BodyTextBlockStyle}">
       <Setter Property="Margin"
-              Value="0,4" />
+              Value="8,4" />
       <Setter Property="IsTextSelectionEnabled"
               Value="True" />
     </Style>
