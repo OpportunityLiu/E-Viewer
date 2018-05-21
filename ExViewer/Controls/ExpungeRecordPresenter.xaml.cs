@@ -1,4 +1,5 @@
 ﻿using ExClient.Services;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,5 +38,11 @@ namespace ExViewer.Controls
         public static readonly DependencyProperty RecordProperty =
             DependencyProperty.Register(nameof(Record), typeof(ExpungeRecord), typeof(ExpungeRecordPresenter), new PropertyMetadata(default(ExpungeRecord)));
 
+        private static HtmlNode warpString(string data)
+        {
+            if (data.IsNullOrWhiteSpace())
+                return null;
+            return HtmlNode.CreateNode(HtmlEntity.Entitize(data, true, true));
+        }
     }
 }
