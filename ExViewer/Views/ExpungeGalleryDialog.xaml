@@ -22,35 +22,7 @@
   <controls:MyContentDialog.Resources>
     <DataTemplate x:Key="RecordDataTemplate"
                   x:DataType="services:ExpungeRecord">
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="40" />
-          <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Rectangle Fill="{ThemeResource SystemControlBackgroundBaseLowBrush}"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch"
-                   StrokeThickness="0"
-                   Grid.ColumnSpan="999" />
-        <TextBlock Text="{x:Bind Power, Mode=OneWay}"
-                   Margin="8,4"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Center" />
-        <TextBlock Margin="8,4"
-                   Grid.Column="1"
-                   Style="{ThemeResource BodyTextBlockStyle}"
-                   TextTrimming="CharacterEllipsis"
-                   Text="{x:Bind local:ExpungeGalleryDialog.format(Reason, Posted, Author)}" />
-        <TextBlock Grid.Row="1"
-                   Grid.ColumnSpan="999"
-                   Margin="8,4,8,8"
-                   Style="{ThemeResource BodyTextBlockStyle}"
-                   Text="{x:Bind Explanation}" />
-      </Grid>
+      <controls:ExpungeRecordPresenter Record="{x:Bind}" />
     </DataTemplate>
   </controls:MyContentDialog.Resources>
   <Grid Margin="0,-4">
@@ -68,14 +40,13 @@
               ItemContainerStyle="{ThemeResource ListViewItemStyle}"
               ItemTemplate="{StaticResource RecordDataTemplate}">
     </ListView>
-    <Grid Grid.Row="1"
-          Margin="0,4">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="8" />
-        <RowDefinition Height="Auto" />
-      </Grid.RowDefinitions>
+    <StackPanel Grid.Row="1">
+      <TextBlock x:Uid="Views/ExpungeGalleryDialog/PetitionTextBlock"
+                 Style="{ThemeResource BodyTextBlockStyle}"
+                 Text="Expunge petition"
+                 Margin="0,8" />
       <ListView x:Name="lvReason"
+                Grid.Row="2"
                 HorizontalAlignment="Stretch"
                 SelectionChanged="lvReason_SelectionChanged"
                 ItemContainerStyle="{ThemeResource ListViewItemStyle}">
@@ -97,12 +68,14 @@
         </ListView.ItemsPanel>
       </ListView>
       <TextBox x:Name="tbExpl"
+               x:Uid="Views/ExpungeGalleryDialog/ExplanationTextBox"
                TextChanged="tbExpl_TextChanged"
                Grid.Row="999"
                AcceptsReturn="True"
                TextWrapping="Wrap"
-               PlaceholderText="Explanation for the expunction" />
-    </Grid>
+               PlaceholderText="Explanation for the expunction"
+               Margin="0,4" />
+    </StackPanel>
     <Grid Margin="0,4"
           MinHeight="4"
           Grid.Row="999">

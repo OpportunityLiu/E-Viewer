@@ -207,6 +207,9 @@
     <Compile Include="Controls\CoverPresenter.xaml.cs">
       <DependentUpon>CoverPresenter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ExpungeRecordPresenter.xaml.cs">
+      <DependentUpon>ExpungeRecordPresenter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FavoriteCategoryPresenter.cs" />
     <Compile Include="Controls\ExcludedTagNamespacesSelector.xaml.cs">
       <DependentUpon>ExcludedTagNamespacesSelector.xaml</DependentUpon>
@@ -447,6 +450,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ExpungeRecordPresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\FolderPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -682,7 +689,7 @@
       <Version>2.2.8</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.3.13</Version>
+      <Version>1.3.14</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
       <Version>2.6.14</Version>

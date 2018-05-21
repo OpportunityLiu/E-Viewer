@@ -61,6 +61,10 @@
       "RewriteTextBlock/Text": "重寫",
       "TranslatedTextBlock/Text": "翻譯"
     },
+    "ExpungeRecordPresenter": {
+      "PostedTemplate": "於 {0}",
+      "PowerTemplate": "+{0}"
+    },
     "FolderPicker": {
       "DefaultTextBlock/Text": "預設",
       "ResetButton/Content": "重置",
@@ -180,6 +184,11 @@
     "EhWikiDialog": {
       "ContentDialog/CloseButtonText": "確定",
       "TagNotFound": "在 EhWiki 中未找到此標籤。"
+    },
+    "ExpungeGalleryDialog": {
+      "ContentDialog/Title": "刪除畫廊",
+      "ExplanationTextBox/PlaceholderText": "刪除原因說明",
+      "PetitionTextBlock/Text": "刪除請求"
     },
     "FavoritesPage": {
       "ApplyAppBarButton/Label": "應用",
