@@ -97,13 +97,8 @@ namespace ExClient.Services
         {
             if (doc.DocumentNode.ChildNodes.Count == 1 && doc.DocumentNode.FirstChild.NodeType == HtmlNodeType.Text)
                 throw new InvalidOperationException(doc.DocumentNode.FirstChild.GetInnerText())
-                {
-                    Data =
-                    {
-                        ["Uri"] = apiUri.ToString(),
-                        ["Document"] = doc.Text,
-                    }
-                };
+                    .AddData("Uri", apiUri.ToString())
+                    .AddData("Document", doc.Text);
             var tables = doc.DocumentNode.Descendants("table").ToList();
             IReadOnlyList<RenameRecord> romanRec, japaneseRec;
             RenameRecord romanV, japaneseV;
@@ -129,13 +124,8 @@ namespace ExClient.Services
                     break;
                 }
                 throw new InvalidOperationException(error)
-                {
-                    Data =
-                    {
-                        ["Uri"] = apiUri.ToString(),
-                        ["Document"] = doc.Text,
-                    }
-                };
+                    .AddData("Uri", apiUri.ToString())
+                    .AddData("Document", doc.Text);
             }
 
             (RenameRecord current, IReadOnlyList<RenameRecord> records, string original) analyzeTable(HtmlNode tableNode)

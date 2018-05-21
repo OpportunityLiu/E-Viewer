@@ -83,7 +83,7 @@
           <DataTemplate x:DataType="services:ExpungeReason">
             <TextBlock Text="{x:Bind}"
                        ToolTipService.ToolTip="{x:Bind}"
-                       Margin="4"
+                       Margin="8,4"
                        HorizontalAlignment="Center"
                        TextTrimming="CharacterEllipsis"/>
           </DataTemplate>
