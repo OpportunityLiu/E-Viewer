@@ -30,7 +30,7 @@ namespace ExViewer.Controls
                 defaultImage = new BitmapImage();
                 Dispatcher.BeginIdle(async p =>
                 {
-                    using (var img = await StorageHelper.GetIconOfExtension("jpg"))
+                    using (var img = await StorageHelper.GetIconOfExtensionAsync("jpg"))
                     {
                         await defaultImage.SetSourceAsync(img);
                     }

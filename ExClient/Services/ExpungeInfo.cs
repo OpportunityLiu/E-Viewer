@@ -91,13 +91,8 @@ namespace ExClient.Services
                 catch (Exception ex)
                 {
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse, ex)
-                    {
-                        Data =
-                        {
-                            ["RequestUri"] = response.RequestMessage.RequestUri.ToString(),
-                            ["Response"] = responseStr,
-                        },
-                    };
+                        .AddData("RequestUri", response.RequestMessage.RequestUri.ToString())
+                        .AddData("Response", responseStr);
                 }
             }).AsAsyncAction();
         }
@@ -129,8 +124,8 @@ namespace ExClient.Services
                     }
                     catch (Exception ex)
                     {
-                        ex.Data["RequestUri"] = res.RequestMessage.RequestUri.ToString();
-                        ex.Data["Response"] = resStr;
+                        ex.AddData("RequestUri", res.RequestMessage.RequestUri.ToString());
+                        ex.AddData("Response", resStr);
                         throw;
                     }
                 }

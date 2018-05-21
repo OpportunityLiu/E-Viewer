@@ -47,7 +47,7 @@ namespace ExClient.Galleries
                 }
 
                 await b.Dispatcher.YieldIdle();
-                using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
+                using (var stream = await StorageHelper.GetIconOfExtensionAsync("jpg"))
                 {
                     await b.SetSourceAsync(stream);
                 }

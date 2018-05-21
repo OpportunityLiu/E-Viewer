@@ -40,18 +40,23 @@ namespace ExViewer.Controls
             var size = Orientation == Orientation.Horizontal
                 ? new Size(availableSize.Width / Children.Count, availableSize.Height)
                 : new Size(availableSize.Width, availableSize.Height / Children.Count);
-            var max = 0d;
+            var maxu = 0d;
+            var maxv = 0d;
             foreach (var item in Children)
             {
                 item.Measure(size);
-                var need = Orientation == Orientation.Horizontal
+                var needu = Orientation == Orientation.Horizontal
                     ? item.DesiredSize.Height
                     : item.DesiredSize.Width;
-                max = Math.Max(max, need);
+                var needv = Orientation == Orientation.Horizontal
+                    ? item.DesiredSize.Width
+                    : item.DesiredSize.Height;
+                maxu = Math.Max(maxu, needu);
+                maxv = Math.Max(maxv, needv);
             }
             return Orientation == Orientation.Horizontal
-                ? new Size(availableSize.Width, max)
-                : new Size(max, availableSize.Height);
+                ? new Size(maxv * Children.Count, maxu)
+                : new Size(maxu, maxv * Children.Count);
         }
 
         protected override Size ArrangeOverride(Size finalSize)

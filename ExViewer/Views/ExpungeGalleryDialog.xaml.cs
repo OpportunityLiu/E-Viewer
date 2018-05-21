@@ -77,8 +77,8 @@ namespace ExViewer.Views
             try
             {
                 this.pbLoading.IsIndeterminate = true;
-                await Dispatcher.YieldIdle();
                 resetVote();
+                await Dispatcher.YieldIdle();
                 this.info = await this.Gallery.FetchExpungeInfoAsync();
                 this.Bindings.Update();
             }
@@ -114,8 +114,7 @@ namespace ExViewer.Views
             this.Bindings.Update();
             this.lvRecords.ItemsSource = null;
             this.tbInfo.Text = "";
-            this.lvReason.SelectedIndex = 0;
-            this.tbExpl.Text = "";
+            resetVote();
         }
 
         private void lvReason_SelectionChanged(object sender, SelectionChangedEventArgs e)
