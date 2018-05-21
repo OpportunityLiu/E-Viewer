@@ -80,12 +80,14 @@
                 SelectionChanged="lvReason_SelectionChanged"
                 ItemContainerStyle="{ThemeResource ListViewItemStyle}">
         <ListView.ItemTemplate>
-          <DataTemplate x:DataType="services:ExpungeReason">
-            <TextBlock Text="{x:Bind}"
-                       ToolTipService.ToolTip="{x:Bind}"
-                       Margin="8,4"
-                       HorizontalAlignment="Center"
-                       TextTrimming="CharacterEllipsis"/>
+          <DataTemplate x:DataType="local:ExpungeReasonVM">
+            <Border Background="Transparent"
+                    ToolTipService.ToolTip="{x:Bind Description}"
+                    Padding="8,4">
+              <TextBlock Text="{x:Bind Name}"
+                         HorizontalAlignment="Center"
+                         TextTrimming="CharacterEllipsis" />
+            </Border>
           </DataTemplate>
         </ListView.ItemTemplate>
         <ListView.ItemsPanel>

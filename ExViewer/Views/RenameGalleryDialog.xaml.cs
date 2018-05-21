@@ -70,8 +70,8 @@ namespace ExViewer.Views
             {
                 this.pbLoading.IsIndeterminate = true;
                 await Dispatcher.YieldIdle();
-                this.tbORoman.Text = this.Gallery.Title ?? "";
-                this.tbOJapanese.Text = this.Gallery.TitleJpn ?? "";
+                this.lvRoman.Header = this.Gallery.Title ?? "";
+                this.lvJapanese.Header = this.Gallery.TitleJpn ?? "";
                 this.info = await this.Gallery.FetchRenameInfoAsync();
                 this.Bindings.Update();
             }

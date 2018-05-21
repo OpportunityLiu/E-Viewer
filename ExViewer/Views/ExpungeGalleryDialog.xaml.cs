@@ -18,12 +18,15 @@ namespace ExViewer.Views
 {
     public sealed partial class ExpungeGalleryDialog : MyContentDialog
     {
+        private static readonly ExpungeReasonVM[] expungeReasonVM
+            = EnumExtension.GetDefinedValues<ExpungeReason>().Select(kvp => new ExpungeReasonVM(kvp.Value)).ToArray();
+
         public ExpungeGalleryDialog()
         {
             this.InitializeComponent();
             this.PrimaryButtonText = Strings.Resources.General.Submit;
             this.CloseButtonText = Strings.Resources.General.Close;
-            this.lvReason.ItemsSource = EnumExtension.GetDefinedValues<ExpungeReason>().Select(kvp => kvp.Value).ToArray();
+            this.lvReason.ItemsSource = expungeReasonVM;
         }
 
         public Gallery Gallery
@@ -54,7 +57,7 @@ namespace ExViewer.Views
                 await Dispatcher.YieldIdle();
                 if (this.info is null)
                     this.info = await this.Gallery.FetchExpungeInfoAsync();
-                await this.info.VoteAsync((ExpungeReason)this.lvReason.SelectedItem, this.tbExpl.Text);
+                await this.info.VoteAsync(((ExpungeReasonVM)this.lvReason.SelectedItem).Key, this.tbExpl.Text);
                 this.Bindings.Update();
                 resetVote();
             }
@@ -104,7 +107,7 @@ namespace ExViewer.Views
         private void lvRecords_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (ExpungeRecord)e.ClickedItem;
-            this.lvReason.SelectedItem = item.Reason;
+            this.lvReason.SelectedItem = Array.Find(expungeReasonVM, i => i.Key == item.Reason);
             this.tbExpl.Text = item.Explanation;
         }
 
@@ -132,5 +135,19 @@ namespace ExViewer.Views
         {
             return string.Format("{0} on {1} by {2}", a, b, c);
         }
+    }
+
+    public sealed class ExpungeReasonVM
+    {
+        public ExpungeReasonVM(ExpungeReason reason)
+        {
+            this.Name = reason.ToFriendlyNameString();
+            this.Description = reason.GetDescription();
+            this.Key = reason;
+        }
+
+        public string Name { get; }
+        public string Description { get; }
+        public ExpungeReason Key { get; }
     }
 }
