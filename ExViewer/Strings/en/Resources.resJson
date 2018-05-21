@@ -61,6 +61,10 @@
       "RewriteTextBlock/Text": "Rewrite",
       "TranslatedTextBlock/Text": "Translated"
     },
+    "ExpungeRecordPresenter": {
+      "PostedTemplate": "on {0}",
+      "PowerTemplate": "+{0}"
+    },
     "FolderPicker": {
       "DefaultTextBlock/Text": "Default",
       "ResetButton/Content": "Reset",
@@ -180,6 +184,11 @@
     "EhWikiDialog": {
       "ContentDialog/CloseButtonText": "OK",
       "TagNotFound": "Tag not found in wiki."
+    },
+    "ExpungeGalleryDialog": {
+      "ContentDialog/Title": "EXPUNGE GALLERY",
+      "ExplanationTextBox/PlaceholderText": "Explanation for the expunction",
+      "PetitionTextBlock/Text": "Expunge petition"
     },
     "FavoritesPage": {
       "ApplyAppBarButton/Label": "Apply",
