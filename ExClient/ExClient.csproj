@@ -238,11 +238,14 @@
     <Compile Include="Forums\UserInfo.cs" />
     <Compile Include="Status\UserStatus.cs" />
     <Content Include="Properties\ExClient.rd.xml" />
+    <PRIResource Include="Strings\zh-hant\ExpungeReason.resjson" />
+    <PRIResource Include="Strings\zh-hans\ExpungeReason.resjson" />
     <PRIResource Include="Strings\en\Namespace.resjson" />
     <PRIResource Include="Strings\en\Category.resjson" />
     <PRIResource Include="Strings\en\Resources.resjson" />
     <PRIResource Include="Strings\en\Language.resjson" />
     <PRIResource Include="Strings\en\Toplist.resjson" />
+    <PRIResource Include="Strings\en\ExpungeReason.resjson" />
     <None Include="Strings\LocalizedStrings.resgenconfig" />
   </ItemGroup>
   <ItemGroup>
