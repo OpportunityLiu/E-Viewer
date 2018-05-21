@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
@@ -264,11 +265,20 @@ namespace ExViewer.Controls
         private async Task<List<DependencyObject>> loadHtmlAsync(Paragraph target, HtmlNode content, bool detectLink)
         {
             var hyperlinks = new List<DependencyObject>();
-            foreach (var node in content.ChildNodes)
+            if (content.ChildNodes.IsNullOrEmpty())
             {
-                var tbNode = createNode(node, hyperlinks, detectLink);
+                var tbNode = createNode(content, hyperlinks, detectLink);
                 target.Inlines.Add(tbNode);
-                await Task.Yield();
+            }
+            else
+            {
+                foreach (var node in content.ChildNodes)
+                {
+                    var tbNode = createNode(node, hyperlinks, detectLink);
+                    target.Inlines.Add(tbNode);
+                    if (Dispatcher.ShouldYield(CoreDispatcherPriority.Low))
+                        await Dispatcher.YieldIdle();
+                }
             }
             target.Inlines.Add(CreateRun(eof));
             return hyperlinks;

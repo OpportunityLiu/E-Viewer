@@ -74,14 +74,12 @@
     <TextBlock x:Name="Reason"
                Style="{StaticResource HeaderTextBlockStyle}"
                Text="{x:Bind services:ExpungeReasonExtension.ToFriendlyNameString(Record.Reason), Mode=OneWay}" />
-    <TextBlock x:Name="Explanation"
-               Margin="8"
-               RelativePanel.AlignLeftWithPanel="True"
-               RelativePanel.AlignRightWithPanel="True"
-               RelativePanel.AlignBottomWithPanel="True"
-               RelativePanel.Below="Header"
-               IsTextSelectionEnabled="True"
-               Style="{ThemeResource BodyTextBlockStyle}"
-               Text="{x:Bind Record.Explanation, TargetNullValue='', Mode=OneWay}" />
+    <local:HtmlTextBlock x:Name="Explanation"
+                         Margin="8"
+                         RelativePanel.AlignLeftWithPanel="True"
+                         RelativePanel.AlignBottomWithPanel="True"
+                         RelativePanel.Below="Header"
+                         DetectLink="True"
+                         HtmlContent="{x:Bind local:ExpungeRecordPresenter.warpString(Record.Explanation), Mode=OneWay}" />
   </RelativePanel>
 </UserControl>
