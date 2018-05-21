@@ -23,7 +23,6 @@
     },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "查看更多",
-      "AuthorFormatString": "{0}",
       "EditedFormatString": "最后编辑于 {0}",
       "EditMenuFlyoutItem/Text": "编辑",
       "IsUploaderCommentTextBlock/Text": "上传者评论",

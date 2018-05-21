@@ -105,7 +105,8 @@
                RelativePanel.AlignLeftWithPanel="True"
                RelativePanel.AlignTopWithPanel="True"
                Style="{StaticResource CommentHeaderTextBlockStyle}"
-               Text="{x:Bind VM.Comment.Author, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/AuthorFormatString'}" />
+               IsTextSelectionEnabled="True"
+               Text="{x:Bind VM.Comment.Author, Mode=OneWay, FallbackValue=''}" />
     <Grid x:Name="TimeInfo">
       <TextBlock x:Name="Posted"
                  Style="{StaticResource CommentHeaderTextBlockStyle}"
