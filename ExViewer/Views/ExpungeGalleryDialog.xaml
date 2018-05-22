@@ -8,6 +8,7 @@
                           xmlns:controls="using:ExViewer.Controls"
                           xmlns:client="using:ExClient"
                           xmlns:sys="using:System"
+                          xmlns:xb="using:Opportunity.Converters.XBind"
                           xmlns:services="using:ExClient.Services"
                           mc:Ignorable="d"
                           x:Uid="Views/ExpungeGalleryDialog/ContentDialog"
@@ -25,26 +26,40 @@
       <controls:ExpungeRecordPresenter Record="{x:Bind}" />
     </DataTemplate>
   </controls:MyContentDialog.Resources>
-  <Grid Margin="0,-4">
+  <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <ListView x:Name="lvRecords"
-              Margin="0,4"
               SelectionMode="None"
               IsItemClickEnabled="True"
               ItemClick="lvRecords_ItemClick"
               ItemsSource="{x:Bind info.Records}"
               ItemContainerStyle="{ThemeResource ListViewItemStyle}"
               ItemTemplate="{StaticResource RecordDataTemplate}">
+      <ListView.Header>
+        <TextBlock x:Uid="Views/ExpungeGalleryDialog/EmptyTextBlock"
+                   Visibility="{x:Bind local:ExpungeGalleryDialog.emptyVisible(info.Records.Count, pbLoading.IsIndeterminate), Mode=OneWay, FallbackValue=Collapsed}"
+                   Text="There are currently no expunge petitions."
+                   Style="{ThemeResource BaseTextBlockStyle}"
+                   HorizontalAlignment="Center" />
+      </ListView.Header>
+      <ListView.Footer>
+        <TextBlock x:Uid="Views/ExpungeGalleryDialog/LoadingTextBlock"
+                   Visibility="{x:Bind local:ExpungeGalleryDialog.loadingVisible(info.Records.Count, pbLoading.IsIndeterminate), Mode=OneWay, FallbackValue=Visible}"
+                   Text="Loading expunge log…"
+                   Style="{ThemeResource BaseTextBlockStyle}"
+                   HorizontalAlignment="Center" />
+      </ListView.Footer>
     </ListView>
-    <StackPanel Grid.Row="1">
+    <StackPanel Grid.Row="1"
+                Visibility="{x:Bind xb:Visibility.OfBooleanInv(Gallery.Expunged), Mode=OneWay, FallbackValue=Visible}">
       <TextBlock x:Uid="Views/ExpungeGalleryDialog/PetitionTextBlock"
                  Style="{ThemeResource BodyTextBlockStyle}"
                  Text="Expunge petition"
-                 Margin="0,8" />
+                 Margin="0,8,0,4" />
       <ListView x:Name="lvReason"
                 Grid.Row="2"
                 HorizontalAlignment="Stretch"
@@ -74,19 +89,27 @@
                AcceptsReturn="True"
                TextWrapping="Wrap"
                PlaceholderText="Explanation for the expunction"
-               Margin="0,4" />
+               Margin="0,4,0,0" />
     </StackPanel>
-    <Grid Margin="0,4"
-          MinHeight="4"
+    <Grid MinHeight="4"
+          Margin="0,8,0,0"
           Grid.Row="999">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="33*" />
+        <ColumnDefinition Width="61*" />
+      </Grid.ColumnDefinitions>
       <TextBlock x:Name="tbInfo"
-                 HorizontalAlignment="Stretch"
+                 HorizontalAlignment="Center"
                  TextWrapping="WrapWholeWords"
                  Foreground="Red"
-                 Visibility="{x:Bind tbInfo.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
+                 Visibility="{x:Bind tbInfo.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}"
+                 Grid.ColumnSpan="2"
+                 VerticalAlignment="Top" />
       <ProgressBar x:Name="pbLoading"
                    VerticalAlignment="Top"
-                   Visibility="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}" />
+                   Visibility="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}"
+                   Grid.ColumnSpan="2"
+                   HorizontalAlignment="Center" />
     </Grid>
   </Grid>
 </controls:MyContentDialog>

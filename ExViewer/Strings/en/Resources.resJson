@@ -187,7 +187,10 @@
     },
     "ExpungeGalleryDialog": {
       "ContentDialog/Title": "EXPUNGE GALLERY",
+      "EmptyTextBlock/Text": "There are currently no expunge petitions",
       "ExplanationTextBox/PlaceholderText": "Explanation for the expunction",
+      "Expunged": "Expunged",
+      "LoadingTextBlock/Text": "Loading expunge log…",
       "PetitionTextBlock/Text": "Expunge petition"
     },
     "FavoritesPage": {

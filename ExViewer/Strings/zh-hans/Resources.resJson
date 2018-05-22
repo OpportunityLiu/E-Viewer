@@ -187,7 +187,10 @@
     },
     "ExpungeGalleryDialog": {
       "ContentDialog/Title": "删除画廊",
+      "EmptyTextBlock/Text": "目前没有删除请求",
       "ExplanationTextBox/PlaceholderText": "删除原因说明",
+      "Expunged": "已删除",
+      "LoadingTextBlock/Text": "正在加载删除记录…",
       "PetitionTextBlock/Text": "删除请求"
     },
     "FavoritesPage": {
