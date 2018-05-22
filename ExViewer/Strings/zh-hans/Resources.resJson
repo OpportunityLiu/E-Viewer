@@ -3,7 +3,7 @@
   "AppDisplayName": "E-Viewer",
   "Controls": {
     "AboutControl": {
-      "$GithubVersionFormat": "GitHub 分支：{branch} / 提交：{commit}",
+      "$GithubVersionFormat": "GitHub 分支 {branch} / 提交 {commit}",
       "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ GitHub.com",
       "ChineseTagProviderTextBlock/Text": "标签中文翻译",
       "DataProvidersTextBlock/Text": "数据提供方",
