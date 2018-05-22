@@ -7,6 +7,7 @@
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           xmlns:controls="using:ExViewer.Controls"
                           xmlns:client="using:ExClient"
+                          xmlns:xb="using:Opportunity.Converters.XBind"
                           xmlns:services="using:ExClient.Services"
                           xmlns:sys="using:System"
                           mc:Ignorable="d"
@@ -23,7 +24,7 @@
     <DataTemplate x:Key="UploaderTitleTemplate"
                   x:DataType="x:String">
       <TextBlock Text="{x:Bind}"
-                 Margin="8,4"
+                 Margin="8,0,8,4"
                  IsTextSelectionEnabled="True"
                  Style="{ThemeResource BaseTextBlockStyle}" />
     </DataTemplate>
@@ -40,6 +41,12 @@
                      Background="{x:Null}"
                      Opacity="0.4"
                      Maximum="100" />
+        <ProgressBar Grid.ColumnSpan="999"
+                     Value="{x:Bind xb:Int32.Subtract(Power, 100), Mode=OneWay}"
+                     VerticalAlignment="Stretch"
+                     Background="{x:Null}"
+                     Opacity="0.4"
+                     Maximum="400" />
         <TextBlock Style="{ThemeResource BodyTextBlockStyle}"
                    Margin="8,4"
                    Text="{x:Bind Title}" />
@@ -64,16 +71,16 @@
       <Setter Property="TextWrapping"
               Value="Wrap" />
       <Setter Property="Margin"
-              Value="0,4" />
+              Value="0,4,0,0" />
     </Style>
     <Style x:Key="RenameTypeTextBlockStyle"
            TargetType="TextBlock"
            BasedOn="{StaticResource BodyTextBlockStyle}">
       <Setter Property="Margin"
-              Value="0,8,0,0" />
+              Value="0,0,0,4" />
     </Style>
   </controls:MyContentDialog.Resources>
-  <Grid Margin="0,-4">
+  <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
@@ -85,6 +92,7 @@
                    x:Uid="Views/RenameGalleryDialog/RomanTitleTextBlock"
                    Style="{ThemeResource RenameTypeTextBlockStyle}" />
         <ListView x:Name="lvRoman"
+                  Margin="0,0,0,12"
                   SelectionChanged="lv_SelectionChanged"
                   Style="{ThemeResource RecordListViewStyle}"
                   ItemsSource="{x:Bind info.RomanRecords}"
@@ -115,12 +123,11 @@
                      Text="{x:Bind info.VotedJapanese, TargetNullValue='', Mode=OneWay}" />
           </ListView.Footer>
         </ListView>
-
       </StackPanel>
     </ScrollViewer>
-    <Grid Margin="0,4"
-          MinHeight="4"
-          Grid.Row="1">
+    <Grid MinHeight="4"
+          Margin="0,8,0,0"
+          Grid.Row="999">
       <TextBlock x:Name="tbInfo"
                  HorizontalAlignment="Stretch"
                  TextWrapping="WrapWholeWords"

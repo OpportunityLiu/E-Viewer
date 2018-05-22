@@ -99,6 +99,8 @@ namespace ExClient.Services
 
         public IAsyncAction VoteAsync(ExpungeReason reason, string explanation)
         {
+            if (reason == ExpungeReason.None)
+                explanation = null;
             return AsyncInfo.Run(async token =>
             {
                 var post = Client.Current.HttpClient.PostAsync(apiUri,

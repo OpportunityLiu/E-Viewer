@@ -77,6 +77,11 @@ namespace ExViewer.Views
         {
             if (this.Gallery is null)
                 throw new InvalidOperationException("Property RenameGalleryDialog.Gallery is null.");
+            if (this.Gallery.Expunged)
+            {
+                this.PrimaryButtonText = Strings.Resources.Views.ExpungeGalleryDialog.Expunged;
+                this.IsPrimaryButtonEnabled = false;
+            }
             try
             {
                 this.pbLoading.IsIndeterminate = true;
@@ -117,6 +122,8 @@ namespace ExViewer.Views
             this.Bindings.Update();
             this.lvRecords.ItemsSource = null;
             this.tbInfo.Text = "";
+            this.PrimaryButtonText = Strings.Resources.General.Submit;
+            this.IsPrimaryButtonEnabled = true;
             resetVote();
         }
 
@@ -131,9 +138,19 @@ namespace ExViewer.Views
         }
 
 
-        static string format(object a, object b, object c)
+        static Visibility emptyVisible(int count, bool indeterminate)
         {
-            return string.Format("{0} on {1} by {2}", a, b, c);
+            if (count == 0 && !indeterminate)
+                return Visibility.Visible;
+            return Visibility.Collapsed;
+        }
+
+
+        static Visibility loadingVisible(int count, bool indeterminate)
+        {
+            if (count == 0 && indeterminate)
+                return Visibility.Visible;
+            return Visibility.Collapsed;
         }
     }
 

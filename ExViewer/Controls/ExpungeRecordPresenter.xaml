@@ -26,7 +26,7 @@
       <VisualStateGroup>
         <VisualState x:Name="Normal">
           <VisualState.StateTriggers>
-            <hxaml:SizeTrigger MinWidth="500"
+            <hxaml:SizeTrigger MinWidth="400"
                                Target="{x:Bind Panel}" />
           </VisualState.StateTriggers>
           <VisualState.Setters>
