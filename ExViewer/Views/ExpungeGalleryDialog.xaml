@@ -94,22 +94,14 @@
     <Grid MinHeight="4"
           Margin="0,8,0,0"
           Grid.Row="999">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="33*" />
-        <ColumnDefinition Width="61*" />
-      </Grid.ColumnDefinitions>
       <TextBlock x:Name="tbInfo"
-                 HorizontalAlignment="Center"
+                 HorizontalAlignment="Stretch"
                  TextWrapping="WrapWholeWords"
                  Foreground="Red"
-                 Visibility="{x:Bind tbInfo.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}"
-                 Grid.ColumnSpan="2"
-                 VerticalAlignment="Top" />
+                 Visibility="{x:Bind tbInfo.Text, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
       <ProgressBar x:Name="pbLoading"
                    VerticalAlignment="Top"
-                   Visibility="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}"
-                   Grid.ColumnSpan="2"
-                   HorizontalAlignment="Center" />
+                   Visibility="{x:Bind pbLoading.IsIndeterminate, Mode=OneWay}"/>
     </Grid>
   </Grid>
 </controls:MyContentDialog>
