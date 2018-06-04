@@ -63,9 +63,17 @@ namespace ExClient.HentaiVerse
                 var key = item.Groups["name"].Value;
                 switch (key.ToLowerInvariant())
                 {
-                case "gps": key = "GP"; break;
-                case "credit": key = "Credits"; break;
-                case "haths": key = "Hath"; break;
+                case "gp":
+                case "gps":
+                    key = "GP"; break;
+                case "credit":
+                case "credits":
+                    key = "Credits"; break;
+                case "hath":
+                case "haths":
+                    key = "Hath"; break;
+                case "exp":
+                    key = "EXP"; break;
                 }
                 data[key] = double.Parse(item.Groups["value"].Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture);
             }

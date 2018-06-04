@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="ExViewer.Controls.ExpungeRecordPresenter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:ExViewer.Controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:hxaml="using:Opportunity.Helpers.Universal.Xaml"
+             xmlns:services="using:ExClient.Services"
+             mc:Ignorable="d"
+             d:DesignHeight="100"
+             d:DesignWidth="400">
+  <RelativePanel Padding="4,8"
+                 x:Name="Panel">
+    <RelativePanel.Resources>
+      <Style x:Key="HeaderTextBlockStyle"
+             TargetType="TextBlock">
+        <Setter Property="FontSize"
+                Value="14" />
+        <Setter Property="FontWeight"
+                Value="Medium" />
+        <Setter Property="Margin"
+                Value="8,0" />
+      </Style>
+    </RelativePanel.Resources>
+    <VisualStateManager.VisualStateGroups>
+      <VisualStateGroup>
+        <VisualState x:Name="Normal">
+          <VisualState.StateTriggers>
+            <hxaml:SizeTrigger MinWidth="400"
+                               Target="{x:Bind Panel}" />
+          </VisualState.StateTriggers>
+          <VisualState.Setters>
+            <Setter Target="Posted.(RelativePanel.RightOf)"
+                    Value="Author" />
+            <Setter Target="Reason.(RelativePanel.LeftOf)"
+                    Value="Power" />
+          </VisualState.Setters>
+        </VisualState>
+        <VisualState x:Name="Narrow">
+          <VisualState.StateTriggers>
+            <hxaml:SizeTrigger MinWidth="0"
+                               Target="{x:Bind Panel}" />
+          </VisualState.StateTriggers>
+          <VisualState.Setters>
+            <Setter Target="Posted.(RelativePanel.Below)"
+                    Value="Author" />
+            <Setter Target="Reason.(RelativePanel.AlignRightWithPanel)"
+                    Value="True" />
+            <Setter Target="Power.(RelativePanel.Below)"
+                    Value="Reason" />
+          </VisualState.Setters>
+        </VisualState>
+      </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+    <Rectangle x:Name="Header"
+               Fill="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+               RelativePanel.AlignLeftWithPanel="True"
+               RelativePanel.AlignRightWithPanel="True"
+               RelativePanel.AlignTopWith="Author"
+               RelativePanel.AlignBottomWith="Posted"
+               Margin="0,-4"
+               StrokeThickness="0" />
+    <TextBlock x:Name="Author"
+               Style="{StaticResource HeaderTextBlockStyle}"
+               Text="{x:Bind Record.Author, TargetNullValue='', Mode=OneWay}"
+               IsTextSelectionEnabled="True" />
+    <TextBlock x:Name="Posted"
+               Style="{StaticResource HeaderTextBlockStyle}"
+               Text="{x:Bind Record.Posted, Converter={StaticResource DateTimeOffsetToStringConverter}, ConverterParameter='ms-resource:Controls/ExpungeRecordPresenter/PostedTemplate', Mode=OneWay}" />
+    <TextBlock x:Name="Power"
+               RelativePanel.AlignRightWithPanel="True"
+               Style="{StaticResource HeaderTextBlockStyle}"
+               Text="{x:Bind Record.Power, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/ExpungeRecordPresenter/PowerTemplate', Mode=OneWay}" />
+    <TextBlock x:Name="Reason"
+               Style="{StaticResource HeaderTextBlockStyle}"
+               Text="{x:Bind services:ExpungeReasonExtension.ToFriendlyNameString(Record.Reason), Mode=OneWay}" />
+    <local:HtmlTextBlock x:Name="Explanation"
+                         Margin="8"
+                         RelativePanel.AlignLeftWithPanel="True"
+                         RelativePanel.AlignBottomWithPanel="True"
+                         RelativePanel.Below="Header"
+                         DetectLink="True"
+                         HtmlContent="{x:Bind local:ExpungeRecordPresenter.warpString(Record.Explanation), Mode=OneWay}" />
+  </RelativePanel>
+</UserControl>

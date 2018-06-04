@@ -17,13 +17,20 @@ namespace ExClient.Internal
      * */
     internal class MyHttpClient : IDisposable
     {
-        private const string IP_BANNED_OF_PAGE_LOAD = "Your IP address has been temporarily banned for excessive pageloads";
-
-        private void checkIPBanStatus(string responseString)
+        private static void checkStringResponse(string responseString)
         {
-            if (responseString.StartsWith(IP_BANNED_OF_PAGE_LOAD))
-            {
+            if (responseString.Equals("This gallery is currently unavailable.", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException(LocalizedStrings.Resources.GalleryRemoved);
+            if (responseString.StartsWith("Your IP address has been temporarily banned for excessive pageloads"))
                 throw new InvalidOperationException(LocalizedStrings.Resources.IPBannedOfPageLoad);
+        }
+
+        private void checkSadPanda(HttpResponseMessage response)
+        {
+            if (response.Content.Headers.ContentDisposition?.FileName == "sadpanda.jpg")
+            {
+                this.owner.ResetExCookie();
+                throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
             }
         }
 
@@ -36,24 +43,13 @@ namespace ExClient.Internal
         private void reformUri(ref Uri uri)
         {
             if (!uri.IsAbsoluteUri)
-            {
                 uri = new Uri(this.owner.Uris.RootUri, uri);
-            }
         }
 
         private readonly HttpClient inner;
         private readonly Client owner;
 
         public HttpRequestHeaderCollection DefaultRequestHeaders => this.inner.DefaultRequestHeaders;
-
-        private void checkSadPanda(HttpResponseMessage response)
-        {
-            if (response.Content.Headers.ContentDisposition?.FileName == "sadpanda.jpg")
-            {
-                this.owner.ResetExCookie();
-                throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
-            }
-        }
 
         public IHttpAsyncOperation GetAsync(Uri uri, HttpCompletionOption completionOption, bool checkStatusCode)
         {
@@ -143,7 +139,7 @@ namespace ExClient.Internal
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
                 var str = await response.Content.ReadAsStringAsync();
-                checkIPBanStatus(str);
+                checkStringResponse(str);
                 return str;
             });
         }
@@ -165,33 +161,22 @@ namespace ExClient.Internal
                 }
                 var rootNode = doc.DocumentNode;
                 if (rootNode.ChildNodes.Count == 1 && rootNode.FirstChild.NodeType == HtmlNodeType.Text)
-                {
-                    this.checkIPBanStatus(rootNode.FirstChild.InnerText);
-                }
+                    checkStringResponse(rootNode.FirstChild.InnerText);
 
                 do
                 {
                     if (response.StatusCode != HttpStatusCode.NotFound)
-                    {
                         break;
-                    }
 
                     var title = rootNode.Element("html").Element("head").Element("title");
                     if (title is null)
-                    {
                         break;
-                    }
-
                     if (!title.GetInnerText().StartsWith("Gallery Not Available - "))
-                    {
                         break;
-                    }
 
                     var error = rootNode.Element("html").Element("body")?.Element("div")?.Element("p");
                     if (error is null)
-                    {
                         break;
-                    }
 
                     var msg = error.GetInnerText();
                     switch (msg)
@@ -236,7 +221,7 @@ namespace ExClient.Internal
                 var res = await op;
                 res.EnsureSuccessStatusCode();
                 var str = await res.Content.ReadAsStringAsync();
-                checkIPBanStatus(str);
+                checkStringResponse(str);
                 return str;
             });
         }

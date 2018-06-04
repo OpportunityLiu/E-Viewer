@@ -5,12 +5,12 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Web.Http;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Services
 {
@@ -23,7 +23,7 @@ namespace ExClient.Services
             => TorrentInfo.FetchAsync(gallery);
     }
 
-    public sealed class TorrentInfo
+    public readonly struct TorrentInfo : IEquatable<TorrentInfo>
     {
         private static readonly Regex infoMatcher = new Regex(@"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+", RegexOptions.Compiled);
 
@@ -40,81 +40,124 @@ namespace ExClient.Services
                             let reg = infoMatcher.Match(n.GetInnerText())
                             let name = n.Descendants("tr").Last()
                             let link = name.Descendants("a").SingleOrDefault()
-                            select new TorrentInfo()
-                            {
-                                Name = name.GetInnerText().Trim(),
-                                Posted = DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
-                                Size = parseSize(reg.Groups[2].Value),
-                                Seeds = int.Parse(reg.Groups[3].Value),
-                                Peers = int.Parse(reg.Groups[4].Value),
-                                Downloads = int.Parse(reg.Groups[5].Value),
-                                Uploader = reg.Groups[6].Value,
-                                TorrentUri = link?.GetAttribute("href", default(Uri)),
-                            };
+                            select new TorrentInfo(
+                                name.GetInnerText().Trim(),
+                                DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
+                                parseSize(reg.Groups[2].Value),
+                                int.Parse(reg.Groups[3].Value),
+                                int.Parse(reg.Groups[4].Value),
+                                int.Parse(reg.Groups[5].Value),
+                                reg.Groups[6].Value,
+                                link?.GetAttribute("href", default(Uri))
+                            );
                 return nodes.ToList().AsReadOnly();
+
+                long parseSize(string sizeStr)
+                {
+                    var s = sizeStr.Split(' ');
+                    var value = double.Parse(s[0]);
+                    switch (s[1])
+                    {
+                    case "B":
+                        return (long)value;
+                    case "KB":
+                        return (long)(value * (1 << 10));
+                    case "MB":
+                        return (long)(value * (1 << 20));
+                    case "GB":
+                        return (long)(value * (1 << 30));
+                    default:
+                        return 0;
+                    }
+                }
             }).AsAsyncOperation();
         }
 
-        private static long parseSize(string sizeStr)
+        internal TorrentInfo(string name, DateTimeOffset posted, long size, int seeds, int peers, int downloads, string uploader, Uri torrentUri)
         {
-            var s = sizeStr.Split(' ');
-            var value = double.Parse(s[0]);
-            switch (s[1])
-            {
-            case "B":
-                return (long)value;
-            case "KB":
-                return (long)(value * (1 << 10));
-            case "MB":
-                return (long)(value * (1 << 20));
-            case "GB":
-                return (long)(value * (1 << 30));
-            default:
-                return 0;
-            }
+            this.Name = name;
+            this.Posted = posted;
+            this.Size = size;
+            this.Seeds = seeds;
+            this.Peers = peers;
+            this.Downloads = downloads;
+            this.Uploader = uploader;
+            this.TorrentUri = torrentUri;
         }
 
-        private TorrentInfo() { }
+        public string Name { get; }
 
-        public string Name { get; private set; }
+        public DateTimeOffset Posted { get; }
 
-        public DateTimeOffset Posted { get; private set; }
+        public long Size { get; }
 
-        public long Size { get; private set; }
+        public int Seeds { get; }
 
-        public int Seeds { get; private set; }
+        public int Peers { get; }
 
-        public int Peers { get; private set; }
+        public int Downloads { get; }
 
-        public int Downloads { get; private set; }
+        public string Uploader { get; }
 
-        public string Uploader { get; private set; }
+        public Uri TorrentUri { get; }
 
-        public Uri TorrentUri { get; private set; }
+        public bool IsExpunged => TorrentUri is null;
 
         public IAsyncOperation<StorageFile> DownloadTorrentAsync()
         {
-            return Run(async token =>
+            if (IsExpunged)
+                throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
+            var uri = this.TorrentUri;
+            var name = this.Name + ".torrent";
+            return AsyncInfo.Run(async token =>
             {
-                if (this.TorrentUri is null)
-                    throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
-
                 using (var client = new HttpClient())
                 {
-                    var loadT = client.GetBufferAsync(this.TorrentUri);
-                    var filename = StorageHelper.ToValidFileName(this.Name + ".torrent");
-                    var folder = await StorageHelper.CreateTempFolderAsync();
+                    var loadT = client.GetBufferAsync(uri);
+                    var filename = StorageHelper.ToValidFileName(name);
                     var buf = await loadT;
                     try
                     {
-                        return await folder.SaveFileAsync(filename, CreationCollisionOption.ReplaceExisting, buf);
+                        return await StorageFile.CreateStreamedFileAsync(filename, dataRequested, null);
                     }
                     catch (Exception)
                     {
-                        return await folder.SaveFileAsync("gallery.torrent", CreationCollisionOption.ReplaceExisting, buf);
+                        return await StorageFile.CreateStreamedFileAsync("gallery.torrent", dataRequested, null);
+                    }
+
+                    async void dataRequested(StreamedFileDataRequest stream)
+                    {
+                        try
+                        {
+                            await stream.WriteAsync(buf);
+                            await stream.FlushAsync();
+                            stream.Dispose();
+                        }
+                        catch
+                        {
+                            stream.FailAndClose(StreamedFileFailureMode.Failed);
+                            throw;
+                        }
                     }
                 }
             });
         }
+
+        public bool Equals(TorrentInfo other)
+            => this.Posted == other.Posted
+            && this.Size == other.Size
+            && this.Seeds == other.Seeds
+            && this.Peers == other.Peers
+            && this.Downloads == other.Downloads
+            && this.TorrentUri == other.TorrentUri
+            && this.Name == other.Name
+            && this.Uploader == other.Uploader;
+
+        public override bool Equals(object obj) => obj is TorrentInfo i && Equals(i);
+
+        public override int GetHashCode() => unchecked(Posted.GetHashCode() ^ Size.GetHashCode() * 3);
+
+        public static bool operator ==(in TorrentInfo left, in TorrentInfo right) => left.Equals(right);
+        public static bool operator !=(in TorrentInfo left, in TorrentInfo right) => !left.Equals(right);
     }
 }

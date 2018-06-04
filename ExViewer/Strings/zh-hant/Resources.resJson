@@ -3,7 +3,8 @@
   "AppDisplayName": "E-Viewer",
   "Controls": {
     "AboutControl": {
-      "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ Github.com",
+      "$GithubVersionFormat": "GitHub 分支 {branch} / 提交 {commit}",
+      "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ GitHub.com",
       "ChineseTagProviderTextBlock/Text": "標籤中文翻譯",
       "DataProvidersTextBlock/Text": "資料提供方",
       "EHTextBlock/Text": "E-Hentai.org",
@@ -22,11 +23,10 @@
     },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "檢視更多",
-      "AuthorFormatString": "{0}",
       "EditedFormatString": "最後編輯於 {0}",
       "EditMenuFlyoutItem/Text": "編輯",
       "IsUploaderCommentTextBlock/Text": "上傳者評論",
-      "PostedFormatString": "釋出於 {0}",
+      "PostedFormatString": "發表於 {0}",
       "ReplyMenuFlyoutItem/Text": "回覆",
       "ScoreFormatString": "評分 {0:+#0;-#0}",
       "TranslateMenuFlyoutItem/Text": "翻譯",
@@ -60,6 +60,10 @@
       "OriginalTextBlock/Text": "原始",
       "RewriteTextBlock/Text": "重寫",
       "TranslatedTextBlock/Text": "翻譯"
+    },
+    "ExpungeRecordPresenter": {
+      "PostedTemplate": "於 {0}",
+      "PowerTemplate": "+{0}"
     },
     "FolderPicker": {
       "DefaultTextBlock/Text": "預設",
@@ -107,11 +111,13 @@
   },
   "General": {
     "Cancel": "取消",
+    "Close": "關閉",
     "Exit": "退出",
     // Use local language to replace "English"
     // see https://ctrlq.org/code/19899-google-translate-languages#languages
     "LanguageCode": "zh-Hant",
-    "OK": "確定"
+    "OK": "確定",
+    "Submit": "提交"
   },
   "Sharing": {
     "CopyedToClipboard": "內容已經複製到剪貼簿",
@@ -170,7 +176,7 @@
       "AppBarButtonUnderline/Label": "下劃線",
       "AppBarButtonUnderline/ToolTipService/ToolTip": "下劃線 (Ctrl + U)",
       "ContentDialog": {
-        "PrimaryButtonText": "釋出",
+        "PrimaryButtonText": "發表",
         "CloseButtonText": "取消"
       },
       "EditTitle": "編輯評論"
@@ -178,6 +184,14 @@
     "EhWikiDialog": {
       "ContentDialog/CloseButtonText": "確定",
       "TagNotFound": "在 EhWiki 中未找到此標籤。"
+    },
+    "ExpungeGalleryDialog": {
+      "ContentDialog/Title": "刪除畫廊",
+      "EmptyTextBlock/Text": "目前沒有刪除請求",
+      "ExplanationTextBox/PlaceholderText": "刪除原因說明",
+      "Expunged": "已刪除",
+      "LoadingTextBlock/Text": "正在載入刪除記錄…",
+      "PetitionTextBlock/Text": "刪除請求"
     },
     "FavoritesPage": {
       "ApplyAppBarButton/Label": "應用",
@@ -207,10 +221,12 @@
       "AppBarButtonLatestRevision/Label": "轉到最新版本",
       "CommentsEmptyTextBlock/Text": "沒有評論",
       "CommentsLoadingTextBlock/Text": "正在載入評論…",
+      "ExpungeAppBarButton/Label": "請求刪除畫廊",
       "FavoritesAppBarButton/Text": "新增至收藏",
       "PivotHeaderCommentsTextBlock/Text": "評論",
       "PivotHeaderImagesTextBlock/Text": "圖片",
       "PivotHeaderTorrentsTextBlock/Text": "種子",
+      "RenameAppBarButton/Label": "請求重新命名畫廊",
       "SaveAppBarButton/Label": "儲存此畫廊",
       "SearchUploaderAppBarButton/Label": "搜尋該上傳者的所有畫廊",
       "ShareAppBarButton/Label": "共享",
@@ -285,6 +301,15 @@
       "PrimaryButtonText": "複製",
       "CloseButtonText": "關閉",
       "Title": "QR 碼掃描結果"
+    },
+    "RenameGalleryDialog": {
+      "$PowerTemplate": "{power} %",
+      "ContentDialog/Title": "重新命名畫廊",
+      "JapaneseTextBox/PlaceholderText": "輸入日文標題",
+      "JapaneseTitleTextBlock/Text": "日文標題",
+      "PowerColumnDefinition/Width": "40",
+      "RomanTextBox/PlaceholderText": "輸入羅馬字標題",
+      "RomanTitleTextBlock/Text": "羅馬字標題"
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "快取的畫廊",

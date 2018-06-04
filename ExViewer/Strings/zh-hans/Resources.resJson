@@ -3,7 +3,8 @@
   "AppDisplayName": "E-Viewer",
   "Controls": {
     "AboutControl": {
-      "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ Github.com",
+      "$GithubVersionFormat": "GitHub 分支 {branch} / 提交 {commit}",
+      "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ GitHub.com",
       "ChineseTagProviderTextBlock/Text": "标签中文翻译",
       "DataProvidersTextBlock/Text": "数据提供方",
       "EHTextBlock/Text": "E-Hentai.org",
@@ -22,7 +23,6 @@
     },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "查看更多",
-      "AuthorFormatString": "{0}",
       "EditedFormatString": "最后编辑于 {0}",
       "EditMenuFlyoutItem/Text": "编辑",
       "IsUploaderCommentTextBlock/Text": "上传者评论",
@@ -60,6 +60,10 @@
       "OriginalTextBlock/Text": "原始",
       "RewriteTextBlock/Text": "重写",
       "TranslatedTextBlock/Text": "翻译"
+    },
+    "ExpungeRecordPresenter": {
+      "PostedTemplate": "于 {0}",
+      "PowerTemplate": "+{0}"
     },
     "FolderPicker": {
       "DefaultTextBlock/Text": "默认",
@@ -107,11 +111,13 @@
   },
   "General": {
     "Cancel": "取消",
+    "Close": "关闭",
     "Exit": "退出",
     // Use local language to replace "English"
     // see https://ctrlq.org/code/19899-google-translate-languages#languages
     "LanguageCode": "zh-Hans",
-    "OK": "确定"
+    "OK": "确定",
+    "Submit": "提交"
   },
   "Sharing": {
     "CopyedToClipboard": "内容已经复制到剪贴板",
@@ -179,6 +185,14 @@
       "ContentDialog/CloseButtonText": "确定",
       "TagNotFound": "在 EhWiki 中未找到此标签。"
     },
+    "ExpungeGalleryDialog": {
+      "ContentDialog/Title": "删除画廊",
+      "EmptyTextBlock/Text": "目前没有删除请求",
+      "ExplanationTextBox/PlaceholderText": "删除原因说明",
+      "Expunged": "已删除",
+      "LoadingTextBlock/Text": "正在加载删除记录…",
+      "PetitionTextBlock/Text": "删除请求"
+    },
     "FavoritesPage": {
       "ApplyAppBarButton/Label": "应用",
       "AutoSuggestBox/PlaceholderText": "搜索…",
@@ -207,10 +221,12 @@
       "AppBarButtonLatestRevision/Label": "转到最新版本",
       "CommentsEmptyTextBlock/Text": "没有评论",
       "CommentsLoadingTextBlock/Text": "正在加载评论…",
+      "ExpungeAppBarButton/Label": "请求删除画廊",
       "FavoritesAppBarButton/Text": "添加至收藏",
       "PivotHeaderCommentsTextBlock/Text": "评论",
       "PivotHeaderImagesTextBlock/Text": "图片",
       "PivotHeaderTorrentsTextBlock/Text": "种子",
+      "RenameAppBarButton/Label": "请求重命名画廊",
       "SaveAppBarButton/Label": "保存此画廊",
       "SearchUploaderAppBarButton/Label": "搜索该上传者的所有画廊",
       "ShareAppBarButton/Label": "共享",
@@ -285,6 +301,15 @@
       "PrimaryButtonText": "复制",
       "CloseButtonText": "关闭",
       "Title": "QR 码扫描结果"
+    },
+    "RenameGalleryDialog": {
+      "$PowerTemplate": "{power} %",
+      "ContentDialog/Title": "重命名画廊",
+      "JapaneseTextBox/PlaceholderText": "输入日文标题",
+      "JapaneseTitleTextBlock/Text": "日文标题",
+      "PowerColumnDefinition/Width": "40",
+      "RomanTextBox/PlaceholderText": "输入罗马字标题",
+      "RomanTitleTextBlock/Text": "罗马字标题"
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "缓存的画廊",

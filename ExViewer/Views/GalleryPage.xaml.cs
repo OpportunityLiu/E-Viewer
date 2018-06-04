@@ -339,7 +339,7 @@ namespace ExViewer.Views
                 }
                 // finish the add animation
                 await Task.Delay(150);
-                if (this.lv_Torrents.Items.Count > 0)
+                if (!this.lv_Torrents.Items.IsNullOrEmpty())
                 {
                     this.lv_Torrents.SelectedIndex = -1;
                     this.lv_Torrents.SelectedIndex = 0;
@@ -355,26 +355,19 @@ namespace ExViewer.Views
 
         private void lv_Torrents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            foreach (var item in e.RemovedItems)
+            foreach (var item in this.lv_Torrents.Descendants<ListViewItem>())
             {
-                var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(item);
-                if (con is null)
-                {
-                    continue;
-                }
-                var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
-                gd.Visibility = Visibility.Collapsed;
+                setDetailVisibility(item, Visibility.Collapsed);
             }
-            var added = e.AddedItems.FirstOrDefault();
-            if (added != null)
+            var con = (ListViewItem)this.lv_Torrents.ContainerFromIndex(this.lv_Torrents.SelectedIndex);
+            if (con is null)
+                return;
+            setDetailVisibility(con, Visibility.Visible);
+
+            void setDetailVisibility(ListViewItem item, Visibility visibility)
             {
-                var con = (ListViewItem)this.lv_Torrents.ContainerFromItem(added);
-                if (con is null)
-                {
-                    return;
-                }
-                var gd = (FrameworkElement)((FrameworkElement)con.ContentTemplateRoot).FindName("gd_TorrentDetail");
-                gd.Visibility = Visibility.Visible;
+                var gd = (FrameworkElement)((FrameworkElement)item.ContentTemplateRoot).FindName("gd_TorrentDetail");
+                gd.Visibility = visibility;
             }
         }
 

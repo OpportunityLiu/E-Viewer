@@ -47,10 +47,7 @@ namespace ExViewer.Views
             var o = (Tag)e.OldValue;
             var n = (Tag)e.NewValue;
             if (n.Equals(o))
-            {
                 return;
-            }
-
             sender.refresh(n);
         }
 
@@ -91,6 +88,7 @@ namespace ExViewer.Views
                 catch (Exception ex)
                 {
                     str = $@"<p style='color:red;'>{HtmlAgilityPack.HtmlEntity.Entitize(ex.GetMessage(), true, true)}</p>";
+                    Telemetry.LogException(ex);
                 }
                 var redirect = regRedirect.Match(str);
                 if (redirect.Success)

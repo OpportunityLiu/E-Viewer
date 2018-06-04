@@ -144,7 +144,7 @@
                Header="OVERVIEW">
       <ListView SelectionMode="None"
                 Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
-                ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                ext:ScrollViewerExtensions.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                 Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                 ItemsSource="{x:Bind ViewModel.Status.Toplists, Mode=OneWay}"
                 ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}">
@@ -363,7 +363,7 @@
     <PivotItem x:Uid="Views/InfoPage/TaggingPivotItem"
                Header="TAGGING">
       <ListView x:Name="lvTagging"
-                ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                ext:ScrollViewerExtensions.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                 Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                 Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                 SelectionMode="None"

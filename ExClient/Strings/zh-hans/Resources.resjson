@@ -23,6 +23,7 @@
   "IPBannedOfPageLoad": "由于过多的页面加载，您的 IP 地址已被暂时禁止，这表示您正在使用自动镜像/收集软件。",
   "OnlyIpv4": "仅支持 IPv4 地址。",
   "RemoveFromFavorites": "从收藏中移除",
+  "RenameTitleTooShort": "提出的新标题太短。",
   "SadPanda": "从 ExHentai 返回了熊猫图，这可能意味着当前用户没有访问 ExHentai 的权限。",
   "ShortComment": "评论内容太短。",
   "TagNoVotePremition": "不能为此标签投票。",
@@ -32,9 +33,9 @@
   "UnsupportedMonotone": "上传的文件是单色图，仅支持精确搜索。",
   "VoteOutOfRange": "投票必须为 -1 或 1。",
   "WrongAccountInfo": "登录令牌错误。",
+  "WrongApiResponse": "服务器返回结果有误。",
   "WrongEditState": "你只能编辑自己的评论。",
   "WrongGalleryState": "当前画廊处于非活动状态，无法添加评论。",
-  "WrongVoteResponse": "服务器返回结果有误。",
   "WrongVoteState": "发表评论后无法投票。",
   "WrongVoteStateUploader": "无法对上传者评论投票。"
 }

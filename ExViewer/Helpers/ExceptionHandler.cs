@@ -7,7 +7,7 @@ namespace ExViewer
     {
         public static string GetMessage(this Exception ex)
         {
-            if (ex.InnerException != null && (ex is System.Reflection.TargetInvocationException || ex is AggregateException))
+            while (ex.InnerException != null && (ex is System.Reflection.TargetInvocationException || ex is AggregateException))
             {
                 // the outer exception is meaningless.
                 ex = ex.InnerException;
@@ -17,8 +17,7 @@ namespace ExViewer
             if (!string.IsNullOrEmpty(localizedMsg))
                 return localizedMsg;
 
-            if (ex is COMException
-                && ex.Data.Contains("RestrictedDescription")
+            if (ex.Data.Contains("RestrictedDescription")
                 && ex.Data["RestrictedDescription"] is string rinfo
                 && !rinfo.IsNullOrWhiteSpace())
                 return rinfo.Trim();

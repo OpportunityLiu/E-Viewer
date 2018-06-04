@@ -1,0 +1,20 @@
+﻿{
+  // Reasons To Expunge, see: https://ehwiki.org/wiki/Expunging
+
+  "None": {
+    "Name": "None",
+    "Description": "Withdraw petition."
+  },
+  "Duplicate": {
+    "Name": "Duplicate",
+    "Description": "This gallery is a duplicate of equal or lower quality of an earlier posted, clearly marked gallery."
+  },
+  "Replaced": {
+    "Name": "Replaced",
+    "Description": "A newer higher-quality and clearly marked copy of this gallery has been uploaded."
+  },
+  "Forbidden": {
+    "Name": "Forbidden",
+    "Description": "This gallery contains either illicit content like child porn or anything else that has been banned."
+  }
+}

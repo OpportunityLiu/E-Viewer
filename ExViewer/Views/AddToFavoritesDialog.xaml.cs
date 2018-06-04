@@ -56,6 +56,7 @@ namespace ExViewer.Views
             catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
+                Telemetry.LogException(ex);
                 args.Cancel = true;
             }
             finally
@@ -125,6 +126,7 @@ namespace ExViewer.Views
             catch (Exception ex)
             {
                 this.tbInfo.Text = ex.GetMessage();
+                Telemetry.LogException(ex);
             }
             finally
             {

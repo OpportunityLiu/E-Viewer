@@ -99,10 +99,7 @@ namespace ExViewer.ViewModels
                 var that = (GalleryVM)c.Tag;
                 var rt = that.gallery?.Rating;
                 if (rt is null || rt.UserScore == s)
-                {
                     return;
-                }
-
                 try
                 {
                     await rt.RatingAsync(s);
@@ -126,6 +123,22 @@ namespace ExViewer.ViewModels
             ac.ReentrancyHandler = ReentrancyHandler.LastQueued();
             return ac;
         });
+
+        public AsyncCommand Rename => Commands.GetOrAdd(() =>
+            AsyncCommand.Create(async (c, s) =>
+            {
+                var rename = ThreadLocalSingleton.GetOrCreate<RenameGalleryDialog>();
+                rename.Gallery = this.Gallery;
+                await rename.ShowAsync();
+            }));
+
+        public AsyncCommand Expunge => Commands.GetOrAdd(() =>
+            AsyncCommand.Create(async (c, s) =>
+            {
+                var expunge = ThreadLocalSingleton.GetOrCreate<ExpungeGalleryDialog>();
+                expunge.Gallery = this.Gallery;
+                await expunge.ShowAsync();
+            }));
 
         public Command<RevisionCollection> GoToLatestRevision => Commands.GetOrAdd(() =>
             Command<RevisionCollection>.Create(async (sender, c) =>
@@ -272,6 +285,7 @@ namespace ExViewer.ViewModels
                 {
                     await image.LoadImageAsync(true, ConnectionStrategy.AllFull, true);
                 }
+                catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
                     RootControl.RootController.SendToast(ex, typeof(ImagePage));
@@ -536,7 +550,7 @@ namespace ExViewer.ViewModels
                     if (torrentfolder is null)
                         await loadTorrentFolder();
 
-                    await file.MoveAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
+                    await file.CopyAsync(torrentfolder, file.Name, NameCollisionOption.GenerateUniqueName);
                     if (!await Launcher.LaunchFileAsync(file))
                         await Launcher.LaunchFolderAsync(torrentfolder);
 
@@ -546,7 +560,7 @@ namespace ExViewer.ViewModels
                 {
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
                 }
-            }, (sender, torrent) => torrent != null && torrent.TorrentUri != null));
+            }, (sender, torrent) => !torrent.IsExpunged));
 
         public IAsyncAction LoadTorrents()
         {
