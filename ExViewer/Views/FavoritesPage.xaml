@@ -43,7 +43,7 @@
                               RefreshRequested="lv_RefreshRequested"
                               Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                               Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
-                              ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                              ext:ScrollViewerExtensions.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                               ItemsSource="{x:Bind ViewModel.SearchResult, Mode=OneWay}"
                               ContinuumNavigationTransitionInfo.ExitElementContainer="True"
                               Style="{StaticResource GalleryListViewStyle}"
