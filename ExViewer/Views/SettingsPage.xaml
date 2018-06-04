@@ -47,7 +47,7 @@
         <ListView ItemTemplateSelector="{StaticResource SettingTemplateSelector}"
                   ItemsSource="{x:Bind}"
                   Padding="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
-                  ext:ScrollViewerEx.VerticalScrollBarMargin="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
+                  ext:ScrollViewerExtensions.VerticalScrollBarMargin="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
                   Margin="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x1,x0'}">
           <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
