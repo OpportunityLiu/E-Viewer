@@ -24,32 +24,22 @@ namespace BannerProvider
             get
             {
                 if (ApplicationData.Current.LocalSettings.Values.TryGetValue(LAST_UPDATE, out var r))
-                {
                     return (DateTimeOffset)r;
-                }
-
                 return DateTimeOffset.MinValue;
             }
             private set
             {
                 if (value == DateTimeOffset.MinValue)
-                {
                     ApplicationData.Current.LocalSettings.Values.Remove(LAST_UPDATE);
-                }
                 else
-                {
                     ApplicationData.Current.LocalSettings.Values[LAST_UPDATE] = value;
-                }
             }
         }
 
         private static async Task init()
         {
             if (bannerFolder != null)
-            {
                 return;
-            }
-
             bannerFolder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Banners", CreationCollisionOption.OpenIfExists);
         }
 
@@ -88,22 +78,74 @@ namespace BannerProvider
             return Run(async token =>
             {
                 await init();
-                using (var f = new HttpBaseProtocolFilter())
+                var time = DateTimeOffset.UtcNow;
+                var loadedImageCount = 0;
+                for (var i = 0; i < 3; i++)
                 {
-                    f.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
-                    f.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-                    using (var client = new HttpClient(f))
+                    var uri = new Uri($"https://ehgt.org/b/{time.Year:D4}-{time.Month:D2}/");
+                    loadedImageCount = await fetchBannerCore(uri);
+                    if (loadedImageCount != 0)
+                        break;
+                    time = time.AddMonths(-1);
+                }
+                if (loadedImageCount == 0)
+                    loadedImageCount = await fetchBannerFallbackCore();
+                if (loadedImageCount != 0)
+                    LastUpdate = DateTimeOffset.Now;
+            });
+        }
+
+        private static async Task<int> fetchBannerCore(Uri rootUri)
+        {
+            using (var f = new HttpBaseProtocolFilter())
+            {
+                f.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
+                f.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
+                using (var client = new HttpClient(f))
+                {
+                    var i = 1;
+                    try
                     {
-                        for (var i = 1; i < 8; i++)
+                        while (true)
+                        {
+                            var buf = await client.GetBufferAsync(new Uri(rootUri, $"{i}.jpg"));
+                            var file = await bannerFolder.CreateFileAsync($"{i}.jpg", CreationCollisionOption.ReplaceExisting);
+                            await FileIO.WriteBufferAsync(file, buf);
+                            i++;
+                        }
+                    }
+                    catch
+                    {
+                        return i - 1;
+                    }
+                }
+            }
+        }
+
+        private static async Task<int> fetchBannerFallbackCore()
+        {
+            using (var f = new HttpBaseProtocolFilter())
+            {
+                f.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
+                f.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
+                using (var client = new HttpClient(f))
+                {
+                    for (var i = 1; i < 8; i++)
+                    {
+                        try
                         {
                             var buf = await client.GetBufferAsync(new Uri($"https://ehgt.org/c/botm{i}.jpg"));
                             var file = await bannerFolder.CreateFileAsync($"{i}.jpg", CreationCollisionOption.ReplaceExisting);
                             await FileIO.WriteBufferAsync(file, buf);
                         }
+                        catch
+                        {
+                            return i - 1;
+                        }
                     }
                 }
-                LastUpdate = DateTimeOffset.Now;
-            });
+                return 8;
+            }
         }
     }
 }

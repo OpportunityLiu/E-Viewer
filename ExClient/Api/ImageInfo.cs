@@ -54,21 +54,15 @@ namespace ExClient.Api
         {
             var data = new UriHandlerData(uri);
             if (TryParse(data, out info))
-            {
                 return true;
-            }
-
-            info = default(ImageInfo);
+            info = default;
             return false;
         }
 
         public static ImageInfo Parse(Uri uri)
         {
             if (TryParse(uri, out var r))
-            {
                 return r;
-            }
-
             throw new FormatException();
         }
 
@@ -100,19 +94,14 @@ namespace ExClient.Api
                 && this.PageID == other.PageID;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is ImageInfo info)
-            {
-                return Equals(info);
-            }
-
-            return false;
-        }
+        public override bool Equals(object obj) => obj is ImageInfo ii && Equals(ii);
 
         public override int GetHashCode()
         {
             return this.GalleryID.GetHashCode() ^ this.ImageToken.GetHashCode() ^ this.PageID.GetHashCode();
         }
+
+        public static bool operator ==(in ImageInfo left, in ImageInfo right) => left.Equals(right);
+        public static bool operator !=(in ImageInfo left, in ImageInfo right) => !left.Equals(right);
     }
 }

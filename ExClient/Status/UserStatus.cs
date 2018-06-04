@@ -18,7 +18,7 @@ namespace ExClient.Status
 
         private static int deEntitizeAndParse(HtmlNode node)
         {
-            return int.Parse(node.GetInnerText());
+            return int.Parse(node.GetInnerText(), System.Globalization.NumberStyles.Integer);
         }
 
         private void analyzeToplists(HtmlNode toplistsDiv)
@@ -34,22 +34,13 @@ namespace ExClient.Status
             {
                 var rankNode = toplistRecord.Descendants("strong").FirstOrDefault();
                 var listNode = toplistRecord.Descendants("a").FirstOrDefault();
-                if (rankNode is null || listNode is null)
-                {
-                    continue;
-                }
-
-                if (!int.TryParse(rankNode.GetInnerText().TrimStart('#'), out var rank))
-                {
-                    continue;
-                }
-
+                if (rankNode is null)
+                    throw new InvalidOperationException("rankNode not found");
+                if (listNode is null)
+                    throw new InvalidOperationException("listNode not found");
+                var rank = int.Parse(rankNode.GetInnerText().TrimStart('#'), System.Globalization.NumberStyles.Integer);
                 var link = listNode.GetAttribute("href", default(Uri));
-                if (!int.TryParse(link.Query.Split('=').Last(), out var listID))
-                {
-                    continue;
-                }
-
+                var listID = int.Parse(link.Query.Split('=').Last(), System.Globalization.NumberStyles.Integer);
                 newList.Add(new ToplistItem(rank, (ToplistName)listID));
             }
             this.toplists.Update(newList);
@@ -58,6 +49,8 @@ namespace ExClient.Status
         private void analyzeImageLimit(HtmlNode imageLimitDiv)
         {
             var values = imageLimitDiv.Descendants("strong").Select(deEntitizeAndParse).ToList();
+            if (values.Count != 4)
+                throw new InvalidOperationException("Wrong values.Count from analyzeImageLimit");
             this.ImageUsage = values[0];
             this.ImageUsageLimit = values[1];
             this.ImageUsageRegenerateRatePerMinute = values[2];
@@ -73,6 +66,8 @@ namespace ExClient.Status
                 .Where(s => !string.IsNullOrWhiteSpace(s) && s[0] != '=')
                 .Select(double.Parse)
                 .ToList();
+            if (values.Count != 8)
+                throw new InvalidOperationException("Wrong values.Count from analyzeModPower");
             this.ModerationPowerBase = values[0];
             this.ModerationPowerAwards = values[1];
             this.ModerationPowerTagging = values[2];
@@ -88,35 +83,37 @@ namespace ExClient.Status
         {
             return AsyncInfo.Run(async token =>
             {
-                this.toplists.Clear();
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(infoUri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
-                analyzeDoc(doc);
+                try
+                {
+                    analyzeDoc(doc);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse, ex)
+                    {
+
+                    };
+                }
             });
         }
 
-        private bool analyzeDoc(HtmlDocument doc)
+        private void analyzeDoc(HtmlDocument doc)
         {
             if (doc is null)
-            {
-                return false;
-            }
-
+                throw new ArgumentNullException(nameof(doc));
             var contentDivs = doc.DocumentNode
                .Element("html").Element("body").Element("div")
                .Elements("div", "homebox").ToList();
             if (contentDivs.Count != 5)
-            {
-                return false;
-            }
-
+                throw new InvalidOperationException("Wrong `homebox` count");
             analyzeImageLimit(contentDivs[0]);
             var ehTrackerDiv = contentDivs[1];
             var totalGPGainedDiv = contentDivs[2];
             analyzeToplists(contentDivs[3]);
             analyzeModPower(contentDivs[4]);
-            return true;
         }
 
         #region Image Limits
@@ -151,7 +148,11 @@ namespace ExClient.Status
                 var html = await r.Content.ReadAsStringAsync();
                 var doc = new HtmlDocument();
                 doc.LoadHtml(html);
-                if (!analyzeDoc(doc))
+                try
+                {
+                    analyzeDoc(doc);
+                }
+                catch (Exception)
                 {
                     await RefreshAsync();
                 }
@@ -160,7 +161,7 @@ namespace ExClient.Status
         #endregion
 
         #region Toplist
-        private ObservableList<ToplistItem> toplists = new ObservableList<ToplistItem>();
+        private readonly ObservableList<ToplistItem> toplists = new ObservableList<ToplistItem>();
         public ObservableListView<ToplistItem> Toplists => this.toplists.AsReadOnly();
         #endregion
 

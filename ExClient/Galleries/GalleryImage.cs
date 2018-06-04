@@ -47,7 +47,7 @@ namespace ExClient.Galleries
                 }
 
                 await b.Dispatcher.YieldIdle();
-                using (var stream = await StorageHelper.GetIconOfExtension("jpg"))
+                using (var stream = await StorageHelper.GetIconOfExtensionAsync("jpg"))
                 {
                     await b.SetSourceAsync(stream);
                 }
@@ -263,18 +263,13 @@ namespace ExClient.Galleries
                 if (!reload)
                 {
                     if (previousEnded)
-                    {
                         return AsyncAction.CreateCompleted();
-                    }
-
                     return PollingAsyncWrapper.Wrap(previousAction, 1500);
                 }
                 else
                 {
                     if (!previousEnded)
-                    {
                         previousAction?.Cancel();
-                    }
                 }
                 break;
             case ImageLoadingState.Preparing:

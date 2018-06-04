@@ -27,28 +27,47 @@ namespace ExDawnOfDayTask
         }
 
         private const string TASK_NAME = "ExDawnOfDayTask";
-        private static int registered = 0;
-        public static void Register()
+        private static readonly object syncRoot = new object();
+
+        public static void Register() => register(false);
+
+        private static void register(bool unregister)
         {
-            if (Interlocked.Exchange(ref registered, 1) != 0)
-                return;
-            foreach (var task in BackgroundTaskRegistration.AllTasks)
+            lock (syncRoot)
             {
-                if (task.Value.Name == TASK_NAME)
-                    return;
+                foreach (var task in BackgroundTaskRegistration.AllTasks)
+                {
+                    if (task.Value.Name == TASK_NAME)
+                    {
+                        if (unregister)
+                            task.Value.Unregister(false);
+                        else
+                            return;
+                    }
+                }
+                var builder = new BackgroundTaskBuilder
+                {
+                    Name = TASK_NAME,
+                    TaskEntryPoint = "ExDawnOfDayTask.Task",
+                    IsNetworkRequested = true,
+                };
+                builder.SetTrigger(new TimeTrigger(getRemainTime(), true));
+                builder.Register();
             }
-            var builder = new BackgroundTaskBuilder
+
+            uint getRemainTime()
             {
-                Name = TASK_NAME,
-                TaskEntryPoint = "ExDawnOfDayTask.Task",
-                IsNetworkRequested = true,
-            };
-            builder.SetTrigger(new TimeTrigger(24 * 60, false));
-            builder.Register();
+                var offset = new Random().Next(20, 40);
+                var currentTime = DateTimeOffset.UtcNow;
+                var triggerTime = new DateTimeOffset(currentTime.Date.AddDays(1).AddMinutes(offset), default);
+                var diff = triggerTime - currentTime;
+                return (uint)Math.Ceiling(diff.TotalMinutes);
+            }
         }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
+            register(true);
             if (!Enabled)
                 return;
             if (ExClient.Client.Current.NeedLogOn)

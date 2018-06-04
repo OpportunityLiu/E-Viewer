@@ -1,5 +1,7 @@
 ﻿using ExClient;
+using ExClient.Api;
 using ExClient.Forums;
+using ExClient.Services;
 using ExViewer.Controls;
 using ExViewer.Settings;
 using ExViewer.ViewModels;

@@ -19,22 +19,22 @@ namespace ExViewer.Services
     {
         public IAsyncOperation<bool> NotifyAsync(object data)
         {
-            if (!RootControl.RootController.Available)
-            {
-                return AsyncOperation<bool>.CreateCompleted(false);
-            }
 
             switch (data)
             {
             case Exception ex:
                 RootControl.RootController.SendToast(ex, null);
-                return AsyncOperation<bool>.CreateCompleted(true);
+                break;
             case string str:
                 RootControl.RootController.SendToast(str, null);
-                return AsyncOperation<bool>.CreateCompleted(true);
+                break;
             default:
                 return AsyncOperation<bool>.CreateCompleted(false);
             }
+            if (!RootControl.RootController.Available)
+                return AsyncOperation<bool>.CreateCompleted(false);
+            else
+                return AsyncOperation<bool>.CreateCompleted(true);
         }
 
 

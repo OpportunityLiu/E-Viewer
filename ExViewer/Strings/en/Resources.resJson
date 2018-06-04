@@ -3,7 +3,8 @@
   "AppDisplayName": "E-Viewer",
   "Controls": {
     "AboutControl": {
-      "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ Github.com",
+      "$GithubVersionFormat": "GitHub branch {branch} / commit {commit}",
+      "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ GitHub.com",
       "ChineseTagProviderTextBlock/Text": "Chinese translation of tags",
       "DataProvidersTextBlock/Text": "Data providers",
       "EHTextBlock/Text": "E-Hentai.org",
@@ -22,7 +23,6 @@
     },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "See more",
-      "AuthorFormatString": "By {0}",
       "EditedFormatString": "Last edited on {0}",
       "EditMenuFlyoutItem/Text": "Edit",
       "IsUploaderCommentTextBlock/Text": "Uploader Comment",
@@ -60,6 +60,10 @@
       "OriginalTextBlock/Text": "Original",
       "RewriteTextBlock/Text": "Rewrite",
       "TranslatedTextBlock/Text": "Translated"
+    },
+    "ExpungeRecordPresenter": {
+      "PostedTemplate": "on {0}",
+      "PowerTemplate": "+{0}"
     },
     "FolderPicker": {
       "DefaultTextBlock/Text": "Default",
@@ -107,11 +111,13 @@
   },
   "General": {
     "Cancel": "Cancel",
+    "Close": "Close",
     "Exit": "Exit",
     // Use local language to replace "English"
     // see https://ctrlq.org/code/19899-google-translate-languages#languages
     "LanguageCode": "en",
-    "OK": "OK"
+    "OK": "OK",
+    "Submit": "Submit"
   },
   "Sharing": {
     "CopyedToClipboard": "Content has copied to clipboard.",
@@ -179,6 +185,14 @@
       "ContentDialog/CloseButtonText": "OK",
       "TagNotFound": "Tag not found in wiki."
     },
+    "ExpungeGalleryDialog": {
+      "ContentDialog/Title": "EXPUNGE GALLERY",
+      "EmptyTextBlock/Text": "There are currently no expunge petitions",
+      "ExplanationTextBox/PlaceholderText": "Explanation for the expunction",
+      "Expunged": "Expunged",
+      "LoadingTextBlock/Text": "Loading expunge log…",
+      "PetitionTextBlock/Text": "Expunge petition"
+    },
     "FavoritesPage": {
       "ApplyAppBarButton/Label": "Apply",
       "AutoSuggestBox/PlaceholderText": "Search…",
@@ -207,10 +221,12 @@
       "AppBarButtonLatestRevision/Label": "Go to latest revision",
       "CommentsEmptyTextBlock/Text": "No comments",
       "CommentsLoadingTextBlock/Text": "Loading comments…",
+      "ExpungeAppBarButton/Label": "Petition to expunge",
       "FavoritesAppBarButton/Text": "Add to favorite",
       "PivotHeaderCommentsTextBlock/Text": "Comments",
       "PivotHeaderImagesTextBlock/Text": "Images",
       "PivotHeaderTorrentsTextBlock/Text": "Torrents",
+      "RenameAppBarButton/Label": "Petition to rename",
       "SaveAppBarButton/Label": "Save this gallery",
       "SearchUploaderAppBarButton/Label": "Search all galleries of the uploader",
       "ShareAppBarButton/Label": "Share",
@@ -285,6 +301,15 @@
       "PrimaryButtonText": "Copy",
       "CloseButtonText": "Close",
       "Title": "QR CODE SCAN RESULT"
+    },
+    "RenameGalleryDialog": {
+      "$PowerTemplate": "{power} %",
+      "ContentDialog/Title": "RENAME GALLERY",
+      "JapaneseTextBox/PlaceholderText": "Input Japanese title",
+      "JapaneseTitleTextBlock/Text": "Japanese script",
+      "PowerColumnDefinition/Width": "40",
+      "RomanTextBox/PlaceholderText": "Input Roman title",
+      "RomanTitleTextBlock/Text": "Roman script"
     },
     "RootControl": {
       "CachedSplitViewTab/Content": "Cached galleries",

@@ -33,11 +33,10 @@
                Style="{ThemeResource SubtitleTextBlockStyle}"
                Padding="0,8" />
     <ScrollViewer Grid.Row="2"
-                  HorizontalScrollMode="Auto"
                   VerticalScrollMode="Enabled"
-                  HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
       <tk:MarkdownTextBlock x:Name="tbContent"
+                            ImageStretch="Uniform"
                             Text="{x:Bind release.body}" />
     </ScrollViewer>
     <RelativePanel x:Name="rpDownload"

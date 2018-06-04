@@ -6,6 +6,7 @@
              xmlns:local="using:ExViewer.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:hxaml="using:Opportunity.Helpers.Universal.Xaml"
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="600"
@@ -39,24 +40,10 @@
                  Padding="4,8,4,20">
     <VisualStateManager.VisualStateGroups>
       <VisualStateGroup>
-        <VisualState x:Name="Narrow">
-          <VisualState.StateTriggers>
-            <AdaptiveTrigger MinWindowWidth="0" />
-          </VisualState.StateTriggers>
-          <VisualState.Setters>
-            <Setter Target="TimeInfo.(RelativePanel.Below)"
-                    Value="Author" />
-            <Setter Target="IsUploaderComment.(RelativePanel.AlignRightWithPanel)"
-                    Value="True" />
-            <Setter Target="Score.(RelativePanel.AlignRightWithPanel)"
-                    Value="True" />
-            <Setter Target="Actions.Margin"
-                    Value="0,0,0,-4" />
-          </VisualState.Setters>
-        </VisualState>
         <VisualState x:Name="Normal">
           <VisualState.StateTriggers>
-            <AdaptiveTrigger MinWindowWidth="500" />
+            <hxaml:SizeTrigger MinWidth="500"
+                               Target="{x:Bind LayoutRoot}" />
           </VisualState.StateTriggers>
           <VisualState.Setters>
             <Setter Target="TimeInfo.(RelativePanel.RightOf)"
@@ -67,6 +54,22 @@
                     Value="Actions" />
             <Setter Target="Actions.Margin"
                     Value="0,-4" />
+          </VisualState.Setters>
+        </VisualState>
+        <VisualState x:Name="Narrow">
+          <VisualState.StateTriggers>
+            <hxaml:SizeTrigger MinWidth="0"
+                               Target="{x:Bind LayoutRoot}" />
+          </VisualState.StateTriggers>
+          <VisualState.Setters>
+            <Setter Target="TimeInfo.(RelativePanel.Below)"
+                    Value="Author" />
+            <Setter Target="IsUploaderComment.(RelativePanel.AlignRightWithPanel)"
+                    Value="True" />
+            <Setter Target="Score.(RelativePanel.AlignRightWithPanel)"
+                    Value="True" />
+            <Setter Target="Actions.Margin"
+                    Value="0,0,0,-4" />
           </VisualState.Setters>
         </VisualState>
       </VisualStateGroup>
@@ -105,7 +108,8 @@
                RelativePanel.AlignLeftWithPanel="True"
                RelativePanel.AlignTopWithPanel="True"
                Style="{StaticResource CommentHeaderTextBlockStyle}"
-               Text="{x:Bind VM.Comment.Author, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Controls/CommentViewer/AuthorFormatString'}" />
+               IsTextSelectionEnabled="True"
+               Text="{x:Bind VM.Comment.Author, Mode=OneWay, FallbackValue=''}" />
     <Grid x:Name="TimeInfo">
       <TextBlock x:Name="Posted"
                  Style="{StaticResource CommentHeaderTextBlockStyle}"

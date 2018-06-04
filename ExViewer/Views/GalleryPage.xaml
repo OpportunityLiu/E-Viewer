@@ -101,7 +101,7 @@
                    Foreground="Red"
                    Style="{StaticResource TorrentNameTextBlockStyle}"
                    Text="Expunged"
-                   Visibility="{x:Bind TorrentUri, Converter={StaticResource NullToVisibleConverter}}" />
+                   Visibility="{x:Bind IsExpunged}" />
         <Button x:Uid="Views/GalleryPage/TorrentDownloadButton"
                 Grid.RowSpan="2"
                 Grid.Column="2"
@@ -366,7 +366,7 @@
               <GridView x:Name="gv"
                         Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                         Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
-                        ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                        ext:ScrollViewerExtensions.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                         ani:ReorderGridAnimation.Duration="100"
                         IsItemClickEnabled="True"
                         ItemClick="gv_ItemClick"
@@ -420,7 +420,7 @@
               <ListView x:Name="lv_Comments"
                         Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                         Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
-                        ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                        ext:ScrollViewerExtensions.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                         ItemsSource="{x:Bind ViewModel.Gallery.Comments, Mode=OneWay}"
                         Loaded="pv_Content_Loaded"
                         SelectionMode="None">
@@ -481,7 +481,7 @@
               <ListView x:Name="lv_Torrents"
                         Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
                         Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
-                        ext:ScrollViewerEx.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                        ext:ScrollViewerExtensions.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                         ItemTemplate="{StaticResource TorrentTemplate}"
                         ItemsSource="{x:Bind ViewModel.Torrents, Mode=OneWay}"
                         ItemContainerStyle="{StaticResource UnfocusableListViewItemStyle}"
@@ -560,6 +560,24 @@
                       Command="{x:Bind ViewModel.AddComment, Mode=OneWay}" />
       </CommandBar.PrimaryCommands>
       <CommandBar.SecondaryCommands>
+        <!--Wait 250ms for command bar close animation-->
+        <AppBarButton x:Uid="Views/GalleryPage/SearchUploaderAppBarButton"
+                      Command="{x:Bind xb:Command.Delay(ViewModel.SearchUploader, 250), Mode=OneWay}"
+                      Icon="ContactInfo"
+                      Label="Search uploader" />
+        <AppBarButton x:Uid="Views/GalleryPage/RenameAppBarButton"
+                      Command="{x:Bind ViewModel.Rename, Mode=OneWay}"
+                      Icon="Rename"
+                      Label="Petition to rename" />
+        <AppBarButton x:Uid="Views/GalleryPage/ExpungeAppBarButton"
+                      Command="{x:Bind ViewModel.Expunge, Mode=OneWay}"
+                      Label="Petition to expunge">
+          <AppBarButton.Icon>
+            <FontIcon FontFamily="Segoe MDL2 Assets"
+                      Glyph="&#xE7BA;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarSeparator />
         <AppBarButton x:Uid="Views/GalleryPage/ShareAppBarButton"
                       Command="{x:Bind ViewModel.Share, Mode=OneWay}"
                       Label="Share">
@@ -567,15 +585,11 @@
             <FontIcon Glyph="&#xE72D;" />
           </AppBarButton.Icon>
         </AppBarButton>
-        <!--Wait 250ms for command bar close animation-->
-        <AppBarButton x:Uid="Views/GalleryPage/SearchUploaderAppBarButton"
-                      Command="{x:Bind xb:Command.Delay(ViewModel.SearchUploader, 250), Mode=OneWay}"
-                      Icon="ContactInfo"
-                      Label="Search uploader" />
         <AppBarButton x:Uid="Views/GalleryPage/SaveAppBarButton"
                       Command="{x:Bind ViewModel.Save, Mode=OneWay}"
                       Icon="Download"
                       Label="Save this gallery" />
+        
       </CommandBar.SecondaryCommands>
     </CommandBar>
     <ProgressBar x:Name="pb_save"

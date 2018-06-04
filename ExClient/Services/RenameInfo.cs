@@ -67,16 +67,16 @@ namespace ExClient.Services
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private RenameRecord? votedRmn;
-        public RenameRecord? VotedRoman
+        private RenameRecord votedRmn;
+        public RenameRecord VotedRoman
         {
             get => this.votedRmn;
             private set => Set(ref this.votedRmn, value);
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private RenameRecord? votedJpn;
-        public RenameRecord? VotedJapanese
+        private RenameRecord votedJpn;
+        public RenameRecord VotedJapanese
         {
             get => this.votedJpn;
             private set => Set(ref this.votedJpn, value);
@@ -96,16 +96,39 @@ namespace ExClient.Services
         private void analyze(HtmlDocument doc)
         {
             if (doc.DocumentNode.ChildNodes.Count == 1 && doc.DocumentNode.FirstChild.NodeType == HtmlNodeType.Text)
-                throw new InvalidOperationException(doc.DocumentNode.FirstChild.InnerText);
-
+                throw new InvalidOperationException(doc.DocumentNode.FirstChild.GetInnerText())
+                    .AddData("Uri", apiUri.ToString())
+                    .AddData("Document", doc.Text);
             var tables = doc.DocumentNode.Descendants("table").ToList();
             IReadOnlyList<RenameRecord> romanRec, japaneseRec;
-            (this.VotedRoman, romanRec, this.OriginalRomanTitle) = analyzeTable(tables[0]);
-            (this.VotedJapanese, japaneseRec, this.OriginalJapaneseTitle) = analyzeTable(tables[1]);
-            this.rmnRecords.Update(romanRec);
-            this.jpnRecords.Update(japaneseRec);
+            RenameRecord romanV, japaneseV;
+            (romanV, romanRec, this.OriginalRomanTitle) = analyzeTable(tables[0]);
+            (japaneseV, japaneseRec, this.OriginalJapaneseTitle) = analyzeTable(tables[1]);
+            this.rmnRecords.Update(romanRec, default(IEqualityComparer<RenameRecord>), (o, n) => o.Power = n.Power);
+            this.jpnRecords.Update(japaneseRec, default(IEqualityComparer<RenameRecord>), (o, n) => o.Power = n.Power);
+            this.VotedRoman = romanV;
+            this.VotedJapanese = japaneseV;
 
-            (RenameRecord? current, IReadOnlyList<RenameRecord> records, string original) analyzeTable(HtmlNode tableNode)
+            var errorNode = doc.DocumentNode.SelectSingleNode("//p[@class='br']");
+            if (errorNode != null)
+            {
+                var error = errorNode.GetInnerText();
+                switch (error)
+                {
+                case "New suggested title is too short.":
+                case "New suggested title is too short.New suggested title is too short.":
+                    error = LocalizedStrings.Resources.RenameTitleTooShort;
+                    break;
+                //localize;
+                default:
+                    break;
+                }
+                throw new InvalidOperationException(error)
+                    .AddData("Uri", apiUri.ToString())
+                    .AddData("Document", doc.Text);
+            }
+
+            (RenameRecord current, IReadOnlyList<RenameRecord> records, string original) analyzeTable(HtmlNode tableNode)
             {
                 var original = default(string);
                 var text = tableNode.Element("tr").LastChild.FirstChild;
@@ -116,7 +139,7 @@ namespace ExClient.Services
 
                 var trecords = tableNode.Elements("tr").Skip(1).ToList();
                 var records = new List<RenameRecord>();
-                var current = default(RenameRecord?);
+                var current = default(RenameRecord);
                 foreach (var rec in trecords)
                 {
                     var input = rec.Descendants("input").First();
