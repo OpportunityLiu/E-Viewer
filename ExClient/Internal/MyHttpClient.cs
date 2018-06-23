@@ -51,6 +51,10 @@ namespace ExClient.Internal
 
         public HttpRequestHeaderCollection DefaultRequestHeaders => this.inner.DefaultRequestHeaders;
 
+        private static readonly Uri thumbServer = new Uri("https://ehgt.org/");
+        public IAsyncOperationWithProgress<IBuffer, HttpProgress> GetThumbAsync(Uri uri)
+            => GetBufferAsync(new Uri(thumbServer, uri.PathAndQuery));
+
         public IHttpAsyncOperation GetAsync(Uri uri, HttpCompletionOption completionOption, bool checkStatusCode)
         {
             reformUri(ref uri);
