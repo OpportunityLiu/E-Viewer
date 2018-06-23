@@ -259,15 +259,13 @@ namespace ExClient.Galleries
         protected override GalleryImage CreatePlaceholder(int index)
             => new GalleryImage(this, index + 1);
 
-        private static readonly HttpClient coverClient = new HttpClient();
-
         protected virtual IAsyncOperation<ImageSource> GetThumbAsync()
         {
             return Run<ImageSource>(async token =>
             {
                 try
                 {
-                    var buffer = await coverClient.GetBufferAsync(this.ThumbUri);
+                    var buffer = await Client.Current.HttpClient.GetThumbAsync(this.ThumbUri);
                     using (var stream = buffer.AsRandomAccessStream())
                     {
                         await CoreApplication.MainView.Dispatcher.Yield();
