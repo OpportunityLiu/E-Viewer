@@ -73,25 +73,20 @@ namespace ExClient.Galleries
 
         private static DisplayInformation display;
 
-        private static StorageFolder imageFolder;
-        public static StorageFolder ImageFolder
-        {
-            get => imageFolder;
-            set => imageFolder = value;
-        }
+        public static StorageFolder ImageFolder { get; set; }
 
         protected internal static IAsyncOperation<StorageFolder> GetImageFolderAsync()
         {
-            var temp = imageFolder;
+            var temp = ImageFolder;
             if (temp != null)
                 return AsyncOperation<StorageFolder>.CreateCompleted(temp);
             return Run(async token =>
             {
-                var temp2 = imageFolder;
+                var temp2 = ImageFolder;
                 if (temp2 is null)
                 {
                     temp2 = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
-                    imageFolder = temp2;
+                    ImageFolder = temp2;
                 }
                 return temp2;
             });
@@ -171,8 +166,6 @@ namespace ExClient.Galleries
 
         private Uri thumbUri;
 
-        protected static HttpClient ThumbClient { get; } = new HttpClient();
-
         private void loadThumb()
         {
             CoreApplication.MainView.Dispatcher.BeginIdle(async d =>
@@ -189,7 +182,7 @@ namespace ExClient.Galleries
                     }
                     else if (this.thumbUri != null)
                     {
-                        var buffer = await ThumbClient.GetBufferAsync(this.thumbUri);
+                        var buffer = await Client.Current.HttpClient.GetThumbAsync(this.thumbUri);
                         using (var stream = buffer.AsRandomAccessStream())
                         {
                             await img.SetSourceAsync(stream);
