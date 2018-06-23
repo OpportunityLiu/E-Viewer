@@ -52,7 +52,7 @@ namespace ExClient.Models
         public long posted;
         public DateTimeOffset Posted
         {
-            get => DateTimeOffset.FromUnixTimeMilliseconds(posted);
+            get => DateTimeOffset.FromUnixTimeMilliseconds(this.posted);
             set => this.posted = value.ToUnixTimeMilliseconds();
         }
 
