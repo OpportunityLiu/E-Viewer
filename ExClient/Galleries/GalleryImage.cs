@@ -182,11 +182,7 @@ namespace ExClient.Galleries
                     }
                     else if (this.thumbUri != null)
                     {
-                        var buffer = await Client.Current.HttpClient.GetThumbAsync(this.thumbUri);
-                        using (var stream = buffer.AsRandomAccessStream())
-                        {
-                            await img.SetSourceAsync(stream);
-                        }
+                        await ThumbClient.FetchThumbAsync(this.thumbUri, img);
                     }
                     else
                     {

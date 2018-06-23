@@ -263,21 +263,11 @@ namespace ExClient.Galleries
         {
             return Run<ImageSource>(async token =>
             {
-                try
-                {
-                    var buffer = await Client.Current.HttpClient.GetThumbAsync(this.ThumbUri);
-                    using (var stream = buffer.AsRandomAccessStream())
-                    {
-                        await CoreApplication.MainView.Dispatcher.Yield();
-                        var image = new BitmapImage();
-                        await image.SetSourceAsync(stream);
-                        return image;
-                    }
-                }
-                catch (Exception)
-                {
+                await CoreApplication.MainView.Dispatcher.Yield();
+                var image = new BitmapImage();
+                if (!await ThumbClient.FetchThumbAsync(this.ThumbUri, image))
                     return null;
-                }
+                return image;
             });
         }
 
