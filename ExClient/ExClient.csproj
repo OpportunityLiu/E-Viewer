@@ -138,6 +138,7 @@
     <Compile Include="Api\VoteState.cs" />
     <Compile Include="Forums\Topic.cs" />
     <Compile Include="Hentaiverse\EventArgs.cs" />
+    <Compile Include="Internal\ThumbClient.cs" />
     <Compile Include="Services\ExpungeInfo.cs" />
     <Compile Include="Services\ExpungeReason.cs" />
     <Compile Include="Services\ExpungeRecord.cs" />
@@ -178,7 +179,7 @@
     <Compile Include="Api\ApiRequest.cs" />
     <Compile Include="HostType.cs" />
     <Compile Include="Galleries\ImageLoadingState.cs" />
-    <Compile Include="Internal\TokenExtension.cs" />
+    <Compile Include="Helpers\TokenExtension.cs" />
     <Compile Include="Services\Language.cs" />
     <Compile Include="Launch\FavoritesSearchHandler.cs" />
     <Compile Include="Launch\GalleryHandler.cs" />
