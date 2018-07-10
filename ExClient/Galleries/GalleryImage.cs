@@ -20,11 +20,12 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+using Windows.Storage.FileProperties;
 
 namespace ExClient.Galleries
 {
     [System.Diagnostics.DebuggerDisplay(@"\{PageID = {PageID} State = {State} File = {ImageFile?.Name}\}")]
-    public class GalleryImage : ObservableObject
+    public sealed class GalleryImage : ObservableObject
     {
         static GalleryImage()
         {
@@ -61,13 +62,9 @@ namespace ExClient.Galleries
             set
             {
                 if (value is null)
-                {
                     createDefaultThumb();
-                }
                 else
-                {
                     defaultThumb = value;
-                }
             }
         }
 
@@ -75,7 +72,7 @@ namespace ExClient.Galleries
 
         public static StorageFolder ImageFolder { get; set; }
 
-        protected internal static IAsyncOperation<StorageFolder> GetImageFolderAsync()
+        internal static IAsyncOperation<StorageFolder> GetImageFolderAsync()
         {
             var temp = ImageFolder;
             if (temp != null)
@@ -145,13 +142,9 @@ namespace ExClient.Galleries
                 var oft = this.failToken;
                 var nft = failTokenMatcher.Match(loadFail).Groups[1].Value;
                 if (oft is null)
-                {
                     this.failToken = "nl=" + nft;
-                }
                 else
-                {
                     this.failToken = oft + "&nl=" + nft;
-                }
             });
         }
 
@@ -161,56 +154,50 @@ namespace ExClient.Galleries
         public ImageLoadingState State
         {
             get => this.state;
-            protected set => Set(ref this.state, value);
+            private set => Set(ref this.state, value);
         }
 
         private Uri thumbUri;
-
-        private void loadThumb()
+        private readonly WeakReference<ImageSource> thumb = new WeakReference<ImageSource>(null);
+        private async void loadThumb()
         {
-            CoreApplication.MainView.Dispatcher.BeginIdle(async d =>
+            var file = this.imageFile;
+            var uri = this.thumbUri;
+            if (file is null && uri is null)
+                return;
+
+            this.thumb.TryGetTarget(out var current);
+            if (!CoreApplication.MainView.Dispatcher.HasThreadAccess)
+                await CoreApplication.MainView.Dispatcher.YieldIdle();
+            var img = new BitmapImage();
+            try
             {
-                var img = new BitmapImage();
-                try
+                if (file != null)
                 {
-                    if (this.imageFile != null)
+                    var size = (uint)(180 * display.RawPixelsPerViewPixel);
+                    using (var stream = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, size, ThumbnailOptions.ResizeThumbnail))
                     {
-                        using (var stream = await this.imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem, (uint)(180 * display.RawPixelsPerViewPixel), Windows.Storage.FileProperties.ThumbnailOptions.ResizeThumbnail))
-                        {
-                            await img.SetSourceAsync(stream);
-                        }
-                    }
-                    else if (this.thumbUri != null)
-                    {
-                        await ThumbClient.FetchThumbAsync(this.thumbUri, img);
-                    }
-                    else
-                    {
-                        img = null;
+                        await img.SetSourceAsync(stream);
                     }
                 }
-                catch (Exception)
-                {
+                else if (!await ThumbClient.FetchThumbAsync(uri, img))
                     img = null;
-                }
-                this.thumb.SetTarget(img);
-                if (img != null)
-                {
-                    OnPropertyChanged(nameof(Thumb));
-                }
-            });
+            }
+            catch
+            {
+                img = null;
+            }
+            this.thumb.SetTarget(img);
+            if (img != current)
+                OnPropertyChanged(nameof(Thumb));
         }
 
-        private readonly WeakReference<ImageSource> thumb = new WeakReference<ImageSource>(null);
-        public virtual ImageSource Thumb
+        public ImageSource Thumb
         {
             get
             {
                 if (this.thumb.TryGetTarget(out var thb))
-                {
                     return thb;
-                }
-
                 loadThumb();
                 return DefaultThumb;
             }
@@ -236,12 +223,12 @@ namespace ExClient.Galleries
         public SHA1Value ImageHash
         {
             get => this.imageHash;
-            protected set => Set(ref this.imageHash, value);
+            private set => Set(ref this.imageHash, value);
         }
 
         private IAsyncAction loadImageAction;
 
-        public virtual IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
+        public IAsyncAction LoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
         {
             var previousAction = this.loadImageAction;
             var previousEnded = previousAction is null || previousAction.Status != AsyncStatus.Started;
@@ -263,10 +250,7 @@ namespace ExClient.Galleries
                 break;
             case ImageLoadingState.Preparing:
                 if (previousEnded)
-                {
                     return AsyncAction.CreateCompleted();
-                }
-
                 return PollingAsyncWrapper.Wrap(previousAction, 1500);
             }
             return this.loadImageAction = startLoadImageAsync(reload, strategy, throwIfFailed);
@@ -280,10 +264,7 @@ namespace ExClient.Galleries
                 try
                 {
                     if (this.PageUri is null)
-                    {
                         await Owner.LoadItemsAsync(this.PageID - 1, 1);
-                    }
-
                     var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
                     var folder = ImageFolder ?? await GetImageFolderAsync();
                     this.Progress = 0;
@@ -324,11 +305,9 @@ namespace ExClient.Galleries
                             this.State = ImageLoadingState.Loaded;
                             return;
                         }
-                        token.ThrowIfCancellationRequested();
+
                         if (this.imageUri.LocalPath.EndsWith("/509.gif"))
-                        {
                             throw new InvalidOperationException(LocalizedStrings.Resources.ExceedLimits);
-                        }
 
                         var imgUri = default(Uri);
                         if (loadFull)
@@ -412,9 +391,7 @@ namespace ExClient.Galleries
                     this.Progress = 100;
                     this.State = ImageLoadingState.Failed;
                     if (throwIfFailed)
-                    {
                         throw;
-                    }
                 }
             });
         }
@@ -450,7 +427,7 @@ namespace ExClient.Galleries
         public StorageFile ImageFile
         {
             get => this.imageFile;
-            protected set
+            private set
             {
                 Set(ref this.imageFile, value);
                 if (value != null)
