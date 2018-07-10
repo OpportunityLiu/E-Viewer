@@ -105,18 +105,14 @@ namespace ExViewer.Views
         private int sizeChanging;
         private async void gdInfo_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.sizeChanging++;
-            await Dispatcher.YieldIdle();
-            this.sizeChanging--;
-            if (this.sizeChanging != 0)
-            {
-                return;
-            }
             var state = this.isGdInfoHide;
             if (this.tracker != null)
-            {
                 this.tracker.MaxPosition = new System.Numerics.Vector3(0, (float)this.gdInfo.ActualHeight, 0);
-            }
+            this.sizeChanging++;
+            await Dispatcher.Yield(CoreDispatcherPriority.Low);
+            this.sizeChanging--;
+            if (this.sizeChanging != 0)
+                return;
             changeViewTo(state, true);
         }
 
