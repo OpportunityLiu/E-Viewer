@@ -362,7 +362,7 @@ namespace ExViewer.Controls
                 }
                 return u;
             case "del"://[s]
-                var s = new Span() { Foreground = (Brush)this.Resources["SystemControlBackgroundChromeMediumBrush"] };
+                var s = new Span() { Foreground = (Brush)this.Resources["SystemControlForegroundChromeHighBrush"] };
                 foreach (var item in createChildNodes(node, hyperlinks, detectLink))
                 {
                     s.Inlines.Add(item);

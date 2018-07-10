@@ -129,7 +129,27 @@ namespace ExClient.Galleries
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            await image.LoadImageAsync(false, strategy, true);
+                            var firstFailed = false;
+                            try
+                            {
+                                var firstChance = image.LoadImageAsync(false, strategy, true);
+                                var firstTask = firstChance.AsTask(token);
+                                var c = await Task.WhenAny(Task.Delay(30_000), firstTask);
+                                if (c != firstTask)
+                                {
+                                    firstFailed = true;
+                                    firstChance.Cancel();
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                firstFailed = true;
+                            }
+                            if (firstFailed)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                await image.LoadImageAsync(false, strategy, true).AsTask(token);
+                            }
                             progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), this.Count));
                         }
                         finally

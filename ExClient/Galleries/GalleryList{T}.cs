@@ -18,13 +18,13 @@ namespace ExClient.Galleries
             for (var i = 0; i < end; i++)
             {
                 this[i] = Load(models[i]);
-                models[i] = default(TModel);
+                models[i] = default;
                 this.loadedCount++;
             }
             this.models = models;
         }
 
-        private List<TModel> models;
+        private readonly List<TModel> models;
 
         protected override void ClearItems()
         {
@@ -71,7 +71,7 @@ namespace ExClient.Galleries
                 }
 
                 this[i] = Load(this.models[i]);
-                this.models[i] = default(TModel);
+                this.models[i] = default;
                 this.loadedCount++;
             }
         }
