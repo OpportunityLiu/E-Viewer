@@ -7,29 +7,21 @@ namespace ExClient
     {
         public static bool IsLofiRequired(ConnectionStrategy strategy)
         {
-            switch(strategy)
+            switch (strategy)
             {
             case ConnectionStrategy.AllLofi:
                 return true;
-            case ConnectionStrategy.LofiOnMetered:
-                var netProfile = NetworkInformation.GetInternetConnectionProfile();
-                var cost = netProfile.GetConnectionCost();
-                var lofi = false;
-                if(cost.NetworkCostType != NetworkCostType.Unrestricted)
-                {
-                    lofi = true;
-                }
-
-                if (cost.OverDataLimit || cost.ApproachingDataLimit)
-                {
-                    lofi = true;
-                }
-
-                return lofi;
             case ConnectionStrategy.AllFull:
                 return false;
+            case ConnectionStrategy.LofiOnMetered:
+            default:
+                var netProfile = NetworkInformation.GetInternetConnectionProfile();
+                var cost = netProfile.GetConnectionCost();
+                if (cost.NetworkCostType != NetworkCostType.Unrestricted
+                    || cost.OverDataLimit || cost.ApproachingDataLimit)
+                    return true;
+                return false;
             }
-            throw new ArgumentOutOfRangeException(nameof(strategy));
         }
     }
 }
