@@ -363,7 +363,7 @@ namespace ExViewer.ViewModels
             QRCodeResult = null;
         }
 
-        public CollectionView<GalleryImage> View { get; private set; }
+        public new CollectionView<GalleryImage> View { get; private set; }
 
         private string currentInfo;
         public string CurrentInfo { get => this.currentInfo; private set => Set(ref this.currentInfo, value); }

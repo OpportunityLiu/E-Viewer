@@ -96,15 +96,14 @@ namespace ExClient.Galleries.Commenting
             {
                 IEnumerable<KeyValuePair<string, string>> getData()
                 {
-                    yield return new KeyValuePair<string, string>("commenttext", content);
                     if (editable != null && editable.Status == CommentStatus.Editable)
                     {
                         yield return new KeyValuePair<string, string>("edit_comment", editable.Id.ToString());
-                        yield return new KeyValuePair<string, string>("postcomment", "Edit Comment");
+                        yield return new KeyValuePair<string, string>("commenttext_edit", content);
                     }
                     else
                     {
-                        yield return new KeyValuePair<string, string>("postcomment", "Post Comment");
+                        yield return new KeyValuePair<string, string>("commenttext_new", content);
                     }
                 }
                 var requestTask = Client.Current.HttpClient.PostAsync(this.Owner.GalleryUri, getData());
