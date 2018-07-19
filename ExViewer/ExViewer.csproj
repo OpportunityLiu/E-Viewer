@@ -22,7 +22,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Never</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>54BBA9627EB2720D8CDF827F50F65A12CE885EDB</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>AC82A857467374ACB64C3F8A542446485164DD50</PackageCertificateThumbprint>
     <HockeyAppResourceId>9c09ca3908114a38a09c81ca8b68ee39</HockeyAppResourceId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
@@ -193,7 +193,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="ExViewer_TemporaryKey.pfx" />
     <PRIResource Include="Strings\zh-hant\Exceptions.resJson" />
     <PRIResource Include="Strings\zh-hans\Exceptions.resJson" />
     <PRIResource Include="Strings\zh-hant\Settings.resJson" />
@@ -411,6 +410,7 @@
     <PRIResource Include="Strings\en\Resources.resJson" />
     <PRIResource Include="Strings\en\Settings.resJson" />
     <PRIResource Include="Strings\en\Exceptions.resJson" />
+    <None Include="ExViewer_TemporaryKey.pfx" />
     <None Include="Strings\Strings.resgenconfig" />
     <Content Include="Assets\Theme\Light\UserBackground.scale-100.png" />
     <Content Include="Assets\Theme\Light\UserBackground.scale-200.png" />
