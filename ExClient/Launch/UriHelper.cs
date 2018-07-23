@@ -1,28 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Windows.Foundation;
 
 namespace ExClient.Launch
 {
     internal static class UriHelper
     {
-        public static string Unescape(this string value)
-        {
-            value = value.Replace('+', ' ');
-            value = Uri.UnescapeDataString(value);
-            return value;
-        }
-
-        /// <summary>
-        /// Unescape twice for special usage.
-        /// </summary>
-        /// <param name="value">string to unescape</param>
-        /// <returns>unescaped string</returns>
-        public static string Unescape2(this string value)
-        {
-            value = Uri.UnescapeDataString(value);
-            return Unescape(value);
-        }
-
         public static bool QueryValueAsBoolean(this string value)
         {
             return value != "0" && value != "";
@@ -52,24 +35,40 @@ namespace ExClient.Launch
             return 0;
         }
 
-        public static int GetInt32(this IReadOnlyDictionary<string, string> query, string key)
+        public static string GetString(this WwwFormUrlDecoder query, string key)
         {
-            if (query.TryGetValue(key, out var value))
+            try
             {
-                return value.QueryValueAsInt32();
+                return query.GetFirstValueByName(key);
             }
-
-            return 0;
+            catch (ArgumentException)
+            {
+                return null;
+            }
         }
 
-        public static bool GetBoolean(this IReadOnlyDictionary<string, string> query, string key)
+        public static int GetInt32(this WwwFormUrlDecoder query, string key)
         {
-            if (query.TryGetValue(key, out var value))
+            try
             {
-                return value.QueryValueAsBoolean();
+                return query.GetFirstValueByName(key).QueryValueAsInt32();
             }
+            catch (ArgumentException)
+            {
+                return 0;
+            }
+        }
 
-            return false;
+        public static bool GetBoolean(this WwwFormUrlDecoder query, string key)
+        {
+            try
+            {
+                return query.GetFirstValueByName(key).QueryValueAsBoolean();
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
         }
     }
 }
