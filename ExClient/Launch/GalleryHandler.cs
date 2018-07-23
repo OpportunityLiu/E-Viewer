@@ -6,7 +6,6 @@ namespace ExClient.Launch
 {
     internal class GalleryHandler : UriHandler
     {
-
         public override bool CanHandle(UriHandlerData data)
         {
             return GalleryInfo.TryParseGallery(data, out var info);
