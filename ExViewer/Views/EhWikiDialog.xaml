@@ -6,7 +6,7 @@
                           xmlns:controls="using:ExViewer.Controls"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           x:Uid="Views/EhWikiDialog/ContentDialog"
-                          Title="TITLE"
+                          Title="{x:Bind WikiTag, Mode=OneWay}"
                           FullSizeDesired="True"
                           CloseButtonText="Ok"
                           Opened="MyContentDialog_Opened"
@@ -26,7 +26,7 @@
   <Grid>
     <Border Width="500" />
     <WebView x:Name="wv"
-             DefaultBackgroundColor="{ThemeResource SystemChromeMediumLowColor}"
+             DefaultBackgroundColor="{x:Bind ((SolidColorBrush)Background).Color, Mode=OneWay}"
              NavigationStarting="wv_NavigationStarting"
              ScrollViewer.VerticalScrollBarVisibility="Auto"
              Visibility="Collapsed" />
