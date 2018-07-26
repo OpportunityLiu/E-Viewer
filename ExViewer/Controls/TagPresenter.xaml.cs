@@ -63,7 +63,7 @@ namespace ExViewer.Controls
             public Command<GalleryTag> GoToDefination { get; } = Command<GalleryTag>.Create(async (s, t) =>
             {
                 var dialog = System.Threading.LazyInitializer.EnsureInitialized(ref ewd);
-                dialog.WikiTag = t.Content;
+                dialog.WikiTag = t.Content.Content;
                 await dialog.ShowAsync();
             }, (s, t) => t?.Content.Content != null);
 

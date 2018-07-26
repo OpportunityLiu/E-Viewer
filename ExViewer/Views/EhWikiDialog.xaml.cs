@@ -1,8 +1,10 @@
 ﻿using EhWikiClient;
 using ExClient.Tagging;
 using ExViewer.Controls;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.System;
@@ -27,61 +29,97 @@ namespace ExViewer.Views
         {
             var s = (EhWikiDialog)sender;
             s.style = null;
-            s.refresh(s.WikiTag);
+            s.refresh(s.WikiTag, null);
         }
 
         private string style;
 
-        public Tag WikiTag
+        public string WikiTag
         {
-            get => (Tag)GetValue(WikiTagProperty);
+            get => (string)GetValue(WikiTagProperty);
             set => SetValue(WikiTagProperty, value);
         }
 
         public static readonly DependencyProperty WikiTagProperty =
-            DependencyProperty.Register(nameof(WikiTag), typeof(Tag), typeof(EhWikiDialog), new PropertyMetadata(default(Tag), WikiTagPropertyChangedCallback));
+            DependencyProperty.Register(nameof(WikiTag), typeof(string), typeof(EhWikiDialog), new PropertyMetadata("", WikiTagPropertyChangedCallback));
 
         private static void WikiTagPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var sender = (EhWikiDialog)d;
-            var o = (Tag)e.OldValue;
-            var n = (Tag)e.NewValue;
+            var o = (string)e.OldValue;
+            var n = (string)e.NewValue;
             if (n.Equals(o))
                 return;
-            sender.refresh(n);
+            sender.refresh(n, o);
         }
 
-        private static Regex regRedirect = new Regex(@"<div class=""redirectMsg""><p>Redirect to:</p><ul class=""redirectText""><li><a href=""([^""]+)"" title=""([^""]+)"">([^<]+)</a></li></ul></div>", RegexOptions.Compiled);
+        private static Regex regRedirect = new Regex(@"<div class=""redirectMsg""><p>Redirect to:</p><ul class=""redirectText""><li><a href=""/wiki/([^""]+)"" title=""([^""]+)"">([^<]+)</a></li></ul></div>", RegexOptions.Compiled);
 
-        private async void refresh(Tag tag)
+        private static bool getRedirect(Record rec, out string redirectTitle)
         {
-            this.loadRecord?.Cancel();
-            this.wv.Visibility = Visibility.Collapsed;
-            this.pb.Visibility = Visibility.Visible;
-            if (tag.Content is null)
+            redirectTitle = default;
+            if (rec.DetialHtml.IsNullOrEmpty())
+                return false;
+            var redirect = regRedirect.Match(rec.DetialHtml);
+            if (!redirect.Success)
+                return false;
+
+            redirectTitle = HtmlAgilityPack.HtmlEntity.DeEntitize(redirect.Groups[1].Value);
+            return true;
+        }
+
+        private static readonly Dictionary<string, Record> cache = new Dictionary<string, Record>(StringComparer.OrdinalIgnoreCase);
+
+        private static IAsyncOperation<Record> getRecord(string title)
+        {
+            if (cache.TryGetValue(title, out var r))
+                return AsyncOperation<Record>.CreateCompleted(r);
+            return AsyncInfo.Run(async token =>
             {
-                this.Title = "";
-                this.wv.NavigateToString("");
-            }
-            else
+                var rc = await Client.FetchAsync(title).AsTask(token);
+                cache[title] = rc;
+                return rc;
+            });
+        }
+
+        private int reinRefresh = 0;
+
+        private async void refresh(string title, string previousTitle)
+        {
+            this.reinRefresh++;
+            try
             {
+                this.wv.Visibility = Visibility.Collapsed;
+                this.pb.Visibility = Visibility.Visible;
+                this.loadRecord?.Cancel();
+                if (title.IsNullOrEmpty())
+                {
+                    this.wv.NavigateToString("");
+                    return;
+                }
                 var str = (string)null;
-                this.Title = tag.Content;
                 try
                 {
-                    this.loadRecord = tag.FetchEhWikiRecordAsync();
+                    this.loadRecord = getRecord(title);
                     var record = await this.loadRecord;
                     this.loadRecord = null;
                     if (record?.DetialHtml is null)
                     {
                         str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
                     }
+                    else if (getRedirect(record, out var rd))
+                    {
+                        this.wv.NavigateToString("");
+                        if (!this.navigate(new Uri(eww, rd)) && !previousTitle.IsNullOrEmpty())
+                            this.WikiTag = previousTitle;
+                        return;
+                    }
                     else
                     {
                         str = record.DetialHtml;
                     }
                 }
-                catch (System.Threading.Tasks.TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     return;
                 }
@@ -90,21 +128,21 @@ namespace ExViewer.Views
                     str = $@"<p style='color:red;'>{HtmlAgilityPack.HtmlEntity.Entitize(ex.GetMessage(), true, true)}</p>";
                     Telemetry.LogException(ex);
                 }
-                var redirect = regRedirect.Match(str);
-                if (redirect.Success)
-                {
-                    this.navigate(new Uri(ew, HtmlAgilityPack.HtmlEntity.DeEntitize(redirect.Groups[1].Value)));
-                }
                 if (this.style is null)
                 {
                     this.initStyle();
                 }
 
                 this.wv.NavigateToString(this.style + str);
-
             }
-            this.wv.Visibility = Visibility.Visible;
-            this.pb.Visibility = Visibility.Collapsed;
+            finally
+            {
+                if (--this.reinRefresh == 0)
+                {
+                    this.wv.Visibility = Visibility.Visible;
+                    this.pb.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private IAsyncOperation<Record> loadRecord;
@@ -159,7 +197,8 @@ namespace ExViewer.Views
 
         private static readonly Uri eh = new Uri("https://e-hentai.org/");
         private static readonly Uri ew = new Uri("https://ehwiki.org/");
-        private static readonly char[] invalidTagChar = ":/*%\"".ToCharArray();
+        private static readonly Uri eww = new Uri("https://ehwiki.org/wiki/");
+        private static readonly char[] invalidTagChar = ":#/*%\"".ToCharArray();
         private static readonly HashSet<string> notTag = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "Power",
@@ -167,30 +206,47 @@ namespace ExViewer.Views
             "Contextual",
             "Costume",
             "Namespace",
-            "Genderbend"
+            "Renaming",
+            "Rewards",
         };
 
-        private async void navigate(Uri uri)
+        private static bool isValidTitle(string title)
         {
-            if (uri.Host == "ehwiki.org" && string.IsNullOrEmpty(uri.Fragment))
+            return !notTag.Contains(title)
+                        && title.IndexOfAny(invalidTagChar) < 0;
+        }
+
+        private bool navigate(Uri uri)
+        {
+            try
             {
-                if (uri.AbsolutePath.StartsWith("/wiki/"))
+                if (uri.Host == "g.e-hentai.org")
                 {
-                    var tag = uri.AbsolutePath.Substring(6);
-                    if (!notTag.Contains(tag)
-                        && tag.IndexOfAny(invalidTagChar) < 0)
-                    {
-                        this.WikiTag = new Tag(Namespace.Misc, tag.Replace('_', ' '));
-                        Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Ehwiki navigated", new Dictionary<string, string> { ["Tag"] = this.WikiTag.ToString() });
-                        return;
-                    }
+                    uri = new Uri(eh, uri.PathAndQuery + uri.Fragment);
+                    return false;
+                }
+
+                if (uri.Host != "ehwiki.org" ||
+                    !uri.Fragment.IsNullOrEmpty() ||
+                    !uri.AbsolutePath.StartsWith("/wiki/"))
+                    return false;
+
+                var tag = uri.AbsolutePath.Substring("/wiki/".Length);
+                if (!isValidTitle(tag))
+                    return false;
+
+                this.WikiTag = tag.Replace('_', ' ');
+                Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Ehwiki navigated", new Dictionary<string, string> { ["Tag"] = this.WikiTag });
+                uri = null;
+                return true;
+            }
+            finally
+            {
+                if (uri != null)
+                {
+                    var ignore = Launcher.LaunchUriAsync(uri);
                 }
             }
-            if (uri.Host == "g.e-hentai.org")
-            {
-                uri = new Uri(eh, uri.PathAndQuery + uri.Fragment);
-            }
-            await Launcher.LaunchUriAsync(uri);
         }
 
         private void wv_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
