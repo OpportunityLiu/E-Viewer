@@ -208,6 +208,7 @@ namespace ExViewer.Views
             "Namespace",
             "Renaming",
             "Rewards",
+            "Gallery Categories",
         };
 
         private static bool isValidTitle(string title)
