@@ -208,6 +208,7 @@ namespace ExViewer.Views
             "Namespace",
             "Renaming",
             "Rewards",
+            "Category",
             "Gallery Categories",
         };
 
