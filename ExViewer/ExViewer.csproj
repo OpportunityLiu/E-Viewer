@@ -257,17 +257,17 @@
     </Compile>
     <Compile Include="Controls\SplitViewButton.cs" />
     <Compile Include="Controls\SplitViewTab.cs" />
-    <Compile Include="Database\SearchHistoryDb.cs" />
+    <Compile Include="Database\HistoryDb.cs" />
     <Compile Include="Helpers\ExceptionHandler.cs" />
     <Compile Include="Helpers\HtmlHelper.cs" />
     <Compile Include="Helpers\ShareHandler.cs" />
     <Compile Include="Helpers\TagExtension.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
-    <Compile Include="Migrations\20170327142247_MigrationReset.cs" />
-    <Compile Include="Migrations\20170327142247_MigrationReset.designer.cs">
-      <DependentUpon>20170327142247_MigrationReset.cs</DependentUpon>
+    <Compile Include="Migrations\20180807021725_History.cs" />
+    <Compile Include="Migrations\20180807021725_History.designer.cs">
+      <DependentUpon>20180807021725_History.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\SearchHistoryDbModelSnapshot.cs" />
+    <Compile Include="Migrations\HistoryDbModelSnapshot.cs" />
     <Compile Include="Services\InAppToastNotification.cs" />
     <Compile Include="Services\ContentDialogNotification.cs" />
     <Compile Include="Settings\SettingCollection.cs" />

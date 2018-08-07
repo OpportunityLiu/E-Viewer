@@ -35,7 +35,7 @@ namespace ApplicationDataManager.Settings
             this.PropertyInfo = info;
             this.Info = settingAttribute;
             this.Name = info.Name;
-            this.FriendlyName = StringLoader.GetString(this.Name);
+            this.FriendlyName = StringLoader.GetString(this.Name).CoalesceNullOrEmpty(this.Name);
 
             this.ValueRepresent = info.GetCustomAttribute<ValueRepresentAttribute>();
 

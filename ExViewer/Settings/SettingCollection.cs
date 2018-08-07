@@ -293,6 +293,17 @@ namespace ExViewer.Settings
             set => SetLocal(value);
         }
 
+        /// <summary>
+        /// Tap in image view to previous/next page.
+        /// </summary>
+        [Setting("Viewing", Index = 2450)]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
+        public bool TapToFlip
+        {
+            get => GetLocal(false);
+            set => SetLocal(value);
+        }
+
         [Setting("Viewing", Index = 2500)]
         public bool KeepScreenOn
         {
