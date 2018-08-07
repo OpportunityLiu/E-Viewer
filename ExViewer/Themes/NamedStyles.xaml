@@ -335,7 +335,7 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
-      <controls:HighlightTextBlock Text="{Binding Content, Mode=OneTime}"
+      <controls:HighlightTextBlock Text="{Binding Title, Mode=OneTime}"
                                    HighlightText="{Binding Highlight, Mode=OneTime}"
                                    Grid.Column="1" />
       <TextBlock Text="{Binding Time, Converter={StaticResource DateTimeOffsetToStringConverter}, Mode=OneTime}"
@@ -379,9 +379,8 @@
     </Grid>
   </DataTemplate>
   <controls:DataTemplateSelector x:Key="SearchAutoSuggestBoxItemTemplateSelector"
-                                 xmlns:vm="using:ExViewer.ViewModels">
-    <controls:DataTemplateKeyValuePair Key="ExViewer.Database.SearchHistory"
-                                       Value="{StaticResource SearchHistoryTemplate}" />
+                                 xmlns:vm="using:ExViewer.ViewModels"
+                                 DefaultTemplate="{StaticResource SearchHistoryTemplate}">
     <controls:DataTemplateKeyValuePair Key="ExViewer.Controls.TagSuggestion.ITagRecord"
                                        Value="{StaticResource EhTagTemplate}" />
   </controls:DataTemplateSelector>
