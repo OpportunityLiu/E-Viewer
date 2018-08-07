@@ -1,9 +1,9 @@
 ﻿<uwp:ResourceDictionary xmlns="using:ExViewer.Converters"
                         xmlns:uwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                        xmlns:c="using:Opportunity.Converters"
-                        xmlns:t="using:Opportunity.Converters.Typed"
-                        xmlns:com="using:Opportunity.Converters.Command"
+                        xmlns:c="using:Opportunity.UWP.Converters"
+                        xmlns:t="using:Opportunity.UWP.Converters.Typed"
+                        xmlns:com="using:Opportunity.UWP.Converters.Command"
                         xmlns:local="using:ExViewer.Views">
   <com:DelayConverter x:Name="DelayConverter" />
   

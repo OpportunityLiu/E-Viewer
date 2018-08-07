@@ -8,7 +8,7 @@
                           xmlns:controls="using:ExViewer.Controls"
                           xmlns:client="using:ExClient"
                           xmlns:sys="using:System"
-                          xmlns:xb="using:Opportunity.Converters.XBind"
+                          xmlns:xb="using:Opportunity.UWP.Converters.XBind"
                           xmlns:services="using:ExClient.Services"
                           mc:Ignorable="d"
                           x:Uid="Views/ExpungeGalleryDialog/ContentDialog"

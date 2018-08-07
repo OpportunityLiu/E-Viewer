@@ -12,7 +12,7 @@
                 xmlns:client="using:ExClient"
                 xmlns:g="using:ExClient.Galleries"
                 x:Name="page"
-                xmlns:xb="using:Opportunity.Converters.XBind"
+                xmlns:xb="using:Opportunity.UWP.Converters.XBind"
                 xmlns:helper="using:Opportunity.Helpers.Universal"
                 Loading="page_Loading"
                 Loaded="page_Loaded"

@@ -117,7 +117,7 @@ namespace ExViewer
             {
                 currentWindow.Activate();
             }
-            ((Opportunity.Converters.Typed.StringToBooleanConverter)this.Resources["EmptyStringToFalseConverter"]).ValuesForFalse.Add("");
+            ((Opportunity.UWP.Converters.Typed.StringToBooleanConverter)this.Resources["EmptyStringToFalseConverter"]).ValuesForFalse.Add("");
         }
 
         protected override void OnActivated(IActivatedEventArgs args)
