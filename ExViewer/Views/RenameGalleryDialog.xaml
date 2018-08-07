@@ -7,7 +7,7 @@
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           xmlns:controls="using:ExViewer.Controls"
                           xmlns:client="using:ExClient"
-                          xmlns:xb="using:Opportunity.Converters.XBind"
+                          xmlns:xb="using:Opportunity.UWP.Converters.XBind"
                           xmlns:services="using:ExClient.Services"
                           xmlns:sys="using:System"
                           mc:Ignorable="d"
