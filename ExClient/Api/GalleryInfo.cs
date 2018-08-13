@@ -69,7 +69,7 @@ namespace ExClient.Api
 
         internal static bool TryParseGallery(UriHandlerData data, out GalleryInfo info)
         {
-            if (data.Path0 == "g" && data.Paths.Count == 3)
+            if (data.Path0 == "g" && data.Paths.Count >= 3)
             {
                 if (long.TryParse(data.Paths[1], out var gId))
                 {
@@ -83,17 +83,20 @@ namespace ExClient.Api
 
         internal static bool TryParseGalleryPopup(UriHandlerData data, out GalleryInfo info, out GalleryLaunchStatus type)
         {
-            if (data.Paths.Count == 1
+            info = default;
+            type = default;
+            if (data.Paths.Count >= 1
                 && (data.Path0 == "gallerytorrents.php"
                     || data.Path0 == "gallerypopups.php"
                     || data.Path0 == "stats.php"
                     || data.Path0 == "archiver.php"))
             {
-                if (data.Queries.TryGetValue("gid", out var gidStr)
-                    && (data.Queries.TryGetValue("t", out var gtoken) || data.Queries.TryGetValue("token", out gtoken))
-                    && long.TryParse(data.Queries["gid"], out var gId))
+                if (long.TryParse(data.Queries.GetString("gid"), out var gId))
                 {
-                    info = new GalleryInfo(gId, gtoken.ToToken());
+                    var token = data.Queries.GetString("t") + data.Queries.GetString("token");
+                    if (token.IsNullOrWhiteSpace())
+                        return false;
+                    info = new GalleryInfo(gId, token.ToToken());
                     type = GalleryLaunchStatus.Default;
                     switch (data.Path0)
                     {
@@ -107,29 +110,23 @@ namespace ExClient.Api
                         type = GalleryLaunchStatus.Archive;
                         break;
                     default:
-                        if (data.Queries.TryGetValue("act", out var action))
+                        switch (data.Queries.GetString("act"))
                         {
-                            switch (action)
-                            {
-                            case "addfav":
-                                type = GalleryLaunchStatus.Favorite;
-                                break;
-                            case "expunge":
-                                type = GalleryLaunchStatus.Expunge;
-                                break;
-                            case "rename":
-                                type = GalleryLaunchStatus.Rename;
-                                break;
-                            }
+                        case "addfav":
+                            type = GalleryLaunchStatus.Favorite;
+                            break;
+                        case "expunge":
+                            type = GalleryLaunchStatus.Expunge;
+                            break;
+                        case "rename":
+                            type = GalleryLaunchStatus.Rename;
+                            break;
                         }
-
                         break;
                     }
                     return true;
                 }
             }
-            info = default;
-            type = default;
             return false;
         }
 

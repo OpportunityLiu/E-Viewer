@@ -85,8 +85,9 @@ namespace EhTagTranslatorClient
                         var html = await client.GetStringAsync(stateUri);
                         var doc = new HtmlDocument();
                         doc.LoadHtml(html);
-                        var tr = doc.DocumentNode.Descendants("tr").First();
-                        var rtime = tr.Descendants("relative-time").First();
+                        var versionform = doc.GetElementbyId("version-form");
+                        var li = versionform.Descendants("li").First();
+                        var rtime = li.Descendants("relative-time").First();
                         var time = rtime.GetAttributeValue("datetime", "");
                         var dt = DateTimeOffset.Parse(time);
                         LastCommit = dt;

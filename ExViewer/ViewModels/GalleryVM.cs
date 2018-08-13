@@ -396,7 +396,7 @@ namespace ExViewer.ViewModels
                 var imageProp = await imageFile.Properties.GetImagePropertiesAsync();
                 this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfo(
                     fileType: imageFile.DisplayType,
-                    size: Opportunity.Converters.XBind.ByteSize.ToBinaryString((long)prop.Size),
+                    size: Opportunity.UWP.Converters.XBind.ByteSize.ToBinaryString((long)prop.Size),
                     width: imageProp.Width,
                     height: imageProp.Height);
                 var newQRHash = prop.Size.GetHashCode() ^ imageFile.Name.GetHashCode();

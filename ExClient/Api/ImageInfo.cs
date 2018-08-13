@@ -35,7 +35,7 @@ namespace ExClient.Api
 
         internal static bool TryParse(UriHandlerData data, out ImageInfo info)
         {
-            if (data.Path0 == "s" && data.Paths.Count == 3)
+            if (data.Path0 == "s" && data.Paths.Count >= 3)
             {
                 var sp = data.Paths[2].Split('-');
                 if ((sp.Length == 2)
@@ -46,7 +46,7 @@ namespace ExClient.Api
                     return true;
                 }
             }
-            info = default(ImageInfo);
+            info = default;
             return false;
         }
 

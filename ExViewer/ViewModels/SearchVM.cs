@@ -1,5 +1,6 @@
 ﻿using ExClient;
 using ExClient.Search;
+using ExViewer.Database;
 using ExViewer.Settings;
 using ExViewer.Views;
 using Opportunity.MvvmUniverse.Collections;
@@ -34,7 +35,15 @@ namespace ExViewer.ViewModels
                 search = (CategorySearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
             }
             var vm = new SearchVM(search);
-            AddHistory(vm.Keyword);
+            using (var db = new HistoryDb())
+            {
+                db.AddHistory(new HistoryRecord
+                {
+                    Type = HistoryRecordType.Search,
+                    Uri = vm.SearchResult.SearchUri,
+                    Title = vm.Keyword,
+                });
+            }
             return vm;
         }, 10);
 
@@ -43,7 +52,15 @@ namespace ExViewer.ViewModels
         public static SearchVM GetVM(CategorySearchResult searchResult)
         {
             var vm = new SearchVM(searchResult ?? throw new ArgumentNullException(nameof(searchResult)));
-            AddHistory(vm.Keyword);
+            using (var db = new HistoryDb())
+            {
+                db.AddHistory(new HistoryRecord
+                {
+                    Type = HistoryRecordType.Search,
+                    Uri = vm.SearchResult.SearchUri,
+                    Title = vm.Keyword,
+                });
+            }
             Cache[vm.SearchQuery] = vm;
             return vm;
         }

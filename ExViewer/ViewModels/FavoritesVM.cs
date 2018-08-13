@@ -1,5 +1,6 @@
 ﻿using ExClient;
 using ExClient.Search;
+using ExViewer.Database;
 using ExViewer.Views;
 using Opportunity.MvvmUniverse.Collections;
 using Opportunity.MvvmUniverse.Commands;
@@ -12,8 +13,13 @@ namespace ExViewer.ViewModels
         private static AutoFillCacheStorage<string, FavoritesVM> Cache = AutoFillCacheStorage.Create((string query) =>
         {
             var search = default(FavoritesSearchResult);
+            var record = new HistoryRecord
+            {
+                Type = HistoryRecordType.Favorite,
+            };
             if (string.IsNullOrEmpty(query))
             {
+                record.Uri = FavoritesSearchResult.SearchBaseUri;
                 search = Client.Current.Favorites.All.Search("");
             }
             else
@@ -24,7 +30,15 @@ namespace ExViewer.ViewModels
                 search = (FavoritesSearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
             }
             var vm = new FavoritesVM(search);
-            AddHistory(vm.Keyword);
+            using (var db = new HistoryDb())
+            {
+                db.AddHistory(new HistoryRecord
+                {
+                    Type = HistoryRecordType.Favorite,
+                    Uri = vm.SearchResult.SearchUri,
+                    Title = vm.Keyword,
+                });
+            }
             return vm;
         }, 10);
 
@@ -34,7 +48,15 @@ namespace ExViewer.ViewModels
         {
             var vm = new FavoritesVM(searchResult ?? throw new ArgumentNullException(nameof(searchResult)));
             var query = vm.SearchQuery;
-            AddHistory(vm.Keyword);
+            using (var db = new HistoryDb())
+            {
+                db.AddHistory(new HistoryRecord
+                {
+                    Type = HistoryRecordType.Favorite,
+                    Uri = vm.SearchResult.SearchUri,
+                    Title = vm.Keyword,
+                });
+            }
             Cache[query] = vm;
             return vm;
         }

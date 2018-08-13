@@ -23,7 +23,7 @@ namespace ExClient.Launch
 
         public override bool CanHandle(UriHandlerData data)
         {
-            return data.Paths.Count == 1 && (categoryDic.ContainsKey(data.Path0));
+            return data.Paths.Count >= 1 && (categoryDic.ContainsKey(data.Path0));
         }
 
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
