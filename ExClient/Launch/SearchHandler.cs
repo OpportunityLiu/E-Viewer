@@ -16,9 +16,9 @@ namespace ExClient.Launch
 
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
-            var sr = data.Queries.ContainsKey("f_shash")
-                 ? handleFileSearch(data)
-                 : handleSearch(data);
+            var sr = data.Queries.GetString("f_shash").IsNullOrEmpty()
+                 ? handleSearch(data)
+                 : handleFileSearch(data);
             return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(sr));
         }
 
@@ -32,34 +32,16 @@ namespace ExClient.Launch
 
         private FileSearchResult handleFileSearch(UriHandlerData data)
         {
-            var fn = default(string);
-            var sm = false;
-            var cv = false;
-            var exp = false;
-            var hashes = default(IEnumerable<SHA1Value>);
-            foreach (var item in data.Queries)
-            {
-                switch (item.Key)
-                {
-                case "f_shash":
-                    hashes = item.Value.Split(",;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(SHA1Value.Parse);
-                    break;
-                case "fs_from":
-                    fn = item.Value;
-                    break;
-                case "fs_similar":
-                    sm = item.Value.QueryValueAsBoolean();
-                    break;
-                case "fs_covers":
-                    cv = item.Value.QueryValueAsBoolean();
-                    break;
-                case "fs_exp":
-                    exp = item.Value.QueryValueAsBoolean();
-                    break;
-                }
-            }
+            var filename = data.Queries.GetString("fs_from");
+            var sm = data.Queries.GetBoolean("fs_similar");
+            var cv = data.Queries.GetBoolean("fs_covers");
+            var exp = data.Queries.GetBoolean("fs_exp");
+            var hashes = (data.Queries.GetString("f_shash") ?? "")
+                .Split(",; ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+                .Where(str => str.All(ch => ('0' <= ch && ch <= '9') || ('a' <= ch && ch <= 'f') || ('A' <= ch && ch <= 'F')))
+                .Select(SHA1Value.Parse);
             var otherdata = handleSearch(data);
-            return FileSearchResult.Search(otherdata.Keyword, otherdata.Category, hashes, fn, sm, cv, exp);
+            return FileSearchResult.Search(otherdata.Keyword, otherdata.Category, hashes, filename, sm, cv, exp);
         }
     }
 }

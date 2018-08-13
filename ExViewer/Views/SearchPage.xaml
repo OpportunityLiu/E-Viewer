@@ -1,6 +1,6 @@
 ﻿<views:MvvmPage x:Class="ExViewer.Views.SearchPage"
                 xmlns:views="using:Opportunity.MvvmUniverse.Views"
-                xmlns:xb="using:Opportunity.Converters.XBind"
+                xmlns:xb="using:Opportunity.UWP.Converters.XBind"
                 x:Name="root"
                 xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="using:ExViewer.Views"
                     xmlns:controls="using:ExViewer.Controls"
+                    xmlns:oppControls="using:Opportunity.UWP.Controls"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d">
@@ -318,11 +319,11 @@
     <Setter Property="Margin"
             Value="8,0" />
     <Setter Property="VerticalAlignment"
-            Value="Center"/>
+            Value="Center" />
     <Setter Property="Grid.RowSpan"
-            Value="2"/>
+            Value="2" />
     <Setter Property="Foreground"
-            Value="{ThemeResource SystemControlPageTextBaseHighBrush}"/>
+            Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
   </Style>
 
   <DataTemplate x:Key="SearchHistoryTemplate">
@@ -335,7 +336,7 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
-      <controls:HighlightTextBlock Text="{Binding Content, Mode=OneTime}"
+      <controls:HighlightTextBlock Text="{Binding Title, Mode=OneTime}"
                                    HighlightText="{Binding Highlight, Mode=OneTime}"
                                    Grid.Column="1" />
       <TextBlock Text="{Binding Time, Converter={StaticResource DateTimeOffsetToStringConverter}, Mode=OneTime}"
@@ -378,13 +379,12 @@
                 Glyph="&#xE8EC;" />
     </Grid>
   </DataTemplate>
-  <controls:DataTemplateSelector x:Key="SearchAutoSuggestBoxItemTemplateSelector"
-                                 xmlns:vm="using:ExViewer.ViewModels">
-    <controls:DataTemplateKeyValuePair Key="ExViewer.Database.SearchHistory"
-                                       Value="{StaticResource SearchHistoryTemplate}" />
-    <controls:DataTemplateKeyValuePair Key="ExViewer.Controls.TagSuggestion.ITagRecord"
-                                       Value="{StaticResource EhTagTemplate}" />
-  </controls:DataTemplateSelector>
+  <oppControls:DataTemplateSelector x:Key="SearchAutoSuggestBoxItemTemplateSelector"
+                                    xmlns:vm="using:ExViewer.ViewModels"
+                                    DefaultTemplate="{StaticResource SearchHistoryTemplate}">
+    <oppControls:DataTemplateKeyValuePair Key="ExViewer.Controls.TagSuggestion.ITagRecord"
+                                          Value="{StaticResource EhTagTemplate}" />
+  </oppControls:DataTemplateSelector>
   <Style x:Key="SearchAutoSuggestBoxStyle"
          TargetType="AutoSuggestBox">
     <Setter Property="ItemTemplateSelector"
@@ -1272,7 +1272,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  
+
   <Style x:Key="UpdateProgressRingStyle"
          TargetType="ProgressRing">
     <Setter Property="MinHeight"

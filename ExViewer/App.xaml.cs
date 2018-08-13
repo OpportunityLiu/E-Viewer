@@ -2,10 +2,12 @@
 using Microsoft.AppCenter.Analytics;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
+using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 #if !DEBUG
@@ -65,6 +67,8 @@ namespace ExViewer
                 //this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
             }
 #endif
+            if (!e.Arguments.IsNullOrEmpty())
+                lanuchUri(new Uri(e.Arguments), e.PreviousExecutionState);
             lanunchCore(e, e.PrelaunchActivated);
         }
 
@@ -90,6 +94,15 @@ namespace ExViewer
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
                 CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+                if (JumpList.IsSupported())
+                {
+                    Task.Run(async () =>
+                    {
+                        var jl = await JumpList.LoadCurrentAsync();
+                        jl.SystemGroupKind = JumpListSystemGroupKind.None;
+                        await jl.SaveAsync();
+                    });
+                }
                 currentContent = new SplashControl(e.SplashScreen);
                 currentWindow.Content = currentContent;
             }
@@ -104,31 +117,31 @@ namespace ExViewer
             {
                 currentWindow.Activate();
             }
-            ((Opportunity.Converters.Typed.StringToBooleanConverter)this.Resources["EmptyStringToFalseConverter"]).ValuesForFalse.Add("");
+            ((Opportunity.UWP.Converters.Typed.StringToBooleanConverter)this.Resources["EmptyStringToFalseConverter"]).ValuesForFalse.Add("");
         }
 
         protected override void OnActivated(IActivatedEventArgs args)
         {
-            base.OnActivated(args);
             if (args.Kind == ActivationKind.Protocol)
             {
                 var e = (ProtocolActivatedEventArgs)args;
-                var needHandleInApp = RootControl.RootController.HandleUriLaunch(e.Uri);
-                if (!needHandleInApp
-                    && e.PreviousExecutionState != ApplicationExecutionState.Running
-                    && e.PreviousExecutionState != ApplicationExecutionState.Suspended)
-                {
-                    Exit();
-                }
-                lanunchCore(args, false);
-                if (needHandleInApp)
-                {
-                    Analytics.TrackEvent("Launched by uri", new Dictionary<string, string> { ["Uri"] = e.Uri.ToString() });
-                }
+                lanuchUri(e.Uri, e.PreviousExecutionState);
             }
-            else
+            lanunchCore(args, false);
+        }
+
+        private void lanuchUri(Uri uri, ApplicationExecutionState previousExecutionState)
+        {
+            var needHandleInApp = RootControl.RootController.HandleUriLaunch(uri);
+            if (!needHandleInApp
+                && previousExecutionState != ApplicationExecutionState.Running
+                && previousExecutionState != ApplicationExecutionState.Suspended)
             {
-                lanunchCore(args, false);
+                Exit();
+            }
+            if (needHandleInApp)
+            {
+                Analytics.TrackEvent("Launched by uri", new Dictionary<string, string> { ["Uri"] = uri.ToString() });
             }
         }
 

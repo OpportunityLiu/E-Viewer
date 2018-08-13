@@ -111,8 +111,8 @@ namespace ExViewer.Views
             var c = this.currentDownloaded + (long)p.BytesReceived;
             this.pb.Value = 100d * c / this.totalDownloaded;
             this.pb.IsIndeterminate = false;
-            this.tbCurrent.Text = Opportunity.Converters.XBind.ByteSize.ToBinaryString(c);
-            this.tbTotal.Text = Opportunity.Converters.XBind.ByteSize.ToBinaryString(this.totalDownloaded);
+            this.tbCurrent.Text = Opportunity.UWP.Converters.XBind.ByteSize.ToBinaryString(c);
+            this.tbTotal.Text = Opportunity.UWP.Converters.XBind.ByteSize.ToBinaryString(this.totalDownloaded);
         }
 
         private async void MyContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

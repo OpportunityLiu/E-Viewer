@@ -12,16 +12,8 @@ environment:
     secure: jamZ7Amcuj5QZeiKqfmrig==
 install:
 - ps: |
-    $pfxpath = "${Env:APPVEYOR_BUILD_FOLDER}/ExViewer/ExViewer_TemporaryKey.pfx"
-    $password = $Env:GITHUB_PASS
-
-    Add-Type -AssemblyName System.Security
-    $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-    $cert.Import($pfxpath, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]"PersistKeySet")
-    $store = new-object system.security.cryptography.X509Certificates.X509Store -argumentlist "MY", CurrentUser
-    $store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]"ReadWrite")
-    $store.Add($cert)
-    $store.Close()
+    $certfile = Get-Item "${Env:APPVEYOR_BUILD_FOLDER}/ExViewer/ExViewer_TemporaryKey.pfx"
+    Import-PfxCertificate $certfile -Password (ConvertTo-SecureString -AsPlainText "$Env:GITHUB_PASS" -Force) -CertStoreLocation Cert:\CurrentUser\My\
 before_build:
 - ps: |
     nuget restore

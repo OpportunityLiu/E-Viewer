@@ -7,7 +7,7 @@
                 Loading="page_Loading"
                 xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                 NavigationCacheMode="Enabled"
-                xmlns:xb="using:Opportunity.Converters.XBind"
+                xmlns:xb="using:Opportunity.UWP.Converters.XBind"
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"

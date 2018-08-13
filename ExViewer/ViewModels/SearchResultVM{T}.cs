@@ -51,36 +51,5 @@ namespace ExViewer.ViewModels
 
         private string keyword;
         public string Keyword { get => this.keyword; set => Set(ref this.keyword, value); }
-
-        internal static void AddHistory(string content)
-        {
-            using (var db = new SearchHistoryDb())
-            {
-                db.SearchHistorySet.Add(SearchHistory.Create(content));
-                db.SaveChanges();
-            }
-        }
-
-        internal Command<SearchHistory> DeleteHistory => Commands.GetOrAdd(() =>
-            Command<SearchHistory>.Create((sender, sh) =>
-            {
-                using (var db = new SearchHistoryDb())
-                {
-                    db.SearchHistorySet.Remove(sh);
-                    db.SaveChanges();
-                }
-            }, (sender, sh) => sh != null));
-
-        public IAsyncAction ClearHistoryAsync()
-        {
-            return Run(async token =>
-            {
-                using (var db = new SearchHistoryDb())
-                {
-                    db.SearchHistorySet.RemoveRange(db.SearchHistorySet);
-                    await db.SaveChangesAsync();
-                }
-            });
-        }
     }
 }

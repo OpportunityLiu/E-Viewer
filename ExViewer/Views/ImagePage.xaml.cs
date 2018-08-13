@@ -122,11 +122,11 @@ namespace ExViewer.Views
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             this.fv.Opacity = 0;
+            this.tapToFlip = null;
             this.fv.IsEnabled = false;
             this.imgConnect.Visibility = Visibility.Visible;
             base.OnNavigatedFrom(e);
             CloseAll();
-            cb_top_Closed(this.cb_top, null);
         }
 
         void IServiceHandler<Navigator>.OnAdd(Navigator navigator) { }
@@ -206,24 +206,69 @@ namespace ExViewer.Views
             setScale();
         }
 
-        private System.Threading.CancellationTokenSource changingCbVisibility;
 
         private static UISettings uiSettings = new UISettings();
 
+        bool? tapToFlip;
+        private System.Threading.CancellationTokenSource doubleTapToken;
+
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            this.changingCbVisibility = new System.Threading.CancellationTokenSource();
-            await Task.Delay((int)uiSettings.DoubleClickTime, this.changingCbVisibility.Token).ContinueWith(async t =>
+            if (this.tapToFlip == null)
+                this.tapToFlip = SettingCollection.Current.TapToFlip;
+            var tapToFlip = this.tapToFlip.Value;
+            this.doubleTapToken = new System.Threading.CancellationTokenSource();
+            await Task.Delay((int)uiSettings.DoubleClickTime, this.doubleTapToken.Token).ContinueWith(async t =>
             {
                 if (t.IsCanceled)
-                {
                     return;
-                }
-
+                this.doubleTapToken.Cancel();
                 await Dispatcher.Yield();
-                this.changingCbVisibility.Cancel();
-                changeCbVisibility();
+
+                var handled = false;
+                if (tapToFlip && e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
+                {
+                    var orient = (this.fv.ItemsPanelRoot is VirtualizingStackPanel panel) ? panel.Orientation : Orientation.Horizontal;
+                    var point = e.GetPosition(this.fv);
+                    if (orient == Orientation.Horizontal)
+                    {
+                        if (point.X < this.fv.ActualWidth * 0.3)
+                        {
+                            if (this.ViewModel.View.CurrentPosition != 0)
+                                handled = this.ViewModel.View.MoveCurrentToPrevious();
+                        }
+                        else if (point.X > this.fv.ActualWidth * 0.7)
+                        {
+                            if (this.ViewModel.View.CurrentPosition != this.ViewModel.View.Count - 1)
+                                handled = this.ViewModel.View.MoveCurrentToNext();
+                        }
+                    }
+                    else
+                    {
+                        if (point.Y < this.fv.ActualHeight * 0.3)
+                        {
+                            if (this.ViewModel.View.CurrentPosition != 0)
+                                handled = this.ViewModel.View.MoveCurrentToPrevious();
+                        }
+                        else if (point.Y > this.fv.ActualHeight * 0.7)
+                        {
+                            if (this.ViewModel.View.CurrentPosition != this.ViewModel.View.Count - 1)
+                                handled = this.ViewModel.View.MoveCurrentToNext();
+                        }
+                    }
+                }
+                if (!handled)
+                    changeCbVisibility();
             });
+        }
+
+        private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            if (this.doubleTapToken != null)
+            {
+                this.doubleTapToken.Cancel();
+                e.Handled = true;
+            }
         }
 
         private bool cbVisible = true;
@@ -252,22 +297,6 @@ namespace ExViewer.Views
                 this.cb_top.IsOpen = false;
                 this.cb_top.Visibility = Visibility.Collapsed;
             }
-        }
-
-        private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-        {
-            if (this.changingCbVisibility != null)
-            {
-                if (this.changingCbVisibility.IsCancellationRequested)
-                {
-                    changeCbVisibility();
-                }
-                else
-                {
-                    this.changingCbVisibility.Cancel();
-                }
-            }
-            e.Handled = true;
         }
 
         private async void Flyout_Opening(object sender, object e)

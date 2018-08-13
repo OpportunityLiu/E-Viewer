@@ -8,33 +8,22 @@ namespace ExClient.Launch
     {
         public override bool CanHandle(UriHandlerData data)
         {
-            return data.Paths.Count == 1 && data.Path0 == "favorites.php";
+            return data.Paths.Count >= 1 && data.Path0 == "favorites.php";
         }
 
         public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
         {
-            var keyword = "";
+            var keyword = UnescapeKeyword(data.Queries.GetString("f_search") ?? "");
             var category = Client.Current.Favorites.All;
-            var ap = false;
-            foreach (var item in data.Queries)
+            var ap = data.Queries.GetBoolean("f_apply");
             {
-                switch (item.Key)
+                var cat = data.Queries.GetString("favcat") ?? "all";
+                if (cat != "all")
                 {
-                case "f_apply":
-                    ap = item.Value.QueryValueAsBoolean();
-                    break;
-                case "favcat":
-                    if (item.Value != "all")
-                    {
-                        var index = item.Value.QueryValueAsInt32();
-                        index = Math.Max(0, index);
-                        index = Math.Min(9, index);
-                        category = Client.Current.Favorites[index];
-                    }
-                    break;
-                case "f_search":
-                    keyword = UnescapeKeyword(item.Value);
-                    break;
+                    var index = cat.QueryValueAsInt32();
+                    index = Math.Max(0, index);
+                    index = Math.Min(9, index);
+                    category = Client.Current.Favorites[index];
                 }
             }
             if (!ap)

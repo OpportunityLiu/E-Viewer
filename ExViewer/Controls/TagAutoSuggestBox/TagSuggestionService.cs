@@ -195,6 +195,30 @@ namespace ExViewer.Controls
             sender.ItemsSource = null;
         }
 
+        public class SearchHistory
+        {
+            public string Title { get; set; }
+            public string Highlight { get; set; }
+            public DateTimeOffset Time { get; set; }
+
+            public override string ToString() => Title;
+        }
+
+        private class HistoryRecordEqulityComparer : IEqualityComparer<HistoryRecord>
+        {
+            public bool Equals(HistoryRecord x, HistoryRecord y)
+            {
+                return x.Title == y.Title;
+            }
+
+            public int GetHashCode(HistoryRecord obj)
+            {
+                return (obj?.Title ?? "").GetHashCode();
+            }
+        }
+
+        private static readonly IEqualityComparer<HistoryRecord> historyComparer = new HistoryRecordEqulityComparer();
+
         private class TagRecordEqulityComparer : IEqualityComparer<ITagRecord>
         {
             public bool Equals(ITagRecord x, ITagRecord y)
@@ -218,13 +242,22 @@ namespace ExViewer.Controls
             return Task.Run<IReadOnlyList<object>>(() =>
             {
                 input = input?.Trim() ?? "";
-                using (var db = new SearchHistoryDb())
+                using (var db = new HistoryDb())
                 {
-                    var history = useHistory ? ((IEnumerable<SearchHistory>)db.SearchHistorySet
-                                                                 .Where(sh => sh.Content.Contains(input))
-                                                                 .OrderByDescending(sh => sh.Time))
-                                        .Distinct()
-                                        .Select(sh => sh.SetHighlight(input)) : Enumerable.Empty<SearchHistory>();
+                    var history = default(IEnumerable<SearchHistory>);
+                    if (useHistory)
+                        history = db.HistorySet
+                            .Where(sh => (sh.Type == HistoryRecordType.Search || sh.Type == HistoryRecordType.Favorite) && sh.Title.Contains(input))
+                            .OrderByDescending(sh => sh.TimeStamp)
+                            .ToList().Distinct(historyComparer)
+                            .Select(sh => new SearchHistory
+                            {
+                                Title = sh.Title,
+                                Time = sh.Time,
+                                Highlight = input,
+                            });
+                    else
+                        history = Enumerable.Empty<SearchHistory>();
                     splitKeyword(sep, input, out var lastwordNs, out var lastword, out var previous);
                     var dictionary = default(IEnumerable<ITagRecord>);
                     if (!string.IsNullOrEmpty(lastword) && lastwordNs != Namespace.Unknown)
@@ -359,10 +392,7 @@ namespace ExViewer.Controls
         private static bool autoCompleteFinished(object selectedSuggestion)
         {
             if (selectedSuggestion is SearchHistory)
-            {
                 return true;
-            }
-
             return false;
         }
     }
