@@ -206,26 +206,27 @@ namespace ExViewer.Views
             setScale();
         }
 
-        private System.Threading.CancellationTokenSource doubleTapToen;
 
         private static UISettings uiSettings = new UISettings();
 
         bool? tapToFlip;
+        private System.Threading.CancellationTokenSource doubleTapToken;
+
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (this.tapToFlip == null)
                 this.tapToFlip = SettingCollection.Current.TapToFlip;
             var tapToFlip = this.tapToFlip.Value;
-            this.doubleTapToen = new System.Threading.CancellationTokenSource();
-            await Task.Delay((int)uiSettings.DoubleClickTime, this.doubleTapToen.Token).ContinueWith(async t =>
+            this.doubleTapToken = new System.Threading.CancellationTokenSource();
+            await Task.Delay((int)uiSettings.DoubleClickTime, this.doubleTapToken.Token).ContinueWith(async t =>
             {
                 if (t.IsCanceled)
                     return;
-                this.doubleTapToen.Cancel();
+                this.doubleTapToken.Cancel();
                 await Dispatcher.Yield();
 
                 var handled = false;
-                if (e.PointerDeviceType != Windows.Devices.Input.PointerDeviceType.Mouse && tapToFlip)
+                if (tapToFlip && e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
                 {
                     var orient = (this.fv.ItemsPanelRoot is VirtualizingStackPanel panel) ? panel.Orientation : Orientation.Horizontal;
                     var point = e.GetPosition(this.fv);
@@ -261,6 +262,15 @@ namespace ExViewer.Views
             });
         }
 
+        private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            if (this.doubleTapToken != null)
+            {
+                this.doubleTapToken.Cancel();
+                e.Handled = true;
+            }
+        }
+
         private bool cbVisible = true;
 
         private bool changeCbVisibility()
@@ -287,22 +297,6 @@ namespace ExViewer.Views
                 this.cb_top.IsOpen = false;
                 this.cb_top.Visibility = Visibility.Collapsed;
             }
-        }
-
-        private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-        {
-            if (this.doubleTapToen != null)
-            {
-                if (this.doubleTapToen.IsCancellationRequested)
-                {
-                    changeCbVisibility();
-                }
-                else
-                {
-                    this.doubleTapToen.Cancel();
-                }
-            }
-            e.Handled = true;
         }
 
         private async void Flyout_Opening(object sender, object e)
