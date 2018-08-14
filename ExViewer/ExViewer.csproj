@@ -24,6 +24,9 @@
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <PackageCertificateThumbprint>AC82A857467374ACB64C3F8A542446485164DD50</PackageCertificateThumbprint>
     <HockeyAppResourceId>9c09ca3908114a38a09c81ca8b68ee39</HockeyAppResourceId>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
@@ -694,7 +697,7 @@
       <Version>1.3.10</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.UWP.Controls">
-      <Version>1.0.1</Version>
+      <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.UWP.Converters">
       <Version>1.0.0</Version>
