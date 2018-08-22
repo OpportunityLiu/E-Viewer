@@ -15,7 +15,7 @@ namespace ExViewer.ViewModels
             var search = default(FavoritesSearchResult);
             var record = new HistoryRecord
             {
-                Type = HistoryRecordType.Favorite,
+                Type = HistoryRecordType.Favorites,
             };
             if (string.IsNullOrEmpty(query))
             {
@@ -32,7 +32,7 @@ namespace ExViewer.ViewModels
             var vm = new FavoritesVM(search);
             HistoryDb.Add(new HistoryRecord
             {
-                Type = HistoryRecordType.Favorite,
+                Type = HistoryRecordType.Favorites,
                 Uri = vm.SearchResult.SearchUri,
                 Title = vm.Keyword,
             });
@@ -47,7 +47,7 @@ namespace ExViewer.ViewModels
             var query = vm.SearchQuery;
             HistoryDb.Add(new HistoryRecord
             {
-                Type = HistoryRecordType.Favorite,
+                Type = HistoryRecordType.Favorites,
                 Uri = vm.SearchResult.SearchUri,
                 Title = vm.Keyword,
             });

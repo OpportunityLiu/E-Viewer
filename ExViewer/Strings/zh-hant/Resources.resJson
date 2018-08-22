@@ -119,6 +119,18 @@
     "OK": "確定",
     "Submit": "提交"
   },
+  "JumpList": {
+    "Recent": {
+      "GroupName": "最近",
+      "HistoryRecord": {
+        "Default": "{0} - E-Viewer",
+        "Favorites": "{0} - 收藏",
+        "Gallery": "{0}",
+        "Image": "{0}",
+        "Search": "{0} - 搜尋"
+      }
+    }
+  },
   "Sharing": {
     "CopyedToClipboard": "內容已經複製到剪貼簿",
     "CopyToClipboard": "複製到剪貼簿",
