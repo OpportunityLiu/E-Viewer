@@ -370,12 +370,12 @@
   <ItemGroup>
     <Content Include="Assets\About\EH.png" />
     <Content Include="Assets\About\EHWiki.png" />
-    <Content Include="Assets\Application\Medium.png" />
-    <Content Include="Assets\Application\Small.png" />
-    <Content Include="Assets\Application\SplashScreen.png" />
-    <Content Include="Assets\Application\Store.png" />
-    <Content Include="Assets\Application\TaskBar.png" />
-    <Content Include="Assets\Application\Wide.png" />
+    <Content Include="Assets\Application\Medium.scale-400.png" />
+    <Content Include="Assets\Application\Small.scale-400.png" />
+    <Content Include="Assets\Application\SplashScreen.scale-400.png" />
+    <Content Include="Assets\Application\Store.scale-400.png" />
+    <Content Include="Assets\Application\TaskBar.scale-400.png" />
+    <Content Include="Assets\Application\Wide.scale-400.png" />
     <Content Include="Assets\JumpList\Favorites.contrast-black.png" />
     <Content Include="Assets\JumpList\Favorites.contrast-white.png" />
     <Content Include="Assets\JumpList\Favorites.png" />
