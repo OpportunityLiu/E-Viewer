@@ -5,7 +5,7 @@ using Windows.UI.StartScreen;
 
 namespace ExViewer.Database
 {
-    class HistoryDb : DbContext
+    internal class HistoryDb : DbContext
     {
         private const string dbFilename = "ExViewer.History.db";
 
@@ -41,43 +41,58 @@ namespace ExViewer.Database
 
         public DbSet<HistoryRecord> HistorySet { get; protected set; }
 
-        public int AddHistory(HistoryRecord record)
+        public static int Add(HistoryRecord record)
         {
             if (record is null)
                 throw new ArgumentNullException(nameof(record));
             if (record.Id != 0)
                 throw new ArgumentException("Id of record is not 0.", nameof(record));
+
             record.UpdateTime();
-            this.HistorySet.Add(record);
-            this.SaveChanges();
-            return record.Id;
+            using (var db = new HistoryDb())
+            {
+                db.HistorySet.Add(record);
+                db.SaveChanges();
+                return record.Id;
+            }
         }
 
-        public void UpdateHistory(HistoryRecord record)
+        public static void Update(HistoryRecord record)
         {
             if (record is null)
                 throw new ArgumentNullException(nameof(record));
             if (record.Id == 0)
                 throw new ArgumentException("Id of record is 0.", nameof(record));
             record.UpdateTime();
-            this.HistorySet.Update(record);
-            this.SaveChanges();
+            using (var db = new HistoryDb())
+            {
+                db.HistorySet.Update(record);
+                db.SaveChanges();
+            }
         }
 
-        public void RemoveHistory(int id)
+        public static void Remove(int id)
         {
-            this.HistorySet.Remove(this.HistorySet.Find(id));
-            this.SaveChanges();
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException(nameof(id), "Id of record is 0.");
+            using (var db = new HistoryDb())
+            {
+                db.HistorySet.Remove(db.HistorySet.Find(id));
+                db.SaveChanges();
+            }
         }
 
-        public void ClearHistory()
+        public static void Clear()
         {
-            this.HistorySet.RemoveRange(this.HistorySet);
-            this.SaveChanges();
+            using (var db = new HistoryDb())
+            {
+                db.HistorySet.RemoveRange(db.HistorySet);
+                db.SaveChanges();
+            }
         }
     }
 
-    enum HistoryRecordType
+    internal enum HistoryRecordType
     {
         Default,
         Search,
@@ -86,7 +101,7 @@ namespace ExViewer.Database
         Image,
     }
 
-    class HistoryRecord : IEquatable<HistoryRecord>
+    internal class HistoryRecord : IEquatable<HistoryRecord>
     {
         public int Id { get; set; }
 

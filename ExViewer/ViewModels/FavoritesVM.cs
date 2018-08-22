@@ -30,15 +30,12 @@ namespace ExViewer.ViewModels
                 search = (FavoritesSearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
             }
             var vm = new FavoritesVM(search);
-            using (var db = new HistoryDb())
+            HistoryDb.Add(new HistoryRecord
             {
-                db.AddHistory(new HistoryRecord
-                {
-                    Type = HistoryRecordType.Favorite,
-                    Uri = vm.SearchResult.SearchUri,
-                    Title = vm.Keyword,
-                });
-            }
+                Type = HistoryRecordType.Favorite,
+                Uri = vm.SearchResult.SearchUri,
+                Title = vm.Keyword,
+            });
             return vm;
         }, 10);
 
@@ -48,15 +45,12 @@ namespace ExViewer.ViewModels
         {
             var vm = new FavoritesVM(searchResult ?? throw new ArgumentNullException(nameof(searchResult)));
             var query = vm.SearchQuery;
-            using (var db = new HistoryDb())
+            HistoryDb.Add(new HistoryRecord
             {
-                db.AddHistory(new HistoryRecord
-                {
-                    Type = HistoryRecordType.Favorite,
-                    Uri = vm.SearchResult.SearchUri,
-                    Title = vm.Keyword,
-                });
-            }
+                Type = HistoryRecordType.Favorite,
+                Uri = vm.SearchResult.SearchUri,
+                Title = vm.Keyword,
+            });
             Cache[query] = vm;
             return vm;
         }
