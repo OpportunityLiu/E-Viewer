@@ -103,7 +103,7 @@ namespace ExViewer.Views
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            this.GetNavigator().Handlers.Remove(this);
+            Navigator.GetForCurrentView().Handlers.Remove(this);
             base.OnNavigatingFrom(e);
             this.ViewModel.View.IsCurrentPositionLocked = true;
 
@@ -159,7 +159,7 @@ namespace ExViewer.Views
 
         // null fo unknown;
         // tracked by Av_VisibleBoundsChanged
-        bool? isFullScreen;
+        private bool? isFullScreen;
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
         {
             var currentState = RootControl.RootController.IsFullScreen;
@@ -208,8 +208,7 @@ namespace ExViewer.Views
 
 
         private static UISettings uiSettings = new UISettings();
-
-        bool? tapToFlip;
+        private bool? tapToFlip;
         private System.Threading.CancellationTokenSource doubleTapToken;
 
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
