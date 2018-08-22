@@ -119,6 +119,18 @@
     "OK": "OK",
     "Submit": "Submit"
   },
+  "JumpList": {
+    "Recent": {
+      "GroupName": "Recent",
+      "HistoryRecord": {
+        "Default": "{0} - E-Viewer",
+        "Favorites": "{0} - Favorite",
+        "Gallery": "{0}",
+        "Image": "{0}",
+        "Search": "{0} - Search"
+      }
+    }
+  },
   "Sharing": {
     "CopyedToClipboard": "Content has copied to clipboard.",
     "CopyToClipboard": "Copy to clipboard",

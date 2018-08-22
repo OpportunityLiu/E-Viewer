@@ -1,4 +1,5 @@
-﻿using ExViewer.Views;
+﻿using ExViewer.Helpers;
+using ExViewer.Views;
 using Microsoft.AppCenter.Analytics;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,6 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
-using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 #if !DEBUG
@@ -20,7 +20,7 @@ namespace ExViewer
     /// <summary>
     /// 提供特定于应用程序的行为，以补充默认的应用程序类。
     /// </summary>
-    sealed partial class App : Application
+    public sealed partial class App : Application
     {
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -87,6 +87,7 @@ namespace ExViewer
                 Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Add(new Services.ContentDialogNotification());
                 Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Add(new Services.InAppToastNotification());
             }
+            var jumplist = JumplistManager.RefreshJumplistAsync();
             var currentWindow = Window.Current;
             var currentContent = currentWindow.Content;
             if (currentContent is null)
@@ -94,15 +95,6 @@ namespace ExViewer
                 var view = ApplicationView.GetForCurrentView();
                 view.SetPreferredMinSize(new Size(320, 500));
                 CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-                if (JumpList.IsSupported())
-                {
-                    Task.Run(async () =>
-                    {
-                        var jl = await JumpList.LoadCurrentAsync();
-                        jl.SystemGroupKind = JumpListSystemGroupKind.None;
-                        await jl.SaveAsync();
-                    });
-                }
                 currentContent = new SplashControl(e.SplashScreen);
                 currentWindow.Content = currentContent;
             }
@@ -156,8 +148,17 @@ namespace ExViewer
         /// </summary>
         /// <param name="sender">挂起的请求的源。</param>
         /// <param name="e">有关挂起请求的详细信息。</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            var def = e.SuspendingOperation.GetDeferral();
+            try
+            {
+                await JumplistManager.RefreshJumplistAsync();
+            }
+            finally
+            {
+                def.Complete();
+            }
         }
     }
 }

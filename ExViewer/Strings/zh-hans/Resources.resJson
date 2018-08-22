@@ -119,6 +119,18 @@
     "OK": "确定",
     "Submit": "提交"
   },
+  "JumpList": {
+    "Recent": {
+      "GroupName": "最近",
+      "HistoryRecord": {
+        "Default": "{0} - E-Viewer",
+        "Favorites": "{0} - 收藏",
+        "Gallery": "{0}",
+        "Image": "{0}",
+        "Search": "{0} - 搜索"
+      }
+    }
+  },
   "Sharing": {
     "CopyedToClipboard": "内容已经复制到剪贴板",
     "CopyToClipboard": "复制到剪贴板",

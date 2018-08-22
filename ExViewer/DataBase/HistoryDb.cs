@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Windows.UI.StartScreen;
 
@@ -82,6 +84,18 @@ namespace ExViewer.Database
             }
         }
 
+        public static void Remove(Uri uri)
+        {
+            if (uri is null)
+                throw new ArgumentNullException(nameof(uri));
+            var str = uri.ToString();
+            using (var db = new HistoryDb())
+            {
+                db.HistorySet.RemoveRange(db.HistorySet.Where(r => EF.Property<string>(r, "uri") == str));
+                db.SaveChanges();
+            }
+        }
+
         public static void Clear()
         {
             using (var db = new HistoryDb())
@@ -96,7 +110,7 @@ namespace ExViewer.Database
     {
         Default,
         Search,
-        Favorite,
+        Favorites,
         Gallery,
         Image,
     }
