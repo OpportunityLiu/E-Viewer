@@ -4,5 +4,6 @@
   "80072EFE": "The connection with the server has been terminated.",
   "80072EFF": "The connection with the server was reset.",
   "80072F78": "The server returned an invalid or unrecognized response.",
-  "80190194": "Not found (404). The requested URL does not exist on the server."
+  "80190194": "Not found (404). The requested URL does not exist on the server.",
+  "80190198": "Request time-out (408). The server timed out waiting for the request."
 }
