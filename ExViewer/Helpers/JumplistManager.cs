@@ -31,6 +31,8 @@ namespace ExViewer.Helpers
             public static HistoryRecordComparer Instance { get; } = new HistoryRecordComparer();
         }
 
+        private const string RECENT_GROUP_NAME = "ms-resource:///Resources/JumpList/Recent/GroupName";
+
         public static async Task RefreshJumplistAsync()
         {
             if (!JumpList.IsSupported())
@@ -38,13 +40,13 @@ namespace ExViewer.Helpers
             var jl = await JumpList.LoadCurrentAsync();
             foreach (var item in jl.Items)
             {
-                if (item.RemovedByUser)
+                if (item.RemovedByUser && item.GroupName == RECENT_GROUP_NAME)
                     HistoryDb.Remove(new Uri(item.Arguments));
             }
             jl.Items.Clear();
             using (var db = new HistoryDb())
             {
-                var records = db.HistorySet.OrderByDescending(r => r.TimeStamp).Take(40).ToArray();
+                var records = db.HistorySet.OrderByDescending(r => r.TimeStamp).Take(50).ToArray();
                 var added = new HashSet<HistoryRecord>(HistoryRecordComparer.Instance);
                 var dtformatter = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("shortdate shorttime");
                 const string sep = " - ";
@@ -63,12 +65,10 @@ namespace ExViewer.Helpers
                         title = $"{record.Title.Trim()} - E-Viewer";
                     }
                     var item = JumpListItem.CreateWithArguments(record.Uri.ToString(), title);
-                    item.GroupName = "ms-resource:///Resources/JumpList/Recent/GroupName";
+                    item.GroupName = RECENT_GROUP_NAME;
                     item.Logo = new Uri($"ms-appx:///Assets/JumpList/{record.Type.ToString()}.png");
-                    item.Description = item.DisplayName + sep + dtformatter.Format(record.Time) + sep + item.Arguments;
+                    item.Description = item.DisplayName + sep + dtformatter.Format(record.Time);
                     jl.Items.Add(item);
-                    if (jl.Items.Count >= 20)
-                        break;
                 }
             }
             await jl.SaveAsync();
