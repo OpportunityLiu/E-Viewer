@@ -46,6 +46,8 @@ namespace ExViewer.Helpers
             {
                 var records = db.HistorySet.OrderByDescending(r => r.TimeStamp).Take(40).ToArray();
                 var added = new HashSet<HistoryRecord>(HistoryRecordComparer.Instance);
+                var dtformatter = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("shortdate shorttime");
+                const string sep = " - ";
                 foreach (var record in records)
                 {
                     if (!added.Add(record))
@@ -63,7 +65,7 @@ namespace ExViewer.Helpers
                     var item = JumpListItem.CreateWithArguments(record.Uri.ToString(), title);
                     item.GroupName = "ms-resource:///Resources/JumpList/Recent/GroupName";
                     item.Logo = new Uri($"ms-appx:///Assets/JumpList/{record.Type.ToString()}.png");
-                    item.Description = item.Arguments;
+                    item.Description = item.DisplayName + sep + dtformatter.Format(record.Time) + sep + item.Arguments;
                     jl.Items.Add(item);
                     if (jl.Items.Count >= 20)
                         break;
