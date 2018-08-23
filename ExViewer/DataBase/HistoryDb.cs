@@ -123,7 +123,7 @@ namespace ExViewer.Database
         public Uri Uri
         {
             get => this.uri.IsNullOrEmpty() ? null : new Uri(this.uri);
-            set => this.uri = value?.ToString();
+            set => this.uri = (value ?? throw new ArgumentNullException(nameof(value))).ToString();
         }
 
         public string Title { get; set; }

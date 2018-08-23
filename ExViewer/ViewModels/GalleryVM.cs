@@ -375,16 +375,16 @@ namespace ExViewer.ViewModels
         {
             CurrentInfo = null;
             QRCodeResult = null;
-            var current = View.CurrentItem;
-            if (current is null)
+            this.history.Title = this.gallery.GetDisplayTitle();
+            if (this.View.CurrentItem?.PageUri is Uri pageUri)
             {
-                this.history.Type = HistoryRecordType.Gallery;
-                this.history.Uri = this.gallery.GalleryUri;
+                this.history.Type = HistoryRecordType.Image;
+                this.history.Uri = pageUri;
             }
             else
             {
-                this.history.Type = HistoryRecordType.Image;
-                this.history.Uri = current.PageUri;
+                this.history.Type = HistoryRecordType.Gallery;
+                this.history.Uri = this.gallery.GalleryUri;
             }
             HistoryDb.Update(this.history);
         }
