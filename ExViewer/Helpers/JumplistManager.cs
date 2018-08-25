@@ -54,17 +54,7 @@ namespace ExViewer.Helpers
                 {
                     if (!added.Add(record))
                         continue;
-                    var title = default(string);
-                    try
-                    {
-                        title = string.Format(Strings.Resources.JumpList.Recent.HistoryRecord.GetValue(record.Type.ToString()), record.Title.Trim());
-                    }
-                    catch (Exception ex)
-                    {
-                        Telemetry.LogException(ex);
-                        title = $"{record.Title.Trim()} - E-Viewer";
-                    }
-                    var item = JumpListItem.CreateWithArguments(record.Uri.ToString(), title);
+                    var item = JumpListItem.CreateWithArguments(record.Uri.ToString(), record.ToDisplayString());
                     item.GroupName = RECENT_GROUP_NAME;
                     item.Logo = new Uri($"ms-appx:///Assets/JumpList/{record.Type.ToString()}.png");
                     item.Description = item.DisplayName + sep + dtformatter.Format(record.Time);

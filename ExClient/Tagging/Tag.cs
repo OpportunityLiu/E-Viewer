@@ -91,13 +91,13 @@ namespace ExClient.Tagging
             }
         }
 
-        public CategorySearchResult Search()
+        public AdvancedSearchResult Search()
             => Client.Current.Search(ToSearchTerm());
 
-        public CategorySearchResult Search(Category filter)
+        public AdvancedSearchResult Search(Category filter)
             => Client.Current.Search(ToSearchTerm(), filter);
 
-        public CategorySearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
+        public AdvancedSearchResult Search(Category filter, AdvancedSearchOptions advancedSearch)
             => Client.Current.Search(ToSearchTerm(), filter, advancedSearch);
 
         public static Uri WikiUri { get; } = new Uri("https://ehwiki.org/wiki/");

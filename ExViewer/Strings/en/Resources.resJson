@@ -123,11 +123,11 @@
     "Recent": {
       "GroupName": "Recent",
       "HistoryRecord": {
-        "Default": "{0} - E-Viewer",
-        "Favorites": "{0} - Favorite",
-        "Gallery": "{0}",
-        "Image": "{0}",
-        "Search": "{0} - Search"
+        "$Default": "{title} - E-Viewer",
+        "$Favorites": "{searchTerm} - {searchCategory}",
+        "$Gallery": "{galleryName}",
+        "$Image": "{galleryName} - Page\u00a0{currentPage}",
+        "$Search": "{searchTerm} - Search"
       }
     }
   },

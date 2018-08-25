@@ -7,15 +7,15 @@ namespace ExClient.Launch
 {
     public static class UriLauncher
     {
-        private static IReadOnlyList<UriHandler> handlers = new UriHandler[]
+        private static readonly UriHandler[] handlers = new UriHandler[]
         {
-            new SearchHandler(),
-            new SearchCategoryHandler(),
-            new SearchUploaderAndTagHandler(),
+            SearchHandler.Instance,
+            SearchCategoryHandler.Instance,
+            SearchUploaderAndTagHandler.Instance,
+            FavoritesSearchHandler.Instance,
             new GalleryHandler(),
             new GalleryPopupHandler(),
             new GalleryImageHandler(),
-            new FavoritesSearchHandler()
         };
 
         private static UriHandlerData previousData;
