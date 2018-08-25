@@ -49,4 +49,4 @@ Here is a simple introduction for those who would like to build this project by 
 
 ## Translate
 If you would like to help me translate this project into other languages,
-just fork this project, translate resources in `*/Strings/` folders and open pull requests.
+just fork this project, translate resources in `**/Strings/` folders and open pull requests.
