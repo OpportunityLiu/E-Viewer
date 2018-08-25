@@ -11,6 +11,7 @@
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls"
+                xmlns:converters="using:Opportunity.UWP.Converters"
                 mc:Ignorable="d">
   <views:MvvmPage.Transitions>
     <TransitionCollection>
@@ -114,6 +115,33 @@
                       Icon="Find"
                       Text="Show galleries with this tag" />
     </MenuFlyout>
+    <MenuFlyout x:Name="mfHistoryRecord">
+      <MenuFlyoutItem x:Uid="Views/InfoPage/OpenHistoryMenuFlyoutItem"
+                      Command="{x:Bind ViewModel.OpenHistory}"
+                      Icon="Go"
+                      Text="Open" />
+      <MenuFlyoutItem x:Uid="Views/InfoPage/DeleteHistoryMenuFlyoutItem"
+                      Command="{x:Bind ViewModel.DeleteHistory}"
+                      Icon="Clear"
+                      Text="Delete" />
+      <MenuFlyoutSeparator />
+      <MenuFlyoutSubItem x:Uid="Views/InfoPage/DeleteManyHistoryMenuFlyoutItem"
+                         Text="Delete many"
+                         Icon="Delete">
+        <MenuFlyoutItem x:Uid="Views/InfoPage/DeleteHistoryWithSameTitleMenuFlyoutItem"
+                        Command="{x:Bind ViewModel.DeleteHistoryWithSameTitle}"
+                        Text="Same title" />
+        <MenuFlyoutItem x:Uid="Views/InfoPage/DeleteHistoryWithSameDateMenuFlyoutItem"
+                        Command="{x:Bind ViewModel.DeleteHistoryWithSameDate}"
+                        Text="Same date" />
+        <MenuFlyoutSeparator />
+        <MenuFlyoutItem x:Uid="Views/InfoPage/ClearHistoryMenuFlyoutItem"
+                        Command="{x:Bind ViewModel.ClearHistory}"
+                        Text="All" />
+      </MenuFlyoutSubItem>
+    </MenuFlyout>
+    <converters:ConverterReference x:Key="HistoryIconConverter"
+                                   x:Name="HistoryIconConverter" />
   </views:MvvmPage.Resources>
   <Pivot x:Name="pv_root"
          BorderThickness="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
@@ -323,8 +351,8 @@
                     Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition />
-                  <ColumnDefinition Width="Auto"/>
-                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Uid="Views/InfoPage/ModPowerTextBlock"
                            Style="{StaticResource ModPowerKeyTextBlockStyle}"
@@ -375,7 +403,7 @@
           <DataTemplate xmlns:s="using:ExClient.Status"
                         xmlns:controls="using:ExViewer.Controls"
                         x:DataType="s:TaggingRecord">
-            <controls:TaggingRecordPresenter Margin="8,2"
+            <controls:TaggingRecordPresenter Padding="8,4"
                                              HorizontalAlignment="Stretch"
                                              HorizontalContentAlignment="Stretch"
                                              Record="{x:Bind}" />
@@ -447,6 +475,58 @@
                          Text="There are no tagging records recently." />
             </StackPanel>
           </tk:ScrollHeader>
+        </ListView.Header>
+      </ListView>
+    </PivotItem>
+    <PivotItem x:Uid="Views/InfoPage/HistoryPivotItem"
+               Header="HISTORY">
+      <ListView x:Name="lvHistory"
+                ext:ScrollViewerExtensions.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+                Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0'), Mode=OneWay}"
+                SelectionMode="None"
+                IsItemClickEnabled="True"
+                ItemsSource="{x:Bind ViewModel.History, Mode=OneWay}"
+                ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                ItemClick="lvHistory_ItemClick">
+        <ListView.ItemTemplate>
+          <DataTemplate xmlns:s="using:ExViewer.Database"
+                        xmlns:controls="using:ExViewer.Controls"
+                        x:DataType="s:HistoryRecord">
+            <RelativePanel Background="Transparent"
+                           ToolTipService.ToolTip="{x:Bind Uri}"
+                           Padding="7,3">
+              <TextBlock x:Name="Title"
+                         Margin="1"
+                         RelativePanel.AlignTopWithPanel="True"
+                         RelativePanel.RightOf="Icon"
+                         Text="{x:Bind ToDisplayString()}"
+                         Style="{ThemeResource BaseTextBlockStyle}" />
+              <TextBlock x:Name="Date"
+                         Margin="1"
+                         RelativePanel.Below="Title"
+                         RelativePanel.RightOf="Icon"
+                         Text="{x:Bind Time, Converter={StaticResource DateTimeOffsetToStringConverter}}"
+                         Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                         Style="{ThemeResource CaptionTextBlockStyle}" />
+              <BitmapIcon x:Name="Icon"
+                          RelativePanel.AlignTopWithPanel="True"
+                          RelativePanel.AlignBottomWithPanel="True"
+                          RelativePanel.AlignLeftWithPanel="True"
+                          Margin="1,0,7,0"
+                          Width="24"
+                          Height="24"
+                          UriSource="{x:Bind Type, Converter={StaticResource HistoryIconConverter}}" />
+            </RelativePanel>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.Header>
+          <TextBlock x:Uid="Views/InfoPage/NoHistoryTextBlock"
+                     HorizontalAlignment="Center"
+                     Margin="4"
+                     Style="{StaticResource BaseTextBlockStyle}"
+                     Visibility="{x:Bind ViewModel.History.Count, FallbackValue=Collapsed, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
+                     Text="You will see your browsing history here." />
         </ListView.Header>
       </ListView>
     </PivotItem>
