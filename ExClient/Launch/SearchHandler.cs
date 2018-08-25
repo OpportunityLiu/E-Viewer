@@ -9,20 +9,22 @@ namespace ExClient.Launch
 {
     internal class SearchHandler : SearchHandlerBase
     {
+        public static SearchHandler Instance { get; } = new SearchHandler();
+
         public override bool CanHandle(UriHandlerData data)
         {
             return data.Paths.Count == 0;
         }
 
-        public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
+        public override SearchLaunchResult Handle(UriHandlerData data)
         {
             var sr = data.Queries.GetString("f_shash").IsNullOrEmpty()
                  ? handleSearch(data)
-                 : handleFileSearch(data);
-            return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(sr));
+                 : (CategorySearchResult)handleFileSearch(data);
+            return new SearchLaunchResult(sr);
         }
 
-        private CategorySearchResult handleSearch(UriHandlerData data)
+        private AdvancedSearchResult handleSearch(UriHandlerData data)
         {
             var keyword = GetKeyword(data);
             var category = GetCategory(data);

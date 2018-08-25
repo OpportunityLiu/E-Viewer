@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ExClient.Api;
+using ExClient.Galleries;
+using ExClient.Launch;
+using ExClient.Search;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -158,6 +162,39 @@ namespace ExViewer.Database
         public override string ToString()
         {
             return this.Title ?? "";
+        }
+
+        public string ToDisplayString()
+        {
+            var resource = Strings.Resources.JumpList.Recent.HistoryRecord;
+            var title = Title is null ? "" : Title.Trim();
+            try
+            {
+                switch (Type)
+                {
+                case HistoryRecordType.Search:
+                    return resource.Search(title);
+                case HistoryRecordType.Favorites:
+                {
+                    var data = FavoritesSearchResult.Parse(Uri);
+                    return resource.Favorites(title, data.Category);
+                }
+                case HistoryRecordType.Gallery:
+                    return resource.Gallery(title);
+                case HistoryRecordType.Image:
+                {
+                    var data = ImageInfo.Parse(Uri);
+                    return resource.Image(title, data.PageID);
+                }
+                default:
+                    return resource.Default(title);
+                }
+            }
+            catch (Exception ex)
+            {
+                Telemetry.LogException(ex);
+                return $"{title} - E-Viewer";
+            }
         }
     }
 }

@@ -123,11 +123,11 @@
     "Recent": {
       "GroupName": "最近",
       "HistoryRecord": {
-        "Default": "{0} - E-Viewer",
-        "Favorites": "{0} - 收藏",
-        "Gallery": "{0}",
-        "Image": "{0}",
-        "Search": "{0} - 搜尋"
+        "$Default": "{title} - E-Viewer",
+        "$Favorites": "{searchTerm} - {searchCategory}",
+        "$Gallery": "{galleryName}",
+        "$Image": "{galleryName} - 第\u00a0{currentPage}\u00a0頁",
+        "$Search": "{searchTerm} - 搜尋"
       }
     }
   },
