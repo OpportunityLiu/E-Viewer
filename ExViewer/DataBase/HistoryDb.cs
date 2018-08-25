@@ -4,6 +4,7 @@ using ExClient.Launch;
 using ExClient.Search;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -46,6 +47,17 @@ namespace ExViewer.Database
         }
 
         public DbSet<HistoryRecord> HistorySet { get; protected set; }
+
+        public static async Task<List<HistoryRecord>> GetAsync(int limit = -1)
+        {
+            using (var db = new HistoryDb())
+            {
+                IQueryable<HistoryRecord> data = db.HistorySet.OrderByDescending(h => h.TimeStamp);
+                if (limit > 0)
+                    data = data.Take(limit);
+                return await data.ToListAsync();
+            }
+        }
 
         public static int Add(HistoryRecord record)
         {
@@ -100,12 +112,23 @@ namespace ExViewer.Database
             }
         }
 
-        public static void Clear()
+        public static void Remove(Expression<Func<HistoryRecord, bool>> predicate)
+        {
+            if (predicate is null)
+                throw new ArgumentNullException(nameof(predicate));
+            using (var db = new HistoryDb())
+            {
+                db.HistorySet.RemoveRange(db.HistorySet.Where(predicate));
+                db.SaveChanges();
+            }
+        }
+
+        public static async Task ClearAsync()
         {
             using (var db = new HistoryDb())
             {
                 db.HistorySet.RemoveRange(db.HistorySet);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
         }
     }
@@ -144,6 +167,13 @@ namespace ExViewer.Database
 
         public bool Equals(HistoryRecord other)
         {
+            if (other is null)
+                return false;
+            if (this.Id != other.Id)
+                return false;
+            if (this.Id > 0)
+                return true;
+
             return this.uri == other.uri;
         }
 
@@ -156,6 +186,8 @@ namespace ExViewer.Database
 
         public override int GetHashCode()
         {
+            if (this.Id > 0)
+                return this.Id;
             return this.uri?.GetHashCode() ?? -1;
         }
 

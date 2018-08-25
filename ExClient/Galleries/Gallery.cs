@@ -183,7 +183,7 @@ namespace ExClient.Galleries
             this.ID = id;
             this.Token = token;
             this.Rating = new RatingStatus(this);
-            this.GalleryUri = new Uri(Client.Current.Uris.RootUri, $"g/{ID.ToString()}/{Token.ToTokenString()}/");
+            this.GalleryUri = new GalleryInfo(id, token).Uri;
             if (Client.Current.Settings.RawSettings.TryGetValue("tr", out var trv))
             {
                 switch (trv)

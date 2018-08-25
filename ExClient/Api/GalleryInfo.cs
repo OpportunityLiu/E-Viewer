@@ -169,6 +169,8 @@ namespace ExClient.Api
 
         public ulong Token { get; }
 
+        public Uri Uri => new Uri(Client.Current.Uris.RootUri, $"g/{ID.ToString()}/{Token.ToTokenString()}/");
+
         public override int GetHashCode()
             => this.ID.GetHashCode() * 19 ^ this.Token.GetHashCode();
 
