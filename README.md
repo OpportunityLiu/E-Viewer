@@ -1,6 +1,6 @@
 # ExViewer
 A Client for e-hentai.org on Windows 10.    
-用于 WIndows 10 的 E-站 UWP 应用。
+用于 Windows 10 的 E-站 UWP 应用。
 
 | Barnch | Build status |
 | :----- | -----------: |
@@ -11,7 +11,7 @@ A Client for e-hentai.org on Windows 10.
 [More screenshots](https://github.com/OpportunityLiu/ExViewer/wiki/Home)  
 [更多截图](https://github.com/OpportunityLiu/ExViewer/wiki/主页)  
 ## Releases / 发布
-| [Latest Release / 最新版本](https://github.com/OpportunityLiu/ExViewer/releases/latest) | [![Github Latest Release](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/latest/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases/latest) |
+| [**Latest Release / 最新版本**](https://github.com/OpportunityLiu/ExViewer/releases/latest) | [![Github Latest Release](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/latest/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases/latest) |
 | :--- | ---: |
 | [**All Releases / 所有版本**](https://github.com/OpportunityLiu/ExViewer/releases) | [![Github All Releases](https://img.shields.io/github/downloads/OpportunityLiu/ExViewer/total.svg)](https://github.com/OpportunityLiu/ExViewer/releases) |
 
