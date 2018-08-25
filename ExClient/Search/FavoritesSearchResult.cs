@@ -1,4 +1,5 @@
 ﻿using ExClient.Galleries;
+using ExClient.Launch;
 using HtmlAgilityPack;
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using System;
@@ -13,6 +14,25 @@ namespace ExClient.Search
 {
     public sealed class FavoritesSearchResult : SearchResult
     {
+        public static bool TryParse(Uri uri, out FavoritesSearchResult result)
+        {
+            result = default;
+            if (uri is null)
+                return false;
+            var data = new UriHandlerData(uri);
+            if (!FavoritesSearchHandler.Instance.CanHandle(data))
+                return false;
+            result = (FavoritesSearchResult)FavoritesSearchHandler.Instance.Handle(data).Data;
+            return true;
+        }
+
+        public static FavoritesSearchResult Parse(Uri uri)
+        {
+            if (TryParse(uri, out var r))
+                return r;
+            throw new FormatException($"Failed to parse uri `{uri}` as FavoritesSearchResult");
+        }
+
         public static Uri SearchBaseUri => new Uri(Client.Current.Uris.RootUri, "favorites.php");
 
         internal static FavoritesSearchResult Search(string keyword, FavoriteCategory category)
@@ -51,14 +71,7 @@ namespace ExClient.Search
             {
                 var favNode = dataNode.ChildNodes[2].LastChild;
                 var favNote = favNode.GetInnerText();
-                if (favNote.StartsWith("Note: "))
-                {
-                    gallery.FavoriteNote = favNote.Substring(6);
-                }
-                else
-                {
-                    gallery.FavoriteNote = "";
-                }
+                gallery.FavoriteNote = favNote.StartsWith("Note: ") ? favNote.Substring(6) : "";
             }
         }
 
@@ -91,16 +104,7 @@ namespace ExClient.Search
 
             return AsyncInfo.Run(async token =>
             {
-                var ddact = default(string);
-                if (categoty.Index < 0)
-                {
-                    ddact = "delete";
-                }
-                else
-                {
-                    ddact = $"fav{categoty.Index}";
-                }
-
+                var ddact = categoty.Index < 0 ? "delete" : $"fav{categoty.Index}";
                 var post = Client.Current.HttpClient.PostAsync(this.SearchUri, getParameters());
                 token.Register(post.Cancel);
                 var r = await post;

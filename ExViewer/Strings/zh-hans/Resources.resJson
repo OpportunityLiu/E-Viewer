@@ -119,6 +119,18 @@
     "OK": "确定",
     "Submit": "提交"
   },
+  "JumpList": {
+    "Recent": {
+      "GroupName": "最近",
+      "HistoryRecord": {
+        "$Default": "{title} - E-Viewer",
+        "$Favorites": "{searchTerm} - {searchCategory}",
+        "$Gallery": "{galleryName}",
+        "$Image": "{galleryName} - 第\u00a0{currentPage}\u00a0页",
+        "$Search": "{searchTerm} - 搜索"
+      }
+    }
+  },
   "Sharing": {
     "CopyedToClipboard": "内容已经复制到剪贴板",
     "CopyToClipboard": "复制到剪贴板",
@@ -258,6 +270,12 @@
     },
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "更换用户",
+      "ClearHistoryMenuFlyoutItem/Text": "全部",
+      "DeleteHistoryMenuFlyoutItem/Text": "删除",
+      "DeleteHistoryWithSameDateMenuFlyoutItem/Text": "相同浏览日期",
+      "DeleteHistoryWithSameTitleMenuFlyoutItem/Text": "相同标题",
+      "DeleteManyHistoryMenuFlyoutItem/Text": "删除多条记录",
+      "HistoryPivotItem/Header": "历史",
       "ImageLimitsHeaderTextBlock/Text": "流量限制",
       "ImageLimitsResetButtonTextBlock/Text": "重置",
       "ImageLimitsSeparatorTextBlock/Text": "/",
@@ -272,9 +290,11 @@
       "ModPowerTextBlock/Text": "总计",
       "ModPowerUploadsAndHatHTextBlock/Text": "上传和 H@H",
       "MoreButton/Content": "更多信息…",
+      "NoHistoryTextBlock/Text": "你将在此处看到你的浏览记录。",
       "NoTaggingHistoryTextBlock/Text": "最近一段时间内没有记录",
       "NoToplistsTextBlock/Text": "你现在不在排行榜上",
       "OpenGalleryMenuFlyoutItem/Text": "打开画廊",
+      "OpenHistoryMenuFlyoutItem/Text": "打开",
       "OverviewPivotItem/Header": "总览",
       "RefreshAppBarButton/Label": "刷新",
       "RegenerateFormatString": "-{0}/分钟",

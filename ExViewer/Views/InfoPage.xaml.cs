@@ -1,10 +1,14 @@
 ﻿using ExViewer.Controls;
+using ExViewer.Database;
 using ExViewer.ViewModels;
 using Opportunity.MvvmUniverse.Views;
+using Opportunity.UWP.Converters;
 using System;
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Imaging;
 
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
@@ -14,14 +18,21 @@ namespace ExViewer.Views
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class InfoPage : MvvmPage, IHasAppBar
+    internal sealed partial class InfoPage : MvvmPage, IHasAppBar
     {
         public InfoPage()
         {
             this.InitializeComponent();
+            this.HistoryIconConverter.Converter = new HistoryToIconConverter();
             this.ViewModel = new InfoVM();
+            refreshAll();
+        }
+
+        private void refreshAll()
+        {
             this.ViewModel.RefreshStatus.Execute();
             this.ViewModel.RefreshTaggingStatistics.Execute();
+            this.ViewModel.RefreshHistory.Execute();
         }
 
         private double percent(double value)
@@ -53,10 +64,7 @@ namespace ExViewer.Views
 
         private void setSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
-            if (visible)
-                this.bdSplitViewPlaceholder.Width = 48;
-            else
-                this.bdSplitViewPlaceholder.Width = 0;
+            this.bdSplitViewPlaceholder.Width = visible ? 48 : 0;
         }
 
         private void pv_root_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -69,6 +77,9 @@ namespace ExViewer.Views
             case 1:
                 this.abbRefresh.Command = ViewModel.RefreshTaggingStatistics;
                 break;
+            case 2:
+                this.abbRefresh.Command = ViewModel.RefreshHistory;
+                break;
             }
         }
 
@@ -76,8 +87,7 @@ namespace ExViewer.Views
         {
             if (await RootControl.RootController.RequestLogOn())
             {
-                this.ViewModel.RefreshStatus.Execute();
-                this.ViewModel.RefreshTaggingStatistics.Execute();
+                refreshAll();
             }
         }
 
@@ -106,16 +116,47 @@ namespace ExViewer.Views
             this.cb.IsOpen = false;
         }
 
-        private void lvTagging_ItemClick(object sender, ItemClickEventArgs e)
+        private static void setCommandParameter(MenuFlyout target, object parameter)
         {
-            foreach (var item in this.mfTaggingRecord.Items)
+            set(target.Items);
+
+            void set(IEnumerable<MenuFlyoutItemBase> collection)
             {
-                if (item is MenuFlyoutItem mfi)
+                foreach (var item in collection)
                 {
-                    mfi.CommandParameter = e.ClickedItem;
+                    switch (item)
+                    {
+                    case MenuFlyoutItem mfi:
+                        mfi.CommandParameter = parameter;
+                        break;
+                    case MenuFlyoutSubItem msi:
+                        set(msi.Items);
+                        break;
+                    }
                 }
             }
+        }
+
+        private void lvTagging_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            setCommandParameter(this.mfTaggingRecord, e.ClickedItem);
             this.mfTaggingRecord.ShowAt(this.lvTagging.ContainerFromItem(e.ClickedItem).Cast<FrameworkElement>());
+        }
+
+        private void lvHistory_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            setCommandParameter(this.mfHistoryRecord, e.ClickedItem);
+            this.mfHistoryRecord.ShowAt(this.lvHistory.ContainerFromItem(e.ClickedItem).Cast<FrameworkElement>());
+        }
+
+        private sealed class HistoryToIconConverter : ValueConverter<HistoryRecordType, Uri>
+        {
+            public override Uri Convert(HistoryRecordType value, object parameter, string language)
+            {
+                return new Uri($"ms-appx:///Assets/Jumplist/{value}.png");
+            }
+
+            public override HistoryRecordType ConvertBack(Uri value, object parameter, string language) => throw new NotImplementedException();
         }
     }
 }

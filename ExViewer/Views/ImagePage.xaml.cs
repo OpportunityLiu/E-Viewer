@@ -51,6 +51,7 @@ namespace ExViewer.Views
         {
             Debug.Assert(e.Parameter != null, "e.Parameter != null");
             Navigator.GetForCurrentView().Handlers.Add(this);
+            this.tapToFlip = SettingCollection.Current.TapToFlip;
 
             base.OnNavigatedTo(e);
 
@@ -103,7 +104,7 @@ namespace ExViewer.Views
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            this.GetNavigator().Handlers.Remove(this);
+            Navigator.GetForCurrentView().Handlers.Remove(this);
             base.OnNavigatingFrom(e);
             this.ViewModel.View.IsCurrentPositionLocked = true;
 
@@ -122,7 +123,6 @@ namespace ExViewer.Views
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             this.fv.Opacity = 0;
-            this.tapToFlip = null;
             this.fv.IsEnabled = false;
             this.imgConnect.Visibility = Visibility.Visible;
             base.OnNavigatedFrom(e);
@@ -159,7 +159,7 @@ namespace ExViewer.Views
 
         // null fo unknown;
         // tracked by Av_VisibleBoundsChanged
-        bool? isFullScreen;
+        private bool? isFullScreen;
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
         {
             var currentState = RootControl.RootController.IsFullScreen;
@@ -208,15 +208,11 @@ namespace ExViewer.Views
 
 
         private static UISettings uiSettings = new UISettings();
-
-        bool? tapToFlip;
+        private bool tapToFlip;
         private System.Threading.CancellationTokenSource doubleTapToken;
 
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (this.tapToFlip == null)
-                this.tapToFlip = SettingCollection.Current.TapToFlip;
-            var tapToFlip = this.tapToFlip.Value;
             this.doubleTapToken = new System.Threading.CancellationTokenSource();
             await Task.Delay((int)uiSettings.DoubleClickTime, this.doubleTapToken.Token).ContinueWith(async t =>
             {
@@ -226,7 +222,7 @@ namespace ExViewer.Views
                 await Dispatcher.Yield();
 
                 var handled = false;
-                if (tapToFlip && e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
+                if (this.tapToFlip && e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
                 {
                     var orient = (this.fv.ItemsPanelRoot is VirtualizingStackPanel panel) ? panel.Orientation : Orientation.Horizontal;
                     var point = e.GetPosition(this.fv);
@@ -476,14 +472,7 @@ namespace ExViewer.Views
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
-            if (visible)
-            {
-                this.cdSplitViewPlaceholder.Width = new GridLength(48);
-            }
-            else
-            {
-                this.cdSplitViewPlaceholder.Width = new GridLength(0);
-            }
+            this.cdSplitViewPlaceholder.Width = visible ? new GridLength(48) : new GridLength(0);
         }
 
         private void cb_top_KeyDown(object sender, KeyRoutedEventArgs e)

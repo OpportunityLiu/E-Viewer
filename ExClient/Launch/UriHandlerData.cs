@@ -11,7 +11,7 @@ namespace ExClient.Launch
     {
         public UriHandlerData(Uri uri)
         {
-            this.Uri = uri;
+            this.Uri = uri ?? throw new ArgumentNullException(nameof(uri));
             this.Paths = uri.Segments.Skip(1)
                 .Select(s => s.EndsWith("/") ? s.Substring(0, s.Length - 1) : s)
                 .ToArray();

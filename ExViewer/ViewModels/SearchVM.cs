@@ -35,15 +35,12 @@ namespace ExViewer.ViewModels
                 search = (CategorySearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
             }
             var vm = new SearchVM(search);
-            using (var db = new HistoryDb())
+            HistoryDb.Add(new HistoryRecord
             {
-                db.AddHistory(new HistoryRecord
-                {
-                    Type = HistoryRecordType.Search,
-                    Uri = vm.SearchResult.SearchUri,
-                    Title = vm.Keyword,
-                });
-            }
+                Type = HistoryRecordType.Search,
+                Uri = vm.SearchResult.SearchUri,
+                Title = vm.Keyword,
+            });
             return vm;
         }, 10);
 
@@ -52,15 +49,12 @@ namespace ExViewer.ViewModels
         public static SearchVM GetVM(CategorySearchResult searchResult)
         {
             var vm = new SearchVM(searchResult ?? throw new ArgumentNullException(nameof(searchResult)));
-            using (var db = new HistoryDb())
+            HistoryDb.Add(new HistoryRecord
             {
-                db.AddHistory(new HistoryRecord
-                {
-                    Type = HistoryRecordType.Search,
-                    Uri = vm.SearchResult.SearchUri,
-                    Title = vm.Keyword,
-                });
-            }
+                Type = HistoryRecordType.Search,
+                Uri = vm.SearchResult.SearchUri,
+                Title = vm.Keyword,
+            });
             Cache[vm.SearchQuery] = vm;
             return vm;
         }

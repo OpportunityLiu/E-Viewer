@@ -9,7 +9,7 @@
              d:DesignHeight="20"
              d:DesignWidth="400">
 
-  <Grid>
+  <Grid Margin="{x:Bind Padding, Mode=OneWay}">
     <TextBlock x:Name="tbTag" />
     <TextBlock x:Name="tbStatus" HorizontalAlignment="Right" Foreground="Red"/>
   </Grid>

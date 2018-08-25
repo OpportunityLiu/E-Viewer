@@ -6,12 +6,14 @@ namespace ExClient.Launch
 {
     internal sealed class FavoritesSearchHandler : SearchHandler
     {
+        public static FavoritesSearchHandler Instance { get; } = new FavoritesSearchHandler();
+
         public override bool CanHandle(UriHandlerData data)
         {
             return data.Paths.Count >= 1 && data.Path0 == "favorites.php";
         }
 
-        public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
+        public override SearchLaunchResult Handle(UriHandlerData data)
         {
             var keyword = UnescapeKeyword(data.Queries.GetString("f_search") ?? "");
             var category = Client.Current.Favorites.All;
@@ -28,11 +30,11 @@ namespace ExClient.Launch
             }
             if (!ap)
             {
-                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(category.Search("")));
+                return new SearchLaunchResult(category.Search(""));
             }
             else
             {
-                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(category.Search(keyword)));
+                return new SearchLaunchResult(category.Search(keyword));
             }
         }
     }

@@ -4,6 +4,7 @@ using ExClient.Galleries;
 using ExClient.Galleries.Metadata;
 using ExClient.Galleries.Rating;
 using ExClient.Services;
+using ExViewer.Database;
 using ExViewer.Helpers;
 using ExViewer.Services;
 using ExViewer.Settings;
@@ -339,6 +340,7 @@ namespace ExViewer.ViewModels
             get => this.gallery;
             private set
             {
+                this.history = null;
                 if (View != null)
                 {
                     View.CurrentChanged -= this.View_CurrentChanged;
@@ -354,13 +356,37 @@ namespace ExViewer.ViewModels
                 this.Share.OnCanExecuteChanged();
                 this.AddComment.OnCanExecuteChanged();
                 this.Torrents = null;
+                if (value != null)
+                {
+                    this.history = new HistoryRecord
+                    {
+                        Title = value.GetDisplayTitle(),
+                        Type = HistoryRecordType.Gallery,
+                        Uri = value.GalleryUri,
+                    };
+                    HistoryDb.Add(this.history);
+                }
             }
         }
+
+        private HistoryRecord history;
 
         private void View_CurrentChanged(object sender, object e)
         {
             CurrentInfo = null;
             QRCodeResult = null;
+            this.history.Title = this.gallery.GetDisplayTitle();
+            if (this.View.CurrentItem?.PageUri is Uri pageUri)
+            {
+                this.history.Type = HistoryRecordType.Image;
+                this.history.Uri = pageUri;
+            }
+            else
+            {
+                this.history.Type = HistoryRecordType.Gallery;
+                this.history.Uri = this.gallery.GalleryUri;
+            }
+            HistoryDb.Update(this.history);
         }
 
         public new CollectionView<GalleryImage> View { get; private set; }

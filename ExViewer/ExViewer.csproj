@@ -239,6 +239,7 @@
     <Compile Include="Helpers\ApiInfo.cs" />
     <Compile Include="Helpers\DocumentHelper.cs" />
     <Compile Include="Helpers\FavoriteExtension.cs" />
+    <Compile Include="Helpers\JumplistManager.cs" />
     <Compile Include="Helpers\SearchResultExtension.cs" />
     <Compile Include="Helpers\GalleryExtension.cs" />
     <Compile Include="App.xaml.cs">
@@ -367,62 +368,42 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Application\SplashScreen.scale-100.png" />
-    <Content Include="Assets\Application\SplashScreen.scale-200.png" />
-    <Content Include="Assets\Application\SplashScreen.scale-400.png" />
-    <Content Include="Assets\Theme\Dark\ImageLoading.scale-100.png" />
-    <Content Include="Assets\Theme\Dark\ImageLoading.scale-200.png" />
-    <Content Include="Assets\Theme\Dark\ImageLoading.scale-400.png" />
-    <Content Include="Assets\Theme\Light\ImageLoading.scale-100.png" />
-    <Content Include="Assets\Theme\Light\ImageLoading.scale-200.png" />
-    <Content Include="Assets\Theme\Light\ImageLoading.scale-400.png" />
-    <Content Include="Assets\ShareTarget\CopyToClipboard.scale-100.png" />
-    <Content Include="Assets\ShareTarget\CopyToClipboard.scale-200.png" />
-    <Content Include="Assets\ShareTarget\CopyToClipboard.scale-400.png" />
-    <Content Include="Assets\About\EHWiki.scale-100.png" />
-    <Content Include="Assets\About\EHWiki.scale-200.png" />
-    <Content Include="Assets\About\EHWiki.scale-400.png" />
-    <Content Include="Assets\About\EH.scale-100.png" />
-    <Content Include="Assets\About\EH.scale-200.png" />
-    <Content Include="Assets\About\EH.scale-400.png" />
-    <Content Include="Assets\Theme\Dark\UserBackground.scale-100.png" />
-    <Content Include="Assets\Theme\Dark\UserBackground.scale-200.png" />
-    <Content Include="Assets\Theme\Dark\UserBackground.scale-400.png" />
-    <Content Include="Assets\DefaultUser.scale-100.png" />
-    <Content Include="Assets\DefaultUser.scale-200.png" />
-    <Content Include="Assets\DefaultUser.scale-400.png" />
-    <Content Include="Assets\Application\Medium.scale-100.png" />
-    <Content Include="Assets\Application\Medium.scale-200.png" />
+    <Content Include="Assets\About\EH.png" />
+    <Content Include="Assets\About\EHWiki.png" />
     <Content Include="Assets\Application\Medium.scale-400.png" />
-    <Content Include="Assets\Application\Small.scale-100.png" />
-    <Content Include="Assets\Application\Small.scale-200.png" />
     <Content Include="Assets\Application\Small.scale-400.png" />
-    <Content Include="Assets\Application\Store.scale-100.png" />
-    <Content Include="Assets\Application\Store.scale-200.png" />
+    <Content Include="Assets\Application\SplashScreen.scale-400.png" />
     <Content Include="Assets\Application\Store.scale-400.png" />
-    <Content Include="Assets\Application\TaskBar.scale-100.png" />
-    <Content Include="Assets\Application\TaskBar.scale-200.png" />
     <Content Include="Assets\Application\TaskBar.scale-400.png" />
+    <Content Include="Assets\Application\Wide.scale-400.png" />
+    <Content Include="Assets\JumpList\Favorites.contrast-black.png" />
+    <Content Include="Assets\JumpList\Favorites.contrast-white.png" />
+    <Content Include="Assets\JumpList\Favorites.png" />
+    <Content Include="Assets\JumpList\Gallery.contrast-black.png" />
+    <Content Include="Assets\JumpList\Gallery.contrast-white.png" />
+    <Content Include="Assets\JumpList\Gallery.png" />
+    <Content Include="Assets\JumpList\Image.contrast-black.png" />
+    <Content Include="Assets\JumpList\Image.contrast-white.png" />
+    <Content Include="Assets\JumpList\Image.png" />
+    <Content Include="Assets\JumpList\Search.contrast-black.png" />
+    <Content Include="Assets\JumpList\Search.contrast-white.png" />
+    <Content Include="Assets\JumpList\Search.png" />
+    <Content Include="Assets\ShareTarget\CopyToClipboard.png" />
+    <Content Include="Assets\ShareTarget\MicrosoftEdge.png" />
+    <Content Include="Assets\ShareTarget\Settings.png" />
+    <Content Include="Assets\DefaultUser.png" />
     <Content Include="Assets\Application\TaskBar.targetsize-256.png" />
     <Content Include="Assets\Application\TaskBar.targetsize-256_altform-unplated.png" />
-    <Content Include="Assets\Application\Wide.scale-100.png" />
-    <Content Include="Assets\Application\Wide.scale-200.png" />
-    <Content Include="Assets\Application\Wide.scale-400.png" />
     <PRIResource Include="Strings\zh-hans\Resources.resJson" />
     <PRIResource Include="Strings\en\Resources.resJson" />
     <PRIResource Include="Strings\en\Settings.resJson" />
     <PRIResource Include="Strings\en\Exceptions.resJson" />
     <None Include="ExViewer_TemporaryKey.pfx" />
     <None Include="Strings\Strings.resgenconfig" />
-    <Content Include="Assets\Theme\Light\UserBackground.scale-100.png" />
-    <Content Include="Assets\Theme\Light\UserBackground.scale-200.png" />
-    <Content Include="Assets\Theme\Light\UserBackground.scale-400.png" />
-    <Content Include="Assets\ShareTarget\Settings.scale-100.png" />
-    <Content Include="Assets\ShareTarget\Settings.scale-200.png" />
-    <Content Include="Assets\ShareTarget\Settings.scale-400.png" />
-    <Content Include="Assets\ShareTarget\MicrosoftEdge.scale-200.png" />
-    <Content Include="Assets\ShareTarget\MicrosoftEdge.scale-400.png" />
-    <Content Include="Assets\ShareTarget\MicrosoftEdge.scale-100.png" />
+    <Content Include="Assets\Theme\Dark\ImageLoading.png" />
+    <Content Include="Assets\Theme\Dark\UserBackground.png" />
+    <Content Include="Assets\Theme\Light\ImageLoading.png" />
+    <Content Include="Assets\Theme\Light\UserBackground.png" />
     <Content Include="Properties\Default.rd.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -667,7 +648,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.8.6</Version>
+      <Version>1.8.7</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
       <Version>1.8.0</Version>
@@ -691,7 +672,7 @@
       <Version>1.3.15</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
-      <Version>2.7.0</Version>
+      <Version>2.7.1</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
       <Version>1.3.10</Version>
