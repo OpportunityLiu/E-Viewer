@@ -119,6 +119,18 @@
     "OK": "OK",
     "Submit": "Submit"
   },
+  "JumpList": {
+    "Recent": {
+      "GroupName": "Recent",
+      "HistoryRecord": {
+        "$Default": "{title} - E-Viewer",
+        "$Favorites": "{searchTerm} - {searchCategory}",
+        "$Gallery": "{galleryName}",
+        "$Image": "{galleryName} - Page\u00a0{currentPage}",
+        "$Search": "{searchTerm} - Search"
+      }
+    }
+  },
   "Sharing": {
     "CopyedToClipboard": "Content has copied to clipboard.",
     "CopyToClipboard": "Copy to clipboard",
@@ -258,6 +270,12 @@
     },
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "Change user",
+      "ClearHistoryMenuFlyoutItem/Text": "All",
+      "DeleteHistoryMenuFlyoutItem/Text": "Delete",
+      "DeleteHistoryWithSameDateMenuFlyoutItem/Text": "Same date",
+      "DeleteHistoryWithSameTitleMenuFlyoutItem/Text": "Same title",
+      "DeleteManyHistoryMenuFlyoutItem/Text": "Delete many",
+      "HistoryPivotItem/Header": "HISTORY",
       "ImageLimitsHeaderTextBlock/Text": "Image Limits",
       "ImageLimitsResetButtonTextBlock/Text": "Reset limit",
       "ImageLimitsSeparatorTextBlock/Text": "/",
@@ -272,9 +290,11 @@
       "ModPowerTextBlock/Text": "Total",
       "ModPowerUploadsAndHatHTextBlock/Text": "Uploads & H@H",
       "MoreButton/Content": "More info…",
+      "NoHistoryTextBlock/Text": "You will see your browsing history here.",
       "NoTaggingHistoryTextBlock/Text": "There are no tagging records recently",
       "NoToplistsTextBlock/Text": "You are currently not featured on any toplists",
       "OpenGalleryMenuFlyoutItem/Text": "Open gallery",
+      "OpenHistoryMenuFlyoutItem/Text": "Open",
       "OverviewPivotItem/Header": "OVERVIEW",
       "RefreshAppBarButton/Label": "Refresh",
       "RegenerateFormatString": "-{0}/min",

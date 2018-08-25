@@ -247,7 +247,7 @@ namespace ExViewer.Controls
                     var history = default(IEnumerable<SearchHistory>);
                     if (useHistory)
                         history = db.HistorySet
-                            .Where(sh => (sh.Type == HistoryRecordType.Search || sh.Type == HistoryRecordType.Favorite) && sh.Title.Contains(input))
+                            .Where(sh => (sh.Type == HistoryRecordType.Search || sh.Type == HistoryRecordType.Favorites) && sh.Title.Contains(input))
                             .OrderByDescending(sh => sh.TimeStamp)
                             .ToList().Distinct(historyComparer)
                             .Select(sh => new SearchHistory

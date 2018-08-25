@@ -7,6 +7,8 @@ namespace ExClient.Launch
 {
     internal sealed class SearchCategoryHandler : SearchHandlerBase
     {
+        public static SearchCategoryHandler Instance { get; } = new SearchCategoryHandler();
+
         private static Dictionary<string, Category> categoryDic = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
             ["Doujinshi"] = Category.Doujinshi,
@@ -26,12 +28,12 @@ namespace ExClient.Launch
             return data.Paths.Count >= 1 && (categoryDic.ContainsKey(data.Path0));
         }
 
-        public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
+        public override SearchLaunchResult Handle(UriHandlerData data)
         {
             var category = categoryDic[data.Path0];
             var keyword = GetKeyword(data);
             var advanced = GetAdvancedSearchOptions(data);
-            return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(Client.Current.Search(keyword, category, advanced)));
+            return new SearchLaunchResult(Client.Current.Search(keyword, category, advanced));
         }
     }
 }

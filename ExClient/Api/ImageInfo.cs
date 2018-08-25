@@ -52,10 +52,12 @@ namespace ExClient.Api
 
         public static bool TryParse(Uri uri, out ImageInfo info)
         {
+            info = default;
+            if (uri is null)
+                return false;
             var data = new UriHandlerData(uri);
             if (TryParse(data, out info))
                 return true;
-            info = default;
             return false;
         }
 

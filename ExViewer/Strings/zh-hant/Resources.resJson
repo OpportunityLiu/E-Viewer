@@ -119,6 +119,18 @@
     "OK": "確定",
     "Submit": "提交"
   },
+  "JumpList": {
+    "Recent": {
+      "GroupName": "最近",
+      "HistoryRecord": {
+        "$Default": "{title} - E-Viewer",
+        "$Favorites": "{searchTerm} - {searchCategory}",
+        "$Gallery": "{galleryName}",
+        "$Image": "{galleryName} - 第\u00a0{currentPage}\u00a0頁",
+        "$Search": "{searchTerm} - 搜尋"
+      }
+    }
+  },
   "Sharing": {
     "CopyedToClipboard": "內容已經複製到剪貼簿",
     "CopyToClipboard": "複製到剪貼簿",
@@ -258,6 +270,12 @@
     },
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "更換使用者",
+      "ClearHistoryMenuFlyoutItem/Text": "全部",
+      "DeleteHistoryMenuFlyoutItem/Text": "刪除",
+      "DeleteHistoryWithSameDateMenuFlyoutItem/Text": "相同瀏覽日期",
+      "DeleteHistoryWithSameTitleMenuFlyoutItem/Text": "相同標題",
+      "DeleteManyHistoryMenuFlyoutItem/Text": "刪除多條記錄",
+      "HistoryPivotItem/Header": "歷史",
       "ImageLimitsHeaderTextBlock/Text": "流量限制",
       "ImageLimitsResetButtonTextBlock/Text": "重置",
       "ImageLimitsSeparatorTextBlock/Text": "/",
@@ -272,9 +290,11 @@
       "ModPowerTextBlock/Text": "總計",
       "ModPowerUploadsAndHatHTextBlock/Text": "上傳和 H@H",
       "MoreButton/Content": "更多資訊…",
+      "NoHistoryTextBlock/Text": "你將在此處看到你的瀏覽記錄。",
       "NoTaggingHistoryTextBlock/Text": "最近一段時間內沒有記錄",
       "NoToplistsTextBlock/Text": "你現在不在排行榜上",
       "OpenGalleryMenuFlyoutItem/Text": "開啟畫廊",
+      "OpenHistoryMenuFlyoutItem/Text": "打開",
       "OverviewPivotItem/Header": "總覽",
       "RefreshAppBarButton/Label": "重新整理",
       "RegenerateFormatString": "-{0}/分鐘",

@@ -1,5 +1,7 @@
 ﻿using ExClient.Search;
+using Opportunity.Helpers.Universal.AsyncHelpers;
 using System.Collections.Generic;
+using Windows.Foundation;
 
 namespace ExClient.Launch
 {
@@ -12,6 +14,11 @@ namespace ExClient.Launch
 
         protected static AdvancedSearchOptions GetAdvancedSearchOptions(UriHandlerData data)
             => AdvancedSearchOptions.ParseUri(data);
+
+        public abstract SearchLaunchResult Handle(UriHandlerData data);
+
+        public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
+            => AsyncOperation<LaunchResult>.CreateCompleted(Handle(data));
 
         protected static Category GetCategory(UriHandlerData data)
         {

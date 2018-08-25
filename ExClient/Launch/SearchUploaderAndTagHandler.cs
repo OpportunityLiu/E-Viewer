@@ -7,6 +7,8 @@ namespace ExClient.Launch
 {
     internal sealed class SearchUploaderAndTagHandler : SearchHandlerBase
     {
+        public static SearchUploaderAndTagHandler Instance { get; } = new SearchUploaderAndTagHandler();
+
         /// <summary>
         /// Unescape twice for special usage.
         /// </summary>
@@ -39,7 +41,7 @@ namespace ExClient.Launch
             }
         }
 
-        public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
+        public override SearchLaunchResult Handle(UriHandlerData data)
         {
             var v = unescape2(data.Paths[1]);
             var category = GetCategory(data);
@@ -47,11 +49,11 @@ namespace ExClient.Launch
             switch (data.Path0)
             {
             case "tag":
-                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search(category, advanced)));
+                return new SearchLaunchResult(Tag.Parse(v.TrimEnd(trim)).Search(category, advanced));
             case "uploader":
-                return AsyncOperation<LaunchResult>.CreateCompleted(new SearchLaunchResult(Client.Current.Search(v, null, category, advanced)));
+                return new SearchLaunchResult(Client.Current.Search(v, null, category, advanced));
             }
-            return AsyncOperation<LaunchResult>.CreateFault(new NotSupportedException("Unsupported uri."));
+            throw new NotSupportedException($"Unsupported uri `{data.Uri}`.");
         }
     }
 }
