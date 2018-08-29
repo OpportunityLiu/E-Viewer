@@ -48,7 +48,7 @@ namespace ExClient
             {
                 this.CookieManager.DeleteCookie(item);
             }
-            foreach (var item in this.GetLogOnInfo().Cookies.Where(isImportantCookie))
+            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(isImportantCookie))
             {
                 var cookie = new HttpCookie(item.Name, Domains.Ex, "/")
                 {
@@ -89,11 +89,13 @@ namespace ExClient
             ClearLogOnInfo();
             foreach (var item in info.Cookies)
                 this.CookieManager.SetCookie(item);
+            ResetExCookie();
         }
 
         public void ClearLogOnInfo()
         {
-            foreach (var item in GetLogOnInfo().Cookies)
+            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Eh.RootUri)
+                        .Concat(this.CookieManager.GetCookies(DomainProvider.Ex.RootUri)))
                 this.CookieManager.DeleteCookie(item);
             setDefaultCookies();
         }
@@ -106,18 +108,10 @@ namespace ExClient
 
         private async Task refreshCookieAndSettings()
         {
-            var backup = GetLogOnInfo();
-            try
-            {
-                foreach (var item in backup.Cookies.Where(c => !isKeyCookie(c)))
-                    this.CookieManager.DeleteCookie(item);
-                await this.Settings.FetchAsync();
-                ResetExCookie();
-            }
-            catch (Exception)
-            {
-                RestoreLogOnInfo(backup);
-            }
+            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(c => !isKeyCookie(c)))
+                this.CookieManager.DeleteCookie(item);
+            await this.Settings.FetchAsync();
+            ResetExCookie();
         }
 
         /// <summary>

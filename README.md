@@ -44,7 +44,7 @@ Here is a simple introduction for those who would like to build this project by 
 - Clone the repository to local
 - Open `ExViewer.sln`
 - Restore nuget packages
-- Run `Convert-Resource` in **Package Manager** (See [OpportunityLiu/ResourceGenerator](https://github.com/OpportunityLiu/ResourceGenerator))
+- *Run `Convert-Resource` in **Package Manager** (See [OpportunityLiu/ResourceGenerator](https://github.com/OpportunityLiu/ResourceGenerator))*
 - Build and run
 
 ## Translate

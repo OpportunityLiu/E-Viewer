@@ -4,6 +4,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
+#pragma warning disable CS0618 // 类型或成员已过时
+
 namespace ExViewer.Controls
 {
     public class PullToRefreshIndicator : Control
@@ -78,3 +80,5 @@ namespace ExViewer.Controls
         }
     }
 }
+
+#pragma warning restore CS0618 // 类型或成员已过时
