@@ -62,8 +62,15 @@ namespace ExClient.Api
                 try
                 {
                     var req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
-                    token.Register(req.Cancel);
+                    token.Register(() => req?.Cancel());
                     resStr = await req;
+                    if (resStr.IsNullOrEmpty() || resStr[0] == '<')
+                    {
+                        // sometimes apis returns HTML, try a second time
+                        req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
+                        token.Register(() => req.Cancel());
+                        resStr = await req;
+                    }
                     var resobj = JsonConvert.DeserializeObject<TResponse>(resStr);
                     resobj.CheckResponse(this);
                     return resobj;

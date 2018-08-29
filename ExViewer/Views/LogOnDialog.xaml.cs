@@ -74,7 +74,7 @@ namespace ExViewer.Views
 
         private async Task injectOtherPage()
         {
-            if (this.bdProgress.Visibility == Visibility.Visible)
+            if (this.loggingOn || this.Succeed)
                 return;
 
             var r = await this.wv.InvokeScriptAsync("eval", new[] { @"
@@ -227,6 +227,8 @@ namespace ExViewer.Views
 
         private async Task logOnAsync(string id, string hash)
         {
+            if (this.loggingOn || this.Succeed)
+                return;
             loggingOn = true;
             try
             {

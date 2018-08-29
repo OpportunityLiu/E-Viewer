@@ -6,7 +6,7 @@ namespace ExClient.Launch
 {
     internal sealed class FavoritesSearchHandler : SearchHandler
     {
-        public static FavoritesSearchHandler Instance { get; } = new FavoritesSearchHandler();
+        public static new FavoritesSearchHandler Instance { get; } = new FavoritesSearchHandler();
 
         public override bool CanHandle(UriHandlerData data)
         {
