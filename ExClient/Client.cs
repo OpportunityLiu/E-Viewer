@@ -23,7 +23,18 @@ namespace ExClient
                 ClearLogOnInfo();
             else
             {
-                var ignore = Task.Run(refreshCookieAndSettings);
+                var ignore = Task.Run(async () =>
+                {
+                    var backup = GetLogOnInfo();
+                    try
+                    {
+                        await refreshCookieAndSettings();
+                    }
+                    catch (Exception)
+                    {
+                        RestoreLogOnInfo(backup);
+                    }
+                });
             }
         }
 

@@ -36,12 +36,10 @@ namespace ExClient.Settings
 
     public sealed class SettingCollection : ObservableObject
     {
-        private static readonly Uri configUriRaletive = new Uri("/uconfig.php", UriKind.Relative);
-        private readonly Uri configUri;
+        private static readonly Uri configUri = new Uri(DomainProvider.Eh.RootUri, "/uconfig.php");
 
         internal SettingCollection()
         {
-            this.configUri = new Uri(DomainProvider.Eh.RootUri, configUriRaletive);
             foreach (var item in this.items.Values)
             {
                 item.Owner = this;
@@ -132,7 +130,7 @@ namespace ExClient.Settings
             {
                 try
                 {
-                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(this.configUri);
+                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(configUri);
                     token.Register(getDoc.Cancel);
                     var doc = await getDoc;
                     updateSettingsDic(doc);
@@ -151,7 +149,7 @@ namespace ExClient.Settings
                 item.DataChanged(this.settings);
             }
             StoreCache();
-            OnPropertyChanged("");
+            OnPropertyReset();
         }
 
         public IAsyncAction SendAsync()
@@ -170,7 +168,7 @@ namespace ExClient.Settings
                     {
                         item.ApplyChanges(postDic);
                     }
-                    var postData = Client.Current.HttpClient.PostAsync(this.configUri, postDic);
+                    var postData = Client.Current.HttpClient.PostAsync(configUri, postDic);
                     token.Register(postData.Cancel);
                     var r = await postData;
                     var doc = new HtmlDocument();
@@ -250,32 +248,16 @@ namespace ExClient.Settings
 
             internal override void DataChanged(Dictionary<string, string> settings)
             {
-                if (settings.TryGetValue("xr", out var xr))
+                void setEnum<T>(ref T field, string key, T def)
+                    where T : struct, Enum
                 {
-                    this.ResampledImageSize = (ImageSize)int.Parse(xr);
+                    if (!settings.TryGetValue(key, out var value)
+                        || !Enum.TryParse<T>(value, true, out field))
+                        field = def;
                 }
-                else
-                {
-                    this.ResampledImageSize = ImageSize.Auto;
-                }
-
-                if (settings.TryGetValue("cs", out var cs))
-                {
-                    this.CommentsOrder = (CommentsOrder)int.Parse(cs);
-                }
-                else
-                {
-                    this.CommentsOrder = CommentsOrder.ByTimeAscending;
-                }
-
-                if (settings.TryGetValue("fs", out var fs))
-                {
-                    this.FavoritesOrder = (FavoritesOrder)int.Parse(fs);
-                }
-                else
-                {
-                    this.FavoritesOrder = FavoritesOrder.ByLastUpdatedTime;
-                }
+                setEnum(ref this.ResampledImageSize, "xr", ImageSize.Auto);
+                setEnum(ref this.CommentsOrder, "cs", CommentsOrder.ByTimeAscending);
+                setEnum(ref this.FavoritesOrder, "fs", FavoritesOrder.ByLastUpdatedTime);
             }
 
             public ImageSize ResampledImageSize;
