@@ -37,14 +37,11 @@ namespace ExClient.Settings
     public sealed class SettingCollection : ObservableObject
     {
         private static readonly Uri configUriRaletive = new Uri("/uconfig.php", UriKind.Relative);
-
-        private readonly DomainProvider owner;
         private readonly Uri configUri;
 
-        internal SettingCollection(DomainProvider owner)
+        internal SettingCollection()
         {
-            this.owner = owner;
-            this.configUri = new Uri(owner.RootUri, configUriRaletive);
+            this.configUri = new Uri(DomainProvider.Eh.RootUri, configUriRaletive);
             foreach (var item in this.items.Values)
             {
                 item.Owner = this;
@@ -57,16 +54,18 @@ namespace ExClient.Settings
 
         public IReadOnlyDictionary<string, string> RawSettings => this.settings;
 
+        private const string CACHE_NAME = "SettingsCache";
+
         internal void StoreCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values[this.owner.Type + "SettingsCache"] = JsonConvert.SerializeObject(this.settings);
+            storage.Values[CACHE_NAME] = JsonConvert.SerializeObject(this.settings);
         }
 
         private void loadCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values.TryGetValue(this.owner.Type + "SettingsCache", out var r);
+            storage.Values.TryGetValue(CACHE_NAME, out var r);
             var value = r + "";
             this.settings.Clear();
             if (string.IsNullOrEmpty(value))
@@ -128,6 +127,7 @@ namespace ExClient.Settings
 
         public IAsyncAction FetchAsync()
         {
+            Client.Current.CheckLogOn();
             return AsyncInfo.Run(async token =>
             {
                 try
@@ -241,10 +241,7 @@ namespace ExClient.Settings
                 // Thumbnail Size - Large
                 settings["ts"] = "1";
                 // Popular Right Now - Display
-                if (this.Owner.owner.Type == HostType.EHentai)
-                {
-                    settings["pp"] = "0";
-                }
+                settings["pp"] = "0";
 
                 settings["xr"] = ((int)this.ResampledImageSize).ToString();
                 settings["cs"] = ((int)this.CommentsOrder).ToString();

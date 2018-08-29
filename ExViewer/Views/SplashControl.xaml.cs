@@ -170,7 +170,6 @@ namespace ExViewer.Views
                 if (!client.NeedLogOn)
                 {
                     SettingCollection.Current.Apply();
-                    client.ResetExCookie();
                     var initSearchTask = SearchVM.InitAsync();
                     var waitTime = 0;
                     while (waitTime < 7000)

@@ -6,7 +6,6 @@ namespace ExClient.Internal
     {
         public Uri RootUri { get; }
         public Uri ApiUri { get; }
-        public Settings.SettingCollection Settings { get; }
         public HostType Type { get; }
 
         private DomainProvider(HostType type, string root, string api)
@@ -14,7 +13,6 @@ namespace ExClient.Internal
             Type = type;
             RootUri = new Uri(root);
             ApiUri = new Uri(api);
-            Settings = new Settings.SettingCollection(this);
         }
 
         public static DomainProvider Ex { get; }

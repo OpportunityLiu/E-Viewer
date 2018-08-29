@@ -19,32 +19,15 @@ namespace ExClient
             httpFilter.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
             this.CookieManager = httpFilter.CookieManager;
             this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
-
-            ResetExCookie();
-
-            var ignore = Task.Run(fetchSettings);
-        }
-
-        private async Task fetchSettings()
-        {
-            if (!NeedLogOn)
+            if (NeedLogOn)
+                ClearLogOnInfo();
+            else
             {
-                try
-                {
-                    await DomainProvider.Eh.Settings.FetchAsync();
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    await DomainProvider.Ex.Settings.FetchAsync();
-                }
-                catch (Exception)
-                {
-                }
+                var ignore = Task.Run(refreshCookieAndSettings);
             }
         }
+
+        public SettingCollection Settings { get; } = new SettingCollection();
 
         internal HttpCookieManager CookieManager { get; }
 
@@ -62,8 +45,6 @@ namespace ExClient
                 Settings.FetchAsync().Completed = (s, e) => s.Close();
             }
         }
-
-        public SettingCollection Settings => this.Uris.Settings;
 
         private readonly FavoriteCollection favotites = new FavoriteCollection();
         public FavoriteCollection Favorites => NeedLogOn ? null : this.favotites;
