@@ -39,11 +39,7 @@ namespace ExClient
         public HostType Host
         {
             get => this.host;
-            set
-            {
-                Set(nameof(Settings), ref this.host, value);
-                Settings.FetchAsync().Completed = (s, e) => s.Close();
-            }
+            set => Set(ref this.host, value);
         }
 
         private readonly FavoriteCollection favotites = new FavoriteCollection();
