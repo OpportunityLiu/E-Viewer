@@ -51,6 +51,8 @@ namespace ExClient.Status
                 var table = body.Element("table");
                 if (table != null)
                     this.records.Update(table.Elements("tr").Skip(1).Select(item => new TaggingRecord(item)).ToList());
+                else if (match.Success)
+                    this.records.Clear();
                 OnPropertyChanged(default(string));
             }, token));
         }
@@ -58,15 +60,9 @@ namespace ExClient.Status
         private static double parsePercetage(string str)
         {
             if (string.IsNullOrWhiteSpace(str))
-            {
                 return double.NaN;
-            }
-
             if (str.EndsWith("%") && double.TryParse(str.Substring(0, str.Length - 1), out var r))
-            {
                 return r / 100;
-            }
-
             return double.NaN;
         }
     }
