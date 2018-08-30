@@ -36,10 +36,14 @@ namespace ExClient.Settings
 
     public sealed class SettingCollection : ObservableObject
     {
-        private static readonly Uri configUri = new Uri(DomainProvider.Eh.RootUri, "/uconfig.php");
+        private static readonly Uri configUriRaletive = new Uri("/uconfig.php", UriKind.Relative);
+        private readonly Uri configUri;
+        private readonly DomainProvider owner;
 
-        internal SettingCollection()
+        internal SettingCollection(DomainProvider domain)
         {
+            this.owner = domain;
+            this.configUri = new Uri(domain.RootUri, configUriRaletive);
             foreach (var item in this.items.Values)
             {
                 item.Owner = this;
@@ -57,13 +61,13 @@ namespace ExClient.Settings
         internal void StoreCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values[CACHE_NAME] = JsonConvert.SerializeObject(this.settings);
+            storage.Values[this.owner.Type + CACHE_NAME] = JsonConvert.SerializeObject(this.settings);
         }
 
         private void loadCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values.TryGetValue(CACHE_NAME, out var r);
+            storage.Values.TryGetValue(this.owner.Type + CACHE_NAME, out var r);
             var value = r + "";
             this.settings.Clear();
             if (string.IsNullOrEmpty(value))
@@ -130,7 +134,7 @@ namespace ExClient.Settings
             {
                 try
                 {
-                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(configUri);
+                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(this.configUri);
                     token.Register(getDoc.Cancel);
                     var doc = await getDoc;
                     updateSettingsDic(doc);
@@ -168,7 +172,7 @@ namespace ExClient.Settings
                     {
                         item.ApplyChanges(postDic);
                     }
-                    var postData = Client.Current.HttpClient.PostAsync(configUri, postDic);
+                    var postData = Client.Current.HttpClient.PostAsync(this.configUri, postDic);
                     token.Register(postData.Cancel);
                     var r = await postData;
                     var doc = new HtmlDocument();
@@ -239,7 +243,8 @@ namespace ExClient.Settings
                 // Thumbnail Size - Large
                 settings["ts"] = "1";
                 // Popular Right Now - Display
-                settings["pp"] = "0";
+                if (this.Owner.owner.Type == HostType.EHentai)
+                    settings["pp"] = "0";
 
                 settings["xr"] = ((int)this.ResampledImageSize).ToString();
                 settings["cs"] = ((int)this.CommentsOrder).ToString();

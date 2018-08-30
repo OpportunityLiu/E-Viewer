@@ -75,7 +75,8 @@ namespace ExViewer.ViewModels
                         Arguments = args,
                         VisualElements =
                         {
-                            Square150x150Logo= new Uri("ms-appx:///Assets/Application/Medium.png"),
+                            Wide310x150Logo = new Uri("ms-appx:///Assets/Application/Wide.png"),
+                            Square150x150Logo = new Uri("ms-appx:///Assets/Application/Medium.png"),
                             Square71x71Logo = new Uri("ms-appx:///Assets/Application/Small.png"),
                             Square44x44Logo = new Uri("ms-appx:///Assets/Application/TaskBar.png"),
                         }
@@ -131,7 +132,32 @@ namespace ExViewer.ViewModels
                                             },
                                         }
                                     }
-                                }
+                                },
+                                TileWide = new TileBinding
+                                {
+                                    Content = new TileBindingContentAdaptive
+                                    {
+                                        BackgroundImage = new TileBackgroundImage
+                                        {
+                                            Source = $"ms-appx:///Assets/JumpList/{hr.Type.ToString()}.png",
+                                            AlternateText = hr.Type.ToString(),
+                                        },
+                                        Children =
+                                        {
+                                            new AdaptiveText
+                                            {
+                                                HintStyle = AdaptiveTextStyle.Body,
+                                                Text = hr.ToDisplayString(),
+                                                HintWrap = true,
+                                            },
+                                            new AdaptiveText
+                                            {
+                                                HintStyle = AdaptiveTextStyle.CaptionSubtle,
+                                                Text = dtformatter.Format(hr.Time),
+                                            },
+                                        }
+                                    }
+                                },
                             }
                         };
                         var thumbUri = default(string);
@@ -156,6 +182,7 @@ namespace ExViewer.ViewModels
                             };
                             ((TileBindingContentAdaptive)tcontent.Visual.TileMedium.Content).PeekImage = peek;
                             ((TileBindingContentAdaptive)tcontent.Visual.TileSmall.Content).PeekImage = peek;
+                            ((TileBindingContentAdaptive)tcontent.Visual.TileWide.Content).PeekImage = peek;
                         }
                         TileUpdateManager.CreateTileUpdaterForSecondaryTile(t.TileId).Update(new TileNotification(tcontent.GetXml()));
                     }
