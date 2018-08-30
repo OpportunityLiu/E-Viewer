@@ -1,8 +1,11 @@
 ﻿using ExClient;
+using ExClient.Api;
+using ExClient.Galleries;
 using ExClient.Search;
 using ExClient.Status;
 using ExViewer.Database;
 using ExViewer.Views;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
@@ -10,7 +13,10 @@ using Opportunity.MvvmUniverse.Commands;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows.Input;
+using Windows.UI.Notifications;
+using Windows.UI.StartScreen;
 
 namespace ExViewer.ViewModels
 {
@@ -57,6 +63,104 @@ namespace ExViewer.ViewModels
             Command<HistoryRecord>.Create(
                 (sender, hr) => UriHandler.Handle(hr.Uri),
                 (sender, hr) => hr?.Uri != null));
+
+        public AsyncCommand<HistoryRecord> PinHistory => Commands.GetOrAdd(() =>
+            AsyncCommand<HistoryRecord>.Create(
+                async (sender, hr) =>
+                {
+                    var args = hr.Uri.ToString();
+                    var t = new SecondaryTile(hr.Uri.GetHashCode().ToString())
+                    {
+                        DisplayName = hr.ToDisplayString(),
+                        Arguments = args,
+                        VisualElements =
+                        {
+                            Square150x150Logo= new Uri("ms-appx:///Assets/Application/Medium.png"),
+                            Square71x71Logo = new Uri("ms-appx:///Assets/Application/Small.png"),
+                            Square44x44Logo = new Uri("ms-appx:///Assets/Application/TaskBar.png"),
+                        }
+                    };
+                    if (await t.RequestCreateAsync())
+                    {
+                        var dtformatter = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("shortdate shorttime");
+                        var tcontent = new TileContent
+                        {
+                            Visual = new TileVisual
+                            {
+                                TileMedium = new TileBinding
+                                {
+                                    Content = new TileBindingContentAdaptive
+                                    {
+                                        BackgroundImage = new TileBackgroundImage
+                                        {
+                                            Source = $"ms-appx:///Assets/JumpList/{hr.Type.ToString()}.png",
+                                            AlternateText = hr.Type.ToString(),
+                                        },
+                                        Children =
+                                        {
+                                            new AdaptiveText
+                                            {
+                                                HintStyle = AdaptiveTextStyle.Body,
+                                                Text = hr.ToDisplayString(),
+                                                HintWrap = true,
+                                            },
+                                            new AdaptiveText
+                                            {
+                                                HintStyle = AdaptiveTextStyle.CaptionSubtle,
+                                                Text = dtformatter.Format(hr.Time),
+                                            },
+                                        }
+                                    }
+                                },
+                                TileSmall = new TileBinding
+                                {
+                                    Content = new TileBindingContentAdaptive
+                                    {
+                                        BackgroundImage = new TileBackgroundImage
+                                        {
+                                            Source = $"ms-appx:///Assets/JumpList/{hr.Type.ToString()}.png",
+                                            AlternateText = hr.Type.ToString(),
+                                        },
+                                        Children =
+                                        {
+                                            new AdaptiveText
+                                            {
+                                                HintStyle = AdaptiveTextStyle.Body,
+                                                Text = hr.ToDisplayString(),
+                                                HintWrap = true,
+                                            },
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        var thumbUri = default(string);
+                        if (hr.Type == HistoryRecordType.Gallery)
+                        {
+                            var gi = GalleryInfo.Parse(hr.Uri);
+                            var g = await gi.FetchGalleryAsync();
+                            thumbUri = g.ThumbUri.ToString();
+                        }
+                        else if (hr.Type == HistoryRecordType.Image)
+                        {
+                            var ii = ImageInfo.Parse(hr.Uri);
+                            var gi = await ii.FetchGalleryInfoAsync();
+                            var g = await gi.FetchGalleryAsync();
+                            thumbUri = g.ThumbUri.ToString();
+                        }
+                        if (thumbUri != null)
+                        {
+                            var peek = new TilePeekImage
+                            {
+                                Source = thumbUri,
+                            };
+                            ((TileBindingContentAdaptive)tcontent.Visual.TileMedium.Content).PeekImage = peek;
+                            ((TileBindingContentAdaptive)tcontent.Visual.TileSmall.Content).PeekImage = peek;
+                        }
+                        TileUpdateManager.CreateTileUpdaterForSecondaryTile(t.TileId).Update(new TileNotification(tcontent.GetXml()));
+                    }
+                },
+                (sender, hr) => hr?.Uri != null && !SecondaryTile.Exists(hr.Uri.GetHashCode().ToString())));
 
         public Command<HistoryRecord> DeleteHistory => Commands.GetOrAdd(() =>
             Command<HistoryRecord>.Create((sender, hr) =>

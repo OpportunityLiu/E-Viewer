@@ -15,12 +15,12 @@ using Windows.Data.Html;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
-using Windows.Storage.FileProperties;
 
 namespace ExClient.Galleries
 {
@@ -117,8 +117,7 @@ namespace ExClient.Galleries
         internal void Init(ulong imageKey, Uri thumb)
         {
             this.ImageKey = imageKey;
-            this.thumbUri = thumb;
-            OnPropertyChanged(nameof(Thumb));
+            this.ThumbUri = thumb;
         }
 
         private static readonly Regex failTokenMatcher = new Regex(@"return\s+nl\(\s*'(.+?)'\s*\)", RegexOptions.Compiled);
@@ -158,6 +157,8 @@ namespace ExClient.Galleries
         }
 
         private Uri thumbUri;
+        public Uri ThumbUri { get => this.thumbUri; private set => ForceSet(nameof(Thumb), ref this.thumbUri, value); }
+
         private readonly WeakReference<ImageSource> thumb = new WeakReference<ImageSource>(null);
         private async void loadThumb()
         {

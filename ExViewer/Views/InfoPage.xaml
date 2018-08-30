@@ -120,6 +120,10 @@
                       Command="{x:Bind ViewModel.OpenHistory}"
                       Icon="Go"
                       Text="Open" />
+      <MenuFlyoutItem x:Uid="Views/InfoPage/PinHistoryMenuFlyoutItem"
+                      Command="{x:Bind ViewModel.PinHistory}"
+                      Icon="Pin"
+                      Text="Pin to startscreen" />
       <MenuFlyoutItem x:Uid="Views/InfoPage/DeleteHistoryMenuFlyoutItem"
                       Command="{x:Bind ViewModel.DeleteHistory}"
                       Icon="Clear"

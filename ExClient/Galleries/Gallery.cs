@@ -40,7 +40,7 @@ namespace ExClient.Galleries
             {
                 using (var db = new GalleryDb())
                 {
-                    db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
+                    db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                     var cm = db.SavedSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.GalleryModelId == galleryId);
                     if (gm is null)
@@ -251,7 +251,7 @@ namespace ExClient.Galleries
             this.Rating.AverageScore = double.Parse(rating, NumberStyles.Number, CultureInfo.InvariantCulture);
             this.TorrentCount = int.Parse(torrentcount, NumberStyles.Integer, CultureInfo.InvariantCulture);
             this.Tags = new TagCollection(this, tags.Select(tag => Tag.Parse(tag)));
-            this.ThumbUri = new Uri(thumb);
+            this.ThumbUri = ThumbClient.FormatThumbUri(thumb);
         }
 
         protected IAsyncAction InitAsync()
@@ -416,11 +416,9 @@ namespace ExClient.Galleries
                     foreach (var page in picRoot.Elements("div", "gdtl"))
                     {
                         var nodeA = page.Element("a");
-                        var thumb = nodeA.Element("img").GetAttribute("src", default(Uri));
+                        var thumb = ThumbClient.FormatThumbUri(nodeA.Element("img").GetAttribute("src", ""));
                         if (thumb is null)
-                        {
                             continue;
-                        }
 
                         var tokens = nodeA.GetAttribute("href", "").Split(new[] { '/', '-' });
                         if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s")
