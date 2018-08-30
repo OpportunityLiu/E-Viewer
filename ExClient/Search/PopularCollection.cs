@@ -63,8 +63,8 @@ namespace ExClient.Search
                     }
                     else
                     {
-                        await Client.Current.Settings.FetchAsync();
-                        await Client.Current.Settings.SendAsync();
+                        await DomainProvider.Eh.Settings.FetchAsync();
+                        await DomainProvider.Eh.Settings.SendAsync();
                         return await loadCore(true);
                     }
                 }

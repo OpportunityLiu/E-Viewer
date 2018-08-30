@@ -23,12 +23,13 @@ namespace ExClient
                 ClearLogOnInfo();
             else
             {
-                var ignore = Task.Run(async () =>
+                this.initTask = Task.Run(async () =>
                 {
                     var backup = GetLogOnInfo();
                     try
                     {
                         await refreshCookieAndSettings();
+                        await refreshHathPerks();
                     }
                     catch (Exception)
                     {
@@ -38,7 +39,7 @@ namespace ExClient
             }
         }
 
-        public SettingCollection Settings { get; } = new SettingCollection();
+        private Task initTask;
 
         internal HttpCookieManager CookieManager { get; }
 
@@ -50,8 +51,16 @@ namespace ExClient
         public HostType Host
         {
             get => this.host;
-            set => Set(ref this.host, value);
+            set
+            {
+                Set(nameof(Settings), ref this.host, value);
+                if (this.initTask.IsCompleted)
+                    this.initTask = refreshCookieAndSettings();
+            }
         }
+
+        public SettingCollection Settings => this.Uris.Settings;
+
 
         private readonly FavoriteCollection favotites = new FavoriteCollection();
         public FavoriteCollection Favorites => NeedLogOn ? null : this.favotites;

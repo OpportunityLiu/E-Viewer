@@ -230,7 +230,6 @@ namespace ExViewer.Views
             }
             try
             {
-                await Client.Current.RefreshHathPerks();
                 await ExClient.HentaiVerse.HentaiVerseInfo.FetchAsync();
             }
             catch (Exception)
