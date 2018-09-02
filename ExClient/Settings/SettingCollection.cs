@@ -240,6 +240,8 @@ namespace ExClient.Settings
         {
             internal override void ApplyChanges(Dictionary<string, string> settings)
             {
+                // Original Images - Nope (Use local setting instead)
+                settings["oi"] = "0";
                 // Thumbnail Size - Large
                 settings["ts"] = "1";
                 // Popular Right Now - Display
