@@ -38,16 +38,15 @@ namespace ExClient.Galleries
 
         private static void createDefaultThumb()
         {
-            CoreApplication.MainView.Dispatcher.Begin(async () =>
+            if (defaultThumb != null)
+                return;
+            CoreApplication.MainView.Dispatcher.BeginIdle(async d =>
             {
                 var b = new BitmapImage();
                 var old = Interlocked.CompareExchange(ref defaultThumb, b, null);
                 if (old != null)
-                {
                     return;
-                }
 
-                await b.Dispatcher.YieldIdle();
                 using (var stream = await StorageHelper.GetIconOfExtensionAsync("jpg"))
                 {
                     await b.SetSourceAsync(stream);
