@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Background;
+﻿using ExClient.Forums;
 using ExClient.HentaiVerse;
 using Microsoft.Toolkit.Uwp.Notifications;
-using Windows.UI.Notifications;
-using System.Threading;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Background;
 using Windows.Storage;
-using ExClient.Forums;
+using Windows.UI.Notifications;
 
 namespace ExDawnOfDayTask
 {
@@ -57,7 +57,7 @@ namespace ExDawnOfDayTask
 
             uint getRemainTime()
             {
-                var offset = new Random().Next(20, 40);
+                var offset = new Random().Next(90, 120);
                 var currentTime = DateTimeOffset.UtcNow;
                 var triggerTime = new DateTimeOffset(currentTime.Date.AddDays(1).AddMinutes(offset), default);
                 var diff = triggerTime - currentTime;
@@ -76,10 +76,6 @@ namespace ExDawnOfDayTask
             try
             {
                 HentaiVerseInfo.DawnOfDayRewardsAwarded += this.HentaiVerseInfo_DawnOfDayRewardsAwarded;
-#if DEBUG
-                if (Debugger.IsAttached)
-                    HentaiVerseInfo_DawnOfDayRewardsAwarded(null, null);
-#endif
                 await HentaiVerseInfo.FetchAsync();
                 if (ExClient.Client.Current.UserId == 1832306)
                 {
@@ -161,18 +157,6 @@ namespace ExDawnOfDayTask
 
         private void HentaiVerseInfo_DawnOfDayRewardsAwarded(object sender, DawnOfDayRewardsEventArgs e)
         {
-#if DEBUG
-            if (e is null)
-            {
-                sendToast(new Dictionary<string, double>
-                {
-                    ["EXP"] = 209415,
-                    ["Credits"] = 314,
-                    ["Hath"] = 1,
-                });
-                return;
-            }
-#endif
             sendToast(e.Data);
         }
     }
