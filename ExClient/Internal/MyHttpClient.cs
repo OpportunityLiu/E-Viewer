@@ -47,6 +47,7 @@ namespace ExClient.Internal
         }
 
         private readonly HttpClient inner;
+        private readonly HttpClient nocookie = new HttpClient();
         private readonly Client owner;
 
         public HttpRequestHeaderCollection DefaultRequestHeaders => this.inner.DefaultRequestHeaders;
@@ -54,7 +55,8 @@ namespace ExClient.Internal
         public IHttpAsyncOperation GetAsync(Uri uri, HttpCompletionOption completionOption, bool checkStatusCode)
         {
             reformUri(ref uri);
-            var request = this.inner.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+            var client = uri.Host.EndsWith("hentai.org") ? this.inner : this.nocookie;
+            var request = client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             if (completionOption == HttpCompletionOption.ResponseHeadersRead)
             {
                 return request;
@@ -75,14 +77,7 @@ namespace ExClient.Internal
                 if (!response.Content.TryComputeLength(out var length))
                 {
                     var contentLength = response.Content.Headers.ContentLength;
-                    if (contentLength.HasValue)
-                    {
-                        length = contentLength.Value;
-                    }
-                    else
-                    {
-                        length = ulong.MaxValue;
-                    }
+                    length = contentLength ?? ulong.MaxValue;
                 }
                 buffer.Progress = (t, p) =>
                 {
@@ -235,6 +230,7 @@ namespace ExClient.Internal
         public void Dispose()
         {
             this.inner.Dispose();
+            this.nocookie.Dispose();
         }
     }
 }

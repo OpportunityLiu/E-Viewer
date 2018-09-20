@@ -121,7 +121,7 @@ namespace ExClient.Galleries
                 var loadedCount = 0;
                 progress.Report(new SaveGalleryProgress(loadedCount, this.Count));
 
-                using (var semaphore = new SemaphoreSlim(16, 16))
+                using (var semaphore = new SemaphoreSlim(10, 10))
                 {
                     var loadTasks = this.Select(image => Task.Run(async () =>
                     {
@@ -148,7 +148,7 @@ namespace ExClient.Galleries
                             if (firstFailed)
                             {
                                 token.ThrowIfCancellationRequested();
-                                await image.LoadImageAsync(false, strategy, true).AsTask(token);
+                                await image.LoadImageAsync(true, strategy, true).AsTask(token);
                             }
                             progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), this.Count));
                         }
@@ -542,7 +542,7 @@ namespace ExClient.Galleries
 
                             if (file is null)
                             {
-                                var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
+                                var folder = await GalleryImage.GetImageFolderAsync();
                                 file = await folder.TryGetFileAsync(item.Image.FileName);
                             }
                             if (file != null)

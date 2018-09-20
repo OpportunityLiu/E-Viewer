@@ -71,40 +71,34 @@ namespace ExClient.Galleries
 
         public static StorageFolder ImageFolder { get; set; }
 
-        internal static IAsyncOperation<StorageFolder> GetImageFolderAsync()
+        internal static async ValueTask<StorageFolder> GetImageFolderAsync()
         {
             var temp = ImageFolder;
             if (temp != null)
-                return AsyncOperation<StorageFolder>.CreateCompleted(temp);
-            return Run(async token =>
+                return temp;
+            var temp2 = ImageFolder;
+            if (temp2 is null)
             {
-                var temp2 = ImageFolder;
-                if (temp2 is null)
-                {
-                    temp2 = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
-                    ImageFolder = temp2;
-                }
-                return temp2;
-            });
+                temp2 = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
+                ImageFolder = temp2;
+            }
+            return temp2;
         }
 
-        internal IAsyncAction PopulateCachedImageAsync(GalleryImageModel galleryImageModel, ImageModel imageModel)
+        internal async Task PopulateCachedImageAsync(GalleryImageModel galleryImageModel, ImageModel imageModel)
         {
-            return Run(async token =>
+            var folder = await GetImageFolderAsync();
+            var hash = galleryImageModel.ImageId;
+            this.ImageHash = hash;
+            var imageFile = await folder.TryGetFileAsync(imageModel.FileName);
+            if (imageFile != null)
             {
-                var folder = ImageFolder ?? await GetImageFolderAsync();
-                var hash = galleryImageModel.ImageId;
-                this.ImageHash = hash;
-                var imageFile = await folder.TryGetFileAsync(imageModel.FileName);
-                if (imageFile != null)
-                {
-                    ImageFile = imageFile;
-                    OriginalLoaded = imageModel.OriginalLoaded;
-                    Progress = 100;
-                    State = ImageLoadingState.Loaded;
-                }
-                this.Init(hash.ToToken(), null);
-            });
+                ImageFile = imageFile;
+                OriginalLoaded = imageModel.OriginalLoaded;
+                Progress = 100;
+                State = ImageLoadingState.Loaded;
+            }
+            this.Init(hash.ToToken(), null);
         }
 
         internal GalleryImage(Gallery owner, int pageID)
@@ -122,28 +116,25 @@ namespace ExClient.Galleries
         private static readonly Regex failTokenMatcher = new Regex(@"return\s+nl\(\s*'(.+?)'\s*\)", RegexOptions.Compiled);
         private static readonly Regex hashMatcher = new Regex(@"f_shash=([A-Fa-f0-9]{40})(&|\s|$)", RegexOptions.Compiled);
 
-        private IAsyncAction loadImageUriAndHash()
+        private async Task loadImageUriAndHash(CancellationToken token)
         {
-            return Run(async token =>
-            {
-                var loadPageUri = this.failToken is null
-                    ? this.PageUri
-                    : new Uri(this.PageUri, $"?{this.failToken}");
+            var loadPageUri = this.failToken is null
+                ? this.PageUri
+                : new Uri(this.PageUri, $"?{this.failToken}");
 
-                var doc = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri);
+            var doc = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri).AsTask(token);
 
-                this.imageUri = doc.GetElementbyId("img").GetAttribute("src", default(Uri));
-                this.originalImageUri = doc.GetElementbyId("i7").Element("a")?.GetAttribute("href", default(Uri));
-                var hashNode = doc.GetElementbyId("i6").Element("a");
-                this.ImageHash = SHA1Value.Parse(hashMatcher.Match(hashNode.GetAttribute("href", "")).Groups[1].Value);
-                var loadFail = doc.GetElementbyId("loadfail").GetAttribute("onclick", "");
-                var oft = this.failToken;
-                var nft = failTokenMatcher.Match(loadFail).Groups[1].Value;
-                if (oft is null)
-                    this.failToken = "nl=" + nft;
-                else
-                    this.failToken = oft + "&nl=" + nft;
-            });
+            this.imageUri = doc.GetElementbyId("img").GetAttribute("src", default(Uri));
+            this.originalImageUri = doc.GetElementbyId("i7").Element("a")?.GetAttribute("href", default(Uri));
+            var hashNode = doc.GetElementbyId("i6").Element("a");
+            this.ImageHash = SHA1Value.Parse(hashMatcher.Match(hashNode.GetAttribute("href", "")).Groups[1].Value);
+            var loadFail = doc.GetElementbyId("loadfail").GetAttribute("onclick", "");
+            var oft = this.failToken;
+            var nft = failTokenMatcher.Match(loadFail).Groups[1].Value;
+            if (oft is null)
+                this.failToken = "nl=" + nft;
+            else
+                this.failToken = oft + "&nl=" + nft;
         }
 
         private string failToken;
@@ -172,6 +163,8 @@ namespace ExClient.Galleries
             var img = new BitmapImage();
             try
             {
+                file = this.imageFile;
+                uri = this.thumbUri;
                 if (file != null)
                 {
                     var size = (uint)(180 * display.RawPixelsPerViewPixel);
@@ -232,28 +225,27 @@ namespace ExClient.Galleries
         {
             var previousAction = this.loadImageAction;
             var previousEnded = previousAction is null || previousAction.Status != AsyncStatus.Started;
+            if (reload)
+            {
+                if (!previousEnded)
+                    previousAction.Cancel();
+                return this.loadImageAction = startLoadImageAsync(reload, strategy, throwIfFailed);
+            }
             switch (this.state)
             {
-            case ImageLoadingState.Loading:
             case ImageLoadingState.Loaded:
-                if (!reload)
-                {
-                    if (previousEnded)
-                        return AsyncAction.CreateCompleted();
+                if (!previousEnded)
+                    previousAction.Cancel();
+                return AsyncAction.CreateCompleted();
+            case ImageLoadingState.Failed:
+                if (!previousEnded)
+                    previousAction.Cancel();
+                return this.loadImageAction = startLoadImageAsync(reload, strategy, throwIfFailed);
+            default:
+                if (!previousEnded)
                     return PollingAsyncWrapper.Wrap(previousAction, 1500);
-                }
-                else
-                {
-                    if (!previousEnded)
-                        previousAction?.Cancel();
-                }
-                break;
-            case ImageLoadingState.Preparing:
-                if (previousEnded)
-                    return AsyncAction.CreateCompleted();
-                return PollingAsyncWrapper.Wrap(previousAction, 1500);
+                return this.loadImageAction = startLoadImageAsync(reload, strategy, throwIfFailed);
             }
-            return this.loadImageAction = startLoadImageAsync(reload, strategy, throwIfFailed);
         }
 
         private IAsyncAction startLoadImageAsync(bool reload, ConnectionStrategy strategy, bool throwIfFailed)
@@ -266,13 +258,10 @@ namespace ExClient.Galleries
                     if (this.PageUri is null)
                         await Owner.LoadItemsAsync(this.PageID - 1, 1);
                     var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
-                    var folder = ImageFolder ?? await GetImageFolderAsync();
+                    var folder = await GetImageFolderAsync();
                     this.Progress = 0;
 
-                    var loadImgInfo = this.loadImageUriAndHash();
-                    token.Register(loadImgInfo.Cancel);
-                    await loadImgInfo;
-                    token.ThrowIfCancellationRequested();
+                    await this.loadImageUriAndHash(token);
 
                     using (var db = new GalleryDb())
                     {
@@ -309,6 +298,7 @@ namespace ExClient.Galleries
                         if (this.imageUri.LocalPath.EndsWith("/509.gif"))
                             throw new InvalidOperationException(LocalizedStrings.Resources.ExceedLimits);
 
+                        token.ThrowIfCancellationRequested();
                         var imgUri = default(Uri);
                         if (loadFull)
                         {
@@ -322,26 +312,18 @@ namespace ExClient.Galleries
                         }
                         this.State = ImageLoadingState.Loading;
 
-                        var loadImg = Client.Current.HttpClient.GetAsync(imgUri);
-                        loadImg.Progress = (httpAsyncInfo, httpProgress) =>
+                        var imageLoadResponse = await Client.Current.HttpClient.GetAsync(imgUri).AsTask(token, new Progress<HttpProgress>(p =>
                         {
-                            if (token.IsCancellationRequested)
-                            {
-                                httpAsyncInfo.Cancel();
-                                return;
-                            }
-                            if (httpProgress.TotalBytesToReceive is null || httpProgress.TotalBytesToReceive == 0)
+                            if (p.TotalBytesToReceive is null || p.TotalBytesToReceive == 0)
                             {
                                 this.Progress = 0;
                             }
                             else
                             {
-                                var pro = (int)(httpProgress.BytesReceived * 100 / ((ulong)httpProgress.TotalBytesToReceive));
+                                var pro = (int)(p.BytesReceived * 100 / ((ulong)p.TotalBytesToReceive));
                                 this.Progress = pro;
                             }
-                        };
-                        var imageLoadResponse = await loadImg;
-                        token.ThrowIfCancellationRequested();
+                        }));
 
                         if (imageLoadResponse.Content.Headers.ContentType.MediaType == "text/html")
                         {
@@ -355,9 +337,10 @@ namespace ExClient.Galleries
                                 throw new InvalidOperationException(error);
                             }
                         }
+                        var buffer = await imageLoadResponse.Content.ReadAsBufferAsync().AsTask(token);
 
+                        token.ThrowIfCancellationRequested();
                         await this.deleteImageFileAsync();
-                        var buffer = await imageLoadResponse.Content.ReadAsBufferAsync();
                         var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
                         this.ImageFile = await folder.SaveFileAsync($"{this.imageHash}{ext}", CreationCollisionOption.ReplaceExisting, buffer);
                         var myModel = db.GalleryImageSet
@@ -382,10 +365,16 @@ namespace ExClient.Galleries
                             myModel.Update(this);
                         }
                         db.SaveChanges();
+                        this.Progress = 100;
                         this.State = ImageLoadingState.Loaded;
                     }
                 }
-                catch (OperationCanceledException) { throw; }
+                catch (OperationCanceledException)
+                {
+                    this.Progress = 0;
+                    this.State = ImageLoadingState.Waiting;
+                    throw;
+                }
                 catch (Exception)
                 {
                     this.Progress = 100;

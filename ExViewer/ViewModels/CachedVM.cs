@@ -7,10 +7,7 @@ namespace ExViewer.ViewModels
 {
     public class CachedVM : GalleryListVM<CachedGallery>
     {
-        public static CachedVM Instance
-        {
-            get;
-        } = new CachedVM();
+        public static CachedVM Instance { get; } = new CachedVM();
 
         private CachedVM()
         {
