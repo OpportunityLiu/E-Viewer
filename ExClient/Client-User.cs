@@ -34,6 +34,7 @@ namespace ExClient
             public const string SK = "sk";
             public const string HathPerks = "hath_perks";
             public const string NeverWarn = "nw";
+            public const string LastEventRefreshTime = "event";
         }
 
         internal static class Domains
@@ -102,6 +103,7 @@ namespace ExClient
         private void setDefaultCookies()
         {
             this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Eh, "/") { Value = "1" });
+            this.CookieManager.SetCookie(new HttpCookie(CookieNames.LastEventRefreshTime, Domains.Eh, "/") { Value = "1" });
             this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Ex, "/") { Value = "1" });
         }
 
