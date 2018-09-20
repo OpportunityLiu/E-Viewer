@@ -30,8 +30,8 @@ namespace ExClient.Forums
             });
         }
 
-        private static readonly Regex md5Regex = new Regex(@"var\s+ipb_md5_check\s*=\s*""([a-fA-F0-9]+)"";", RegexOptions.Compiled);
-        private static readonly Regex forumIdRegex = new Regex(@"var\s+ipb_input_f\s*=\s*""([0-9]+)"";", RegexOptions.Compiled);
+        private static readonly Regex md5Regex = new Regex(@"var\s+ipb_md5_check\s*=\s*""([a-f0-9]+)"";", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex forumIdRegex = new Regex(@"var\s+ipb_input_f\s*=\s*""([0-9]+)"";", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private Topic(long id)
         {

@@ -127,7 +127,7 @@
       <Version>4.0.0</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
-      <Version>1.3.16</Version>
+      <Version>1.3.18</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
       <Version>1.4.0</Version>

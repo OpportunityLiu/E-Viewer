@@ -55,7 +55,7 @@ namespace ExClient.Galleries
             return Run<double>(async (token, progress) =>
             {
                 progress.Report(double.NaN);
-                var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
+                var folder = await GalleryImage.GetImageFolderAsync();
                 var getFiles = folder.GetFilesAsync();
                 using (var db = new GalleryDb())
                 {

@@ -11,8 +11,16 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Forums
 {
+    /// <summary>
+    /// Detailed user info from forum.
+    /// </summary>
     public class UserInfo
     {
+        private const string CacheFileName = "UserInfo";
+
+        /// <summary>
+        /// Fetch user info from forum.e-hentai.org/index?showuser={<paramref name="userID"/>}.
+        /// </summary>
         public static IAsyncOperation<UserInfo> FeachAsync(long userID)
         {
             if (userID <= 0)
@@ -59,32 +67,34 @@ namespace ExClient.Forums
             }, token));
         }
 
+        /// <summary>
+        /// Serialize current instance to ms-appdata:///local/UserInfo.
+        /// </summary>
         public IAsyncAction SaveToCache()
         {
             return Run(async token =>
             {
                 var str = JsonConvert.SerializeObject(this);
-                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("UserInfo", CreationCollisionOption.ReplaceExisting);
+                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(CacheFileName, CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(file, str);
             });
         }
 
+        /// <summary>
+        /// Deserialize file ms-appdata:///local/UserInfo to a instance.
+        /// </summary>
         public static IAsyncOperation<UserInfo> LoadFromCache()
         {
             return Run(async token =>
             {
-                var file = await ApplicationData.Current.LocalFolder.TryGetFileAsync("UserInfo");
+                var file = await ApplicationData.Current.LocalFolder.TryGetFileAsync(CacheFileName);
                 if (file is null)
-                {
                     return null;
-                }
 
                 var str = await FileIO.ReadTextAsync(file);
                 var obj = JsonConvert.DeserializeObject<UserInfo>(str);
                 if (obj is null)
-                {
                     return null;
-                }
 
                 return obj;
             });

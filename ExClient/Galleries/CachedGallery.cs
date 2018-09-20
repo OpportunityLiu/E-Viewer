@@ -60,7 +60,7 @@ namespace ExClient.Galleries
             {
                 using (var db = new GalleryDb())
                 {
-                    var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
+                    var folder = await GalleryImage.GetImageFolderAsync();
                     var todelete = await db.ImageSet
                         .Where(im => !db.SavedSet.Any(sm => im.UsingBy.Any(gi => gi.GalleryId == sm.GalleryId)))
                         .ToListAsync(token);
@@ -128,7 +128,7 @@ namespace ExClient.Galleries
                         .FirstOrDefault();
                     if (imageModel is null)
                         return null;
-                    var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
+                    var folder = await GalleryImage.GetImageFolderAsync();
                     var file = await folder.TryGetFileAsync(imageModel.Image.FileName);
                     if (file is null)
                         return null;
