@@ -57,7 +57,7 @@ namespace ExDawnOfDayTask
 
             uint getRemainTime()
             {
-                var offset = new Random().Next(90, 120);
+                var offset = new Random().Next(30, 60);
                 var currentTime = DateTimeOffset.UtcNow;
                 var triggerTime = new DateTimeOffset(currentTime.Date.AddDays(1).AddMinutes(offset), default);
                 var diff = triggerTime - currentTime;
