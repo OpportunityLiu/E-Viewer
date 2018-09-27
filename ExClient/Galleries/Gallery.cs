@@ -32,7 +32,7 @@ namespace ExClient.Galleries
 {
     [JsonObject]
     [System.Diagnostics.DebuggerDisplay(@"\{ID = {ID} Count = {Count}\}")]
-    public class Gallery : FixedIncrementalLoadingList<GalleryImage>
+    public class Gallery : FixedLoadingList<GalleryImage>
     {
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
