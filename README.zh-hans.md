@@ -9,7 +9,7 @@
 | [**最新版本**](https://github.com/OpportunityLiu/E-Viewer/releases/latest) | [![Github Latest Release](https://img.shields.io/github/downloads/OpportunityLiu/E-Viewer/latest/total.svg)](https://github.com/OpportunityLiu/E-Viewer/releases/latest) |
 | :--- | ---: |
 | [**所有版本**](https://github.com/OpportunityLiu/E-Viewer/releases) | [![Github All Releases](https://img.shields.io/github/downloads/OpportunityLiu/E-Viewer/total.svg)](https://github.com/OpportunityLiu/E-Viewer/releases) |
-    
+
 首先安装依赖包 ([x86](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/ARM.zip)) 和证书（`.cer` 文件）。
  
 下载 `.appxbundle` 或 `.appx` 安装包来安装。
