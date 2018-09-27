@@ -1,7 +1,7 @@
+> Other languages: [简体中文（Simplified Chinese）](/README.zh-hans.md)
+
 # E-Viewer
 A Client for e-hentai.org on Windows 10.    
-
-[简体中文（Simplified Chinese）](/README.zh-hans.md)
 
 | Barnch | Build status |
 | :----- | -----------: |
@@ -10,6 +10,7 @@ A Client for e-hentai.org on Windows 10.
 
 [![](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Images/Screenshots/0.png)](https://github.com/OpportunityLiu/E-Viewer/wiki)
 [More screenshots](https://github.com/OpportunityLiu/E-Viewer/wiki/Home)  
+
 ## Releases 
 | [**Latest Release**](https://github.com/OpportunityLiu/E-Viewer/releases/latest) | [![Github Latest Release](https://img.shields.io/github/downloads/OpportunityLiu/E-Viewer/latest/total.svg)](https://github.com/OpportunityLiu/E-Viewer/releases/latest) |
 | :--- | ---: |
@@ -31,7 +32,7 @@ Please download `.appxbundle` or `.appx` file to install.
 Here is a simple introduction for those who would like to build this project by themselves.
 
 ### Prerequisite
-- Visual Studio 2017 15.7
+- Visual Studio 2017 15.8
 - Windows SDK 10.0.17134
 
 ### Procedure
@@ -44,3 +45,5 @@ Here is a simple introduction for those who would like to build this project by 
 ## Translate
 If you would like to help me translate this project into other languages,
 just fork this project, translate resources in `**/Strings/` folders and open pull requests.
+
+You can also provide translation of README, as the [Simplified Chinese](/README.zh-hans.md) version.

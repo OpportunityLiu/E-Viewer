@@ -1,10 +1,11 @@
+> 本文不包含关于 CI、编译、翻译等的相关内容，也不保证其内容最新。完整的 ReadMe 请查看[英文版本](/README.md)。
+
 # E-Viewer
 用于 Windows 10 的 E-站 UWP 应用。
 
-本文不包含关于 CI、编译、翻译等的相关内容，也不保证其内容最新。完整的 ReadMe 请查看[英文版本](/README.md)。
-
 [![](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Images/Screenshots/0.png)](https://github.com/OpportunityLiu/E-Viewer/wiki)
 [更多截图](https://github.com/OpportunityLiu/E-Viewer/wiki/主页)  
+
 ## 发布
 | [**最新版本**](https://github.com/OpportunityLiu/E-Viewer/releases/latest) | [![Github Latest Release](https://img.shields.io/github/downloads/OpportunityLiu/E-Viewer/latest/total.svg)](https://github.com/OpportunityLiu/E-Viewer/releases/latest) |
 | :--- | ---: |
