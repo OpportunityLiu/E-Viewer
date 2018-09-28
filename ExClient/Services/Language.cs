@@ -27,7 +27,8 @@ namespace ExClient.Services
                 return default;
 
             var modi = LanguageModifier.None;
-            var language = new List<LanguageName>(1);
+            Span<LanguageName> language = stackalloc LanguageName[32];
+            var langCount = 0;
             var lanNA = false;
             foreach (var item in tags[Namespace.Language])
             {
@@ -44,62 +45,71 @@ namespace ExClient.Services
                 default:
                     if (naTags.Contains(item.Content.Content))
                     {
-                        language.Clear();
+                        langCount = 0;
                         lanNA = true;
                     }
                     else if (!lanNA)
                     {
                         if (Enum.TryParse<LanguageName>(item.Content.Content, true, out var lan))
                         {
-                            language.Add(lan);
+                            language[langCount] = lan;
+                            langCount++;
                         }
                         else
                         {
-                            language.Add(LanguageName.Other);
+                            language[langCount] = LanguageName.Other;
+                            langCount++;
                         }
                     }
                     continue;
                 }
             }
             if (lanNA)
-                return new Language(Array.Empty<LanguageName>(), modi);
-            else if (language.IsEmpty())
-                return new Language(null, modi);
+                return new Language(default, null, modi);
+            else if (langCount == 0)
+                return new Language(LanguageName.Japanese, Array.Empty<LanguageName>(), modi);
+            else if (langCount == 1)
+                return new Language(language[0], Array.Empty<LanguageName>(), modi);
             else
-                return new Language(language, modi);
+                return new Language(language[0], language.Slice(0, langCount).ToArray(), modi);
         }
     }
 
     public readonly struct Language : IEquatable<Language>
     {
-        public Language(IEnumerable<LanguageName> names, LanguageModifier modifier)
+        internal Language(LanguageName firstName, LanguageName[] names, LanguageModifier modifier)
         {
-            Modifier = modifier;
-            if (names is null)
-            {
-                this.names = null;
-                return;
-            }
-            this.names = names.Distinct().ToArray();
+            this.firstName = firstName;
+            this.names = names;
+            this.Modifier = modifier;
         }
 
+        private readonly LanguageName firstName;
         private readonly LanguageName[] names;
 
-        private static readonly IReadOnlyList<LanguageName> defaultLanguage = new[] { LanguageName.Japanese };
-
-        public IReadOnlyList<LanguageName> Names => this.names ?? defaultLanguage;
+        public IReadOnlyList<LanguageName> Names
+        {
+            get
+            {
+                if (this.names is null)
+                    return Array.Empty<LanguageName>();
+                if (this.names.Length == 0)
+                    return new[] { this.firstName };
+                return this.names;
+            }
+        }
 
         public LanguageModifier Modifier { get; }
 
         public override string ToString()
         {
-            if (this.Names.Count == 0) // 0.9% cases
+            if (this.names is null) // rare
                 return LocalizedStrings.Language.Names.NotApplicable;
 
             string name;
-            if (this.Names.Count == 1) // 99% cases
-                name = this.Names[0].ToFriendlyNameString();
-            else // 0.1% cases
+            if (this.names.Length == 0) // most cases
+                name = this.firstName.ToFriendlyNameString();
+            else // very rare
                 name = string.Join(", ", this.Names.Select(LanguageNameExtension.ToFriendlyNameString));
 
             switch (Modifier)
@@ -117,28 +127,24 @@ namespace ExClient.Services
         {
             if (this.Modifier != other.Modifier)
                 return false;
+            if (this.firstName != other.firstName)
+                return false;
             if (this.names is null)
-                return (other.names is null);
+                return other.names is null;
             if (other.names is null)
                 return false;
 
             return this.names.SequenceEqual(other.names);
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Language l)
-                return Equals(l);
-            return false;
-        }
+        public override bool Equals(object obj) => obj is Language l && Equals(l);
 
         public override int GetHashCode()
         {
-            var hash = this.Modifier.GetHashCode();
-            foreach (var item in this.Names)
-            {
-                hash = unchecked(hash * 7 ^ item.GetHashCode());
-            }
+            var hash = this.Modifier.GetHashCode() + (int)this.firstName * 237;
+            if (this.names != null)
+                foreach (var item in this.names)
+                    hash = unchecked(hash * 7 ^ item.GetHashCode());
             return hash;
         }
     }
