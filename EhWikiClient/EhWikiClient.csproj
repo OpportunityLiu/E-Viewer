@@ -154,6 +154,9 @@
     <PackageReference Include="Opportunity.MvvmUniverse">
       <Version>2.7.3</Version>
     </PackageReference>
+    <PackageReference Include="System.Memory">
+      <Version>4.5.1</Version>
+    </PackageReference>
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>
