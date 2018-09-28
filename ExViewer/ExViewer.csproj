@@ -685,9 +685,6 @@
     <PackageReference Include="Opportunity.UWP.Converters">
       <Version>1.0.1</Version>
     </PackageReference>
-    <PackageReference Include="System.Memory">
-      <Version>4.5.1</Version>
-    </PackageReference>
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>
