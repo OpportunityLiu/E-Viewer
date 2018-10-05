@@ -82,6 +82,7 @@ namespace ExClient.Services
             this.Modifier = modifier;
         }
 
+        public LanguageModifier Modifier { get; }
         private readonly LanguageName firstName;
         private readonly LanguageName[] otherNames;
 
@@ -96,8 +97,6 @@ namespace ExClient.Services
                     yield return item;
             }
         }
-
-        public LanguageModifier Modifier { get; }
 
         public override string ToString()
         {
@@ -136,6 +135,9 @@ namespace ExClient.Services
         }
 
         public override bool Equals(object obj) => obj is Language l && Equals(l);
+
+        public static bool operator ==(Language l, Language r) => l.Equals(r);
+        public static bool operator !=(Language l, Language r) => !l.Equals(r);
 
         public override int GetHashCode()
         {

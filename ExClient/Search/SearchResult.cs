@@ -161,14 +161,13 @@ namespace ExClient.Search
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(uri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
-                updateRecordCount(doc);
+                this.updateRecordCount(doc);
                 if (this.RecordCount == 0)
                 {
                     this.lpc++;
                     return LoadItemsResult.Empty<Gallery>();
                 }
-                var loadlistTask = loadPage(doc, token);
-                var list = await loadlistTask;
+                var list = await this.loadPage(doc, token);
                 token.ThrowIfCancellationRequested();
                 if (this.Count == 0)
                 {
@@ -201,7 +200,7 @@ namespace ExClient.Search
                 this.lpc++;
                 return LoadItemsResult.Create(listStart, list, false);
 
-                defaultRet:
+            defaultRet:
                 this.lpc++;
                 return LoadItemsResult.Create(listCount, list, false);
             });
