@@ -14,8 +14,8 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Search
 {
-    [System.Diagnostics.DebuggerDisplay(@"\{Count = {Count}/{rc} Page = {lpc}/{pc}\}")]
-    public abstract class SearchResult : IncrementalLoadingList<Gallery>
+    [System.Diagnostics.DebuggerDisplay(@"\{Count = {Count} Page = {FirstPage}-{FirstPage+LoadedPageCount-1}/{PageCount}\}")]
+    public abstract class SearchResult : PagingList<Gallery>
     {
         public abstract Uri SearchUri { get; }
 
@@ -30,24 +30,12 @@ namespace ExClient.Search
         public void Reset()
         {
             Clear();
-            this.RecordCount = -1;
-            this.lpc = 0;
             this.PageCount = 1;
         }
 
-        private int lpc = 0;
-
-        private int pc = 1;
-        public int PageCount { get => this.pc; set => Set(ref this.pc, value); }
-
-        private int rc;
-        public int RecordCount { get => this.rc; set => Set(nameof(HasMoreItems), ref this.rc, value); }
-
-        public override bool HasMoreItems => this.rc < 0 || this.rc > this.Count;
-
         private static readonly Regex recordCountMatcher = new Regex(@"Showing.+?-\s*[0-9,]+\s*of\s*([0-9,]+)", RegexOptions.Compiled);
 
-        private void updateRecordCount(HtmlDocument doc)
+        private void updatePageCount(HtmlDocument doc)
         {
             var idoNode = doc.DocumentNode
                 .Element("html")
@@ -59,28 +47,20 @@ namespace ExClient.Search
                 .FirstOrDefault(node => node.HasClass("ptt"));
             if (rcNode is null || pttNode is null)
             {
-                this.RecordCount = 0;
+                this.PageCount = 0;
+            }
+            else if (recordCountMatcher.Match(rcNode.InnerText).Success)
+            {
+                this.PageCount = pttNode.Descendants("td").Select(node =>
+                {
+                    if (!int.TryParse(node.GetInnerText(), out var i))
+                        i = -1;
+                    return i;
+                }).Max();
             }
             else
             {
-                var match = recordCountMatcher.Match(rcNode.InnerText);
-                if (match.Success)
-                {
-                    this.PageCount = pttNode.Descendants("td").Select(node =>
-                    {
-                        if (!int.TryParse(node.GetInnerText(), out var i))
-                        {
-                            i = -1;
-                        }
-
-                        return i;
-                    }).Max();
-                    this.RecordCount = int.Parse(match.Groups[1].Value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    this.RecordCount = 0;
-                }
+                this.PageCount = 0;
             }
         }
 
@@ -152,57 +132,45 @@ namespace ExClient.Search
             return galleries;
         }
 
-        protected override IAsyncOperation<LoadItemsResult<Gallery>> LoadItemsAsync(int count)
+        protected override IAsyncOperation<IEnumerable<Gallery>> LoadItemsAsync(int pageIndex)
         {
             return Run(async token =>
             {
                 var listCount = Count;
-                var uri = new Uri($"{this.SearchUri}&page={this.lpc.ToString()}");
+                var uri = new Uri($"{this.SearchUri}&page={pageIndex.ToString()}");
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(uri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
-                this.updateRecordCount(doc);
-                if (this.RecordCount == 0)
-                {
-                    this.lpc++;
-                    return LoadItemsResult.Empty<Gallery>();
-                }
+                this.updatePageCount(doc);
+                if (this.PageCount == 0)
+                    return Enumerable.Empty<Gallery>();
+
                 var list = await this.loadPage(doc, token);
                 token.ThrowIfCancellationRequested();
-                if (this.Count == 0)
-                {
-                    goto defaultRet;
-                }
+                if (list.Count == 0)
+                    return Enumerable.Empty<Gallery>();
 
-                var lastID = this[this.Count - 1].ID;
-                var index = list.Count - 1;
-                for (; index >= 0; index--)
+                if (pageIndex > FirstPage)
                 {
-                    if (list[index].ID == lastID)
+                    for (var i = 0; i < list.Count; i++)
                     {
-                        break;
+                        var id = list[i].ID;
+                        if (this.Any(g => g.ID == id))
+                            list.RemoveAt(i);
                     }
                 }
-                if (index < 0)
+                else if (pageIndex < FirstPage)
                 {
-                    goto defaultRet;
-                }
-
-                var listStart = this.Count - index - 1;
-                var i = this.Count - 1;
-                for (; index >= 0; index--, i--)
-                {
-                    if (list[index].ID != this[i].ID)
+                    for (var i = 0; i < list.Count; i++)
                     {
-                        goto defaultRet;
+                        var id = list[i].ID;
+                        var ga = this.FirstOrDefault(g => g.ID == id);
+                        if (ga != null)
+                            this.Remove(ga);
                     }
                 }
-                this.lpc++;
-                return LoadItemsResult.Create(listStart, list, false);
 
-            defaultRet:
-                this.lpc++;
-                return LoadItemsResult.Create(listCount, list, false);
+                return list;
             });
         }
     }

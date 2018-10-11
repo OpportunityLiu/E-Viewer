@@ -15,7 +15,7 @@ namespace ExViewer.ViewModels
         public static IAsyncAction InitAsync()
         {
             var defaultVM = GetVM(string.Empty);
-            return defaultVM.SearchResult.LoadMoreItemsAsync(40).AsTask().AsAsyncAction();
+            return defaultVM.SearchResult.LoadNextPage();
         }
 
         private static AutoFillCacheStorage<string, SearchVM> Cache = AutoFillCacheStorage.Create((string query) =>

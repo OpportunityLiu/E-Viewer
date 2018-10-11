@@ -13,6 +13,7 @@
                 xmlns:con="using:Opportunity.UWP.Converters"
                 xmlns:tcon="using:Opportunity.UWP.Converters.Typed"
                 xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+                xmlns:windata="using:Windows.UI.Xaml.Data"
                 Loading="root_Loading"
                 Unloaded="root_Unloaded"
                 mc:Ignorable="d"
@@ -66,7 +67,7 @@
                    HorizontalAlignment="Center"
                    Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(ViewModel.SearchResult.Count, ViewModel.SearchResult.HasMoreItems), FallbackValue=Collapsed, Mode=OneWay}"
+                   Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(ViewModel.SearchResult.Count, ViewModel.SearchResult.PageCount), FallbackValue=Collapsed, Mode=OneWay}"
                    Text="No hits found" />
       </ListView.Header>
       <ListView.Footer>
@@ -74,7 +75,7 @@
                    HorizontalAlignment="Center"
                    Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind xb:Visibility.OfBoolean(ViewModel.SearchResult.HasMoreItems), Mode=OneWay, FallbackValue=Visible}"
+                   Visibility="{x:Bind xb:Visibility.OfBoolean(ViewModel.SearchResult.IsLoading), Mode=OneWay, FallbackValue=Visible}"
                    Text="Loading more galleries..." />
       </ListView.Footer>
     </tk:PullToRefreshListView>

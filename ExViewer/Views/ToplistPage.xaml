@@ -77,7 +77,7 @@
                        HorizontalAlignment="Center"
                        Margin="12"
                        Style="{StaticResource BaseTextBlockStyle}"
-                       Visibility="{x:Bind xb:Visibility.OfBoolean(HasMoreItems), FallbackValue=Visible, Mode=OneWay}"
+                       Visibility="{x:Bind xb:Visibility.OfBoolean(IsLoading), FallbackValue=Visible, Mode=OneWay}"
                        Text="Loading more galleries..." />
           </ListView.Footer>
         </tk:PullToRefreshListView>
