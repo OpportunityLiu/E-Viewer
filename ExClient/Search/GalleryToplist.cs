@@ -1,5 +1,8 @@
-﻿using ExClient.Galleries;
+﻿using ExClient.Api;
+using ExClient.Galleries;
+using ExClient.Internal;
 using ExClient.Status;
+using HtmlAgilityPack;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
@@ -8,29 +11,24 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using HtmlAgilityPack;
-using ExClient.Api;
-using ExClient.Internal;
 
 namespace ExClient.Search
 {
-    public sealed class GalleryToplist : IncrementalLoadingList<Gallery>
+    public sealed class GalleryToplist : PagingList<Gallery>
     {
         public GalleryToplist(ToplistName toplist)
         {
+            this.PageCount = 200;
             this.Toplist = toplist;
         }
 
-        public override bool HasMoreItems => this.Count < 10000;
-
         public ToplistName Toplist { get; }
 
-        protected override IAsyncOperation<LoadItemsResult<Gallery>> LoadItemsAsync(int count)
+        protected override IAsyncOperation<IEnumerable<Gallery>> LoadItemsAsync(int pageIndex)
         {
-            var page = Count / 50;
-            return AsyncInfo.Run(async token =>
+            return AsyncInfo.Run<IEnumerable<Gallery>>(async token =>
             {
-                var uri = new Uri($"https://e-hentai.org/toplist.php?tl={(int)Toplist}&p={page}");
+                var uri = new Uri($"https://e-hentai.org/toplist.php?tl={(int)Toplist}&p={pageIndex}");
                 var doctask = Client.Current.HttpClient.GetDocumentAsync(uri);
                 token.Register(doctask.Cancel);
                 var doc = await doctask;
@@ -42,8 +40,7 @@ namespace ExClient.Search
                     var guri = item.GetAttribute("href", DomainProvider.Eh.RootUri, null);
                     gr.Add(GalleryInfo.Parse(guri));
                 }
-                var galleries = await Gallery.FetchGalleriesAsync(gr);
-                return LoadItemsResult.Create(page * 50, galleries);
+                return await Gallery.FetchGalleriesAsync(gr);
             });
         }
     }

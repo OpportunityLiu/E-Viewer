@@ -4,11 +4,11 @@ using Windows.UI.Xaml;
 
 namespace ExClient
 {
-    static class SearchResultExtension
+    internal static class SearchResultExtension
     {
-        public static Visibility IsEmptyVisible(int count, bool hasMoreItems)
+        public static Visibility IsEmptyVisible(int count,int pageCount)
         {
-            if (count == 0 && !hasMoreItems)
+            if (count == 0 && pageCount == 0)
             {
                 return Visibility.Visible;
             }
