@@ -33,7 +33,7 @@ Here is a simple introduction for those who would like to build this project by 
 
 ### Prerequisite
 - Visual Studio 2017 15.8
-- Windows SDK 10.0.17134
+- Windows SDK 10.0.17763
 
 ### Procedure
 - Clone the repository to local
