@@ -67,67 +67,67 @@ namespace ExClient.Api
             });
         }
 
+        private static readonly string[] galleryPaths = new[] { "g", "mpv", };
+
         internal static bool TryParseGallery(UriHandlerData data, out GalleryInfo info)
         {
-            if (data.Path0 == "g" && data.Paths.Count >= 3)
-            {
-                if (long.TryParse(data.Paths[1], out var gId))
-                {
-                    info = new GalleryInfo(gId, data.Paths[2].ToToken());
-                    return true;
-                }
-            }
             info = default;
-            return false;
+            if (data.Paths.Count < 3)
+                return false;
+            if (!Array.Exists(galleryPaths, s => data.Path0.Equals(s, StringComparison.OrdinalIgnoreCase)))
+                return false;
+            if (!long.TryParse(data.Paths[1], out var gId))
+                return false;
+
+            info = new GalleryInfo(gId, data.Paths[2].ToToken());
+            return true;
         }
+
+        private static readonly string[] popups = new[] { "gallerytorrents.php", "gallerypopups.php", "stats.php", "archiver.php", };
 
         internal static bool TryParseGalleryPopup(UriHandlerData data, out GalleryInfo info, out GalleryLaunchStatus type)
         {
             info = default;
             type = default;
-            if (data.Paths.Count >= 1
-                && (data.Path0 == "gallerytorrents.php"
-                    || data.Path0 == "gallerypopups.php"
-                    || data.Path0 == "stats.php"
-                    || data.Path0 == "archiver.php"))
+            if (data.Paths.Count < 1)
+                return false;
+            if (!Array.Exists(popups, s => data.Path0.Equals(s, StringComparison.OrdinalIgnoreCase)))
+                return false;
+            if (!long.TryParse(data.Queries.GetString("gid"), out var gId))
+                return false;
+
+            var token = data.Queries.GetString("t") + data.Queries.GetString("token");
+            if (token.IsNullOrWhiteSpace())
+                return false;
+            info = new GalleryInfo(gId, token.ToToken());
+            type = GalleryLaunchStatus.Default;
+            switch (data.Path0)
             {
-                if (long.TryParse(data.Queries.GetString("gid"), out var gId))
+            case "gallerytorrents.php":
+                type = GalleryLaunchStatus.Torrent;
+                break;
+            case "stats.php":
+                type = GalleryLaunchStatus.Stats;
+                break;
+            case "archiver.php":
+                type = GalleryLaunchStatus.Archive;
+                break;
+            default:
+                switch (data.Queries.GetString("act"))
                 {
-                    var token = data.Queries.GetString("t") + data.Queries.GetString("token");
-                    if (token.IsNullOrWhiteSpace())
-                        return false;
-                    info = new GalleryInfo(gId, token.ToToken());
-                    type = GalleryLaunchStatus.Default;
-                    switch (data.Path0)
-                    {
-                    case "gallerytorrents.php":
-                        type = GalleryLaunchStatus.Torrent;
-                        break;
-                    case "stats.php":
-                        type = GalleryLaunchStatus.Stats;
-                        break;
-                    case "archiver.php":
-                        type = GalleryLaunchStatus.Archive;
-                        break;
-                    default:
-                        switch (data.Queries.GetString("act"))
-                        {
-                        case "addfav":
-                            type = GalleryLaunchStatus.Favorite;
-                            break;
-                        case "expunge":
-                            type = GalleryLaunchStatus.Expunge;
-                            break;
-                        case "rename":
-                            type = GalleryLaunchStatus.Rename;
-                            break;
-                        }
-                        break;
-                    }
-                    return true;
+                case "addfav":
+                    type = GalleryLaunchStatus.Favorite;
+                    break;
+                case "expunge":
+                    type = GalleryLaunchStatus.Expunge;
+                    break;
+                case "rename":
+                    type = GalleryLaunchStatus.Rename;
+                    break;
                 }
+                break;
             }
-            return false;
+            return true;
         }
 
         public static bool TryParse(Uri uri, out GalleryInfo info)
