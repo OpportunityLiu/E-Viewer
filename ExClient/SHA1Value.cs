@@ -143,7 +143,7 @@ namespace ExClient
             return false;
         }
 
-        public unsafe override int GetHashCode()
+        public override unsafe int GetHashCode()
         {
             var r = 0;
             fixed (void* p = &this)
@@ -210,7 +210,7 @@ namespace ExClient
             return new string(str, 0, length * 2);
         }
 
-        private unsafe static void getHexValueL(char* p, int i)
+        private static unsafe void getHexValueL(char* p, int i)
         {
             if (i < 10)
             {
@@ -222,7 +222,7 @@ namespace ExClient
             }
         }
 
-        private unsafe static void getHexValueU(char* p, int i)
+        private static unsafe void getHexValueU(char* p, int i)
         {
             if (i < 10)
             {
