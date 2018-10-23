@@ -45,6 +45,7 @@
     <Pivot.ItemTemplate>
       <DataTemplate x:DataType="settings:GroupedSettings">
         <ListView ItemTemplateSelector="{StaticResource SettingTemplateSelector}"
+                  SelectionMode="None"
                   ItemsSource="{x:Bind}"
                   Padding="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
                   ext:ScrollViewerExtensions.VerticalScrollBarMargin="{Binding VisibleBounds, ElementName=page, Mode=OneWay, Converter={StaticResource ThicknessConverter}, ConverterParameter='x0,x0,x0,x1'}"
