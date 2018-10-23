@@ -16,8 +16,8 @@
                 x:DataType="settings:SettingInfo">
     <StackPanel>
       <TextBlock Text="{Binding FriendlyName}" />
-      <controls:ExcludedTagNamespacesSelector ExcludedTagNamespaces="{Binding Value, Mode=TwoWay}" 
-                                              HorizontalAlignment="Center"/>
+      <controls:ExcludedTagNamespacesSelector ExcludedTagNamespaces="{Binding Value, Mode=TwoWay}"
+                                              HorizontalAlignment="Center" />
     </StackPanel>
   </DataTemplate>
   <DataTemplate x:Name="ExcludedLanguagesTemplate"
@@ -29,7 +29,9 @@
   </DataTemplate>
   <DataTemplate x:Name="AboutContentTemplate"
                 x:DataType="settings:SettingInfo">
-    <controls:AboutControl />
+    <Border DataContext="{x:Null}">
+      <controls:AboutControl />
+    </Border>
   </DataTemplate>
   <DataTemplate x:Name="FolderTemplate"
                 x:DataType="settings:SettingInfo">
