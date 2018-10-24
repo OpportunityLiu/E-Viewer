@@ -28,7 +28,7 @@
          ItemsSource="{x:Bind ViewModel.Toplists}">
     <Pivot.LeftHeader>
       <Border x:Name="bdSplitViewPlaceholder"
-              Height="48"
+              Height="{StaticResource AppBarThemeCompactHeight}"
               Width="0" />
     </Pivot.LeftHeader>
     <Pivot.RightHeader>

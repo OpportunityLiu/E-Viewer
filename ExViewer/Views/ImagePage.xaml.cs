@@ -314,6 +314,12 @@ namespace ExViewer.Views
             this.cb_top_Close.Begin();
         }
 
+        private Thickness gdCbContentPadding(double minHeight)
+        {
+            var tb = (minHeight - 20) / 2;
+            return new Thickness(0, tb, 0, tb);
+        }
+
         private void cb_top_Closed(object sender, object e)
         {
             this.tb_Title.ClearValue(TextBlock.MaxLinesProperty);

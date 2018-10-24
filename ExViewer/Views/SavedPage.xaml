@@ -73,7 +73,7 @@
       </ListView.Header>
     </tk:PullToRefreshListView>
     <Border Style="{ThemeResource TopBarPlaceholderBorderStyle}"
-            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,48,x1,x0'), Mode=OneWay}"
+            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
             RelativePanel.AlignLeftWithPanel="True"
             RelativePanel.AlignRightWithPanel="True" />
     <CommandBar x:Name="cb_top"
