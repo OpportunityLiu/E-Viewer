@@ -360,7 +360,7 @@
                              Style="{StaticResource PivotHeaderTextBlockStyle}"
                              Text="Images" />
                   <TextBlock Style="{StaticResource PivotHeaderSuperscriptTextBlockStyle}"
-                             Text="{x:Bind sys:String.Format('[{0}]', ViewModel.Gallery.Count), Mode=OneWay}"/>
+                             Text="{x:Bind sys:String.Format('[{0}]', ViewModel.Gallery.Count), Mode=OneWay}" />
                 </Grid>
               </PivotItem.Header>
               <GridView x:Name="gv"
@@ -516,7 +516,9 @@
                 HorizontalContentAlignment="Stretch"
                 IsDynamicOverflowEnabled="False">
       <CommandBar.Content>
-        <Grid Padding="0,14">
+        <Grid x:Name="gdCbContent"
+              MinHeight="{StaticResource AppBarThemeCompactHeight}"
+              Padding="{x:Bind gdCbContentPadding(gdCbContent.MinHeight)}">
           <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="cdSplitViewPlaceholder"
                               Width="0" />
@@ -527,13 +529,13 @@
                      Grid.ColumnSpan="999"
                      Style="{StaticResource GalleryTitleTextBlockStyle}"
                      Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}">
-                        <ToolTipService.ToolTip>
-                          <ToolTip rs3:IsEnabled="{x:Bind tbGalleryName.IsTextTrimmed, Mode=OneWay}">
-                            <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}"
-                                       TextWrapping="WrapWholeWords" />
-                          </ToolTip>
-                        </ToolTipService.ToolTip>
-                    </TextBlock>
+            <ToolTipService.ToolTip>
+              <ToolTip rs3:IsEnabled="{x:Bind tbGalleryName.IsTextTrimmed, Mode=OneWay}">
+                <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}"
+                           TextWrapping="WrapWholeWords" />
+              </ToolTip>
+            </ToolTipService.ToolTip>
+          </TextBlock>
         </Grid>
       </CommandBar.Content>
       <CommandBar.PrimaryCommands>
@@ -589,7 +591,7 @@
                       Command="{x:Bind ViewModel.Save, Mode=OneWay}"
                       Icon="Download"
                       Label="Save this gallery" />
-        
+
       </CommandBar.SecondaryCommands>
     </CommandBar>
     <ProgressBar x:Name="pb_save"

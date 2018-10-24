@@ -33,13 +33,14 @@
             Tapped="fvi_Tapped"
             Margin="{Binding VisibleBounds, ElementName=page, Mode=OneWay}">
         <Grid.RowDefinitions>
-          <RowDefinition Height="48" />
+          <RowDefinition MinHeight="{StaticResource AppBarThemeCompactHeight}"
+                         MaxHeight="{StaticResource AppBarThemeCompactHeight}" />
           <RowDefinition />
         </Grid.RowDefinitions>
         <controls:ImagePresenter x:Name="ip"
                                  Grid.RowSpan="2"
                                  Image="{x:Bind Mode=OneWay}" />
-        <ProgressBar Grid.Row="1" 
+        <ProgressBar Grid.Row="1"
                      VerticalAlignment="Top"
                      Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(State), Mode=OneWay, FallbackValue=Yellow}"
                      IsIndeterminate="{x:Bind local:ImagePage.loadStateToPbIsIndeterminate(State), Mode=OneWay, FallbackValue=True}"
@@ -280,7 +281,7 @@
     <Border x:Name="bdLeft"
             Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0,x0,x0'), Mode=OneWay}"
             Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x1,x0,x0'), Mode=OneWay}"
-            Height="48"
+            Height="{StaticResource AppBarThemeCompactHeight}"
             Visibility="{x:Bind cb_top.Visibility, Mode=OneWay}"
             Background="{x:Bind cb_top.Background, Mode=OneWay}"
             RelativePanel.AlignTopWithPanel="True"
@@ -292,7 +293,7 @@
     <Border x:Name="bdRight"
             Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x1,x0'), Mode=OneWay}"
             Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x1,x0,x0'), Mode=OneWay}"
-            Height="48"
+            Height="{StaticResource AppBarThemeCompactHeight}"
             Visibility="{x:Bind cb_top.Visibility, Mode=OneWay}"
             Background="{x:Bind cb_top.Background, Mode=OneWay}"
             RelativePanel.AlignTopWithPanel="True"
@@ -316,7 +317,9 @@
         <TranslateTransform />
       </CommandBar.RenderTransform>
       <CommandBar.Content>
-        <Grid Padding="0,14">
+        <Grid x:Name="gdCbContent"
+              MinHeight="{StaticResource AppBarThemeCompactHeight}"
+              Padding="{x:Bind gdCbContentPadding(gdCbContent.MinHeight)}">
           <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="cdSplitViewPlaceholder"
                               Width="0" />
@@ -329,13 +332,13 @@
                      Grid.Column="1"
                      Style="{StaticResource GalleryTitleTextBlockStyle}"
                      Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}">
-                        <ToolTipService.ToolTip>
-                          <ToolTip rs3:IsEnabled="{x:Bind tb_Title.IsTextTrimmed, Mode=OneWay}">
-                            <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}"
-                                       TextWrapping="WrapWholeWords" />
-                          </ToolTip>
-                        </ToolTipService.ToolTip>
-                    </TextBlock>
+            <ToolTipService.ToolTip>
+              <ToolTip rs3:IsEnabled="{x:Bind tb_Title.IsTextTrimmed, Mode=OneWay}">
+                <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}"
+                           TextWrapping="WrapWholeWords" />
+              </ToolTip>
+            </ToolTipService.ToolTip>
+          </TextBlock>
           <TextBlock x:Name="tb_si"
                      Grid.Column="2"
                      Style="{ThemeResource PageIndicatorTextBlockStyle}"

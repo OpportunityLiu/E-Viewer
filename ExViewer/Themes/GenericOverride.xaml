@@ -3,13 +3,12 @@
                     xmlns:rs3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
                     xmlns:prers3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
                     xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls">
-  <prers3:Style x:Key="ButtonRevealStyle"
-                TargetType="Button" />
+  
   <Style TargetType="PivotHeaderItem">
     <Setter Property="Height"
             Value="Auto" />
     <Setter Property="MinHeight"
-            Value="48" />
+            Value="{StaticResource AppBarThemeCompactHeight}" />
     <Setter Property="VerticalAlignment"
             Value="Stretch" />
     <Setter Property="VerticalContentAlignment"
