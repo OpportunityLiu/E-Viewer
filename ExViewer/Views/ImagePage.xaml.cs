@@ -535,5 +535,7 @@ namespace ExViewer.Views
         }
 
         private static GalleryImage loadOriginalCommandParameter(GalleryImage image, bool originalLoaded) => image;
+
+        private static double opposite(double value) => -value;
     }
 }

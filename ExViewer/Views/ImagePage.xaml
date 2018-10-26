@@ -201,7 +201,7 @@
       <DoubleAnimation Storyboard.TargetName="cb_top"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
-                       To="-48">
+                       To="{x:Bind local:ImagePage.opposite(bdLeft.Height), Mode=OneWay}">
         <DoubleAnimation.EasingFunction>
           <CubicEase EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
@@ -209,7 +209,7 @@
       <DoubleAnimation Storyboard.TargetName="bdTop"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
-                       To="-48">
+                       To="{x:Bind local:ImagePage.opposite(bdLeft.Height), Mode=OneWay}">
         <DoubleAnimation.EasingFunction>
           <CubicEase EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
@@ -217,7 +217,7 @@
       <DoubleAnimation Storyboard.TargetName="bdLeft"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
-                       To="-48">
+                       To="{x:Bind local:ImagePage.opposite(bdLeft.Height), Mode=OneWay}">
         <DoubleAnimation.EasingFunction>
           <CubicEase EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
@@ -225,7 +225,7 @@
       <DoubleAnimation Storyboard.TargetName="bdRight"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
-                       To="-48">
+                       To="{x:Bind local:ImagePage.opposite(cb_top.ActualHeight), Mode=OneWay}">
         <DoubleAnimation.EasingFunction>
           <CubicEase EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
