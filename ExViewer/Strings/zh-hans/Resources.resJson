@@ -162,6 +162,7 @@
     "CachedPage": {
       "DeleteAllAppBarButton/Label": "删除全部",
       "DeleteMenuFlyout/Text": "删除",
+      "DeleteSwipeItem/Text": "删除",
       "EmptyTextBlock/Text": "没有缓存的画廊",
       "GalleryDeleted": "选定的画廊已删除。",
       "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
@@ -345,6 +346,7 @@
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "删除全部",
       "DeleteMenuFlyout/Text": "删除",
+      "DeleteSwipeItem/Text": "删除",
       "EmptyTextBlock/Text": "没有保存的画廊",
       "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
       "RefreshAppBarButton/Label": "刷新"

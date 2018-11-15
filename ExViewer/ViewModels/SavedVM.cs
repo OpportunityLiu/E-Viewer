@@ -29,18 +29,5 @@ namespace ExViewer.ViewModels
                 that.Galleries = await SavedGallery.LoadSavedGalleriesAsync();
             }));
         }
-
-        private static readonly FolderPicker savePicker = initSavePicker();
-
-        private static FolderPicker initSavePicker()
-        {
-            var p = new FolderPicker()
-            {
-                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
-                ViewMode = PickerViewMode.Thumbnail
-            };
-            p.FileTypeFilter.Add("*");
-            return p;
-        }
     }
 }

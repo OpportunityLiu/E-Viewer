@@ -162,6 +162,7 @@
     "CachedPage": {
       "DeleteAllAppBarButton/Label": "Delete all",
       "DeleteMenuFlyout/Text": "Delete",
+      "DeleteSwipeItem/Text": "Delete",
       "EmptyTextBlock/Text": "No cached galleries",
       "GalleryDeleted": "Selected gallery has been deleted.",
       "LoadingMoreTextBlock/Text": "Loading more galleries…",
@@ -345,6 +346,7 @@
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "Delete all",
       "DeleteMenuFlyout/Text": "Delete",
+      "DeleteSwipeItem/Text": "Delete",
       "EmptyTextBlock/Text": "No saved galleries",
       "LoadingMoreTextBlock/Text": "Loading more galleries…",
       "RefreshAppBarButton/Label": "Refresh"
