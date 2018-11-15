@@ -5,8 +5,13 @@ using Windows.UI.Xaml.Controls;
 
 namespace ExViewer.Views
 {
-    static class ViewHelper
+    internal static class ViewHelper
     {
+        public static void SwipeItemCommandHelper(Microsoft.UI.Xaml.Controls.SwipeItem sender, Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
+        {
+            sender.CommandParameter = args.SwipeControl.DataContext;
+        }
+
         public static async Task<bool> ScrollAndFocus(ListViewBase listView, object item)
         {
             if (item is null || listView is null)
