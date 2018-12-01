@@ -117,6 +117,11 @@ namespace ExClient
             await f1;
             ResetExCookie();
             await f2;
+
+            var a1 = DomainProvider.Eh.Settings.SendAsync();
+            var a2 = DomainProvider.Ex.Settings.SendAsync();
+            await a1;
+            await a2;
         }
 
         /// <summary>

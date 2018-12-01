@@ -421,6 +421,7 @@ namespace ExClient.Galleries
                             continue;
 
                         var tokens = nodeA.GetAttribute("href", "").Split(new[] { '/', '-' });
+
                         if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s")
                         {
                             continue;
