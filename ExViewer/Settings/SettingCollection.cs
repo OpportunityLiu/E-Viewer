@@ -1,14 +1,14 @@
 ﻿using ApplicationDataManager.Settings;
-using System;
 using ExClient;
 using ExClient.Galleries;
 using ExClient.Settings;
 using ExClient.Tagging;
+using System;
+using Windows.Security.Credentials.UI;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Windows.Security.Credentials.UI;
 
 namespace ExViewer.Settings
 {
@@ -370,13 +370,13 @@ namespace ExViewer.Settings
                 {
                     if (string.IsNullOrEmpty(token))
                     {
-                        GalleryImage.ImageFolder = null;
+                        await Storage.SetImageFolderAsync(null);
                     }
                     else
                     {
                         try
                         {
-                            GalleryImage.ImageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
+                            await Storage.SetImageFolderAsync(await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token));
                             Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Custom cache folder set");
                         }
                         catch

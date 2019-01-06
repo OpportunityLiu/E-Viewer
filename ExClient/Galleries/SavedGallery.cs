@@ -55,8 +55,7 @@ namespace ExClient.Galleries
             return Run<double>(async (token, progress) =>
             {
                 progress.Report(double.NaN);
-                var folder = await GalleryImage.GetImageFolderAsync();
-                var getFiles = folder.GetFilesAsync();
+                var getFiles = Storage.ImageFolder.GetFilesAsync();
                 using (var db = new GalleryDb())
                 {
                     db.SavedSet.RemoveRange(db.SavedSet);
@@ -76,14 +75,6 @@ namespace ExClient.Galleries
 
         internal SavedGallery(GalleryModel model)
                 : base(model) { }
-
-        protected override IAsyncOperation<ImageSource> GetThumbAsync()
-        {
-            return Run(async token =>
-            {
-                return await GetThumbLocalilyAsync() ?? await base.GetThumbAsync();
-            });
-        }
 
         public override IAsyncAction DeleteAsync()
         {
