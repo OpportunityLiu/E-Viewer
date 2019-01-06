@@ -404,9 +404,9 @@
     <Content Include="Assets\Theme\Dark\UserBackground.png" />
     <Content Include="Assets\Theme\Light\ImageLoading.png" />
     <Content Include="Assets\Theme\Light\UserBackground.png" />
-    <Content Include="Properties\Default.rd.xml">
+    <EmbeddedResource Include="Properties\Default.rd.xml">
       <SubType>Designer</SubType>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -648,13 +648,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.8.10</Version>
+      <Version>1.8.11</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
-      <Version>1.11.0</Version>
+      <Version>1.12.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>1.11.0</Version>
+      <Version>1.12.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite">
       <Version>1.1.6</Version>
@@ -671,7 +671,7 @@
       <Version>4.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.0.181018003</Version>
+      <Version>2.0.181018003.1</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.Helpers.Universal">
       <Version>1.3.19</Version>

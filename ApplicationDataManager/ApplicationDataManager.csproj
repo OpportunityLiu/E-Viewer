@@ -116,7 +116,7 @@
     <Compile Include="Strings\Strings.g.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Properties\ApplicationDataManager.rd.xml" />
+    <EmbeddedResource Include="Properties\ApplicationDataManager.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Settings\Xaml\DefaultTemplateProvider.xaml">
