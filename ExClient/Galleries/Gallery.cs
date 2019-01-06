@@ -327,7 +327,7 @@ namespace ExClient.Galleries
                     this.thumbImage.SetTarget(r);
                     OnPropertyChanged(nameof(Thumb));
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
-                return Storage.DefaultThumb;
+                return ThumbHelper.DefaultThumb;
             }
         }
 
@@ -538,7 +538,7 @@ namespace ExClient.Galleries
 
                             if (file is null)
                             {
-                                file = await Storage.ImageFolder.TryGetFileAsync(item.Image.FileName);
+                                file = await StorageHelper.ImageFolder.TryGetFileAsync(item.Image.FileName);
                             }
                             if (file != null)
                             {

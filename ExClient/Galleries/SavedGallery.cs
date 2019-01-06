@@ -55,7 +55,7 @@ namespace ExClient.Galleries
             return Run<double>(async (token, progress) =>
             {
                 progress.Report(double.NaN);
-                var getFiles = Storage.ImageFolder.GetFilesAsync();
+                var getFiles = StorageHelper.ImageFolder.GetFilesAsync();
                 using (var db = new GalleryDb())
                 {
                     db.SavedSet.RemoveRange(db.SavedSet);

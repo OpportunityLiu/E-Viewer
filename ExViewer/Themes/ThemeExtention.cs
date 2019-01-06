@@ -69,10 +69,10 @@ namespace ExViewer.Themes
             switch (Settings.SettingCollection.Current.Theme)
             {
             case ApplicationTheme.Light:
-                ExClient.Storage.DefaultThumb.UriSource = new Uri("ms-appx:///Assets/Theme/Light/ImageLoading.png");
+                ExClient.Config.DefaultThumbUri = new Uri("ms-appx:///Assets/Theme/Light/ImageLoading.png");
                 break;
             default:
-                ExClient.Storage.DefaultThumb.UriSource = new Uri("ms-appx:///Assets/Theme/Dark/ImageLoading.png");
+                ExClient.Config.DefaultThumbUri = new Uri("ms-appx:///Assets/Theme/Dark/ImageLoading.png");
                 break;
             }
         }

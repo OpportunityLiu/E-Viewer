@@ -17,35 +17,19 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace ExClient
 {
-    public static class Storage
+    internal static class ThumbHelper
     {
-        static Storage()
+        static ThumbHelper()
         {
-            var ignore = SetImageFolderAsync(null);
             CoreApplication.MainView.Dispatcher.Begin(() =>
             {
                 Display = DisplayInformation.GetForCurrentView();
-                DefaultThumb = new BitmapImage();
+                DefaultThumb = new BitmapImage(Config.DefaultThumbUri);
             });
         }
 
-        public static StorageFolder ImageFolder { get; private set; }
+        public static DisplayInformation Display { get; private set; }
 
-        public static async Task SetImageFolderAsync(StorageFolder folder)
-        {
-            if (folder != null)
-            {
-                ImageFolder = folder;
-                return;
-            }
-
-            var old = ImageFolder;
-            var temp = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
-            if (old == ImageFolder)
-                ImageFolder = temp;
-        }
-
-        internal static DisplayInformation Display { get; private set; }
         public static BitmapImage DefaultThumb { get; private set; }
 
         private static async Task<bool> getThumbLocalilyAsync(Gallery gallery, bool exact, BitmapImage bitmap)
@@ -72,7 +56,7 @@ namespace ExClient
             var imageModel = getImageModel(gallery.ID, exact);
             if (imageModel is null)
                 return false;
-            var file = await ImageFolder.TryGetFileAsync(imageModel.Image.FileName);
+            var file = await StorageHelper.ImageFolder.TryGetFileAsync(imageModel.Image.FileName);
             if (file is null)
                 return false;
             try
@@ -94,7 +78,7 @@ namespace ExClient
             return await ThumbClient.FetchThumbAsync(gallery.ThumbUri, bitmap);
         }
 
-        internal static async Task<ImageSource> GetThumbAsync(this Gallery gallery)
+        public static async Task<ImageSource> GetThumbAsync(this Gallery gallery)
         {
             await CoreApplication.MainView.Dispatcher.Yield();
             var image = new BitmapImage();
@@ -107,4 +91,5 @@ namespace ExClient
             return DefaultThumb;
         }
     }
+
 }

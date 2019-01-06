@@ -31,7 +31,7 @@ namespace ExClient.Galleries
         {
             var hash = galleryImageModel.ImageId;
             this.ImageHash = hash;
-            var imageFile = await Storage.ImageFolder.TryGetFileAsync(imageModel.FileName);
+            var imageFile = await StorageHelper.ImageFolder.TryGetFileAsync(imageModel.FileName);
             if (imageFile != null)
             {
                 ImageFile = imageFile;
@@ -90,7 +90,7 @@ namespace ExClient.Galleries
         private Uri thumbUri;
         public Uri ThumbUri { get => this.thumbUri; private set => ForceSet(nameof(Thumb), ref this.thumbUri, value); }
 
-        private readonly WeakReference<ImageSource> thumb = new WeakReference<ImageSource>(null);
+        private readonly WeakReference<BitmapImage> thumb = new WeakReference<BitmapImage>(null);
         private async void loadThumb()
         {
             var file = this.imageFile;
@@ -99,41 +99,48 @@ namespace ExClient.Galleries
                 return;
 
             this.thumb.TryGetTarget(out var current);
-            if (!CoreApplication.MainView.Dispatcher.HasThreadAccess)
-                await CoreApplication.MainView.Dispatcher.YieldIdle();
-            var img = new BitmapImage();
+
+            var img = current;
+            if (img is null)
+            {
+                if (!CoreApplication.MainView.Dispatcher.HasThreadAccess)
+                    await CoreApplication.MainView.Dispatcher.Yield();
+                img = new BitmapImage();
+            }
             try
             {
                 file = this.imageFile;
                 uri = this.thumbUri;
                 if (file != null)
                 {
-                    var size = (uint)(180 * Storage.Display.RawPixelsPerViewPixel);
+                    var size = (uint)(180 * ThumbHelper.Display.RawPixelsPerViewPixel);
                     using (var stream = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, size, ThumbnailOptions.ResizeThumbnail))
                     {
                         await img.SetSourceAsync(stream);
                     }
                 }
                 else if (!await ThumbClient.FetchThumbAsync(uri, img))
-                    img = null;
+                    return;
             }
             catch
             {
-                img = null;
+                return;
             }
-            this.thumb.SetTarget(img);
             if (img != current)
+            {
+                this.thumb.SetTarget(img);
                 OnPropertyChanged(nameof(Thumb));
+            }
         }
 
-        public ImageSource Thumb
+        public BitmapImage Thumb
         {
             get
             {
                 if (this.thumb.TryGetTarget(out var thb))
                     return thb;
                 loadThumb();
-                return Storage.DefaultThumb;
+                return ThumbHelper.DefaultThumb;
             }
         }
 
@@ -209,7 +216,7 @@ namespace ExClient.Galleries
                         while (!reload && imageModel != null && (imageModel.OriginalLoaded || imageModel.OriginalLoaded == loadFull))
                         {
                             // Try load local file
-                            var file = await Storage.ImageFolder.TryGetFileAsync(imageModel.FileName);
+                            var file = await StorageHelper.ImageFolder.TryGetFileAsync(imageModel.FileName);
                             if (file is null)
                             {
                                 // Failed
@@ -282,7 +289,7 @@ namespace ExClient.Galleries
                         token.ThrowIfCancellationRequested();
                         await this.deleteImageFileAsync();
                         var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
-                        this.ImageFile = await Storage.ImageFolder.SaveFileAsync($"{this.imageHash}{ext}", CreationCollisionOption.ReplaceExisting, buffer);
+                        this.ImageFile = await StorageHelper.ImageFolder.SaveFileAsync($"{this.imageHash}{ext}", CreationCollisionOption.ReplaceExisting, buffer);
                         var myModel = db.GalleryImageSet
                             .Include(model => model.Image)
                             .SingleOrDefault(model => model.GalleryId == this.Owner.ID && model.PageId == this.PageID);
@@ -359,7 +366,7 @@ namespace ExClient.Galleries
             private set
             {
                 Set(ref this.imageFile, value);
-                if (value != null)
+                if (value != null && this.thumb.TryGetTarget(out _))
                 {
                     loadThumb();
                 }
