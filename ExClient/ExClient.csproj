@@ -114,6 +114,7 @@
     <Compile Include="Api\Tagging.cs" />
     <Compile Include="Api\VoteState.cs" />
     <Compile Include="Forums\Topic.cs" />
+    <Compile Include="Storage.cs" />
     <Compile Include="Hentaiverse\EventArgs.cs" />
     <Compile Include="Internal\ThumbClient.cs" />
     <Compile Include="Services\ExpungeInfo.cs" />

@@ -27,70 +27,11 @@ namespace ExClient.Galleries
     [System.Diagnostics.DebuggerDisplay(@"\{PageID = {PageID} State = {State} File = {ImageFile?.Name}\}")]
     public sealed class GalleryImage : ObservableObject
     {
-        static GalleryImage()
-        {
-            CoreApplication.MainView.Dispatcher.Begin(() =>
-            {
-                display = DisplayInformation.GetForCurrentView();
-                createDefaultThumb();
-            });
-        }
-
-        private static void createDefaultThumb()
-        {
-            if (defaultThumb != null)
-                return;
-            CoreApplication.MainView.Dispatcher.BeginIdle(async d =>
-            {
-                var b = new BitmapImage();
-                var old = Interlocked.CompareExchange(ref defaultThumb, b, null);
-                if (old != null)
-                    return;
-
-                using (var stream = await StorageHelper.GetIconOfExtensionAsync("jpg"))
-                {
-                    await b.SetSourceAsync(stream);
-                }
-            });
-        }
-
-        private static ImageSource defaultThumb;
-        public static ImageSource DefaultThumb
-        {
-            get => defaultThumb;
-            set
-            {
-                if (value is null)
-                    createDefaultThumb();
-                else
-                    defaultThumb = value;
-            }
-        }
-
-        private static DisplayInformation display;
-
-        public static StorageFolder ImageFolder { get; set; }
-
-        internal static async ValueTask<StorageFolder> GetImageFolderAsync()
-        {
-            var temp = ImageFolder;
-            if (temp != null)
-                return temp;
-            var temp2 = ImageFolder;
-            if (temp2 is null)
-            {
-                temp2 = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
-                ImageFolder = temp2;
-            }
-            return temp2;
-        }
-
         internal async Task PopulateCachedImageAsync(GalleryImageModel galleryImageModel, ImageModel imageModel)
         {
-            var folder = await GetImageFolderAsync();
             var hash = galleryImageModel.ImageId;
             this.ImageHash = hash;
-            var imageFile = await folder.TryGetFileAsync(imageModel.FileName);
+            var imageFile = await Storage.ImageFolder.TryGetFileAsync(imageModel.FileName);
             if (imageFile != null)
             {
                 ImageFile = imageFile;
@@ -167,7 +108,7 @@ namespace ExClient.Galleries
                 uri = this.thumbUri;
                 if (file != null)
                 {
-                    var size = (uint)(180 * display.RawPixelsPerViewPixel);
+                    var size = (uint)(180 * Storage.Display.RawPixelsPerViewPixel);
                     using (var stream = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, size, ThumbnailOptions.ResizeThumbnail))
                     {
                         await img.SetSourceAsync(stream);
@@ -192,7 +133,7 @@ namespace ExClient.Galleries
                 if (this.thumb.TryGetTarget(out var thb))
                     return thb;
                 loadThumb();
-                return DefaultThumb;
+                return Storage.DefaultThumb;
             }
         }
 
@@ -258,7 +199,6 @@ namespace ExClient.Galleries
                     if (this.PageUri is null)
                         await Owner.LoadItemsAsync(this.PageID - 1, 1);
                     var loadFull = !ConnectionHelper.IsLofiRequired(strategy);
-                    var folder = await GetImageFolderAsync();
                     this.Progress = 0;
 
                     await this.loadImageUriAndHash(token);
@@ -269,7 +209,7 @@ namespace ExClient.Galleries
                         while (!reload && imageModel != null && (imageModel.OriginalLoaded || imageModel.OriginalLoaded == loadFull))
                         {
                             // Try load local file
-                            var file = await folder.TryGetFileAsync(imageModel.FileName);
+                            var file = await Storage.ImageFolder.TryGetFileAsync(imageModel.FileName);
                             if (file is null)
                             {
                                 // Failed
@@ -342,7 +282,7 @@ namespace ExClient.Galleries
                         token.ThrowIfCancellationRequested();
                         await this.deleteImageFileAsync();
                         var ext = Path.GetExtension(imageLoadResponse.RequestMessage.RequestUri.LocalPath);
-                        this.ImageFile = await folder.SaveFileAsync($"{this.imageHash}{ext}", CreationCollisionOption.ReplaceExisting, buffer);
+                        this.ImageFile = await Storage.ImageFolder.SaveFileAsync($"{this.imageHash}{ext}", CreationCollisionOption.ReplaceExisting, buffer);
                         var myModel = db.GalleryImageSet
                             .Include(model => model.Image)
                             .SingleOrDefault(model => model.GalleryId == this.Owner.ID && model.PageId == this.PageID);
