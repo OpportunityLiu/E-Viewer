@@ -404,9 +404,9 @@
     <Content Include="Assets\Theme\Dark\UserBackground.png" />
     <Content Include="Assets\Theme\Light\ImageLoading.png" />
     <Content Include="Assets\Theme\Light\UserBackground.png" />
-    <EmbeddedResource Include="Properties\Default.rd.xml">
+    <Content Include="Properties\Default.rd.xml">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
