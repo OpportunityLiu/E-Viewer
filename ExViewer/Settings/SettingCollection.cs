@@ -370,13 +370,13 @@ namespace ExViewer.Settings
                 {
                     if (string.IsNullOrEmpty(token))
                     {
-                        await Storage.SetImageFolderAsync(null);
+                        await Config.SetImageFolderAsync(null);
                     }
                     else
                     {
                         try
                         {
-                            await Storage.SetImageFolderAsync(await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token));
+                            await Config.SetImageFolderAsync(await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token));
                             Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Custom cache folder set");
                         }
                         catch

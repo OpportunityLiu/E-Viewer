@@ -67,7 +67,7 @@ namespace ExClient.Galleries
                     var i = 0;
                     foreach (var item in todelete)
                     {
-                        var file = await Storage.ImageFolder.TryGetFileAsync(item.FileName);
+                        var file = await StorageHelper.ImageFolder.TryGetFileAsync(item.FileName);
                         if (file != null)
                         {
                             await file.DeleteAsync();
