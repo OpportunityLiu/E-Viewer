@@ -74,7 +74,7 @@ namespace ExViewer.Controls.TagSuggestion
 
     public static class TagRecordFactory
     {
-        private static Dictionary<Namespace, int> nsFactor = new Dictionary<Namespace, int>()
+        private static readonly Dictionary<Namespace, int> nsFactor = new Dictionary<Namespace, int>()
         {
             [Namespace.Unknown] = 1,
             [Namespace.Reclass] = 4,
