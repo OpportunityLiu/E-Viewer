@@ -21,12 +21,12 @@ namespace ExClient.Forums
         /// <summary>
         /// Fetch user info from forum.e-hentai.org/index?showuser={<paramref name="userID"/>}.
         /// </summary>
-        public static IAsyncOperation<UserInfo> FeachAsync(long userID)
+        public static Task<UserInfo> FeachAsync(long userID)
         {
             if (userID <= 0)
                 throw new ArgumentOutOfRangeException(nameof(userID));
 
-            return Run(async token => await Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 var document = await Current.HttpClient.GetDocumentAsync(new Uri(ForumsUri, $"index.php?showuser={userID}"));
                 var profileName = document.GetElementbyId("profilename");
@@ -64,7 +64,7 @@ namespace ExClient.Forums
                     MemberGroup = groupAndJoin.FirstChild.GetInnerText().Trim().Substring(14),
                     RegisterDate = register
                 };
-            }, token));
+            });
         }
 
         /// <summary>

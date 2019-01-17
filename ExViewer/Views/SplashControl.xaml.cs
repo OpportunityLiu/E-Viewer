@@ -217,6 +217,14 @@ namespace ExViewer.Views
         {
             try
             {
+                await Client.Current.RefreshCookiesAsync();
+            }
+            catch (Exception)
+            {
+                //Ignore exceptions here.
+            }
+            try
+            {
                 var ver = await VersionChecker.CheckAsync();
                 if (ver is VersionChecker.GitHubRelease v)
                 {
