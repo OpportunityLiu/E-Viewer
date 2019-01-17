@@ -82,10 +82,29 @@ namespace ExClient
             return new LogOnInfo(this);
         }
 
+        public async Task RefreshCookiesAsync()
+        {
+            if (NeedLogOn)
+                throw new InvalidOperationException("Must log on first.");
+
+            var backup = GetLogOnInfo();
+            try
+            {
+                await refreshCookieAndSettings();
+                await refreshHathPerks();
+            }
+            catch (Exception)
+            {
+                RestoreLogOnInfo(backup);
+                throw;
+            }
+        }
+
         public void RestoreLogOnInfo(LogOnInfo info)
         {
             if (info is null)
                 throw new ArgumentNullException(nameof(info));
+
             ClearLogOnInfo();
             foreach (var item in info.Cookies)
                 this.CookieManager.SetCookie(item);
@@ -115,7 +134,6 @@ namespace ExClient
             var f1 = DomainProvider.Eh.Settings.FetchAsync();
             var f2 = DomainProvider.Ex.Settings.FetchAsync();
             await f1;
-            ResetExCookie();
             await f2;
 
             var a1 = DomainProvider.Eh.Settings.SendAsync();
@@ -130,7 +148,7 @@ namespace ExClient
         /// </summary>
         /// <param name="userID">cookie with name ipb_member_id</param>
         /// <param name="passHash">cookie with name ipb_pass_hash</param>
-        public IAsyncAction LogOnAsync(long userID, string passHash)
+        public async Task LogOnAsync(long userID, string passHash)
         {
             if (userID <= 0)
                 throw new ArgumentOutOfRangeException(nameof(userID));
@@ -141,47 +159,43 @@ namespace ExClient
             if (passHash.Length != 32 || !passHash.All(c => (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')))
                 throw new ArgumentException("Should be 32 hex chars.", nameof(passHash));
 
-            var memberID = userID.ToString();
-            return AsyncInfo.Run(async token =>
+            var cookieBackUp = GetLogOnInfo();
+            ClearLogOnInfo();
+
+            this.CookieManager.SetCookie(new HttpCookie(CookieNames.MemberID, Domains.Eh, "/") { Value = userID.ToString(), Expires = DateTimeOffset.UtcNow.AddYears(5) });
+            this.CookieManager.SetCookie(new HttpCookie(CookieNames.PassHash, Domains.Eh, "/") { Value = passHash, Expires = DateTimeOffset.UtcNow.AddYears(5) });
+
+            try
             {
-                var cookieBackUp = GetLogOnInfo();
-                ClearLogOnInfo();
-                this.CookieManager.SetCookie(new HttpCookie(CookieNames.MemberID, Domains.Eh, "/") { Value = memberID, Expires = DateTimeOffset.UtcNow.AddYears(5) });
-                this.CookieManager.SetCookie(new HttpCookie(CookieNames.PassHash, Domains.Eh, "/") { Value = passHash, Expires = DateTimeOffset.UtcNow.AddYears(5) });
+                await refreshCookieAndSettings();
                 try
                 {
-                    await refreshCookieAndSettings();
-                    this.initTask = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            await UserStatus?.RefreshAsync();
-                            await refreshHathPerks();
-                        }
-                        catch { }
-                    });
+                    await UserStatus?.RefreshAsync();
+                    await refreshHathPerks();
                 }
-                catch (Exception)
-                {
-                    RestoreLogOnInfo(cookieBackUp);
-                    throw;
-                }
-            });
+                catch { }
+
+                if (NeedLogOn)
+                    throw new ArgumentException("Invalid log on info.");
+            }
+            catch (Exception)
+            {
+                RestoreLogOnInfo(cookieBackUp);
+                throw;
+            }
         }
 
         private static readonly Uri hathperksUri = new Uri(DomainProvider.Eh.RootUri, "hathperks.php");
 
-        private IAsyncAction refreshHathPerks()
+        private async Task refreshHathPerks()
         {
             var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.HathPerks);
             if (cookie != null)
                 this.CookieManager.DeleteCookie(cookie);
-            return AsyncInfo.Run(async token =>
-            {
-                await this.HttpClient.GetAsync(hathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
-                CheckLogOn();
-                ResetExCookie();
-            });
+
+            await this.HttpClient.GetAsync(hathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
+            CheckLogOn();
+            ResetExCookie();
         }
 
         public long UserId
@@ -208,7 +222,7 @@ namespace ExClient
             }
         }
 
-        public IAsyncOperation<UserInfo> FetchCurrentUserInfoAsync()
+        public Task<UserInfo> FetchCurrentUserInfoAsync()
         {
             if (this.UserId < 0)
                 throw new InvalidOperationException("Hasn't log in");

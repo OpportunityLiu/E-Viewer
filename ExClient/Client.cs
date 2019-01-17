@@ -19,27 +19,11 @@ namespace ExClient
             httpFilter.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
             this.CookieManager = httpFilter.CookieManager;
             this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
+            setDefaultCookies();
+
             if (NeedLogOn)
                 ClearLogOnInfo();
-            else
-            {
-                this.initTask = Task.Run(async () =>
-                {
-                    var backup = GetLogOnInfo();
-                    try
-                    {
-                        await refreshCookieAndSettings();
-                        await refreshHathPerks();
-                    }
-                    catch (Exception)
-                    {
-                        RestoreLogOnInfo(backup);
-                    }
-                });
-            }
         }
-
-        private Task initTask;
 
         internal HttpCookieManager CookieManager { get; }
 
@@ -51,12 +35,7 @@ namespace ExClient
         public HostType Host
         {
             get => this.host;
-            set
-            {
-                Set(nameof(Settings), ref this.host, value);
-                if (this.initTask.IsCompleted)
-                    this.initTask = refreshCookieAndSettings();
-            }
+            set => Set(nameof(Settings), ref this.host, value);
         }
 
         public SettingCollection Settings => this.Uris.Settings;
