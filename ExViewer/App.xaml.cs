@@ -82,10 +82,11 @@ namespace ExViewer
                 AppCenter.Start(Telemetry.AppCenterKey, typeof(Analytics), typeof(Crashes));
             }
 #endif
-            if (Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Count == 0)
+            var notificator = Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView();
+            if (notificator.Handlers.Count == 0)
             {
-                Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Add(new Services.ContentDialogNotification());
-                Opportunity.MvvmUniverse.Services.Notification.Notificator.GetForCurrentView().Handlers.Add(new Services.InAppToastNotification());
+                notificator.Handlers.Add(new Services.ContentDialogNotification());
+                notificator.Handlers.Add(new Services.InAppToastNotification());
             }
             var jumplist = JumplistManager.RefreshJumplistAsync();
             var currentWindow = Window.Current;

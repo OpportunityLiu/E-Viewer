@@ -265,6 +265,7 @@
     <Compile Include="Helpers\HtmlHelper.cs" />
     <Compile Include="Helpers\ShareHandler.cs" />
     <Compile Include="Helpers\TagExtension.cs" />
+    <Compile Include="Helpers\VerificationManager.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Migrations\20180807021725_History.cs" />
     <Compile Include="Migrations\20180807021725_History.designer.cs">
@@ -677,7 +678,7 @@
       <Version>1.3.19</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.MvvmUniverse">
-      <Version>2.8.0</Version>
+      <Version>2.8.1</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.ResourceGenerator">
       <Version>1.4.0</Version>
