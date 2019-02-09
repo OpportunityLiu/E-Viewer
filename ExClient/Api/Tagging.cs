@@ -13,9 +13,7 @@ namespace ExClient.Api
         {
             this.Vote = vote;
             if (tags.Length >= 200)
-            {
                 throw new ArgumentException(LocalizedStrings.Resources.TagsTooLong, nameof(tags));
-            }
 
             this.Tags = tags;
         }
