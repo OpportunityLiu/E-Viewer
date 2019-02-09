@@ -36,9 +36,9 @@ namespace ExViewer.Views
     {
         public ImagePage()
         {
-            this.InitializeComponent();
-            this.fv.Opacity = 0;
-            this.fv.IsEnabled = false;
+            InitializeComponent();
+            fv.Opacity = 0;
+            fv.IsEnabled = false;
         }
 
         public new GalleryVM ViewModel
@@ -51,36 +51,36 @@ namespace ExViewer.Views
         {
             Debug.Assert(e.Parameter != null, "e.Parameter != null");
             Navigator.GetForCurrentView().Handlers.Add(this);
-            this.tapToFlip = SettingCollection.Current.TapToFlip;
+            tapToFlip = SettingCollection.Current.TapToFlip;
 
             base.OnNavigatedTo(e);
 
-            this.ViewModel = GalleryVM.GetVM((long)e.Parameter);
+            ViewModel = GalleryVM.GetVM((long)e.Parameter);
 
-            var index = this.ViewModel.View.CurrentPosition;
+            var index = ViewModel.View.CurrentPosition;
             if (index < 0)
             {
                 index = 0;
             }
 
-            this.imgConnect.Source = this.ViewModel.Gallery[index].Thumb;
+            imgConnect.Source = ViewModel.Gallery[index].Thumb;
             var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
             var animationSucceed = false;
             if (animation != null)
             {
-                animationSucceed = animation.TryStart(this.imgConnect, new UIElement[]
+                animationSucceed = animation.TryStart(imgConnect, new UIElement[]
                 {
-                    this.cb_top, this.bdLeft, this.bdRight, this.bdTop
+                    cbTop, bdTopLeft, bdTopRight, bdTop
                 });
                 if (animationSucceed)
                 {
-                    animation.Completed += this.Animation_Completed;
+                    animation.Completed += Animation_Completed;
                 }
             }
 
             await Dispatcher.YieldIdle();
-            this.fv.ItemsSource = this.ViewModel.View;
-            this.fv.SelectedIndex = index;
+            fv.ItemsSource = ViewModel.View;
+            fv.SelectedIndex = index;
             setScale();
             if (!animationSucceed)
             {
@@ -92,28 +92,28 @@ namespace ExViewer.Views
 
         private void Animation_Completed(ConnectedAnimation sender, object args)
         {
-            this.imgConnect.Visibility = Visibility.Collapsed;
-            this.imgConnect.Source = null;
-            this.fv.ItemsSource = this.ViewModel.View;
-            this.ViewModel.View.IsCurrentPositionLocked = false;
-            this.fv.IsEnabled = true;
-            this.fv.Opacity = 1;
-            this.fv.Focus(FocusState.Programmatic);
-            this.fv.SelectedIndex = ViewModel.View.CurrentPosition;
+            imgConnect.Visibility = Visibility.Collapsed;
+            imgConnect.Source = null;
+            fv.ItemsSource = ViewModel.View;
+            ViewModel.View.IsCurrentPositionLocked = false;
+            fv.IsEnabled = true;
+            fv.Opacity = 1;
+            fv.Focus(FocusState.Programmatic);
+            fv.SelectedIndex = ViewModel.View.CurrentPosition;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             Navigator.GetForCurrentView().Handlers.Remove(this);
             base.OnNavigatingFrom(e);
-            this.ViewModel.View.IsCurrentPositionLocked = true;
+            ViewModel.View.IsCurrentPositionLocked = true;
 
-            if (!this.cbVisible)
+            if (!cbVisible)
             {
                 changeCbVisibility();
             }
 
-            var container = this.fv.ContainerFromIndex(this.fv.SelectedIndex);
+            var container = fv.ContainerFromIndex(fv.SelectedIndex);
             if (container != null)
             {
                 ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ImageAnimation", container.Descendants<Image>().First());
@@ -122,9 +122,9 @@ namespace ExViewer.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            this.fv.Opacity = 0;
-            this.fv.IsEnabled = false;
-            this.imgConnect.Visibility = Visibility.Visible;
+            fv.Opacity = 0;
+            fv.IsEnabled = false;
+            imgConnect.Visibility = Visibility.Visible;
             base.OnNavigatedFrom(e);
             CloseAll();
         }
@@ -135,7 +135,7 @@ namespace ExViewer.Views
         bool INavigationHandler.CanGoBack => false;
         IAsyncOperation<bool> INavigationHandler.GoBackAsync()
         {
-            StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
+            StatusCollection.Current.FullScreenInImagePage = isFullScreen ?? false;
             RootControl.RootController.SetFullScreen(false);
             return AsyncInfo.Run(async token =>
             {
@@ -146,13 +146,13 @@ namespace ExViewer.Views
         bool INavigationHandler.CanGoForward => false;
         IAsyncOperation<bool> INavigationHandler.GoForwardAsync()
         {
-            StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
+            StatusCollection.Current.FullScreenInImagePage = isFullScreen ?? false;
             RootControl.RootController.SetFullScreen(false);
             return AsyncOperation<bool>.CreateCompleted(false);
         }
         IAsyncOperation<bool> INavigationHandler.NavigateAsync(Type sourcePageType, object parameter)
         {
-            StatusCollection.Current.FullScreenInImagePage = this.isFullScreen ?? false;
+            StatusCollection.Current.FullScreenInImagePage = isFullScreen ?? false;
             RootControl.RootController.SetFullScreen(false);
             return AsyncOperation<bool>.CreateCompleted(false);
         }
@@ -163,27 +163,27 @@ namespace ExViewer.Views
         private void Av_VisibleBoundsChanged(ApplicationView sender, object args)
         {
             var currentState = RootControl.RootController.IsFullScreen;
-            if (currentState == this.isFullScreen)
+            if (currentState == isFullScreen)
             {
                 return;
             }
 
             if (currentState)
             {
-                this.abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
-                this.abb_fullScreen.Label = Strings.Resources.Views.ImagePage.BackToWindow;
+                abb_fullScreen.Icon = new SymbolIcon(Symbol.BackToWindow);
+                abb_fullScreen.Label = Strings.Resources.Views.ImagePage.BackToWindow;
             }
             else
             {
-                this.abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
-                this.abb_fullScreen.Label = Strings.Resources.Views.ImagePage.FullScreen;
+                abb_fullScreen.Icon = new SymbolIcon(Symbol.FullScreen);
+                abb_fullScreen.Label = Strings.Resources.Views.ImagePage.FullScreen;
             }
-            this.isFullScreen = currentState;
+            isFullScreen = currentState;
         }
 
         private void setScale()
         {
-            foreach (var item in this.fv.Descendants<ImagePresenter>())
+            foreach (var item in fv.Descendants<ImagePresenter>())
             {
                 item.ResetZoom(true);
             }
@@ -191,78 +191,72 @@ namespace ExViewer.Views
 
         private void fv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var index = this.fv.SelectedIndex;
+            var index = fv.SelectedIndex;
             if (index < 0)
-            {
                 return;
-            }
 
-            var g = this.ViewModel?.Gallery;
+            var g = ViewModel?.Gallery;
             if (g is null)
-            {
                 return;
-            }
 
             setScale();
         }
 
 
-        private static UISettings uiSettings = new UISettings();
+        private static readonly UISettings uiSettings = new UISettings();
         private bool tapToFlip;
         private System.Threading.CancellationTokenSource doubleTapToken;
 
         private async void fvi_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            this.doubleTapToken = new System.Threading.CancellationTokenSource();
-            await Task.Delay((int)uiSettings.DoubleClickTime, this.doubleTapToken.Token).ContinueWith(async t =>
-            {
-                if (t.IsCanceled)
-                    return;
-                this.doubleTapToken.Cancel();
-                await Dispatcher.Yield();
+            doubleTapToken = new System.Threading.CancellationTokenSource();
+            await Task.Delay((int)uiSettings.DoubleClickTime, doubleTapToken.Token);
+            if (doubleTapToken.IsCancellationRequested)
+                return;
 
-                var handled = false;
-                if (this.tapToFlip && e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
+            doubleTapToken.Cancel();
+
+            var handled = false;
+            if (tapToFlip && e.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
+            {
+                var orient = (fv.ItemsPanelRoot is VirtualizingStackPanel panel) ? panel.Orientation : Orientation.Horizontal;
+                var point = e.GetPosition(fv);
+                if (orient == Orientation.Horizontal)
                 {
-                    var orient = (this.fv.ItemsPanelRoot is VirtualizingStackPanel panel) ? panel.Orientation : Orientation.Horizontal;
-                    var point = e.GetPosition(this.fv);
-                    if (orient == Orientation.Horizontal)
+                    if (point.X < fv.ActualWidth * 0.3)
                     {
-                        if (point.X < this.fv.ActualWidth * 0.3)
-                        {
-                            if (this.ViewModel.View.CurrentPosition != 0)
-                                handled = this.ViewModel.View.MoveCurrentToPrevious();
-                        }
-                        else if (point.X > this.fv.ActualWidth * 0.7)
-                        {
-                            if (this.ViewModel.View.CurrentPosition != this.ViewModel.View.Count - 1)
-                                handled = this.ViewModel.View.MoveCurrentToNext();
-                        }
+                        if (ViewModel.View.CurrentPosition != 0)
+                            handled = ViewModel.View.MoveCurrentToPrevious();
                     }
-                    else
+                    else if (point.X > fv.ActualWidth * 0.7)
                     {
-                        if (point.Y < this.fv.ActualHeight * 0.3)
-                        {
-                            if (this.ViewModel.View.CurrentPosition != 0)
-                                handled = this.ViewModel.View.MoveCurrentToPrevious();
-                        }
-                        else if (point.Y > this.fv.ActualHeight * 0.7)
-                        {
-                            if (this.ViewModel.View.CurrentPosition != this.ViewModel.View.Count - 1)
-                                handled = this.ViewModel.View.MoveCurrentToNext();
-                        }
+                        if (ViewModel.View.CurrentPosition != ViewModel.View.Count - 1)
+                            handled = ViewModel.View.MoveCurrentToNext();
                     }
                 }
-                if (!handled)
-                    changeCbVisibility();
-            });
+                else
+                {
+                    if (point.Y < fv.ActualHeight * 0.3)
+                    {
+                        if (ViewModel.View.CurrentPosition != 0)
+                            handled = ViewModel.View.MoveCurrentToPrevious();
+                    }
+                    else if (point.Y > fv.ActualHeight * 0.7)
+                    {
+                        if (ViewModel.View.CurrentPosition != ViewModel.View.Count - 1)
+                            handled = ViewModel.View.MoveCurrentToNext();
+                    }
+                }
+            }
+            if (!handled)
+                changeCbVisibility();
         }
 
         private void fvi_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            if (this.doubleTapToken != null)
+            if (doubleTapToken != null)
             {
-                this.doubleTapToken.Cancel();
+                doubleTapToken.Cancel();
                 e.Handled = true;
             }
         }
@@ -271,47 +265,47 @@ namespace ExViewer.Views
 
         private bool changeCbVisibility()
         {
-            if (this.cbVisible)
+            if (cbVisible)
             {
-                this.cb_top_Hide.Begin();
+                cbTop_Hide.Begin();
                 RootControl.RootController.SetSplitViewButtonOpacity(0.5);
-                return this.cbVisible = false;
+                return cbVisible = false;
             }
             else
             {
-                this.cb_top_Show.Begin();
-                this.cb_top.Visibility = Visibility.Visible;
+                cbTop_Show.Begin();
+                cbTop.Visibility = Visibility.Visible;
                 RootControl.RootController.SetSplitViewButtonOpacity(1);
-                return this.cbVisible = true;
+                return cbVisible = true;
             }
         }
 
-        private void cb_top_Hide_Completed(object sender, object e)
+        private void cbTop_Hide_Completed(object sender, object e)
         {
-            if (!this.cbVisible)
+            if (!cbVisible)
             {
-                this.cb_top.IsOpen = false;
-                this.cb_top.Visibility = Visibility.Collapsed;
+                cbTop.IsOpen = false;
+                cbTop.Visibility = Visibility.Collapsed;
             }
         }
 
         private async void Flyout_Opening(object sender, object e)
         {
-            await this.ViewModel.RefreshInfoAsync();
+            await ViewModel.RefreshInfoAsync();
         }
 
-        private async void cb_top_Opening(object sender, object e)
+        private async void cbTop_Opening(object sender, object e)
         {
-            this.tb_Title.MaxLines = 0;
-            Grid.SetColumn(this.tb_Title, 0);
-            Grid.SetColumnSpan(this.tb_Title, 2);
-            this.cb_top_Open.Begin();
-            await this.ViewModel.RefreshInfoAsync();
+            tb_Title.MaxLines = 0;
+            Grid.SetColumn(tb_Title, 0);
+            Grid.SetColumnSpan(tb_Title, 2);
+            cbTop_Open.Begin();
+            await ViewModel.RefreshInfoAsync();
         }
 
-        private void cb_top_Closing(object sender, object e)
+        private void cbTop_Closing(object sender, object e)
         {
-            this.cb_top_Close.Begin();
+            cbTop_Close.Begin();
         }
 
         private Thickness gdCbContentPadding(double minHeight)
@@ -320,11 +314,11 @@ namespace ExViewer.Views
             return new Thickness(0, tb, 0, tb);
         }
 
-        private void cb_top_Closed(object sender, object e)
+        private void cbTop_Closed(object sender, object e)
         {
-            this.tb_Title.ClearValue(TextBlock.MaxLinesProperty);
-            Grid.SetColumn(this.tb_Title, 1);
-            Grid.SetColumnSpan(this.tb_Title, 1);
+            tb_Title.ClearValue(TextBlock.MaxLinesProperty);
+            Grid.SetColumn(tb_Title, 1);
+            Grid.SetColumnSpan(tb_Title, 1);
         }
 
         private void abb_fullScreen_Click(object sender, RoutedEventArgs e)
@@ -335,10 +329,10 @@ namespace ExViewer.Views
         protected override void OnKeyDown(KeyRoutedEventArgs e)
         {
             base.OnKeyDown(e);
-            if (!this.enterPressed && e.Key == VirtualKey.Enter)
+            if (!enterPressed && e.Key == VirtualKey.Enter)
             {
                 RootControl.RootController.ChangeFullScreen();
-                this.enterPressed = true;
+                enterPressed = true;
                 e.Handled = true;
             }
         }
@@ -350,17 +344,17 @@ namespace ExViewer.Views
             switch (e.OriginalKey)
             {
             case VirtualKey.Enter:
-                this.enterPressed = false;
+                enterPressed = false;
                 break;
             case VirtualKey.Application:
             case VirtualKey.GamepadMenu:
                 if (!changeCbVisibility())
                 {
-                    this.fv.Focus(FocusState.Programmatic);
+                    fv.Focus(FocusState.Programmatic);
                 }
                 else
                 {
-                    this.cb_top.Focus(FocusState.Programmatic);
+                    cbTop.Focus(FocusState.Programmatic);
                 }
 
                 break;
@@ -374,7 +368,7 @@ namespace ExViewer.Views
 
         public void CloseAll()
         {
-            this.cb_top.IsOpen = false;
+            cbTop.IsOpen = false;
         }
 
         private readonly DisplayRequest displayRequest = new DisplayRequest();
@@ -384,15 +378,15 @@ namespace ExViewer.Views
 
         private void setCbColor()
         {
-            var backColor = this.scbBack.Color;
-            var needColor = this.scbNeed.Color;
-            if (this.currentBackColor == backColor && this.currentNeedColor == needColor)
+            var backColor = scbBack.Color;
+            var needColor = scbNeed.Color;
+            if (currentBackColor == backColor && currentNeedColor == needColor)
             {
                 return;
             }
 
-            this.currentBackColor = backColor;
-            this.currentNeedColor = needColor;
+            currentBackColor = backColor;
+            currentNeedColor = needColor;
 
             Color getCbColor(byte alpha)
             {
@@ -405,37 +399,37 @@ namespace ExViewer.Views
             }
 
             var toColor = getCbColor(85);
-            this.cb_top.Background = new SolidColorBrush(toColor);
+            cbTop.Background = new SolidColorBrush(toColor);
 
-            var kfc = this.cb_top_CloseAnimation.KeyFrames.Count;
+            var kfc = cbTop_CloseAnimation.KeyFrames.Count;
             var offset = (255d - 85d) / (kfc - 1);
             for (var i = 0; i < kfc; i++)
             {
                 var c = getCbColor((byte)(85 + i * offset));
-                this.cb_top_OpenAnimation.KeyFrames[i].Value = c;
-                this.cb_top_CloseAnimation.KeyFrames[kfc - 1 - i].Value = c;
+                cbTop_OpenAnimation.KeyFrames[i].Value = c;
+                cbTop_CloseAnimation.KeyFrames[kfc - 1 - i].Value = c;
             }
         }
 
         private void page_Loading(FrameworkElement sender, object args)
         {
             setCbColor();
-            this.SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
+            SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += SetSplitViewButtonPlaceholderVisibility;
             var av = ApplicationView.GetForCurrentView();
             Av_VisibleBoundsChanged(av, null);
-            av.VisibleBoundsChanged += this.Av_VisibleBoundsChanged;
+            av.VisibleBoundsChanged += Av_VisibleBoundsChanged;
             if (SettingCollection.Current.KeepScreenOn)
             {
-                this.displayRequest.RequestActive();
-                this.displayActived = true;
+                displayRequest.RequestActive();
+                displayActived = true;
             }
         }
 
         private void page_Loaded(object sender, RoutedEventArgs e)
         {
-            this.fv.Descendants<ScrollContentPresenter>().First().Clip = null;
-            this.fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
+            fv.Descendants<ScrollContentPresenter>().First().Clip = null;
+            fv.FlowDirection = SettingCollection.Current.ReverseFlowDirection ?
                 FlowDirection.RightToLeft : FlowDirection.LeftToRight;
             if (!(this.fv.ItemsPanelRoot is VirtualizingStackPanel panel))
             {
@@ -448,7 +442,7 @@ namespace ExViewer.Views
                 panel.Orientation = Orientation.Vertical;
                 break;
             case ViewOrientation.Auto:
-                if (this.ViewModel.Gallery.Tags[ExClient.Tagging.Namespace.Misc].Any(t => t.Content.Content == "webtoon"))
+                if (ViewModel.Gallery.Tags[ExClient.Tagging.Namespace.Misc].Any(t => t.Content.Content == "webtoon"))
                 {
                     panel.Orientation = Orientation.Vertical;
                 }
@@ -467,23 +461,23 @@ namespace ExViewer.Views
         private void page_Unloaded(object sender, RoutedEventArgs e)
         {
             var av = ApplicationView.GetForCurrentView();
-            av.VisibleBoundsChanged -= this.Av_VisibleBoundsChanged;
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
-            if (this.displayActived)
+            av.VisibleBoundsChanged -= Av_VisibleBoundsChanged;
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= SetSplitViewButtonPlaceholderVisibility;
+            if (displayActived)
             {
-                this.displayRequest.RequestRelease();
-                this.displayActived = false;
+                displayRequest.RequestRelease();
+                displayActived = false;
             }
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
-            this.cdSplitViewPlaceholder.Width = visible ? new GridLength(48) : new GridLength(0);
+            cdSplitViewPlaceholder.Width = visible ? new GridLength(48) : new GridLength(0);
         }
 
-        private void cb_top_KeyDown(object sender, KeyRoutedEventArgs e)
+        private void cbTop_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if (this.cb_top.IsOpen)
+            if (cbTop.IsOpen)
             {
                 return;
             }
@@ -491,7 +485,7 @@ namespace ExViewer.Views
             if (e.OriginalKey == VirtualKey.GamepadDPadDown || e.OriginalKey == VirtualKey.GamepadLeftThumbstickDown)
             {
                 e.Handled = true;
-                this.fv.Focus(FocusState.Programmatic);
+                fv.Focus(FocusState.Programmatic);
             }
         }
 
@@ -537,5 +531,11 @@ namespace ExViewer.Views
         private static GalleryImage loadOriginalCommandParameter(GalleryImage image, bool originalLoaded) => image;
 
         private static double opposite(double value) => -value;
+
+        private static double getIndexIndicatorWidth(int count)
+        {
+            var n = Math.Ceiling(Math.Log10(count + 0.5));
+            return (n * 2 + 3) * 8 + 16;
+        }
     }
 }

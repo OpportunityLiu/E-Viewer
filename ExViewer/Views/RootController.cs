@@ -127,7 +127,7 @@ namespace ExViewer.Views
                 return true;
             }
 
-            public static bool Available => Parent != null && Window.Current.Content == Parent;
+            public static bool Available => Parent != null && Window.Current?.Content == Parent;
 
             public static StatusBar StatusBar { get; private set; }
 
