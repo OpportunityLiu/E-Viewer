@@ -79,18 +79,12 @@ namespace ExViewer.Controls
                 var that = (TagVM)sender.Tag;
                 var tagc = that.Tags;
                 if (tagc is null)
-                {
                     return;
-                }
 
                 var tags = text.Split(commas, StringSplitOptions.RemoveEmptyEntries)
                     .Where(s => !string.IsNullOrWhiteSpace(s))
                     .Select(ExClient.Tagging.Tag.Parse)
-                    .Distinct().ToList();
-                if (that.Tags.Count == 0)
-                {
-                    return;
-                }
+                    .Distinct();
 
                 await tagc.VoteAsync(tags, VoteState.Up);
             });
