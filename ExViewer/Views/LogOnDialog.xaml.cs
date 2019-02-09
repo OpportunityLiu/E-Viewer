@@ -64,7 +64,9 @@ namespace ExViewer.Views
 
             public AsyncCommand LogOn { get; }
 
-            public string PrimaryButtonText => this._UseCookieLogOn ? "Log on" : "Reset";
+            public string PrimaryButtonText => _UseCookieLogOn
+                ? Strings.Resources.Views.LogOnDialog.LogOnButtonText
+                : Strings.Resources.Views.LogOnDialog.ResetButtonText;
 
             public bool IsPrimaryButtonEnabled => this._UseCookieLogOn ? CanLogOn && !LogOn.IsExecuting : !LogOn.IsExecuting;
 
@@ -75,7 +77,7 @@ namespace ExViewer.Views
             public bool Succeed
             {
                 get => this._Succeed;
-                set => Set(nameof(CanLogOn), nameof(IsPrimaryButtonEnabled), ref this._Succeed, value);
+                set => Set(nameof(CanLogOn), nameof(IsPrimaryButtonEnabled), ref _Succeed, value);
             }
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -302,9 +304,9 @@ namespace ExViewer.Views
         private void cd_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             args.Cancel = true;
-            if (this.VM.UseCookieLogOn)
+            if (VM.UseCookieLogOn)
             {
-                this.VM.LogOn.Execute();
+                VM.LogOn.Execute();
             }
             else
             {
@@ -312,23 +314,31 @@ namespace ExViewer.Views
             }
         }
 
-        private void cd_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            if (this.VM.LogOn.IsExecuting)
-            {
-                args.Cancel = true;
-                return;
-            }
-            if (this.VM.LogOnInfoBackup != null)
-                Client.Current.RestoreLogOnInfo(this.VM.LogOnInfoBackup);
-            if (Client.Current.NeedLogOn)
-                Application.Current.Exit();
-        }
-
         private void cookie_TextChanged(object sender, RoutedEventArgs e)
         {
             if (((TextBox)sender).Text != "")
                 this.VM.ShowErrorMsg = false;
+        }
+
+        private void cd_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Succeed)
+                Hide();
+        }
+
+        private void cd_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
+        {
+            if (VM.LogOn.IsExecuting)
+            {
+                args.Cancel = true;
+                return;
+            }
+            if (Succeed)
+                return;
+            if (VM.LogOnInfoBackup != null)
+                Client.Current.RestoreLogOnInfo(VM.LogOnInfoBackup);
+            if (Client.Current.NeedLogOn)
+                Application.Current.Exit();
         }
     }
 }

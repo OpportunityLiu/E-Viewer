@@ -310,9 +310,14 @@
       "ToplistsHeaderTextBlock/Text": "Toplists"
     },
     "LogOnDialog": {
-      "ContentDialog/PrimaryButtonText": "Reset",
+      "LogOnButtonText": "Log on",
+      "MemberIdTextBox/Header": "Cookie value of \"ipb_member_id\"",
+      "PassHashTextBox/Header": "Cookie value of \"ipb_pass_hash\"",
       "RegisterHyperlinkButton/Content": "Register",
-      "TitleTextBlock/Text": "LOG ON"
+      "ResetButtonText": "Reset",
+      "TitleTextBlock/Text": "LOG ON",
+      "UseCookieButton/Content": "Use cookie log on",
+      "UseWebpageButton/Content": "Use webpage log on"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "Loading popular galleries…",
