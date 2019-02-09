@@ -11,29 +11,43 @@
                           x:Name="cd"
                           Loaded="cd_Loaded"
                           Opened="cd_Opened"
+                          IsEnabled="{x:Bind VM.Succeed, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
+                          IsEnabledChanged="cd_IsEnabledChanged"
+                          Closing="cd_Closing"
                           PrimaryButtonText="{x:Bind VM.PrimaryButtonText, Mode=OneWay}"
                           IsPrimaryButtonEnabled="{x:Bind VM.IsPrimaryButtonEnabled, Mode=OneWay}"
                           PrimaryButtonClick="cd_PrimaryButtonClick"
                           CloseButtonText="?"
-                          CloseButtonClick="cd_CloseButtonClick"
                           FullSizeDesired="True">
+  <controls:MyContentDialog.Resources>
+    <Style x:Key="DialogHeaderButtonStyle"
+           BasedOn="{StaticResource TextBlockButtonStyle}"
+           TargetType="ButtonBase">
+      <Setter Property="Padding"
+              Value="8,4" />
+    </Style>
+  </controls:MyContentDialog.Resources>
   <ContentDialog.Title>
     <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
       <TextBlock x:Uid="Views/LogOnDialog/TitleTextBlock"
                  Text="LOG ON" />
-      <StackPanel Orientation="Horizontal"
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
                   HorizontalAlignment="Right">
         <Grid Visibility="{x:Bind VM.LogOn.IsExecuting, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}">
-          <Button Style="{ThemeResource NormalTextBlockButtonStyle}"
+          <Button x:Uid="Views/LogOnDialog/UseCookieButton"
+                  Style="{ThemeResource DialogHeaderButtonStyle}"
                   Content="Use cookie"
                   Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
-                  Padding="4"
                   Click="btnUseCookie_Click" />
-
-          <Button Style="{ThemeResource NormalTextBlockButtonStyle}"
+          <Button x:Uid="Views/LogOnDialog/UseWebpageButton"
+                  Style="{ThemeResource DialogHeaderButtonStyle}"
                   Content="Use webpage"
                   Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
-                  Padding="4"
                   Click="btnUseWebpage_Click" />
         </Grid>
 
@@ -41,10 +55,8 @@
                          x:Name="btn_Register"
                          Content="Register"
                          HorizontalAlignment="Right"
-                         Style="{StaticResource TextBlockButtonStyle}"
-                         NavigateUri="https://forums.e-hentai.org/index.php?act=Reg&amp;CODE=00"
-                         Padding="4"
-                         FontSize="12" />
+                         Style="{StaticResource DialogHeaderButtonStyle}"
+                         NavigateUri="https://forums.e-hentai.org/index.php?act=Reg&amp;CODE=00" />
       </StackPanel>
     </Grid>
   </ContentDialog.Title>
@@ -58,12 +70,14 @@
     <StackPanel x:Name="spCookieLogOn"
                 Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">
       <TextBox x:Name="tbMemberId"
+               x:Uid="Views/LogOnDialog/MemberIdTextBox"
                tke:TextBoxRegex.ValidationMode="Normal"
                tke:TextBoxRegex.Regex="^[1-9][0-9]*$"
                Header="ipb_member_id"
                Text="{x:Bind VM.MemberId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                TextChanged="cookie_TextChanged" />
       <TextBox x:Name="tbPassHash"
+               x:Uid="Views/LogOnDialog/PassHashTextBox"
                tke:TextBoxRegex.ValidationMode="Normal"
                tke:TextBoxRegex.Regex="^[0-9a-fA-F]{32}$"
                Header="ipb_pass_hash"

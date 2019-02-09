@@ -310,9 +310,15 @@
       "ToplistsHeaderTextBlock/Text": "排行榜"
     },
     "LogOnDialog": {
-      "ContentDialog/PrimaryButtonText": "重置",
+      "LogOnButtonText": "登入",
+      "MemberIdTextBox/Header": "\"ipb_member_id\" cookie 的值",
+      "PassHashTextBox/Header": "\"ipb_pass_hash\" cookie 的值",
       "RegisterHyperlinkButton/Content": "註冊",
-      "TitleTextBlock/Text": "登入"
+      "ResetButtonText": "重置",
+      "TitleTextBlock/Text": "登入",
+      "UseCookieButton/Content": "使用 cookie 登入",
+      "UseWebpageButton/Content": "使用網頁登入",
+      "ContentDialog/PrimaryButtonText": "重置"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "正在載入熱門畫廊…",
