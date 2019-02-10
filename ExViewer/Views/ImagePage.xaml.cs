@@ -40,6 +40,7 @@ namespace ExViewer.Views
             fv.Opacity = 0;
             fv.IsEnabled = false;
             sldIndex.AddHandler(PointerReleasedEvent, new PointerEventHandler(SldIndex_PointerReleased), true);
+            _SlideTimer.Tick += _SlideTimer_Tick;
         }
 
         public new GalleryVM ViewModel
@@ -53,6 +54,7 @@ namespace ExViewer.Views
             Debug.Assert(e.Parameter != null, "e.Parameter != null");
             Navigator.GetForCurrentView().Handlers.Add(this);
             tapToFlip = SettingCollection.Current.TapToFlip;
+            _SlideTimer.Interval = TimeSpan.FromSeconds(SettingCollection.Current.SliderInterval);
 
             base.OnNavigatedTo(e);
 
@@ -199,6 +201,12 @@ namespace ExViewer.Views
             var g = ViewModel?.Gallery;
             if (g is null)
                 return;
+
+            if (_SlideTimer.IsEnabled)
+            {
+                _SlideTimer.Stop();
+                _SlideTimer.Start();
+            }
 
             setScale();
         }
@@ -545,6 +553,24 @@ namespace ExViewer.Views
         {
             var n = Math.Ceiling(Math.Log10(count + 0.5));
             return (n * 2 + 3) * 8 + 16;
+        }
+
+        private void _AbbSlide_Click(object sender, RoutedEventArgs e)
+        {
+            if (_SlideTimer.IsEnabled)
+                _SlideTimer.Stop();
+            else
+                _SlideTimer.Start();
+        }
+
+        private readonly DispatcherTimer _SlideTimer = new DispatcherTimer();
+
+        private void _SlideTimer_Tick(object sender, object e)
+        {
+            if (fv.SelectedIndex < ViewModel.View.Count - 1)
+                fv.SelectedIndex++;
+            else
+                _SlideTimer.Stop();
         }
     }
 }

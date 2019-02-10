@@ -311,6 +311,14 @@ namespace ExViewer.Settings
             set => SetLocal(value);
         }
 
+        [Setting("Viewing", Index = 2500)]
+        [Range(1,16, ApplicationDataManager.Settings.ValueType.Double, Large = 5, Small = 0.1, Tick = 1)]
+        public double SliderInterval
+        {
+            get => GetLocal(5.0);
+            set => SetLocal(value);
+        }
+
         [Setting("Connection", Index = 9100)]
         [EnumRepresent("ImageSize")]
         public ImageSize ResampledImageSize
