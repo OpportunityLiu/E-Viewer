@@ -46,6 +46,7 @@
   "ReverseFlowDirection": "Horizontal flip direction",
   "SaveLastSearch": "Save my lastest search as default",
   "Searching": "SEARCHING",
+  "SlideInterval": "Interval of slide show (sec.)",
   "TapToFlip": "Tap sides to flip (Touch only)",
   "Theme": "The theme of the app",
   "TriggerDawnOfDay": "Trigger the Dawn of a New Day event with background task",

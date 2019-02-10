@@ -267,7 +267,9 @@
       "QRCodeAppBarButton/Label": "Scan QR code",
       "ReloadAppBarButton/Label": "Reload",
       "SearchAppBarButton/Label": "Show all galleries with this file",
-      "ShareAppBarButton/Label": "Share"
+      "ShareAppBarButton/Label": "Share",
+      "SlideAppBarButton/StartLabel": "Start slide show",
+      "SlideAppBarButton/StopLabel": "Stop slide show"
     },
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "Change user",
