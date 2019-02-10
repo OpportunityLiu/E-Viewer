@@ -565,10 +565,11 @@
           </AppBarButton.Icon>
         </AppBarButton>
         <AppBarSeparator />
-        <AppBarButton x:Name="abbSlide"
+        <AppBarButton x:Name="_AbbSlide"
                       Icon="SlideShow"
                       Label="Play"
-                      ToolTipService.ToolTip="{x:Bind abbSlide.Label, Mode=OneWay}" />
+                      Click="_AbbSlide_Click"
+                      ToolTipService.ToolTip="{x:Bind _AbbSlide.Label, Mode=OneWay}" />
       </CommandBar.SecondaryCommands>
     </CommandBar>
     <Border x:Name="bdBottom"
