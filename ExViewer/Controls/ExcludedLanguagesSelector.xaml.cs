@@ -15,14 +15,14 @@ namespace ExViewer.Controls
     {
         public ExcludedLanguagesSelector()
         {
-            this.InitializeComponent();
-            foreach (var item in this.filters)
+            InitializeComponent();
+            foreach (var item in filters)
             {
-                item.PropertyChanged += this.filter_PropertyChanged;
+                item.PropertyChanged += filter_PropertyChanged;
             }
         }
 
-        private List<ExcludedLanguageFilter> filters = new List<ExcludedLanguageFilter>()
+        private readonly ExcludedLanguageFilter[] filters = new []
         {
             new ExcludedLanguageFilter(ExcludedLanguage.Default),
             new ExcludedLanguageFilter(ExcludedLanguage.EnglishOriginal),
@@ -145,7 +145,7 @@ namespace ExViewer.Controls
 
         private void filter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (this.changing)
+            if (changing)
             {
                 return;
             }
@@ -156,7 +156,7 @@ namespace ExViewer.Controls
             }
 
             var r = new List<ExcludedLanguage>();
-            foreach (var item in this.filters)
+            foreach (var item in filters)
             {
                 if (item.Original)
                 {
@@ -173,17 +173,17 @@ namespace ExViewer.Controls
                     r.Add(item.Language + 2048);
                 }
             }
-            this.ExcludedLanguages = ExcludedLanguagesSettingProvider.ToString(r);
+            ExcludedLanguages = ExcludedLanguagesSettingProvider.ToString(r);
         }
 
         private void userControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var contentWidth = this.cdColumn.MinWidth * 4;
-            var leftWidth = this.lvLeftHeader.ActualWidth;
-            contentWidth = Math.Max(contentWidth, this.ActualWidth - leftWidth);
-            this.bdTopLeftHeader.Width = leftWidth;
-            this.gdTopHeader.Width = contentWidth;
-            this.lvContent.Width = contentWidth;
+            var contentWidth = cdColumn.MinWidth * 4;
+            var leftWidth = lvLeftHeader.ActualWidth;
+            contentWidth = Math.Max(contentWidth, ActualWidth - leftWidth);
+            bdTopLeftHeader.Width = leftWidth;
+            gdTopHeader.Width = contentWidth;
+            lvContent.Width = contentWidth;
         }
     }
 
@@ -191,16 +191,8 @@ namespace ExViewer.Controls
     {
         public ExcludedLanguageFilter(ExcludedLanguage language)
         {
-            if (language == ExcludedLanguage.Default)
-            {
-                this.Name = Strings.Resources.Controls.ExcludedLanguagesSelector.ExcludedLanguage.Japanese;
-                this.Language = language;
-                return;
-            }
-            var lan = language.ToString();
-            lan = lan.Substring(0, lan.Length - "Original".Length);
-            this.Name = Strings.Resources.Controls.ExcludedLanguagesSelector.ExcludedLanguage.GetValue(lan);
-            this.Language = language;
+            Name = language.ToDisplayNameString();
+            Language = language;
         }
 
         public ExcludedLanguage Language { get; }
@@ -213,30 +205,30 @@ namespace ExViewer.Controls
 
         public bool Original
         {
-            get => this.original;
-            set => setValue(value, ref this.original);
+            get => original;
+            set => setValue(value, ref original);
         }
 
         private bool translated;
 
         public bool Translated
         {
-            get => this.translated;
-            set => setValue(value, ref this.translated);
+            get => translated;
+            set => setValue(value, ref translated);
         }
 
         private bool rewrite;
 
         public bool Rewrite
         {
-            get => this.rewrite;
-            set => setValue(value, ref this.rewrite);
+            get => rewrite;
+            set => setValue(value, ref rewrite);
         }
 
         private void setValue(bool value, ref bool field, [CallerMemberName]string propName = null)
         {
-            var oldAll = this.All;
-            if (Set(ref field, value, propName) && oldAll != this.All)
+            var oldAll = All;
+            if (Set(ref field, value, propName) && oldAll != All)
             {
                 OnPropertyChanged(nameof(All));
             }
@@ -248,25 +240,25 @@ namespace ExViewer.Controls
             {
                 if (Language != ExcludedLanguage.Default)
                 {
-                    return this.original && this.translated && this.rewrite;
+                    return original && translated && rewrite;
                 }
 
-                return this.translated && this.rewrite;
+                return translated && rewrite;
             }
             set
             {
-                if (value == this.All)
+                if (value == All)
                 {
                     return;
                 }
 
                 if (Language != ExcludedLanguage.Default)
                 {
-                    this.original = value;
+                    original = value;
                 }
 
-                this.translated = value;
-                this.rewrite = value;
+                translated = value;
+                rewrite = value;
                 OnPropertyChanged(default(string));
             }
         }
