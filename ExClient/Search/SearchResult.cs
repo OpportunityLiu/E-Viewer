@@ -23,14 +23,14 @@ namespace ExClient.Search
 
         internal SearchResult(string keyword)
         {
-            this.Keyword = keyword ?? "";
+            Keyword = keyword ?? "";
             Reset();
         }
 
         public void Reset()
         {
             Clear();
-            this.PageCount = 1;
+            PageCount = 1;
         }
 
         private static readonly Regex recordCountMatcher = new Regex(@"Showing.+?-\s*[0-9,]+\s*of\s*([0-9,]+)", RegexOptions.Compiled);
@@ -47,11 +47,11 @@ namespace ExClient.Search
                 .FirstOrDefault(node => node.HasClass("ptt"));
             if (rcNode is null || pttNode is null)
             {
-                this.PageCount = 0;
+                PageCount = 0;
             }
             else if (recordCountMatcher.Match(rcNode.InnerText).Success)
             {
-                this.PageCount = pttNode.Descendants("td").Select(node =>
+                PageCount = pttNode.Descendants("td").Select(node =>
                 {
                     if (!int.TryParse(node.GetInnerText(), out var i))
                         i = -1;
@@ -60,7 +60,7 @@ namespace ExClient.Search
             }
             else
             {
-                this.PageCount = 0;
+                PageCount = 0;
             }
         }
 
@@ -137,15 +137,15 @@ namespace ExClient.Search
             return Run(async token =>
             {
                 var listCount = Count;
-                var uri = new Uri($"{this.SearchUri}&page={pageIndex.ToString()}");
+                var uri = new Uri($"{SearchUri}&page={pageIndex.ToString()}");
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(uri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
-                this.updatePageCount(doc);
-                if (this.PageCount == 0)
+                updatePageCount(doc);
+                if (PageCount == 0)
                     return Enumerable.Empty<Gallery>();
 
-                var list = await this.loadPage(doc, token);
+                var list = await loadPage(doc, token);
                 token.ThrowIfCancellationRequested();
                 if (list.Count == 0)
                     return Enumerable.Empty<Gallery>();
@@ -166,7 +166,7 @@ namespace ExClient.Search
                         var id = list[i].ID;
                         var ga = this.FirstOrDefault(g => g.ID == id);
                         if (ga != null)
-                            this.Remove(ga);
+                            Remove(ga);
                     }
                 }
 

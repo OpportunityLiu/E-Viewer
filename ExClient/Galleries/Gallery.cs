@@ -79,7 +79,7 @@ namespace ExClient.Galleries
             {
                 return Run<IList<Gallery>>(async token =>
                 {
-                    var result = new Gallery[galleryInfo.Count];
+                    var result = new List<Gallery>(galleryInfo.Count);
                     var pageCount = MathHelper.GetPageCount(galleryInfo.Count, 25);
                     for (var i = 0; i < pageCount; i++)
                     {
@@ -88,7 +88,7 @@ namespace ExClient.Galleries
                         var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync();
                         var data = re.GalleryMetaData;
                         data.ForEach(async g => await g.InitAsync());
-                        data.CopyTo(result, startIndex);
+                        result.AddRange(data);
                     }
                     return result;
                 });
