@@ -3,6 +3,7 @@ using ExViewer.Controls;
 using ExViewer.Settings;
 using ExViewer.ViewModels;
 using Opportunity.Helpers.Universal.AsyncHelpers;
+using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Services;
 using Opportunity.MvvmUniverse.Services.Navigation;
 using Opportunity.MvvmUniverse.Views;
@@ -54,7 +55,7 @@ namespace ExViewer.Views
             Debug.Assert(e.Parameter != null, "e.Parameter != null");
             Navigator.GetForCurrentView().Handlers.Add(this);
             tapToFlip = SettingCollection.Current.TapToFlip;
-            _SlideTimer.Interval = TimeSpan.FromSeconds(SettingCollection.Current.SliderInterval);
+            _SlideTimer.Interval = TimeSpan.FromSeconds(SettingCollection.Current.SlideInterval);
 
             base.OnNavigatedTo(e);
 
@@ -127,6 +128,7 @@ namespace ExViewer.Views
         {
             fv.Opacity = 0;
             fv.IsEnabled = false;
+            _SlideTimer.IsEnabled = false;
             imgConnect.Visibility = Visibility.Visible;
             base.OnNavigatedFrom(e);
             CloseAll();
@@ -202,11 +204,7 @@ namespace ExViewer.Views
             if (g is null)
                 return;
 
-            if (_SlideTimer.IsEnabled)
-            {
-                _SlideTimer.Stop();
-                _SlideTimer.Start();
-            }
+            _SlideTimer.Reset();
 
             setScale();
         }
@@ -557,20 +555,28 @@ namespace ExViewer.Views
 
         private void _AbbSlide_Click(object sender, RoutedEventArgs e)
         {
-            if (_SlideTimer.IsEnabled)
-                _SlideTimer.Stop();
-            else
-                _SlideTimer.Start();
+            _SlideTimer.IsEnabled = !_SlideTimer.IsEnabled;
         }
 
-        private readonly DispatcherTimer _SlideTimer = new DispatcherTimer();
+        private readonly ObservableTimer _SlideTimer = new ObservableTimer();
 
         private void _SlideTimer_Tick(object sender, object e)
         {
             if (fv.SelectedIndex < ViewModel.View.Count - 1)
                 fv.SelectedIndex++;
             else
-                _SlideTimer.Stop();
+                _SlideTimer.IsEnabled = false;
         }
+
+        private static string _GetSlideLabel(bool isEnabled)
+        {
+            if (isEnabled)
+                return Strings.Resources.Views.ImagePage.SlideAppBarButton.StopLabel;
+            else
+                return Strings.Resources.Views.ImagePage.SlideAppBarButton.StartLabel;
+        }
+
+        private static string _GetSlideSymbol(bool isEnabled)
+            => (isEnabled ? (char)Symbol.StopSlideShow : (char)Symbol.SlideShow).ToString();
     }
 }

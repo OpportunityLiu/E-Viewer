@@ -566,10 +566,13 @@
         </AppBarButton>
         <AppBarSeparator />
         <AppBarButton x:Name="_AbbSlide"
-                      Icon="SlideShow"
-                      Label="Play"
-                      Click="_AbbSlide_Click"
-                      ToolTipService.ToolTip="{x:Bind _AbbSlide.Label, Mode=OneWay}" />
+                      Label="{x:Bind local:ImagePage._GetSlideLabel(_SlideTimer.IsEnabled), Mode=OneWay}"
+                      ToolTipService.ToolTip="{x:Bind local:ImagePage._GetSlideLabel(_SlideTimer.IsEnabled), Mode=OneWay}"
+                      Click="_AbbSlide_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="{x:Bind local:ImagePage._GetSlideSymbol(_SlideTimer.IsEnabled), Mode=OneWay}" />
+          </AppBarButton.Icon>
+        </AppBarButton>
       </CommandBar.SecondaryCommands>
     </CommandBar>
     <Border x:Name="bdBottom"

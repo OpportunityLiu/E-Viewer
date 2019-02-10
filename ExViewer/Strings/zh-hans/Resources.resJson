@@ -267,7 +267,9 @@
       "QRCodeAppBarButton/Label": "扫描 QR 码",
       "ReloadAppBarButton/Label": "重新加载",
       "SearchAppBarButton/Label": "显示所有包含此文件的画廊",
-      "ShareAppBarButton/Label": "共享"
+      "ShareAppBarButton/Label": "共享",
+      "SlideAppBarButton/StartLabel": "开始幻灯片放映",
+      "SlideAppBarButton/StopLabel": "结束幻灯片放映"
     },
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "更换用户",
@@ -317,8 +319,7 @@
       "ResetButtonText": "重置",
       "TitleTextBlock/Text": "登录",
       "UseCookieButton/Content": "使用 cookie 登录",
-      "UseWebpageButton/Content": "使用网页登录",
-      "ContentDialog/PrimaryButtonText": "重置"
+      "UseWebpageButton/Content": "使用网页登录"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "正在加载热门画廊…",

@@ -267,7 +267,9 @@
       "QRCodeAppBarButton/Label": "掃描 QR 碼",
       "ReloadAppBarButton/Label": "重新載入",
       "SearchAppBarButton/Label": "顯示所有包含此檔案的畫廊",
-      "ShareAppBarButton/Label": "共享"
+      "ShareAppBarButton/Label": "共享",
+      "SlideAppBarButton/StartLabel": "開始幻燈片放映",
+      "SlideAppBarButton/StopLabel": "結束幻燈片放映"
     },
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "更換使用者",
@@ -317,8 +319,7 @@
       "ResetButtonText": "重置",
       "TitleTextBlock/Text": "登入",
       "UseCookieButton/Content": "使用 cookie 登入",
-      "UseWebpageButton/Content": "使用網頁登入",
-      "ContentDialog/PrimaryButtonText": "重置"
+      "UseWebpageButton/Content": "使用網頁登入"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "正在載入熱門畫廊…",
