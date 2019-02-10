@@ -38,25 +38,6 @@
       "AllTextBlock/Text": "All",
       // Space for "AllTextBlock/Text", "OriginalTextBlock/Text", "RewriteTextBlock/Text" and "TranslatedTextBlock/Text"
       "CellColumnDefination/MinWidth": "80",
-      "ExcludedLanguage": {
-        "Chinese": "Chinese",
-        "Dutch": "Dutch",
-        "English": "English",
-        "French": "French",
-        "German": "German",
-        "Hungarian": "Hungarian",
-        "Italian": "Italian",
-        "Japanese": "Japanese",
-        "Korean": "Korean",
-        "NotApplicable": "N/A",
-        "Other": "Other",
-        "Polish": "Polish",
-        "Portuguese": "Portuguese",
-        "Russian": "Russian",
-        "Spanish": "Spanish",
-        "Thai": "Thai",
-        "Vietnamese": "Vietnamese"
-      },
       "OriginalTextBlock/Text": "Original",
       "RewriteTextBlock/Text": "Rewrite",
       "TranslatedTextBlock/Text": "Translated"

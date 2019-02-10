@@ -74,7 +74,8 @@ namespace ExViewer.Views
             {
                 animationSucceed = animation.TryStart(imgConnect, new UIElement[]
                 {
-                    cbTop, bdTopLeft, bdTopRight, bdTop
+                    cbTop, bdTopLeft, bdTopRight, bdTop,
+                    cbBottom, bdBottomLeft, bdBottomRight, bdBottom,
                 });
                 if (animationSucceed)
                 {
