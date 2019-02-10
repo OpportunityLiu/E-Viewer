@@ -39,6 +39,7 @@ namespace ExViewer.Views
             InitializeComponent();
             fv.Opacity = 0;
             fv.IsEnabled = false;
+            sldIndex.AddHandler(PointerReleasedEvent, new PointerEventHandler(SldIndex_PointerReleased), true);
         }
 
         public new GalleryVM ViewModel
@@ -530,7 +531,15 @@ namespace ExViewer.Views
 
         private static GalleryImage loadOriginalCommandParameter(GalleryImage image, bool originalLoaded) => image;
 
-        private static double opposite(double value) => -value;
+        private void SldIndex_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            fv.SelectedIndex = (int)sldIndex.Value - 1;
+        }
+
+        private void SldIndex_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            fv.SelectedIndex = (int)sldIndex.Value - 1;
+        }
 
         private static double getIndexIndicatorWidth(int count)
         {

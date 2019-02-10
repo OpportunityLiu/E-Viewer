@@ -687,7 +687,7 @@
       <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="Opportunity.UWP.Converters">
-      <Version>1.0.2</Version>
+      <Version>1.0.4</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
@@ -696,7 +696,6 @@
       <Version>0.16.4</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
