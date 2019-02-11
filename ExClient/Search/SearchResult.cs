@@ -5,6 +5,7 @@ using HtmlAgilityPack;
 using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -14,7 +15,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Search
 {
-    [System.Diagnostics.DebuggerDisplay(@"\{Count = {Count} Page = {FirstPage}-{FirstPage+LoadedPageCount-1}/{PageCount}\}")]
+    [DebuggerDisplay(@"\{Count = {Count} Page = {FirstPage}-{FirstPage+LoadedPageCount-1}/{PageCount}\}")]
     public abstract class SearchResult : PagingList<Gallery>
     {
         public abstract Uri SearchUri { get; }
@@ -33,9 +34,9 @@ namespace ExClient.Search
             PageCount = 1;
         }
 
-        private static readonly Regex recordCountMatcher = new Regex(@"Showing.+?-\s*[0-9,]+\s*of\s*([0-9,]+)", RegexOptions.Compiled);
+        private static readonly Regex _RecordCountMatcher = new Regex(@"Showing.+?-\s*[0-9,]+\s*of\s*([0-9,]+)", RegexOptions.Compiled);
 
-        private void updatePageCount(HtmlDocument doc)
+        private void _UpdatePageCount(HtmlDocument doc)
         {
             var idoNode = doc.DocumentNode
                 .Element("html")
@@ -49,7 +50,7 @@ namespace ExClient.Search
             {
                 PageCount = 0;
             }
-            else if (recordCountMatcher.Match(rcNode.InnerText).Success)
+            else if (_RecordCountMatcher.Match(rcNode.InnerText).Success)
             {
                 PageCount = pttNode.Descendants("td").Select(node =>
                 {
@@ -64,7 +65,7 @@ namespace ExClient.Search
             }
         }
 
-        private static readonly Regex gLinkMatcher = new Regex(@".+?/g/(\d+)/([0-9a-f]+).+?", RegexOptions.Compiled);
+        private static readonly Regex _GLinkMatcher = new Regex(@".+?/g/(\d+)/([0-9a-f]+).+?", RegexOptions.Compiled);
 
         protected virtual void HandleAdditionalInfo(HtmlNode dataNode, Gallery gallery, bool isList)
         {
@@ -88,7 +89,7 @@ namespace ExClient.Search
 
         protected virtual void LoadPageOverride(HtmlDocument doc) { }
 
-        private async Task<IList<Gallery>> loadPage(HtmlDocument doc, CancellationToken token)
+        private async Task<IList<Gallery>> _LoadPage(HtmlDocument doc, CancellationToken token)
         {
             var isList = true;
             var dataRoot = doc.DocumentNode.Descendants("table").SingleOrDefault(node => node.HasClass("itg"));
@@ -105,7 +106,7 @@ namespace ExClient.Search
                 {
                     var infoNode = node.ChildNodes[2].FirstChild;
                     var detailNode = infoNode.ChildNodes[2]; //class = it5
-                    var match = gLinkMatcher.Match(detailNode.FirstChild.GetAttribute("href", ""));
+                    var match = _GLinkMatcher.Match(detailNode.FirstChild.GetAttribute("href", ""));
                     dataNodeList.Add(node);
                     gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.ToToken()));
                 }
@@ -115,7 +116,7 @@ namespace ExClient.Search
                 foreach (var node in dataRoot.Elements("div", "id1"))
                 {
                     var link = node.Element("div", "id2").Element("a");
-                    var match = gLinkMatcher.Match(link.GetAttribute("href", ""));
+                    var match = _GLinkMatcher.Match(link.GetAttribute("href", ""));
                     dataNodeList.Add(node);
                     gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.ToToken()));
                 }
@@ -141,11 +142,11 @@ namespace ExClient.Search
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(uri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
-                updatePageCount(doc);
+                _UpdatePageCount(doc);
                 if (PageCount == 0)
                     return Enumerable.Empty<Gallery>();
 
-                var list = await loadPage(doc, token);
+                var list = await _LoadPage(doc, token);
                 token.ThrowIfCancellationRequested();
                 if (list.Count == 0)
                     return Enumerable.Empty<Gallery>();
