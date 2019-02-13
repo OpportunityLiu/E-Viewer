@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace ExViewer.Themes
 {
-    static class ThemeExtention
+    internal static class ThemeExtention
     {
         private static ThemeHelperControl helper = new ThemeHelperControl();
         private static StatusBar sb = ExApiInfo.StatusBarSupported ? StatusBar.GetForCurrentView() : null;
@@ -69,10 +69,10 @@ namespace ExViewer.Themes
             switch (Settings.SettingCollection.Current.Theme)
             {
             case ApplicationTheme.Light:
-                GalleryImage.DefaultThumb = new BitmapImage(new Uri("ms-appx:///Assets/Theme/Light/ImageLoading.png"));
+                ExClient.Config.DefaultThumbUri = new Uri("ms-appx:///Assets/Theme/Light/ImageLoading.png");
                 break;
             default:
-                GalleryImage.DefaultThumb = new BitmapImage(new Uri("ms-appx:///Assets/Theme/Dark/ImageLoading.png"));
+                ExClient.Config.DefaultThumbUri = new Uri("ms-appx:///Assets/Theme/Dark/ImageLoading.png");
                 break;
             }
         }

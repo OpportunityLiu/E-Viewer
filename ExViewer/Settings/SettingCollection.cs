@@ -1,14 +1,14 @@
 ﻿using ApplicationDataManager.Settings;
-using System;
 using ExClient;
 using ExClient.Galleries;
 using ExClient.Settings;
 using ExClient.Tagging;
+using System;
+using Windows.Security.Credentials.UI;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Windows.Security.Credentials.UI;
 
 namespace ExViewer.Settings
 {
@@ -311,6 +311,14 @@ namespace ExViewer.Settings
             set => SetLocal(value);
         }
 
+        [Setting("Viewing", Index = 2500)]
+        [Range(1,16, ApplicationDataManager.Settings.ValueType.Double, Large = 5, Small = 0.1, Tick = 1)]
+        public double SlideInterval
+        {
+            get => GetLocal(5.0);
+            set => SetLocal(value);
+        }
+
         [Setting("Connection", Index = 9100)]
         [EnumRepresent("ImageSize")]
         public ImageSize ResampledImageSize
@@ -370,13 +378,13 @@ namespace ExViewer.Settings
                 {
                     if (string.IsNullOrEmpty(token))
                     {
-                        GalleryImage.ImageFolder = null;
+                        await Config.SetImageFolderAsync(null);
                     }
                     else
                     {
                         try
                         {
-                            GalleryImage.ImageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
+                            await Config.SetImageFolderAsync(await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token));
                             Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Custom cache folder set");
                         }
                         catch

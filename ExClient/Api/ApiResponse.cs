@@ -13,20 +13,11 @@ namespace ExClient.Api
 
         public void CheckResponse(ApiRequest request)
         {
-            try
-            {
-                if (!LogIn.IsNullOrEmpty())
-                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
-                CheckResponseOverride(request);
-                if (!Error.IsNullOrEmpty())
-                    throw new InvalidOperationException(Error);
-            }
-            catch (Exception ex)
-            {
-                ex.AddData("ApiRequest", JsonConvert.SerializeObject(request));
-                ex.AddData("ApiResponse", JsonConvert.SerializeObject(this));
-                throw;
-            }
+            if (!LogIn.IsNullOrEmpty())
+                throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
+            CheckResponseOverride(request);
+            if (!Error.IsNullOrEmpty())
+                throw new InvalidOperationException(Error);
         }
 
         protected virtual void CheckResponseOverride(ApiRequest request) { }

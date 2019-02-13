@@ -23,35 +23,17 @@ namespace ApplicationDataManager.Settings
         }
     }
 
-    public interface IValueRange
+    public interface IValueRangeAttribute
     {
-        object Min
-        {
-            get;
-        }
+        double Min { get; }
 
-        object Max
-        {
-            get;
-        }
+        double Max { get; }
 
-        double Tick
-        {
-            get;
-            set;
-        }
+        double Tick { get; }
 
-        double Small
-        {
-            get;
-            set;
-        }
+        double Small { get; }
 
-        double Large
-        {
-            get;
-            set;
-        }
+        double Large { get; }
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
@@ -81,132 +63,43 @@ namespace ApplicationDataManager.Settings
         public bool MultiLine { get; set; }
     }
 
-    public sealed class Int32RangeAttribute : ValueRepresentAttribute, IValueRange
+    public sealed class RangeAttribute : ValueRepresentAttribute, IValueRangeAttribute
     {
-        private readonly int min, max;
-
-        public Int32RangeAttribute(int min, int max)
+        public RangeAttribute(double min, double max, ValueType targetType)
         {
-            this.min = min;
-            this.max = max;
+            if (double.IsNaN(min))
+                throw new ArgumentException("min is nan");
+            if (double.IsNaN(max))
+                throw new ArgumentException("max is nan");
+            if (min > max)
+                throw new ArgumentException("min > max");
+
+            switch (targetType)
+            {
+            case ValueType.Int32:
+            case ValueType.Int64:
+            case ValueType.Single:
+            case ValueType.Double:
+                TargetType = targetType;
+                break;
+            default:
+                throw new ArgumentException("targetType must be a numeric type.");
+            }
+            Min = min;
+            Max = max;
         }
 
-        public object Min => this.min;
+        public double Min { get; }
 
-        public object Max => this.max;
+        public double Max { get; }
 
-        public double Tick
-        {
-            get; set;
-        } = double.NaN;
+        public double Tick { get; set; } = double.NaN;
 
-        public double Small
-        {
-            get; set;
-        } = double.NaN;
+        public double Small { get; set; } = double.NaN;
 
-        public double Large
-        {
-            get; set;
-        } = double.NaN;
+        public double Large { get; set; } = double.NaN;
 
-        public override ValueType TargetType => ValueType.Int32;
-    }
-
-    public sealed class Int64RangeAttribute : ValueRepresentAttribute, IValueRange
-    {
-        private readonly long min, max;
-
-        public Int64RangeAttribute(long min, long max)
-        {
-            this.min = min;
-            this.max = max;
-        }
-
-        public object Min => this.min;
-
-        public object Max => this.max;
-
-        public double Tick
-        {
-            get; set;
-        } = double.NaN;
-
-        public double Small
-        {
-            get; set;
-        } = double.NaN;
-
-        public double Large
-        {
-            get; set;
-        } = double.NaN;
-
-        public override ValueType TargetType => ValueType.Int64;
-    }
-
-    public sealed class DoubleRangeAttribute : ValueRepresentAttribute, IValueRange
-    {
-        private readonly double min, max;
-
-        public DoubleRangeAttribute(double min, double max)
-        {
-            this.min = min;
-            this.max = max;
-        }
-
-        public object Min => this.min;
-
-        public object Max => this.max;
-
-        public double Tick
-        {
-            get; set;
-        } = double.NaN;
-
-        public double Small
-        {
-            get; set;
-        } = double.NaN;
-
-        public double Large
-        {
-            get; set;
-        } = double.NaN;
-
-        public override ValueType TargetType => ValueType.Double;
-    }
-
-    public sealed class SingleRangeAttribute : ValueRepresentAttribute, IValueRange
-    {
-        private readonly float min, max;
-
-        public SingleRangeAttribute(float min, float max)
-        {
-            this.min = min;
-            this.max = max;
-        }
-
-        public object Min => this.min;
-
-        public object Max => this.max;
-
-        public double Tick
-        {
-            get; set;
-        } = double.NaN;
-
-        public double Small
-        {
-            get; set;
-        } = double.NaN;
-
-        public double Large
-        {
-            get; set;
-        } = double.NaN;
-
-        public override ValueType TargetType => ValueType.Single;
+        public override ValueType TargetType { get; }
     }
 
     public sealed class EnumRepresentAttribute : ValueRepresentAttribute

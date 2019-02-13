@@ -4,6 +4,7 @@ using ExClient.Status;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
 
@@ -16,8 +17,7 @@ namespace ExClient
         public static Uri LogOnUri { get; } = new Uri(ForumsUri, "index.php?act=Login");
 
         public bool NeedLogOn
-            => this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).Count(isLogOnCookie) < 3
-            || this.UserId <= 0
+            => this.UserId <= 0
             || this.PassHash is null;
 
         internal void CheckLogOn()
@@ -32,9 +32,9 @@ namespace ExClient
             public const string PassHash = "ipb_pass_hash";
             public const string S = "s";
             public const string SK = "sk";
-            public const string NeverWarn = "nw";
             public const string HathPerks = "hath_perks";
-            public const string Config = "uconfig";
+            public const string NeverWarn = "nw";
+            public const string LastEventRefreshTime = "event";
         }
 
         internal static class Domains
@@ -43,13 +43,12 @@ namespace ExClient
             public const string Ex = "exhentai.org";
         }
 
-        public void ResetExCookie()
+        internal void ResetExCookie()
         {
             foreach (var item in this.CookieManager.GetCookies(DomainProvider.Ex.RootUri))
-            {
                 this.CookieManager.DeleteCookie(item);
-            }
-            foreach (var item in this.GetLogOnInfo().Cookies.Where(isImportantCookie))
+
+            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(isImportantCookie))
             {
                 var cookie = new HttpCookie(item.Name, Domains.Ex, "/")
                 {
@@ -71,12 +70,11 @@ namespace ExClient
                 || name == CookieNames.HathPerks;
         }
 
-        private static bool isLogOnCookie(HttpCookie cookie)
+        private static bool isKeyCookie(HttpCookie cookie)
         {
             var name = cookie?.Name;
             return name == CookieNames.MemberID
-                || name == CookieNames.PassHash
-                || name == CookieNames.S;
+                || name == CookieNames.PassHash;
         }
 
         public LogOnInfo GetLogOnInfo()
@@ -84,18 +82,39 @@ namespace ExClient
             return new LogOnInfo(this);
         }
 
+        public async Task RefreshCookiesAsync()
+        {
+            if (NeedLogOn)
+                throw new InvalidOperationException("Must log on first.");
+
+            var backup = GetLogOnInfo();
+            try
+            {
+                await refreshCookieAndSettings();
+                await refreshHathPerks();
+            }
+            catch (Exception)
+            {
+                RestoreLogOnInfo(backup);
+                throw;
+            }
+        }
+
         public void RestoreLogOnInfo(LogOnInfo info)
         {
             if (info is null)
                 throw new ArgumentNullException(nameof(info));
+
             ClearLogOnInfo();
             foreach (var item in info.Cookies)
                 this.CookieManager.SetCookie(item);
+            ResetExCookie();
         }
 
         public void ClearLogOnInfo()
         {
-            foreach (var item in GetLogOnInfo().Cookies)
+            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Eh.RootUri)
+                        .Concat(this.CookieManager.GetCookies(DomainProvider.Ex.RootUri)))
                 this.CookieManager.DeleteCookie(item);
             setDefaultCookies();
         }
@@ -103,7 +122,24 @@ namespace ExClient
         private void setDefaultCookies()
         {
             this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Eh, "/") { Value = "1" });
+            this.CookieManager.SetCookie(new HttpCookie(CookieNames.LastEventRefreshTime, Domains.Eh, "/") { Value = "1" });
             this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Ex, "/") { Value = "1" });
+        }
+
+        private async Task refreshCookieAndSettings()
+        {
+            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(c => !isKeyCookie(c)))
+                this.CookieManager.DeleteCookie(item);
+            ResetExCookie();
+            var f1 = DomainProvider.Eh.Settings.FetchAsync();
+            var f2 = DomainProvider.Ex.Settings.FetchAsync();
+            await f1;
+            await f2;
+
+            var a1 = DomainProvider.Eh.Settings.SendAsync();
+            var a2 = DomainProvider.Ex.Settings.SendAsync();
+            await a1;
+            await a2;
         }
 
         /// <summary>
@@ -112,7 +148,7 @@ namespace ExClient
         /// </summary>
         /// <param name="userID">cookie with name ipb_member_id</param>
         /// <param name="passHash">cookie with name ipb_pass_hash</param>
-        public IAsyncAction LogOnAsync(long userID, string passHash)
+        public async Task LogOnAsync(long userID, string passHash)
         {
             if (userID <= 0)
                 throw new ArgumentOutOfRangeException(nameof(userID));
@@ -123,43 +159,43 @@ namespace ExClient
             if (passHash.Length != 32 || !passHash.All(c => (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')))
                 throw new ArgumentException("Should be 32 hex chars.", nameof(passHash));
 
-            var memberID = userID.ToString();
-            return AsyncInfo.Run(async token =>
+            var cookieBackUp = GetLogOnInfo();
+            ClearLogOnInfo();
+
+            this.CookieManager.SetCookie(new HttpCookie(CookieNames.MemberID, Domains.Eh, "/") { Value = userID.ToString(), Expires = DateTimeOffset.UtcNow.AddYears(5) });
+            this.CookieManager.SetCookie(new HttpCookie(CookieNames.PassHash, Domains.Eh, "/") { Value = passHash, Expires = DateTimeOffset.UtcNow.AddYears(5) });
+
+            try
             {
-                var cookieBackUp = GetLogOnInfo();
-                ClearLogOnInfo();
-                this.CookieManager.SetCookie(new HttpCookie(CookieNames.MemberID, Domains.Eh, "/") { Value = memberID, Expires = DateTimeOffset.UtcNow.AddYears(5) });
-                this.CookieManager.SetCookie(new HttpCookie(CookieNames.PassHash, Domains.Eh, "/") { Value = passHash, Expires = DateTimeOffset.UtcNow.AddYears(5) });
+                await refreshCookieAndSettings();
                 try
                 {
-                    await this.refreshHathPerksCore();
-                    await fetchSettings();
-                    var ignore = this.UserStatus?.RefreshAsync();
+                    await UserStatus?.RefreshAsync();
+                    await refreshHathPerks();
                 }
-                catch (Exception)
-                {
-                    RestoreLogOnInfo(cookieBackUp);
-                    throw;
-                }
-            });
+                catch { }
+
+                if (NeedLogOn)
+                    throw new ArgumentException("Invalid log on info.");
+            }
+            catch (Exception)
+            {
+                RestoreLogOnInfo(cookieBackUp);
+                throw;
+            }
         }
 
         private static readonly Uri hathperksUri = new Uri(DomainProvider.Eh.RootUri, "hathperks.php");
 
-        public IAsyncAction RefreshHathPerks()
+        private async Task refreshHathPerks()
         {
-            CheckLogOn();
-            return refreshHathPerksCore();
-        }
+            var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.HathPerks);
+            if (cookie != null)
+                this.CookieManager.DeleteCookie(cookie);
 
-        private IAsyncAction refreshHathPerksCore()
-        {
-            return AsyncInfo.Run(async token =>
-            {
-                await this.HttpClient.GetAsync(hathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
-                CheckLogOn();
-                ResetExCookie();
-            });
+            await this.HttpClient.GetAsync(hathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
+            CheckLogOn();
+            ResetExCookie();
         }
 
         public long UserId
@@ -167,9 +203,10 @@ namespace ExClient
             get
             {
                 var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.MemberID);
-                if (cookie is null)
+                var value = cookie?.Value;
+                if (value.IsNullOrWhiteSpace())
                     return -1;
-                return long.Parse(cookie.Value);
+                return long.Parse(value);
             }
         }
 
@@ -178,16 +215,14 @@ namespace ExClient
             get
             {
                 var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.PassHash);
-                if (cookie is null)
-                {
+                var value = cookie?.Value;
+                if (value.IsNullOrWhiteSpace())
                     return null;
-                }
-
-                return cookie.Value;
+                return value;
             }
         }
 
-        public IAsyncOperation<UserInfo> FetchCurrentUserInfoAsync()
+        public Task<UserInfo> FetchCurrentUserInfoAsync()
         {
             if (this.UserId < 0)
                 throw new InvalidOperationException("Hasn't log in");

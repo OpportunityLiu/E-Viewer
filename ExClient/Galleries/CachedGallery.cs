@@ -60,7 +60,6 @@ namespace ExClient.Galleries
             {
                 using (var db = new GalleryDb())
                 {
-                    var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
                     var todelete = await db.ImageSet
                         .Where(im => !db.SavedSet.Any(sm => im.UsingBy.Any(gi => gi.GalleryId == sm.GalleryId)))
                         .ToListAsync(token);
@@ -68,7 +67,7 @@ namespace ExClient.Galleries
                     var i = 0;
                     foreach (var item in todelete)
                     {
-                        var file = await folder.TryGetFileAsync(item.FileName);
+                        var file = await StorageHelper.ImageFolder.TryGetFileAsync(item.FileName);
                         if (file != null)
                         {
                             await file.DeleteAsync();
@@ -103,51 +102,6 @@ namespace ExClient.Galleries
                     }
                 }
             }).AsAsyncAction();
-        }
-
-        protected override IAsyncOperation<ImageSource> GetThumbAsync()
-        {
-            return Run(async token =>
-            {
-                return await base.GetThumbAsync() ?? await GetThumbLocalilyAsync();
-            });
-        }
-
-        protected IAsyncOperation<ImageSource> GetThumbLocalilyAsync()
-        {
-            return Run<ImageSource>(async token =>
-            {
-                using (var db = new GalleryDb())
-                {
-                    db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                    var gId = this.ID;
-                    var imageModel = db.GalleryImageSet
-                        .Include(gi => gi.Image)
-                        .Where(gi => gi.GalleryId == gId)
-                        .OrderBy(gi => gi.PageId)
-                        .FirstOrDefault();
-                    if (imageModel is null)
-                        return null;
-                    var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
-                    var file = await folder.TryGetFileAsync(imageModel.Image.FileName);
-                    if (file is null)
-                        return null;
-                    try
-                    {
-                        using (var stream = await file.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem))
-                        {
-                            await CoreApplication.MainView.Dispatcher.Yield();
-                            var image = new BitmapImage();
-                            await image.SetSourceAsync(stream);
-                            return image;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        return null;
-                    }
-                }
-            });
         }
     }
 }

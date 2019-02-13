@@ -13,6 +13,7 @@ using Opportunity.MvvmUniverse.Collections;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace ExClient.Galleries
 {
     [JsonObject]
     [System.Diagnostics.DebuggerDisplay(@"\{ID = {ID} Count = {Count}\}")]
-    public class Gallery : FixedIncrementalLoadingList<GalleryImage>
+    public class Gallery : FixedLoadingList<GalleryImage>
     {
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
         {
@@ -40,7 +41,7 @@ namespace ExClient.Galleries
             {
                 using (var db = new GalleryDb())
                 {
-                    db.ChangeTracker.QueryTrackingBehavior = Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking;
+                    db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                     var cm = db.SavedSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.GalleryModelId == galleryId);
                     if (gm is null)
@@ -78,7 +79,7 @@ namespace ExClient.Galleries
             {
                 return Run<IList<Gallery>>(async token =>
                 {
-                    var result = new Gallery[galleryInfo.Count];
+                    var result = new List<Gallery>(galleryInfo.Count);
                     var pageCount = MathHelper.GetPageCount(galleryInfo.Count, 25);
                     for (var i = 0; i < pageCount; i++)
                     {
@@ -87,7 +88,7 @@ namespace ExClient.Galleries
                         var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync();
                         var data = re.GalleryMetaData;
                         data.ForEach(async g => await g.InitAsync());
-                        data.CopyTo(result, startIndex);
+                        result.AddRange(data);
                     }
                     return result;
                 });
@@ -121,43 +122,59 @@ namespace ExClient.Galleries
                 var loadedCount = 0;
                 progress.Report(new SaveGalleryProgress(loadedCount, this.Count));
 
-                using (var semaphore = new SemaphoreSlim(16, 16))
+                using (var semaphore = new SemaphoreSlim(10, 10))
                 {
-                    var loadTasks = this.Select(image => Task.Run(async () =>
+                    async Task loadSingleImage(GalleryImage i)
                     {
-                        await semaphore.WaitAsync();
                         try
                         {
+                            Debug.WriteLine($"Start {i.PageID}");
                             token.ThrowIfCancellationRequested();
                             var firstFailed = false;
                             try
                             {
-                                var firstChance = image.LoadImageAsync(false, strategy, true);
+                                var firstChance = i.LoadImageAsync(false, strategy, true);
                                 var firstTask = firstChance.AsTask(token);
                                 var c = await Task.WhenAny(Task.Delay(30_000), firstTask);
                                 if (c != firstTask)
                                 {
+                                    Debug.WriteLine($"Timeout 1st {i.PageID}");
                                     firstFailed = true;
                                     firstChance.Cancel();
                                 }
                             }
                             catch (Exception)
                             {
+                                Debug.WriteLine($"Fail 1st {i.PageID}");
                                 firstFailed = true;
                             }
                             if (firstFailed)
                             {
+                                Debug.WriteLine($"Retry {i.PageID}");
                                 token.ThrowIfCancellationRequested();
-                                await image.LoadImageAsync(false, strategy, true).AsTask(token);
+                                await i.LoadImageAsync(true, strategy, true).AsTask(token);
                             }
                             progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), this.Count));
+                            Debug.WriteLine($"Success {i.PageID}");
                         }
                         finally
                         {
                             semaphore.Release();
+                            Debug.WriteLine($"End {i.PageID}");
                         }
-                    })).ToArray();
-                    await Task.WhenAll(loadTasks).ConfigureAwait(false);
+                    }
+
+                    var pendingTasks = new List<Task>(this.Count);
+                    await Task.Run(async () =>
+                    {
+                        foreach (var item in this)
+                        {
+                            await semaphore.WaitAsync().ConfigureAwait(false);
+                            pendingTasks.Add(loadSingleImage(item));
+                        }
+                    }, token).ConfigureAwait(false);
+
+                    await Task.WhenAll(pendingTasks).ConfigureAwait(false);
                 }
 
                 using (var db = new GalleryDb())
@@ -251,7 +268,7 @@ namespace ExClient.Galleries
             this.Rating.AverageScore = double.Parse(rating, NumberStyles.Number, CultureInfo.InvariantCulture);
             this.TorrentCount = int.Parse(torrentcount, NumberStyles.Integer, CultureInfo.InvariantCulture);
             this.Tags = new TagCollection(this, tags.Select(tag => Tag.Parse(tag)));
-            this.ThumbUri = new Uri(thumb);
+            this.ThumbUri = ThumbClient.FormatThumbUri(thumb);
         }
 
         protected IAsyncAction InitAsync()
@@ -279,18 +296,6 @@ namespace ExClient.Galleries
         protected override GalleryImage CreatePlaceholder(int index)
             => new GalleryImage(this, index + 1);
 
-        protected virtual IAsyncOperation<ImageSource> GetThumbAsync()
-        {
-            return Run<ImageSource>(async token =>
-            {
-                await CoreApplication.MainView.Dispatcher.Yield();
-                var image = new BitmapImage();
-                if (!await ThumbClient.FetchThumbAsync(this.ThumbUri, image))
-                    return null;
-                return image;
-            });
-        }
-
         public Uri GalleryUri { get; }
 
         #region MetaData
@@ -314,25 +319,15 @@ namespace ExClient.Galleries
             {
                 if (this.thumbImage.TryGetTarget(out var img))
                     return img;
-                var load = GetThumbAsync();
-                load.Completed = (asyncInfo, asyncStatus) =>
+                this.GetThumbAsync().ContinueWith(t =>
                 {
-                    try
-                    {
-                        if (asyncStatus != AsyncStatus.Completed)
-                            return;
-                        var r = asyncInfo.GetResults();
-                        if (r is null)
-                            return;
-                        this.thumbImage.SetTarget(r);
-                        OnPropertyChanged(nameof(Thumb));
-                    }
-                    finally
-                    {
-                        asyncInfo.Close();
-                    }
-                };
-                return GalleryImage.DefaultThumb;
+                    var r = t.Result;
+                    if (r is null)
+                        return;
+                    this.thumbImage.SetTarget(r);
+                    OnPropertyChanged(nameof(Thumb));
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+                return ThumbHelper.DefaultThumb;
             }
         }
 
@@ -416,13 +411,12 @@ namespace ExClient.Galleries
                     foreach (var page in picRoot.Elements("div", "gdtl"))
                     {
                         var nodeA = page.Element("a");
-                        var thumb = nodeA.Element("img").GetAttribute("src", default(Uri));
+                        var thumb = ThumbClient.FormatThumbUri(nodeA.Element("img").GetAttribute("src", ""));
                         if (thumb is null)
-                        {
                             continue;
-                        }
 
                         var tokens = nodeA.GetAttribute("href", "").Split(new[] { '/', '-' });
+
                         if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s")
                         {
                             continue;
@@ -544,8 +538,7 @@ namespace ExClient.Galleries
 
                             if (file is null)
                             {
-                                var folder = GalleryImage.ImageFolder ?? await GalleryImage.GetImageFolderAsync();
-                                file = await folder.TryGetFileAsync(item.Image.FileName);
+                                file = await StorageHelper.ImageFolder.TryGetFileAsync(item.Image.FileName);
                             }
                             if (file != null)
                             {

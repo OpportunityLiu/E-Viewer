@@ -158,7 +158,7 @@ namespace ExViewer.Helpers
                 }
             }
 
-            private TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler;
+            private readonly TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler;
 
             private void T_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
             {
@@ -307,7 +307,7 @@ namespace ExViewer.Helpers
                     }
                 }
 
-                private DataPackageView viewToProxy;
+                private readonly DataPackageView viewToProxy;
 
                 public DataPackage View { get; }
             }

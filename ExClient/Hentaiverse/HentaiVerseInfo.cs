@@ -24,6 +24,7 @@ namespace ExClient.HentaiVerse
         public static IAsyncActionWithProgress<HttpProgress> FetchAsync()
             => Client.Current.HttpClient.GetDocumentAsync(newsUri).ContinueWith(d =>
             {
+                // if IsEnabled is true, it will be analyzed in AnalyzePage, in GetDocumentAsync.
                 if (!IsEnabled)
                     analyze(d.GetResults());
             });

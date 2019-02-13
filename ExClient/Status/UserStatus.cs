@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
 
@@ -79,25 +80,17 @@ namespace ExClient.Status
             this.ModerationPowerCaculated = values.Take(3).Sum() + Math.Min(values.Skip(3).Take(5).Sum(), 25);
         }
 
-        public IAsyncAction RefreshAsync()
+        public async Task RefreshAsync()
         {
-            return AsyncInfo.Run(async token =>
+            var doc = await Client.Current.HttpClient.GetDocumentAsync(infoUri);
+            try
             {
-                var getDoc = Client.Current.HttpClient.GetDocumentAsync(infoUri);
-                token.Register(getDoc.Cancel);
-                var doc = await getDoc;
-                try
-                {
-                    analyzeDoc(doc);
-                }
-                catch (Exception ex)
-                {
-                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse, ex)
-                    {
-
-                    };
-                }
-            });
+                analyzeDoc(doc);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse, ex);
+            }
         }
 
         private void analyzeDoc(HtmlDocument doc)

@@ -27,7 +27,7 @@ namespace ExViewer.Views
         {
             internal static void SetRoot(RootControl root)
             {
-                RootController.root = root;
+                RootController.Parent = root;
 
                 if (ExApiInfo.StatusBarSupported)
                 {
@@ -79,7 +79,7 @@ namespace ExViewer.Views
                 }
 
                 SplitViewButtonPlaceholderVisibility = visible;
-                SplitViewButtonPlaceholderVisibilityChanged?.Invoke(root, visible);
+                SplitViewButtonPlaceholderVisibilityChanged?.Invoke(Parent, visible);
                 SetSplitViewButtonOpacity(tbtPaneOpacity);
             }
 
@@ -92,7 +92,7 @@ namespace ExViewer.Views
                 tbtPaneOpacity = opacity;
                 if (Available)
                 {
-                    root.tbtPane.Opacity = TbtPaneOpacity;
+                    Parent.tbtPane.Opacity = TbtPaneOpacity;
                     if (TbtPaneOpacity < 0.6)
                     {
                         Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
@@ -127,14 +127,14 @@ namespace ExViewer.Views
                 return true;
             }
 
-            public static bool Available => root != null && Window.Current.Content == root;
+            public static bool Available => Parent != null && Window.Current?.Content == Parent;
 
             public static StatusBar StatusBar { get; private set; }
 
 #if !DEBUG_BOUNDS
-            async
+            private
 #endif
-            private static void av_VisibleBoundsChanged(ApplicationView sender, object args)
+            static async void av_VisibleBoundsChanged(ApplicationView sender, object args)
             {
 #if !DEBUG_BOUNDS
                 if (ExApiInfo.StatusBarSupported)
@@ -177,13 +177,11 @@ namespace ExViewer.Views
                 SetFullScreen(!IsFullScreen);
             }
 
-            public static Navigator Navigator => root.manager;
+            public static Navigator Navigator => Parent.manager;
 
-            public static Frame Frame => root?.fm_inner;
+            public static Frame Frame => Parent?.fm_inner;
 
-            private static RootControl root;
-
-            public static RootControl Parent => root;
+            public static RootControl Parent { get; private set; }
 
             private static Storyboard sbInitializer(ref Storyboard storage, EventHandler<object> completed, [CallerMemberName]string name = null)
             {
@@ -192,7 +190,7 @@ namespace ExViewer.Views
                     return storage;
                 }
 
-                var sb = (Storyboard)root.Resources[name];
+                var sb = (Storyboard)Parent.Resources[name];
                 if (completed != null)
                 {
                     sb.Completed += completed;
@@ -211,7 +209,7 @@ namespace ExViewer.Views
             private static void Sv_root_PaneClosing(SplitView sender, SplitViewPaneClosingEventArgs args)
             {
                 CloseSplitViewPane.Begin();
-                root.CloseSplitViewPaneBtnPane.To = TbtPaneOpacity;
+                Parent.CloseSplitViewPaneBtnPane.To = TbtPaneOpacity;
                 if (TbtPaneOpacity < 0.6)
                 {
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Collapsed);
@@ -221,7 +219,7 @@ namespace ExViewer.Views
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
                 }
 
-                root.manager.IsBackEnabled = true;
+                Parent.manager.IsBackEnabled = true;
             }
 
             internal static void HandleUriLaunch()
@@ -254,23 +252,23 @@ namespace ExViewer.Views
                 if (content is null)
                     throw new ArgumentNullException(nameof(content));
 
-                root.Dispatcher.Begin(() =>
+                Parent.Dispatcher.Begin(() =>
                 {
-                    if (source != null && source != root.fm_inner.Content?.GetType())
+                    if (source != null && source != Parent.fm_inner.Content?.GetType())
                     {
                         return;
                     }
 
-                    root.FindName(nameof(root.bd_Toast));
-                    root.tb_Toast.Text = content;
-                    root.bd_Toast.Visibility = Visibility.Visible;
+                    Parent.FindName(nameof(Parent.bd_Toast));
+                    Parent.tb_Toast.Text = content;
+                    Parent.bd_Toast.Visibility = Visibility.Visible;
                     PlayToastPanel.Begin();
                 });
             }
 
             private static void PlayToast_Completed(object sender, object e)
             {
-                root.bd_Toast.Visibility = Visibility.Collapsed;
+                Parent.bd_Toast.Visibility = Visibility.Collapsed;
             }
 
             public static void SwitchSplitView(bool? open)
@@ -278,24 +276,24 @@ namespace ExViewer.Views
                 if (!Available)
                     return;
 
-                var currentState = root.sv_root.IsPaneOpen;
+                var currentState = Parent.sv_root.IsPaneOpen;
                 if (open == currentState)
                     return;
 
                 var targetState = open ?? !currentState;
                 if (targetState)
                 {
-                    (root.fm_inner.Content as IHasAppBar)?.CloseAll();
-                    root.sv_root.IsPaneOpen = true;
+                    (Parent.fm_inner.Content as IHasAppBar)?.CloseAll();
+                    Parent.sv_root.IsPaneOpen = true;
                     OpenSplitViewPane.Begin();
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                    root.manager.IsBackEnabled = false;
-                    var currentTab = root.tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? root.svt_Search;
+                    Parent.manager.IsBackEnabled = false;
+                    var currentTab = Parent.tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? Parent.svt_Search;
                     currentTab.Focus(FocusState.Programmatic);
                 }
                 else
                 {
-                    root.sv_root.IsPaneOpen = false;
+                    Parent.sv_root.IsPaneOpen = false;
                 }
             }
 
@@ -317,7 +315,7 @@ namespace ExViewer.Views
             public static async void UpdateUserInfo(bool setNull)
             {
                 if (Available && setNull)
-                    root.UserInfo = null;
+                    Parent.UserInfo = null;
                 if (Client.Current.UserId < 0)
                     return;
 
@@ -332,13 +330,13 @@ namespace ExViewer.Views
                     info = await UserInfo.LoadFromCache();
                 }
                 if (Available)
-                    root.UserInfo = info;
+                    Parent.UserInfo = info;
             }
 
             public static void TrackAsyncAction(IAsyncAction action)
             {
                 DisableView(null);
-                action.Completed = (s, e) => root.Dispatcher.Begin(EnableView);
+                action.Completed = (s, e) => Parent.Dispatcher.Begin(EnableView);
             }
 
             public static void TrackAsyncAction(IAsyncActionWithProgress<double> action)
@@ -349,14 +347,14 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<TProgress>(IAsyncActionWithProgress<TProgress> action, Func<TProgress, double> progressConverter)
             {
                 DisableView(null);
-                action.Completed = (s, e) => root.Dispatcher.Begin(EnableView);
-                action.Progress = (s, p) => root.Dispatcher.Begin(() => DisableView(progressConverter(p)));
+                action.Completed = (s, e) => Parent.Dispatcher.Begin(EnableView);
+                action.Progress = (s, p) => Parent.Dispatcher.Begin(() => DisableView(progressConverter(p)));
             }
 
             public static void TrackAsyncAction<T>(IAsyncOperation<T> action)
             {
                 DisableView(null);
-                action.Completed = (s, e) => root.Dispatcher.Begin(EnableView);
+                action.Completed = (s, e) => Parent.Dispatcher.Begin(EnableView);
             }
 
             public static void TrackAsyncAction<T>(IAsyncOperationWithProgress<T, double> action)
@@ -367,14 +365,14 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<T, TProgress>(IAsyncOperationWithProgress<T, TProgress> action, Func<TProgress, double> progressConverter)
             {
                 DisableView(null);
-                action.Completed = (s, e) => root.Dispatcher.Begin(EnableView);
-                action.Progress = (s, p) => root.Dispatcher.Begin(() => DisableView(progressConverter(p)));
+                action.Completed = (s, e) => Parent.Dispatcher.Begin(EnableView);
+                action.Progress = (s, p) => Parent.Dispatcher.Begin(() => DisableView(progressConverter(p)));
             }
 
             public static void TrackAsyncAction(IAsyncAction action, AsyncActionCompletedHandler completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => root.Dispatcher.Begin(() =>
+                action.Completed = (s, e) => Parent.Dispatcher.Begin(() =>
                 {
                     EnableView();
                     completed(s, e);
@@ -389,18 +387,18 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<TProgress>(IAsyncActionWithProgress<TProgress> action, Func<TProgress, double> progressConverter, AsyncActionWithProgressCompletedHandler<TProgress> completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => root.Dispatcher.Begin(() =>
+                action.Completed = (s, e) => Parent.Dispatcher.Begin(() =>
                 {
                     EnableView();
                     completed(s, e);
                 });
-                action.Progress = (s, p) => root.Dispatcher.Begin(() => DisableView(progressConverter(p)));
+                action.Progress = (s, p) => Parent.Dispatcher.Begin(() => DisableView(progressConverter(p)));
             }
 
             public static void TrackAsyncAction<T>(IAsyncOperation<T> action, AsyncOperationCompletedHandler<T> completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => root.Dispatcher.Begin(() =>
+                action.Completed = (s, e) => Parent.Dispatcher.Begin(() =>
                 {
                     EnableView();
                     completed(s, e);
@@ -415,12 +413,12 @@ namespace ExViewer.Views
             public static void TrackAsyncAction<T, TProgress>(IAsyncOperationWithProgress<T, TProgress> action, Func<TProgress, double> progressConverter, AsyncOperationWithProgressCompletedHandler<T, TProgress> completed)
             {
                 DisableView(null);
-                action.Completed = (s, e) => root.Dispatcher.Begin(() =>
+                action.Completed = (s, e) => Parent.Dispatcher.Begin(() =>
                 {
                     EnableView();
                     completed(s, e);
                 });
-                action.Progress = (s, p) => root.Dispatcher.Begin(() => DisableView(progressConverter(p)));
+                action.Progress = (s, p) => Parent.Dispatcher.Begin(() => DisableView(progressConverter(p)));
             }
 
             public static bool ViewEnabled { get; private set; } = true;
@@ -429,22 +427,22 @@ namespace ExViewer.Views
             {
                 ViewEnabled = false;
 
-                root.FindName(nameof(root.rp_Disable));
-                root.sv_root.IsEnabled = false;
+                Parent.FindName(nameof(Parent.rp_Disable));
+                Parent.sv_root.IsEnabled = false;
 
-                root.manager.IsBackEnabled = false;
-                root.manager.IsForwardEnabled = false;
+                Parent.manager.IsBackEnabled = false;
+                Parent.manager.IsForwardEnabled = false;
 
-                root.rp_Disable.Visibility = Visibility.Visible;
+                Parent.rp_Disable.Visibility = Visibility.Visible;
 
                 var indeterminate = !progress.HasValue;
                 var keep = double.IsNaN(progress.GetValueOrDefault());
                 if (!keep)
                 {
-                    root.pb_Disable.IsIndeterminate = indeterminate;
+                    Parent.pb_Disable.IsIndeterminate = indeterminate;
                     if (!indeterminate)
                     {
-                        root.pb_Disable.Value = progress.Value;
+                        Parent.pb_Disable.Value = progress.Value;
                     }
                 }
             }
@@ -453,15 +451,15 @@ namespace ExViewer.Views
             {
                 ViewEnabled = true;
 
-                root.sv_root.IsEnabled = true;
+                Parent.sv_root.IsEnabled = true;
 
-                root.manager.IsBackEnabled = true;
-                root.manager.IsForwardEnabled = true;
+                Parent.manager.IsBackEnabled = true;
+                Parent.manager.IsForwardEnabled = true;
 
-                root.rp_Disable.Visibility = Visibility.Collapsed;
+                Parent.rp_Disable.Visibility = Visibility.Collapsed;
 
-                await root.Dispatcher.Yield();
-                root.Focus(FocusState.Programmatic);
+                await Parent.Dispatcher.Yield();
+                Parent.Focus(FocusState.Programmatic);
             }
         }
     }

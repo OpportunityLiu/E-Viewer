@@ -46,7 +46,7 @@ namespace ExClient.Settings
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        private HashSet<ushort> items = new HashSet<ushort>();
+        private readonly HashSet<ushort> items = new HashSet<ushort>();
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 

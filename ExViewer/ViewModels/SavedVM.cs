@@ -16,11 +16,10 @@ namespace ExViewer.ViewModels
         {
             Commands.Add(nameof(Clear), Command.Create(sender =>
             {
-                var that = (SavedVM)sender.Tag;
-                RootControl.RootController.TrackAsyncAction(SavedGallery.ClearCachedGalleriesAsync(), (s, e) =>
+                RootControl.RootController.TrackAsyncAction(SavedGallery.ClearAllGalleriesAsync(), (s, e) =>
                 {
                     CachedVM.Instance.Refresh.Execute();
-                    that.Refresh.Execute();
+                    Instance.Refresh.Execute();
                 });
             }));
             Commands.Add(nameof(Refresh), AsyncCommand.Create(async (sender) =>
@@ -29,19 +28,6 @@ namespace ExViewer.ViewModels
                 that.Galleries = null;
                 that.Galleries = await SavedGallery.LoadSavedGalleriesAsync();
             }));
-        }
-
-        private static FolderPicker savePicker = initSavePicker();
-
-        private static FolderPicker initSavePicker()
-        {
-            var p = new FolderPicker()
-            {
-                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
-                ViewMode = PickerViewMode.Thumbnail
-            };
-            p.FileTypeFilter.Add("*");
-            return p;
         }
     }
 }

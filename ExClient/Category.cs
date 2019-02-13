@@ -6,17 +6,17 @@ namespace ExClient
     public enum Category
     {
         Unspecified = 0,
-        Doujinshi = 0x01,
-        Manga = 0x02,
-        ArtistCG = 0x04,
-        GameCG = 0x08,
-        Western = 0x10,
-        NonH = 0x20,
-        ImageSet = 0x40,
-        Cosplay = 0x80,
-        AsianPorn = 0x100,
-        Misc = 0x200,
-        All = Doujinshi | Manga | ArtistCG | GameCG | Western | NonH | ImageSet | Cosplay | AsianPorn | Misc
+        Doujinshi = 2,
+        Manga = 4,
+        ArtistCG = 8,
+        GameCG = 16,
+        Western = 512,
+        NonH = 256,
+        ImageSet = 32,
+        Cosplay = 64,
+        AsianPorn = 128,
+        Misc = 1,
+        All = Doujinshi | Manga | ArtistCG | GameCG | Western | NonH | ImageSet | Cosplay | AsianPorn | Misc,
     }
 
     public static class CategoryExtention

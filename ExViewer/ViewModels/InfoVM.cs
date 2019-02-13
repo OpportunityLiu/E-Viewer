@@ -1,8 +1,11 @@
 ﻿using ExClient;
+using ExClient.Api;
+using ExClient.Galleries;
 using ExClient.Search;
 using ExClient.Status;
 using ExViewer.Database;
 using ExViewer.Views;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
@@ -10,7 +13,10 @@ using Opportunity.MvvmUniverse.Commands;
 using Opportunity.MvvmUniverse.Views;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows.Input;
+using Windows.UI.Notifications;
+using Windows.UI.StartScreen;
 
 namespace ExViewer.ViewModels
 {

@@ -17,7 +17,7 @@ namespace ExViewer
                 {
                     return pv.FindAllByResource(AccountName).First();
                 }
-                catch(Exception ex) when(ex.HResult == -2147023728)
+                catch (Exception ex) when (ex.HResult == -2147023728)
                 {
                     return null;
                 }
@@ -26,11 +26,11 @@ namespace ExViewer
             {
                 var pv = new PasswordVault();
                 var old = CurrentCredential;
-                if(old != null)
+                if (old != null)
                 {
                     pv.Remove(old);
                 }
-                if(value != null)
+                if (value != null)
                 {
                     pv.Add(value);
                 }

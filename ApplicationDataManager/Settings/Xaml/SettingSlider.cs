@@ -35,39 +35,29 @@ namespace ApplicationDataManager.Settings.Xaml
             }
             if(nv != null)
             {
-                var range = (IValueRange)nv.ValueRepresent;
-                var min = Convert.ToDouble(range.Min);
-                var max = Convert.ToDouble(range.Max);
+                var range = (IValueRangeAttribute)nv.ValueRepresent;
 
-                s.Minimum = min;
-                s.Maximum = max;
+                s.Minimum = range.Min;
+                s.Maximum = range.Max;
                 s.Value = Convert.ToDouble(nv.Value);
 
-                var small = (max - min) / 100;
+                var small = (range.Max - range.Min) / 100;
                 var large = small * 10;
 
                 if(!double.IsNaN(range.Small))
-                {
                     small = range.Small;
-                }
 
                 if (!double.IsNaN(range.Large))
-                {
                     large = range.Large;
-                }
 
                 s.SmallChange = small;
                 s.LargeChange = large;
                 s.StepFrequency = small;
 
-                if(!double.IsNaN(range.Tick))
-                {
+                if (!double.IsNaN(range.Tick))
                     s.TickFrequency = range.Tick;
-                }
                 else
-                {
                     s.ClearValue(TickFrequencyProperty);
-                }
 
                 s.ValueChanged += s.valueChangedCallback;
                 nv.PropertyChanged += s.settingInfoPropertyChanged;

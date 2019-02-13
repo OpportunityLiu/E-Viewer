@@ -1,6 +1,11 @@
 ﻿using ExClient;
 using ExViewer.Controls;
+using Microsoft.Toolkit.Uwp.UI.Extensions;
+using Opportunity.MvvmUniverse;
+using Opportunity.MvvmUniverse.Commands;
 using System;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -21,13 +26,125 @@ namespace ExViewer.Views
             this.InitializeComponent();
         }
 
-        public bool Succeed { get; private set; }
+        private class VMData : ObservableObject
+        {
+            public VMData()
+            {
+                this.LogOn = AsyncCommand.Create(async s =>
+                {
+                    if (!long.TryParse(MemberId, out var uid))
+                        return;
+                    var hash = PassHash;
+
+                    try
+                    {
+                        await Client.Current.LogOnAsync(uid, hash);
+                    }
+                    catch (Exception ex)
+                    {
+                        Reset();
+                        this.ErrorMsg = ex.Message;
+                        this.ShowErrorMsg = true;
+                        Telemetry.LogException(ex);
+                        return;
+                    }
+                    if (!string.IsNullOrEmpty(this.UserName) && !string.IsNullOrEmpty(this.Password))
+                        AccountManager.CurrentCredential = AccountManager.CreateCredential(this.UserName, this.Password);
+
+                    this.Succeed = true;
+                }, s => CanLogOn);
+                this.LogOn.PropertyChanged += (s, e) => OnPropertyChanged(nameof(IsPrimaryButtonEnabled));
+            }
+
+            public LogOnInfo LogOnInfoBackup { get; } = Client.Current.GetLogOnInfo();
+
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private bool _UseCookieLogOn;
+            public bool UseCookieLogOn { get => this._UseCookieLogOn; set => Set(nameof(PrimaryButtonText), nameof(IsPrimaryButtonEnabled), ref this._UseCookieLogOn, value); }
+
+            public AsyncCommand LogOn { get; }
+
+            public string PrimaryButtonText => _UseCookieLogOn
+                ? Strings.Resources.Views.LogOnDialog.LogOnButtonText
+                : Strings.Resources.Views.LogOnDialog.ResetButtonText;
+
+            public bool IsPrimaryButtonEnabled => this._UseCookieLogOn ? CanLogOn && !LogOn.IsExecuting : !LogOn.IsExecuting;
+
+            public bool CanLogOn => !Succeed && long.TryParse(MemberId, out _) && Regex.IsMatch(PassHash ?? "", @"^[0-9a-fA-F]{32}$");
+
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private bool _Succeed;
+            public bool Succeed
+            {
+                get => this._Succeed;
+                set => Set(nameof(CanLogOn), nameof(IsPrimaryButtonEnabled), ref _Succeed, value);
+            }
+
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private string _UserName;
+            public string UserName { get => this._UserName; set => Set(ref this._UserName, value); }
+
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private string _Password;
+            public string Password { get => this._Password; set => Set(ref this._Password, value); }
+
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private string _MemberId;
+            public string MemberId
+            {
+                get => this._MemberId;
+                set => Set(nameof(CanLogOn), nameof(IsPrimaryButtonEnabled), ref this._MemberId, value);
+            }
+
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private string _PassHash;
+            public string PassHash
+            {
+                get => this._PassHash;
+                set => Set(nameof(CanLogOn), nameof(IsPrimaryButtonEnabled), ref this._PassHash, value);
+            }
+
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private string _ErrorMsg;
+            public string ErrorMsg { get => this._ErrorMsg; private set => Set(ref this._ErrorMsg, value); }
+
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private bool _ShowErrorMsg;
+            public bool ShowErrorMsg { get => this._ShowErrorMsg; set => Set(ref this._ShowErrorMsg, value); }
+
+
+            public void Reset()
+            {
+                this.Succeed = false;
+
+                this.UserName = null;
+                this.Password = null;
+
+                this.MemberId = "";
+                this.PassHash = "";
+            }
+        }
+
+        private readonly VMData VM = new VMData();
+
+        public bool Succeed => this.VM.Succeed;
+
+        private void btnUseCookie_Click(object sender, RoutedEventArgs e)
+        {
+            this.VM.UseCookieLogOn = true;
+            reset();
+        }
+
+        private void btnUseWebpage_Click(object sender, RoutedEventArgs e)
+        {
+            this.VM.UseCookieLogOn = false;
+            reset();
+        }
 
         private async void reset()
         {
-            this.Succeed = false;
-            this.tempUserName = null;
-            this.tempPassword = null;
+            this.VM.Reset();
+
             this.wv.NavigateToString("");
             await Dispatcher.YieldIdle();
             this.wv.Navigate(Client.LogOnUri);
@@ -74,7 +191,7 @@ namespace ExViewer.Views
 
         private async Task injectOtherPage()
         {
-            if (this.bdProgress.Visibility == Visibility.Visible)
+            if (this.VM.LogOn.IsExecuting)
                 return;
 
             var r = await this.wv.InvokeScriptAsync("eval", new[] { @"
@@ -98,8 +215,9 @@ namespace ExViewer.Views
             {
                 return;
             }
-
-            await logOnAsync(data[0], data[1]);
+            this.VM.MemberId = data[0];
+            this.VM.PassHash = data[1];
+            this.VM.LogOn.Execute();
         }
 
         private void cd_Loaded(object sender, RoutedEventArgs e)
@@ -112,13 +230,12 @@ namespace ExViewer.Views
 
         private void cd_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            this.logOnInfoBackup = Client.Current.GetLogOnInfo();
             reset();
         }
 
         private async void wv_DOMContentLoaded(WebView sender, WebViewDOMContentLoadedEventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine(args.Uri?.ToString() ?? "local string", "WebView");
+            Debug.WriteLine(args.Uri?.ToString() ?? "local string", "WebView");
             if (args.Uri is null)
                 return;
 
@@ -157,10 +274,6 @@ namespace ExViewer.Views
 </html>");
         }
 
-        private LogOnInfo logOnInfoBackup;
-
-        private string tempUserName, tempPassword;
-
         private void wv_ScriptNotify(object sender, NotifyEventArgs e)
         {
             var data = e.Value.Split(new[] { '\n' }, StringSplitOptions.None);
@@ -171,8 +284,8 @@ namespace ExViewer.Views
                     return;
                 }
 
-                this.tempUserName = data[0];
-                this.tempPassword = data[1];
+                this.VM.UserName = data[0];
+                this.VM.Password = data[1];
                 return;
             }
         }
@@ -190,67 +303,42 @@ namespace ExViewer.Views
 
         private void cd_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            reset();
             args.Cancel = true;
+            if (VM.UseCookieLogOn)
+            {
+                VM.LogOn.Execute();
+            }
+            else
+            {
+                reset();
+            }
         }
 
-        private void cd_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void cookie_TextChanged(object sender, RoutedEventArgs e)
         {
-            if (loggingOn)
+            if (((TextBox)sender).Text != "")
+                this.VM.ShowErrorMsg = false;
+        }
+
+        private void cd_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Succeed)
+                Hide();
+        }
+
+        private void cd_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
+        {
+            if (VM.LogOn.IsExecuting)
             {
                 args.Cancel = true;
                 return;
             }
-            if (this.logOnInfoBackup != null)
-                Client.Current.RestoreLogOnInfo(this.logOnInfoBackup);
+            if (Succeed)
+                return;
+            if (VM.LogOnInfoBackup != null)
+                Client.Current.RestoreLogOnInfo(VM.LogOnInfoBackup);
             if (Client.Current.NeedLogOn)
                 Application.Current.Exit();
-        }
-
-        private bool loggingOn
-        {
-            get => !this.IsPrimaryButtonEnabled;
-            set
-            {
-                if (value)
-                {
-                    this.bdProgress.Visibility = Visibility.Visible;
-                    this.IsPrimaryButtonEnabled = false;
-                }
-                else
-                {
-                    this.bdProgress.Visibility = Visibility.Collapsed;
-                    this.IsPrimaryButtonEnabled = true;
-                }
-            }
-        }
-
-        private async Task logOnAsync(string id, string hash)
-        {
-            loggingOn = true;
-            try
-            {
-                if (!long.TryParse(id, out var uid))
-                    return;
-                try
-                {
-                    await Client.Current.LogOnAsync(uid, hash);
-                }
-                catch (Exception ex)
-                {
-                    Telemetry.LogException(ex);
-                    return;
-                }
-                if (!string.IsNullOrEmpty(this.tempUserName) && !string.IsNullOrEmpty(this.tempPassword))
-                    AccountManager.CurrentCredential = AccountManager.CreateCredential(this.tempUserName, this.tempPassword);
-
-                this.Succeed = true;
-                this.Hide();
-            }
-            finally
-            {
-                loggingOn = false;
-            }
         }
     }
 }

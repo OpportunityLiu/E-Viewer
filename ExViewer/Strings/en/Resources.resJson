@@ -38,25 +38,6 @@
       "AllTextBlock/Text": "All",
       // Space for "AllTextBlock/Text", "OriginalTextBlock/Text", "RewriteTextBlock/Text" and "TranslatedTextBlock/Text"
       "CellColumnDefination/MinWidth": "80",
-      "ExcludedLanguage": {
-        "Chinese": "Chinese",
-        "Dutch": "Dutch",
-        "English": "English",
-        "French": "French",
-        "German": "German",
-        "Hungarian": "Hungarian",
-        "Italian": "Italian",
-        "Japanese": "Japanese",
-        "Korean": "Korean",
-        "NotApplicable": "N/A",
-        "Other": "Other",
-        "Polish": "Polish",
-        "Portuguese": "Portuguese",
-        "Russian": "Russian",
-        "Spanish": "Spanish",
-        "Thai": "Thai",
-        "Vietnamese": "Vietnamese"
-      },
       "OriginalTextBlock/Text": "Original",
       "RewriteTextBlock/Text": "Rewrite",
       "TranslatedTextBlock/Text": "Translated"
@@ -162,6 +143,7 @@
     "CachedPage": {
       "DeleteAllAppBarButton/Label": "Delete all",
       "DeleteMenuFlyout/Text": "Delete",
+      "DeleteSwipeItem/Text": "Delete",
       "EmptyTextBlock/Text": "No cached galleries",
       "GalleryDeleted": "Selected gallery has been deleted.",
       "LoadingMoreTextBlock/Text": "Loading more galleries…",
@@ -266,7 +248,9 @@
       "QRCodeAppBarButton/Label": "Scan QR code",
       "ReloadAppBarButton/Label": "Reload",
       "SearchAppBarButton/Label": "Show all galleries with this file",
-      "ShareAppBarButton/Label": "Share"
+      "ShareAppBarButton/Label": "Share",
+      "SlideAppBarButton/StartLabel": "Start slide show",
+      "SlideAppBarButton/StopLabel": "Stop slide show"
     },
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "Change user",
@@ -309,9 +293,14 @@
       "ToplistsHeaderTextBlock/Text": "Toplists"
     },
     "LogOnDialog": {
-      "ContentDialog/PrimaryButtonText": "Reset",
+      "LogOnButtonText": "Log on",
+      "MemberIdTextBox/Header": "Cookie value of \"ipb_member_id\"",
+      "PassHashTextBox/Header": "Cookie value of \"ipb_pass_hash\"",
       "RegisterHyperlinkButton/Content": "Register",
-      "TitleTextBlock/Text": "LOG ON"
+      "ResetButtonText": "Reset",
+      "TitleTextBlock/Text": "LOG ON",
+      "UseCookieButton/Content": "Use cookie log on",
+      "UseWebpageButton/Content": "Use webpage log on"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "Loading popular galleries…",
@@ -345,6 +334,7 @@
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "Delete all",
       "DeleteMenuFlyout/Text": "Delete",
+      "DeleteSwipeItem/Text": "Delete",
       "EmptyTextBlock/Text": "No saved galleries",
       "LoadingMoreTextBlock/Text": "Loading more galleries…",
       "RefreshAppBarButton/Label": "Refresh"

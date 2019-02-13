@@ -453,6 +453,12 @@ namespace ExViewer.Views
             Grid.SetColumn(this.tbGalleryName, 1);
         }
 
+        private Thickness gdCbContentPadding(double minHeight)
+        {
+            var tb = (minHeight - 20) / 2;
+            return new Thickness(0, tb, 0, tb);
+        }
+
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)

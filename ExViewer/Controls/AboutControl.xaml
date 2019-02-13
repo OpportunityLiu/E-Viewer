@@ -60,7 +60,7 @@
         <Setter.Value>
           <DataTemplate>
             <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
-                       Text="{Binding}" />
+                       Text="{Binding Mode=OneTime}" />
           </DataTemplate>
         </Setter.Value>
       </Setter>
