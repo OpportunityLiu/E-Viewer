@@ -13,6 +13,7 @@
                 xmlns:con="using:Opportunity.UWP.Converters"
                 xmlns:tcon="using:Opportunity.UWP.Converters.Typed"
                 xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+                xmlns:windata="using:Windows.UI.Xaml.Data"
                 Loading="root_Loading"
                 Unloaded="root_Unloaded"
                 mc:Ignorable="d"
@@ -66,7 +67,7 @@
                    HorizontalAlignment="Center"
                    Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(ViewModel.SearchResult.Count, ViewModel.SearchResult.HasMoreItems), FallbackValue=Collapsed, Mode=OneWay}"
+                   Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(ViewModel.SearchResult.Count, ViewModel.SearchResult.PageCount), FallbackValue=Collapsed, Mode=OneWay}"
                    Text="No hits found" />
       </ListView.Header>
       <ListView.Footer>
@@ -74,84 +75,88 @@
                    HorizontalAlignment="Center"
                    Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind xb:Visibility.OfBoolean(ViewModel.SearchResult.HasMoreItems), Mode=OneWay, FallbackValue=Visible}"
+                   Visibility="{x:Bind xb:Visibility.OfBoolean(ViewModel.SearchResult.IsLoading), Mode=OneWay, FallbackValue=Visible}"
                    Text="Loading more galleries..." />
       </ListView.Footer>
     </tk:PullToRefreshListView>
-    <Grid x:Name="gdTopRoot"
-          Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-          Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition x:Name="cdSplitViewPlaceholder"
-                          Width="0" />
-        <ColumnDefinition MaxWidth="200" />
-        <ColumnDefinition Width="2*" />
-      </Grid.ColumnDefinitions>
-      <ComboBox x:Name="cbCategory"
-                Grid.Column="1"
-                Margin="8,8,0,8"
-                Style="{StaticResource NoDropDownGlyphComboBoxStyle}"
-                SelectedItem="{x:Bind ViewModel.Category, Mode=TwoWay}"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
-      <AutoSuggestBox x:Uid="Views/FavoritesPage/AutoSuggestBox"
-                      x:Name="asb"
-                      QueryIcon="Find"
-                      Style="{StaticResource SearchAutoSuggestBoxStyle}"
-                      Grid.Column="2"
-                      Margin="8"
-                      Text="{x:Bind ViewModel.Keyword, Mode=TwoWay}"
-                      PlaceholderText="Search..."
-                      controls:TagSuggestionService.IsEnabled="True"
-                      controls:TagSuggestionService.InputScope="Search"
-                      controls:TagSuggestionService.SubmitCommand="{x:Bind ViewModel.Search, Mode=OneWay}"
-                      VerticalAlignment="Stretch" />
-      <CommandBar x:Name="cbActions"
-                  x:DeferLoadStrategy="Lazy"
-                  Visibility="Collapsed"
-                  Grid.ColumnSpan="3"
-                  Opening="cbActions_Opening"
-                  Closed="cbActions_Closed"
-                  HorizontalContentAlignment="Stretch"
-                  IsDynamicOverflowEnabled="False"
-                  ClosedDisplayMode="Compact">
-        <CommandBar.Content>
-          <Grid x:Name="gdCbContent">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition x:Name="cdSplitViewPlaceholder2"
-                                Width="{x:Bind cdSplitViewPlaceholder.Width, Mode=OneWay}" />
-              <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <ComboBox x:Name="cbCategory2"
-                      Margin="8"
-                      Grid.Column="1"
-                      Grid.ColumnSpan="1000"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
-          </Grid>
-        </CommandBar.Content>
-        <CommandBar.PrimaryCommands>
-          <AppBarButton x:Name="abbApply"
-                        x:Uid="Views/FavoritesPage/ApplyAppBarButton"
-                        Icon="Send"
-                        Label="Apply"
-                        ToolTipService.ToolTip="{x:Bind abbApply.Label}"
-                        IsEnabled="{x:Bind xb:Int32.AreNotEqual(lv.SelectedIndex, -1), Mode=OneWay}"
-                        Click="abbApply_Click" />
-        </CommandBar.PrimaryCommands>
-        <CommandBar.SecondaryCommands>
-          <AppBarButton x:Uid="Views/FavoritesPage/SelectAllAppBarButton"
-                        Icon="SelectAll"
-                        Label="Select all"
-                        Click="abbAll_Click" />
-          <AppBarButton x:Uid="Views/FavoritesPage/ClearSelectionAppBarButton"
-                        Icon="ClearSelection"
-                        Label="Clear selection"
-                        Click="abbClear_Click" />
-        </CommandBar.SecondaryCommands>
-      </CommandBar>
-    </Grid>
+    <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}">
+      <Grid x:Name="gdTopRoot"
+            MinHeight="{StaticResource AppBarThemeCompactHeight}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition x:Name="cdSplitViewPlaceholder"
+                            Width="0" />
+          <ColumnDefinition MaxWidth="200" />
+          <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <ComboBox x:Name="cbCategory"
+                  Grid.Column="1"
+                  Margin="8,0,0,0"
+                  Style="{StaticResource NoDropDownGlyphComboBoxStyle}"
+                  SelectedItem="{x:Bind ViewModel.Category, Mode=TwoWay}"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center"
+                  ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
+        <AutoSuggestBox x:Uid="Views/FavoritesPage/AutoSuggestBox"
+                        x:Name="asb"
+                        QueryIcon="Find"
+                        Style="{StaticResource SearchAutoSuggestBoxStyle}"
+                        Grid.Column="2"
+                        Margin="8,0"
+                        Text="{x:Bind ViewModel.Keyword, Mode=TwoWay}"
+                        PlaceholderText="Search..."
+                        controls:TagSuggestionService.IsEnabled="True"
+                        controls:TagSuggestionService.InputScope="Search"
+                        controls:TagSuggestionService.SubmitCommand="{x:Bind ViewModel.Search, Mode=OneWay}"
+                        VerticalAlignment="Center" />
+        <CommandBar x:Name="cbActions"
+                    x:DeferLoadStrategy="Lazy"
+                    Visibility="Collapsed"
+                    Grid.ColumnSpan="3"
+                    Opening="cbActions_Opening"
+                    Closed="cbActions_Closed"
+                    HorizontalContentAlignment="Stretch"
+                    IsDynamicOverflowEnabled="False"
+                    ClosedDisplayMode="Compact">
+          <CommandBar.Content>
+            <Grid x:Name="gdCbContent"
+                  Height="{StaticResource AppBarThemeCompactHeight}">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="cdSplitViewPlaceholder2"
+                                  Width="{x:Bind cdSplitViewPlaceholder.Width, Mode=OneWay}" />
+                <ColumnDefinition />
+              </Grid.ColumnDefinitions>
+              <ComboBox x:Name="cbCategory2"
+                        Margin="8,0"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="1000"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        ItemTemplate="{StaticResource FavoriteCategoryDataTemplate}" />
+            </Grid>
+          </CommandBar.Content>
+          <CommandBar.PrimaryCommands>
+            <AppBarButton x:Name="abbApply"
+                          x:Uid="Views/FavoritesPage/ApplyAppBarButton"
+                          Icon="Send"
+                          Label="Apply"
+                          ToolTipService.ToolTip="{x:Bind abbApply.Label}"
+                          IsEnabled="{x:Bind xb:Int32.AreNotEqual(lv.SelectedIndex, -1), Mode=OneWay}"
+                          Click="abbApply_Click" />
+          </CommandBar.PrimaryCommands>
+          <CommandBar.SecondaryCommands>
+            <AppBarButton x:Uid="Views/FavoritesPage/SelectAllAppBarButton"
+                          Icon="SelectAll"
+                          Label="Select all"
+                          Click="abbAll_Click" />
+            <AppBarButton x:Uid="Views/FavoritesPage/ClearSelectionAppBarButton"
+                          Icon="ClearSelection"
+                          Label="Clear selection"
+                          Click="abbClear_Click" />
+          </CommandBar.SecondaryCommands>
+        </CommandBar>
+      </Grid>
+
+    </Border>
   </Grid>
 </views:MvvmPage>

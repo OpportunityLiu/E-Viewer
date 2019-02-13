@@ -53,7 +53,7 @@
       </tk:PullToRefreshListView.Footer>
     </tk:PullToRefreshListView>
     <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
-            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,48,x1,x0'), Mode=OneWay}"
+            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
             RelativePanel.AlignLeftWithPanel="True"
             RelativePanel.AlignRightWithPanel="True"
             RelativePanel.AlignTopWithPanel="True" />
@@ -64,7 +64,7 @@
                 RelativePanel.AlignRightWithPanel="True"
                 RelativePanel.AlignTopWithPanel="True"
                 DefaultLabelPosition="Right"
-                OverflowButtonVisibility="Auto">
+                OverflowButtonVisibility="Collapsed">
       <CommandBar.PrimaryCommands>
         <AppBarButton x:Uid="Views/PopularPage/RefreshAppBarButton"
                       x:Name="abb_Refresh"

@@ -25,15 +25,19 @@ namespace ExClient.Launch
 
         public override bool CanHandle(UriHandlerData data)
         {
-            return data.Paths.Count >= 1 && (categoryDic.ContainsKey(data.Path0));
+            return data.Paths.Count >= 1 && (categoryDic.ContainsKey(data.Path0) || uint.TryParse(data.Path0, out _));
         }
 
         public override SearchLaunchResult Handle(UriHandlerData data)
         {
-            var category = categoryDic[data.Path0];
+            categoryDic.TryGetValue(data.Path0, out var cate0);
+            uint.TryParse(data.Path0, out var cate1ui);
+            if (cate1ui == 0) cate1ui = uint.MaxValue;
+            var cate1 = (~(Category)cate1ui) & Category.All;
+            var cate2 = GetCategory(data);
             var keyword = GetKeyword(data);
             var advanced = GetAdvancedSearchOptions(data);
-            return new SearchLaunchResult(Client.Current.Search(keyword, category, advanced));
+            return new SearchLaunchResult(Client.Current.Search(keyword, cate0 | cate1 | cate2, advanced));
         }
     }
 }

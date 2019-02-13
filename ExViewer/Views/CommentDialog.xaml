@@ -94,7 +94,7 @@
       <Setter Property="LabelPosition"
               Value="Collapsed" />
       <Setter Property="Height"
-              Value="48" />
+              Value="{StaticResource AppBarThemeCompactHeight}" />
       <Setter Property="Width"
               Value="Auto" />
       <Setter Property="MinWidth"

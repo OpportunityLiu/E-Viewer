@@ -100,7 +100,7 @@ namespace ExClient.Galleries.Commenting
                 foreach (var item in node.Descendants("#text"))
                 {
                     var data = item.GetInnerText();
-                    var uri = $"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8"
+                    var uri = $"https://translate.google.cn/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8"
                         + $"&sl=auto&tl={targetLangCode}&q={Uri.EscapeDataString(data)}";
                     var transRetHtml = await transClient.GetStringAsync(new Uri(uri));
                     var obj = JsonConvert.DeserializeObject<JArray>(transRetHtml);

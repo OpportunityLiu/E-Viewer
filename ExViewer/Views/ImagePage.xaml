@@ -11,6 +11,7 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:client="using:ExClient"
                 xmlns:g="using:ExClient.Galleries"
+                xmlns:sys="using:System"
                 x:Name="page"
                 xmlns:xb="using:Opportunity.UWP.Converters.XBind"
                 xmlns:helper="using:Opportunity.Helpers.Universal"
@@ -18,7 +19,9 @@
                 Loaded="page_Loaded"
                 Unloaded="page_Unloaded"
                 NavigationCacheMode="Enabled"
-                mc:Ignorable="d">
+                mc:Ignorable="d"
+                xmlns:tcon="using:Opportunity.UWP.Converters.Typed"
+                xmlns:con="using:Opportunity.UWP.Converters">
   <Page.Transitions>
     <TransitionCollection>
       <NavigationThemeTransition>
@@ -27,26 +30,31 @@
     </TransitionCollection>
   </Page.Transitions>
   <Page.Resources>
+    <con:ChainConverter x:Key="IndexConverter">
+      <tcon:Int32OffsetConverter Offset="1" />
+      <con:SystemConverter />
+    </con:ChainConverter>
     <DataTemplate x:Key="FlipViewItemTemplate"
                   x:DataType="g:GalleryImage">
       <Grid DoubleTapped="fvi_DoubleTapped"
             Tapped="fvi_Tapped"
             Margin="{Binding VisibleBounds, ElementName=page, Mode=OneWay}">
         <Grid.RowDefinitions>
-          <RowDefinition Height="48" />
+          <RowDefinition MinHeight="{StaticResource AppBarThemeCompactHeight}"
+                         MaxHeight="{StaticResource AppBarThemeCompactHeight}" />
           <RowDefinition />
         </Grid.RowDefinitions>
         <controls:ImagePresenter x:Name="ip"
                                  Grid.RowSpan="2"
                                  Image="{x:Bind Mode=OneWay}" />
-        <ProgressBar Grid.Row="1" 
+        <ProgressBar Grid.Row="1"
                      VerticalAlignment="Top"
                      Foreground="{x:Bind local:ImagePage.loadStateToPbForeground(State), Mode=OneWay, FallbackValue=Yellow}"
                      IsIndeterminate="{x:Bind local:ImagePage.loadStateToPbIsIndeterminate(State), Mode=OneWay, FallbackValue=True}"
                      Visibility="{x:Bind local:ImagePage.loadStateToPbVisibility(State), Mode=OneWay, FallbackValue=Visible}"
                      Value="{x:Bind Progress, Mode=OneWay}">
           <ProgressBar.RenderTransform>
-            <TranslateTransform Y="{Binding RenderTransform.Y, ElementName=cb_top, Mode=OneWay}" />
+            <TranslateTransform Y="{Binding RenderTransform.Y, ElementName=cbTop, Mode=OneWay}" />
           </ProgressBar.RenderTransform>
         </ProgressBar>
       </Grid>
@@ -55,9 +63,9 @@
                      Color="{ThemeResource SystemAltHighColor}" />
     <SolidColorBrush x:Name="scbNeed"
                      Color="{ThemeResource SystemChromeMediumColor}" />
-    <Storyboard x:Name="cb_top_Open">
-      <ColorAnimationUsingKeyFrames x:Name="cb_top_OpenAnimation"
-                                    Storyboard.TargetName="cb_top"
+    <Storyboard x:Name="cbTop_Open">
+      <ColorAnimationUsingKeyFrames x:Name="cbTop_OpenAnimation"
+                                    Storyboard.TargetName="cbTop"
                                     Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
                                     Duration="0:0:0.15">
         <LinearColorKeyFrame KeyTime="0:0:0" />
@@ -70,9 +78,9 @@
         <LinearColorKeyFrame KeyTime="0:0:0.15" />
       </ColorAnimationUsingKeyFrames>
     </Storyboard>
-    <Storyboard x:Name="cb_top_Close">
-      <ColorAnimationUsingKeyFrames x:Name="cb_top_CloseAnimation"
-                                    Storyboard.TargetName="cb_top"
+    <Storyboard x:Name="cbTop_Close">
+      <ColorAnimationUsingKeyFrames x:Name="cbTop_CloseAnimation"
+                                    Storyboard.TargetName="cbTop"
                                     Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
                                     Duration="0:0:0.15">
         <LinearColorKeyFrame KeyTime="0:0:0" />
@@ -85,8 +93,8 @@
         <LinearColorKeyFrame KeyTime="0:0:0.15" />
       </ColorAnimationUsingKeyFrames>
     </Storyboard>
-    <Storyboard x:Name="cb_top_Show">
-      <DoubleAnimation Storyboard.TargetName="cb_top"
+    <Storyboard x:Name="cbTop_Show">
+      <DoubleAnimation Storyboard.TargetName="cbTop"
                        Storyboard.TargetProperty="Opacity"
                        Duration="0:0:0.2"
                        To="1">
@@ -104,7 +112,7 @@
                     EasingMode="EaseOut" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="bdLeft"
+      <DoubleAnimation Storyboard.TargetName="bdTopLeft"
                        Storyboard.TargetProperty="Opacity"
                        Duration="0:0:0.2"
                        To="1">
@@ -113,7 +121,7 @@
                     EasingMode="EaseOut" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="bdRight"
+      <DoubleAnimation Storyboard.TargetName="bdTopRight"
                        Storyboard.TargetProperty="Opacity"
                        Duration="0:0:0.2"
                        To="1">
@@ -122,7 +130,7 @@
                     EasingMode="EaseOut" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="cb_top"
+      <DoubleAnimation Storyboard.TargetName="cbTop"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
                        To="0">
@@ -140,7 +148,7 @@
                     EasingMode="EaseOut" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="bdLeft"
+      <DoubleAnimation Storyboard.TargetName="bdTopLeft"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
                        To="0">
@@ -149,7 +157,80 @@
                     EasingMode="EaseOut" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="bdRight"
+      <DoubleAnimation Storyboard.TargetName="bdTopRight"
+                       Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+
+      <DoubleAnimation Storyboard.TargetName="cbBottom"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="1">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottom"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="1">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottomLeft"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="1">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottomRight"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="1">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="cbBottom"
+                       Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottom"
+                       Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottomLeft"
+                       Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseOut" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottomRight"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
                        To="0">
@@ -159,9 +240,9 @@
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
     </Storyboard>
-    <Storyboard x:Name="cb_top_Hide"
-                Completed="cb_top_Hide_Completed">
-      <DoubleAnimation Storyboard.TargetName="cb_top"
+    <Storyboard x:Name="cbTop_Hide"
+                Completed="cbTop_Hide_Completed">
+      <DoubleAnimation Storyboard.TargetName="cbTop"
                        Storyboard.TargetProperty="Opacity"
                        Duration="0:0:0.2"
                        To="0">
@@ -179,7 +260,7 @@
                     EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="bdLeft"
+      <DoubleAnimation Storyboard.TargetName="bdTopLeft"
                        Storyboard.TargetProperty="Opacity"
                        Duration="0:0:0.2"
                        To="0">
@@ -188,7 +269,7 @@
                     EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="bdRight"
+      <DoubleAnimation Storyboard.TargetName="bdTopRight"
                        Storyboard.TargetProperty="Opacity"
                        Duration="0:0:0.2"
                        To="0">
@@ -197,10 +278,10 @@
                     EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="cb_top"
+      <DoubleAnimation Storyboard.TargetName="cbTop"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
-                       To="-48">
+                       To="{x:Bind xb:Double.Opposite(bdTopLeft.Height), Mode=OneWay}">
         <DoubleAnimation.EasingFunction>
           <CubicEase EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
@@ -208,40 +289,97 @@
       <DoubleAnimation Storyboard.TargetName="bdTop"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
-                       To="-48">
+                       To="{x:Bind xb:Double.Opposite(bdTopLeft.Height), Mode=OneWay}">
         <DoubleAnimation.EasingFunction>
           <CubicEase EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="bdLeft"
+      <DoubleAnimation Storyboard.TargetName="bdTopLeft"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
-                       To="-48">
+                       To="{x:Bind xb:Double.Opposite(bdTopLeft.Height), Mode=OneWay}">
         <DoubleAnimation.EasingFunction>
           <CubicEase EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
-      <DoubleAnimation Storyboard.TargetName="bdRight"
+      <DoubleAnimation Storyboard.TargetName="bdTopRight"
                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                        Duration="0:0:0.2"
-                       To="-48">
+                       To="{x:Bind xb:Double.Opposite(bdTopLeft.Height), Mode=OneWay}">
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+
+      <DoubleAnimation Storyboard.TargetName="cbBottom"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottom"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottomLeft"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottomRight"
+                       Storyboard.TargetProperty="Opacity"
+                       Duration="0:0:0.2"
+                       To="0">
+        <DoubleAnimation.EasingFunction>
+          <BackEase Amplitude="0.25"
+                    EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="cbBottom"
+                       Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                       Duration="0:0:0.2"
+                       To="{x:Bind bdBottomLeft.Height, Mode=OneWay}">
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottom"
+                       Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                       Duration="0:0:0.2"
+                       To="{x:Bind bdBottomLeft.Height, Mode=OneWay}">
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottomLeft"
+                       Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                       Duration="0:0:0.2"
+                       To="{x:Bind bdBottomLeft.Height, Mode=OneWay}">
+        <DoubleAnimation.EasingFunction>
+          <CubicEase EasingMode="EaseIn" />
+        </DoubleAnimation.EasingFunction>
+      </DoubleAnimation>
+      <DoubleAnimation Storyboard.TargetName="bdBottomRight"
+                       Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                       Duration="0:0:0.2"
+                       To="{x:Bind bdBottomLeft.Height, Mode=OneWay}">
         <DoubleAnimation.EasingFunction>
           <CubicEase EasingMode="EaseIn" />
         </DoubleAnimation.EasingFunction>
       </DoubleAnimation>
     </Storyboard>
-    <Style x:Key="PageIndicatorTextBlockStyle"
-           BasedOn="{StaticResource BodyTextBlockStyle}"
-           TargetType="TextBlock">
-      <Setter Property="VerticalAlignment"
-              Value="Top" />
-      <Setter Property="MaxLines"
-              Value="1" />
-      <Setter Property="TextTrimming"
-              Value="None" />
-      <Setter Property="TextWrapping"
-              Value="NoWrap" />
-    </Style>
   </Page.Resources>
   <RelativePanel rs3:Background="{ThemeResource SystemControlAltHighAcrylicWindowBrush}"
                  prers3:Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -268,8 +406,8 @@
     </FlipView>
     <Border x:Name="bdTop"
             Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
-            Visibility="{x:Bind cb_top.Visibility, Mode=OneWay}"
-            Background="{x:Bind cb_top.Background, Mode=OneWay}"
+            Visibility="{x:Bind cbTop.Visibility, Mode=OneWay}"
+            Background="{x:Bind cbTop.Background, Mode=OneWay}"
             RelativePanel.AlignTopWithPanel="True"
             RelativePanel.AlignLeftWithPanel="True"
             RelativePanel.AlignRightWithPanel="True">
@@ -277,79 +415,64 @@
         <TranslateTransform />
       </Border.RenderTransform>
     </Border>
-    <Border x:Name="bdLeft"
+    <Border x:Name="bdTopLeft"
             Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0,x0,x0'), Mode=OneWay}"
             Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x1,x0,x0'), Mode=OneWay}"
-            Height="48"
-            Visibility="{x:Bind cb_top.Visibility, Mode=OneWay}"
-            Background="{x:Bind cb_top.Background, Mode=OneWay}"
+            Height="{StaticResource AppBarThemeCompactHeight}"
+            Visibility="{x:Bind cbTop.Visibility, Mode=OneWay}"
+            Background="{x:Bind cbTop.Background, Mode=OneWay}"
             RelativePanel.AlignTopWithPanel="True"
             RelativePanel.AlignLeftWithPanel="True">
       <Border.RenderTransform>
         <TranslateTransform />
       </Border.RenderTransform>
     </Border>
-    <Border x:Name="bdRight"
+    <Border x:Name="bdTopRight"
             Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x1,x0'), Mode=OneWay}"
             Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x1,x0,x0'), Mode=OneWay}"
-            Height="48"
-            Visibility="{x:Bind cb_top.Visibility, Mode=OneWay}"
-            Background="{x:Bind cb_top.Background, Mode=OneWay}"
+            Height="{StaticResource AppBarThemeCompactHeight}"
+            Visibility="{x:Bind cbTop.Visibility, Mode=OneWay}"
+            Background="{x:Bind cbTop.Background, Mode=OneWay}"
             RelativePanel.AlignTopWithPanel="True"
             RelativePanel.AlignRightWithPanel="True">
       <Border.RenderTransform>
         <TranslateTransform />
       </Border.RenderTransform>
     </Border>
-    <CommandBar x:Name="cb_top"
+    <CommandBar x:Name="cbTop"
                 xmlns:ani="using:Microsoft.Toolkit.Uwp.UI.Animations"
-                KeyDown="cb_top_KeyDown"
+                KeyDown="cbTop_KeyDown"
                 Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
                 HorizontalContentAlignment="Stretch"
                 IsDynamicOverflowEnabled="False"
-                Closing="cb_top_Closing"
-                Closed="cb_top_Closed"
-                Opening="cb_top_Opening"
+                Closing="cbTop_Closing"
+                Closed="cbTop_Closed"
+                Opening="cbTop_Opening"
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.AlignRightWithPanel="True">
       <CommandBar.RenderTransform>
         <TranslateTransform />
       </CommandBar.RenderTransform>
       <CommandBar.Content>
-        <Grid Padding="0,14">
+        <Grid x:Name="gdCbContent"
+              MinHeight="{StaticResource AppBarThemeCompactHeight}"
+              Padding="{x:Bind gdCbContentPadding(gdCbContent.MinHeight)}">
           <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="cdSplitViewPlaceholder"
                               Width="0" />
             <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
           </Grid.ColumnDefinitions>
           <TextBlock x:Name="tb_Title"
                      Grid.Column="1"
                      Style="{StaticResource GalleryTitleTextBlockStyle}"
                      Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}">
-                        <ToolTipService.ToolTip>
-                          <ToolTip rs3:IsEnabled="{x:Bind tb_Title.IsTextTrimmed, Mode=OneWay}">
-                            <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}"
-                                       TextWrapping="WrapWholeWords" />
-                          </ToolTip>
-                        </ToolTipService.ToolTip>
-                    </TextBlock>
-          <TextBlock x:Name="tb_si"
-                     Grid.Column="2"
-                     Style="{ThemeResource PageIndicatorTextBlockStyle}"
-                     Text="{x:Bind xb:Int32.IncreaseToString(fv.SelectedIndex), Mode=OneWay}" />
-          <TextBlock x:Name="tb_sep"
-                     x:Uid="Views/ImagePage/CounterSeparatorTextBlock"
-                     Grid.Column="3"
-                     Style="{ThemeResource PageIndicatorTextBlockStyle}"
-                     Text="/" />
-          <TextBlock x:Name="tb_rc"
-                     Grid.Column="4"
-                     Margin="0,0,8,0"
-                     Style="{ThemeResource PageIndicatorTextBlockStyle}"
-                     Text="{x:Bind ViewModel.Gallery.Count, Mode=OneWay}" />
+            <ToolTipService.ToolTip>
+              <ToolTip rs3:IsEnabled="{x:Bind tb_Title.IsTextTrimmed, Mode=OneWay}">
+                <TextBlock Text="{x:Bind client:GalleryExtension.GetDisplayTitle(ViewModel.Gallery), Mode=OneWay}"
+                           TextWrapping="WrapWholeWords" />
+              </ToolTip>
+            </ToolTipService.ToolTip>
+          </TextBlock>
         </Grid>
       </CommandBar.Content>
       <CommandBar.PrimaryCommands>
@@ -441,7 +564,92 @@
             <PathIcon Data="M1.25,1.25h5v1.25h-3.75v3.75h-1.25zM1.25,18.75h5v-1.25h-3.75v-3.75h-1.25zM18.75,1.25h-5v1.25h3.75v3.75h1.25zM18.75,18.75h-5v-1.25h3.75v-3.75h1.25zM0,9.375h20v1.25h-20z" />
           </AppBarButton.Icon>
         </AppBarButton>
+        <AppBarSeparator />
+        <AppBarButton x:Name="_AbbSlide"
+                      Label="{x:Bind local:ImagePage._GetSlideLabel(_SlideTimer.IsEnabled), Mode=OneWay}"
+                      ToolTipService.ToolTip="{x:Bind local:ImagePage._GetSlideLabel(_SlideTimer.IsEnabled), Mode=OneWay}"
+                      Click="_AbbSlide_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="{x:Bind local:ImagePage._GetSlideSymbol(_SlideTimer.IsEnabled), Mode=OneWay}" />
+          </AppBarButton.Icon>
+        </AppBarButton>
       </CommandBar.SecondaryCommands>
+    </CommandBar>
+    <Border x:Name="bdBottom"
+            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0,x1,x1'), Mode=OneWay}"
+            Visibility="{x:Bind cbTop.Visibility, Mode=OneWay}"
+            Background="{x:Bind cbTop.Background, Mode=OneWay}"
+            RelativePanel.AlignBottomWithPanel="True"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True">
+      <Border.RenderTransform>
+        <TranslateTransform />
+      </Border.RenderTransform>
+    </Border>
+    <Border x:Name="bdBottomLeft"
+            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0,x0,x0'), Mode=OneWay}"
+            Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+            Height="{StaticResource AppBarThemeCompactHeight}"
+            Visibility="{x:Bind cbTop.Visibility, Mode=OneWay}"
+            Background="{x:Bind cbTop.Background, Mode=OneWay}"
+            RelativePanel.AlignBottomWithPanel="True"
+            RelativePanel.AlignLeftWithPanel="True">
+      <Border.RenderTransform>
+        <TranslateTransform />
+      </Border.RenderTransform>
+    </Border>
+    <Border x:Name="bdBottomRight"
+            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x1,x0'), Mode=OneWay}"
+            Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
+            Height="{StaticResource AppBarThemeCompactHeight}"
+            Visibility="{x:Bind cbTop.Visibility, Mode=OneWay}"
+            Background="{x:Bind cbTop.Background, Mode=OneWay}"
+            RelativePanel.AlignBottomWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True">
+      <Border.RenderTransform>
+        <TranslateTransform />
+      </Border.RenderTransform>
+    </Border>
+    <CommandBar x:Name="cbBottom"
+                Background="{x:Bind cbTop.Background, Mode=OneWay}"
+                Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0,x1,x1'), Mode=OneWay}"
+                HorizontalContentAlignment="Stretch"
+                IsDynamicOverflowEnabled="False"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.AlignBottomWithPanel="True">
+      <CommandBar.RenderTransform>
+        <TranslateTransform />
+      </CommandBar.RenderTransform>
+      <CommandBar.Content>
+        <Grid MinHeight="{StaticResource AppBarThemeCompactHeight}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <Slider x:Name="sldIndex"
+                  Margin="8,0,0,0"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                  Minimum="1"
+                  Maximum="{x:Bind ViewModel.Gallery.Count, Mode=OneWay}"
+                  Value="{x:Bind fv.SelectedIndex, Converter={StaticResource IndexConverter}, Mode=OneWay}"
+                  PointerReleased="SldIndex_PointerReleased"
+                  KeyUp="SldIndex_KeyUp" />
+          <TextBlock Grid.Column="1"
+                     Style="{ThemeResource BodyTextBlockStyle}"
+                     MaxLines="1"
+                     VerticalAlignment="Center"
+                     TextWrapping="NoWrap"
+                     TextTrimming="None"
+                     MinWidth="{x:Bind local:ImagePage.getIndexIndicatorWidth(ViewModel.Gallery.Count), Mode=OneWay}"
+                     TextAlignment="Center">
+            <Run Text="{x:Bind xb:Int32.IncreaseToString(fv.SelectedIndex), Mode=OneWay}" />
+            <Run Text="/" />
+            <Run Text="{x:Bind ViewModel.Gallery.Count, Mode=OneWay}" />
+          </TextBlock>
+        </Grid>
+      </CommandBar.Content>
     </CommandBar>
   </RelativePanel>
 </views:MvvmPage>

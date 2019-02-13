@@ -56,17 +56,18 @@ namespace EhTagClient
                             using (var client = new HttpClient(c))
                             using (var db = new TagDb())
                             {
-                                var htmls = new string[9];
+                                var htmlTasks = new Task<string>[9];
                                 for (var i = 0; i < 9; i++)
                                 {
                                     var uri = new Uri(string.Format(DbUri, i));
-                                    htmls[i] = await client.GetStringAsync(uri);
+                                    htmlTasks[i] = client.GetStringAsync(uri).AsTask();
                                 }
+                                var htmls = await Task.WhenAll(htmlTasks);
+                                token.ThrowIfCancellationRequested();
                                 db.TagTable.RemoveRange(db.TagTable);
                                 await db.SaveChangesAsync(token);
                                 foreach (var item in htmls)
                                 {
-                                    token.ThrowIfCancellationRequested();
                                     await updateDbAsync(db, item, token);
                                 }
                             }

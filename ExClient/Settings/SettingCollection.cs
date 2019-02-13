@@ -37,14 +37,13 @@ namespace ExClient.Settings
     public sealed class SettingCollection : ObservableObject
     {
         private static readonly Uri configUriRaletive = new Uri("/uconfig.php", UriKind.Relative);
-
-        private readonly DomainProvider owner;
         private readonly Uri configUri;
+        private readonly DomainProvider owner;
 
-        internal SettingCollection(DomainProvider owner)
+        internal SettingCollection(DomainProvider domain)
         {
-            this.owner = owner;
-            this.configUri = new Uri(owner.RootUri, configUriRaletive);
+            this.owner = domain;
+            this.configUri = new Uri(domain.RootUri, configUriRaletive);
             foreach (var item in this.items.Values)
             {
                 item.Owner = this;
@@ -57,16 +56,18 @@ namespace ExClient.Settings
 
         public IReadOnlyDictionary<string, string> RawSettings => this.settings;
 
+        private const string CACHE_NAME = "SettingsCache";
+
         internal void StoreCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values[this.owner.Type + "SettingsCache"] = JsonConvert.SerializeObject(this.settings);
+            storage.Values[this.owner.Type + CACHE_NAME] = JsonConvert.SerializeObject(this.settings);
         }
 
         private void loadCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values.TryGetValue(this.owner.Type + "SettingsCache", out var r);
+            storage.Values.TryGetValue(this.owner.Type + CACHE_NAME, out var r);
             var value = r + "";
             this.settings.Clear();
             if (string.IsNullOrEmpty(value))
@@ -128,6 +129,7 @@ namespace ExClient.Settings
 
         public IAsyncAction FetchAsync()
         {
+            Client.Current.CheckLogOn();
             return AsyncInfo.Run(async token =>
             {
                 try
@@ -151,7 +153,7 @@ namespace ExClient.Settings
                 item.DataChanged(this.settings);
             }
             StoreCache();
-            OnPropertyChanged("");
+            OnPropertyReset();
         }
 
         public IAsyncAction SendAsync()
@@ -238,13 +240,15 @@ namespace ExClient.Settings
         {
             internal override void ApplyChanges(Dictionary<string, string> settings)
             {
+                // Original Images - Nope (Use local setting instead)
+                settings["oi"] = "0";
+                // Always use the Multi-Page Viewer - Nope 
+                settings["qb"] = "0";
                 // Thumbnail Size - Large
                 settings["ts"] = "1";
                 // Popular Right Now - Display
                 if (this.Owner.owner.Type == HostType.EHentai)
-                {
                     settings["pp"] = "0";
-                }
 
                 settings["xr"] = ((int)this.ResampledImageSize).ToString();
                 settings["cs"] = ((int)this.CommentsOrder).ToString();
@@ -253,32 +257,16 @@ namespace ExClient.Settings
 
             internal override void DataChanged(Dictionary<string, string> settings)
             {
-                if (settings.TryGetValue("xr", out var xr))
+                void setEnum<T>(ref T field, string key, T def)
+                    where T : struct, Enum
                 {
-                    this.ResampledImageSize = (ImageSize)int.Parse(xr);
+                    if (!settings.TryGetValue(key, out var value)
+                        || !Enum.TryParse<T>(value, true, out field))
+                        field = def;
                 }
-                else
-                {
-                    this.ResampledImageSize = ImageSize.Auto;
-                }
-
-                if (settings.TryGetValue("cs", out var cs))
-                {
-                    this.CommentsOrder = (CommentsOrder)int.Parse(cs);
-                }
-                else
-                {
-                    this.CommentsOrder = CommentsOrder.ByTimeAscending;
-                }
-
-                if (settings.TryGetValue("fs", out var fs))
-                {
-                    this.FavoritesOrder = (FavoritesOrder)int.Parse(fs);
-                }
-                else
-                {
-                    this.FavoritesOrder = FavoritesOrder.ByLastUpdatedTime;
-                }
+                setEnum(ref this.ResampledImageSize, "xr", ImageSize.Auto);
+                setEnum(ref this.CommentsOrder, "cs", CommentsOrder.ByTimeAscending);
+                setEnum(ref this.FavoritesOrder, "fs", FavoritesOrder.ByLastUpdatedTime);
             }
 
             public ImageSize ResampledImageSize;

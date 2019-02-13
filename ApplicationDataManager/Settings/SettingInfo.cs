@@ -62,7 +62,7 @@ namespace ApplicationDataManager.Settings
             this.settingCollection = settingCollection;
         }
 
-        private ApplicationSettingCollection settingCollection;
+        private readonly ApplicationSettingCollection settingCollection;
 
         private void settingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -82,7 +82,7 @@ namespace ApplicationDataManager.Settings
 
         public string FriendlyName { get; }
 
-        private ValueType type;
+        private readonly ValueType type;
 
         public ValueType Type => this.ValueRepresent?.TargetType ?? this.type;
 

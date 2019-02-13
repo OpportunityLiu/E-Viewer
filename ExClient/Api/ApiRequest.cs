@@ -58,12 +58,30 @@ namespace ExClient.Api
             return AsyncInfo.Run(async token =>
             {
                 var reqStr = JsonConvert.SerializeObject(this);
-                var req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
-                token.Register(req.Cancel);
-                var res = await req;
-                var resobj = JsonConvert.DeserializeObject<TResponse>(res);
-                resobj.CheckResponse(this);
-                return resobj;
+                var resStr = default(string);
+                try
+                {
+                    var req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
+                    token.Register(() => req?.Cancel());
+                    resStr = await req;
+                    if (resStr.IsNullOrEmpty() || resStr[0] == '<')
+                    {
+                        // sometimes apis returns HTML, try a second time
+                        req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
+                        token.Register(() => req.Cancel());
+                        resStr = await req;
+                    }
+                    var resobj = JsonConvert.DeserializeObject<TResponse>(resStr);
+                    resobj.CheckResponse(this);
+                    return resobj;
+                }
+                catch (Exception ex)
+                {
+                    ex.AddData("ApiRequest", reqStr);
+                    if (resStr != null)
+                        ex.AddData("ApiResponse", resStr);
+                    throw;
+                }
             });
         }
     }

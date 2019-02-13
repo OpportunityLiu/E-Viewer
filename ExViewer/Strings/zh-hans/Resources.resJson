@@ -5,14 +5,14 @@
     "AboutControl": {
       "$GithubVersionFormat": "GitHub 分支 {branch} / 提交 {commit}",
       "ChineseTagProviderHyperlinkButton/Content": "Mapaler / EhTagTranslator @ GitHub.com",
-      "ChineseTagProviderTextBlock/Text": "标签中文翻译",
+      "ChineseTagProviderTextBlock/Text": "标签汉语翻译",
       "DataProvidersTextBlock/Text": "数据提供方",
       "EHTextBlock/Text": "E-Hentai.org",
       "EHWikiTextBlock/Text": "EHWiki.org",
       "ForumsHyperlinkButton/Content": "E-Hentai 论坛",
       "HelpTranslateTagsHyperlinkButton/Content": "帮助提供标签翻译",
       "HentaiVerseHyperlinkButton/Content": "HentaiVerse",
-      "JapaneseTagProviderTextBlock/Text": "标签日文翻译",
+      "JapaneseTagProviderTextBlock/Text": "标签日语翻译",
       "LastUpdate": "最后更新时间：{0}",
       "LicenceTextBlock/Text": "协议",
       "OnlineContentsTextBlock/Text": "在线内容",
@@ -38,25 +38,6 @@
       "AllTextBlock/Text": "全部",
       // Space for "AllTextBlock/Text", "OriginalTextBlock/Text", "RewriteTextBlock/Text" and "TranslatedTextBlock/Text"
       "CellColumnDefination/MinWidth": "48",
-      "ExcludedLanguage": {
-        "Chinese": "中国语",
-        "Dutch": "荷兰语",
-        "English": "英语",
-        "French": "法语",
-        "German": "德语",
-        "Hungarian": "匈牙利语",
-        "Italian": "意大利语",
-        "Japanese": "日语",
-        "Korean": "韩语",
-        "NotApplicable": "无文字",
-        "Other": "其他",
-        "Polish": "波兰语",
-        "Portuguese": "葡萄牙语",
-        "Russian": "俄语",
-        "Spanish": "西班牙语",
-        "Thai": "泰语",
-        "Vietnamese": "越南语"
-      },
       "OriginalTextBlock/Text": "原始",
       "RewriteTextBlock/Text": "重写",
       "TranslatedTextBlock/Text": "翻译"
@@ -104,8 +85,8 @@
     },
     "EhTagTranslatorClient": {
       "Update": {
-        "Failed": "标签中文翻译数据库更新失败，将在下次启动应用时重试",
-        "Succeeded": "标签中文翻译数据库已更新"
+        "Failed": "标签汉语翻译数据库更新失败，将在下次启动应用时重试",
+        "Succeeded": "标签汉语翻译数据库已更新"
       }
     }
   },
@@ -162,6 +143,7 @@
     "CachedPage": {
       "DeleteAllAppBarButton/Label": "删除全部",
       "DeleteMenuFlyout/Text": "删除",
+      "DeleteSwipeItem/Text": "删除",
       "EmptyTextBlock/Text": "没有缓存的画廊",
       "GalleryDeleted": "选定的画廊已删除。",
       "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
@@ -266,7 +248,9 @@
       "QRCodeAppBarButton/Label": "扫描 QR 码",
       "ReloadAppBarButton/Label": "重新加载",
       "SearchAppBarButton/Label": "显示所有包含此文件的画廊",
-      "ShareAppBarButton/Label": "共享"
+      "ShareAppBarButton/Label": "共享",
+      "SlideAppBarButton/StartLabel": "开始幻灯片放映",
+      "SlideAppBarButton/StopLabel": "结束幻灯片放映"
     },
     "InfoPage": {
       "ChangeUserAppBarButton/Label": "更换用户",
@@ -309,9 +293,14 @@
       "ToplistsHeaderTextBlock/Text": "排行榜"
     },
     "LogOnDialog": {
-      "ContentDialog/PrimaryButtonText": "重置",
+      "LogOnButtonText": "登录",
+      "MemberIdTextBox/Header": "\"ipb_member_id\" cookie 的值",
+      "PassHashTextBox/Header": "\"ipb_pass_hash\" cookie 的值",
       "RegisterHyperlinkButton/Content": "注册",
-      "TitleTextBlock/Text": "登录"
+      "ResetButtonText": "重置",
+      "TitleTextBlock/Text": "登录",
+      "UseCookieButton/Content": "使用 cookie 登录",
+      "UseWebpageButton/Content": "使用网页登录"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "正在加载热门画廊…",
@@ -325,8 +314,8 @@
     "RenameGalleryDialog": {
       "$PowerTemplate": "{power} %",
       "ContentDialog/Title": "重命名画廊",
-      "JapaneseTextBox/PlaceholderText": "输入日文标题",
-      "JapaneseTitleTextBlock/Text": "日文标题",
+      "JapaneseTextBox/PlaceholderText": "输入日语标题",
+      "JapaneseTitleTextBlock/Text": "日语标题",
       "PowerColumnDefinition/Width": "40",
       "RomanTextBox/PlaceholderText": "输入罗马字标题",
       "RomanTitleTextBlock/Text": "罗马字标题"
@@ -345,6 +334,7 @@
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "删除全部",
       "DeleteMenuFlyout/Text": "删除",
+      "DeleteSwipeItem/Text": "删除",
       "EmptyTextBlock/Text": "没有保存的画廊",
       "LoadingMoreTextBlock/Text": "正在加载更多画廊…",
       "RefreshAppBarButton/Label": "刷新"

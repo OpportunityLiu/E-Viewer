@@ -3,6 +3,7 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:local="using:ExViewer"
                           xmlns:controls="using:ExViewer.Controls"
+                          xmlns:tke="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           mc:Ignorable="d"
@@ -10,34 +11,88 @@
                           x:Name="cd"
                           Loaded="cd_Loaded"
                           Opened="cd_Opened"
-                          PrimaryButtonText="Reset"
+                          IsEnabled="{x:Bind VM.Succeed, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
+                          IsEnabledChanged="cd_IsEnabledChanged"
+                          Closing="cd_Closing"
+                          PrimaryButtonText="{x:Bind VM.PrimaryButtonText, Mode=OneWay}"
+                          IsPrimaryButtonEnabled="{x:Bind VM.IsPrimaryButtonEnabled, Mode=OneWay}"
                           PrimaryButtonClick="cd_PrimaryButtonClick"
                           CloseButtonText="?"
-                          CloseButtonClick="cd_CloseButtonClick"
                           FullSizeDesired="True">
+  <controls:MyContentDialog.Resources>
+    <Style x:Key="DialogHeaderButtonStyle"
+           BasedOn="{StaticResource TextBlockButtonStyle}"
+           TargetType="ButtonBase">
+      <Setter Property="Padding"
+              Value="8,4" />
+    </Style>
+  </controls:MyContentDialog.Resources>
   <ContentDialog.Title>
     <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
       <TextBlock x:Uid="Views/LogOnDialog/TitleTextBlock"
                  Text="LOG ON" />
-      <HyperlinkButton x:Uid="Views/LogOnDialog/RegisterHyperlinkButton"
-                       x:Name="btn_Register"
-                       Content="Register"
-                       HorizontalAlignment="Right"
-                       Style="{StaticResource TextBlockButtonStyle}"
-                       Padding="0"
-                       NavigateUri="https://forums.e-hentai.org/index.php?act=Reg&amp;CODE=00"
-                       FontSize="12" />
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  HorizontalAlignment="Right">
+        <Grid Visibility="{x:Bind VM.LogOn.IsExecuting, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}">
+          <Button x:Uid="Views/LogOnDialog/UseCookieButton"
+                  Style="{ThemeResource DialogHeaderButtonStyle}"
+                  Content="Use cookie"
+                  Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
+                  Click="btnUseCookie_Click" />
+          <Button x:Uid="Views/LogOnDialog/UseWebpageButton"
+                  Style="{ThemeResource DialogHeaderButtonStyle}"
+                  Content="Use webpage"
+                  Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}"
+                  Click="btnUseWebpage_Click" />
+        </Grid>
+
+        <HyperlinkButton x:Uid="Views/LogOnDialog/RegisterHyperlinkButton"
+                         x:Name="btn_Register"
+                         Content="Register"
+                         HorizontalAlignment="Right"
+                         Style="{StaticResource DialogHeaderButtonStyle}"
+                         NavigateUri="https://forums.e-hentai.org/index.php?act=Reg&amp;CODE=00" />
+      </StackPanel>
     </Grid>
   </ContentDialog.Title>
   <Grid x:Name="gdContentRoot">
     <WebView x:Name="wv"
+             Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
              DefaultBackgroundColor="{x:Bind ((SolidColorBrush)cd.Background).Color, Mode=OneWay}"
              DOMContentLoaded="wv_DOMContentLoaded"
              NavigationFailed="wv_NavigationFailed"
              ScriptNotify="wv_ScriptNotify" />
+    <StackPanel x:Name="spCookieLogOn"
+                Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">
+      <TextBox x:Name="tbMemberId"
+               x:Uid="Views/LogOnDialog/MemberIdTextBox"
+               tke:TextBoxRegex.ValidationMode="Normal"
+               tke:TextBoxRegex.Regex="^[1-9][0-9]*$"
+               Header="ipb_member_id"
+               Text="{x:Bind VM.MemberId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+               TextChanged="cookie_TextChanged" />
+      <TextBox x:Name="tbPassHash"
+               x:Uid="Views/LogOnDialog/PassHashTextBox"
+               tke:TextBoxRegex.ValidationMode="Normal"
+               tke:TextBoxRegex.Regex="^[0-9a-fA-F]{32}$"
+               Header="ipb_pass_hash"
+               Text="{x:Bind VM.PassHash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+               Margin="0,12"
+               TextChanged="cookie_TextChanged" />
+      <TextBlock x:Name="tbErrMsg"
+                 Visibility="{x:Bind VM.ShowErrorMsg, Mode=OneWay}"
+                 Text="{x:Bind VM.ErrorMsg, Mode=OneWay}"
+                 Style="{ThemeResource BaseTextBlockStyle}"
+                 Foreground="Red" />
+    </StackPanel>
     <Border x:Name="bdProgress"
             Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"
-            Visibility="Collapsed">
+            Visibility="{x:Bind VM.LogOn.IsExecuting, Mode=OneWay}">
       <ProgressRing x:Name="pr"
                     Width="40"
                     Height="40"

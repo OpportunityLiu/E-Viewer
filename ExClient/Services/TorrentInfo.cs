@@ -114,7 +114,7 @@ namespace ExClient.Services
                 using (var client = new HttpClient())
                 {
                     var loadT = client.GetBufferAsync(uri);
-                    var filename = StorageHelper.ToValidFileName(name);
+                    var filename = Windows.Storage.StorageHelper.ToValidFileName(name);
                     var buf = await loadT;
                     try
                     {

@@ -11,6 +11,7 @@
                 xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
                 xmlns:behaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors"
                 xmlns:client="using:ExClient"
+                xmlns:windata="using:Windows.UI.Xaml.Data"
                 mc:Ignorable="d"
                 Loading="root_Loading"
                 Unloaded="root_Unloaded"
@@ -39,13 +40,13 @@
   </Page.Resources>
   <RelativePanel>
     <tk:PullToRefreshListView x:Name="lv"
-                              RelativePanel.AlignTopWithPanel="True"
+                              RelativePanel.Below="ab"
                               RelativePanel.AlignBottomWithPanel="True"
                               RelativePanel.AlignLeftWithPanel="True"
                               RelativePanel.AlignRightWithPanel="True"
                               SelectionMode="None"
                               RefreshRequested="lv_RefreshRequested"
-                              Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,48,x1,x0'), Mode=OneWay}"
+                              Margin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x0,x1,x0'), Mode=OneWay}"
                               Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                               ext:ScrollViewerExtensions.VerticalScrollBarMargin="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x0,x0,x0,x1'), Mode=OneWay}"
                               ItemsSource="{x:Bind ViewModel.SearchResult, Mode=OneWay}"
@@ -68,7 +69,7 @@
                    HorizontalAlignment="Center"
                    Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(ViewModel.SearchResult.Count, ViewModel.SearchResult.HasMoreItems), FallbackValue=Collapsed, Mode=OneWay}"
+                   Visibility="{x:Bind client:SearchResultExtension.IsEmptyVisible(ViewModel.SearchResult.Count, ViewModel.SearchResult.PageCount), FallbackValue=Collapsed, Mode=OneWay}"
                    Text="No hits found" />
       </ListView.Header>
       <ListView.Footer>
@@ -76,12 +77,12 @@
                    HorizontalAlignment="Center"
                    Margin="12"
                    Style="{StaticResource BaseTextBlockStyle}"
-                   Visibility="{x:Bind xb:Visibility.OfBoolean(ViewModel.SearchResult.HasMoreItems), FallbackValue=Visible, Mode=OneWay}"
+                   Visibility="{x:Bind xb:Visibility.OfBoolean(ViewModel.SearchResult.IsLoading), FallbackValue=Visible, Mode=OneWay}"
                    Text="Loading more galleries..." />
       </ListView.Footer>
     </tk:PullToRefreshListView>
     <Border Style="{StaticResource TopBarPlaceholderBorderStyle}"
-            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,48,x1,x0'), Mode=OneWay}"
+            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
             RelativePanel.AlignLeftWithPanel="True"
             RelativePanel.AlignRightWithPanel="True" />
     <AppBar x:Name="ab"
@@ -95,7 +96,8 @@
       <Grid x:Name="gdAb"
             MaxHeight="{x:Bind caculateGdAbMaxHeight(VisibleBounds, root.ActualHeight), Mode=OneWay}">
         <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
+          <RowDefinition MinHeight="{StaticResource AppBarThemeCompactHeight}"
+                         MaxHeight="{StaticResource AppBarThemeCompactHeight}" />
           <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -109,14 +111,15 @@
                         Grid.Column="1"
                         Grid.ColumnSpan="2"
                         QueryIcon="Find"
-                        Margin="8"
+                        Margin="8,0"
+                        VerticalAlignment="Center"
                         Text="{x:Bind ViewModel.Keyword, Mode=TwoWay}"
                         PlaceholderText="Search..."
                         controls:TagSuggestionService.IsEnabled="True"
                         controls:TagSuggestionService.InputScope="Search"
                         controls:TagSuggestionService.SubmitCommand="{x:Bind ViewModel.Search, Mode=OneWay}" />
         <ScrollViewer x:Name="sv_AdvancedSearch"
-                      Margin="0,0,0,12"
+                      Margin="0,4,0,12"
                       Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsEnabled="False"

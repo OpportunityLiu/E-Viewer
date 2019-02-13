@@ -29,9 +29,9 @@ namespace ExViewer.ViewModels
         public Command<Gallery> Delete => Commands.GetOrAdd(() =>
             Command<Gallery>.Create(async (sender, g) =>
             {
+                ((GalleryListVM<T>)sender.Tag).Galleries?.Remove(g);
                 GalleryVM.RemoveVM(g.ID);
                 await g.DeleteAsync();
-                ((GalleryListVM<T>)sender.Tag).Galleries?.Remove(g);
                 RootControl.RootController.SendToast(Strings.Resources.Views.CachedPage.GalleryDeleted, null);
             }, (sender, g) => g != null));
 

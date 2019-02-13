@@ -9,6 +9,8 @@
                 NavigationCacheMode="Enabled"
                 xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                 xmlns:controls="using:ExViewer.Controls"
+                xmlns:xc="using:Microsoft.UI.Xaml.Controls"
+                xmlns:local="using:ExViewer.Views"
                 x:Name="page"
                 mc:Ignorable="d">
   <Page.Resources>
@@ -20,6 +22,28 @@
                       Text="Delete"
                       Command="{x:Bind ViewModel.Delete, Mode=OneWay}" />
     </MenuFlyout>
+
+    <xc:SwipeItems x:Key="SwipeItems"
+                   Mode="Execute">
+      <xc:SwipeItem x:Uid="Views/SavedPage/DeleteSwipeItem"
+                    Text="Delete"
+                    Command="{x:Bind ViewModel.Delete, Mode=OneWay}"
+                    Invoked="{x:Bind local:ViewHelper.SwipeItemCommandHelper}">
+        <xc:SwipeItem.IconSource>
+          <xc:SymbolIconSource Symbol="Delete" />
+        </xc:SwipeItem.IconSource>
+      </xc:SwipeItem>
+    </xc:SwipeItems>
+
+    <DataTemplate x:Key="ContentDataTemplate"
+                  xmlns:c="using:ExClient.Galleries"
+                  xmlns:controls="using:ExViewer.Controls"
+                  x:DataType="c:Gallery">
+      <xc:SwipeControl RightItems="{StaticResource SwipeItems}">
+        <controls:GalleryViewer x:Name="gv_Gallery"
+                                Gallery="{x:Bind}" />
+      </xc:SwipeControl>
+    </DataTemplate>
   </Page.Resources>
   <Page.Transitions>
     <TransitionCollection>
@@ -40,6 +64,7 @@
                               RelativePanel.AlignRightWithPanel="True"
                               RelativePanel.Below="cb_top"
                               ItemsSource="{x:Bind ViewModel.Galleries, Mode=OneWay}"
+                              ItemTemplate="{StaticResource ContentDataTemplate}"
                               Style="{StaticResource GalleryListViewStyle}"
                               ItemClick="lv_ItemClick"
                               ContextCanceled="lv_ContextCanceled"
@@ -47,14 +72,6 @@
       <tk:PullToRefreshListView.RefreshIndicatorContent>
         <controls:PullToRefreshIndicator />
       </tk:PullToRefreshListView.RefreshIndicatorContent>
-      <ListView.ItemTemplate>
-        <DataTemplate xmlns:c="using:ExClient.Galleries"
-                      xmlns:controls="using:ExViewer.Controls"
-                      x:DataType="c:Gallery">
-          <controls:GalleryViewer x:Name="gv_Gallery"
-                                  Gallery="{x:Bind}" />
-        </DataTemplate>
-      </ListView.ItemTemplate>
       <ListView.Footer>
         <TextBlock x:Uid="Views/SavedPage/LoadingMoreTextBlock"
                    HorizontalAlignment="Center"
@@ -73,7 +90,7 @@
       </ListView.Header>
     </tk:PullToRefreshListView>
     <Border Style="{ThemeResource TopBarPlaceholderBorderStyle}"
-            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,48,x1,x0'), Mode=OneWay}"
+            Padding="{x:Bind xb:Thickness.Convert(VisibleBounds, 'x1,x1,x1,x0'), Mode=OneWay}"
             RelativePanel.AlignLeftWithPanel="True"
             RelativePanel.AlignRightWithPanel="True" />
     <CommandBar x:Name="cb_top"

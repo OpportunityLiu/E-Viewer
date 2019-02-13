@@ -18,8 +18,27 @@ namespace ExClient.Internal
         private static readonly HttpClient client = new HttpClient();
         private static readonly Regex thumbUriRegex = new Regex(@"^(http|https)://(ehgt\.org(/t|)|exhentai\.org/t|ul\.ehgt\.org(/t|))/(.+)$", RegexOptions.Compiled | RegexOptions.Singleline);
 
+        public static Uri FormatThumbUri(string uri)
+        {
+            if (uri.IsNullOrWhiteSpace())
+                return null;
+            var match = thumbUriRegex.Match(uri);
+            if (!match.Success)
+            {
+                return new Uri(uri);
+            }
+            var tail = match.Groups[5].Value;
+            return new Uri("https://ul.ehgt.org/" + tail);
+        }
+
+        public static Uri FormatThumbUri(Uri uri) => FormatThumbUri(uri?.ToString());
+
         public static IAsyncOperation<bool> FetchThumbAsync(Uri source, BitmapImage target)
         {
+            if (source is null)
+                throw new ArgumentNullException(nameof(source));
+            if (target is null)
+                throw new ArgumentNullException(nameof(target));
             return AsyncInfo.Run(async token =>
             {
                 var match = thumbUriRegex.Match(source.ToString());

@@ -110,7 +110,7 @@ namespace ExViewer.Views
         {
             if (SettingCollection.Current.NeedVerify)
             {
-                await verify();
+                await Helpers.VerificationManager.VerifyAsync();
             }
 
             this.ccHided.Content = null;
@@ -170,7 +170,6 @@ namespace ExViewer.Views
                 if (!client.NeedLogOn)
                 {
                     SettingCollection.Current.Apply();
-                    client.ResetExCookie();
                     var initSearchTask = SearchVM.InitAsync();
                     var waitTime = 0;
                     while (waitTime < 7000)
@@ -218,6 +217,14 @@ namespace ExViewer.Views
         {
             try
             {
+                await Client.Current.RefreshCookiesAsync();
+            }
+            catch (Exception)
+            {
+                //Ignore exceptions here.
+            }
+            try
+            {
                 var ver = await VersionChecker.CheckAsync();
                 if (ver is VersionChecker.GitHubRelease v)
                 {
@@ -231,7 +238,6 @@ namespace ExViewer.Views
             }
             try
             {
-                await Client.Current.RefreshHathPerks();
                 await ExClient.HentaiVerse.HentaiVerseInfo.FetchAsync();
             }
             catch (Exception)
@@ -263,54 +269,6 @@ namespace ExViewer.Views
                 {
                     //Ignore exceptions here.
                 }
-            }
-        }
-
-        private async Task verify()
-        {
-            string info = null;
-            var succeed = false;
-            var result = await UserConsentVerifier.RequestVerificationAsync(Strings.Resources.Verify.Dialog.Content);
-            switch (result)
-            {
-            case UserConsentVerificationResult.Verified:
-                succeed = true;
-                break;
-            case UserConsentVerificationResult.DeviceNotPresent:
-                info = Strings.Resources.Verify.DeviceNotPresent;
-                break;
-            case UserConsentVerificationResult.NotConfiguredForUser:
-                info = Strings.Resources.Verify.NotConfigured;
-                break;
-            case UserConsentVerificationResult.DisabledByPolicy:
-                info = Strings.Resources.Verify.Disabled;
-                break;
-            case UserConsentVerificationResult.DeviceBusy:
-                info = Strings.Resources.Verify.DeviceBusy;
-                break;
-            case UserConsentVerificationResult.RetriesExhausted:
-                info = Strings.Resources.Verify.RetriesExhausted;
-                break;
-            case UserConsentVerificationResult.Canceled:
-                info = Strings.Resources.Verify.Canceled;
-                break;
-            default:
-                info = Strings.Resources.Verify.OtherFailure;
-                break;
-            }
-            if (!succeed)
-            {
-                if (info != null)
-                {
-                    var dialog = new MyContentDialog
-                    {
-                        Title = Strings.Resources.Verify.FailedDialogTitle,
-                        Content = info,
-                        CloseButtonText = Strings.Resources.General.Exit,
-                    };
-                    await dialog.ShowAsync();
-                }
-                Application.Current.Exit();
             }
         }
     }
