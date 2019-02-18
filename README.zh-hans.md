@@ -4,7 +4,7 @@
 # E-Viewer
 用于 Windows 10 的 E-站 UWP 应用。
 
-[![](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Images/Screenshots/0.png)](https://github.com/OpportunityLiu/E-Viewer/wiki)
+[![](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Images/Screenshots/1.png)](https://github.com/OpportunityLiu/E-Viewer/wiki)
 [更多截图](https://github.com/OpportunityLiu/E-Viewer/wiki/主页)  
 
 ## 发布
