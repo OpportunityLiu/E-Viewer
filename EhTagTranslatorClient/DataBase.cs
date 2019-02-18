@@ -7,14 +7,11 @@ namespace EhTagTranslatorClient
 {
     public class DataBase : IDisposable
     {
-        internal DataBase()
-        {
-            this.db = new TranslateDb();
-        }
+        internal DataBase() => _Db = new TranslateDb();
 
-        public IQueryable<Record> Tags => this.db.Table.AsNoTracking();
+        public IQueryable<Record> Tags => _Db.Table.AsNoTracking();
 
-        private TranslateDb db;
+        private TranslateDb _Db;
 
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
@@ -25,9 +22,9 @@ namespace EhTagTranslatorClient
             {
                 if(disposing)
                 {
-                    this.db.Dispose();
+                    this._Db.Dispose();
                 }
-                this.db = null;
+                this._Db = null;
                 this.disposedValue = true;
             }
         }
