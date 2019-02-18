@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EhTagTranslatorClient.Migrations
 {
-    public partial class Migration1 : Migration
+    public partial class NewDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,8 +14,8 @@ namespace EhTagTranslatorClient.Migrations
                 {
                     Namespace = table.Column<int>(nullable: false),
                     Original = table.Column<string>(nullable: false),
-                    IntroductionRaw = table.Column<string>(nullable: true),
-                    TranslatedRaw = table.Column<string>(nullable: true)
+                    Introduction = table.Column<string>(nullable: true),
+                    Translated = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
