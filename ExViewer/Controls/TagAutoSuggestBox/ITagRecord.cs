@@ -148,14 +148,14 @@ namespace ExViewer.Controls.TagSuggestion
                 {
                     r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
                                           WHERE Original LIKE {0} COLLATE nocase 
-                                            Or TranslatedStr LIKE {0} COLLATE nocase", $"%{highlight}%")
+                                            Or Translated LIKE {0} COLLATE nocase", $"%{highlight}%")
                         .ToList();
                 }
                 else
                 {
                     r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
                                           WHERE Original LIKE {0} COLLATE nocase 
-                                            Or TranslatedStr LIKE {0} COLLATE nocase", $"%{highlight}%")
+                                            Or Translated LIKE {0} COLLATE nocase", $"%{highlight}%")
                         .Where(t => t.Namespace == ns)
                         .ToList();
                 }
