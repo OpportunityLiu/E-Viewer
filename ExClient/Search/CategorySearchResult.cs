@@ -62,7 +62,7 @@ namespace ExClient.Search
                 category = DefaultFliter;
             }
 
-            this.Category = category;
+            Category = category;
         }
 
         public Category Category { get; }
@@ -71,10 +71,10 @@ namespace ExClient.Search
 
         private IEnumerable<KeyValuePair<string, string>> getUriQuery()
         {
-            yield return new KeyValuePair<string, string>("f_search", this.Keyword);
+            yield return new KeyValuePair<string, string>("f_search", Keyword);
             foreach (var item in searchFliterNames)
             {
-                yield return new KeyValuePair<string, string>(item.Value, this.Category.HasFlag(item.Key) ? "1" : "0");
+                yield return new KeyValuePair<string, string>(item.Value, Category.HasFlag(item.Key) ? "1" : "0");
             }
             yield return new KeyValuePair<string, string>("f_apply", "Apply Filter");
         }

@@ -27,15 +27,15 @@ namespace ApplicationDataManager.Settings
 
         public ToggleSwitchRepresentAttribute(string trueStringKey, string falseStringKey)
         {
-            this.TrueString = StringLoader.GetString(trueStringKey);
-            this.FalseString = StringLoader.GetString(falseStringKey);
+            TrueString = StringLoader.GetString(trueStringKey);
+            FalseString = StringLoader.GetString(falseStringKey);
         }
 
         public ToggleSwitchRepresentAttribute(PredefinedToggleSwitchRepresent represent)
         {
             var provider = Strings.Resources.Boolean[represent.ToString()];
-            this.TrueString = provider.GetValue("True");
-            this.FalseString = provider.GetValue("False");
+            TrueString = provider.GetValue("True");
+            FalseString = provider.GetValue("False");
         }
 
         public string TrueString { get; }

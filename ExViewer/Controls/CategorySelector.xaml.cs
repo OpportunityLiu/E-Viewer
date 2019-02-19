@@ -13,37 +13,22 @@ namespace ExViewer.Controls
     {
         public CategorySelector()
         {
-            this.InitializeComponent();
-            this.filter = new List<FilterRecord>()
+            InitializeComponent();
+            foreach (var item in _Filter)
             {
-                new FilterRecord(Category.Doujinshi,true),
-                new FilterRecord(Category.Manga, true),
-                new FilterRecord(Category.ArtistCG, true),
-                new FilterRecord(Category.GameCG, true),
-                new FilterRecord(Category.Western, true),
-                new FilterRecord(Category.NonH, true),
-                new FilterRecord(Category.ImageSet, true),
-                new FilterRecord(Category.Cosplay, true),
-                new FilterRecord(Category.AsianPorn, true),
-                new FilterRecord(Category.Misc, true)
-            };
-            foreach (var item in this.filter)
-            {
-                item.PropertyChanged += this.filterItem_PropertyChanged;
+                item.PropertyChanged += _FilterItem_PropertyChanged;
             }
         }
 
-        private void filterItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void _FilterItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var category = Category.Unspecified;
-            foreach (var item in this.filter)
+            foreach (var item in _Filter)
             {
                 if (item.IsChecked)
-                {
                     category |= item.Category;
-                }
             }
-            this.SelectedCategory = category;
+            SelectedCategory = category;
         }
 
         public Category SelectedCategory
@@ -54,46 +39,51 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for SelectedCategory.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedCategoryProperty =
-            DependencyProperty.Register("SelectedCategory", typeof(Category), typeof(CategorySelector), new PropertyMetadata(Category.All, selectedCategoryPropertyChangedCallback));
+            DependencyProperty.Register("SelectedCategory", typeof(Category), typeof(CategorySelector), new PropertyMetadata(Category.All, _SelectedCategoryPropertyChangedCallback));
 
-        private static void selectedCategoryPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void _SelectedCategoryPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var s = (CategorySelector)d;
             var oldValue = (Category)e.OldValue;
             var newValue = (Category)e.NewValue;
             if (oldValue == newValue)
-            {
                 return;
-            }
 
-            foreach (var item in s.filter)
+            foreach (var item in s._Filter)
             {
                 item.IsChecked = newValue.HasFlag(item.Category);
             }
         }
 
-        private List<FilterRecord> filter;
+        private readonly List<FilterRecord> _Filter = new List<FilterRecord>()
+        {
+            new FilterRecord(Category.Doujinshi),
+            new FilterRecord(Category.Manga),
+            new FilterRecord(Category.ArtistCG),
+            new FilterRecord(Category.GameCG),
+            new FilterRecord(Category.Western),
+            new FilterRecord(Category.NonH),
+            new FilterRecord(Category.ImageSet),
+            new FilterRecord(Category.Cosplay),
+            new FilterRecord(Category.AsianPorn),
+            new FilterRecord(Category.Misc)
+        };
     }
 
     internal class FilterRecord : ObservableObject
     {
-        public FilterRecord(Category category, bool isChecked)
+        public FilterRecord(Category category)
         {
-            this.Category = category;
-            this.IsChecked = isChecked;
+            Category = category;
         }
 
-        public Category Category
-        {
-            get;
-        }
+        public Category Category { get; }
 
-        private bool isChecked;
-
+        private bool _IsChecked = true;
         public bool IsChecked
         {
-            get => this.isChecked;
-            set => Set(ref this.isChecked, value);
+            get => _IsChecked;
+            set => Set(ref _IsChecked, value);
         }
     }
 }

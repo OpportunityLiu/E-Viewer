@@ -16,17 +16,17 @@ namespace ExViewer.Views
     {
         public CommentDialog()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private void MyContentDialog_Loading(FrameworkElement sender, object args)
         {
-            this.tbInfo.Text = "";
+            tbInfo.Text = "";
         }
 
         private void tbContent_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.tbInfo.Text = "";
+            tbInfo.Text = "";
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -70,7 +70,7 @@ namespace ExViewer.Views
 
         private void handleTag(string tag)
         {
-            if (this.tbContent.IsReadOnly)
+            if (tbContent.IsReadOnly)
             {
                 return;
             }
@@ -82,9 +82,9 @@ namespace ExViewer.Views
             }
             var begin = $"[{tag}]";
             var end = $"[/{tag}]";
-            var text = this.tbContent.Text;
-            var sS = this.tbContent.SelectionStart;
-            var currentSelected = this.tbContent.SelectedText;
+            var text = tbContent.Text;
+            var sS = tbContent.SelectionStart;
+            var currentSelected = tbContent.SelectedText;
             bool? startsWith = false;
             bool? endsWith = false;
             if (currentSelected.StartsWith(begin))
@@ -95,8 +95,8 @@ namespace ExViewer.Views
             {
                 startsWith = null;
                 sS -= begin.Length;
-                this.tbContent.Select(sS, currentSelected.Length + begin.Length);
-                currentSelected = this.tbContent.SelectedText;
+                tbContent.Select(sS, currentSelected.Length + begin.Length);
+                currentSelected = tbContent.SelectedText;
             }
             if (currentSelected.EndsWith(end))
             {
@@ -105,33 +105,33 @@ namespace ExViewer.Views
             else if (safeSubstring(text, sS + currentSelected.Length, end.Length) == end)
             {
                 endsWith = null;
-                this.tbContent.Select(sS, currentSelected.Length + end.Length);
-                currentSelected = this.tbContent.SelectedText;
+                tbContent.Select(sS, currentSelected.Length + end.Length);
+                currentSelected = tbContent.SelectedText;
             }
             if (startsWith is null && endsWith == false)
             {
                 startsWith = false;
                 sS += begin.Length;
-                this.tbContent.Select(sS, currentSelected.Length - begin.Length);
-                currentSelected = this.tbContent.SelectedText;
+                tbContent.Select(sS, currentSelected.Length - begin.Length);
+                currentSelected = tbContent.SelectedText;
             }
             else if (startsWith == false && endsWith is null)
             {
                 endsWith = false;
-                this.tbContent.Select(sS, currentSelected.Length - end.Length);
-                currentSelected = this.tbContent.SelectedText;
+                tbContent.Select(sS, currentSelected.Length - end.Length);
+                currentSelected = tbContent.SelectedText;
             }
             if (startsWith != false && endsWith != false)
             {
-                this.tbContent.SelectedText = currentSelected.Substring(begin.Length, currentSelected.Length - begin.Length - end.Length);
+                tbContent.SelectedText = currentSelected.Substring(begin.Length, currentSelected.Length - begin.Length - end.Length);
                 return;
             }
             var replaced = string.Concat(begin, currentSelected, end);
-            this.tbContent.SelectedText = replaced;
-            var s = this.tbContent.SelectionStart;
+            tbContent.SelectedText = replaced;
+            var s = tbContent.SelectionStart;
             if (currentSelected.Length == 0)
             {
-                this.tbContent.Select(s + replaced.Length - end.Length, 0);
+                tbContent.Select(s + replaced.Length - end.Length, 0);
             }
         }
 
@@ -139,12 +139,12 @@ namespace ExViewer.Views
 
         private void handleUrl()
         {
-            var currentSelected = this.tbContent.SelectedText;
+            var currentSelected = tbContent.SelectedText;
             var end = "[/url]";
             var match = urlRegex.Match(currentSelected);
             if (match.Success)
             {
-                this.tbContent.SelectedText = match.Groups[1].Value;
+                tbContent.SelectedText = match.Groups[1].Value;
                 return;
             }
             if (Uri.TryCreate(currentSelected, UriKind.Absolute, out var uri) &&
@@ -152,19 +152,19 @@ namespace ExViewer.Views
             {
                 var begin = $"[url={currentSelected}]";
                 var replaced = string.Concat(begin, currentSelected, end);
-                this.tbContent.SelectedText = replaced;
-                var s = this.tbContent.SelectionStart;
-                this.tbContent.Select(s + begin.Length, currentSelected.Length);
+                tbContent.SelectedText = replaced;
+                var s = tbContent.SelectionStart;
+                tbContent.Select(s + begin.Length, currentSelected.Length);
             }
             else
             {
                 const string begin = "[url]";
                 var replaced = string.Concat(begin, currentSelected, end);
-                this.tbContent.SelectedText = replaced;
-                var s = this.tbContent.SelectionStart;
+                tbContent.SelectedText = replaced;
+                var s = tbContent.SelectionStart;
                 if (currentSelected.Length == 0)
                 {
-                    this.tbContent.Select(s + replaced.Length - end.Length, 0);
+                    tbContent.Select(s + replaced.Length - end.Length, 0);
                 }
             }
         }
@@ -177,7 +177,7 @@ namespace ExViewer.Views
                 e.OriginalKey == Windows.System.VirtualKey.LeftControl ||
                 e.OriginalKey == Windows.System.VirtualKey.RightControl)
             {
-                this.ctrlDown = true;
+                ctrlDown = true;
             }
             base.OnKeyDown(e);
         }
@@ -188,10 +188,10 @@ namespace ExViewer.Views
                 e.OriginalKey == Windows.System.VirtualKey.LeftControl ||
                 e.OriginalKey == Windows.System.VirtualKey.RightControl)
             {
-                this.ctrlDown = false;
+                ctrlDown = false;
             }
             base.OnKeyUp(e);
-            if (e.Handled || !this.ctrlDown)
+            if (e.Handled || !ctrlDown)
             {
                 return;
             }
@@ -224,13 +224,13 @@ namespace ExViewer.Views
         {
             if (e.NewSize.Width > 320)
             {
-                this.gdEditBar.HorizontalAlignment = HorizontalAlignment.Right;
-                this.gdEditBar.Width = 320;
+                gdEditBar.HorizontalAlignment = HorizontalAlignment.Right;
+                gdEditBar.Width = 320;
             }
             else
             {
-                this.gdEditBar.HorizontalAlignment = HorizontalAlignment.Stretch;
-                this.gdEditBar.Width = double.NaN;
+                gdEditBar.HorizontalAlignment = HorizontalAlignment.Stretch;
+                gdEditBar.Width = double.NaN;
             }
         }
     }
@@ -239,9 +239,9 @@ namespace ExViewer.Views
     {
         public AddCommentDialog()
         {
-            this.Title = Strings.Resources.Views.CommentDialog.AddTitle;
-            this.PrimaryButtonClick += this.AddCommentDialog_PrimaryButtonClick;
-            this.Opened += this.AddCommentDialog_Opened;
+            Title = Strings.Resources.Views.CommentDialog.AddTitle;
+            PrimaryButtonClick += AddCommentDialog_PrimaryButtonClick;
+            Opened += AddCommentDialog_Opened;
         }
 
         public Gallery Gallery
@@ -258,28 +258,28 @@ namespace ExViewer.Views
             if (Gallery is null)
                 throw new InvalidOperationException("Gallery is null");
 
-            this.tbContent.Text = "";
-            this.tbContent.Focus(FocusState.Programmatic);
+            tbContent.Text = "";
+            tbContent.Focus(FocusState.Programmatic);
         }
 
         private async void AddCommentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            this.pbLoading.IsIndeterminate = true;
+            pbLoading.IsIndeterminate = true;
             var d = args.GetDeferral();
             try
             {
-                await Gallery.Comments.PostCommentAsync(this.tbContent.Text);
+                await Gallery.Comments.PostCommentAsync(tbContent.Text);
             }
             catch (Exception ex)
             {
-                this.tbInfo.Text = ex.GetMessage();
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
                 args.Cancel = true;
             }
             finally
             {
                 d.Complete();
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
         }
     }
@@ -288,9 +288,9 @@ namespace ExViewer.Views
     {
         public EditCommentDialog()
         {
-            this.Title = Strings.Resources.Views.CommentDialog.EditTitle;
-            this.Opened += this.EditCommentDialog_Opened;
-            this.PrimaryButtonClick += this.EditCommentDialog_PrimaryButtonClick;
+            Title = Strings.Resources.Views.CommentDialog.EditTitle;
+            Opened += EditCommentDialog_Opened;
+            PrimaryButtonClick += EditCommentDialog_PrimaryButtonClick;
         }
 
         public Comment EditableComment
@@ -314,47 +314,47 @@ namespace ExViewer.Views
 
         private async void EditCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            this.tbContent.Text = "";
+            tbContent.Text = "";
             if (EditableComment is null)
                 throw new InvalidOperationException("EditableComment is null");
             try
             {
-                this.pbLoading.IsIndeterminate = true;
+                pbLoading.IsIndeterminate = true;
                 var editable = await EditableComment.FetchEditableAsync() ?? "";
-                this.tbContent.Text = editable;
-                this.tbContent.Select(editable.Length, 0);
+                tbContent.Text = editable;
+                tbContent.Select(editable.Length, 0);
             }
             catch (Exception ex)
             {
-                this.tbContent.Text = "";
-                this.tbInfo.Text = ex.GetMessage();
+                tbContent.Text = "";
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
             }
             finally
             {
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
-            this.tbContent.Focus(FocusState.Programmatic);
+            tbContent.Focus(FocusState.Programmatic);
         }
 
         private async void EditCommentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            this.pbLoading.IsIndeterminate = true;
+            pbLoading.IsIndeterminate = true;
             var d = args.GetDeferral();
             try
             {
-                await EditableComment.EditAsync(this.tbContent.Text);
+                await EditableComment.EditAsync(tbContent.Text);
             }
             catch (Exception ex)
             {
-                this.tbInfo.Text = ex.GetMessage();
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
                 args.Cancel = true;
             }
             finally
             {
                 d.Complete();
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
         }
     }
@@ -363,9 +363,9 @@ namespace ExViewer.Views
     {
         public ReplyCommentDialog()
         {
-            this.Title = Strings.Resources.Views.CommentDialog.AddTitle;
-            this.Opened += this.ReplyCommentDialog_Opened;
-            this.PrimaryButtonClick += this.EditCommentDialog_PrimaryButtonClick;
+            Title = Strings.Resources.Views.CommentDialog.AddTitle;
+            Opened += ReplyCommentDialog_Opened;
+            PrimaryButtonClick += EditCommentDialog_PrimaryButtonClick;
         }
 
         public Comment ReplyingComment
@@ -379,41 +379,41 @@ namespace ExViewer.Views
 
         private void ReplyCommentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            this.tbContent.Text = "";
+            tbContent.Text = "";
             if (ReplyingComment is null)
                 throw new InvalidOperationException("ReplyingComment is null");
             try
             {
-                this.pbLoading.IsIndeterminate = true;
+                pbLoading.IsIndeterminate = true;
                 var reply = $"@{ReplyingComment.Author}{Environment.NewLine}";
-                this.tbContent.Text = reply;
-                this.tbContent.Select(reply.Length, 0);
+                tbContent.Text = reply;
+                tbContent.Select(reply.Length, 0);
             }
             finally
             {
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
-            this.tbContent.Focus(FocusState.Programmatic);
+            tbContent.Focus(FocusState.Programmatic);
         }
 
         private async void EditCommentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            this.pbLoading.IsIndeterminate = true;
+            pbLoading.IsIndeterminate = true;
             var d = args.GetDeferral();
             try
             {
-                await ReplyingComment.Owner.PostCommentAsync(this.tbContent.Text);
+                await ReplyingComment.Owner.PostCommentAsync(tbContent.Text);
             }
             catch (Exception ex)
             {
-                this.tbInfo.Text = ex.GetMessage();
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
                 args.Cancel = true;
             }
             finally
             {
                 d.Complete();
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
         }
     }

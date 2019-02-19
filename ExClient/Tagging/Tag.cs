@@ -57,8 +57,8 @@ namespace ExClient.Tagging
             if (content.IsNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(content));
 
-            this.Namespace = @namespace;
-            this.Content = content.Trim().ToLowerInvariant();
+            Namespace = @namespace;
+            Content = content.Trim().ToLowerInvariant();
         }
 
         public Namespace Namespace { get; }
@@ -112,8 +112,8 @@ namespace ExClient.Tagging
         }
 
         public bool Equals(Tag other)
-            => this.Namespace == other.Namespace
-            && this.Content == other.Content;
+            => Namespace == other.Namespace
+            && Content == other.Content;
 
         public override bool Equals(object obj) => obj is Tag t && Equals(t);
 
@@ -127,10 +127,10 @@ namespace ExClient.Tagging
 
         public int CompareTo(Tag other)
         {
-            var c1 = this.Namespace - other.Namespace;
+            var c1 = Namespace - other.Namespace;
             if (c1 != 0)
                 return c1;
-            return this.Content.CompareTo(other.Content);
+            return Content.CompareTo(other.Content);
         }
 
         int IComparable.CompareTo(object obj) => obj is null ? 1 : CompareTo((Tag)obj);

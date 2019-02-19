@@ -29,38 +29,38 @@ namespace ExViewer.Views
     {
         public FavoritesPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             var l = new List<FavoriteCategory>(11)
             {
                 Client.Current.Favorites.All
             };
             l.AddRange(Client.Current.Favorites);
-            this.cbCategory.ItemsSource = l;
+            cbCategory.ItemsSource = l;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            TagSuggestionService.IncreaseStateCode(this.asb);
+            TagSuggestionService.IncreaseStateCode(asb);
             Navigator.GetForCurrentView().Handlers.Add(this);
             base.OnNavigatedTo(e);
-            this.ViewModel = FavoritesVM.GetVM(e.Parameter?.ToString());
-            this.ViewModel.SetQueryWithSearchResult();
-            this.ViewModel.Search.Executed += this.Search_Executed;
+            ViewModel = FavoritesVM.GetVM(e.Parameter?.ToString());
+            ViewModel.SetQueryWithSearchResult();
+            ViewModel.Search.Executed += Search_Executed;
             await Dispatcher.YieldIdle();
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (e.Parameter != null)
                 {
-                    this.ViewModel.SearchResult.Reset();
+                    ViewModel.SearchResult.Reset();
                 }
 
-                this.cbCategory.Focus(FocusState.Programmatic);
+                cbCategory.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
-                if (!await ViewHelper.ScrollAndFocus(this.lv, this.ViewModel.SelectedGallery))
+                if (!await ViewHelper.ScrollAndFocus(lv, ViewModel.SelectedGallery))
                 {
-                    this.cbCategory.Focus(FocusState.Programmatic);
+                    cbCategory.Focus(FocusState.Programmatic);
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            this.ViewModel.Open.Execute((Gallery)e.ClickedItem);
+            ViewModel.Open.Execute((Gallery)e.ClickedItem);
         }
 
         public new FavoritesVM ViewModel
@@ -87,7 +87,7 @@ namespace ExViewer.Views
 
         private void lv_RefreshRequested(object sender, EventArgs e)
         {
-            this.ViewModel?.SearchResult.Reset();
+            ViewModel?.SearchResult.Reset();
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -97,13 +97,13 @@ namespace ExViewer.Views
             switch (e.Key)
             {
             case Windows.System.VirtualKey.GamepadY:
-                if (this.lv.SelectionMode == ListViewSelectionMode.None)
+                if (lv.SelectionMode == ListViewSelectionMode.None)
                 {
-                    this.cbCategory.Focus(FocusState.Keyboard);
+                    cbCategory.Focus(FocusState.Keyboard);
                 }
                 else
                 {
-                    this.cbCategory2.Focus(FocusState.Keyboard);
+                    cbCategory2.Focus(FocusState.Keyboard);
                 }
 
                 break;
@@ -120,56 +120,56 @@ namespace ExViewer.Views
         public void CloseAll()
         {
             exitSelectMode();
-            this.asb.IsSuggestionListOpen = false;
-            this.cbCategory.IsDropDownOpen = false;
+            asb.IsSuggestionListOpen = false;
+            cbCategory.IsDropDownOpen = false;
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
             {
-                this.cdSplitViewPlaceholder.Width = new GridLength(48);
+                cdSplitViewPlaceholder.Width = new GridLength(48);
             }
             else
             {
-                this.cdSplitViewPlaceholder.Width = new GridLength(0);
+                cdSplitViewPlaceholder.Width = new GridLength(0);
             }
         }
 
         private void root_Loading(FrameworkElement sender, object args)
         {
-            this.SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
+            SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += SetSplitViewButtonPlaceholderVisibility;
         }
 
         private void root_Unloaded(object sender, RoutedEventArgs e)
         {
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= SetSplitViewButtonPlaceholderVisibility;
         }
 
         private bool startSelectMode()
         {
-            if (!this.lv.IsItemClickEnabled)
+            if (!lv.IsItemClickEnabled)
             {
                 return false;
             }
 
-            this.lv.SelectionMode = ListViewSelectionMode.Multiple;
-            this.lv.IsItemClickEnabled = false;
-            if (this.cbActions is null)
+            lv.SelectionMode = ListViewSelectionMode.Multiple;
+            lv.IsItemClickEnabled = false;
+            if (cbActions is null)
             {
-                this.FindName(nameof(this.cbActions));
+                FindName(nameof(cbActions));
                 var l = new List<FavoriteCategory>(11)
                 {
                     Client.Current.Favorites.Removed
                 };
                 l.AddRange(Client.Current.Favorites);
-                this.cbCategory2.ItemsSource = l;
+                cbCategory2.ItemsSource = l;
             }
-            this.cbCategory2.SelectedIndex = this.cbCategory.SelectedIndex;
-            this.cbActions.Visibility = Visibility.Visible;
-            this.cbCategory.Visibility = Visibility.Collapsed;
-            this.asb.Visibility = Visibility.Collapsed;
+            cbCategory2.SelectedIndex = cbCategory.SelectedIndex;
+            cbActions.Visibility = Visibility.Visible;
+            cbCategory.Visibility = Visibility.Collapsed;
+            asb.Visibility = Visibility.Collapsed;
             Navigator.GetForCurrentView().UpdateProperties();
             ElementSoundPlayer.Play(ElementSoundKind.Invoke);
             return true;
@@ -177,16 +177,16 @@ namespace ExViewer.Views
 
         private bool exitSelectMode()
         {
-            if (this.lv.IsItemClickEnabled)
+            if (lv.IsItemClickEnabled)
             {
                 return false;
             }
 
-            this.lv.SelectionMode = ListViewSelectionMode.None;
-            this.lv.IsItemClickEnabled = true;
-            this.cbActions.Visibility = Visibility.Collapsed;
-            this.cbCategory.Visibility = Visibility.Visible;
-            this.asb.Visibility = Visibility.Visible;
+            lv.SelectionMode = ListViewSelectionMode.None;
+            lv.IsItemClickEnabled = true;
+            cbActions.Visibility = Visibility.Collapsed;
+            cbCategory.Visibility = Visibility.Visible;
+            asb.Visibility = Visibility.Visible;
             Navigator.GetForCurrentView().UpdateProperties();
             ElementSoundPlayer.Play(ElementSoundKind.GoBack);
             return true;
@@ -196,7 +196,7 @@ namespace ExViewer.Views
         void IServiceHandler<Navigator>.OnAdd(Navigator service) { }
         void IServiceHandler<Navigator>.OnRemove(Navigator service) { }
 
-        public bool CanGoBack => (this.lv.SelectionMode != ListViewSelectionMode.None);
+        public bool CanGoBack => (lv.SelectionMode != ListViewSelectionMode.None);
         public IAsyncOperation<bool> GoBackAsync()
         {
             if (!CanGoBack)
@@ -228,8 +228,8 @@ namespace ExViewer.Views
             var item = ((DependencyObject)args.OriginalSource).AncestorsAndSelf<ListViewItem>().FirstOrDefault();
             if (item != null)
             {
-                var i = this.lv.ItemFromContainer(item);
-                this.lv.SelectedItem = i;
+                var i = lv.ItemFromContainer(item);
+                lv.SelectedItem = i;
             }
         }
 
@@ -239,19 +239,19 @@ namespace ExViewer.Views
 
         private void abbAll_Click(object sender, RoutedEventArgs e)
         {
-            this.lv.SelectRange(new ItemIndexRange(0, uint.MaxValue));
+            lv.SelectRange(new ItemIndexRange(0, uint.MaxValue));
         }
 
         private void abbClear_Click(object sender, RoutedEventArgs e)
         {
-            this.lv.DeselectRange(new ItemIndexRange(0, uint.MaxValue));
+            lv.DeselectRange(new ItemIndexRange(0, uint.MaxValue));
         }
 
         private void abbApply_Click(object sender, RoutedEventArgs e)
         {
-            var cat = (FavoriteCategory)this.cbCategory2.SelectedItem ?? Client.Current.Favorites.Removed;
-            var task = this.ViewModel.SearchResult.AddToCategoryAsync(this.lv.SelectedRanges.ToList(), cat);
-            this.lv.SelectionMode = ListViewSelectionMode.None;
+            var cat = (FavoriteCategory)cbCategory2.SelectedItem ?? Client.Current.Favorites.Removed;
+            var task = ViewModel.SearchResult.AddToCategoryAsync(lv.SelectedRanges.ToList(), cat);
+            lv.SelectionMode = ListViewSelectionMode.None;
             RootControl.RootController.TrackAsyncAction(task, (s, args) =>
             {
                 if (args == AsyncStatus.Completed)
@@ -260,20 +260,20 @@ namespace ExViewer.Views
                 }
                 else
                 {
-                    RootControl.RootController.SendToast(s.ErrorCode, this.GetType());
-                    this.lv.SelectionMode = ListViewSelectionMode.Multiple;
+                    RootControl.RootController.SendToast(s.ErrorCode, GetType());
+                    lv.SelectionMode = ListViewSelectionMode.Multiple;
                 }
             });
         }
 
         private void cbActions_Opening(object sender, object e)
         {
-            Grid.SetColumn(this.cbCategory2, 0);
+            Grid.SetColumn(cbCategory2, 0);
         }
 
         private void cbActions_Closed(object sender, object e)
         {
-            Grid.SetColumn(this.cbCategory2, 1);
+            Grid.SetColumn(cbCategory2, 1);
         }
     }
 }

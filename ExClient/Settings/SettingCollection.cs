@@ -42,9 +42,9 @@ namespace ExClient.Settings
 
         internal SettingCollection(DomainProvider domain)
         {
-            this.owner = domain;
-            this.configUri = new Uri(domain.RootUri, configUriRaletive);
-            foreach (var item in this.items.Values)
+            owner = domain;
+            configUri = new Uri(domain.RootUri, configUriRaletive);
+            foreach (var item in items.Values)
             {
                 item.Owner = this;
             }
@@ -54,27 +54,27 @@ namespace ExClient.Settings
 
         private readonly Dictionary<string, string> settings = new Dictionary<string, string>();
 
-        public IReadOnlyDictionary<string, string> RawSettings => this.settings;
+        public IReadOnlyDictionary<string, string> RawSettings => settings;
 
         private const string CACHE_NAME = "SettingsCache";
 
         internal void StoreCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values[this.owner.Type + CACHE_NAME] = JsonConvert.SerializeObject(this.settings);
+            storage.Values[owner.Type + CACHE_NAME] = JsonConvert.SerializeObject(settings);
         }
 
         private void loadCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values.TryGetValue(this.owner.Type + CACHE_NAME, out var r);
+            storage.Values.TryGetValue(owner.Type + CACHE_NAME, out var r);
             var value = r + "";
-            this.settings.Clear();
+            settings.Clear();
             if (string.IsNullOrEmpty(value))
             {
                 return;
             }
-            JsonConvert.PopulateObject(value, this.settings);
+            JsonConvert.PopulateObject(value, settings);
         }
 
         private void updateSettingsDic(HtmlDocument doc)
@@ -134,7 +134,7 @@ namespace ExClient.Settings
             {
                 try
                 {
-                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(this.configUri);
+                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(configUri);
                     token.Register(getDoc.Cancel);
                     var doc = await getDoc;
                     updateSettingsDic(doc);
@@ -148,9 +148,9 @@ namespace ExClient.Settings
 
         private void loadSettingsDic()
         {
-            foreach (var item in this.items.Values)
+            foreach (var item in items.Values)
             {
-                item.DataChanged(this.settings);
+                item.DataChanged(settings);
             }
             StoreCache();
             OnPropertyReset();
@@ -162,17 +162,17 @@ namespace ExClient.Settings
             {
                 try
                 {
-                    if (this.settings.Count == 0)
+                    if (settings.Count == 0)
                     {
                         await FetchAsync();
                     }
 
-                    var postDic = new Dictionary<string, string>(this.settings);
-                    foreach (var item in this.items.Values)
+                    var postDic = new Dictionary<string, string>(settings);
+                    foreach (var item in items.Values)
                     {
                         item.ApplyChanges(postDic);
                     }
-                    var postData = Client.Current.HttpClient.PostAsync(this.configUri, postDic);
+                    var postData = Client.Current.HttpClient.PostAsync(configUri, postDic);
                     token.Register(postData.Cancel);
                     var r = await postData;
                     var doc = new HtmlDocument();
@@ -197,7 +197,7 @@ namespace ExClient.Settings
 
         private SettingProvider getProvider([System.Runtime.CompilerServices.CallerMemberName]string key = null)
         {
-            return this.items[key];
+            return items[key];
         }
 
         public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)getProvider();
@@ -247,12 +247,12 @@ namespace ExClient.Settings
                 // Thumbnail Size - Large
                 settings["ts"] = "1";
                 // Popular Right Now - Display
-                if (this.Owner.owner.Type == HostType.EHentai)
+                if (Owner.owner.Type == HostType.EHentai)
                     settings["pp"] = "0";
 
-                settings["xr"] = ((int)this.ResampledImageSize).ToString();
-                settings["cs"] = ((int)this.CommentsOrder).ToString();
-                settings["fs"] = ((int)this.FavoritesOrder).ToString();
+                settings["xr"] = ((int)ResampledImageSize).ToString();
+                settings["cs"] = ((int)CommentsOrder).ToString();
+                settings["fs"] = ((int)FavoritesOrder).ToString();
             }
 
             internal override void DataChanged(Dictionary<string, string> settings)
@@ -264,9 +264,9 @@ namespace ExClient.Settings
                         || !Enum.TryParse<T>(value, true, out field))
                         field = def;
                 }
-                setEnum(ref this.ResampledImageSize, "xr", ImageSize.Auto);
-                setEnum(ref this.CommentsOrder, "cs", CommentsOrder.ByTimeAscending);
-                setEnum(ref this.FavoritesOrder, "fs", FavoritesOrder.ByLastUpdatedTime);
+                setEnum(ref ResampledImageSize, "xr", ImageSize.Auto);
+                setEnum(ref CommentsOrder, "cs", CommentsOrder.ByTimeAscending);
+                setEnum(ref FavoritesOrder, "fs", FavoritesOrder.ByLastUpdatedTime);
             }
 
             public ImageSize ResampledImageSize;

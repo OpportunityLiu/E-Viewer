@@ -22,34 +22,34 @@ namespace ExViewer.Views
     {
         public SearchPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private Button _btnExpandButton;
-        private Button btnExpandButton => System.Threading.LazyInitializer.EnsureInitialized(ref this._btnExpandButton, () => this.ab.Descendants<Button>("ExpandButton").FirstOrDefault());
+        private Button btnExpandButton => System.Threading.LazyInitializer.EnsureInitialized(ref _btnExpandButton, () => ab.Descendants<Button>("ExpandButton").FirstOrDefault());
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            TagSuggestionService.IncreaseStateCode(this.asb);
+            TagSuggestionService.IncreaseStateCode(asb);
             base.OnNavigatedTo(e);
-            this.ViewModel = SearchVM.GetVM(e.Parameter?.ToString());
-            this.ViewModel.SetQueryWithSearchResult();
-            this.ViewModel.Search.Executed += this.Search_Executed;
+            ViewModel = SearchVM.GetVM(e.Parameter?.ToString());
+            ViewModel.SetQueryWithSearchResult();
+            ViewModel.Search.Executed += Search_Executed;
             await Dispatcher.YieldIdle();
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (e.Parameter != null) // for the pre-load page
                 {
-                    this.ViewModel.SearchResult.Reset();
+                    ViewModel.SearchResult.Reset();
                 }
 
-                this.btnExpandButton?.Focus(FocusState.Programmatic);
+                btnExpandButton?.Focus(FocusState.Programmatic);
             }
             else if (e.NavigationMode == NavigationMode.Back)
             {
-                if (!await ViewHelper.ScrollAndFocus(this.lv, this.ViewModel.SelectedGallery))
+                if (!await ViewHelper.ScrollAndFocus(lv, ViewModel.SelectedGallery))
                 {
-                    this.btnExpandButton?.Focus(FocusState.Programmatic);
+                    btnExpandButton?.Focus(FocusState.Programmatic);
                 }
             }
         }
@@ -64,7 +64,7 @@ namespace ExViewer.Views
 
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            this.ViewModel.Open.Execute((Gallery)e.ClickedItem);
+            ViewModel.Open.Execute((Gallery)e.ClickedItem);
         }
 
         public new SearchVM ViewModel
@@ -75,19 +75,19 @@ namespace ExViewer.Views
 
         private void ab_Opening(object sender, object e)
         {
-            this.sv_AdvancedSearch.IsEnabled = true;
-            Grid.SetColumn(this.asb, 0);
+            sv_AdvancedSearch.IsEnabled = true;
+            Grid.SetColumn(asb, 0);
         }
 
         private void ab_Closed(object sender, object e)
         {
-            this.sv_AdvancedSearch.IsEnabled = false;
-            Grid.SetColumn(this.asb, 1);
+            sv_AdvancedSearch.IsEnabled = false;
+            Grid.SetColumn(asb, 1);
         }
 
         private void lv_RefreshRequested(object sender, EventArgs e)
         {
-            this.ViewModel?.SearchResult.Reset();
+            ViewModel?.SearchResult.Reset();
         }
 
         protected override void OnKeyUp(KeyRoutedEventArgs e)
@@ -97,11 +97,11 @@ namespace ExViewer.Views
             switch (e.Key)
             {
             case Windows.System.VirtualKey.GamepadY:
-                this.asb.Focus(FocusState.Keyboard);
+                asb.Focus(FocusState.Keyboard);
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
-                this.ab.IsOpen = !this.ab.IsOpen;
+                ab.IsOpen = !ab.IsOpen;
                 break;
             default:
                 e.Handled = false;
@@ -111,44 +111,44 @@ namespace ExViewer.Views
 
         public void CloseAll()
         {
-            this.asb.IsSuggestionListOpen = false;
-            this.ab.IsOpen = false;
+            asb.IsSuggestionListOpen = false;
+            ab.IsOpen = false;
         }
 
         public void SetSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
             {
-                this.cdSplitViewPlaceholder.Width = new GridLength(48);
+                cdSplitViewPlaceholder.Width = new GridLength(48);
             }
             else
             {
-                this.cdSplitViewPlaceholder.Width = new GridLength(0);
+                cdSplitViewPlaceholder.Width = new GridLength(0);
             }
         }
 
         private void root_Loading(FrameworkElement sender, object args)
         {
-            this.SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
+            SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += SetSplitViewButtonPlaceholderVisibility;
         }
 
         private void root_Unloaded(object sender, RoutedEventArgs e)
         {
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= SetSplitViewButtonPlaceholderVisibility;
         }
 
         private FileSearchDialog dlgFileSearch;
 
         private async void btnFileSearch_Click(object sender, RoutedEventArgs e)
         {
-            if (this.dlgFileSearch is null)
+            if (dlgFileSearch is null)
             {
-                this.dlgFileSearch = new FileSearchDialog();
+                dlgFileSearch = new FileSearchDialog();
             }
 
             CloseAll();
-            await this.dlgFileSearch.ShowAsync();
+            await dlgFileSearch.ShowAsync();
         }
 
         private double caculateGdAbMaxHeight(Thickness visibleBounds, double rootHeight)

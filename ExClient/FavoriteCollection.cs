@@ -40,10 +40,10 @@ namespace ExClient
 
         internal FavoriteCollection()
         {
-            this.data = new FavoriteCategory[10];
-            for (var i = 0; i < this.data.Length; i++)
+            data = new FavoriteCategory[10];
+            for (var i = 0; i < data.Length; i++)
             {
-                this.data[i] = new FavoriteCategory(i, null);
+                data[i] = new FavoriteCategory(i, null);
             }
         }
 
@@ -53,27 +53,27 @@ namespace ExClient
 
         private readonly FavoriteCategory[] data;
 
-        public int Count => this.data.Length;
+        public int Count => data.Length;
 
         bool IList.IsFixedSize => true;
         bool IList.IsReadOnly => true;
         bool ICollection.IsSynchronized => false;
-        object ICollection.SyncRoot => this.data;
+        object ICollection.SyncRoot => data;
 
-        public FavoriteCategory this[int index] => this.data[index];
+        public FavoriteCategory this[int index] => data[index];
         object IList.this[int index] { get => this[index]; set => throw new NotSupportedException(); }
 
         public IEnumerator<FavoriteCategory> GetEnumerator()
-            => this.data.Cast<FavoriteCategory>().GetEnumerator();
+            => data.Cast<FavoriteCategory>().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         int IList.Add(object value) => throw new NotSupportedException();
         void IList.Clear() => throw new NotSupportedException();
-        bool IList.Contains(object value) => ((IList)this.data).Contains(value);
-        int IList.IndexOf(object value) => ((IList)this.data).IndexOf(value);
+        bool IList.Contains(object value) => ((IList)data).Contains(value);
+        int IList.IndexOf(object value) => ((IList)data).IndexOf(value);
         void IList.Insert(int index, object value) => throw new NotSupportedException();
         void IList.Remove(object value) => throw new NotSupportedException();
         void IList.RemoveAt(int index) => throw new NotSupportedException();
-        void ICollection.CopyTo(Array array, int index) => this.data.CopyTo(array, index);
+        void ICollection.CopyTo(Array array, int index) => data.CopyTo(array, index);
     }
 }

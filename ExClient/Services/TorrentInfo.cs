@@ -75,14 +75,14 @@ namespace ExClient.Services
 
         internal TorrentInfo(string name, DateTimeOffset posted, long size, int seeds, int peers, int downloads, string uploader, Uri torrentUri)
         {
-            this.Name = name;
-            this.Posted = posted;
-            this.Size = size;
-            this.Seeds = seeds;
-            this.Peers = peers;
-            this.Downloads = downloads;
-            this.Uploader = uploader;
-            this.TorrentUri = torrentUri;
+            Name = name;
+            Posted = posted;
+            Size = size;
+            Seeds = seeds;
+            Peers = peers;
+            Downloads = downloads;
+            Uploader = uploader;
+            TorrentUri = torrentUri;
         }
 
         public string Name { get; }
@@ -107,8 +107,8 @@ namespace ExClient.Services
         {
             if (IsExpunged)
                 throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
-            var uri = this.TorrentUri;
-            var name = this.Name + ".torrent";
+            var uri = TorrentUri;
+            var name = Name + ".torrent";
             return AsyncInfo.Run(async token =>
             {
                 using (var client = new HttpClient())
@@ -144,14 +144,14 @@ namespace ExClient.Services
         }
 
         public bool Equals(TorrentInfo other)
-            => this.Posted == other.Posted
-            && this.Size == other.Size
-            && this.Seeds == other.Seeds
-            && this.Peers == other.Peers
-            && this.Downloads == other.Downloads
-            && this.TorrentUri == other.TorrentUri
-            && this.Name == other.Name
-            && this.Uploader == other.Uploader;
+            => Posted == other.Posted
+            && Size == other.Size
+            && Seeds == other.Seeds
+            && Peers == other.Peers
+            && Downloads == other.Downloads
+            && TorrentUri == other.TorrentUri
+            && Name == other.Name
+            && Uploader == other.Uploader;
 
         public override bool Equals(object obj) => obj is TorrentInfo i && Equals(i);
 
