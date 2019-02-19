@@ -10,7 +10,7 @@ namespace ApplicationDataManager.Settings.Xaml
     {
         public DefaultTemplateProvider()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public static DefaultTemplateProvider Default
@@ -26,15 +26,15 @@ namespace ApplicationDataManager.Settings.Xaml
             case ValueType.Int64:
             case ValueType.Single:
             case ValueType.Double:
-                return this.Number;
+                return Number;
             case ValueType.String:
-                return this.String;
+                return String;
             case ValueType.Enum:
-                return this.Enum;
+                return Enum;
             case ValueType.BooleanCheckBox:
-                return this.BooleanCheckBox;
+                return BooleanCheckBox;
             case ValueType.BooleanToggleSwitch:
-                return this.BooleanToggleSwitch;
+                return BooleanToggleSwitch;
             default:
                 return null;
             }

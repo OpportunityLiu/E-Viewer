@@ -79,7 +79,7 @@ namespace ExClient.Services
         {
             this.firstName = firstName;
             this.otherNames = otherNames;
-            this.Modifier = modifier;
+            Modifier = modifier;
         }
 
         public LanguageModifier Modifier { get; }
@@ -90,24 +90,24 @@ namespace ExClient.Services
         {
             get
             {
-                if (this.otherNames is null)
+                if (otherNames is null)
                     yield break;
-                yield return this.firstName;
-                foreach (var item in this.otherNames)
+                yield return firstName;
+                foreach (var item in otherNames)
                     yield return item;
             }
         }
 
         public override string ToString()
         {
-            if (this.otherNames is null) // rare
+            if (otherNames is null) // rare
                 return LocalizedStrings.Language.Names.NotApplicable;
 
             string name;
-            if (this.otherNames.Length == 0) // most cases
-                name = this.firstName.ToFriendlyNameString();
+            if (otherNames.Length == 0) // most cases
+                name = firstName.ToFriendlyNameString();
             else // very rare
-                name = string.Join(", ", this.Names.Select(LanguageNameExtension.ToFriendlyNameString));
+                name = string.Join(", ", Names.Select(LanguageNameExtension.ToFriendlyNameString));
 
             switch (Modifier)
             {
@@ -122,16 +122,16 @@ namespace ExClient.Services
 
         public bool Equals(Language other)
         {
-            if (this.Modifier != other.Modifier)
+            if (Modifier != other.Modifier)
                 return false;
-            if (this.firstName != other.firstName)
+            if (firstName != other.firstName)
                 return false;
-            if (this.otherNames is null)
+            if (otherNames is null)
                 return other.otherNames is null;
             if (other.otherNames is null)
                 return false;
 
-            return this.otherNames.SequenceEqual(other.otherNames);
+            return otherNames.SequenceEqual(other.otherNames);
         }
 
         public override bool Equals(object obj) => obj is Language l && Equals(l);
@@ -141,9 +141,9 @@ namespace ExClient.Services
 
         public override int GetHashCode()
         {
-            var hash = this.Modifier.GetHashCode() + (int)this.firstName * 237;
-            if (this.otherNames != null)
-                foreach (var item in this.otherNames)
+            var hash = Modifier.GetHashCode() + (int)firstName * 237;
+            if (otherNames != null)
+                foreach (var item in otherNames)
                     hash = unchecked(hash * 7 ^ item.GetHashCode());
             return hash;
         }

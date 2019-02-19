@@ -39,19 +39,19 @@ namespace ExViewer.Controls
 
             public CommentVM()
             {
-                this.Translate.Tag = this;
-                this.VoteUp.Tag = this;
-                this.VoteDown.Tag = this;
-                this.VoteWithdraw.Tag = this;
+                Translate.Tag = this;
+                VoteUp.Tag = this;
+                VoteDown.Tag = this;
+                VoteWithdraw.Tag = this;
             }
 
             private Comment comment;
             public Comment Comment
             {
-                get => this.comment;
+                get => comment;
                 set
                 {
-                    if (Set(ref this.comment, value))
+                    if (Set(ref comment, value))
                     {
                         TranslatedContent = null;
                     }
@@ -65,10 +65,10 @@ namespace ExViewer.Controls
             private HtmlAgilityPack.HtmlNode translated;
             public HtmlAgilityPack.HtmlNode TranslatedContent
             {
-                get => this.translated;
+                get => translated;
                 private set
                 {
-                    if (Set(ref this.translated, value))
+                    if (Set(ref translated, value))
                     {
                         Translate.OnCanExecuteChanged();
                     }
@@ -97,8 +97,8 @@ namespace ExViewer.Controls
 
         public CommentViewer()
         {
-            this.InitializeComponent();
-            this.VM.Translate.Executed += (s, e) =>
+            InitializeComponent();
+            VM.Translate.Executed += (s, e) =>
             {
                 var ex = e.Exception;
                 e.Handled = true;
@@ -107,8 +107,8 @@ namespace ExViewer.Controls
                     RootControl.RootController.SendToast(ex, typeof(GalleryPage));
                 }
             };
-            this.FocusEngaged += this.CommentViewer_FocusEngaged;
-            this.FocusDisengaged += this.CommentViewer_FocusDisengaged;
+            FocusEngaged += CommentViewer_FocusEngaged;
+            FocusDisengaged += CommentViewer_FocusDisengaged;
         }
 
         private void CommentViewer_FocusDisengaged(Control sender, FocusDisengagedEventArgs args)
@@ -140,7 +140,7 @@ namespace ExViewer.Controls
 
         protected override void OnDisconnectVisualChildren()
         {
-            this.ClearValue(CommentProperty);
+            ClearValue(CommentProperty);
             base.OnDisconnectVisualChildren();
         }
 

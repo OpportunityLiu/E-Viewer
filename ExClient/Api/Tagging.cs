@@ -11,11 +11,11 @@ namespace ExClient.Api
         private TagRequest(TagCollection collection, string tags, VoteState vote)
             : base(collection.Owner)
         {
-            this.Vote = vote;
+            Vote = vote;
             if (tags.Length >= 200)
                 throw new ArgumentException(LocalizedStrings.Resources.TagsTooLong, nameof(tags));
 
-            this.Tags = tags;
+            Tags = tags;
         }
 
         public TagRequest(TagCollection collection, IEnumerable<Tag> tags, VoteState vote)

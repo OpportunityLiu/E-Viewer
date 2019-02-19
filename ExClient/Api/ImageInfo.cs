@@ -70,9 +70,9 @@ namespace ExClient.Api
 
         public ImageInfo(long galleryID, ulong imageToken, int pageID)
         {
-            this.GalleryID = galleryID;
-            this.ImageToken = imageToken;
-            this.PageID = pageID;
+            GalleryID = galleryID;
+            ImageToken = imageToken;
+            PageID = pageID;
         }
 
         public IAsyncOperation<GalleryInfo> FetchGalleryInfoAsync()
@@ -91,16 +91,16 @@ namespace ExClient.Api
 
         public bool Equals(ImageInfo other)
         {
-            return this.GalleryID == other.GalleryID
-                && this.ImageToken == other.ImageToken
-                && this.PageID == other.PageID;
+            return GalleryID == other.GalleryID
+                && ImageToken == other.ImageToken
+                && PageID == other.PageID;
         }
 
         public override bool Equals(object obj) => obj is ImageInfo ii && Equals(ii);
 
         public override int GetHashCode()
         {
-            return this.GalleryID.GetHashCode() ^ this.ImageToken.GetHashCode() ^ this.PageID.GetHashCode();
+            return GalleryID.GetHashCode() ^ ImageToken.GetHashCode() ^ PageID.GetHashCode();
         }
 
         public static bool operator ==(in ImageInfo left, in ImageInfo right) => left.Equals(right);

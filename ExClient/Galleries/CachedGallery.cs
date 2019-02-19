@@ -91,14 +91,14 @@ namespace ExClient.Galleries
                 using (var db = new GalleryDb())
                 {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                    var gid = this.ID;
+                    var gid = ID;
                     var models = db.GalleryImageSet
                         .Include(gi => gi.Image)
                         .Where(gi => gi.GalleryId == gid);
                     foreach (var item in models)
                     {
                         await this[item.PageId - 1].PopulateCachedImageAsync(item, item.Image);
-                        this.LoadedItems[item.PageId - 1] = true;
+                        LoadedItems[item.PageId - 1] = true;
                     }
                 }
             }).AsAsyncAction();

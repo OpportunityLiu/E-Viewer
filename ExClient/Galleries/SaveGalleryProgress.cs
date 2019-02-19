@@ -4,8 +4,8 @@
     {
         internal SaveGalleryProgress(int imageLoaded, int imageCount)
         {
-            this.ImageCount = imageCount;
-            this.ImageLoaded = imageLoaded;
+            ImageCount = imageCount;
+            ImageLoaded = imageLoaded;
         }
 
         public int ImageLoaded { get; }

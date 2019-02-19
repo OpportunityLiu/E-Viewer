@@ -39,7 +39,7 @@ namespace ExClient.Search
             }
         }
 
-        public override bool HasMoreItems => this.Count == 0;
+        public override bool HasMoreItems => Count == 0;
 
         private void handleAdditionalInfo(HtmlNode trNode, Gallery gallery)
         {

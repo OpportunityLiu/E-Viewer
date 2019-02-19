@@ -28,17 +28,17 @@ namespace ExClient.Models
         /// </summary>
         public SHA1Value ImageId
         {
-            get => ImageModel.FromStorage(this.Data0, this.Data1, this.Data2);
-            set => (this.Data0, this.Data1, this.Data2) = ImageModel.ToStorage(value);
+            get => ImageModel.FromStorage(Data0, Data1, Data2);
+            set => (Data0, Data1, Data2) = ImageModel.ToStorage(value);
         }
 
         public ImageModel Image { get; set; }
 
         internal GalleryImageModel Update(GalleryImage galleryImage)
         {
-            this.GalleryId = galleryImage.Owner.ID;
-            this.PageId = galleryImage.PageID;
-            this.ImageId = galleryImage.ImageHash;
+            GalleryId = galleryImage.Owner.ID;
+            PageId = galleryImage.PageID;
+            ImageId = galleryImage.ImageHash;
             return this;
         }
     }

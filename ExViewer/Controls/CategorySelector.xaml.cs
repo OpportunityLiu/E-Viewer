@@ -13,8 +13,8 @@ namespace ExViewer.Controls
     {
         public CategorySelector()
         {
-            this.InitializeComponent();
-            this.filter = new List<FilterRecord>()
+            InitializeComponent();
+            filter = new List<FilterRecord>()
             {
                 new FilterRecord(Category.Doujinshi,true),
                 new FilterRecord(Category.Manga, true),
@@ -27,23 +27,23 @@ namespace ExViewer.Controls
                 new FilterRecord(Category.AsianPorn, true),
                 new FilterRecord(Category.Misc, true)
             };
-            foreach (var item in this.filter)
+            foreach (var item in filter)
             {
-                item.PropertyChanged += this.filterItem_PropertyChanged;
+                item.PropertyChanged += filterItem_PropertyChanged;
             }
         }
 
         private void filterItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var category = Category.Unspecified;
-            foreach (var item in this.filter)
+            foreach (var item in filter)
             {
                 if (item.IsChecked)
                 {
                     category |= item.Category;
                 }
             }
-            this.SelectedCategory = category;
+            SelectedCategory = category;
         }
 
         public Category SelectedCategory
@@ -79,8 +79,8 @@ namespace ExViewer.Controls
     {
         public FilterRecord(Category category, bool isChecked)
         {
-            this.Category = category;
-            this.IsChecked = isChecked;
+            Category = category;
+            IsChecked = isChecked;
         }
 
         public Category Category
@@ -92,8 +92,8 @@ namespace ExViewer.Controls
 
         public bool IsChecked
         {
-            get => this.isChecked;
-            set => Set(ref this.isChecked, value);
+            get => isChecked;
+            set => Set(ref isChecked, value);
         }
     }
 }

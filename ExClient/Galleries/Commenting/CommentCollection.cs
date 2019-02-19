@@ -14,7 +14,7 @@ namespace ExClient.Galleries.Commenting
     {
         public CommentCollection(Gallery owner)
         {
-            this.Owner = owner;
+            Owner = owner;
         }
 
         public Gallery Owner { get; }
@@ -22,13 +22,13 @@ namespace ExClient.Galleries.Commenting
         private bool isLoaded;
         public bool IsLoaded
         {
-            get => this.isLoaded; private set
+            get => isLoaded; private set
             {
-                var r = Set(nameof(IsEmpty), ref this.isLoaded, value);
+                var r = Set(nameof(IsEmpty), ref isLoaded, value);
             }
         }
 
-        public bool IsEmpty => this.Count == 0 && this.IsLoaded;
+        public bool IsEmpty => Count == 0 && IsLoaded;
 
         private readonly object syncroot = new object();
 
@@ -40,14 +40,14 @@ namespace ExClient.Galleries.Commenting
             {
                 if (reload)
                 {
-                    this.Clear();
-                    this.IsLoaded = false;
+                    Clear();
+                    IsLoaded = false;
                 }
-                var get = Client.Current.HttpClient.GetDocumentAsync(new Uri(this.Owner.GalleryUri, "?hc=1"));
+                var get = Client.Current.HttpClient.GetDocumentAsync(new Uri(Owner.GalleryUri, "?hc=1"));
                 token.Register(get.Cancel);
                 var document = await get;
                 token.ThrowIfCancellationRequested();
-                this.Owner.RefreshMetaData(document);
+                Owner.RefreshMetaData(document);
                 AnalyzeDocument(document);
                 return;
             });
@@ -55,17 +55,17 @@ namespace ExClient.Galleries.Commenting
 
         internal void AnalyzeDocument(HtmlDocument doc)
         {
-            lock (this.syncroot)
+            lock (syncroot)
             {
                 var newValues = Comment.AnalyzeDocument(this, doc).ToList();
-                this.Update(newValues, (x, y) => x.Id - y.Id, (o, n) =>
+                Update(newValues, (x, y) => x.Id - y.Id, (o, n) =>
                 {
                     o.Score = n.Score;
                     o.Status = n.Status;
                     o.Edited = n.Edited;
                     o.Content = n.Content;
                 });
-                this.IsLoaded = true;
+                IsLoaded = true;
             }
         }
 
@@ -106,7 +106,7 @@ namespace ExClient.Galleries.Commenting
                         yield return new KeyValuePair<string, string>("commenttext_new", content);
                     }
                 }
-                var requestTask = Client.Current.HttpClient.PostAsync(this.Owner.GalleryUri, getData());
+                var requestTask = Client.Current.HttpClient.PostAsync(Owner.GalleryUri, getData());
                 token.Register(requestTask.Cancel);
                 var response = await requestTask;
                 var responseStr = await response.Content.ReadAsStringAsync();

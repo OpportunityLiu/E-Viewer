@@ -35,7 +35,7 @@ namespace ExClient.Forums
 
         private Topic(long id)
         {
-            this.Id = id;
+            Id = id;
         }
 
         public long Id { get; }

@@ -7,7 +7,7 @@ namespace ApplicationDataManager.Settings
     {
         public SettingAttribute(string categoryNameKey)
         {
-            this.CategoryNameKey = categoryNameKey;
+            CategoryNameKey = categoryNameKey;
         }
 
         public string CategoryNameKey
@@ -15,7 +15,7 @@ namespace ApplicationDataManager.Settings
             get;
         }
 
-        public string Category => StringLoader.GetString(this.CategoryNameKey);
+        public string Category => StringLoader.GetString(CategoryNameKey);
 
         public int Index
         {
@@ -48,7 +48,7 @@ namespace ApplicationDataManager.Settings
 
         public CustomTemplateAttribute(string templateName)
         {
-            this.TemplateName = templateName;
+            TemplateName = templateName;
         }
 
         public string TemplateName { get; }
@@ -111,7 +111,7 @@ namespace ApplicationDataManager.Settings
 
         public EnumRepresentAttribute(string resourcePrefix)
         {
-            this.ResourcePrefix = resourcePrefix;
+            ResourcePrefix = resourcePrefix;
         }
 
         public string ResourcePrefix
@@ -126,7 +126,7 @@ namespace ApplicationDataManager.Settings
                 return name;
             }
 
-            return StringLoader.GetString($"{this.ResourcePrefix}/{name}");
+            return StringLoader.GetString($"{ResourcePrefix}/{name}");
         }
 
         public override ValueType TargetType => ValueType.Enum;
