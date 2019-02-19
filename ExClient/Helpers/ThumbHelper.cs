@@ -32,6 +32,12 @@ namespace ExClient
 
         public static BitmapImage DefaultThumb { get; private set; }
 
+        /// <summary>
+        /// Get thumb image of a gallery with local cache.
+        /// </summary>
+        /// <param name="exact"><see langword="true"/> if thumb of first image of the gallery must be used, otherwise, first cached image in the galley will be used.</param>
+        /// <param name="bitmap">Bitmap to write thumb data into.</param>
+        /// <returns>Local thumb found.</returns>
         private static async Task<bool> getThumbLocalilyAsync(Gallery gallery, bool exact, BitmapImage bitmap)
         {
             GalleryImageModel getImageModel(long gId, bool ex)
