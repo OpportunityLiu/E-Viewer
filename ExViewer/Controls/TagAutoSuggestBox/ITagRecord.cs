@@ -103,16 +103,16 @@ namespace ExViewer.Controls.TagSuggestion
                     score = highlight.Length * 65536 / tag.Original.Length;
                 }
             }
-            var to = tag.TranslatedStr.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
+            var to = tag.Translated.IndexOf(highlight, StringComparison.OrdinalIgnoreCase);
             if (to != -1)
             {
                 if (to == 0)
                 {
-                    score = Math.Max(score, highlight.Length * 65536 * 16 / tag.TranslatedStr.Length);
+                    score = Math.Max(score, highlight.Length * 65536 * 16 / tag.Translated.Length);
                 }
                 else
                 {
-                    score = Math.Max(score, highlight.Length * 65536 / tag.TranslatedStr.Length);
+                    score = Math.Max(score, highlight.Length * 65536 / tag.Translated.Length);
                 }
             }
             score *= nsFactor[tag.Namespace];
@@ -148,14 +148,14 @@ namespace ExViewer.Controls.TagSuggestion
                 {
                     r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
                                           WHERE Original LIKE {0} COLLATE nocase 
-                                            Or TranslatedStr LIKE {0} COLLATE nocase", $"%{highlight}%")
+                                            Or Translated LIKE {0} COLLATE nocase", $"%{highlight}%")
                         .ToList();
                 }
                 else
                 {
                     r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
                                           WHERE Original LIKE {0} COLLATE nocase 
-                                            Or TranslatedStr LIKE {0} COLLATE nocase", $"%{highlight}%")
+                                            Or Translated LIKE {0} COLLATE nocase", $"%{highlight}%")
                         .Where(t => t.Namespace == ns)
                         .ToList();
                 }
