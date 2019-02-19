@@ -132,6 +132,6 @@ namespace ExViewer.Controls
         }
 
         public static AsyncCommand UpdateEhWiki { get; } = AsyncCommand.Create(_ => EhTagClient.Client.UpdateAsync());
-        public static AsyncCommand UpdateETT { get; } = AsyncCommand.Create(_ => EhTagTranslatorClient.Client.UpdateAsync());
+        public static AsyncCommand UpdateETT { get; } = AsyncCommand.Create(async _ => await EhTagTranslatorClient.Client.TryUpdateAsync());
     }
 }
