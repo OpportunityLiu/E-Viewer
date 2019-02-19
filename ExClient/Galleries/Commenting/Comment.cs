@@ -41,27 +41,27 @@ namespace ExClient.Galleries.Commenting
 
         private Comment(CommentCollection owner, int id, HtmlNode commentNode)
         {
-            this.Owner = owner;
+            Owner = owner;
             var culture = System.Globalization.CultureInfo.InvariantCulture;
             var document = commentNode.OwnerDocument;
-            this.Id = id;
+            Id = id;
 
             var contentHtml = document.GetElementbyId($"comment_{id}").OuterHtml.Replace("://forums.exhentai.org", "://forums.e-hentai.org");
-            this.Content = HtmlNode.CreateNode(contentHtml);
+            Content = HtmlNode.CreateNode(contentHtml);
 
             var editNode = commentNode.Descendants("div").FirstOrDefault(node => node.HasClass("c8"));
             if (editNode != null)
             {
-                this.Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
+                Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
             }
 
             var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.HasClass("c3"));
-            this.Author = postedAndAuthorNode.Element("a").GetInnerText();
-            this.Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            Author = postedAndAuthorNode.Element("a").GetInnerText();
+            Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
 
-            if (!this.IsUploaderComment)
+            if (!IsUploaderComment)
             {
-                this.score = int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
+                score = int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
                 var actionNode = commentNode.Descendants("div").FirstOrDefault(node => node.HasClass("c4") && node.HasClass("nosel"));
                 if (actionNode != null)
                 {
@@ -71,20 +71,20 @@ namespace ExClient.Galleries.Commenting
                     {
                         if (vuNode.GetAttribute("style", "").Contains("color:blue"))
                         {
-                            this.status = CommentStatus.VotedUp;
+                            status = CommentStatus.VotedUp;
                         }
                         else if (vdNode.GetAttribute("style", "").Contains("color:blue"))
                         {
-                            this.status = CommentStatus.VotedDown;
+                            status = CommentStatus.VotedDown;
                         }
                         else
                         {
-                            this.status = CommentStatus.Votable;
+                            status = CommentStatus.Votable;
                         }
                     }
                     else if (actionNode.InnerText == "[Edit]")
                     {
-                        this.status = CommentStatus.Editable;
+                        status = CommentStatus.Editable;
                     }
                 }
             }
@@ -96,7 +96,7 @@ namespace ExClient.Galleries.Commenting
         {
             return AsyncInfo.Run(async token =>
             {
-                var node = HtmlNode.CreateNode(this.Content.OuterHtml);
+                var node = HtmlNode.CreateNode(Content.OuterHtml);
                 foreach (var item in node.Descendants("#text"))
                 {
                     var data = item.GetInnerText();
@@ -108,7 +108,7 @@ namespace ExClient.Galleries.Commenting
                     var translated = string.Concat(objarr.Select(a => a[0].ToString()));
                     item.InnerHtml = HtmlEntity.Entitize(translated);
                 }
-                this.TranslatedContent = node;
+                TranslatedContent = node;
                 return node;
             });
         }
@@ -119,50 +119,50 @@ namespace ExClient.Galleries.Commenting
 
         public string Author { get; }
 
-        public bool IsUploaderComment => this.Id == 0;
+        public bool IsUploaderComment => Id == 0;
 
         public DateTimeOffset Posted { get; }
 
         private DateTimeOffset? edited;
         public DateTimeOffset? Edited
         {
-            get => this.edited;
-            internal set => Set(ref this.edited, value);
+            get => edited;
+            internal set => Set(ref edited, value);
         }
 
         private HtmlNode content;
         public HtmlNode Content
         {
-            get => this.content;
-            internal set => Set(ref this.content, value);
+            get => content;
+            internal set => Set(ref content, value);
         }
 
         private HtmlNode translatedContent;
         public HtmlNode TranslatedContent
         {
-            get => this.translatedContent;
-            internal set => Set(ref this.translatedContent, value);
+            get => translatedContent;
+            internal set => Set(ref translatedContent, value);
         }
 
         private int score;
         public int Score
         {
-            get => this.score;
-            internal set => Set(ref this.score, value);
+            get => score;
+            internal set => Set(ref score, value);
         }
 
-        public bool CanVote => (this.status & CommentStatus.Votable) == CommentStatus.Votable;
+        public bool CanVote => (status & CommentStatus.Votable) == CommentStatus.Votable;
 
         public IAsyncAction VoteAsync(VoteState command)
         {
             if (command == VoteState.Default)
             {
                 // Withdraw votes
-                if (this.status == CommentStatus.VotedDown)
+                if (status == CommentStatus.VotedDown)
                 {
                     command = VoteState.Down;
                 }
-                else if (this.status == CommentStatus.VotedUp)
+                else if (status == CommentStatus.VotedUp)
                 {
                     command = VoteState.Up;
                 }
@@ -171,9 +171,9 @@ namespace ExClient.Galleries.Commenting
             {
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
             }
-            if (!this.CanVote)
+            if (!CanVote)
             {
-                if (this.IsUploaderComment)
+                if (IsUploaderComment)
                 {
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteStateUploader);
                 }
@@ -189,27 +189,27 @@ namespace ExClient.Galleries.Commenting
                 switch (r.Vote)
                 {
                 case VoteState.Default:
-                    this.Status = CommentStatus.Votable;
+                    Status = CommentStatus.Votable;
                     break;
                 case VoteState.Up:
-                    this.Status = CommentStatus.VotedUp;
+                    Status = CommentStatus.VotedUp;
                     break;
                 case VoteState.Down:
-                    this.Status = CommentStatus.VotedDown;
+                    Status = CommentStatus.VotedDown;
                     break;
                 default:
                     Debug.Assert(false);
                     break;
                 }
-                this.Score = r.Score;
+                Score = r.Score;
             });
         }
 
-        public bool CanEdit => this.status == CommentStatus.Editable;
+        public bool CanEdit => status == CommentStatus.Editable;
 
         public IAsyncOperation<string> FetchEditableAsync()
         {
-            if (!this.CanEdit)
+            if (!CanEdit)
             {
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
             }
@@ -229,18 +229,18 @@ namespace ExClient.Galleries.Commenting
 
         public IAsyncAction EditAsync(string content)
         {
-            if (!this.CanEdit)
+            if (!CanEdit)
             {
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
             }
-            return this.Owner.PostFormAsync(content, this);
+            return Owner.PostFormAsync(content, this);
         }
 
         private CommentStatus status;
         public CommentStatus Status
         {
-            get => this.status;
-            internal set => Set(nameof(CanVote), nameof(CanEdit), ref this.status, value);
+            get => status;
+            internal set => Set(nameof(CanVote), nameof(CanEdit), ref status, value);
         }
     }
 }

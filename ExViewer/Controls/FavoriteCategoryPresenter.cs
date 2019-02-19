@@ -10,17 +10,17 @@ namespace ExViewer.Controls
     {
         public FavoriteCategoryPresenter()
         {
-            this.DefaultStyleKey = typeof(FavoriteCategoryPresenter);
-            this.Loaded += this.favoriteCategoryPresenter_Loaded;
-            this.Unloaded += this.favoriteCategoryPresenter_Unloaded;
+            DefaultStyleKey = typeof(FavoriteCategoryPresenter);
+            Loaded += favoriteCategoryPresenter_Loaded;
+            Unloaded += favoriteCategoryPresenter_Unloaded;
         }
 
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.Icon = (UIElement)GetTemplateChild(nameof(Icon));
-            this.Label = null;
-            set(this.Category, this.IsLabelVisible);
+            Icon = (UIElement)GetTemplateChild(nameof(Icon));
+            Label = null;
+            set(Category, IsLabelVisible);
         }
 
         private TextBlock Label;
@@ -29,15 +29,15 @@ namespace ExViewer.Controls
         private void set(FavoriteCategory category, bool labelVisible)
         {
             category = category ?? Client.Current.Favorites.All;
-            var icon = this.Icon;
+            var icon = Icon;
             if (icon != null)
             {
                 icon.Visibility = category.Index < 0 ? Visibility.Collapsed : Visibility.Visible;
             }
-            this.BorderBrush = category.GetThemeBrush();
+            BorderBrush = category.GetThemeBrush();
             if (labelVisible)
             {
-                var label = this.Label;
+                var label = Label;
                 if (label is null)
                 {
                     label = GetTemplateChild("Label") as TextBlock;
@@ -47,7 +47,7 @@ namespace ExViewer.Controls
                     }
                     else
                     {
-                        this.Label = label;
+                        Label = label;
                     }
                 }
                 label.Visibility = Visibility.Visible;
@@ -55,12 +55,12 @@ namespace ExViewer.Controls
             }
             else
             {
-                if (this.Label is null)
+                if (Label is null)
                 {
                     return;
                 }
 
-                this.Label.Visibility = Visibility.Collapsed;
+                Label.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -101,22 +101,22 @@ namespace ExViewer.Controls
 
         private void category_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            this.set(this.Category, this.IsLabelVisible);
+            set(Category, IsLabelVisible);
         }
 
         private void favoriteCategoryPresenter_Loaded(object sender, RoutedEventArgs e)
         {
-            this.loaded = true;
-            if (this.Category != null)
-                this.Category.PropertyChanged += this.category_PropertyChanged;
-            this.set(this.Category, this.IsLabelVisible);
+            loaded = true;
+            if (Category != null)
+                Category.PropertyChanged += category_PropertyChanged;
+            set(Category, IsLabelVisible);
         }
 
         private void favoriteCategoryPresenter_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.loaded = false;
-            if (this.Category != null)
-                this.Category.PropertyChanged -= this.category_PropertyChanged;
+            loaded = false;
+            if (Category != null)
+                Category.PropertyChanged -= category_PropertyChanged;
         }
 
         public bool IsLabelVisible

@@ -28,10 +28,10 @@ namespace ExViewer.Views
             //  ![image](https://user-images.githubusercontent.com/13471233/36630227-eceeb6f4-199d-11e8-8398-f34f4d36132f.png)
             //* Bug fix & other improvements";
             this.release = release;
-            this.InitializeComponent();
+            InitializeComponent();
             if (!(ApiInfo.IsDesktop || ApiInfo.IsMobile))
             {
-                this.PrimaryButtonText = "";
+                PrimaryButtonText = "";
             }
         }
 
@@ -42,20 +42,20 @@ namespace ExViewer.Views
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            this.gdRoot.Width = this.gdRoot.ActualWidth;
+            gdRoot.Width = gdRoot.ActualWidth;
             var def = args.GetDeferral();
-            this.PrimaryButtonText = "";
-            this.SecondaryButtonText = "";
-            this.CloseButtonText = "";
-            FindName(nameof(this.rpDownload));
+            PrimaryButtonText = "";
+            SecondaryButtonText = "";
+            CloseButtonText = "";
+            FindName(nameof(rpDownload));
 
-            var folder = await DownloadsFolder.CreateFolderAsync(StorageHelper.ToValidFileName(this.release.tag_name), CreationCollisionOption.GenerateUniqueName);
+            var folder = await DownloadsFolder.CreateFolderAsync(StorageHelper.ToValidFileName(release.tag_name), CreationCollisionOption.GenerateUniqueName);
             try
             {
                 var arch = Package.Current.Id.Architecture.ToString();
-                if (this.release.assets.IsNullOrEmpty())
+                if (release.assets.IsNullOrEmpty())
                     throw new InvalidOperationException("Find appx file failed.");
-                var assets = (from asset in this.release.assets
+                var assets = (from asset in release.assets
                               where asset.name.IndexOf(arch, StringComparison.OrdinalIgnoreCase) > 0 && downloadExt.Any(e => asset.name.EndsWith(e))
                               select asset).ToList();
 
@@ -67,7 +67,7 @@ namespace ExViewer.Views
                 {
                     try
                     {
-                        this.totalDownloaded = assets.Sum(a => (long)a.size);
+                        totalDownloaded = assets.Sum(a => (long)a.size);
                         foreach (var item in assets)
                         {
                             var op = client.GetBufferAsync(new Uri(item.browser_download_url));
@@ -76,7 +76,7 @@ namespace ExViewer.Views
                             var buf = await op;
                             var file = await folder.CreateFileAsync(item.name, CreationCollisionOption.ReplaceExisting);
                             await FileIO.WriteBufferAsync(file, buf);
-                            this.currentDownloaded += item.size;
+                            currentDownloaded += item.size;
                             files.Add(file);
                         }
                         foreach (var item in files)
@@ -95,7 +95,7 @@ namespace ExViewer.Views
             }
             catch
             {
-                await Launcher.LaunchUriAsync(new Uri(this.release.html_url));
+                await Launcher.LaunchUriAsync(new Uri(release.html_url));
             }
             finally
             {
@@ -106,13 +106,13 @@ namespace ExViewer.Views
 
         private async void ReportProgress(IAsyncOperationWithProgress<IBuffer, HttpProgress> asyncInfo, HttpProgress p)
         {
-            await this.Dispatcher.Yield();
+            await Dispatcher.Yield();
 
-            var c = this.currentDownloaded + (long)p.BytesReceived;
-            this.pb.Value = 100d * c / this.totalDownloaded;
-            this.pb.IsIndeterminate = false;
-            this.tbCurrent.Text = Opportunity.UWP.Converters.XBind.ByteSize.ToBinaryString(c);
-            this.tbTotal.Text = Opportunity.UWP.Converters.XBind.ByteSize.ToBinaryString(this.totalDownloaded);
+            var c = currentDownloaded + (long)p.BytesReceived;
+            pb.Value = 100d * c / totalDownloaded;
+            pb.IsIndeterminate = false;
+            tbCurrent.Text = Opportunity.UWP.Converters.XBind.ByteSize.ToBinaryString(c);
+            tbTotal.Text = Opportunity.UWP.Converters.XBind.ByteSize.ToBinaryString(totalDownloaded);
         }
 
         private async void MyContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -121,7 +121,7 @@ namespace ExViewer.Views
             try
             {
                 args.Cancel = true;
-                await Launcher.LaunchUriAsync(new Uri(this.release.html_url));
+                await Launcher.LaunchUriAsync(new Uri(release.html_url));
             }
             finally
             {
@@ -133,7 +133,7 @@ namespace ExViewer.Views
 
         private void MyContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
         {
-            if (this.rpDownload != null)
+            if (rpDownload != null)
             {
                 args.Cancel = true;
             }

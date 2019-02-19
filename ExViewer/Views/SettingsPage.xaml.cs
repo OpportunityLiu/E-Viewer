@@ -24,8 +24,8 @@ namespace ExViewer.Views
     {
         public SettingsPage()
         {
-            this.InitializeComponent();
-            this.pv_root.ItemsSource = SettingCollection.Current.GroupedSettings;
+            InitializeComponent();
+            pv_root.ItemsSource = SettingCollection.Current.GroupedSettings;
         }
 
         private async void SettingsPage_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
@@ -46,53 +46,53 @@ namespace ExViewer.Views
         {
             base.OnNavigatedTo(e);
             await Dispatcher.YieldIdle();
-            InputPane.GetForCurrentView().Showing += this.SettingsPage_Showing;
+            InputPane.GetForCurrentView().Showing += SettingsPage_Showing;
             switch (e.NavigationMode)
             {
             case NavigationMode.New:
-                this.pv_root.SelectedIndex = 0;
+                pv_root.SelectedIndex = 0;
                 break;
             case NavigationMode.Back:
-                this.pv_root.SelectedIndex = this.navigateStack.Pop();
+                pv_root.SelectedIndex = navigateStack.Pop();
                 break;
             }
-            this.pv_root.Focus(FocusState.Programmatic);
+            pv_root.Focus(FocusState.Programmatic);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            InputPane.GetForCurrentView().Showing -= this.SettingsPage_Showing;
+            InputPane.GetForCurrentView().Showing -= SettingsPage_Showing;
             switch (e.NavigationMode)
             {
             case NavigationMode.New:
             case NavigationMode.Forward:
-                this.navigateStack.Push(this.pv_root.SelectedIndex);
+                navigateStack.Push(pv_root.SelectedIndex);
                 break;
             }
         }
 
         private void page_Loading(FrameworkElement sender, object args)
         {
-            this.setSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.setSplitViewButtonPlaceholderVisibility;
+            setSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += setSplitViewButtonPlaceholderVisibility;
 
         }
 
         private void page_Unloaded(object sender, RoutedEventArgs e)
         {
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.setSplitViewButtonPlaceholderVisibility;
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= setSplitViewButtonPlaceholderVisibility;
         }
 
         private void setSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
             {
-                this.bdSplitViewPlaceholder.Width = 48;
+                bdSplitViewPlaceholder.Width = 48;
             }
             else
             {
-                this.bdSplitViewPlaceholder.Width = 0;
+                bdSplitViewPlaceholder.Width = 0;
             }
         }
     }

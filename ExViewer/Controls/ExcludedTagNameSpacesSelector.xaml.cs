@@ -14,7 +14,7 @@ namespace ExViewer.Controls
     {
         public ExcludedTagNamespacesSelector()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             foreach (var item in EnumExtension.GetDefinedValues<Namespace>())
             {
                 if (item.Value == Namespace.Unknown || item.Value >= Namespace.Misc)
@@ -22,7 +22,7 @@ namespace ExViewer.Controls
                     continue;
                 }
 
-                this.gv.Items.Add(new Box<Namespace> { Value = item.Value });
+                gv.Items.Add(new Box<Namespace> { Value = item.Value });
             }
         }
 
@@ -45,47 +45,47 @@ namespace ExViewer.Controls
 
         private void refresh(Namespace value)
         {
-            this.changing = true;
-            foreach (var item in this.gv.Items.Cast<IBox<Namespace>>())
+            changing = true;
+            foreach (var item in gv.Items.Cast<IBox<Namespace>>())
             {
                 var n = value.HasFlag(item.Value);
-                var cb = ((CheckBox)((GridViewItem)this.gv.ContainerFromItem(item))?.ContentTemplateRoot);
+                var cb = ((CheckBox)((GridViewItem)gv.ContainerFromItem(item))?.ContentTemplateRoot);
                 if (cb != null)
                 {
                     cb.IsChecked = n;
                 }
             }
-            this.changing = false;
+            changing = false;
         }
 
         private bool changing;
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if (this.changing)
+            if (changing)
             {
                 return;
             }
 
             var v = ((IBox<Namespace>)((FrameworkElement)sender).DataContext).Value;
-            this.ExcludedTagNamespaces |= v;
+            ExcludedTagNamespaces |= v;
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (this.changing)
+            if (changing)
             {
                 return;
             }
 
             var v = ((IBox<Namespace>)((FrameworkElement)sender).DataContext).Value;
-            this.ExcludedTagNamespaces &= ~v;
+            ExcludedTagNamespaces &= ~v;
         }
 
         private void CheckBox_Loaded(object sender, RoutedEventArgs e)
         {
             var cb = (CheckBox)sender;
-            cb.IsChecked = this.ExcludedTagNamespaces.HasFlag(((IBox<Namespace>)cb.DataContext).Value);
+            cb.IsChecked = ExcludedTagNamespaces.HasFlag(((IBox<Namespace>)cb.DataContext).Value);
         }
     }
 }

@@ -28,12 +28,12 @@ namespace ExViewer
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
-            this.RequiresPointerMode = ApplicationRequiresPointerMode.WhenRequested;
-            this.Suspending += this.OnSuspending;
-            this.Resuming += this.OnResuming;
-            this.UnhandledException += this.App_UnhandledException;
-            this.RequestedTheme = Settings.SettingCollection.Current.Theme;
+            InitializeComponent();
+            RequiresPointerMode = ApplicationRequiresPointerMode.WhenRequested;
+            Suspending += OnSuspending;
+            Resuming += OnResuming;
+            UnhandledException += App_UnhandledException;
+            RequestedTheme = Settings.SettingCollection.Current.Theme;
             ExDawnOfDayTask.Task.Register();
             //ElementSoundPlayer.State = ElementSoundPlayerState.On;
         }
@@ -62,7 +62,7 @@ namespace ExViewer
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
-                this.DebugSettings.EnableFrameRateCounter = true;
+                DebugSettings.EnableFrameRateCounter = true;
                 //this.DebugSettings.IsOverdrawHeatMapEnabled = true;
                 //this.DebugSettings.IsTextPerformanceVisualizationEnabled = true;
             }
@@ -110,7 +110,7 @@ namespace ExViewer
             {
                 currentWindow.Activate();
             }
-            ((Opportunity.UWP.Converters.Typed.StringToBooleanConverter)this.Resources["EmptyStringToFalseConverter"]).ValuesForFalse.Add("");
+            ((Opportunity.UWP.Converters.Typed.StringToBooleanConverter)Resources["EmptyStringToFalseConverter"]).ValuesForFalse.Add("");
         }
 
         protected override void OnActivated(IActivatedEventArgs args)

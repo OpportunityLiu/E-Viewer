@@ -21,7 +21,7 @@ namespace ExClient.Status
         public int VotedCount { get; set; } = 0;
 
         private readonly ObservableList<TaggingRecord> records = new ObservableList<TaggingRecord>();
-        public ObservableListView<TaggingRecord> Records => this.records.AsReadOnly();
+        public ObservableListView<TaggingRecord> Records => records.AsReadOnly();
 
         private static readonly Regex regex = new Regex(@"Tags:\s*(\d+)\s*\(\d+\s*recent\)\s*Started Accuracy\s*=\s*(\S+)\s*of\s*(\d+)\s*Voted Accuracy\s*=\s*(\S+)\s*of\s*(\d+)", RegexOptions.Compiled);
 
@@ -41,18 +41,18 @@ namespace ExClient.Status
                 var match = regex.Match(overall);
                 if (match.Success)
                 {
-                    this.Count = int.Parse(match.Groups[1].Value);
-                    this.StartedAccuracy = parsePercetage(match.Groups[2].Value);
-                    this.StartedCount = int.Parse(match.Groups[3].Value);
-                    this.VotedAccuracy = parsePercetage(match.Groups[4].Value);
-                    this.VotedCount = int.Parse(match.Groups[5].Value);
+                    Count = int.Parse(match.Groups[1].Value);
+                    StartedAccuracy = parsePercetage(match.Groups[2].Value);
+                    StartedCount = int.Parse(match.Groups[3].Value);
+                    VotedAccuracy = parsePercetage(match.Groups[4].Value);
+                    VotedCount = int.Parse(match.Groups[5].Value);
                 }
 
                 var table = body.Element("table");
                 if (table != null)
-                    this.records.Update(table.Elements("tr").Skip(1).Select(item => new TaggingRecord(item)).ToList());
+                    records.Update(table.Elements("tr").Skip(1).Select(item => new TaggingRecord(item)).ToList());
                 else if (match.Success)
-                    this.records.Clear();
+                    records.Clear();
                 OnPropertyChanged(default(string));
             }, token));
         }

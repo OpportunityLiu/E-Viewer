@@ -11,14 +11,14 @@ namespace ExViewer.Controls
     {
         public HighlightTextBlock()
         {
-            this.DefaultStyleKey = typeof(HighlightTextBlock);
+            DefaultStyleKey = typeof(HighlightTextBlock);
         }
 
         private TextBlock Presenter;
 
         protected override void OnApplyTemplate()
         {
-            this.Presenter = GetTemplateChild(nameof(Presenter)) as TextBlock;
+            Presenter = GetTemplateChild(nameof(Presenter)) as TextBlock;
             reload();
         }
 
@@ -95,18 +95,18 @@ namespace ExViewer.Controls
 
         private void reload()
         {
-            if (this.Presenter is null)
+            if (Presenter is null)
             {
                 return;
             }
 
-            this.Presenter.Text = "";
-            this.Presenter.Inlines.Clear();
-            var text = this.Text;
-            var highlightText = this.HighlightText;
+            Presenter.Text = "";
+            Presenter.Inlines.Clear();
+            var text = Text;
+            var highlightText = HighlightText;
             if (string.IsNullOrEmpty(highlightText))
             {
-                this.Presenter.Text = text;
+                Presenter.Text = text;
             }
             else
             {
@@ -116,15 +116,15 @@ namespace ExViewer.Controls
                 {
                     if (matchIndex != currentIndex)
                     {
-                        this.Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex, matchIndex - currentIndex)));
+                        Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex, matchIndex - currentIndex)));
                     }
 
-                    this.Presenter.Inlines.Add(CreateBold(text.Substring(matchIndex, highlightText.Length)));
+                    Presenter.Inlines.Add(CreateBold(text.Substring(matchIndex, highlightText.Length)));
                     currentIndex = matchIndex + highlightText.Length;
                 }
                 if (currentIndex != text.Length)
                 {
-                    this.Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex)));
+                    Presenter.Inlines.Add(CreateRun(text.Substring(currentIndex)));
                 }
             }
         }

@@ -91,7 +91,7 @@ namespace ExViewer.ViewModels
 
         private GalleryVM(Gallery gallery)
         {
-            this.Gallery = gallery;
+            Gallery = gallery;
         }
 
         public AsyncCommand<Score> Rate => Commands.GetOrAdd(() =>
@@ -118,7 +118,7 @@ namespace ExViewer.ViewModels
             var ac = AsyncCommand.Create(async (c, s) =>
             {
                 var addToFavorites = ThreadLocalSingleton.GetOrCreate<AddToFavoritesDialog>();
-                addToFavorites.Gallery = this.Gallery;
+                addToFavorites.Gallery = Gallery;
                 await addToFavorites.ShowAsync();
             });
             ac.ReentrancyHandler = ReentrancyHandler.LastQueued();
@@ -129,7 +129,7 @@ namespace ExViewer.ViewModels
             AsyncCommand.Create(async (c, s) =>
             {
                 var rename = ThreadLocalSingleton.GetOrCreate<RenameGalleryDialog>();
-                rename.Gallery = this.Gallery;
+                rename.Gallery = Gallery;
                 await rename.ShowAsync();
             }));
 
@@ -137,7 +137,7 @@ namespace ExViewer.ViewModels
             AsyncCommand.Create(async (c, s) =>
             {
                 var expunge = ThreadLocalSingleton.GetOrCreate<ExpungeGalleryDialog>();
-                expunge.Gallery = this.Gallery;
+                expunge.Gallery = Gallery;
                 await expunge.ShowAsync();
             }));
 
@@ -337,34 +337,34 @@ namespace ExViewer.ViewModels
 
         public Gallery Gallery
         {
-            get => this.gallery;
+            get => gallery;
             private set
             {
-                this.history = null;
+                history = null;
                 if (View != null)
                 {
-                    View.CurrentChanged -= this.View_CurrentChanged;
+                    View.CurrentChanged -= View_CurrentChanged;
                 }
                 View = value?.CreateView();
                 if (View != null)
                 {
                     View.MoveCurrentToPrevious();
-                    View.CurrentChanged += this.View_CurrentChanged;
+                    View.CurrentChanged += View_CurrentChanged;
                 }
-                Set(nameof(View), ref this.gallery, value);
-                this.Save.OnCanExecuteChanged();
-                this.Share.OnCanExecuteChanged();
-                this.AddComment.OnCanExecuteChanged();
-                this.Torrents = null;
+                Set(nameof(View), ref gallery, value);
+                Save.OnCanExecuteChanged();
+                Share.OnCanExecuteChanged();
+                AddComment.OnCanExecuteChanged();
+                Torrents = null;
                 if (value != null)
                 {
-                    this.history = new HistoryRecord
+                    history = new HistoryRecord
                     {
                         Title = value.GetDisplayTitle(),
                         Type = HistoryRecordType.Gallery,
                         Uri = value.GalleryUri,
                     };
-                    HistoryDb.Add(this.history);
+                    HistoryDb.Add(history);
                 }
             }
         }
@@ -375,58 +375,58 @@ namespace ExViewer.ViewModels
         {
             CurrentInfo = null;
             QRCodeResult = null;
-            this.history.Title = this.gallery.GetDisplayTitle();
-            if (this.View.CurrentItem?.PageUri is Uri pageUri)
+            history.Title = gallery.GetDisplayTitle();
+            if (View.CurrentItem?.PageUri is Uri pageUri)
             {
-                this.history.Type = HistoryRecordType.Image;
-                this.history.Uri = pageUri;
+                history.Type = HistoryRecordType.Image;
+                history.Uri = pageUri;
             }
             else
             {
-                this.history.Type = HistoryRecordType.Gallery;
-                this.history.Uri = this.gallery.GalleryUri;
+                history.Type = HistoryRecordType.Gallery;
+                history.Uri = gallery.GalleryUri;
             }
-            HistoryDb.Update(this.history);
+            HistoryDb.Update(history);
         }
 
         public new CollectionView<GalleryImage> View { get; private set; }
 
         private string currentInfo;
-        public string CurrentInfo { get => this.currentInfo; private set => Set(ref this.currentInfo, value); }
+        public string CurrentInfo { get => currentInfo; private set => Set(ref currentInfo, value); }
 
         private string qrCodeResult;
         private int qrCodeHash;
         public string QRCodeResult
         {
-            get => this.qrCodeResult;
+            get => qrCodeResult;
             private set
             {
-                Set(ref this.qrCodeResult, value);
-                this.qrCodeHash = 0;
+                Set(ref qrCodeResult, value);
+                qrCodeHash = 0;
             }
         }
 
         public IAsyncAction RefreshInfoAsync()
         {
-            var current = (GalleryImage)this.View.CurrentItem;
+            var current = (GalleryImage)View.CurrentItem;
             var imageFile = current?.ImageFile;
             if (imageFile is null)
             {
-                this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
-                this.QRCodeResult = null;
+                CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfoDefault;
+                QRCodeResult = null;
                 return AsyncAction.CreateCompleted();
             }
             return Task.Run(async () =>
             {
                 var prop = await imageFile.GetBasicPropertiesAsync();
                 var imageProp = await imageFile.Properties.GetImagePropertiesAsync();
-                this.CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfo(
+                CurrentInfo = Strings.Resources.Views.ImagePage.ImageFileInfo(
                     fileType: imageFile.DisplayType,
                     size: Opportunity.UWP.Converters.XBind.ByteSize.ToBinaryString((long)prop.Size),
                     width: imageProp.Width,
                     height: imageProp.Height);
                 var newQRHash = prop.Size.GetHashCode() ^ imageFile.Name.GetHashCode();
-                if (newQRHash == this.qrCodeHash)
+                if (newQRHash == qrCodeHash)
                 {
                     return;
                 }
@@ -437,8 +437,8 @@ namespace ExViewer.ViewModels
                     var sb = await decoder.GetSoftwareBitmapAsync();
                     var r = new ZXing.QrCode.QRCodeReader();
                     var qr = r.decode(new ZXing.BinaryBitmap(new ZXing.Common.HybridBinarizer(new ZXing.SoftwareBitmapLuminanceSource(sb))));
-                    this.QRCodeResult = qr?.Text;
-                    this.qrCodeHash = newQRHash;
+                    QRCodeResult = qr?.Text;
+                    qrCodeHash = newQRHash;
                 }
             }).AsAsyncAction();
         }
@@ -481,11 +481,11 @@ namespace ExViewer.ViewModels
 
         public OperationState SaveStatus
         {
-            get => this.saveStatus;
+            get => saveStatus;
             set
             {
-                Set(ref this.saveStatus, value);
-                this.Save.OnCanExecuteChanged();
+                Set(ref saveStatus, value);
+                Save.OnCanExecuteChanged();
             }
         }
 
@@ -493,8 +493,8 @@ namespace ExViewer.ViewModels
 
         public double SaveProgress
         {
-            get => this.saveProgress;
-            set => Set(ref this.saveProgress, value);
+            get => saveProgress;
+            set => Set(ref saveProgress, value);
         }
 
         #region Comments
@@ -518,7 +518,7 @@ namespace ExViewer.ViewModels
             {
                 try
                 {
-                    await this.gallery.Comments.FetchAsync();
+                    await gallery.Comments.FetchAsync();
                 }
                 catch (Exception ex)
                 {
@@ -594,7 +594,7 @@ namespace ExViewer.ViewModels
             {
                 try
                 {
-                    this.Torrents = await this.gallery.FetchTorrnetsAsync();
+                    Torrents = await gallery.FetchTorrnetsAsync();
                 }
                 catch (Exception ex)
                 {
@@ -606,15 +606,15 @@ namespace ExViewer.ViewModels
         private ReadOnlyCollection<TorrentInfo> torrents;
         public ReadOnlyCollection<TorrentInfo> Torrents
         {
-            get => this.torrents;
+            get => torrents;
             private set
             {
-                this.torrents = value;
+                torrents = value;
                 OnPropertyChanged(nameof(Torrents), nameof(TorrentCount));
             }
         }
 
-        public int? TorrentCount => this.torrents?.Count ?? (this.gallery is CachedGallery ? null : this.gallery?.TorrentCount);
+        public int? TorrentCount => torrents?.Count ?? (gallery is CachedGallery ? null : gallery?.TorrentCount);
 
         #endregion Torrents
     }

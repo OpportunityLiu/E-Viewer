@@ -12,9 +12,9 @@ namespace ExViewer.Controls
     {
         public PullToRefreshIndicator()
         {
-            this.DefaultStyleKey = typeof(PullToRefreshIndicator);
-            this.Loading += this.PullToRefreshIndicator_Loading;
-            this.Unloaded += this.PullToRefreshIndicator_Unloaded;
+            DefaultStyleKey = typeof(PullToRefreshIndicator);
+            Loading += PullToRefreshIndicator_Loading;
+            Unloaded += PullToRefreshIndicator_Unloaded;
         }
 
         private void PullToRefreshIndicator_Loading(FrameworkElement sender, object args)
@@ -28,21 +28,21 @@ namespace ExViewer.Controls
 
         private PullToRefreshListView parent
         {
-            get => this.p;
+            get => p;
             set
             {
-                if (this.p != null)
+                if (p != null)
                 {
-                    this.p.PullProgressChanged -= this.Parent_PullProgressChanged;
+                    p.PullProgressChanged -= Parent_PullProgressChanged;
                 }
 
-                this.p = value;
-                if (this.p != null)
+                p = value;
+                if (p != null)
                 {
-                    this.p.PullProgressChanged += this.Parent_PullProgressChanged;
+                    p.PullProgressChanged += Parent_PullProgressChanged;
                 }
 
-                this.ClearValue(PullProgressProperty);
+                ClearValue(PullProgressProperty);
             }
         }
 
@@ -53,7 +53,7 @@ namespace ExViewer.Controls
 
         private void Parent_PullProgressChanged(object sender, RefreshProgressEventArgs e)
         {
-            this.PullProgress = e.PullProgress;
+            PullProgress = e.PullProgress;
         }
 
         public double PullProgress

@@ -2,16 +2,8 @@
 
 namespace EhTagTranslatorClient.Model
 {
-    class TranslateDb : DbContext
+    internal class TranslateDb : DbContext
     {
-        static TranslateDb()
-        {
-            using (var db = new TranslateDb())
-            {
-                db.Database.Migrate();
-            }
-        }
-
         public DbSet<Record> Table { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

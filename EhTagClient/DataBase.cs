@@ -9,10 +9,10 @@ namespace EhTagClient
     {
         internal DataBase()
         {
-            this.db = new TagDb();
+            db = new TagDb();
         }
 
-        public IQueryable<TagRecord> Tags => this.db.TagTable.AsNoTracking();
+        public IQueryable<TagRecord> Tags => db.TagTable.AsNoTracking();
 
         private TagDb db;
 
@@ -21,14 +21,14 @@ namespace EhTagClient
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!this.disposedValue)
+            if(!disposedValue)
             {
                 if(disposing)
                 {
-                    this.db.Dispose();
+                    db.Dispose();
                 }
-                this.db = null;
-                this.disposedValue = true;
+                db = null;
+                disposedValue = true;
             }
         }
 

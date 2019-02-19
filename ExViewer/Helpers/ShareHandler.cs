@@ -122,7 +122,7 @@ namespace ExViewer.Helpers
 
             public IEnumerator<IStorageItem> GetEnumerator()
             {
-                yield return this.item;
+                yield return item;
             }
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -134,16 +134,16 @@ namespace ExViewer.Helpers
             {
                 this.handler = handler;
                 var t = DataTransferManager.GetForCurrentView();
-                t.DataRequested += this.T_DataRequested;
+                t.DataRequested += T_DataRequested;
                 if (CustomHandlers.Instance != null)
                 {
-                    t.ShareProvidersRequested += this.T_ShareProvidersRequested;
+                    t.ShareProvidersRequested += T_ShareProvidersRequested;
                 }
             }
 
             private void T_ShareProvidersRequested(DataTransferManager sender, ShareProvidersRequestedEventArgs args)
             {
-                sender.ShareProvidersRequested -= this.T_ShareProvidersRequested;
+                sender.ShareProvidersRequested -= T_ShareProvidersRequested;
 
                 args.Providers.Add(CustomHandlers.Instance.CopyProvider);
 
@@ -162,12 +162,12 @@ namespace ExViewer.Helpers
 
             private void T_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
             {
-                sender.DataRequested -= this.T_DataRequested;
+                sender.DataRequested -= T_DataRequested;
                 var d = args.Request.Data;
                 d.Properties.Title = Package.Current.DisplayName;
                 d.Properties.ApplicationName = Package.Current.DisplayName;
                 d.Properties.PackageFamilyName = Package.Current.Id.FamilyName;
-                this.handler?.Invoke(sender, args);
+                handler?.Invoke(sender, args);
             }
         }
 
@@ -263,31 +263,31 @@ namespace ExViewer.Helpers
                 private DataProviderProxy(DataPackageView viewToProxy)
                 {
                     this.viewToProxy = viewToProxy;
-                    this.View = new DataPackage();
+                    View = new DataPackage();
                 }
 
                 private IAsyncOperation<DataProviderProxy> initAsync()
                 {
                     return AsyncInfo.Run(async token =>
                     {
-                        var view = this.View;
-                        view.RequestedOperation = this.viewToProxy.RequestedOperation;
-                        foreach (var item in await this.viewToProxy.GetResourceMapAsync())
+                        var view = View;
+                        view.RequestedOperation = viewToProxy.RequestedOperation;
+                        foreach (var item in await viewToProxy.GetResourceMapAsync())
                         {
                             view.ResourceMap.Add(item.Key, item.Value);
                         }
-                        foreach (var item in this.viewToProxy.Properties)
+                        foreach (var item in viewToProxy.Properties)
                         {
                             view.Properties.Add(item.Key, item.Value);
                         }
-                        foreach (var formatId in this.viewToProxy.AvailableFormats)
+                        foreach (var formatId in viewToProxy.AvailableFormats)
                         {
                             if (!view.Properties.FileTypes.Contains(formatId))
                             {
                                 view.Properties.FileTypes.Add(formatId);
                             }
 
-                            view.SetDataProvider(formatId, this.dataProvider);
+                            view.SetDataProvider(formatId, dataProvider);
                         }
                         return this;
                     });
@@ -298,7 +298,7 @@ namespace ExViewer.Helpers
                     var d = request.GetDeferral();
                     try
                     {
-                        var result = await this.viewToProxy.GetDataAsync(request.FormatId);
+                        var result = await viewToProxy.GetDataAsync(request.FormatId);
                         request.SetData(result);
                     }
                     finally

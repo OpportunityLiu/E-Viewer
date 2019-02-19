@@ -10,13 +10,13 @@ namespace ExViewer.Themes
     {
         public ThemeHelperControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
-        public Color SystemChromeMediumColor => ((SolidColorBrush)this.Background).Color;
-        public Color SystemChromeMediumLowColor => ((SolidColorBrush)this.BorderBrush).Color;
-        public Color SystemChromeHighColor => ((SolidColorBrush)this.Foreground).Color;
-        public Color SystemBaseMediumHighColor => ((SolidColorBrush)this.FocusVisualPrimaryBrush).Color;
-        public Color SystemChromeDisabledLowColor => ((SolidColorBrush)this.FocusVisualSecondaryBrush).Color;
+        public Color SystemChromeMediumColor => ((SolidColorBrush)Background).Color;
+        public Color SystemChromeMediumLowColor => ((SolidColorBrush)BorderBrush).Color;
+        public Color SystemChromeHighColor => ((SolidColorBrush)Foreground).Color;
+        public Color SystemBaseMediumHighColor => ((SolidColorBrush)FocusVisualPrimaryBrush).Color;
+        public Color SystemChromeDisabledLowColor => ((SolidColorBrush)FocusVisualSecondaryBrush).Color;
     }
 }

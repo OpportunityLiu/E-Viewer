@@ -37,14 +37,14 @@ namespace ExViewer.Services
     {
         public ContentDialogNotification()
         {
-            this.Opened += this.ContentDialogNotification_Opened;
-            this.Closing += this.ContentDialogNotification_Closing;
-            this.Closed += this.ContentDialogNotification_Closed;
+            Opened += ContentDialogNotification_Opened;
+            Closing += ContentDialogNotification_Closing;
+            Closed += ContentDialogNotification_Closed;
         }
 
         private void ContentDialogNotification_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            this.isopen = true;
+            isopen = true;
         }
 
         private void ContentDialogNotification_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
@@ -53,17 +53,17 @@ namespace ExViewer.Services
 
         private void ContentDialogNotification_Closed(ContentDialog sender, ContentDialogClosedEventArgs args)
         {
-            this.isopen = false;
-            this.Title = null;
-            this.Content = null;
-            this.PrimaryButtonText = "";
-            this.PrimaryButtonCommand = null;
-            this.PrimaryButtonCommandParameter = null;
-            this.SecondaryButtonText = "";
-            this.SecondaryButtonCommand = null;
-            this.SecondaryButtonCommandParameter = null;
-            this.CloseButtonText = "";
-            this.DefaultButton = ContentDialogButton.None;
+            isopen = false;
+            Title = null;
+            Content = null;
+            PrimaryButtonText = "";
+            PrimaryButtonCommand = null;
+            PrimaryButtonCommandParameter = null;
+            SecondaryButtonText = "";
+            SecondaryButtonCommand = null;
+            SecondaryButtonCommandParameter = null;
+            CloseButtonText = "";
+            DefaultButton = ContentDialogButton.None;
         }
 
         private bool isopen = false;
@@ -75,16 +75,16 @@ namespace ExViewer.Services
                 return AsyncOperation<bool>.CreateCompleted(false);
             }
 
-            this.Title = notificationData.Title;
-            this.Content = notificationData.Content;
-            this.PrimaryButtonText = notificationData.PrimaryButtonText;
-            this.PrimaryButtonCommand = notificationData.PrimaryButtonCommand;
-            this.PrimaryButtonCommandParameter = notificationData.PrimaryButtonCommandParameter;
-            this.SecondaryButtonText = notificationData.SecondaryButtonText;
-            this.SecondaryButtonCommand = notificationData.SecondaryButtonCommand;
-            this.SecondaryButtonCommandParameter = notificationData.SecondaryButtonCommandParameter;
-            this.CloseButtonText = notificationData.CloseButtonText;
-            this.DefaultButton = notificationData.DefaultButton;
+            Title = notificationData.Title;
+            Content = notificationData.Content;
+            PrimaryButtonText = notificationData.PrimaryButtonText;
+            PrimaryButtonCommand = notificationData.PrimaryButtonCommand;
+            PrimaryButtonCommandParameter = notificationData.PrimaryButtonCommandParameter;
+            SecondaryButtonText = notificationData.SecondaryButtonText;
+            SecondaryButtonCommand = notificationData.SecondaryButtonCommand;
+            SecondaryButtonCommandParameter = notificationData.SecondaryButtonCommandParameter;
+            CloseButtonText = notificationData.CloseButtonText;
+            DefaultButton = notificationData.DefaultButton;
 
             return ShowAsync().ContinueWith(a => true);
         }

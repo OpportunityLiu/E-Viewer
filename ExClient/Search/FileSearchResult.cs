@@ -80,12 +80,12 @@ namespace ExClient.Search
 
         private FileSearchResult(string keyword, Category category, IEnumerable<SHA1Value> hashes, string fileName, bool searchSimilar, bool onlyCovers, bool searchExpunged) : base(keyword, category)
         {
-            this.SearchSimilar = searchSimilar;
-            this.OnlyCovers = onlyCovers;
-            this.SearchExpunged = searchExpunged;
-            this.FileName = fileName ?? "";
-            this.FileHashList = hashes.ToArray();
-            this.SearchUri = new Uri(base.SearchUri + createSearchUriQuery());
+            SearchSimilar = searchSimilar;
+            OnlyCovers = onlyCovers;
+            SearchExpunged = searchExpunged;
+            FileName = fileName ?? "";
+            FileHashList = hashes.ToArray();
+            SearchUri = new Uri(base.SearchUri + createSearchUriQuery());
         }
 
         private string createSearchUriQuery()

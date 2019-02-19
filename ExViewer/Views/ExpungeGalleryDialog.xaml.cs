@@ -23,10 +23,10 @@ namespace ExViewer.Views
 
         public ExpungeGalleryDialog()
         {
-            this.InitializeComponent();
-            this.PrimaryButtonText = Strings.Resources.General.Submit;
-            this.CloseButtonText = Strings.Resources.General.Close;
-            this.lvReason.ItemsSource = expungeReasonVM;
+            InitializeComponent();
+            PrimaryButtonText = Strings.Resources.General.Submit;
+            CloseButtonText = Strings.Resources.General.Close;
+            lvReason.ItemsSource = expungeReasonVM;
         }
 
         public Gallery Gallery
@@ -42,8 +42,8 @@ namespace ExViewer.Views
 
         private void resetVote()
         {
-            this.lvReason.SelectedIndex = 0;
-            this.tbExpl.Text = "";
+            lvReason.SelectedIndex = 0;
+            tbExpl.Text = "";
         }
 
         private async void MyContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -52,52 +52,52 @@ namespace ExViewer.Views
             args.Cancel = true;
             try
             {
-                this.pbLoading.IsIndeterminate = true;
-                this.tbInfo.Text = "";
+                pbLoading.IsIndeterminate = true;
+                tbInfo.Text = "";
                 await Dispatcher.YieldIdle();
-                if (this.info is null)
-                    this.info = await this.Gallery.FetchExpungeInfoAsync();
-                await this.info.VoteAsync(((ExpungeReasonVM)this.lvReason.SelectedItem).Key, this.tbExpl.Text);
-                this.Bindings.Update();
+                if (info is null)
+                    info = await Gallery.FetchExpungeInfoAsync();
+                await info.VoteAsync(((ExpungeReasonVM)lvReason.SelectedItem).Key, tbExpl.Text);
+                Bindings.Update();
                 resetVote();
             }
             catch (Exception ex)
             {
-                this.tbInfo.Text = ex.GetMessage();
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
             }
             finally
             {
                 def.Complete();
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
         }
 
         private async void MyContentDialog_Loading(FrameworkElement sender, object args)
         {
-            if (this.Gallery is null)
+            if (Gallery is null)
                 throw new InvalidOperationException("Property RenameGalleryDialog.Gallery is null.");
-            if (this.Gallery.Expunged)
+            if (Gallery.Expunged)
             {
-                this.PrimaryButtonText = Strings.Resources.Views.ExpungeGalleryDialog.Expunged;
-                this.IsPrimaryButtonEnabled = false;
+                PrimaryButtonText = Strings.Resources.Views.ExpungeGalleryDialog.Expunged;
+                IsPrimaryButtonEnabled = false;
             }
             try
             {
-                this.pbLoading.IsIndeterminate = true;
+                pbLoading.IsIndeterminate = true;
                 resetVote();
                 await Dispatcher.YieldIdle();
-                this.info = await this.Gallery.FetchExpungeInfoAsync();
-                this.Bindings.Update();
+                info = await Gallery.FetchExpungeInfoAsync();
+                Bindings.Update();
             }
             catch (Exception ex)
             {
-                this.tbInfo.Text = ex.GetMessage();
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
             }
             finally
             {
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
         }
 
@@ -112,29 +112,29 @@ namespace ExViewer.Views
         private void lvRecords_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (ExpungeRecord)e.ClickedItem;
-            this.lvReason.SelectedItem = Array.Find(expungeReasonVM, i => i.Key == item.Reason);
-            this.tbExpl.Text = item.Explanation;
+            lvReason.SelectedItem = Array.Find(expungeReasonVM, i => i.Key == item.Reason);
+            tbExpl.Text = item.Explanation;
         }
 
         private void MyContentDialog_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.info = null;
-            this.Bindings.Update();
-            this.lvRecords.ItemsSource = null;
-            this.tbInfo.Text = "";
-            this.PrimaryButtonText = Strings.Resources.General.Submit;
-            this.IsPrimaryButtonEnabled = true;
+            info = null;
+            Bindings.Update();
+            lvRecords.ItemsSource = null;
+            tbInfo.Text = "";
+            PrimaryButtonText = Strings.Resources.General.Submit;
+            IsPrimaryButtonEnabled = true;
             resetVote();
         }
 
         private void lvReason_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.tbInfo.Text = "";
+            tbInfo.Text = "";
         }
 
         private void tbExpl_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.tbInfo.Text = "";
+            tbInfo.Text = "";
         }
 
 
@@ -158,9 +158,9 @@ namespace ExViewer.Views
     {
         public ExpungeReasonVM(ExpungeReason reason)
         {
-            this.Name = reason.ToFriendlyNameString();
-            this.Description = reason.GetDescription();
-            this.Key = reason;
+            Name = reason.ToFriendlyNameString();
+            Description = reason.GetDescription();
+            Key = reason;
         }
 
         public string Name { get; }

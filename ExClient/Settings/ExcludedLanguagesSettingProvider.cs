@@ -57,7 +57,7 @@ namespace ExClient.Settings
                 throw new ArgumentOutOfRangeException(nameof(item));
             }
 
-            if (this.items.Add((ushort)item))
+            if (items.Add((ushort)item))
             {
                 OnPropertyChanged(nameof(Count));
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
@@ -66,17 +66,17 @@ namespace ExClient.Settings
 
         public void Clear()
         {
-            if (this.items.Count == 0)
+            if (items.Count == 0)
             {
                 return;
             }
 
-            this.items.Clear();
+            items.Clear();
             OnPropertyChanged(nameof(Count));
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        public bool Contains(ExcludedLanguage item) => this.items.Contains((ushort)item);
+        public bool Contains(ExcludedLanguage item) => items.Contains((ushort)item);
 
         public void CopyTo(ExcludedLanguage[] array, int arrayIndex)
         {
@@ -95,7 +95,7 @@ namespace ExClient.Settings
 
         public bool Remove(ExcludedLanguage item)
         {
-            var r = this.items.Remove((ushort)item);
+            var r = items.Remove((ushort)item);
             if (r)
             {
                 OnPropertyChanged(nameof(Count));
@@ -104,17 +104,17 @@ namespace ExClient.Settings
             return r;
         }
 
-        public IEnumerator<ExcludedLanguage> GetEnumerator() => this.items.Select(i => (ExcludedLanguage)i).GetEnumerator();
+        public IEnumerator<ExcludedLanguage> GetEnumerator() => items.Select(i => (ExcludedLanguage)i).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         internal override void DataChanged(Dictionary<string, string> settings)
         {
-            this.items.Clear();
+            items.Clear();
             foreach (var item in settings.Keys.Where(k => k.StartsWith("xl_")))
             {
                 var i = ushort.Parse(item.Substring(3));
-                this.items.Add(i);
+                items.Add(i);
             }
             OnPropertyChanged(nameof(Count));
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
@@ -126,13 +126,13 @@ namespace ExClient.Settings
             {
                 settings.Remove(item);
             }
-            foreach (var item in this.items)
+            foreach (var item in items)
             {
                 settings["xl_" + item] = "on";
             }
         }
 
-        public int Count => this.items.Count;
+        public int Count => items.Count;
 
         bool ICollection<ExcludedLanguage>.IsReadOnly => false;
     }
