@@ -12,7 +12,7 @@ namespace ApplicationDataManager.Settings
 
         internal GroupedSettings(string name, IEnumerable<SettingInfo> contents) : base(contents)
         {
-            this.GroupName = name;
+            GroupName = name;
         }
     }
 }

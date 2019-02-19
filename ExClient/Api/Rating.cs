@@ -15,7 +15,7 @@ namespace ExClient.Api
                 throw new ArgumentOutOfRangeException(nameof(rating));
             }
 
-            this.Rating = rating;
+            Rating = rating;
         }
 
         public override string Method => "rategallery";

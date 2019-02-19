@@ -18,8 +18,8 @@ namespace ExClient.Search
     {
         public GalleryToplist(ToplistName toplist)
         {
-            this.PageCount = 200;
-            this.Toplist = toplist;
+            PageCount = 200;
+            Toplist = toplist;
         }
 
         public ToplistName Toplist { get; }

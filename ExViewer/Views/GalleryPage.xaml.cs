@@ -36,13 +36,13 @@ namespace ExViewer.Views
     {
         public GalleryPage()
         {
-            this.InitializeComponent();
-            this.RegisterPropertyChangedCallback(VisibleBoundsProperty, OnVisibleBoundsPropertyChanged);
+            InitializeComponent();
+            RegisterPropertyChangedCallback(VisibleBoundsProperty, OnVisibleBoundsPropertyChanged);
         }
 
         private void OnVisibleBoundsPropertyChanged(DependencyObject sender, DependencyProperty dp)
         {
-            this.spContent.InvalidateMeasure();
+            spContent.InvalidateMeasure();
         }
 
         private void spContent_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -50,7 +50,7 @@ namespace ExViewer.Views
             var prop = e.GetCurrentPoint(this).Properties;
             if (!prop.IsHorizontalMouseWheel && prop.MouseWheelDelta != 0)
             {
-                this.changeViewTo(prop.MouseWheelDelta < 0, false);
+                changeViewTo(prop.MouseWheelDelta < 0, false);
                 e.Handled = true;
             }
         }
@@ -64,33 +64,33 @@ namespace ExViewer.Views
 
         private void page_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Loaded -= this.page_Loaded;
+            Loaded -= page_Loaded;
 
-            this.spVisual = ElementCompositionPreview.GetElementVisual(this.spContent);
-            this.btnScrollVisual = ElementCompositionPreview.GetElementVisual(this.btn_Scroll);
-            this.compositor = this.spVisual.Compositor;
-            this.tracker = InteractionTracker.Create(this.compositor);
-            var tref = this.tracker.GetReference();
+            spVisual = ElementCompositionPreview.GetElementVisual(spContent);
+            btnScrollVisual = ElementCompositionPreview.GetElementVisual(btn_Scroll);
+            compositor = spVisual.Compositor;
+            tracker = InteractionTracker.Create(compositor);
+            var tref = tracker.GetReference();
 
             var trackerTarget = ExpressionValues.Target.CreateInteractionTrackerTarget();
-            var endpoint1 = InteractionTrackerInertiaRestingValue.Create(this.compositor);
+            var endpoint1 = InteractionTrackerInertiaRestingValue.Create(compositor);
             endpoint1.SetCondition(trackerTarget.NaturalRestingPosition.Y < (trackerTarget.MaxPosition.Y - trackerTarget.MinPosition.Y) / 2);
             endpoint1.SetRestingValue(trackerTarget.MinPosition.Y);
-            var endpoint2 = InteractionTrackerInertiaRestingValue.Create(this.compositor);
+            var endpoint2 = InteractionTrackerInertiaRestingValue.Create(compositor);
             endpoint2.SetCondition(trackerTarget.NaturalRestingPosition.Y >= (trackerTarget.MaxPosition.Y - trackerTarget.MinPosition.Y) / 2);
             endpoint2.SetRestingValue(trackerTarget.MaxPosition.Y);
-            this.tracker.ConfigurePositionYInertiaModifiers(new InteractionTrackerInertiaModifier[] { endpoint1, endpoint2 });
+            tracker.ConfigurePositionYInertiaModifiers(new InteractionTrackerInertiaModifier[] { endpoint1, endpoint2 });
 
-            this.interactionSource = VisualInteractionSource.Create(this.spVisual);
-            this.interactionSource.PositionYSourceMode = InteractionSourceMode.EnabledWithInertia;
-            this.tracker.InteractionSources.Add(this.interactionSource);
-            this.propertySet = this.compositor.CreatePropertySet();
-            this.propertySet.InsertScalar("progress", 0.0f);
-            this.propertySet.StartAnimation("progress", tref.Position.Y / tref.MaxPosition.Y);
-            var progress = this.propertySet.GetReference().GetScalarProperty("progress");
-            this.btnScrollVisual.StartAnimation("RotationAngleInDegrees", ExpressionFunctions.Clamp(progress, 0f, 1f) * 180);
-            this.btnScrollVisual.CenterPoint = new System.Numerics.Vector3((float)this.btn_Scroll.ActualWidth / 2, (float)this.btn_Scroll.ActualHeight / 2, 0);
-            this.spVisual.StartAnimation("Offset.Y", -ExpressionFunctions.Clamp(progress, -0.4f, 1.4f) * tref.MaxPosition.Y);
+            interactionSource = VisualInteractionSource.Create(spVisual);
+            interactionSource.PositionYSourceMode = InteractionSourceMode.EnabledWithInertia;
+            tracker.InteractionSources.Add(interactionSource);
+            propertySet = compositor.CreatePropertySet();
+            propertySet.InsertScalar("progress", 0.0f);
+            propertySet.StartAnimation("progress", tref.Position.Y / tref.MaxPosition.Y);
+            var progress = propertySet.GetReference().GetScalarProperty("progress");
+            btnScrollVisual.StartAnimation("RotationAngleInDegrees", ExpressionFunctions.Clamp(progress, 0f, 1f) * 180);
+            btnScrollVisual.CenterPoint = new System.Numerics.Vector3((float)btn_Scroll.ActualWidth / 2, (float)btn_Scroll.ActualHeight / 2, 0);
+            spVisual.StartAnimation("Offset.Y", -ExpressionFunctions.Clamp(progress, -0.4f, 1.4f) * tref.MaxPosition.Y);
             gdInfo_SizeChanged(this, null);
         }
 
@@ -98,44 +98,44 @@ namespace ExViewer.Views
         {
             var feContent = (FrameworkElement)sender;
             var svContent = feContent.Descendants<ScrollViewer>().First();
-            svContent.ViewChanging += this.pv_Content_ViewChanging;
-            feContent.Loaded -= this.pv_Content_Loaded;
+            svContent.ViewChanging += pv_Content_ViewChanging;
+            feContent.Loaded -= pv_Content_Loaded;
         }
 
         private int sizeChanging;
         private async void gdInfo_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var state = this.isGdInfoHide;
-            if (this.tracker != null)
-                this.tracker.MaxPosition = new System.Numerics.Vector3(0, (float)this.gdInfo.ActualHeight, 0);
-            this.sizeChanging++;
+            var state = isGdInfoHide;
+            if (tracker != null)
+                tracker.MaxPosition = new System.Numerics.Vector3(0, (float)gdInfo.ActualHeight, 0);
+            sizeChanging++;
             await Dispatcher.Yield(CoreDispatcherPriority.Low);
-            this.sizeChanging--;
-            if (this.sizeChanging != 0)
+            sizeChanging--;
+            if (sizeChanging != 0)
                 return;
             changeViewTo(state, true);
         }
 
         private void spContent_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch && this.interactionSource != null)
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch && interactionSource != null)
             {
                 try
                 {
-                    this.interactionSource.TryRedirectForManipulation(e.GetCurrentPoint(this.spContent));
+                    interactionSource.TryRedirectForManipulation(e.GetCurrentPoint(spContent));
                 }
                 catch (UnauthorizedAccessException) { }
-                this.isGdInfoHideDef = null;
+                isGdInfoHideDef = null;
             }
         }
 
         private void pv_Content_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
-            if (e.NextView.VerticalOffset < e.FinalView.VerticalOffset && !this.isGdInfoHide)
+            if (e.NextView.VerticalOffset < e.FinalView.VerticalOffset && !isGdInfoHide)
             {
                 changeViewTo(true, false);
             }
-            else if (e.IsInertial && e.NextView.VerticalOffset < 1 && this.isGdInfoHide)
+            else if (e.IsInertial && e.NextView.VerticalOffset < 1 && isGdInfoHide)
             {
                 changeViewTo(false, false);
             }
@@ -147,13 +147,13 @@ namespace ExViewer.Views
             {
                 foreach (var item in ele.Ancestors<ListViewBase>())
                 {
-                    if (item == this.gv || item == this.lv_Comments || item == this.lv_Torrents)
+                    if (item == gv || item == lv_Comments || item == lv_Torrents)
                     {
                         changeViewTo(true, false);
                         return;
                     }
                 }
-                var trans = this.spContent.TransformToVisual(ele).TransformPoint(new Point(0, this.gdInfo.ActualHeight));
+                var trans = spContent.TransformToVisual(ele).TransformPoint(new Point(0, gdInfo.ActualHeight));
                 if (trans.Y > 0)
                 {
                     changeViewTo(false, false);
@@ -170,40 +170,40 @@ namespace ExViewer.Views
         {
             get
             {
-                if (this.isGdInfoHideDef is bool va)
+                if (isGdInfoHideDef is bool va)
                 {
                     return va;
                 }
-                if (this.tracker is null)
+                if (tracker is null)
                 {
                     return false;
                 }
-                var current = this.tracker.Position.Y;
-                var max = this.tracker.MaxPosition.Y;
+                var current = tracker.Position.Y;
+                var max = tracker.MaxPosition.Y;
                 return current > max / 2;
             }
         }
 
         private void changeViewTo(bool hideGdInfo, bool disableAnimation)
         {
-            if (this.isGdInfoHide == hideGdInfo && !disableAnimation)
+            if (isGdInfoHide == hideGdInfo && !disableAnimation)
             {
                 return;
             }
-            if (this.tracker is null)
+            if (tracker is null)
             {
                 return;
             }
-            this.isGdInfoHideDef = hideGdInfo;
+            isGdInfoHideDef = hideGdInfo;
             if (disableAnimation)
             {
-                this.tracker.TryUpdatePosition(hideGdInfo ? this.tracker.MaxPosition : this.tracker.MinPosition);
+                tracker.TryUpdatePosition(hideGdInfo ? tracker.MaxPosition : tracker.MinPosition);
             }
             else
             {
-                var ani = this.compositor.CreateVector3KeyFrameAnimation();
-                ani.InsertKeyFrame(1, hideGdInfo ? this.tracker.MaxPosition : this.tracker.MinPosition);
-                this.tracker.TryUpdatePositionWithAnimation(ani);
+                var ani = compositor.CreateVector3KeyFrameAnimation();
+                ani.InsertKeyFrame(1, hideGdInfo ? tracker.MaxPosition : tracker.MinPosition);
+                tracker.TryUpdatePositionWithAnimation(ani);
             }
         }
 
@@ -213,18 +213,18 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             var reset = e.NavigationMode == NavigationMode.New;
             var restore = e.NavigationMode == NavigationMode.Back;
-            this.ViewModel = GalleryVM.GetVM((long)e.Parameter);
-            var idx = this.ViewModel.View.CurrentPosition;
-            this.ViewModel.View.IsCurrentPositionLocked = false;
+            ViewModel = GalleryVM.GetVM((long)e.Parameter);
+            var idx = ViewModel.View.CurrentPosition;
+            ViewModel.View.IsCurrentPositionLocked = false;
             if (reset)
             {
                 changeViewTo(false, true);
 
-                this.gv.ScrollIntoView(this.ViewModel.Gallery.First());
+                gv.ScrollIntoView(ViewModel.Gallery.First());
 
-                if (this.ViewModel.Gallery.Comments.IsLoaded)
+                if (ViewModel.Gallery.Comments.IsLoaded)
                 {
-                    this.lv_Comments.ScrollIntoView(this.lv_Comments.Items.FirstOrDefault());
+                    lv_Comments.ScrollIntoView(lv_Comments.Items.FirstOrDefault());
                 }
                 else
                 {
@@ -236,41 +236,41 @@ namespace ExViewer.Views
                             sender.PropertyChanged -= handler;
                             if (!sender.IsEmpty)
                             {
-                                this.lv_Comments.ScrollIntoView(sender[0]);
+                                lv_Comments.ScrollIntoView(sender[0]);
                             }
                         }
                     }
-                    this.ViewModel.Gallery.Comments.PropertyChanged += handler;
+                    ViewModel.Gallery.Comments.PropertyChanged += handler;
                 }
 
-                this.lv_Torrents.ScrollIntoView(this.lv_Torrents.Items.FirstOrDefault());
+                lv_Torrents.ScrollIntoView(lv_Torrents.Items.FirstOrDefault());
 
                 await Task.Delay(33);
 
-                this.pv.Focus(FocusState.Programmatic);
-                this.pv.SelectedIndex = 0;
+                pv.Focus(FocusState.Programmatic);
+                pv.SelectedIndex = 0;
             }
             else if (restore)
             {
                 var animation = ConnectedAnimationService.GetForCurrentView().GetAnimation("ImageAnimation");
                 changeViewTo(true, true);
-                if (this.ViewModel.View.CurrentItem is null)
+                if (ViewModel.View.CurrentItem is null)
                 {
-                    this.ViewModel.View.MoveCurrentToFirst();
+                    ViewModel.View.MoveCurrentToFirst();
                     idx = 0;
                 }
-                this.gv.ScrollIntoView(this.ViewModel.View.CurrentItem, ScrollIntoViewAlignment.Leading);
+                gv.ScrollIntoView(ViewModel.View.CurrentItem, ScrollIntoViewAlignment.Leading);
                 await Dispatcher.Yield(CoreDispatcherPriority.Low);
-                var container = (Control)this.gv.ContainerFromIndex(idx);
-                if (container != null && this.pv.SelectedIndex == 0)
+                var container = (Control)gv.ContainerFromIndex(idx);
+                if (container != null && pv.SelectedIndex == 0)
                 {
                     container.Focus(FocusState.Programmatic);
                 }
                 if (animation != null)
                 {
-                    if (this.pv.SelectedIndex == 0 && container != null)
+                    if (pv.SelectedIndex == 0 && container != null)
                     {
-                        await this.gv.TryStartConnectedAnimationAsync(animation, this.ViewModel.View.CurrentItem, "Image");
+                        await gv.TryStartConnectedAnimationAsync(animation, ViewModel.View.CurrentItem, "Image");
                     }
                     else
                     {
@@ -278,8 +278,8 @@ namespace ExViewer.Views
                     }
                 }
                 await Dispatcher.YieldIdle();
-                container = (Control)this.gv.ContainerFromIndex(idx);
-                if (container != null && this.pv.SelectedIndex == 0)
+                container = (Control)gv.ContainerFromIndex(idx);
+                if (container != null && pv.SelectedIndex == 0)
                 {
                     container.Focus(FocusState.Programmatic);
                 }
@@ -289,7 +289,7 @@ namespace ExViewer.Views
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            this.ViewModel.View.IsCurrentPositionLocked = true;
+            ViewModel.View.IsCurrentPositionLocked = true;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -303,8 +303,8 @@ namespace ExViewer.Views
 
         private void gv_ItemClick(object sender, ItemClickEventArgs e)
         {
-            this.gv.PrepareConnectedAnimation("ImageAnimation", e.ClickedItem, "Image");
-            this.ViewModel.OpenImage.Execute((GalleryImage)e.ClickedItem);
+            gv.PrepareConnectedAnimation("ImageAnimation", e.ClickedItem, "Image");
+            ViewModel.OpenImage.Execute((GalleryImage)e.ClickedItem);
         }
 
         public new GalleryVM ViewModel
@@ -315,30 +315,30 @@ namespace ExViewer.Views
 
         private void btn_Scroll_Click(object sender, RoutedEventArgs e)
         {
-            changeViewTo(!this.isGdInfoHide, false);
+            changeViewTo(!isGdInfoHide, false);
         }
 
         private async void pv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (this.pv.SelectedIndex)
+            switch (pv.SelectedIndex)
             {
             case 1://Comments
-                if (!this.ViewModel.Gallery.Comments.IsLoaded)
+                if (!ViewModel.Gallery.Comments.IsLoaded)
                 {
-                    await this.ViewModel.LoadComments();
+                    await ViewModel.LoadComments();
                 }
                 break;
             case 2://Torrents
-                if (this.ViewModel.Torrents is null)
+                if (ViewModel.Torrents is null)
                 {
-                    await this.ViewModel.LoadTorrents();
+                    await ViewModel.LoadTorrents();
                 }
                 // finish the add animation
                 await Task.Delay(150);
-                if (!this.lv_Torrents.Items.IsNullOrEmpty())
+                if (!lv_Torrents.Items.IsNullOrEmpty())
                 {
-                    this.lv_Torrents.SelectedIndex = -1;
-                    this.lv_Torrents.SelectedIndex = 0;
+                    lv_Torrents.SelectedIndex = -1;
+                    lv_Torrents.SelectedIndex = 0;
                 }
                 break;
             }
@@ -346,16 +346,16 @@ namespace ExViewer.Views
 
         public void ChangePivotSelection(int index)
         {
-            this.pv.SelectedIndex = index;
+            pv.SelectedIndex = index;
         }
 
         private void lv_Torrents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            foreach (var item in this.lv_Torrents.Descendants<ListViewItem>())
+            foreach (var item in lv_Torrents.Descendants<ListViewItem>())
             {
                 setDetailVisibility(item, Visibility.Collapsed);
             }
-            var con = (ListViewItem)this.lv_Torrents.ContainerFromIndex(this.lv_Torrents.SelectedIndex);
+            var con = (ListViewItem)lv_Torrents.ContainerFromIndex(lv_Torrents.SelectedIndex);
             if (con is null)
                 return;
             setDetailVisibility(con, Visibility.Visible);
@@ -374,26 +374,26 @@ namespace ExViewer.Views
             switch (e.Key)
             {
             case VirtualKey.GamepadY:
-                if (this.cb_top.IsOpen)
+                if (cb_top.IsOpen)
                 {
                     e.Handled = false;
                     break;
                 }
-                this.changeViewTo(false, false);
-                this.tpTags.Focus(FocusState.Keyboard);
+                changeViewTo(false, false);
+                tpTags.Focus(FocusState.Keyboard);
                 break;
             case VirtualKey.GamepadX:
-                if (this.cb_top.IsOpen)
+                if (cb_top.IsOpen)
                 {
                     e.Handled = false;
                     break;
                 }
-                this.changeViewTo(true, false);
-                if ((this.pv.SelectedItem as PivotItem)?.Content is ListViewBase lvb)
+                changeViewTo(true, false);
+                if ((pv.SelectedItem as PivotItem)?.Content is ListViewBase lvb)
                 {
                     if (lvb.Items.Count == 0)
                     {
-                        this.pv.Focus(FocusState.Keyboard);
+                        pv.Focus(FocusState.Keyboard);
                     }
                     else if (lvb.ContainerFromIndex(lvb.SelectedIndex) is Control c)
                     {
@@ -406,16 +406,16 @@ namespace ExViewer.Views
                 }
                 else
                 {
-                    this.pv.Focus(FocusState.Keyboard);
+                    pv.Focus(FocusState.Keyboard);
                 }
                 break;
             case VirtualKey.GamepadMenu:
             case VirtualKey.Application:
-                this.cb_top.IsOpen = !this.cb_top.IsOpen;
-                if (this.cb_top.IsOpen && (this.btnMoreButton is null))
+                cb_top.IsOpen = !cb_top.IsOpen;
+                if (cb_top.IsOpen && (btnMoreButton is null))
                 {
-                    this.btnMoreButton = this.cb_top.Descendants<Button>("MoreButton").FirstOrDefault();
-                    this.btnMoreButton?.Focus(FocusState.Programmatic);
+                    btnMoreButton = cb_top.Descendants<Button>("MoreButton").FirstOrDefault();
+                    btnMoreButton?.Focus(FocusState.Programmatic);
                 }
                 break;
             default:
@@ -427,30 +427,30 @@ namespace ExViewer.Views
         private Button btnMoreButton;
         public void CloseAll()
         {
-            this.cb_top.IsOpen = false;
+            cb_top.IsOpen = false;
         }
 
         private void page_Loading(FrameworkElement sender, object args)
         {
-            this.SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.SetSplitViewButtonPlaceholderVisibility;
+            SetSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += SetSplitViewButtonPlaceholderVisibility;
         }
 
         private void page_Unloaded(object sender, RoutedEventArgs e)
         {
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.SetSplitViewButtonPlaceholderVisibility;
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= SetSplitViewButtonPlaceholderVisibility;
         }
 
         private void cb_top_Opening(object sender, object e)
         {
-            this.tbGalleryName.MaxLines = 0;
-            Grid.SetColumn(this.tbGalleryName, 0);
+            tbGalleryName.MaxLines = 0;
+            Grid.SetColumn(tbGalleryName, 0);
         }
 
         private void cb_top_Closed(object sender, object e)
         {
-            this.tbGalleryName.ClearValue(TextBlock.MaxLinesProperty);
-            Grid.SetColumn(this.tbGalleryName, 1);
+            tbGalleryName.ClearValue(TextBlock.MaxLinesProperty);
+            Grid.SetColumn(tbGalleryName, 1);
         }
 
         private Thickness gdCbContentPadding(double minHeight)
@@ -463,11 +463,11 @@ namespace ExViewer.Views
         {
             if (visible)
             {
-                this.cdSplitViewPlaceholder.Width = new GridLength(48);
+                cdSplitViewPlaceholder.Width = new GridLength(48);
             }
             else
             {
-                this.cdSplitViewPlaceholder.Width = new GridLength(0);
+                cdSplitViewPlaceholder.Width = new GridLength(0);
             }
         }
 
@@ -519,28 +519,28 @@ namespace ExViewer.Views
             var infoH = height - this.Ancestors<GalleryPage>().First().VisibleBounds.Bottom;
             if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
             {
-                if (this.gdPvContentHeaderPresenter is null)
+                if (gdPvContentHeaderPresenter is null)
                 {
-                    this.gdPvContentHeaderPresenter = this.Children[1].Descendants<Grid>("HeaderPresenter").FirstOrDefault();
+                    gdPvContentHeaderPresenter = Children[1].Descendants<Grid>("HeaderPresenter").FirstOrDefault();
                 }
-                if (this.gdPvContentHeaderPresenter != null)
+                if (gdPvContentHeaderPresenter != null)
                 {
-                    infoH -= this.gdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
+                    infoH -= gdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
                 }
             }
             infoH = Math.Max(80, Math.Min(infoH, 360));
-            this.Children[0].Measure(new Size(width, infoH));
-            this.Children[1].Measure(availableSize);
-            return new Size(width, this.Children[0].DesiredSize.Height + height);
+            Children[0].Measure(new Size(width, infoH));
+            Children[1].Measure(availableSize);
+            return new Size(width, Children[0].DesiredSize.Height + height);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
             var width = finalSize.Width;
             var height = finalSize.Height;
-            var infoH = this.Children[0].DesiredSize.Height;
-            this.Children[0].Arrange(new Rect(0, 0, width, infoH));
-            this.Children[1].Arrange(new Rect(0, infoH, width, finalSize.Height - infoH));
+            var infoH = Children[0].DesiredSize.Height;
+            Children[0].Arrange(new Rect(0, 0, width, infoH));
+            Children[1].Arrange(new Rect(0, infoH, width, finalSize.Height - infoH));
             return finalSize;
         }
     }

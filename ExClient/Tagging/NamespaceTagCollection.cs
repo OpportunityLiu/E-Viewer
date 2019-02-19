@@ -10,9 +10,9 @@ namespace ExClient.Tagging
     {
         internal NamespaceTagCollection(TagCollection owner, int index)
         {
-            this.Owner = owner;
-            this.version = owner.Version;
-            this.groupIndex = index;
+            Owner = owner;
+            version = owner.Version;
+            groupIndex = index;
         }
 
         private readonly int groupIndex;
@@ -21,24 +21,24 @@ namespace ExClient.Tagging
 
         public TagCollection Owner { get; }
 
-        public Namespace Namespace => this.Owner.Keys[this.groupIndex];
+        public Namespace Namespace => Owner.Keys[groupIndex];
 
-        public int Count => this.Owner.Offset[this.groupIndex + 1] - this.Owner.Offset[this.groupIndex];
+        public int Count => Owner.Offset[groupIndex + 1] - Owner.Offset[groupIndex];
 
         bool IList.IsFixedSize => true;
         bool IList.IsReadOnly => true;
         bool ICollection.IsSynchronized => false;
-        object ICollection.SyncRoot => ((IList)this.Owner).SyncRoot;
+        object ICollection.SyncRoot => ((IList)Owner).SyncRoot;
 
         object IList.this[int index] { get => this[index]; set => throw new InvalidOperationException(); }
 
-        public GalleryTag this[int index] => this.Owner.Data[this.Owner.Offset[this.groupIndex] + index];
+        public GalleryTag this[int index] => Owner.Data[Owner.Offset[groupIndex] + index];
 
         public IEnumerator<GalleryTag> GetEnumerator()
         {
-            var end = this.Owner.Offset[this.groupIndex + 1];
-            for (var i = this.Owner.Offset[this.groupIndex]; i < end; i++)
-                yield return this.Owner.Data[i];
+            var end = Owner.Offset[groupIndex + 1];
+            for (var i = Owner.Offset[groupIndex]; i < end; i++)
+                yield return Owner.Data[i];
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

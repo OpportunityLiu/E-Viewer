@@ -20,13 +20,13 @@ namespace ExClient.Galleries.Rating
         }
 
         private double averageScore;
-        public double AverageScore { get => this.averageScore; internal set => Set(ref this.averageScore, value); }
+        public double AverageScore { get => averageScore; internal set => Set(ref averageScore, value); }
 
         private Score userScore;
-        public Score UserScore { get => this.userScore; private set => Set(ref this.userScore, value); }
+        public Score UserScore { get => userScore; private set => Set(ref userScore, value); }
 
         private long ratingCount = -1;
-        public long RatingCount { get => this.ratingCount; private set => Set(ref this.ratingCount, value); }
+        public long RatingCount { get => ratingCount; private set => Set(ref ratingCount, value); }
 
         private static Regex regAvg = new Regex(@"var\s+average_rating\s*=\s*([\.\d]+)", RegexOptions.Compiled);
         private static Regex regDisp = new Regex(@"var\s+display_rating\s*=\s*([\.\d]+)", RegexOptions.Compiled);
@@ -89,7 +89,7 @@ namespace ExClient.Galleries.Rating
 
             var x = int.Parse(pos.Groups[1].Value);
             var y = int.Parse(pos.Groups[2].Value);
-            this.UserScore = (Score)((x + 80) / 8 - (y < -10 ? 1 : 0));
+            UserScore = (Score)((x + 80) / 8 - (y < -10 ? 1 : 0));
         }
 
         private static bool userRated(string classes)
@@ -97,16 +97,16 @@ namespace ExClient.Galleries.Rating
 
         private void analyzeData(double averageScore, double displayScore, string ratingImageClass, long ratingCount)
         {
-            this.AverageScore = averageScore;
-            this.RatingCount = ratingCount;
+            AverageScore = averageScore;
+            RatingCount = ratingCount;
 
             if (ratingImageClass != null && userRated(ratingImageClass))
             {
-                this.UserScore = displayScore.ToScore();
+                UserScore = displayScore.ToScore();
             }
             else
             {
-                this.UserScore = Score.NotSet;
+                UserScore = Score.NotSet;
             }
         }
 
@@ -114,7 +114,7 @@ namespace ExClient.Galleries.Rating
         {
             return AsyncInfo.Run(async token =>
             {
-                var reqInfo = new RatingRequest(this.owner, rating);
+                var reqInfo = new RatingRequest(owner, rating);
                 var r = reqInfo.GetResponseAsync();
                 token.Register(r.Cancel);
                 var result = await r;

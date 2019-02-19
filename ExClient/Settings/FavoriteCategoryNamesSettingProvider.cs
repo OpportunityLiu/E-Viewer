@@ -13,15 +13,15 @@ namespace ExClient.Settings
 
         internal override void ApplyChanges(Dictionary<string, string> settings)
         {
-            for (var i = 0; i < this.data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
             {
-                settings["favorite_" + i] = this.data[i];
+                settings["favorite_" + i] = data[i];
             }
         }
 
         internal override void DataChanged(Dictionary<string, string> settings)
         {
-            for (var i = 0; i < this.data.Length; i++)
+            for (var i = 0; i < data.Length; i++)
             {
                 if (!settings.TryGetValue("favorite_" + i, out var name))
                 {
@@ -34,13 +34,13 @@ namespace ExClient.Settings
 
         public string this[int index]
         {
-            get => this.data[index];
+            get => data[index];
             set
             {
-                var old = this.data[index];
-                if (Set(ref this.data[index], value))
+                var old = data[index];
+                if (Set(ref data[index], value))
                 {
-                    this.CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, old, index));
+                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, old, index));
                     var fav = Client.Current?.Favorites;
                     if (fav != null)
                     {
@@ -53,20 +53,20 @@ namespace ExClient.Settings
 
         public int Count => 10;
 
-        public bool Contains(string item) => ((IList<string>)this.data).Contains(item);
-        bool IList.Contains(object value) => ((IList)this.data).Contains(value);
-        public void CopyTo(string[] array, int arrayIndex) => ((IList<string>)this.data).CopyTo(array, arrayIndex);
-        void ICollection.CopyTo(Array array, int index) => this.data.CopyTo(array, index);
-        public int IndexOf(string item) => ((IList<string>)this.data).IndexOf(item);
-        int IList.IndexOf(object value) => ((IList)this.data).IndexOf(value);
-        public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)this.data).GetEnumerator();
+        public bool Contains(string item) => ((IList<string>)data).Contains(item);
+        bool IList.Contains(object value) => ((IList)data).Contains(value);
+        public void CopyTo(string[] array, int arrayIndex) => ((IList<string>)data).CopyTo(array, arrayIndex);
+        void ICollection.CopyTo(Array array, int index) => data.CopyTo(array, index);
+        public int IndexOf(string item) => ((IList<string>)data).IndexOf(item);
+        int IList.IndexOf(object value) => ((IList)data).IndexOf(value);
+        public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)data).GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         bool ICollection<string>.IsReadOnly => false;
         bool IList.IsFixedSize => true;
         bool IList.IsReadOnly => false;
         bool ICollection.IsSynchronized => false;
-        object ICollection.SyncRoot => this.data;
+        object ICollection.SyncRoot => data;
 
 
         void ICollection<string>.Add(string item) => throw new NotSupportedException();

@@ -17,7 +17,7 @@ namespace ExViewer.Controls
     {
         public HtmlTextBlock()
         {
-            this.DefaultStyleKey = typeof(HtmlTextBlock);
+            DefaultStyleKey = typeof(HtmlTextBlock);
             RegisterPropertyChangedCallback(XYFocusDownProperty, XYPropertyChanged);
             RegisterPropertyChangedCallback(XYFocusUpProperty, XYPropertyChanged);
             RegisterPropertyChangedCallback(XYFocusLeftProperty, XYPropertyChanged);
@@ -26,13 +26,13 @@ namespace ExViewer.Controls
 
         private void XYPropertyChanged(DependencyObject sender, DependencyProperty e)
         {
-            if (!this.HasHyperlinks)
+            if (!HasHyperlinks)
             {
                 return;
             }
-            var u = this.XYFocusUp;
-            var d = this.XYFocusDown;
-            var begin = this.FirstLink;
+            var u = XYFocusUp;
+            var d = XYFocusDown;
+            var begin = FirstLink;
             switch (begin)
             {
             case Hyperlink hl:
@@ -44,7 +44,7 @@ namespace ExViewer.Controls
             default:
                 throw new InvalidOperationException();
             }
-            var end = this.LastLink;
+            var end = LastLink;
             switch (end)
             {
             case Hyperlink hl:
@@ -59,8 +59,8 @@ namespace ExViewer.Controls
             var o = begin;
             while (o != null)
             {
-                var l = this.XYFocusLeft;
-                var r = this.XYFocusRight;
+                var l = XYFocusLeft;
+                var r = XYFocusRight;
                 switch (o)
                 {
                 case Hyperlink hl:
@@ -83,7 +83,7 @@ namespace ExViewer.Controls
 
         protected override void OnApplyTemplate()
         {
-            this.Presenter = GetTemplateChild(nameof(this.Presenter)) as RichTextBlock;
+            Presenter = GetTemplateChild(nameof(Presenter)) as RichTextBlock;
             reload();
         }
 
@@ -145,15 +145,15 @@ namespace ExViewer.Controls
 
         private async void reload()
         {
-            var presenter = this.Presenter;
-            var htmlContent = this.HtmlContent;
+            var presenter = Presenter;
+            var htmlContent = HtmlContent;
             if (presenter is null)
             {
                 return;
             }
-            if (this.HasHyperlinks)
+            if (HasHyperlinks)
             {
-                var l = this.FirstLink;
+                var l = FirstLink;
                 while (l != null)
                 {
                     switch (l)
@@ -180,15 +180,15 @@ namespace ExViewer.Controls
             presenter.Blocks.Clear();
             if (htmlContent is null)
             {
-                this.HasHyperlinks = false;
-                this.FirstLink = null;
-                this.LastLink = null;
+                HasHyperlinks = false;
+                FirstLink = null;
+                LastLink = null;
                 return;
             }
             var para = new Paragraph();
             presenter.Blocks.Add(para);
-            var links = await loadHtmlAsync(para, htmlContent, this.DetectLink);
-            if (presenter == this.Presenter && htmlContent == this.HtmlContent)
+            var links = await loadHtmlAsync(para, htmlContent, DetectLink);
+            if (presenter == Presenter && htmlContent == HtmlContent)
             {
                 if (links.Count > 1)
                 {
@@ -199,16 +199,16 @@ namespace ExViewer.Controls
                 }
                 if (links.Count != 0)
                 {
-                    this.HasHyperlinks = true;
-                    this.FirstLink = links.First();
-                    this.LastLink = links.Last();
+                    HasHyperlinks = true;
+                    FirstLink = links.First();
+                    LastLink = links.Last();
                     XYPropertyChanged(this, null);
                 }
                 else
                 {
-                    this.HasHyperlinks = false;
-                    this.FirstLink = null;
-                    this.LastLink = null;
+                    HasHyperlinks = false;
+                    FirstLink = null;
+                    LastLink = null;
                 }
             }
         }
@@ -362,7 +362,7 @@ namespace ExViewer.Controls
                 }
                 return u;
             case "del"://[s]
-                var s = new Span() { Foreground = (Brush)this.Resources["SystemControlForegroundChromeHighBrush"] };
+                var s = new Span() { Foreground = (Brush)Resources["SystemControlForegroundChromeHighBrush"] };
                 foreach (var item in createChildNodes(node, hyperlinks, detectLink))
                 {
                     s.Inlines.Add(item);

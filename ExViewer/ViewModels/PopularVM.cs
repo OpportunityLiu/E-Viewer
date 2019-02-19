@@ -13,8 +13,8 @@ namespace ExViewer.ViewModels
     {
         public PopularVM()
         {
-            this.Refresh.Tag = this;
-            this.Open.Tag = this;
+            Refresh.Tag = this;
+            Open.Tag = this;
         }
 
         public PopularCollection Galleries => Client.Current.Popular;

@@ -75,7 +75,7 @@ namespace ExDawnOfDayTask
             var d = taskInstance.GetDeferral();
             try
             {
-                HentaiVerseInfo.DawnOfDayRewardsAwarded += this.HentaiVerseInfo_DawnOfDayRewardsAwarded;
+                HentaiVerseInfo.DawnOfDayRewardsAwarded += HentaiVerseInfo_DawnOfDayRewardsAwarded;
                 await HentaiVerseInfo.FetchAsync();
                 if (ExClient.Client.Current.UserId == 1832306)
                 {
@@ -89,7 +89,7 @@ namespace ExDawnOfDayTask
             catch { }
             finally
             {
-                HentaiVerseInfo.DawnOfDayRewardsAwarded -= this.HentaiVerseInfo_DawnOfDayRewardsAwarded;
+                HentaiVerseInfo.DawnOfDayRewardsAwarded -= HentaiVerseInfo_DawnOfDayRewardsAwarded;
                 d.Complete();
             }
         }

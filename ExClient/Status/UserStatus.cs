@@ -27,7 +27,7 @@ namespace ExClient.Status
             var table = toplistsDiv.Element("table").Descendants("table").FirstOrDefault();
             if (table is null)
             {
-                this.toplists.Clear();
+                toplists.Clear();
                 return;
             }
             var newList = new List<ToplistItem>();
@@ -44,7 +44,7 @@ namespace ExClient.Status
                 var listID = int.Parse(link.Query.Split('=').Last(), System.Globalization.NumberStyles.Integer);
                 newList.Add(new ToplistItem(rank, (ToplistName)listID));
             }
-            this.toplists.Update(newList);
+            toplists.Update(newList);
         }
 
         private void analyzeImageLimit(HtmlNode imageLimitDiv)
@@ -52,15 +52,15 @@ namespace ExClient.Status
             var values = imageLimitDiv.Descendants("strong").Select(deEntitizeAndParse).ToList();
             if (values.Count != 4)
                 throw new InvalidOperationException("Wrong values.Count from analyzeImageLimit");
-            this.ImageUsage = values[0];
-            this.ImageUsageLimit = values[1];
-            this.ImageUsageRegenerateRatePerMinute = values[2];
-            this.ImageUsageResetCost = values[3];
+            ImageUsage = values[0];
+            ImageUsageLimit = values[1];
+            ImageUsageRegenerateRatePerMinute = values[2];
+            ImageUsageResetCost = values[3];
         }
 
         private void analyzeModPower(HtmlNode modPowerDiv)
         {
-            this.ModerationPower = deEntitizeAndParse(modPowerDiv.Descendants("div").Last());
+            ModerationPower = deEntitizeAndParse(modPowerDiv.Descendants("div").Last());
             var values = modPowerDiv.Descendants("td")
                 .Where(n => n.GetAttribute("style", "").Contains("font-weight:bold"))
                 .Select(n => n.GetInnerText())
@@ -69,15 +69,15 @@ namespace ExClient.Status
                 .ToList();
             if (values.Count != 8)
                 throw new InvalidOperationException("Wrong values.Count from analyzeModPower");
-            this.ModerationPowerBase = values[0];
-            this.ModerationPowerAwards = values[1];
-            this.ModerationPowerTagging = values[2];
-            this.ModerationPowerLevel = values[3];
-            this.ModerationPowerDonations = values[4];
-            this.ModerationPowerForumActivity = values[5];
-            this.ModerationPowerUploadsAndHatH = values[6];
-            this.ModerationPowerAccountAge = values[7];
-            this.ModerationPowerCaculated = values.Take(3).Sum() + Math.Min(values.Skip(3).Take(5).Sum(), 25);
+            ModerationPowerBase = values[0];
+            ModerationPowerAwards = values[1];
+            ModerationPowerTagging = values[2];
+            ModerationPowerLevel = values[3];
+            ModerationPowerDonations = values[4];
+            ModerationPowerForumActivity = values[5];
+            ModerationPowerUploadsAndHatH = values[6];
+            ModerationPowerAccountAge = values[7];
+            ModerationPowerCaculated = values.Take(3).Sum() + Math.Min(values.Skip(3).Take(5).Sum(), 25);
         }
 
         public async Task RefreshAsync()
@@ -116,19 +116,19 @@ namespace ExClient.Status
         private int imageUsageResetCost;
         public int ImageUsage
         {
-            get => this.imageUsage; private set => Set(ref this.imageUsage, value);
+            get => imageUsage; private set => Set(ref imageUsage, value);
         }
         public int ImageUsageLimit
         {
-            get => this.imageUsageLimit; private set => Set(ref this.imageUsageLimit, value);
+            get => imageUsageLimit; private set => Set(ref imageUsageLimit, value);
         }
         public int ImageUsageRegenerateRatePerMinute
         {
-            get => this.imageUsageRegenerateRatePerMinute; private set => Set(ref this.imageUsageRegenerateRatePerMinute, value);
+            get => imageUsageRegenerateRatePerMinute; private set => Set(ref imageUsageRegenerateRatePerMinute, value);
         }
         public int ImageUsageResetCost
         {
-            get => this.imageUsageResetCost; private set => Set(ref this.imageUsageResetCost, value);
+            get => imageUsageResetCost; private set => Set(ref imageUsageResetCost, value);
         }
 
         public IAsyncAction ResetImageUsageAsync()
@@ -155,7 +155,7 @@ namespace ExClient.Status
 
         #region Toplist
         private readonly ObservableList<ToplistItem> toplists = new ObservableList<ToplistItem>();
-        public ObservableListView<ToplistItem> Toplists => this.toplists.AsReadOnly();
+        public ObservableListView<ToplistItem> Toplists => toplists.AsReadOnly();
         #endregion
 
         #region Moderation Power
@@ -171,43 +171,43 @@ namespace ExClient.Status
         private double moderationPowerAccountAge;
         public double ModerationPower
         {
-            get => this.moderationPower; private set => Set(ref this.moderationPower, value);
+            get => moderationPower; private set => Set(ref moderationPower, value);
         }
         public double ModerationPowerCaculated
         {
-            get => this.moderationPowerCaculated; private set => Set(ref this.moderationPowerCaculated, value);
+            get => moderationPowerCaculated; private set => Set(ref moderationPowerCaculated, value);
         }
         public double ModerationPowerBase
         {
-            get => this.moderationPowerBase; private set => Set(ref this.moderationPowerBase, value);
+            get => moderationPowerBase; private set => Set(ref moderationPowerBase, value);
         }
         public double ModerationPowerAwards
         {
-            get => this.moderationPowerAwards; private set => Set(ref this.moderationPowerAwards, value);
+            get => moderationPowerAwards; private set => Set(ref moderationPowerAwards, value);
         }
         public double ModerationPowerTagging
         {
-            get => this.moderationPowerTagging; private set => Set(ref this.moderationPowerTagging, value);
+            get => moderationPowerTagging; private set => Set(ref moderationPowerTagging, value);
         }
         public double ModerationPowerLevel
         {
-            get => this.moderationPowerLevel; private set => Set(ref this.moderationPowerLevel, value);
+            get => moderationPowerLevel; private set => Set(ref moderationPowerLevel, value);
         }
         public double ModerationPowerDonations
         {
-            get => this.moderationPowerDonations; private set => Set(ref this.moderationPowerDonations, value);
+            get => moderationPowerDonations; private set => Set(ref moderationPowerDonations, value);
         }
         public double ModerationPowerForumActivity
         {
-            get => this.moderationPowerForumActivity; private set => Set(ref this.moderationPowerForumActivity, value);
+            get => moderationPowerForumActivity; private set => Set(ref moderationPowerForumActivity, value);
         }
         public double ModerationPowerUploadsAndHatH
         {
-            get => this.moderationPowerUploadsAndHatH; private set => Set(ref this.moderationPowerUploadsAndHatH, value);
+            get => moderationPowerUploadsAndHatH; private set => Set(ref moderationPowerUploadsAndHatH, value);
         }
         public double ModerationPowerAccountAge
         {
-            get => this.moderationPowerAccountAge; private set => Set(ref this.moderationPowerAccountAge, value);
+            get => moderationPowerAccountAge; private set => Set(ref moderationPowerAccountAge, value);
         }
         #endregion
     }

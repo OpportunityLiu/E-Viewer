@@ -12,7 +12,7 @@ namespace ExClient.Settings
 
         public override string ToString()
         {
-            return this.value.ToString();
+            return value.ToString();
         }
 
         internal override void DataChanged(Dictionary<string, string> settings)
@@ -23,7 +23,7 @@ namespace ExClient.Settings
                 var i = ushort.Parse(item.Substring(3));
                 data |= (Namespace)(1 << (i - 1));
             }
-            this.Value = data;
+            Value = data;
         }
 
         internal override void ApplyChanges(Dictionary<string, string> settings)
@@ -32,7 +32,7 @@ namespace ExClient.Settings
             {
                 settings.Remove(item);
             }
-            var value = this.Value;
+            var value = Value;
             for (var i = 1; i <= 8; i++)
             {
                 var check = (Namespace)(1 << (i - 1));
@@ -46,7 +46,7 @@ namespace ExClient.Settings
         private Namespace value;
         public Namespace Value
         {
-            get => this.value;
+            get => value;
             set => Set(ref this.value, value & (Namespace)0xFF);
         }
     }

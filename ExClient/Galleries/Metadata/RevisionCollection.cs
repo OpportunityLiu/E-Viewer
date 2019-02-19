@@ -12,8 +12,8 @@ namespace ExClient.Galleries.Metadata
     {
         internal RevisionInfo(GalleryInfo gallery, DateTimeOffset updatedTime)
         {
-            this.Gallery = gallery;
-            this.UpdatedTime = updatedTime;
+            Gallery = gallery;
+            UpdatedTime = updatedTime;
         }
 
         public GalleryInfo Gallery { get; }
@@ -24,12 +24,12 @@ namespace ExClient.Galleries.Metadata
     {
         internal RevisionCollection(Gallery owner, HtmlDocument doc)
         {
-            this.Owner = owner;
+            Owner = owner;
             var gdd = doc.GetElementbyId("gdd");
             var parentNode = gdd.FirstChild.ChildNodes[1].Descendants("a").FirstOrDefault();
             if (parentNode != null)
             {
-                this.ParentInfo = GalleryInfo.Parse(parentNode.GetAttribute("href", default(Uri)));
+                ParentInfo = GalleryInfo.Parse(parentNode.GetAttribute("href", default(Uri)));
             }
 
             var descendantsNode = doc.GetElementbyId("gnd");
@@ -45,11 +45,11 @@ namespace ExClient.Galleries.Metadata
                     var dto = DateTimeOffset.ParseExact(textNode.GetInnerText(), "', added' yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                     descendants[i] = new RevisionInfo(GalleryInfo.Parse(link), dto);
                 }
-                this.DescendantsInfo = descendants;
+                DescendantsInfo = descendants;
             }
             else
             {
-                this.DescendantsInfo = Array.Empty<RevisionInfo>();
+                DescendantsInfo = Array.Empty<RevisionInfo>();
             }
         }
 
@@ -69,12 +69,12 @@ namespace ExClient.Galleries.Metadata
 
         public IAsyncOperation<Gallery> FetchLatestRevisionAsync()
         {
-            if (this.DescendantsInfo.Count == 0)
+            if (DescendantsInfo.Count == 0)
             {
-                return AsyncOperation<Gallery>.CreateCompleted(this.Owner);
+                return AsyncOperation<Gallery>.CreateCompleted(Owner);
             }
 
-            return this.DescendantsInfo.Last().Gallery.FetchGalleryAsync();
+            return DescendantsInfo.Last().Gallery.FetchGalleryAsync();
         }
     }
 }

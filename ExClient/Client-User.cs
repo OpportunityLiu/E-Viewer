@@ -17,8 +17,8 @@ namespace ExClient
         public static Uri LogOnUri { get; } = new Uri(ForumsUri, "index.php?act=Login");
 
         public bool NeedLogOn
-            => this.UserId <= 0
-            || this.PassHash is null;
+            => UserId <= 0
+            || PassHash is null;
 
         internal void CheckLogOn()
         {
@@ -45,17 +45,17 @@ namespace ExClient
 
         internal void ResetExCookie()
         {
-            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Ex.RootUri))
-                this.CookieManager.DeleteCookie(item);
+            foreach (var item in CookieManager.GetCookies(DomainProvider.Ex.RootUri))
+                CookieManager.DeleteCookie(item);
 
-            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(isImportantCookie))
+            foreach (var item in CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(isImportantCookie))
             {
                 var cookie = new HttpCookie(item.Name, Domains.Ex, "/")
                 {
                     Expires = item.Expires,
                     Value = item.Value
                 };
-                this.CookieManager.SetCookie(cookie);
+                CookieManager.SetCookie(cookie);
             }
             setDefaultCookies();
         }
@@ -107,29 +107,29 @@ namespace ExClient
 
             ClearLogOnInfo();
             foreach (var item in info.Cookies)
-                this.CookieManager.SetCookie(item);
+                CookieManager.SetCookie(item);
             ResetExCookie();
         }
 
         public void ClearLogOnInfo()
         {
-            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Eh.RootUri)
-                        .Concat(this.CookieManager.GetCookies(DomainProvider.Ex.RootUri)))
-                this.CookieManager.DeleteCookie(item);
+            foreach (var item in CookieManager.GetCookies(DomainProvider.Eh.RootUri)
+                        .Concat(CookieManager.GetCookies(DomainProvider.Ex.RootUri)))
+                CookieManager.DeleteCookie(item);
             setDefaultCookies();
         }
 
         private void setDefaultCookies()
         {
-            this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Eh, "/") { Value = "1" });
-            this.CookieManager.SetCookie(new HttpCookie(CookieNames.LastEventRefreshTime, Domains.Eh, "/") { Value = "1" });
-            this.CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Ex, "/") { Value = "1" });
+            CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Eh, "/") { Value = "1" });
+            CookieManager.SetCookie(new HttpCookie(CookieNames.LastEventRefreshTime, Domains.Eh, "/") { Value = "1" });
+            CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Ex, "/") { Value = "1" });
         }
 
         private async Task refreshCookieAndSettings()
         {
-            foreach (var item in this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(c => !isKeyCookie(c)))
-                this.CookieManager.DeleteCookie(item);
+            foreach (var item in CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(c => !isKeyCookie(c)))
+                CookieManager.DeleteCookie(item);
             ResetExCookie();
             var f1 = DomainProvider.Eh.Settings.FetchAsync();
             var f2 = DomainProvider.Ex.Settings.FetchAsync();
@@ -162,8 +162,8 @@ namespace ExClient
             var cookieBackUp = GetLogOnInfo();
             ClearLogOnInfo();
 
-            this.CookieManager.SetCookie(new HttpCookie(CookieNames.MemberID, Domains.Eh, "/") { Value = userID.ToString(), Expires = DateTimeOffset.UtcNow.AddYears(5) });
-            this.CookieManager.SetCookie(new HttpCookie(CookieNames.PassHash, Domains.Eh, "/") { Value = passHash, Expires = DateTimeOffset.UtcNow.AddYears(5) });
+            CookieManager.SetCookie(new HttpCookie(CookieNames.MemberID, Domains.Eh, "/") { Value = userID.ToString(), Expires = DateTimeOffset.UtcNow.AddYears(5) });
+            CookieManager.SetCookie(new HttpCookie(CookieNames.PassHash, Domains.Eh, "/") { Value = passHash, Expires = DateTimeOffset.UtcNow.AddYears(5) });
 
             try
             {
@@ -189,11 +189,11 @@ namespace ExClient
 
         private async Task refreshHathPerks()
         {
-            var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.HathPerks);
+            var cookie = CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.HathPerks);
             if (cookie != null)
-                this.CookieManager.DeleteCookie(cookie);
+                CookieManager.DeleteCookie(cookie);
 
-            await this.HttpClient.GetAsync(hathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
+            await HttpClient.GetAsync(hathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
             CheckLogOn();
             ResetExCookie();
         }
@@ -202,7 +202,7 @@ namespace ExClient
         {
             get
             {
-                var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.MemberID);
+                var cookie = CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.MemberID);
                 var value = cookie?.Value;
                 if (value.IsNullOrWhiteSpace())
                     return -1;
@@ -214,7 +214,7 @@ namespace ExClient
         {
             get
             {
-                var cookie = this.CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.PassHash);
+                var cookie = CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.PassHash);
                 var value = cookie?.Value;
                 if (value.IsNullOrWhiteSpace())
                     return null;
@@ -224,9 +224,9 @@ namespace ExClient
 
         public Task<UserInfo> FetchCurrentUserInfoAsync()
         {
-            if (this.UserId < 0)
+            if (UserId < 0)
                 throw new InvalidOperationException("Hasn't log in");
-            return UserInfo.FeachAsync(this.UserId);
+            return UserInfo.FeachAsync(UserId);
         }
     }
 }

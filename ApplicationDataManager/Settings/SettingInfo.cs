@@ -32,25 +32,25 @@ namespace ApplicationDataManager.Settings
 
         internal SettingInfo(PropertyInfo info, ApplicationSettingCollection settingCollection, SettingAttribute settingAttribute)
         {
-            this.PropertyInfo = info;
-            this.Info = settingAttribute;
-            this.Name = info.Name;
-            this.FriendlyName = StringLoader.GetString(this.Name).CoalesceNullOrEmpty(this.Name);
+            PropertyInfo = info;
+            Info = settingAttribute;
+            Name = info.Name;
+            FriendlyName = StringLoader.GetString(Name).CoalesceNullOrEmpty(Name);
 
-            this.ValueRepresent = info.GetCustomAttribute<ValueRepresentAttribute>();
+            ValueRepresent = info.GetCustomAttribute<ValueRepresentAttribute>();
 
             var pType = info.PropertyType;
-            if (this.ValueRepresent is null)
+            if (ValueRepresent is null)
             {
-                if (!typeDic.TryGetValue(pType, out this.type))
+                if (!typeDic.TryGetValue(pType, out type))
                 {
                     if (pType == typeof(bool))
                     {
-                        this.ValueRepresent = ToggleSwitchRepresentAttribute.Default;
+                        ValueRepresent = ToggleSwitchRepresentAttribute.Default;
                     }
                     else if (pType.GetTypeInfo().IsEnum)
                     {
-                        this.ValueRepresent = EnumRepresentAttribute.Default;
+                        ValueRepresent = EnumRepresentAttribute.Default;
                     }
                     else
                     {
@@ -58,7 +58,7 @@ namespace ApplicationDataManager.Settings
                     }
                 }
             }
-            settingCollection.PropertyChanged += this.settingsChanged;
+            settingCollection.PropertyChanged += settingsChanged;
             this.settingCollection = settingCollection;
         }
 
@@ -66,7 +66,7 @@ namespace ApplicationDataManager.Settings
 
         private void settingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == this.Name)
+            if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == Name)
             {
                 OnPropertyChanged(nameof(Value));
             }
@@ -76,7 +76,7 @@ namespace ApplicationDataManager.Settings
 
         internal SettingAttribute Info { get; }
 
-        public string Category => this.Info.Category;
+        public string Category => Info.Category;
 
         public string Name { get; }
 
@@ -84,15 +84,15 @@ namespace ApplicationDataManager.Settings
 
         private readonly ValueType type;
 
-        public ValueType Type => this.ValueRepresent?.TargetType ?? this.type;
+        public ValueType Type => ValueRepresent?.TargetType ?? type;
 
-        public int Index => this.Info.Index;
+        public int Index => Info.Index;
 
         public ValueRepresentAttribute ValueRepresent { get; }
 
         public object Value
         {
-            get => this.PropertyInfo.GetValue(this.settingCollection);
+            get => PropertyInfo.GetValue(settingCollection);
             set
             {
                 if (value is null)
@@ -100,7 +100,7 @@ namespace ApplicationDataManager.Settings
                     return;
                 }
 
-                this.PropertyInfo.SetValue(this.settingCollection, value);
+                PropertyInfo.SetValue(settingCollection, value);
             }
         }
     }
