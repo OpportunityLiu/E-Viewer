@@ -30,7 +30,7 @@ namespace ExViewer.Views
             InitializeComponent();
             if (Opportunity.Helpers.Universal.ApiInfo.IsMobile)
             {
-                this.gd_Foreground.VerticalAlignment = VerticalAlignment.Stretch;
+                gd_Foreground.VerticalAlignment = VerticalAlignment.Stretch;
             }
             BannerProvider.Provider.GetBannerAsync().Completed = (s, e)
                 => Dispatcher.Begin(() => loadBanner(s.GetResults()));
@@ -42,12 +42,12 @@ namespace ExViewer.Views
         {
             if (banner is null)
             {
-                ((BitmapImage)this.img_pic.Source).UriSource = BannerProvider.Provider.DefaultBanner;
+                ((BitmapImage)img_pic.Source).UriSource = BannerProvider.Provider.DefaultBanner;
                 return;
             }
             using (var stream = await banner.OpenReadAsync())
             {
-                await ((BitmapImage)this.img_pic.Source).SetSourceAsync(stream);
+                await ((BitmapImage)img_pic.Source).SetSourceAsync(stream);
             }
         }
 
@@ -59,7 +59,7 @@ namespace ExViewer.Views
 
         private void ShowPic_Completed(object sender, object e)
         {
-            FindName(nameof(this.pr));
+            FindName(nameof(pr));
         }
 
         private void img_pic_ImageFailed(object sender, ExceptionRoutedEventArgs e)
@@ -80,26 +80,26 @@ namespace ExViewer.Views
                 var s = e.NewSize;
                 if (s.Height >= s.Width)
                 {
-                    this.gd_Foreground.Height = double.NaN;
-                    this.img_pic.Height = s.Width / 620 * 136;
+                    gd_Foreground.Height = double.NaN;
+                    img_pic.Height = s.Width / 620 * 136;
                 }
                 else
                 {
-                    this.gd_Foreground.Height = s.Height / 2.5;
-                    this.img_pic.Height = s.Height / 2.5 / 300 * 136;
+                    gd_Foreground.Height = s.Height / 2.5;
+                    img_pic.Height = s.Height / 2.5 / 300 * 136;
                 }
             }
             else
             {
-                var l = this.splashScreen.ImageLocation;
+                var l = splashScreen.ImageLocation;
                 if (Opportunity.Helpers.Universal.ApiInfo.IsXbox)
                 {
                     // Xbox has a 200% scale
                     l = new Windows.Foundation.Rect(l.X / 2, l.Y / 2, l.Width / 2, l.Height / 2);
                 }
-                this.gd_Foreground.Margin = new Thickness(0, l.Top, 0, 0);
-                this.gd_Foreground.Height = l.Height;
-                this.img_pic.Height = l.Height / 300 * 136;
+                gd_Foreground.Margin = new Thickness(0, l.Top, 0, 0);
+                gd_Foreground.Height = l.Height;
+                img_pic.Height = l.Height / 300 * 136;
             }
 
         }
@@ -113,33 +113,33 @@ namespace ExViewer.Views
                 await Helpers.VerificationManager.VerifyAsync();
             }
 
-            this.ccHided.Content = null;
-            Window.Current.Content = this.rootControl;
-            this.rootControl = null;
+            ccHided.Content = null;
+            Window.Current.Content = rootControl;
+            rootControl = null;
             afterActions();
         }
 
         private void setLoadingFinished()
         {
-            if (this.goToContentEnabled)
+            if (goToContentEnabled)
             {
                 goToContent();
             }
             else
             {
-                this.loadingFinished = true;
+                loadingFinished = true;
             }
         }
 
         public void EnableGoToContent()
         {
-            if (this.loadingFinished)
+            if (loadingFinished)
             {
                 goToContent();
             }
             else
             {
-                this.goToContentEnabled = true;
+                goToContentEnabled = true;
             }
         }
 
@@ -151,14 +151,14 @@ namespace ExViewer.Views
         {
             await Dispatcher.YieldIdle();
             Window.Current.Activate();
-            this.ShowPic.Begin();
-            if (this.applicationLoaded)
+            ShowPic.Begin();
+            if (applicationLoaded)
             {
                 setLoadingFinished();
             }
             else
             {
-                this.effectLoaded = true;
+                effectLoaded = true;
             }
         }
 
@@ -195,21 +195,21 @@ namespace ExViewer.Views
                 };
             });
             await Dispatcher.YieldIdle();
-            this.rootControl = new RootControl();
-            FindName(nameof(this.ccHided));
-            this.ccHided.Content = this.rootControl;
+            rootControl = new RootControl();
+            FindName(nameof(ccHided));
+            ccHided.Content = rootControl;
             await loadingTask;
             if (Client.Current.NeedLogOn)
             {
                 await RootControl.RootController.RequestLogOn();
             }
-            if (this.effectLoaded)
+            if (effectLoaded)
             {
                 setLoadingFinished();
             }
             else
             {
-                this.applicationLoaded = true;
+                applicationLoaded = true;
             }
         }
 

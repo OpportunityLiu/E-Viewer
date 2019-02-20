@@ -24,30 +24,30 @@ namespace ExViewer.Views
     {
         public RootControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
-            this.manager.Handlers.Add(this.fm_inner.AsNavigationHandler());
+            manager.Handlers.Add(fm_inner.AsNavigationHandler());
 
-            this.tabs = new Dictionary<Controls.SplitViewTab, Type>()
+            tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
-                [this.svt_Saved] = typeof(SavedPage),
-                [this.svt_Cached] = typeof(CachedPage),
-                [this.svt_Search] = typeof(SearchPage),
-                [this.svt_Favorites] = typeof(FavoritesPage),
-                [this.svt_Popular] = typeof(PopularPage),
-                [this.svt_Toplist] = typeof(ToplistPage),
-                [this.svt_Settings] = typeof(SettingsPage)
+                [svt_Saved] = typeof(SavedPage),
+                [svt_Cached] = typeof(CachedPage),
+                [svt_Search] = typeof(SearchPage),
+                [svt_Favorites] = typeof(FavoritesPage),
+                [svt_Popular] = typeof(PopularPage),
+                [svt_Toplist] = typeof(ToplistPage),
+                [svt_Settings] = typeof(SettingsPage)
             };
 
-            this.pages = new Dictionary<Type, Controls.SplitViewTab>()
+            pages = new Dictionary<Type, Controls.SplitViewTab>()
             {
-                [typeof(CachedPage)] = this.svt_Cached,
-                [typeof(SavedPage)] = this.svt_Saved,
-                [typeof(SearchPage)] = this.svt_Search,
-                [typeof(FavoritesPage)] = this.svt_Favorites,
-                [typeof(PopularPage)] = this.svt_Popular,
-                [typeof(ToplistPage)] = this.svt_Toplist,
-                [typeof(SettingsPage)] = this.svt_Settings
+                [typeof(CachedPage)] = svt_Cached,
+                [typeof(SavedPage)] = svt_Saved,
+                [typeof(SearchPage)] = svt_Search,
+                [typeof(FavoritesPage)] = svt_Favorites,
+                [typeof(PopularPage)] = svt_Popular,
+                [typeof(ToplistPage)] = svt_Toplist,
+                [typeof(SettingsPage)] = svt_Settings
             };
 
             vistualizeFocus();
@@ -56,7 +56,7 @@ namespace ExViewer.Views
         [Conditional("DEBUG")]
         private void vistualizeFocus()
         {
-            this.GotFocus += (s, e) =>
+            GotFocus += (s, e) =>
             {
                 var focus = FocusManager.GetFocusedElement();
                 if (focus is null)
@@ -89,29 +89,29 @@ namespace ExViewer.Views
 
         private async void Control_Loading(FrameworkElement sender, object args)
         {
-            if (!this.layoutLoaded)
+            if (!layoutLoaded)
             {
                 RootController.SetRoot(this);
             }
             else
             {
-                await this.manager.NavigateAsync(typeof(SearchPage));
+                await manager.NavigateAsync(typeof(SearchPage));
             }
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            var temp = this.layoutLoaded;
-            this.layoutLoaded = true;
+            var temp = layoutLoaded;
+            layoutLoaded = true;
             if (!temp)
             {
-                this.UserInfo = await UserInfo.LoadFromCache();
+                UserInfo = await UserInfo.LoadFromCache();
                 RootController.UpdateUserInfo(false);
             }
             else
             {
                 RootController.HandleUriLaunch();
-                this.tbtPane.Focus(FocusState.Pointer);
+                tbtPane.Focus(FocusState.Pointer);
             }
         }
 
@@ -121,8 +121,8 @@ namespace ExViewer.Views
 
         private void fm_inner_Navigated(object sender, NavigationEventArgs e)
         {
-            var pageType = this.fm_inner.Content.GetType();
-            if (this.pages.TryGetValue(pageType, out var tab))
+            var pageType = fm_inner.Content.GetType();
+            if (pages.TryGetValue(pageType, out var tab))
             {
                 tab.IsChecked = true;
             }
@@ -130,14 +130,14 @@ namespace ExViewer.Views
 
         private void fm_inner_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-            var content = this.fm_inner.Content;
+            var content = fm_inner.Content;
             if (content is null)
             {
                 return;
             }
 
             var pageType = content.GetType();
-            if (this.pages.TryGetValue(pageType, out var tab))
+            if (pages.TryGetValue(pageType, out var tab))
             {
                 tab.IsChecked = false;
             }
@@ -149,15 +149,15 @@ namespace ExViewer.Views
             if (s.IsChecked)
                 return;
             RootController.SwitchSplitView(false);
-            await this.manager.NavigateAsync(this.tabs[s]);
+            await manager.NavigateAsync(tabs[s]);
         }
 
         private async void btn_UserInfo_Click(object sender, RoutedEventArgs e)
         {
-            if (!(this.fm_inner.Content is InfoPage))
+            if (!(fm_inner.Content is InfoPage))
             {
                 RootController.SwitchSplitView(false);
-                await this.manager.NavigateAsync(typeof(InfoPage));
+                await manager.NavigateAsync(typeof(InfoPage));
             }
         }
 
@@ -202,17 +202,17 @@ namespace ExViewer.Views
         {
             if (RootController.IsFullScreen || availableSize.Width < NARROW_WIDE_WIDTH)
             {
-                if (this.sv_root.DisplayMode != SplitViewDisplayMode.Overlay)
+                if (sv_root.DisplayMode != SplitViewDisplayMode.Overlay)
                 {
-                    this.sv_root.DisplayMode = SplitViewDisplayMode.Overlay;
+                    sv_root.DisplayMode = SplitViewDisplayMode.Overlay;
                     RootController.SetSplitViewButtonPlaceholderVisibility(true);
                 }
             }
             else
             {
-                if (this.sv_root.DisplayMode != SplitViewDisplayMode.CompactOverlay)
+                if (sv_root.DisplayMode != SplitViewDisplayMode.CompactOverlay)
                 {
-                    this.sv_root.DisplayMode = SplitViewDisplayMode.CompactOverlay;
+                    sv_root.DisplayMode = SplitViewDisplayMode.CompactOverlay;
                     RootController.SetSplitViewButtonPlaceholderVisibility(false);
                 }
             }

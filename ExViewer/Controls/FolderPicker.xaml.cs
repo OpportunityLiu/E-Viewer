@@ -24,7 +24,7 @@ namespace ExViewer.Controls
     {
         public FolderPicker()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public StorageFolder Folder
@@ -91,19 +91,19 @@ namespace ExViewer.Controls
                 return;
             }
 
-            this.FolderToken = StorageApplicationPermissions.FutureAccessList.Add(f);
+            FolderToken = StorageApplicationPermissions.FutureAccessList.Add(f);
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            this.FolderToken = "";
+            FolderToken = "";
         }
 
         private async void FolderButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Folder != null)
+            if (Folder != null)
             {
-                await Launcher.LaunchFolderAsync(this.Folder);
+                await Launcher.LaunchFolderAsync(Folder);
             }
         }
     }

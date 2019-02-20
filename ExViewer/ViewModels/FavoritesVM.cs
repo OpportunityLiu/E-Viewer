@@ -58,7 +58,7 @@ namespace ExViewer.ViewModels
         private FavoritesVM(FavoritesSearchResult searchResult)
             : base(searchResult)
         {
-            this.Commands.Add(nameof(Search), Command<string>.Create(async (sender, queryText) =>
+            Commands.Add(nameof(Search), Command<string>.Create(async (sender, queryText) =>
             {
                 var that = (FavoritesVM)sender.Tag;
                 var cat = that.category ?? Client.Current.Favorites.All;
@@ -71,14 +71,14 @@ namespace ExViewer.ViewModels
         public override void SetQueryWithSearchResult()
         {
             base.SetQueryWithSearchResult();
-            this.Category = this.SearchResult.Category;
+            Category = SearchResult.Category;
         }
 
         private FavoriteCategory category;
         public FavoriteCategory Category
         {
-            get => this.category;
-            set => Set(ref this.category, value);
+            get => category;
+            set => Set(ref category, value);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace ExClient.Api
 
         public GalleryTokenRequest(IEnumerable<ImageInfo> pageList)
         {
-            this.PageList = pageList;
+            PageList = pageList;
         }
     }
 

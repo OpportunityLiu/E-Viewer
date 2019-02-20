@@ -57,7 +57,7 @@ namespace ApplicationDataManager.Settings.Xaml
 
         private void selectionChangedCallback(object sender, SelectionChangedEventArgs e)
         {
-            this.SettingValue.Value = Enum.Parse(this.settingType, ((EnumSelection)this.SelectedItem).EnumName);
+            SettingValue.Value = Enum.Parse(settingType, ((EnumSelection)SelectedItem).EnumName);
         }
 
         private void settingInfoPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -68,15 +68,15 @@ namespace ApplicationDataManager.Settings.Xaml
             }
 
             var s = (SettingInfo)sender;
-            this.SelectedItem = ((IEnumerable<EnumSelection>)this.ItemsSource).Single(sel => sel.EnumName == s.Value.ToString());
+            SelectedItem = ((IEnumerable<EnumSelection>)ItemsSource).Single(sel => sel.EnumName == s.Value.ToString());
         }
 
         private class EnumSelection
         {
             public EnumSelection(string name, string friendlyName)
             {
-                this.FriendlyName = friendlyName;
-                this.EnumName = name;
+                FriendlyName = friendlyName;
+                EnumName = name;
             }
 
             public string FriendlyName
@@ -91,7 +91,7 @@ namespace ApplicationDataManager.Settings.Xaml
 
             public override string ToString()
             {
-                return this.FriendlyName;
+                return FriendlyName;
             }
         }
     }

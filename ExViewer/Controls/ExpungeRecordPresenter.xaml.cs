@@ -23,7 +23,7 @@ namespace ExViewer.Controls
     {
         public ExpungeRecordPresenter()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public ExpungeRecord Record

@@ -16,17 +16,17 @@ namespace EhWikiClient
         private Record(string title, string japanese, string description, string html, TagType type)
             : this(true)
         {
-            this.Title = title;
-            this.Japanese = japanese;
-            this.Description = description;
-            this.DetialHtml = html;
-            this.Type = type;
+            Title = title;
+            Japanese = japanese;
+            Description = description;
+            DetialHtml = html;
+            Type = type;
         }
 
         private Record(bool isValid)
         {
-            this.IsValid = isValid;
-            this.LastUpdate = DateTimeOffset.UtcNow;
+            IsValid = isValid;
+            LastUpdate = DateTimeOffset.UtcNow;
         }
 
 #pragma warning disable CS0649
@@ -102,10 +102,10 @@ namespace EhWikiClient
 
         internal void Update(Record record)
         {
-            this.Japanese = record.Japanese;
-            this.Description = record.Description;
-            this.IsValid = record.IsValid;
-            this.LastUpdate = DateTimeOffset.UtcNow;
+            Japanese = record.Japanese;
+            Description = record.Description;
+            IsValid = record.IsValid;
+            LastUpdate = DateTimeOffset.UtcNow;
         }
 
         [Key]
@@ -140,7 +140,7 @@ namespace EhWikiClient
         public DateTimeOffset LastUpdate
         {
             get => DateTimeOffset.FromUnixTimeMilliseconds(lastUpdate);
-            set => this.lastUpdate = value.ToUnixTimeMilliseconds();
+            set => lastUpdate = value.ToUnixTimeMilliseconds();
         }
 
         public bool IsValid { get; internal set; }

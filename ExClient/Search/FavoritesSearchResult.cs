@@ -47,8 +47,8 @@ namespace ExClient.Search
         private FavoritesSearchResult(string keyword, FavoriteCategory category)
             : base(keyword)
         {
-            this.Category = category;
-            this.SearchUri = new Uri(SearchBaseUri, getUriQuery());
+            Category = category;
+            SearchUri = new Uri(SearchBaseUri, getUriQuery());
         }
 
         public FavoriteCategory Category { get; }
@@ -59,8 +59,8 @@ namespace ExClient.Search
         {
             //?favcat=all&f_search=&f_apply=Search+Favorites
             return
-                $"?favcat={(this.Category.Index < 0 ? "all" : this.Category.Index.ToString())}" +
-                $"&f_search={Uri.EscapeDataString(this.Keyword)}" +
+                $"?favcat={(Category.Index < 0 ? "all" : Category.Index.ToString())}" +
+                $"&f_search={Uri.EscapeDataString(Keyword)}" +
                 $"&f_apply=Search+Favorites";
         }
 
@@ -105,12 +105,12 @@ namespace ExClient.Search
             return AsyncInfo.Run(async token =>
             {
                 var ddact = categoty.Index < 0 ? "delete" : $"fav{categoty.Index}";
-                var post = Client.Current.HttpClient.PostAsync(this.SearchUri, getParameters());
+                var post = Client.Current.HttpClient.PostAsync(SearchUri, getParameters());
                 token.Register(post.Cancel);
                 var r = await post;
                 if (categoty.Index < 0)
                 {
-                    this.Reset();
+                    Reset();
                 }
                 else
                 {

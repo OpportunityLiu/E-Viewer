@@ -29,9 +29,9 @@ namespace ExViewer.Controls.TagSuggestion
     {
         public TagRecord(string highlight, T tag, int score)
         {
-            this.Highlight = highlight;
-            this.Tag = tag;
-            this.Score = score;
+            Highlight = highlight;
+            Tag = tag;
+            Score = score;
         }
 
         public T Tag { get; }
@@ -61,13 +61,13 @@ namespace ExViewer.Controls.TagSuggestion
 
         ITagRecord ITagRecord.SetPrefix(string p)
         {
-            this.Prefix = p;
+            Prefix = p;
             return this;
         }
 
         ITagRecord ITagRecord.SetSuffix(string s)
         {
-            this.Suffix = s;
+            Suffix = s;
             return this;
         }
     }

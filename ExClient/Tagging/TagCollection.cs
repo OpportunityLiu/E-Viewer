@@ -32,9 +32,9 @@ namespace ExClient.Tagging
 
         private int getIndexOfKey(Namespace key)
         {
-            for (var i = 0; i < this.Keys.Length; i++)
+            for (var i = 0; i < Keys.Length; i++)
             {
-                if (this.Keys[i] == key)
+                if (Keys[i] == key)
                 {
                     return i;
                 }
@@ -44,7 +44,7 @@ namespace ExClient.Tagging
 
         public TagCollection(Gallery owner, IEnumerable<Tag> items)
         {
-            this.Owner = owner;
+            Owner = owner;
             if (items is null)
                 throw new ArgumentNullException(nameof(items));
             initOrReset(items.Select(t => (t, TagState.NormalPower)));
@@ -63,11 +63,11 @@ namespace ExClient.Tagging
             {
                 (data[i], state[i]) = rawData[i];
             }
-            if (this.Data != null && this.Data.Select(d => d.Content).SequenceEqual(data))
+            if (Data != null && Data.Select(d => d.Content).SequenceEqual(data))
             {
-                for (var i = 0; i < this.Data.Length; i++)
+                for (var i = 0; i < Data.Length; i++)
                 {
-                    this.Data[i].State = state[i];
+                    Data[i].State = state[i];
                 }
                 return;
             }
@@ -96,10 +96,10 @@ namespace ExClient.Tagging
             {
                 tagData[i] = new GalleryTag(this, data[i], state[i]);
             }
-            this.Data = tagData;
-            this.Keys = keys;
-            this.Offset = offset;
-            this.Version++;
+            Data = tagData;
+            Keys = keys;
+            Offset = offset;
+            Version++;
             OnVectorReset();
             OnPropertyChanged(nameof(Count), nameof(Items), "Groups");
         }
@@ -113,9 +113,9 @@ namespace ExClient.Tagging
 
         public Gallery Owner { get; }
 
-        public IReadOnlyList<GalleryTag> Items => this.Data;
+        public IReadOnlyList<GalleryTag> Items => Data;
 
-        public int Count => this.Keys.Length;
+        public int Count => Keys.Length;
 
         bool IList.IsFixedSize => false;
 
@@ -173,7 +173,7 @@ namespace ExClient.Tagging
 
         private RangedListView<GalleryTag> getValue(int index)
         {
-            return new RangedListView<GalleryTag>(this.Data, this.Offset[index], this.Offset[index + 1] - this.Offset[index]);
+            return new RangedListView<GalleryTag>(Data, Offset[index], Offset[index + 1] - Offset[index]);
         }
 
         public IAsyncAction VoteAsync(Tag tag, VoteState command)
@@ -256,21 +256,21 @@ namespace ExClient.Tagging
             internal Enumerator(TagCollection parent)
             {
                 this.parent = parent;
-                this.version = parent.Version;
-                this.i = -1;
+                version = parent.Version;
+                i = -1;
             }
 
             public NamespaceTagCollection Current
             {
                 get
                 {
-                    if (this.version != this.parent.Version)
+                    if (version != parent.Version)
                         throw new InvalidOperationException("Collection changed.");
-                    if (this.i < 0)
+                    if (i < 0)
                         throw new InvalidOperationException("Enumeration hasn't started.");
-                    if (this.i >= this.parent.Keys.Length)
+                    if (i >= parent.Keys.Length)
                         throw new InvalidOperationException("Enumeration has ended.");
-                    return new NamespaceTagCollection(this.parent, this.i);
+                    return new NamespaceTagCollection(parent, i);
                 }
             }
 
@@ -278,23 +278,23 @@ namespace ExClient.Tagging
 
             public bool MoveNext()
             {
-                if (this.version != this.parent.Version)
+                if (version != parent.Version)
                     throw new InvalidOperationException("Collection changed.");
-                var end = this.parent.Keys.Length;
-                if (this.i >= end)
+                var end = parent.Keys.Length;
+                if (i >= end)
                     return false;
-                this.i++;
-                return this.i < end;
+                i++;
+                return i < end;
             }
 
             void IDisposable.Dispose()
             {
-                this.i = int.MaxValue;
+                i = int.MaxValue;
             }
 
             public void Reset()
             {
-                this.i = 0;
+                i = 0;
             }
         }
 

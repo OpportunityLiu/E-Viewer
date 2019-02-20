@@ -17,8 +17,8 @@ namespace ExClient
         {
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
             httpFilter.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-            this.CookieManager = httpFilter.CookieManager;
-            this.HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
+            CookieManager = httpFilter.CookieManager;
+            HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
             setDefaultCookies();
 
             if (NeedLogOn)
@@ -29,25 +29,25 @@ namespace ExClient
 
         internal MyHttpClient HttpClient { get; }
 
-        internal DomainProvider Uris => this.Host == HostType.ExHentai ? DomainProvider.Ex : DomainProvider.Eh;
+        internal DomainProvider Uris => Host == HostType.ExHentai ? DomainProvider.Ex : DomainProvider.Eh;
 
         private HostType host;
         public HostType Host
         {
-            get => this.host;
-            set => Set(nameof(Settings), ref this.host, value);
+            get => host;
+            set => Set(nameof(Settings), ref host, value);
         }
 
-        public SettingCollection Settings => this.Uris.Settings;
+        public SettingCollection Settings => Uris.Settings;
 
 
         private readonly FavoriteCollection favotites = new FavoriteCollection();
-        public FavoriteCollection Favorites => NeedLogOn ? null : this.favotites;
+        public FavoriteCollection Favorites => NeedLogOn ? null : favotites;
 
         private readonly UserStatus userStatus = new UserStatus();
-        public UserStatus UserStatus => NeedLogOn ? null : this.userStatus;
+        public UserStatus UserStatus => NeedLogOn ? null : userStatus;
 
         private readonly TaggingStatistics taggingStatistics = new TaggingStatistics();
-        public TaggingStatistics TaggingStatistics => NeedLogOn ? null : this.taggingStatistics;
+        public TaggingStatistics TaggingStatistics => NeedLogOn ? null : taggingStatistics;
     }
 }

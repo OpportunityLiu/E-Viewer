@@ -29,9 +29,9 @@ namespace ExClient.Launch
 
         internal GalleryLaunchResult(Api.GalleryInfo gInfo, int index, GalleryLaunchStatus status)
         {
-            this.GalleryInfo = gInfo;
-            this.CurrentIndex = index;
-            this.Status = status;
+            GalleryInfo = gInfo;
+            CurrentIndex = index;
+            Status = status;
         }
     }
 
@@ -39,7 +39,7 @@ namespace ExClient.Launch
     {
         internal SearchLaunchResult(SearchResult data)
         {
-            this.Data = data;
+            Data = data;
         }
 
         public SearchResult Data { get; }
