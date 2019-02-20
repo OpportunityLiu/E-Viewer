@@ -216,7 +216,7 @@ namespace ExViewer.Database
                 case HistoryRecordType.Image:
                 {
                     var data = ImageInfo.Parse(Uri);
-                    return resource.Image(title, data.PageID);
+                    return resource.Image(title, data.PageId);
                 }
                 default:
                     return resource.Default(title);

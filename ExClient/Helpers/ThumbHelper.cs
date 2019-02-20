@@ -53,7 +53,7 @@ namespace ExClient
                 }
             }
 
-            var imageModel = getImageModel(gallery.ID, exact);
+            var imageModel = getImageModel(gallery.Id, exact);
             if (imageModel is null)
                 return false;
             var file = await StorageHelper.ImageFolder.TryGetFileAsync(imageModel.Image.FileName);

@@ -185,7 +185,7 @@ namespace ExClient.Galleries.Commenting
             var request = new CommentVoteRequest(this, command);
             return AsyncInfo.Run(async token =>
             {
-                var r = await request.GetResponseAsync();
+                var r = await request.GetResponseAsync(token);
                 switch (r.Vote)
                 {
                 case VoteState.Default:
@@ -216,7 +216,7 @@ namespace ExClient.Galleries.Commenting
             var request = new CommentEditRequest(this);
             return AsyncInfo.Run(async token =>
             {
-                var r = await request.GetResponseAsync();
+                var r = await request.GetResponseAsync(token);
                 var doc = HtmlNode.CreateNode(r.Editable.Trim());
                 var textArea = doc.Descendants("textarea").FirstOrDefault();
                 if (textArea is null)

@@ -67,7 +67,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var response = await this.postAddFav(gallery.ID, gallery.Token, note);
+                var response = await this.postAddFav(gallery.Id, gallery.Token, note);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var match = favNoteMatcher.Match(responseContent, 1300);
                 if (match.Success)

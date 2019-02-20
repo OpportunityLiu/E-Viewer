@@ -25,7 +25,7 @@ namespace ExViewer.ViewModels
             Command<Gallery>.Create(async (sender, g) =>
             {
                 GalleryVM.GetVM(g);
-                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.Id);
             }, (sender, g) => g != null));
     }
 }

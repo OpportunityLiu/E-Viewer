@@ -91,7 +91,7 @@ namespace ExClient.Galleries
                 using (var db = new GalleryDb())
                 {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                    var gid = this.ID;
+                    var gid = this.Id;
                     var models = db.GalleryImageSet
                         .Include(gi => gi.Image)
                         .Where(gi => gi.GalleryId == gid);

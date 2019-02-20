@@ -1,4 +1,5 @@
-﻿using ExClient.Internal;
+﻿using ExClient.Galleries;
+using ExClient.Internal;
 using ExClient.Launch;
 using Newtonsoft.Json;
 using System;
@@ -10,7 +11,7 @@ namespace ExClient.Api
     [JsonConverter(typeof(ImageInfoConverter))]
     public readonly struct ImageInfo : IEquatable<ImageInfo>
     {
-        private class ImageInfoConverter : JsonConverter
+        private sealed class ImageInfoConverter : JsonConverter
         {
             public override bool CanConvert(Type objectType)
             {
@@ -26,9 +27,9 @@ namespace ExClient.Api
             {
                 var v = (ImageInfo)value;
                 writer.WriteStartArray();
-                writer.WriteValue(v.GalleryID);
-                writer.WriteValue(v.ImageToken.ToTokenString());
-                writer.WriteValue(v.PageID);
+                writer.WriteValue(v.GalleryId);
+                writer.WriteValue(v.ImageKey.ToTokenString());
+                writer.WriteValue(v.PageId);
                 writer.WriteEndArray();
             }
         }
@@ -68,11 +69,11 @@ namespace ExClient.Api
             throw new FormatException();
         }
 
-        public ImageInfo(long galleryID, ulong imageToken, int pageID)
+        public ImageInfo(long galleryID, ulong imageKey, int pageID)
         {
-            this.GalleryID = galleryID;
-            this.ImageToken = imageToken;
-            this.PageID = pageID;
+            GalleryId = galleryID;
+            ImageKey = imageKey;
+            PageId = pageID;
         }
 
         public IAsyncOperation<GalleryInfo> FetchGalleryInfoAsync()
@@ -85,25 +86,32 @@ namespace ExClient.Api
             });
         }
 
-        public long GalleryID { get; }
-        public int PageID { get; }
-        public ulong ImageToken { get; }
+        public long GalleryId { get; }
+        public int PageId { get; }
+        public ulong ImageKey { get; }
 
         public bool Equals(ImageInfo other)
         {
-            return this.GalleryID == other.GalleryID
-                && this.ImageToken == other.ImageToken
-                && this.PageID == other.PageID;
+            return GalleryId == other.GalleryId
+                && ImageKey == other.ImageKey
+                && PageId == other.PageId;
         }
 
         public override bool Equals(object obj) => obj is ImageInfo ii && Equals(ii);
 
         public override int GetHashCode()
         {
-            return this.GalleryID.GetHashCode() ^ this.ImageToken.GetHashCode() ^ this.PageID.GetHashCode();
+            return GalleryId.GetHashCode() ^ ImageKey.GetHashCode() ^ PageId.GetHashCode();
         }
 
         public static bool operator ==(in ImageInfo left, in ImageInfo right) => left.Equals(right);
         public static bool operator !=(in ImageInfo left, in ImageInfo right) => !left.Equals(right);
+
+        public static implicit operator ImageInfo(GalleryImage image)
+        {
+            if (image is null)
+                return default;
+            return new ImageInfo(image.Owner.Id, image.ImageKey, image.PageId);
+        }
     }
 }

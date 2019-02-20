@@ -69,7 +69,7 @@ namespace ExViewer.ViewModels
 
         public static GalleryVM GetVM(Gallery gallery)
         {
-            var gi = new GalleryInfo(gallery.ID, gallery.Token);
+            var gi = new GalleryInfo(gallery.Id, gallery.Token);
             if (Cache.TryGetValue(gi, out var vm))
             {
                 vm.Gallery = gallery;
@@ -209,7 +209,7 @@ namespace ExViewer.ViewModels
                             catch { }
                             var imageFiles = gallery
                                 .Where(i => i.ImageFile != null)
-                                .Select(i => new { i.ImageFile, Name = $"{i.PageID}{i.ImageFile.FileType}" })
+                                .Select(i => new { i.ImageFile, Name = $"{i.PageId}{i.ImageFile.FileType}" })
                                 .Where(f => f.ImageFile != null)
                                 .ToList();
                             if (imageFiles.Count == 0)
@@ -231,7 +231,7 @@ namespace ExViewer.ViewModels
                             var view = RandomAccessStreamReference.CreateFromFile(imageFile);
                             data.SetBitmap(view);
                             data.Properties.Thumbnail = RandomAccessStreamReference.CreateFromStream(await imageFile.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem));
-                            var fileName = $"{image.PageID}{imageFile.FileType}";
+                            var fileName = $"{image.PageId}{imageFile.FileType}";
                             data.SetFileProvider(imageFile, fileName);
                         }
                     }
@@ -274,8 +274,8 @@ namespace ExViewer.ViewModels
             Command<GalleryImage>.Create(async (sender, image) =>
             {
                 var that = (GalleryVM)sender.Tag;
-                that.View.MoveCurrentToPosition(image.PageID - 1);
-                await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), that.gallery.ID);
+                that.View.MoveCurrentToPosition(image.PageId - 1);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), that.gallery.Id);
             }, (sender, image) => image != null));
 
         public Command<GalleryImage> LoadOriginal => Commands.GetOrAdd(() =>

@@ -82,7 +82,7 @@ namespace ExClient.Galleries
             {
                 using (var db = new GalleryDb())
                 {
-                    var gid = this.ID;
+                    var gid = this.Id;
                     db.SavedSet.Remove(db.SavedSet.Single(c => c.GalleryId == gid));
                     await db.SaveChangesAsync();
                 }

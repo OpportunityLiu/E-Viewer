@@ -7,7 +7,7 @@ namespace ExClient.Models
     {
         public SavedGalleryModel Update(Gallery gallery)
         {
-            GalleryId = gallery.ID;
+            GalleryId = gallery.Id;
             Saved = DateTimeOffset.UtcNow;
             return this;
         }

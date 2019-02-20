@@ -155,8 +155,8 @@ namespace ExClient.Search
                 {
                     for (var i = 0; i < list.Count; i++)
                     {
-                        var id = list[i].ID;
-                        if (this.Any(g => g.ID == id))
+                        var id = list[i].Id;
+                        if (this.Any(g => g.Id == id))
                             list.RemoveAt(i);
                     }
                 }
@@ -164,8 +164,8 @@ namespace ExClient.Search
                 {
                     for (var i = 0; i < list.Count; i++)
                     {
-                        var id = list[i].ID;
-                        var ga = this.FirstOrDefault(g => g.ID == id);
+                        var id = list[i].Id;
+                        var ga = this.FirstOrDefault(g => g.Id == id);
                         if (ga != null)
                             Remove(ga);
                     }

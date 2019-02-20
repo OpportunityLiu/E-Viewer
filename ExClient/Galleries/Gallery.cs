@@ -69,7 +69,7 @@ namespace ExClient.Galleries
             {
                 return Run<IList<Gallery>>(async token =>
                 {
-                    var re = await new GalleryDataRequest(galleryInfo, 0, galleryInfo.Count).GetResponseAsync();
+                    var re = await new GalleryDataRequest(galleryInfo, 0, galleryInfo.Count).GetResponseAsync(token);
                     var data = re.GalleryMetaData;
                     data.ForEach(async g => await g.InitAsync());
                     return data;
@@ -85,7 +85,7 @@ namespace ExClient.Galleries
                     {
                         var pageSize = MathHelper.GetSizeOfPage(galleryInfo.Count, 25, i);
                         var startIndex = MathHelper.GetStartIndexOfPage(25, i);
-                        var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync();
+                        var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync(token);
                         var data = re.GalleryMetaData;
                         data.ForEach(async g => await g.InitAsync());
                         result.AddRange(data);
@@ -128,7 +128,7 @@ namespace ExClient.Galleries
                     {
                         try
                         {
-                            Debug.WriteLine($"Start {i.PageID}");
+                            Debug.WriteLine($"Start {i.PageId}");
                             token.ThrowIfCancellationRequested();
                             var firstFailed = false;
                             try
@@ -138,29 +138,29 @@ namespace ExClient.Galleries
                                 var c = await Task.WhenAny(Task.Delay(30_000), firstTask);
                                 if (c != firstTask)
                                 {
-                                    Debug.WriteLine($"Timeout 1st {i.PageID}");
+                                    Debug.WriteLine($"Timeout 1st {i.PageId}");
                                     firstFailed = true;
                                     firstChance.Cancel();
                                 }
                             }
                             catch (Exception)
                             {
-                                Debug.WriteLine($"Fail 1st {i.PageID}");
+                                Debug.WriteLine($"Fail 1st {i.PageId}");
                                 firstFailed = true;
                             }
                             if (firstFailed)
                             {
-                                Debug.WriteLine($"Retry {i.PageID}");
+                                Debug.WriteLine($"Retry {i.PageId}");
                                 token.ThrowIfCancellationRequested();
                                 await i.LoadImageAsync(true, strategy, true).AsTask(token);
                             }
                             progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), this.Count));
-                            Debug.WriteLine($"Success {i.PageID}");
+                            Debug.WriteLine($"Success {i.PageId}");
                         }
                         finally
                         {
                             semaphore.Release();
-                            Debug.WriteLine($"End {i.PageID}");
+                            Debug.WriteLine($"End {i.PageId}");
                         }
                     }
 
@@ -179,7 +179,7 @@ namespace ExClient.Galleries
 
                 using (var db = new GalleryDb())
                 {
-                    var gid = this.ID;
+                    var gid = this.Id;
                     var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == gid);
                     if (myModel is null)
                     {
@@ -197,7 +197,7 @@ namespace ExClient.Galleries
         private Gallery(long id, ulong token, int recordCount)
             : base(recordCount)
         {
-            this.ID = id;
+            this.Id = id;
             this.Token = token;
             this.Rating = new RatingStatus(this);
             this.GalleryUri = new GalleryInfo(id, token).Uri;
@@ -282,7 +282,7 @@ namespace ExClient.Galleries
             {
                 using (var db = new GalleryDb())
                 {
-                    var gid = this.ID;
+                    var gid = this.Id;
                     var myModel = db.GallerySet.SingleOrDefault(model => model.GalleryModelId == gid);
                     if (myModel is null)
                         db.GallerySet.Add(new GalleryModel().Update(this));
@@ -300,7 +300,7 @@ namespace ExClient.Galleries
 
         #region MetaData
 
-        public long ID { get; }
+        public long Id { get; }
 
         public bool Available { get; protected set; }
 
@@ -311,6 +311,8 @@ namespace ExClient.Galleries
         public string TitleJpn { get; protected set; }
 
         public Category Category { get; protected set; }
+
+        internal string ShowKey { get; set; }
 
         private readonly WeakReference<ImageSource> thumbImage = new WeakReference<ImageSource>(null);
         public ImageSource Thumb
@@ -424,7 +426,7 @@ namespace ExClient.Galleries
 
                         var pId = int.Parse(tokens[tokens.Length - 1], NumberStyles.Integer);
                         var imageKey = tokens[tokens.Length - 3].ToToken();
-                        var gId = this.ID;
+                        var gId = this.Id;
                         var imageModel = db.GalleryImageSet
                             .Include(gi => gi.Image)
                             .FirstOrDefault(gi => gi.GalleryId == gId && gi.PageId == pId);
@@ -483,7 +485,7 @@ namespace ExClient.Galleries
         {
             return Run(async token =>
             {
-                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={this.ID}&t={this.Token.ToTokenString()}&act=addfav", UriKind.Relative));
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={this.Id}&t={this.Token.ToTokenString()}&act=addfav", UriKind.Relative));
                 var favdel = doc.GetElementbyId("favdel");
                 if (favdel != null)
                 {
@@ -516,7 +518,7 @@ namespace ExClient.Galleries
         {
             return Task.Run(async () =>
             {
-                var gid = this.ID;
+                var gid = this.Id;
                 using (var db = new GalleryDb())
                 {
                     var toDelete = db.GalleryImageSet

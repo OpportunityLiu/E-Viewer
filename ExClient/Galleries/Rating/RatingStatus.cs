@@ -115,9 +115,7 @@ namespace ExClient.Galleries.Rating
             return AsyncInfo.Run(async token =>
             {
                 var reqInfo = new RatingRequest(this.owner, rating);
-                var r = reqInfo.GetResponseAsync();
-                token.Register(r.Cancel);
-                var result = await r;
+                var result = await reqInfo.GetResponseAsync(token);
                 analyzeData(result.AverageScore, result.UserScore, result.RatingImageClass, result.RatingCount);
             });
         }
