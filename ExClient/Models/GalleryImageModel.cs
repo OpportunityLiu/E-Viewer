@@ -36,8 +36,8 @@ namespace ExClient.Models
 
         internal GalleryImageModel Update(GalleryImage galleryImage)
         {
-            this.GalleryId = galleryImage.Owner.ID;
-            this.PageId = galleryImage.PageID;
+            this.GalleryId = galleryImage.Owner.Id;
+            this.PageId = galleryImage.PageId;
             this.ImageId = galleryImage.ImageHash;
             return this;
         }

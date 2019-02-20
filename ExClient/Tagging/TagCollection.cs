@@ -199,7 +199,7 @@ namespace ExClient.Tagging
         {
             return AsyncInfo.Run(async token =>
             {
-                var res = await req.GetResponseAsync();
+                var res = await req.GetResponseAsync(token);
                 var doc = HtmlNode.CreateNode(res.TagPane);
                 updateCore(doc);
             });

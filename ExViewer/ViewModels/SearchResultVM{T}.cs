@@ -29,7 +29,7 @@ namespace ExViewer.ViewModels
                 var that = (SearchResultVM<T>)sender.Tag;
                 that.SelectedGallery = g;
                 GalleryVM.GetVM(g);
-                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.Id);
             }, (sender, g) => g != null));
 
         public Command<string> Search => Commands.Get<Command<string>>();

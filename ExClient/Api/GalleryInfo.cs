@@ -62,7 +62,7 @@ namespace ExClient.Api
         {
             return Run<IReadOnlyList<GalleryInfo>>(async token =>
             {
-                var res = await new GalleryTokenRequest(pageList).GetResponseAsync();
+                var res = await new GalleryTokenRequest(pageList).GetResponseAsync(token);
                 return res.TokenList;
             });
         }
@@ -188,7 +188,7 @@ namespace ExClient.Api
         {
             if (gallery is null)
                 return default;
-            return new GalleryInfo(gallery.ID, gallery.Token);
+            return new GalleryInfo(gallery.Id, gallery.Token);
         }
     }
 }

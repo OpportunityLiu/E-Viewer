@@ -367,7 +367,7 @@ Please check attchments, and remove anything that you wouldn't like to send.
             {
                 return;
             }
-            sb.AppendLine($"Gallery: Type={g.GetType()}, ID={g.ID}, Token={g.Token:x10}");
+            sb.AppendLine($"Gallery: Type={g.GetType()}, ID={g.Id}, Token={g.Token:x10}");
         }
 
         private static void AddtionalInfo(StringBuilder sb, PopularVM VM)

@@ -30,7 +30,7 @@ namespace ExViewer.ViewModels
             Command<Gallery>.Create(async (sender, g) =>
             {
                 ((GalleryListVM<T>)sender.Tag).Galleries?.Remove(g);
-                GalleryVM.RemoveVM(g.ID);
+                GalleryVM.RemoveVM(g.Id);
                 await g.DeleteAsync();
                 RootControl.RootController.SendToast(Strings.Resources.Views.CachedPage.GalleryDeleted, null);
             }, (sender, g) => g != null));
@@ -39,7 +39,7 @@ namespace ExViewer.ViewModels
             Command<Gallery>.Create(async (sender, g) =>
             {
                 GalleryVM.GetVM(g);
-                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.Id);
             }, (sender, g) => g != null));
     }
 }

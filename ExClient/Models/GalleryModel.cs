@@ -10,7 +10,7 @@ namespace ExClient.Models
     {
         internal GalleryModel Update(Gallery toCache)
         {
-            this.GalleryModelId = toCache.ID;
+            this.GalleryModelId = toCache.Id;
             this.Available = toCache.Available;
             this.Token = toCache.Token;
             this.Title = toCache.Title;
