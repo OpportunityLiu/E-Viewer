@@ -19,7 +19,7 @@ namespace ExClient.Galleries
             {
                 this[i] = Load(models[i]);
                 models[i] = default;
-                this.loadedCount++;
+                loadedCount++;
             }
             this.models = models;
         }
@@ -28,17 +28,17 @@ namespace ExClient.Galleries
 
         protected override void ClearItems()
         {
-            this.models.Clear();
-            this.loadedCount = 0;
+            models.Clear();
+            loadedCount = 0;
             base.ClearItems();
         }
 
         protected override void RemoveItem(int index)
         {
-            this.models.RemoveAt(index);
+            models.RemoveAt(index);
             if (this[index] != null)
             {
-                this.loadedCount--;
+                loadedCount--;
             }
 
             base.RemoveItem(index);
@@ -46,7 +46,7 @@ namespace ExClient.Galleries
 
         void IItemsRangeInfo.RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)
         {
-            if (this.loadedCount == this.models.Count)
+            if (loadedCount == models.Count)
             {
                 return;
             }
@@ -58,9 +58,9 @@ namespace ExClient.Galleries
                 start = 0;
             }
 
-            if (end > this.Count)
+            if (end > Count)
             {
-                end = this.Count;
+                end = Count;
             }
 
             for (var i = start; i < end; i++)
@@ -70,14 +70,14 @@ namespace ExClient.Galleries
                     continue;
                 }
 
-                this[i] = Load(this.models[i]);
-                this.models[i] = default;
-                this.loadedCount++;
+                this[i] = Load(models[i]);
+                models[i] = default;
+                loadedCount++;
             }
         }
 
         protected abstract TGallery Load(TModel model);
 
-        void IDisposable.Dispose() { this.Clear(); }
+        void IDisposable.Dispose() { Clear(); }
     }
 }

@@ -151,8 +151,8 @@ namespace ExClient.Api
 
         public GalleryInfo(long id, ulong token)
         {
-            this.ID = id;
-            this.Token = token;
+            ID = id;
+            Token = token;
         }
 
         public IAsyncOperation<Gallery> FetchGalleryAsync()
@@ -172,13 +172,13 @@ namespace ExClient.Api
         public Uri Uri => new Uri(Client.Current.Uris.RootUri, $"g/{ID.ToString()}/{Token.ToTokenString()}/");
 
         public override int GetHashCode()
-            => this.ID.GetHashCode() * 19 ^ this.Token.GetHashCode();
+            => ID.GetHashCode() * 19 ^ Token.GetHashCode();
 
         public override bool Equals(object obj) => obj is GalleryInfo info && Equals(info);
 
         public bool Equals(GalleryInfo other)
-            => this.ID == other.ID
-            && this.Token == other.Token;
+            => ID == other.ID
+            && Token == other.Token;
 
         public static bool operator ==(in GalleryInfo left, in GalleryInfo right) => left.Equals(right);
 

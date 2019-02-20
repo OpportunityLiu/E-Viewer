@@ -28,8 +28,8 @@ namespace ExViewer.Views
     {
         public ToplistPage()
         {
-            this.InitializeComponent();
-            this.ViewModel = new ToplistVM();
+            InitializeComponent();
+            ViewModel = new ToplistVM();
         }
 
         public new ToplistVM ViewModel
@@ -40,21 +40,21 @@ namespace ExViewer.Views
 
         private void page_Loading(FrameworkElement sender, object args)
         {
-            this.setSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.setSplitViewButtonPlaceholderVisibility;
+            setSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += setSplitViewButtonPlaceholderVisibility;
         }
 
         private void page_Unloaded(object sender, RoutedEventArgs e)
         {
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.setSplitViewButtonPlaceholderVisibility;
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= setSplitViewButtonPlaceholderVisibility;
         }
 
         private void setSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
             if (visible)
-                this.bdSplitViewPlaceholder.Width = 48;
+                bdSplitViewPlaceholder.Width = 48;
             else
-                this.bdSplitViewPlaceholder.Width = 0;
+                bdSplitViewPlaceholder.Width = 0;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -63,13 +63,13 @@ namespace ExViewer.Views
             await Dispatcher.YieldIdle();
             if (e.NavigationMode != NavigationMode.Back)
             {
-                this.pvRoot.Focus(FocusState.Programmatic);
+                pvRoot.Focus(FocusState.Programmatic);
             }
             else
             {
-                if (!await ViewHelper.ScrollAndFocus(this.openedLv, this.opened))
+                if (!await ViewHelper.ScrollAndFocus(openedLv, opened))
                 {
-                    this.pvRoot.Focus(FocusState.Programmatic);
+                    pvRoot.Focus(FocusState.Programmatic);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace ExViewer.Views
             switch (e.Key)
             {
             case Windows.System.VirtualKey.GamepadY:
-                this.cb_top.Focus(FocusState.Keyboard);
+                cb_top.Focus(FocusState.Keyboard);
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
@@ -99,16 +99,16 @@ namespace ExViewer.Views
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (Gallery)e.ClickedItem;
-            if (this.ViewModel.Open.Execute(item))
+            if (ViewModel.Open.Execute(item))
             {
-                this.opened = item;
-                this.openedLv = (ListView)sender;
+                opened = item;
+                openedLv = (ListView)sender;
             }
         }
 
         public void CloseAll()
         {
-            this.cb_top.IsOpen = false;
+            cb_top.IsOpen = false;
         }
 
         private void lv_RefreshRequested(object sender, EventArgs e)

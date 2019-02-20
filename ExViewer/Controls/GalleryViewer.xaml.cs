@@ -15,7 +15,7 @@ namespace ExViewer.Controls
     {
         public GalleryViewer()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public Gallery Gallery
@@ -48,7 +48,7 @@ namespace ExViewer.Controls
                 leftWidth = 150;
             }
 
-            this.Cover.Height = leftWidth * 1.41428;
+            Cover.Height = leftWidth * 1.41428;
             return base.MeasureOverride(availableSize);
         }
     }

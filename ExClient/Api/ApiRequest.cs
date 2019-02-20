@@ -90,8 +90,8 @@ namespace ExClient.Api
     {
         public GalleryRequest(Gallery gallery)
         {
-            this.GalleryID = gallery.Id;
-            this.GalleryToken = gallery.Token.ToTokenString();
+            GalleryID = gallery.Id;
+            GalleryToken = gallery.Token.ToTokenString();
         }
 
         [JsonProperty("gid")]

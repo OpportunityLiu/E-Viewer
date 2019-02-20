@@ -10,28 +10,28 @@ namespace ExClient.Models
     {
         internal GalleryModel Update(Gallery toCache)
         {
-            this.GalleryModelId = toCache.Id;
-            this.Available = toCache.Available;
-            this.Token = toCache.Token;
-            this.Title = toCache.Title;
-            this.TitleJpn = toCache.TitleJpn;
-            this.Category = toCache.Category;
-            this.Uploader = toCache.Uploader;
-            this.Posted = toCache.Posted;
-            this.FileSize = toCache.FileSize;
-            this.Expunged = toCache.Expunged;
-            this.Rating = toCache.Rating.AverageScore;
+            GalleryModelId = toCache.Id;
+            Available = toCache.Available;
+            Token = toCache.Token;
+            Title = toCache.Title;
+            TitleJpn = toCache.TitleJpn;
+            Category = toCache.Category;
+            Uploader = toCache.Uploader;
+            Posted = toCache.Posted;
+            FileSize = toCache.FileSize;
+            Expunged = toCache.Expunged;
+            Rating = toCache.Rating.AverageScore;
             if (toCache.Tags is null || toCache.Tags.Items.Count == 0)
             {
-                this.Tags = "[]";
+                Tags = "[]";
             }
             else
             {
-                this.Tags = JsonConvert.SerializeObject(toCache.Tags.Items.Select(tag => tag.Content.ToString()));
+                Tags = JsonConvert.SerializeObject(toCache.Tags.Items.Select(tag => tag.Content.ToString()));
             }
 
-            this.RecordCount = toCache.Count;
-            this.ThumbUri = toCache.ThumbUri.ToString();
+            RecordCount = toCache.Count;
+            ThumbUri = toCache.ThumbUri.ToString();
             return this;
         }
 
@@ -52,8 +52,8 @@ namespace ExClient.Models
         public long posted;
         public DateTimeOffset Posted
         {
-            get => DateTimeOffset.FromUnixTimeMilliseconds(this.posted);
-            set => this.posted = value.ToUnixTimeMilliseconds();
+            get => DateTimeOffset.FromUnixTimeMilliseconds(posted);
+            set => posted = value.ToUnixTimeMilliseconds();
         }
 
         public long FileSize { get; set; }

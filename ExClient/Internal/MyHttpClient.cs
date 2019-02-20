@@ -29,7 +29,7 @@ namespace ExClient.Internal
         {
             if (response.Content.Headers.ContentDisposition?.FileName == "sadpanda.jpg")
             {
-                this.owner.ResetExCookie();
+                owner.ResetExCookie();
                 throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
             }
         }
@@ -43,19 +43,19 @@ namespace ExClient.Internal
         private void reformUri(ref Uri uri)
         {
             if (!uri.IsAbsoluteUri)
-                uri = new Uri(this.owner.Uris.RootUri, uri);
+                uri = new Uri(owner.Uris.RootUri, uri);
         }
 
         private readonly HttpClient inner;
         private readonly HttpClient nocookie = new HttpClient();
         private readonly Client owner;
 
-        public HttpRequestHeaderCollection DefaultRequestHeaders => this.inner.DefaultRequestHeaders;
+        public HttpRequestHeaderCollection DefaultRequestHeaders => inner.DefaultRequestHeaders;
 
         public IHttpAsyncOperation GetAsync(Uri uri, HttpCompletionOption completionOption, bool checkStatusCode)
         {
             reformUri(ref uri);
-            var client = uri.Host.EndsWith("hentai.org") ? this.inner : this.nocookie;
+            var client = uri.Host.EndsWith("hentai.org") ? inner : nocookie;
             var request = client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             if (completionOption == HttpCompletionOption.ResponseHeadersRead)
             {
@@ -95,7 +95,7 @@ namespace ExClient.Internal
 
         public IHttpAsyncOperation GetAsync(Uri uri)
         {
-            return this.GetAsync(uri, HttpCompletionOption.ResponseContentRead, true);
+            return GetAsync(uri, HttpCompletionOption.ResponseContentRead, true);
         }
 
         public IAsyncOperationWithProgress<IBuffer, HttpProgress> GetBufferAsync(Uri uri)
@@ -144,7 +144,7 @@ namespace ExClient.Internal
             reformUri(ref uri);
             return Run<HtmlDocument, HttpProgress>(async (token, progress) =>
             {
-                var request = this.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, false);
+                var request = GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, false);
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var doc = new HtmlDocument();
@@ -193,7 +193,7 @@ namespace ExClient.Internal
         public IHttpAsyncOperation PostAsync(Uri uri, IHttpContent content)
         {
             reformUri(ref uri);
-            return this.inner.PostAsync(uri, content);
+            return inner.PostAsync(uri, content);
         }
 
         public IHttpAsyncOperation PostAsync(Uri uri, params KeyValuePair<string, string>[] content)
@@ -202,7 +202,7 @@ namespace ExClient.Internal
         public IHttpAsyncOperation PostAsync(Uri uri, IEnumerable<KeyValuePair<string, string>> content)
         {
             reformUri(ref uri);
-            return this.inner.PostAsync(uri, new HttpFormUrlEncodedContent(content));
+            return inner.PostAsync(uri, new HttpFormUrlEncodedContent(content));
         }
 
         public IAsyncOperationWithProgress<string, HttpProgress> PostStringAsync(Uri uri, string content)
@@ -224,13 +224,13 @@ namespace ExClient.Internal
         public IHttpAsyncOperation PutAsync(Uri uri, IHttpContent content)
         {
             reformUri(ref uri);
-            return this.inner.PutAsync(uri, content);
+            return inner.PutAsync(uri, content);
         }
 
         public void Dispose()
         {
-            this.inner.Dispose();
-            this.nocookie.Dispose();
+            inner.Dispose();
+            nocookie.Dispose();
         }
     }
 }

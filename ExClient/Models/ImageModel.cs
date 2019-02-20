@@ -44,8 +44,8 @@ namespace ExClient.Models
         /// </summary>
         public SHA1Value ImageId
         {
-            get => FromStorage(this.Data0, this.Data1, this.Data2);
-            set => (this.Data0, this.Data1, this.Data2) = ToStorage(value);
+            get => FromStorage(Data0, Data1, Data2);
+            set => (Data0, Data1, Data2) = ToStorage(value);
         }
 
         public bool OriginalLoaded { get; set; }
@@ -56,9 +56,9 @@ namespace ExClient.Models
 
         public ImageModel Update(GalleryImage image)
         {
-            this.ImageId = image.ImageHash;
-            this.FileName = image.ImageFile.Name;
-            this.OriginalLoaded = image.OriginalLoaded;
+            ImageId = image.ImageHash;
+            FileName = image.ImageFile.Name;
+            OriginalLoaded = image.OriginalLoaded;
             return this;
         }
     }

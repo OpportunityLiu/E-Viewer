@@ -15,7 +15,7 @@ namespace ExViewer.Controls
     {
         public CoverPresenter()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public ImageSource Source
@@ -37,8 +37,8 @@ namespace ExViewer.Controls
             }
 
             setEffectStatus(uiSettings, null);
-            PowerManager.EnergySaverStatusChanged += this.setEffectStatus;
-            uiSettings.AdvancedEffectsEnabledChanged += this.setEffectStatus;
+            PowerManager.EnergySaverStatusChanged += setEffectStatus;
+            uiSettings.AdvancedEffectsEnabledChanged += setEffectStatus;
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
@@ -48,20 +48,20 @@ namespace ExViewer.Controls
                 return;
             }
 
-            PowerManager.EnergySaverStatusChanged -= this.setEffectStatus;
-            uiSettings.AdvancedEffectsEnabledChanged -= this.setEffectStatus;
+            PowerManager.EnergySaverStatusChanged -= setEffectStatus;
+            uiSettings.AdvancedEffectsEnabledChanged -= setEffectStatus;
         }
 
         private async void setEffectStatus(object sender, object args)
         {
-            await this.Dispatcher.YieldIdle();
+            await Dispatcher.YieldIdle();
             if (uiSettings.AdvancedEffectsEnabled && PowerManager.EnergySaverStatus != EnergySaverStatus.On)
             {
-                FindName(nameof(this.BackgroundImage));
+                FindName(nameof(BackgroundImage));
             }
             else
             {
-                UnloadObject(this.BackgroundImage);
+                UnloadObject(BackgroundImage);
             }
         }
     }

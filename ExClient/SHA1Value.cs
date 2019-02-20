@@ -71,7 +71,7 @@ namespace ExClient
 
             public unsafe bool Equals(DataPack other)
             {
-                fixed (byte* pThis = this.Data)
+                fixed (byte* pThis = Data)
                 {
                     var pOther = other.Data;
                     for (var i = 0; i < HASH_SIZE; i++)
@@ -93,7 +93,7 @@ namespace ExClient
             get
             {
                 var values = new byte[HASH_SIZE];
-                fixed (void* pThis = this.data.Data, pValue = &values[0])
+                fixed (void* pThis = data.Data, pValue = &values[0])
                 {
                     System.Buffer.MemoryCopy(pThis, pValue, HASH_SIZE, HASH_SIZE);
                 }
@@ -104,7 +104,7 @@ namespace ExClient
 
         public ulong ToToken()
         {
-            var data = this.Data;
+            var data = Data;
             return
                 (ulong)data[0] << 32 |
                 (ulong)data[1] << 24 |
@@ -131,14 +131,14 @@ namespace ExClient
 
         public bool Equals(SHA1Value other)
         {
-            return this.data.Equals(other.data);
+            return data.Equals(other.data);
         }
 
         public override bool Equals(object obj)
         {
             if (obj is SHA1Value sha)
             {
-                return this.Equals(sha);
+                return Equals(sha);
             }
             return false;
         }

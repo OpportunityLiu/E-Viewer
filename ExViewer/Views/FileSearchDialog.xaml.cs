@@ -18,34 +18,34 @@ namespace ExViewer.Views
     {
         public FileSearchDialog()
         {
-            this.InitializeComponent();
-            this.picker = new Windows.Storage.Pickers.FileOpenPicker
+            InitializeComponent();
+            picker = new Windows.Storage.Pickers.FileOpenPicker
             {
                 CommitButtonText = Strings.Resources.Views.FileSearchDialog.FileOpenPicker.CommitButtonText,
                 SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary,
                 ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail,
                 SettingsIdentifier = nameof(FileSearchDialog)
             };
-            this.picker.FileTypeFilter.Add(".jpg");
-            this.picker.FileTypeFilter.Add(".jpe");
-            this.picker.FileTypeFilter.Add(".jpeg");
-            this.picker.FileTypeFilter.Add(".jfif");
-            this.picker.FileTypeFilter.Add(".gif");
-            this.picker.FileTypeFilter.Add(".png");
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpe");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".jfif");
+            picker.FileTypeFilter.Add(".gif");
+            picker.FileTypeFilter.Add(".png");
         }
 
         private void MyContentDialog_Loading(FrameworkElement sender, object args)
         {
-            this.SearchFile = null;
-            this.cbCover.IsChecked = false;
-            this.cbExp.IsChecked = false;
-            this.cbSimilar.IsChecked = true;
+            SearchFile = null;
+            cbCover.IsChecked = false;
+            cbExp.IsChecked = false;
+            cbSimilar.IsChecked = true;
         }
 
         private async void MyContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            await this.Dispatcher.YieldIdle();
-            this.btnBrowse.Focus(FocusState.Programmatic);
+            await Dispatcher.YieldIdle();
+            btnBrowse.Focus(FocusState.Programmatic);
         }
 
         public StorageFile SearchFile
@@ -61,9 +61,9 @@ namespace ExViewer.Views
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            var search = ExClient.Client.Current.SearchAsync(this.SearchFile, this.cbSimilar.IsChecked ?? true, this.cbCover.IsChecked ?? false, this.cbExp.IsChecked ?? false);
-            this.SearchFile = null;
-            await this.Dispatcher.YieldIdle();
+            var search = ExClient.Client.Current.SearchAsync(SearchFile, cbSimilar.IsChecked ?? true, cbCover.IsChecked ?? false, cbExp.IsChecked ?? false);
+            SearchFile = null;
+            await Dispatcher.YieldIdle();
             RootControl.RootController.TrackAsyncAction(search, p => double.NaN, async (s, e) =>
             {
                 switch (e)
@@ -82,13 +82,13 @@ namespace ExViewer.Views
 
         private async void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            var file = await this.picker.PickSingleFileAsync();
+            var file = await picker.PickSingleFileAsync();
             if (file is null)
             {
                 return;
             }
 
-            this.SearchFile = file;
+            SearchFile = file;
         }
 
         private async Task<StorageFile> check(DragEventArgs e)
@@ -108,7 +108,7 @@ namespace ExViewer.Views
                     e.DragUIOverride.Caption = info.DropWrongFileNumber;
                     return null;
                 }
-                if (!this.picker.FileTypeFilter.Contains(file.FileType.ToLowerInvariant()))
+                if (!picker.FileTypeFilter.Contains(file.FileType.ToLowerInvariant()))
                 {
                     e.DragUIOverride.Caption = info.DropWrongFileType;
                     return null;
@@ -131,7 +131,7 @@ namespace ExViewer.Views
 
         private async void tbFileName_Drop(object sender, DragEventArgs e)
         {
-            this.SearchFile = await check(e);
+            SearchFile = await check(e);
         }
     }
 }

@@ -9,6 +9,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
@@ -63,86 +64,77 @@ namespace EhTagTranslatorClient
 
         private static readonly string _ReleaseFileName = "db.text.json.gz";
 
+        private static HttpClient _HttpClient;
+
+        private static HttpClient HttpClient => LazyInitializer.EnsureInitialized(ref _HttpClient, () =>
+        {
+            var c = new HttpBaseProtocolFilter
+            {
+                CacheControl =
+                {
+                    ReadBehavior = HttpCacheReadBehavior.NoCache,
+                    WriteBehavior = HttpCacheWriteBehavior.NoCache,
+                }
+            };
+            return new HttpClient(c)
+            {
+                DefaultRequestHeaders =
+                {
+                    UserAgent =
+                    {
+                        new Windows.Web.Http.Headers.HttpProductInfoHeaderValue("EhTagTranslatorClient")
+                    }
+                }
+            };
+        });
+
+        private static async Task<_Release> _GetReleaseAsync()
+            => JsonConvert.DeserializeObject<_Release>(await HttpClient.GetStringAsync(_ReleaseApiUri));
+
         public static IAsyncOperation<bool> NeedUpdateAsync()
         {
             return AsyncInfo.Run(async token =>
             {
-                using (var c = new HttpBaseProtocolFilter())
-                {
-                    c.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
-                    c.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-                    var client = new HttpClient(c)
-                    {
-                        DefaultRequestHeaders =
-                        {
-                            UserAgent =
-                            {
-                                new Windows.Web.Http.Headers.HttpProductInfoHeaderValue("EhTagTranslatorClient")
-                            }
-                        }
-                    };
-                    var release = JsonConvert.DeserializeObject<_Release>(await client.GetStringAsync(_ReleaseApiUri));
-                    return release.id != CurrentVersion;
-                }
+                var release = await _GetReleaseAsync();
+                return release.id != CurrentVersion;
             });
         }
 
-        public static IAsyncOperation<bool> TryUpdateAsync()
+        public static IAsyncAction UpdateAsync()
         {
             return AsyncInfo.Run(async token =>
             {
-                using (var c = new HttpBaseProtocolFilter())
+                var release = await _GetReleaseAsync();
+                var fileUri = release.assets.First(a => _ReleaseFileName.Equals(a.name, StringComparison.OrdinalIgnoreCase)).browser_download_url;
+                using (var rawStream = await HttpClient.GetInputStreamAsync(fileUri))
+                using (var stream = new GZipStream(rawStream.AsStreamForRead(), CompressionMode.Decompress))
+                using (var reader = new StreamReader(stream, System.Text.Encoding.UTF8))
+                using (var db = CreateDatabase())
                 {
-                    c.CacheControl.ReadBehavior = HttpCacheReadBehavior.NoCache;
-                    c.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
-                    var client = new HttpClient(c)
+                    var data = (_ReleaseData)JsonSerializer.CreateDefault().Deserialize(reader, typeof(_ReleaseData));
+                    db.Db.Table.RemoveRange(db.Db.Table);
+                    await db.Db.SaveChangesAsync();
+                    foreach (var item in data.data)
                     {
-                        DefaultRequestHeaders =
+                        if (!Enum.TryParse<Namespace>(item.@namespace, true, out var ns))
+                            continue;
+
+                        foreach (var tag in item.data)
                         {
-                            UserAgent =
-                            {
-                                new Windows.Web.Http.Headers.HttpProductInfoHeaderValue("EhTagTranslatorClient")
-                            }
+                            tag.Value.Namespace = ns;
+                            tag.Value.Original = tag.Key;
                         }
-                    };
-                    var release = JsonConvert.DeserializeObject<_Release>(await client.GetStringAsync(_ReleaseApiUri));
-                    if (release.id == CurrentVersion)
-                    {
-                        LastUpdate = DateTimeOffset.Now;
-                        return false;
+                        db.Db.Table.AddRange(item.data.Values);
+                        await db.Db.SaveChangesAsync();
                     }
-
-                    var fileUri = release.assets.First(a => _ReleaseFileName.Equals(a.name, StringComparison.OrdinalIgnoreCase)).browser_download_url;
-                    using (var rawStream = await client.GetInputStreamAsync(fileUri))
-                    using (var stream = new GZipStream(rawStream.AsStreamForRead(), CompressionMode.Decompress))
-                    using (var reader = new StreamReader(stream, System.Text.Encoding.UTF8))
-                    using (var db = new TranslateDb())
-                    {
-                        var data = (_ReleaseData)JsonSerializer.CreateDefault().Deserialize(reader, typeof(_ReleaseData));
-                        db.Table.RemoveRange(db.Table);
-                        await db.SaveChangesAsync();
-                        foreach (var item in data.data)
-                        {
-                            if (!Enum.TryParse<Namespace>(item.@namespace, true, out var ns))
-                                continue;
-
-                            foreach (var tag in item.data)
-                            {
-                                tag.Value.Namespace = ns;
-                                tag.Value.Original = tag.Key;
-                            }
-                            db.Table.AddRange(item.data.Values);
-                            await db.SaveChangesAsync();
-                        }
-                    }
-
-                    CurrentVersion = release.id;
-                    LastUpdate = DateTimeOffset.Now;
-                    return true;
                 }
+
+                CurrentVersion = release.id;
+                LastUpdate = DateTimeOffset.Now;
             });
         }
 
+#pragma warning disable IDE1006 // 命名样式
         private sealed class _Release
         {
             public long id { get; set; }
@@ -167,5 +159,6 @@ namespace EhTagTranslatorClient
 
             public IDictionary<string, Record> data { get; set; }
         }
+#pragma warning restore IDE1006 // 命名样式
     }
 }

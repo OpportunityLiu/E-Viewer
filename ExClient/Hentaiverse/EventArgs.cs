@@ -7,7 +7,7 @@ namespace ExClient.HentaiVerse
     {
         internal RandomEncounterEventArgs(Uri uri)
         {
-            this.Uri = uri;
+            Uri = uri;
         }
 
         public Uri Uri { get; }
@@ -17,7 +17,7 @@ namespace ExClient.HentaiVerse
     {
         internal DawnOfDayRewardsEventArgs(IReadOnlyDictionary<string, double> data)
         {
-            this.Data = data;
+            Data = data;
         }
 
         public IReadOnlyDictionary<string, double> Data { get; }

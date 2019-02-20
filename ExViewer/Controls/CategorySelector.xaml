@@ -8,8 +8,7 @@
              MaxWidth="560"
              d:DesignHeight="300"
              d:DesignWidth="400">
-    <GridView x:Name="gv_AdvancedSearch"
-              ItemsSource="{x:Bind filter}"
+    <GridView ItemsSource="{x:Bind _Filter}"
               HorizontalAlignment="Center"
               Padding="0">
         <GridView.ItemContainerStyle>

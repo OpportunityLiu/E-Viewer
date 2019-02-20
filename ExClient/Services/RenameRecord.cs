@@ -13,22 +13,22 @@ namespace ExClient.Services
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int power;
-        public int Power { get => this.power; internal set => Set(ref this.power, value); }
+        public int Power { get => power; internal set => Set(ref power, value); }
 
         internal RenameRecord(int id, string title, int power)
         {
-            this.ID = id;
-            this.Title = title;
+            ID = id;
+            Title = title;
             this.power = power;
         }
 
         public bool Equals(RenameRecord other)
-            => this.ID == other.ID
-            && this.Title == other.Title;
+            => ID == other.ID
+            && Title == other.Title;
 
         public override bool Equals(object obj) => obj is RenameRecord rec && Equals(rec);
 
-        public override int GetHashCode() => unchecked((this.ID * 17) ^ this.Title.GetHashCode());
+        public override int GetHashCode() => unchecked((ID * 17) ^ Title.GetHashCode());
 
         public override string ToString() => Title;
     }

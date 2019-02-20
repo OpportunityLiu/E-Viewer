@@ -18,8 +18,8 @@ namespace ExViewer.ViewModels
         private ObservableList<Gallery> galleries;
         public ObservableList<Gallery> Galleries
         {
-            get => this.galleries;
-            protected set => Set(ref this.galleries, value);
+            get => galleries;
+            protected set => Set(ref galleries, value);
         }
 
         public AsyncCommand Refresh => Commands.Get<AsyncCommand>();

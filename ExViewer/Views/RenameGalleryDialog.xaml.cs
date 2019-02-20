@@ -20,9 +20,9 @@ namespace ExViewer.Views
     {
         public RenameGalleryDialog()
         {
-            this.InitializeComponent();
-            this.PrimaryButtonText = Strings.Resources.General.Submit;
-            this.CloseButtonText = Strings.Resources.General.Close;
+            InitializeComponent();
+            PrimaryButtonText = Strings.Resources.General.Submit;
+            CloseButtonText = Strings.Resources.General.Close;
         }
 
         public Gallery Gallery
@@ -42,47 +42,47 @@ namespace ExViewer.Views
             args.Cancel = true;
             try
             {
-                this.pbLoading.IsIndeterminate = true;
-                this.tbInfo.Text = "";
+                pbLoading.IsIndeterminate = true;
+                tbInfo.Text = "";
                 await Dispatcher.YieldIdle();
-                if (this.info is null)
-                    this.info = await this.Gallery.FetchRenameInfoAsync();
-                await this.info.VoteAsync(this.tbRoman.Text, this.tbJapanese.Text);
-                this.Bindings.Update();
+                if (info is null)
+                    info = await Gallery.FetchRenameInfoAsync();
+                await info.VoteAsync(tbRoman.Text, tbJapanese.Text);
+                Bindings.Update();
             }
             catch (Exception ex)
             {
-                this.tbInfo.Text = ex.GetMessage();
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
             }
             finally
             {
                 def.Complete();
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
         }
 
         private async void MyContentDialog_Loading(FrameworkElement sender, object args)
         {
-            if (this.Gallery is null)
+            if (Gallery is null)
                 throw new InvalidOperationException("Property RenameGalleryDialog.Gallery is null.");
             try
             {
-                this.pbLoading.IsIndeterminate = true;
+                pbLoading.IsIndeterminate = true;
                 await Dispatcher.YieldIdle();
-                this.lvRoman.Header = this.Gallery.Title ?? "";
-                this.lvJapanese.Header = this.Gallery.TitleJpn ?? "";
-                this.info = await this.Gallery.FetchRenameInfoAsync();
-                this.Bindings.Update();
+                lvRoman.Header = Gallery.Title ?? "";
+                lvJapanese.Header = Gallery.TitleJpn ?? "";
+                info = await Gallery.FetchRenameInfoAsync();
+                Bindings.Update();
             }
             catch (Exception ex)
             {
-                this.tbInfo.Text = ex.GetMessage();
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
             }
             finally
             {
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
         }
 
@@ -96,18 +96,18 @@ namespace ExViewer.Views
 
         private void MyContentDialog_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.info = null;
-            this.Bindings.Update();
-            this.lvJapanese.ItemsSource = null;
-            this.lvRoman.ItemsSource = null;
-            this.tbInfo.Text = "";
-            this.tbJapanese.Text = "";
-            this.tbRoman.Text = "";
+            info = null;
+            Bindings.Update();
+            lvJapanese.ItemsSource = null;
+            lvRoman.ItemsSource = null;
+            tbInfo.Text = "";
+            tbJapanese.Text = "";
+            tbRoman.Text = "";
         }
 
         private void lv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.tbInfo.Text = "";
+            tbInfo.Text = "";
             var lv = (ListView)sender;
             var tb = lv.Descendants<TextBox>().First();
             if (lv.SelectedItem is RenameRecord r)
@@ -116,7 +116,7 @@ namespace ExViewer.Views
 
         private void tb_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.tbInfo.Text = "";
+            tbInfo.Text = "";
             var tb = (TextBox)sender;
             var focused = tb.FocusState;
             var lv = tb.Ancestors<ListView>().First();

@@ -10,7 +10,7 @@ namespace ExViewer.Controls
     {
         public CategoryToggleButton()
         {
-            this.DefaultStyleKey = typeof(CategoryToggleButton);
+            DefaultStyleKey = typeof(CategoryToggleButton);
         }
         public Category Category
         {

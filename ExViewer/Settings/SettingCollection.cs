@@ -31,7 +31,7 @@ namespace ExViewer.Settings
             : base("Settings")
         {
             var clientSettings = Client.Current.Settings;
-            clientSettings.PropertyChanged += this.ClientSettings_PropertyChanged;
+            clientSettings.PropertyChanged += ClientSettings_PropertyChanged;
         }
 
         private void ClientSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -54,9 +54,9 @@ namespace ExViewer.Settings
 
         public void Apply()
         {
-            this.VisitEx = this.VisitEx;
-            this.OpenHVOnMonsterEncountered = this.OpenHVOnMonsterEncountered;
-            this.ImageCacheFolder = this.ImageCacheFolder;
+            VisitEx = VisitEx;
+            OpenHVOnMonsterEncountered = OpenHVOnMonsterEncountered;
+            ImageCacheFolder = ImageCacheFolder;
         }
 
         [Setting("Global", Index = 100)]
@@ -122,10 +122,10 @@ namespace ExViewer.Settings
             set
             {
                 SetRoaming(value);
-                Client.Current.Settings.PropertyChanged -= this.ClientSettings_PropertyChanged;
+                Client.Current.Settings.PropertyChanged -= ClientSettings_PropertyChanged;
                 Client.Current.Host = value ? HostType.ExHentai : HostType.EHentai;
-                this.ClientSettings_PropertyChanged(Client.Current.Settings, new System.ComponentModel.PropertyChangedEventArgs(null));
-                Client.Current.Settings.PropertyChanged += this.ClientSettings_PropertyChanged;
+                ClientSettings_PropertyChanged(Client.Current.Settings, new System.ComponentModel.PropertyChangedEventArgs(null));
+                Client.Current.Settings.PropertyChanged += ClientSettings_PropertyChanged;
             }
         }
 
@@ -338,7 +338,7 @@ namespace ExViewer.Settings
             get => GetLocal(true);
             set
             {
-                if (this.LoadLofiOnAllInternetConnection)
+                if (LoadLofiOnAllInternetConnection)
                 {
                     ForceSetLocal(true);
                 }
@@ -359,7 +359,7 @@ namespace ExViewer.Settings
                 SetLocal(value);
                 if (value)
                 {
-                    this.LoadLofiOnMeteredInternetConnection = true;
+                    LoadLofiOnMeteredInternetConnection = true;
                 }
             }
         }

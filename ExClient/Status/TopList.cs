@@ -6,16 +6,16 @@ namespace ExClient.Status
     {
         internal ToplistItem(int rank, ToplistName name)
         {
-            this.Rank = rank;
-            this.Name = name;
+            Rank = rank;
+            Name = name;
         }
 
         public int Rank { get; }
         public ToplistName Name { get; }
 
         public bool Equals(ToplistItem other)
-            => this.Name == other.Name
-            && this.Rank == other.Rank;
+            => Name == other.Name
+            && Rank == other.Rank;
 
         public override bool Equals(object obj) => obj is ToplistItem t && this.Equals(t);
 

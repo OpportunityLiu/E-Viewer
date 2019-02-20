@@ -15,12 +15,12 @@ namespace ExViewer.Controls
     {
         public TaggingRecordPresenter()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            this.update(Record);
+            update(Record);
         }
 
         public TaggingRecord Record
@@ -53,11 +53,11 @@ namespace ExViewer.Controls
             var dc = data.Tag.GetDisplayContentAsync();
             if (dc.Status == AsyncStatus.Completed)
             {
-                this.tbTag.Text = $"{data.Tag.Namespace.ToFriendlyNameString()}: {dc.GetResults()}";
+                tbTag.Text = $"{data.Tag.Namespace.ToFriendlyNameString()}: {dc.GetResults()}";
             }
             else
             {
-                this.tbTag.Text = $"{data.Tag.Namespace.ToFriendlyNameString()}: {data.Tag.Content}";
+                tbTag.Text = $"{data.Tag.Namespace.ToFriendlyNameString()}: {data.Tag.Content}";
                 dc.Completed = (IAsyncOperation<string> op, AsyncStatus asyncStatus) =>
                 {
                     if (asyncStatus != AsyncStatus.Completed)
@@ -67,24 +67,24 @@ namespace ExViewer.Controls
 
                     var dispValue = op.GetResults();
                     var t = $"{data.Tag.Namespace.ToFriendlyNameString()}: {dispValue}";
-                    this.Dispatcher.Begin(() =>
+                    Dispatcher.Begin(() =>
                     {
-                        this.tbTag.Text = t;
+                        tbTag.Text = t;
                     });
                 };
             }
 
             if (data.Score > 0)
             {
-                this.tbTag.Foreground = upBrush;
+                tbTag.Foreground = upBrush;
             }
             else if (data.Score < 0)
             {
-                this.tbTag.Foreground = downBrush;
+                tbTag.Foreground = downBrush;
             }
             else
             {
-                this.tbTag.ClearValue(TextBlock.ForegroundProperty);
+                tbTag.ClearValue(TextBlock.ForegroundProperty);
             }
 
             var indicators = "";
@@ -101,7 +101,7 @@ namespace ExViewer.Controls
                 indicators = SlavedIndicator;
             }
 
-            this.tbStatus.Text = indicators;
+            tbStatus.Text = indicators;
         }
 
         private static readonly string BlockedAndSlavedIndicator = Strings.Resources.Controls.TaggingRecordPresenter.BlockedAndSlavedIndicator;

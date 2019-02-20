@@ -15,8 +15,8 @@ namespace ExViewer.Controls
         public Rating()
         {
             DefaultStyleKey = typeof(Rating);
-            this.FocusEngaged += this.Rating_FocusEngaged;
-            this.FocusDisengaged += this.Rating_FocusDisengaged;
+            FocusEngaged += Rating_FocusEngaged;
+            FocusDisengaged += Rating_FocusDisengaged;
         }
 
         private void Rating_FocusDisengaged(Control sender, FocusDisengagedEventArgs args)
@@ -26,9 +26,9 @@ namespace ExViewer.Controls
 
         private void Rating_FocusEngaged(Control sender, FocusEngagedEventArgs args)
         {
-            if (this.actualUserRating == Score.NotSet)
+            if (actualUserRating == Score.NotSet)
             {
-                this.actualUserRating = this.PlaceholderValue.ToScore();
+                actualUserRating = PlaceholderValue.ToScore();
             }
 
             ElementSoundPlayer.Play(ElementSoundKind.Invoke);
@@ -102,7 +102,7 @@ namespace ExViewer.Controls
         protected override void OnLostFocus(RoutedEventArgs e)
         {
             base.OnLostFocus(e);
-            this.actualUserRating = this.UserRatingValue;
+            actualUserRating = UserRatingValue;
             draw();
         }
 
@@ -126,14 +126,14 @@ namespace ExViewer.Controls
             case Windows.System.VirtualKey.Right:
             case Windows.System.VirtualKey.GamepadDPadRight:
             case Windows.System.VirtualKey.GamepadLeftThumbstickRight:
-                if (this.actualUserRating == Score.NotSet)
+                if (actualUserRating == Score.NotSet)
                 {
-                    this.actualUserRating = this.PlaceholderValue.ToScore();
+                    actualUserRating = PlaceholderValue.ToScore();
                 }
 
-                if (this.actualUserRating != Score.Score_5_0)
+                if (actualUserRating != Score.Score_5_0)
                 {
-                    this.actualUserRating++;
+                    actualUserRating++;
                 }
                 ElementSoundPlayer.Play(ElementSoundKind.Focus);
                 draw();
@@ -141,22 +141,22 @@ namespace ExViewer.Controls
             case Windows.System.VirtualKey.Left:
             case Windows.System.VirtualKey.GamepadDPadLeft:
             case Windows.System.VirtualKey.GamepadLeftThumbstickLeft:
-                if (this.actualUserRating == Score.NotSet)
+                if (actualUserRating == Score.NotSet)
                 {
-                    var a = this.PlaceholderValue;
+                    var a = PlaceholderValue;
                     if (a <= 0.5)
                     {
-                        this.actualUserRating = Score.Score_0_5;
+                        actualUserRating = Score.Score_0_5;
                     }
                     else
                     {
-                        this.actualUserRating = a.ToScore();
+                        actualUserRating = a.ToScore();
                     }
                 }
 
-                if (this.actualUserRating != Score.Score_0_5)
+                if (actualUserRating != Score.Score_0_5)
                 {
-                    this.actualUserRating--;
+                    actualUserRating--;
                 }
 
                 ElementSoundPlayer.Play(ElementSoundKind.Focus);
@@ -165,9 +165,9 @@ namespace ExViewer.Controls
             case Windows.System.VirtualKey.Space:
             case Windows.System.VirtualKey.Enter:
             case Windows.System.VirtualKey.GamepadA:
-                if (this.actualUserRating != Score.NotSet)
+                if (actualUserRating != Score.NotSet)
                 {
-                    UserRatingValue = this.actualUserRating;
+                    UserRatingValue = actualUserRating;
                 }
 
                 ElementSoundPlayer.Play(ElementSoundKind.Invoke);
@@ -175,7 +175,7 @@ namespace ExViewer.Controls
                 break;
             case Windows.System.VirtualKey.Escape:
             case Windows.System.VirtualKey.GamepadB:
-                this.actualUserRating = UserRatingValue;
+                actualUserRating = UserRatingValue;
                 RemoveFocusEngagement();
                 draw();
                 break;
@@ -212,11 +212,11 @@ namespace ExViewer.Controls
 
             if (pp < 0 || !IsEnabled)
             {
-                this.actualUserRating = this.UserRatingValue;
+                actualUserRating = UserRatingValue;
             }
             else
             {
-                this.actualUserRating = (Score)Math.Max((byte)Math.Round(pp * 10), (byte)1);
+                actualUserRating = (Score)Math.Max((byte)Math.Round(pp * 10), (byte)1);
             }
 
             draw();
@@ -231,7 +231,7 @@ namespace ExViewer.Controls
             }
 
             e.Handled = true;
-            this.actualUserRating = this.UserRatingValue;
+            actualUserRating = UserRatingValue;
             draw();
         }
 
@@ -264,22 +264,22 @@ namespace ExViewer.Controls
             e.Handled = true;
             if (IsEnabled)
             {
-                this.UserRatingValue = this.actualUserRating;
+                UserRatingValue = actualUserRating;
             }
             else
             {
-                this.actualUserRating = this.UserRatingValue;
+                actualUserRating = UserRatingValue;
                 draw();
             }
         }
 
         protected override void OnApplyTemplate()
         {
-            this.tbBackground = GetTemplateChild("Background") as TextBlock;
-            this.tbPlaceholder = GetTemplateChild("Placeholder") as TextBlock;
-            this.tbUserRating = GetTemplateChild("UserRating") as TextBlock;
-            this.rgPlaceholderClip = GetTemplateChild("PlaceholderClip") as RectangleGeometry;
-            this.rgUserRatingClip = GetTemplateChild("UserRatingClip") as RectangleGeometry;
+            tbBackground = GetTemplateChild("Background") as TextBlock;
+            tbPlaceholder = GetTemplateChild("Placeholder") as TextBlock;
+            tbUserRating = GetTemplateChild("UserRating") as TextBlock;
+            rgPlaceholderClip = GetTemplateChild("PlaceholderClip") as RectangleGeometry;
+            rgUserRatingClip = GetTemplateChild("UserRatingClip") as RectangleGeometry;
             base.OnApplyTemplate();
         }
 
@@ -292,30 +292,30 @@ namespace ExViewer.Controls
         private void draw() => draw(new Size(ActualWidth, ActualHeight));
         private void draw(Size size)
         {
-            var ph = this.PlaceholderValue;
-            var ur = this.actualUserRating;
+            var ph = PlaceholderValue;
+            var ur = actualUserRating;
             if (ur > 0)
             {
-                if (this.rgPlaceholderClip != null)
+                if (rgPlaceholderClip != null)
                 {
-                    this.rgPlaceholderClip.Rect = Rect.Empty;
+                    rgPlaceholderClip.Rect = Rect.Empty;
                 }
 
-                if (this.rgUserRatingClip != null)
+                if (rgUserRatingClip != null)
                 {
-                    this.rgUserRatingClip.Rect = new Rect(0, 0, size.Width / 5 * ur.ToDouble(), size.Height);
+                    rgUserRatingClip.Rect = new Rect(0, 0, size.Width / 5 * ur.ToDouble(), size.Height);
                 }
             }
             else
             {
-                if (this.rgPlaceholderClip != null)
+                if (rgPlaceholderClip != null)
                 {
-                    this.rgPlaceholderClip.Rect = new Rect(0, 0, size.Width / 5 * ph, size.Height);
+                    rgPlaceholderClip.Rect = new Rect(0, 0, size.Width / 5 * ph, size.Height);
                 }
 
-                if (this.rgUserRatingClip != null)
+                if (rgUserRatingClip != null)
                 {
-                    this.rgUserRatingClip.Rect = Rect.Empty;
+                    rgUserRatingClip.Rect = Rect.Empty;
                 }
             }
         }
