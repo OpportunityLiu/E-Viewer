@@ -30,6 +30,7 @@
           <uap3:AppUriHandler>
             <uap3:Host Name="exhentai.org" />
             <uap3:Host Name="e-hentai.org" />
+            <uap3:Host Name="lofi.e-hentai.org" />
           </uap3:AppUriHandler>
         </uap3:Extension>
         <uap:Extension Category="windows.protocol">
