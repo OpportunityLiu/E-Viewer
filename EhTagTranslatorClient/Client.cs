@@ -82,7 +82,7 @@ namespace EhTagTranslatorClient
                 {
                     UserAgent =
                     {
-                        new Windows.Web.Http.Headers.HttpProductInfoHeaderValue("EhTagTranslatorClient")
+                        new Windows.Web.Http.Headers.HttpProductInfoHeaderValue("EhTagTranslatorClient", "1")
                     }
                 }
             };
