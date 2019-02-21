@@ -95,7 +95,7 @@ namespace ExClient.Galleries
             }
         }
 
-        private static readonly IReadOnlyDictionary<string, Category> categoriesForRestApi = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
+        private static readonly IReadOnlyDictionary<string, Category> _CategoriesForRestApi = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
             ["Doujinshi"] = Category.Doujinshi,
             ["Manga"] = Category.Manga,
@@ -154,7 +154,7 @@ namespace ExClient.Galleries
                                 token.ThrowIfCancellationRequested();
                                 await i.LoadImageAsync(true, strategy, true).AsTask(token);
                             }
-                            progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), this.Count));
+                            progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), Count));
                             Debug.WriteLine($"Success {i.PageId}");
                         }
                         finally
@@ -205,10 +205,10 @@ namespace ExClient.Galleries
             {
                 switch (trv)
                 {
-                case "1": pageSize = 50; break;
-                case "2": pageSize = 100; break;
-                case "3": pageSize = 200; break;
-                default: pageSize = 20; break;
+                case "1": _PageSize = 50; break;
+                case "2": _PageSize = 100; break;
+                case "3": _PageSize = 200; break;
+                default: _PageSize = 20; break;
                 }
             }
         }
@@ -255,10 +255,8 @@ namespace ExClient.Galleries
             Available = !expunged;
             Title = HtmlEntity.DeEntitize(title);
             TitleJpn = HtmlEntity.DeEntitize(title_jpn);
-            if (!categoriesForRestApi.TryGetValue(category, out var ca))
-            {
+            if (!_CategoriesForRestApi.TryGetValue(category, out var ca))
                 ca = Category.Unspecified;
-            }
 
             Category = ca;
             Uploader = HtmlEntity.DeEntitize(uploader);
@@ -314,19 +312,19 @@ namespace ExClient.Galleries
 
         internal string ShowKey { get; set; }
 
-        private readonly WeakReference<ImageSource> thumbImage = new WeakReference<ImageSource>(null);
+        private readonly WeakReference<ImageSource> _ThumbImage = new WeakReference<ImageSource>(null);
         public ImageSource Thumb
         {
             get
             {
-                if (thumbImage.TryGetTarget(out var img))
+                if (_ThumbImage.TryGetTarget(out var img))
                     return img;
                 this.GetThumbAsync().ContinueWith(t =>
                 {
                     var r = t.Result;
                     if (r is null)
                         return;
-                    thumbImage.SetTarget(r);
+                    _ThumbImage.SetTarget(r);
                     OnPropertyChanged(nameof(Thumb));
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
                 return ThumbHelper.DefaultThumb;
@@ -341,8 +339,8 @@ namespace ExClient.Galleries
 
         public long FileSize { get; }
 
-        private int pageSize;
-        public int PageSize { get => pageSize; set => Set(ref pageSize, value); }
+        private int _PageSize;
+        public int PageSize { get => _PageSize; set => Set(ref _PageSize, value); }
 
         public bool Expunged { get; }
 
@@ -352,30 +350,30 @@ namespace ExClient.Galleries
 
         public TagCollection Tags { get; }
 
-        private FavoriteCategory favoriteCategory;
+        private FavoriteCategory _FavoriteCategory;
         public FavoriteCategory FavoriteCategory
         {
-            get => favoriteCategory;
-            protected internal set => Set(ref favoriteCategory, value);
+            get => _FavoriteCategory;
+            protected internal set => Set(ref _FavoriteCategory, value);
         }
 
-        private string favoriteNote;
+        private string _FavoriteNote;
         public string FavoriteNote
         {
-            get => favoriteNote;
-            protected internal set => Set(ref favoriteNote, value);
+            get => _FavoriteNote;
+            protected internal set => Set(ref _FavoriteNote, value);
         }
 
-        private RevisionCollection revisions;
+        private RevisionCollection _Revisions;
         public RevisionCollection Revisions
         {
-            get => revisions;
-            private set => Set(ref revisions, value);
+            get => _Revisions;
+            private set => Set(ref _Revisions, value);
         }
 
 
-        private CommentCollection comments;
-        public CommentCollection Comments => LazyInitializer.EnsureInitialized(ref comments, () => new CommentCollection(this));
+        private CommentCollection _Comments;
+        public CommentCollection Comments => LazyInitializer.EnsureInitialized(ref _Comments, () => new CommentCollection(this));
         #endregion
 
         internal void RefreshMetaData(HtmlDocument doc)
@@ -388,11 +386,8 @@ namespace ExClient.Galleries
                 FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
             }
             Rating.AnalyzeDocument(doc);
-            if (Revisions is null)
-            {
-                Revisions = new RevisionCollection(this, doc);
-            }
-
+            Revisions = Revisions ?? new RevisionCollection(this);
+            Revisions.Analyze(doc);
             Tags.Update(doc);
         }
 
@@ -446,7 +441,7 @@ namespace ExClient.Galleries
 
                 async Task<HtmlDocument> getDoc(int imageIndex, CancellationToken cancellationToken, bool reIn = false)
                 {
-                    var pageIndex = imageIndex / pageSize;
+                    var pageIndex = imageIndex / _PageSize;
                     var needLoadComments = !Comments.IsLoaded;
                     var uri = new Uri(GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
                     var docOp = Client.Current.HttpClient.GetDocumentAsync(uri);
@@ -472,7 +467,7 @@ namespace ExClient.Galleries
                         await Client.Current.HttpClient.GetAsync(new Uri("/?inline_set=ts_l", UriKind.Relative));
                         doc = await getDoc(imageIndex, cancellationToken, true);
                     }
-                    else if (pageIndex != imageIndex / pageSize)
+                    else if (pageIndex != imageIndex / _PageSize)
                     {
                         doc = await getDoc(imageIndex, cancellationToken, true);
                     }

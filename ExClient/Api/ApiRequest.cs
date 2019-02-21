@@ -21,18 +21,18 @@ namespace ExClient.Api
             ApiKey = apiKey;
         }
 
-        private static Regex regUid = new Regex(@"var\s+apiuid\s*=\s*(\d+)", RegexOptions.Compiled);
-        private static Regex regKey = new Regex(@"var\s+apikey\s*=\s*""([A-Fa-f0-9]+)""", RegexOptions.Compiled);
+        private static Regex _RegUid = new Regex(@"var\s+apiuid\s*=\s*(\d+)", RegexOptions.Compiled);
+        private static Regex _RegKey = new Regex(@"var\s+apikey\s*=\s*""([A-Fa-f0-9]+)""", RegexOptions.Compiled);
 
         public static void Update(string html)
         {
-            var mUid = regUid.Match(html);
+            var mUid = _RegUid.Match(html);
             if (mUid.Success)
             {
                 UserID = long.Parse(mUid.Groups[1].Value);
             }
 
-            var mKey = regKey.Match(html);
+            var mKey = _RegKey.Match(html);
             if (mKey.Success)
             {
                 ApiKey = mKey.Groups[1].Value;
