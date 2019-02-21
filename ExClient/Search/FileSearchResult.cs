@@ -10,11 +10,6 @@ namespace ExClient.Search
 {
     public sealed class FileSearchResult : CategorySearchResult
     {
-        private static readonly Uri fileSearchUriEh = new Uri("https://upload.e-hentai.org/image_lookup.php");
-        private static readonly Uri fileSearchUriEx = new Uri("https://exhentai.org/upload/image_lookup.php");
-
-        private static Uri fileSearchUri => Client.Current.Host == HostType.EHentai ? fileSearchUriEh : fileSearchUriEx;
-
         internal static IAsyncOperationWithProgress<FileSearchResult, HttpProgress> SearchAsync(string keyword, Category category, StorageFile file, bool searchSimilar, bool onlyCovers, bool searchExpunged)
         {
             if (file is null)
@@ -37,7 +32,7 @@ namespace ExClient.Search
                     var buf = await read;
                     data.Add(new HttpBufferContent(buf), "sfile", file.Name);
                     await data.BufferAllAsync();
-                    var post = Client.Current.HttpClient.PostAsync(fileSearchUri, data);
+                    var post = Client.Current.HttpClient.PostAsync(Client.Current.Uris.FileSearchUri, data);
                     post.Progress = (s, p) => progress.Report(p);
                     var r = await post;
                     var uri = r.RequestMessage.RequestUri;
@@ -85,10 +80,10 @@ namespace ExClient.Search
             SearchExpunged = searchExpunged;
             FileName = fileName ?? "";
             FileHashList = hashes.ToArray();
-            SearchUri = new Uri(base.SearchUri + createSearchUriQuery());
+            SearchUri = new Uri(base.SearchUri + _CreateSearchUriQuery());
         }
 
-        private string createSearchUriQuery()
+        private string _CreateSearchUriQuery()
         {
             return
                 $"&f_shash={string.Join(";", FileHashList)}" +

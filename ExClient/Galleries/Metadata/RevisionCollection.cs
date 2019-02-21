@@ -1,8 +1,10 @@
 ﻿using ExClient.Api;
 using HtmlAgilityPack;
 using Opportunity.Helpers.Universal.AsyncHelpers;
+using Opportunity.MvvmUniverse;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 
@@ -20,17 +22,19 @@ namespace ExClient.Galleries.Metadata
         public DateTimeOffset UpdatedTime { get; }
     }
 
-    public class RevisionCollection
+    public class RevisionCollection : ObservableObject
     {
-        internal RevisionCollection(Gallery owner, HtmlDocument doc)
+        internal RevisionCollection(Gallery owner)
         {
             Owner = owner;
+        }
+
+        internal void Analyze(HtmlDocument doc)
+        {
             var gdd = doc.GetElementbyId("gdd");
             var parentNode = gdd.FirstChild.ChildNodes[1].Descendants("a").FirstOrDefault();
             if (parentNode != null)
-            {
                 ParentInfo = GalleryInfo.Parse(parentNode.GetAttribute("href", default(Uri)));
-            }
 
             var descendantsNode = doc.GetElementbyId("gnd");
             if (descendantsNode != null)
@@ -53,9 +57,15 @@ namespace ExClient.Galleries.Metadata
             }
         }
 
-        internal Gallery Owner { get; }
-        public GalleryInfo? ParentInfo { get; }
-        public IReadOnlyList<RevisionInfo> DescendantsInfo { get; }
+        public Gallery Owner { get; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private GalleryInfo? _ParentInfo;
+        public GalleryInfo? ParentInfo { get => _ParentInfo; private set => Set(ref _ParentInfo, value); }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private IReadOnlyList<RevisionInfo> _DescendantsInfo;
+        public IReadOnlyList<RevisionInfo> DescendantsInfo { get => _DescendantsInfo; private set => Set(ref _DescendantsInfo, value); }
 
         public IAsyncOperation<Gallery> FetchParentAsync()
         {

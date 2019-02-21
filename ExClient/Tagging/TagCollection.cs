@@ -17,7 +17,7 @@ namespace ExClient.Tagging
     public sealed class TagCollection
         : ObservableCollectionBase<NamespaceTagCollection>, IReadOnlyList<NamespaceTagCollection>, IList
     {
-        private static readonly Namespace[] staticKeys = new[]
+        private static readonly Namespace[] _StaticKeys = new[]
         {
             Reclass,
             Language,
@@ -30,15 +30,11 @@ namespace ExClient.Tagging
             Misc
         };
 
-        private int getIndexOfKey(Namespace key)
+        private int _GetIndexOfKey(Namespace key)
         {
             for (var i = 0; i < Keys.Length; i++)
-            {
                 if (Keys[i] == key)
-                {
                     return i;
-                }
-            }
             return -1;
         }
 
@@ -47,10 +43,10 @@ namespace ExClient.Tagging
             Owner = owner;
             if (items is null)
                 throw new ArgumentNullException(nameof(items));
-            initOrReset(items.Select(t => (t, TagState.NormalPower)));
+            _InitOrReset(items.Select(t => (t, TagState.NormalPower)));
         }
 
-        private void initOrReset(IEnumerable<(Tag tag, TagState ts)> items)
+        private void _InitOrReset(IEnumerable<(Tag tag, TagState ts)> items)
         {
             var rawData = items.OrderBy(t => t.tag.Namespace)
                 // put low-power tags to the end
@@ -71,8 +67,8 @@ namespace ExClient.Tagging
                 }
                 return;
             }
-            var keys = new Namespace[staticKeys.Length];
-            var offset = new int[staticKeys.Length + 1];
+            var keys = new Namespace[_StaticKeys.Length];
+            var offset = new int[_StaticKeys.Length + 1];
             var currentIdx = 0;
             var currentNs = Unknown;
             for (var i = 0; i < data.Length; i++)
@@ -146,7 +142,7 @@ namespace ExClient.Tagging
             {
                 try
                 {
-                    return getValue(key);
+                    return _GetValue(key);
                 }
                 catch (ArgumentOutOfRangeException ex)
                 {
@@ -155,12 +151,12 @@ namespace ExClient.Tagging
             }
         }
 
-        private RangedListView<GalleryTag> getValue(Namespace key)
+        private RangedListView<GalleryTag> _GetValue(Namespace key)
         {
-            var i = getIndexOfKey(key);
+            var i = _GetIndexOfKey(key);
             if (i >= 0)
             {
-                return getValue(i);
+                return _GetValue(i);
             }
 
             if (!key.IsDefined())
@@ -171,7 +167,7 @@ namespace ExClient.Tagging
             return RangedListView<GalleryTag>.Empty;
         }
 
-        private RangedListView<GalleryTag> getValue(int index)
+        private RangedListView<GalleryTag> _GetValue(int index)
         {
             return new RangedListView<GalleryTag>(Data, Offset[index], Offset[index + 1] - Offset[index]);
         }
@@ -180,7 +176,7 @@ namespace ExClient.Tagging
         {
             if (command != VoteState.Down && command != VoteState.Up)
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
-            return voteAsync(new TagRequest(this, tag, command));
+            return _VoteAsync(new TagRequest(this, tag, command));
         }
 
         public IAsyncAction VoteAsync(IEnumerable<Tag> tags, VoteState command)
@@ -192,16 +188,16 @@ namespace ExClient.Tagging
             var req = new TagRequest(this, tags, command);
             if (string.IsNullOrWhiteSpace(req.Tags))
                 return AsyncAction.CreateCompleted();
-            return voteAsync(req);
+            return _VoteAsync(req);
         }
 
-        private IAsyncAction voteAsync(TagRequest req)
+        private IAsyncAction _VoteAsync(TagRequest req)
         {
             return AsyncInfo.Run(async token =>
             {
                 var res = await req.GetResponseAsync(token);
                 var doc = HtmlNode.CreateNode(res.TagPane);
-                updateCore(doc);
+                _UpdateCore(doc);
             });
         }
 
@@ -213,10 +209,10 @@ namespace ExClient.Tagging
             var tableNode = tablecontainer.Element("table");
             if (tableNode is null)
                 return;
-            updateCore(tableNode);
+            _UpdateCore(tableNode);
         }
 
-        private void updateCore(HtmlNode tableNode)
+        private void _UpdateCore(HtmlNode tableNode)
         {
             var query = tableNode.Descendants("div")
                 .Select(node =>
@@ -244,33 +240,33 @@ namespace ExClient.Tagging
                     var tag = node.Id.Substring(3).Replace('_', ' ');
                     return (Tag.Parse(tag), state);
                 });
-            initOrReset(query);
+            _InitOrReset(query);
         }
 
         public struct Enumerator : IEnumerator<NamespaceTagCollection>
         {
-            private readonly TagCollection parent;
-            private readonly int version;
-            private int i;
+            private readonly TagCollection _Parent;
+            private readonly int _Version;
+            private int _I;
 
             internal Enumerator(TagCollection parent)
             {
-                this.parent = parent;
-                version = parent.Version;
-                i = -1;
+                _Parent = parent;
+                _Version = parent.Version;
+                _I = -1;
             }
 
             public NamespaceTagCollection Current
             {
                 get
                 {
-                    if (version != parent.Version)
+                    if (_Version != _Parent.Version)
                         throw new InvalidOperationException("Collection changed.");
-                    if (i < 0)
+                    if (_I < 0)
                         throw new InvalidOperationException("Enumeration hasn't started.");
-                    if (i >= parent.Keys.Length)
+                    if (_I >= _Parent.Keys.Length)
                         throw new InvalidOperationException("Enumeration has ended.");
-                    return new NamespaceTagCollection(parent, i);
+                    return new NamespaceTagCollection(_Parent, _I);
                 }
             }
 
@@ -278,28 +274,27 @@ namespace ExClient.Tagging
 
             public bool MoveNext()
             {
-                if (version != parent.Version)
+                if (_Version != _Parent.Version)
                     throw new InvalidOperationException("Collection changed.");
-                var end = parent.Keys.Length;
-                if (i >= end)
+                var end = _Parent.Keys.Length;
+                if (_I >= end)
                     return false;
-                i++;
-                return i < end;
+                _I++;
+                return _I < end;
             }
 
             void IDisposable.Dispose()
             {
-                i = int.MaxValue;
+                _I = int.MaxValue;
             }
 
             public void Reset()
             {
-                i = 0;
+                _I = 0;
             }
         }
 
-        public Enumerator GetEnumerator()
-            => new Enumerator(this);
+        public Enumerator GetEnumerator() => new Enumerator(this);
 
         IEnumerator<NamespaceTagCollection> IEnumerable<NamespaceTagCollection>.GetEnumerator() => GetEnumerator();
     }

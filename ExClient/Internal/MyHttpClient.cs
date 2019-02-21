@@ -3,9 +3,12 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 using IHttpAsyncOperation = Windows.Foundation.IAsyncOperationWithProgress<Windows.Web.Http.HttpResponseMessage, Windows.Web.Http.HttpProgress>;
@@ -17,7 +20,7 @@ namespace ExClient.Internal
      * */
     internal class MyHttpClient : IDisposable
     {
-        private static void checkStringResponse(string responseString)
+        private static void _CheckStringResponse(string responseString)
         {
             if (responseString.Equals("This gallery is currently unavailable.", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException(LocalizedStrings.Resources.GalleryRemoved);
@@ -25,37 +28,45 @@ namespace ExClient.Internal
                 throw new InvalidOperationException(LocalizedStrings.Resources.IPBannedOfPageLoad);
         }
 
-        private void checkSadPanda(HttpResponseMessage response)
+        private void _CheckSadPanda(HttpResponseMessage response)
         {
             if (response.Content.Headers.ContentDisposition?.FileName == "sadpanda.jpg")
             {
-                owner.ResetExCookie();
+                _Owner.ResetExCookie();
                 throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
             }
         }
 
         public MyHttpClient(Client owner, HttpClient inner)
         {
-            this.inner = inner;
-            this.owner = owner;
+            _Inner = inner;
+            _Owner = owner;
+            _Nocookie = new HttpClient(new HttpBaseProtocolFilter
+            {
+                CookieUsageBehavior = HttpCookieUsageBehavior.NoCookies,
+            });
+
+            var ua = new HttpProductInfoHeaderValue(Package.Current.Id.Name, Package.Current.Id.Version.ToVersion().ToString());
+            _Inner.DefaultRequestHeaders.UserAgent.Add(ua);
+            _Nocookie.DefaultRequestHeaders.UserAgent.Add(ua);
         }
 
-        private void reformUri(ref Uri uri)
+        private void _ReformUri(ref Uri uri)
         {
             if (!uri.IsAbsoluteUri)
-                uri = new Uri(owner.Uris.RootUri, uri);
+                uri = new Uri(_Owner.Uris.RootUri, uri);
         }
 
-        private readonly HttpClient inner;
-        private readonly HttpClient nocookie = new HttpClient();
-        private readonly Client owner;
+        private readonly HttpClient _Inner;
+        private readonly HttpClient _Nocookie;
+        private readonly Client _Owner;
 
-        public HttpRequestHeaderCollection DefaultRequestHeaders => inner.DefaultRequestHeaders;
+        public HttpRequestHeaderCollection DefaultRequestHeaders => _Inner.DefaultRequestHeaders;
 
         public IHttpAsyncOperation GetAsync(Uri uri, HttpCompletionOption completionOption, bool checkStatusCode)
         {
-            reformUri(ref uri);
-            var client = uri.Host.EndsWith("hentai.org") ? inner : nocookie;
+            _ReformUri(ref uri);
+            var client = uri.Host.EndsWith("hentai.org") ? _Inner : _Nocookie;
             var request = client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             if (completionOption == HttpCompletionOption.ResponseHeadersRead)
             {
@@ -67,7 +78,7 @@ namespace ExClient.Internal
                 token.Register(request.Cancel);
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
-                checkSadPanda(response);
+                _CheckSadPanda(response);
                 if (checkStatusCode)
                 {
                     response.EnsureSuccessStatusCode();
@@ -100,7 +111,7 @@ namespace ExClient.Internal
 
         public IAsyncOperationWithProgress<IBuffer, HttpProgress> GetBufferAsync(Uri uri)
         {
-            reformUri(ref uri);
+            _ReformUri(ref uri);
             return Run<IBuffer, HttpProgress>(async (token, progress) =>
             {
                 var request = GetAsync(uri);
@@ -113,7 +124,7 @@ namespace ExClient.Internal
 
         public IAsyncOperationWithProgress<IInputStream, HttpProgress> GetInputStreamAsync(Uri uri)
         {
-            reformUri(ref uri);
+            _ReformUri(ref uri);
             return Run<IInputStream, HttpProgress>(async (token, progress) =>
             {
                 var request = GetAsync(uri);
@@ -126,7 +137,7 @@ namespace ExClient.Internal
 
         public IAsyncOperationWithProgress<string, HttpProgress> GetStringAsync(Uri uri)
         {
-            reformUri(ref uri);
+            _ReformUri(ref uri);
             return Run<string, HttpProgress>(async (token, progress) =>
             {
                 var request = GetAsync(uri);
@@ -134,14 +145,14 @@ namespace ExClient.Internal
                 request.Progress = (t, p) => progress.Report(p);
                 var response = await request;
                 var str = await response.Content.ReadAsStringAsync();
-                checkStringResponse(str);
+                _CheckStringResponse(str);
                 return str;
             });
         }
 
         public IAsyncOperationWithProgress<HtmlDocument, HttpProgress> GetDocumentAsync(Uri uri)
         {
-            reformUri(ref uri);
+            _ReformUri(ref uri);
             return Run<HtmlDocument, HttpProgress>(async (token, progress) =>
             {
                 var request = GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, false);
@@ -149,14 +160,14 @@ namespace ExClient.Internal
                 request.Progress = (t, p) => progress.Report(p);
                 var doc = new HtmlDocument();
                 var response = await request;
-                checkSadPanda(response);
+                _CheckSadPanda(response);
                 using (var stream = (await response.Content.ReadAsInputStreamAsync()).AsStreamForRead())
                 {
                     doc.Load(stream);
                 }
                 var rootNode = doc.DocumentNode;
                 if (rootNode.ChildNodes.Count == 1 && rootNode.FirstChild.NodeType == HtmlNodeType.Text)
-                    checkStringResponse(rootNode.FirstChild.InnerText);
+                    _CheckStringResponse(rootNode.FirstChild.InnerText);
 
                 do
                 {
@@ -192,8 +203,8 @@ namespace ExClient.Internal
 
         public IHttpAsyncOperation PostAsync(Uri uri, IHttpContent content)
         {
-            reformUri(ref uri);
-            return inner.PostAsync(uri, content);
+            _ReformUri(ref uri);
+            return _Inner.PostAsync(uri, content);
         }
 
         public IHttpAsyncOperation PostAsync(Uri uri, params KeyValuePair<string, string>[] content)
@@ -201,13 +212,13 @@ namespace ExClient.Internal
 
         public IHttpAsyncOperation PostAsync(Uri uri, IEnumerable<KeyValuePair<string, string>> content)
         {
-            reformUri(ref uri);
-            return inner.PostAsync(uri, new HttpFormUrlEncodedContent(content));
+            _ReformUri(ref uri);
+            return _Inner.PostAsync(uri, new HttpFormUrlEncodedContent(content));
         }
 
         public IAsyncOperationWithProgress<string, HttpProgress> PostStringAsync(Uri uri, string content)
         {
-            reformUri(ref uri);
+            _ReformUri(ref uri);
             return Run<string, HttpProgress>(async (token, progress) =>
             {
                 var op = PostAsync(uri, content is null ? null : new HttpStringContent(content));
@@ -216,21 +227,15 @@ namespace ExClient.Internal
                 var res = await op;
                 res.EnsureSuccessStatusCode();
                 var str = await res.Content.ReadAsStringAsync();
-                checkStringResponse(str);
+                _CheckStringResponse(str);
                 return str;
             });
         }
 
-        public IHttpAsyncOperation PutAsync(Uri uri, IHttpContent content)
-        {
-            reformUri(ref uri);
-            return inner.PutAsync(uri, content);
-        }
-
         public void Dispose()
         {
-            inner.Dispose();
-            nocookie.Dispose();
+            _Inner.Dispose();
+            _Nocookie.Dispose();
         }
     }
 }
