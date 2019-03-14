@@ -27,13 +27,13 @@ namespace ExDawnOfDayTask
         }
 
         private const string TASK_NAME = "ExDawnOfDayTask";
-        private static readonly object syncRoot = new object();
+        private static readonly object _SyncRoot = new object();
 
-        public static void Register() => register(false);
+        public static void Register() => _Register(false);
 
-        private static void register(bool unregister)
+        private static void _Register(bool unregister)
         {
-            lock (syncRoot)
+            lock (_SyncRoot)
             {
                 foreach (var task in BackgroundTaskRegistration.AllTasks)
                 {
@@ -67,15 +67,15 @@ namespace ExDawnOfDayTask
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
-            register(true);
-            if (!Enabled)
-                return;
-            if (ExClient.Client.Current.NeedLogOn)
-                return;
             var d = taskInstance.GetDeferral();
             try
             {
-                HentaiVerseInfo.DawnOfDayRewardsAwarded += HentaiVerseInfo_DawnOfDayRewardsAwarded;
+                _Register(true);
+                if (!Enabled)
+                    return;
+                if (ExClient.Client.Current.NeedLogOn)
+                    return;
+                HentaiVerseInfo.DawnOfDayRewardsAwarded += _HentaiVerseInfo_DawnOfDayRewardsAwarded;
                 await HentaiVerseInfo.FetchAsync();
                 if (ExClient.Client.Current.UserId == 1832306)
                 {
@@ -89,12 +89,17 @@ namespace ExDawnOfDayTask
             catch { }
             finally
             {
-                HentaiVerseInfo.DawnOfDayRewardsAwarded -= HentaiVerseInfo_DawnOfDayRewardsAwarded;
+                HentaiVerseInfo.DawnOfDayRewardsAwarded -= _HentaiVerseInfo_DawnOfDayRewardsAwarded;
                 d.Complete();
             }
         }
 
-        private static void sendToast(IReadOnlyDictionary<string, double> data)
+        private void _HentaiVerseInfo_DawnOfDayRewardsAwarded(object sender, DawnOfDayRewardsEventArgs e)
+        {
+            _SendToast(e.Data);
+        }
+
+        private static void _SendToast(IReadOnlyDictionary<string, double> data)
         {
             var format = default(Opportunity.ResourceGenerator.FormattableResourceString);
             switch (data.Count)
@@ -153,11 +158,6 @@ namespace ExDawnOfDayTask
                 NotificationMirroring = NotificationMirroring.Allowed,
             };
             ToastNotificationManager.CreateToastNotifier().Show(toastNotif);
-        }
-
-        private void HentaiVerseInfo_DawnOfDayRewardsAwarded(object sender, DawnOfDayRewardsEventArgs e)
-        {
-            sendToast(e.Data);
         }
     }
 }
