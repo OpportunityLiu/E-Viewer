@@ -47,7 +47,7 @@ namespace ExClient
 
         private readonly string name;
 
-        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> postAddFav(long gId, ulong gToken, string note)
+        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> postAddFav(long gId, EToken gToken, string note)
         {
             IEnumerable<KeyValuePair<string, string>> getInfo()
             {
@@ -56,7 +56,7 @@ namespace ExClient
                 yield return new KeyValuePair<string, string>("favnote", note);
                 yield return new KeyValuePair<string, string>("update", "1");
             }
-            var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken.ToTokenString()}&act=addfav", UriKind.Relative);
+            var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken.ToString()}&act=addfav", UriKind.Relative);
             return Client.Current.HttpClient.PostAsync(requestUri, getInfo());
         }
 

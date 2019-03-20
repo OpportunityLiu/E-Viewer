@@ -108,7 +108,7 @@ namespace ExClient.Search
                     var detailNode = infoNode.ChildNodes[2]; //class = it5
                     var match = _GLinkMatcher.Match(detailNode.FirstChild.GetAttribute("href", ""));
                     dataNodeList.Add(node);
-                    gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.ToToken()));
+                    gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), EToken.Parse(match.Groups[2].Value)));
                 }
             }
             else
@@ -118,7 +118,7 @@ namespace ExClient.Search
                     var link = node.Element("div", "id2").Element("a");
                     var match = _GLinkMatcher.Match(link.GetAttribute("href", ""));
                     dataNodeList.Add(node);
-                    gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), match.Groups[2].Value.ToToken()));
+                    gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), EToken.Parse(match.Groups[2].Value)));
                 }
             }
             var getG = Gallery.FetchGalleriesAsync(gInfoList);

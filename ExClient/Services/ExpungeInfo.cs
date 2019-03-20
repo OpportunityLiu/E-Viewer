@@ -43,7 +43,7 @@ namespace ExClient.Services
 
         public GalleryInfo GalleryInfo { get; }
 
-        private Uri apiUri => new Uri($"gallerypopups.php?gid={GalleryInfo.ID}&t={GalleryInfo.Token.ToTokenString()}&act=expunge", UriKind.Relative);
+        private Uri apiUri => new Uri($"gallerypopups.php?gid={GalleryInfo.ID}&t={GalleryInfo.Token.ToString()}&act=expunge", UriKind.Relative);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ObservableList<ExpungeRecord> records = new ObservableList<ExpungeRecord>();

@@ -28,7 +28,7 @@ namespace ExClient.Api
                 var v = (ImageInfo)value;
                 writer.WriteStartArray();
                 writer.WriteValue(v.GalleryId);
-                writer.WriteValue(v.ImageKey.ToTokenString());
+                writer.WriteValue(v.ImageKey.ToString());
                 writer.WriteValue(v.PageId);
                 writer.WriteEndArray();
             }
@@ -41,9 +41,10 @@ namespace ExClient.Api
                 var sp = data.Paths[2].Split('-');
                 if ((sp.Length == 2)
                     && long.TryParse(sp[0], out var gID)
-                    && int.TryParse(sp[1], out var pID))
+                    && int.TryParse(sp[1], out var pID)
+                    && EToken.TryParse(data.Paths[1], out var token))
                 {
-                    info = new ImageInfo(gID, data.Paths[1].Substring(0, 10).ToToken(), pID);
+                    info = new ImageInfo(gID, token, pID);
                     return true;
                 }
             }
@@ -69,7 +70,7 @@ namespace ExClient.Api
             throw new FormatException();
         }
 
-        public ImageInfo(long galleryID, ulong imageKey, int pageID)
+        public ImageInfo(long galleryID, EToken imageKey, int pageID)
         {
             GalleryId = galleryID;
             ImageKey = imageKey;
@@ -88,7 +89,7 @@ namespace ExClient.Api
 
         public long GalleryId { get; }
         public int PageId { get; }
-        public ulong ImageKey { get; }
+        public EToken ImageKey { get; }
 
         public bool Equals(ImageInfo other)
         {

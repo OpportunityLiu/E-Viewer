@@ -31,7 +31,7 @@ namespace ExClient.Services
         {
             return Task.Run(async () =>
             {
-                var torrentUri = new Uri(Client.Current.Uris.RootUri, $"gallerytorrents.php?gid={galleryInfo.ID}&t={galleryInfo.Token.ToTokenString()}");
+                var torrentUri = new Uri(Client.Current.Uris.RootUri, $"gallerytorrents.php?gid={galleryInfo.ID}&t={galleryInfo.Token.ToString()}");
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(torrentUri);
                 if (doc.DocumentNode.ChildNodes.Count == 1 && doc.DocumentNode.FirstChild.NodeType == HtmlNodeType.Text)
                     throw new InvalidOperationException(doc.DocumentNode.FirstChild.InnerText);

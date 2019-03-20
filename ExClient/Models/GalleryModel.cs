@@ -12,7 +12,7 @@ namespace ExClient.Models
         {
             GalleryModelId = toCache.Id;
             Available = toCache.Available;
-            Token = toCache.Token;
+            Token = toCache.Token.Value;
             Title = toCache.Title;
             TitleJpn = toCache.TitleJpn;
             Category = toCache.Category;

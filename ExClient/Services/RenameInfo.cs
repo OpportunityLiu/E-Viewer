@@ -82,7 +82,7 @@ namespace ExClient.Services
             private set => Set(ref votedJpn, value);
         }
 
-        private Uri apiUri => new Uri($"gallerypopups.php?gid={GalleryInfo.ID}&t={GalleryInfo.Token.ToTokenString()}&act=rename", UriKind.Relative);
+        private Uri apiUri => new Uri($"gallerypopups.php?gid={GalleryInfo.ID}&t={GalleryInfo.Token.ToString()}&act=rename", UriKind.Relative);
 
         public IAsyncAction RefreshAsync()
         {
