@@ -194,7 +194,7 @@ namespace ExClient.Galleries
             }));
         }
 
-        private Gallery(long id, ulong token, int recordCount)
+        private Gallery(long id, EToken token, int recordCount)
             : base(recordCount)
         {
             Id = id;
@@ -214,7 +214,7 @@ namespace ExClient.Galleries
         }
 
         internal Gallery(GalleryModel model)
-            : this(model.GalleryModelId, model.Token, model.RecordCount)
+            : this(model.GalleryModelId, new EToken(model.Token), model.RecordCount)
         {
             Available = model.Available;
             Title = model.Title;
@@ -246,7 +246,7 @@ namespace ExClient.Galleries
             string rating = null,
             string torrentcount = null,
             string[] tags = null)
-            : this(gid, token?.ToToken() ?? 0, int.Parse(filecount, NumberStyles.Integer, CultureInfo.InvariantCulture))
+            : this(gid, EToken.Parse(token.CoalesceNullOrWhiteSpace("0")), int.Parse(filecount, NumberStyles.Integer, CultureInfo.InvariantCulture))
         {
             if (error != null)
             {
@@ -302,7 +302,7 @@ namespace ExClient.Galleries
 
         public bool Available { get; protected set; }
 
-        public ulong Token { get; }
+        public EToken Token { get; }
 
         public string Title { get; protected set; }
 
@@ -420,7 +420,7 @@ namespace ExClient.Galleries
                         }
 
                         var pId = int.Parse(tokens[tokens.Length - 1], NumberStyles.Integer);
-                        var imageKey = tokens[tokens.Length - 3].ToToken();
+                        var imageKey = EToken.Parse(tokens[tokens.Length - 3]);
                         var gId = Id;
                         var imageModel = db.GalleryImageSet
                             .Include(gi => gi.Image)
@@ -480,7 +480,7 @@ namespace ExClient.Galleries
         {
             return Run(async token =>
             {
-                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={Id}&t={Token.ToTokenString()}&act=addfav", UriKind.Relative));
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={Id}&t={Token.ToString()}&act=addfav", UriKind.Relative));
                 var favdel = doc.GetElementbyId("favdel");
                 if (favdel != null)
                 {

@@ -49,7 +49,7 @@ namespace ExClient.Galleries
             PageId = pageId;
         }
 
-        internal void Init(ulong imageKey, Uri thumb)
+        internal void Init(EToken imageKey, Uri thumb)
         {
             ImageKey = imageKey;
             ThumbUri = thumb;
@@ -204,10 +204,10 @@ namespace ExClient.Galleries
         public int PageId { get; }
 
         public Uri PageUri
-            => _ImageKey == 0 ? null : new Uri(Client.Current.Uris.RootUri, $"s/{_ImageKey.ToTokenString()}/{Owner.Id}-{PageId}");
+            => _ImageKey == default ? null : new Uri(Client.Current.Uris.RootUri, $"s/{_ImageKey.ToString()}/{Owner.Id}-{PageId}");
 
-        private ulong _ImageKey;
-        public ulong ImageKey { get => _ImageKey; private set => Set(nameof(PageUri), ref _ImageKey, value); }
+        private EToken _ImageKey;
+        public EToken ImageKey { get => _ImageKey; private set => Set(nameof(PageUri), ref _ImageKey, value); }
 
         private SHA1Value _ImageHash;
         /// <summary>

@@ -25,7 +25,7 @@ namespace ExClient.Api
             ShowKey = showKey;
             GalleryId = imageInfo.GalleryId;
             PageId = imageInfo.PageId;
-            ImageKey = imageInfo.ImageKey.ToTokenString();
+            ImageKey = imageInfo.ImageKey.ToString();
         }
     }
 
