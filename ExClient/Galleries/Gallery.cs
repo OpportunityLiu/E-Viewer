@@ -99,10 +99,10 @@ namespace ExClient.Galleries
         {
             ["Doujinshi"] = Category.Doujinshi,
             ["Manga"] = Category.Manga,
-            ["Artist CG Sets"] = Category.ArtistCG,
-            ["Game CG Sets"] = Category.GameCG,
+            ["Artist CG"] = Category.ArtistCG,
+            ["Game CG"] = Category.GameCG,
             ["Western"] = Category.Western,
-            ["Image Sets"] = Category.ImageSet,
+            ["Image Set"] = Category.ImageSet,
             ["Non-H"] = Category.NonH,
             ["Cosplay"] = Category.Cosplay,
             ["Asian Porn"] = Category.AsianPorn,
