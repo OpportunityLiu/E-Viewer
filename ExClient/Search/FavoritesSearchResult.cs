@@ -48,20 +48,20 @@ namespace ExClient.Search
             : base(keyword)
         {
             Category = category;
-            SearchUri = new Uri(SearchBaseUri, getUriQuery());
+            SearchUri = new Uri(SearchBaseUri, _GetUriQuery());
         }
 
         public FavoriteCategory Category { get; }
 
         public override Uri SearchUri { get; }
 
-        private string getUriQuery()
+        private string _GetUriQuery()
         {
-            //?favcat=all&f_search=&f_apply=Search+Favorites
+            // ?favcat=all&f_search=d&sn=on&st=on&sf=off
             return
                 $"?favcat={(Category.Index < 0 ? "all" : Category.Index.ToString())}" +
                 $"&f_search={Uri.EscapeDataString(Keyword)}" +
-                $"&f_apply=Search+Favorites";
+                $"&sn=1&st=1&sf=1";
         }
 
         protected override void HandleAdditionalInfo(HtmlNode dataNode, Gallery gallery, bool isList)
