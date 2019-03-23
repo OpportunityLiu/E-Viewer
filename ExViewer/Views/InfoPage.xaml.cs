@@ -22,17 +22,17 @@ namespace ExViewer.Views
     {
         public InfoPage()
         {
-            this.InitializeComponent();
-            this.HistoryIconConverter.Converter = new HistoryToIconConverter();
-            this.ViewModel = new InfoVM();
+            InitializeComponent();
+            HistoryIconConverter.Converter = new HistoryToIconConverter();
+            ViewModel = new InfoVM();
             refreshAll();
         }
 
         private void refreshAll()
         {
-            this.ViewModel.RefreshStatus.Execute();
-            this.ViewModel.RefreshTaggingStatistics.Execute();
-            this.ViewModel.RefreshHistory.Execute();
+            ViewModel.RefreshStatus.Execute();
+            ViewModel.RefreshTaggingStatistics.Execute();
+            ViewModel.RefreshHistory.Execute();
         }
 
         private double percent(double value)
@@ -53,32 +53,32 @@ namespace ExViewer.Views
 
         private void page_Loading(FrameworkElement sender, object args)
         {
-            this.setSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += this.setSplitViewButtonPlaceholderVisibility;
+            setSplitViewButtonPlaceholderVisibility(null, RootControl.RootController.SplitViewButtonPlaceholderVisibility);
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged += setSplitViewButtonPlaceholderVisibility;
         }
 
         private void page_Unloaded(object sender, RoutedEventArgs e)
         {
-            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= this.setSplitViewButtonPlaceholderVisibility;
+            RootControl.RootController.SplitViewButtonPlaceholderVisibilityChanged -= setSplitViewButtonPlaceholderVisibility;
         }
 
         private void setSplitViewButtonPlaceholderVisibility(RootControl sender, bool visible)
         {
-            this.bdSplitViewPlaceholder.Width = visible ? 48 : 0;
+            bdSplitViewPlaceholder.Width = visible ? 48 : 0;
         }
 
         private void pv_root_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (this.pv_root.SelectedIndex)
+            switch (pv_root.SelectedIndex)
             {
             case 0:
-                this.abbRefresh.Command = ViewModel.RefreshStatus;
+                abbRefresh.Command = ViewModel.RefreshStatus;
                 break;
             case 1:
-                this.abbRefresh.Command = ViewModel.RefreshTaggingStatistics;
+                abbRefresh.Command = ViewModel.RefreshTaggingStatistics;
                 break;
             case 2:
-                this.abbRefresh.Command = ViewModel.RefreshHistory;
+                abbRefresh.Command = ViewModel.RefreshHistory;
                 break;
             }
         }
@@ -102,8 +102,8 @@ namespace ExViewer.Views
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
-                this.cb.IsOpen = true;
-                this.cb.Focus(FocusState.Programmatic);
+                cb.IsOpen = true;
+                cb.Focus(FocusState.Programmatic);
                 break;
             default:
                 e.Handled = false;
@@ -113,7 +113,7 @@ namespace ExViewer.Views
 
         public void CloseAll()
         {
-            this.cb.IsOpen = false;
+            cb.IsOpen = false;
         }
 
         private static void setCommandParameter(MenuFlyout target, object parameter)
@@ -139,14 +139,14 @@ namespace ExViewer.Views
 
         private void lvTagging_ItemClick(object sender, ItemClickEventArgs e)
         {
-            setCommandParameter(this.mfTaggingRecord, e.ClickedItem);
-            this.mfTaggingRecord.ShowAt(this.lvTagging.ContainerFromItem(e.ClickedItem).Cast<FrameworkElement>());
+            setCommandParameter(mfTaggingRecord, e.ClickedItem);
+            mfTaggingRecord.ShowAt(lvTagging.ContainerFromItem(e.ClickedItem).Cast<FrameworkElement>());
         }
 
         private void lvHistory_ItemClick(object sender, ItemClickEventArgs e)
         {
-            setCommandParameter(this.mfHistoryRecord, e.ClickedItem);
-            this.mfHistoryRecord.ShowAt(this.lvHistory.ContainerFromItem(e.ClickedItem).Cast<FrameworkElement>());
+            setCommandParameter(mfHistoryRecord, e.ClickedItem);
+            mfHistoryRecord.ShowAt(lvHistory.ContainerFromItem(e.ClickedItem).Cast<FrameworkElement>());
         }
 
         private sealed class HistoryToIconConverter : ValueConverter<HistoryRecordType, Uri>

@@ -83,12 +83,12 @@ namespace ApplicationDataManager.Settings.Xaml
             }
 
             var s = (SettingInfo)sender;
-            this.Value = Convert.ToDouble(s.Value);
+            Value = Convert.ToDouble(s.Value);
         }
 
         private void valueChangedCallback(object sender, RangeBaseValueChangedEventArgs e)
         {
-            this.SettingValue.Value = ConvertToBack(e.NewValue, this.SettingValue.Type);
+            SettingValue.Value = ConvertToBack(e.NewValue, SettingValue.Type);
         }
 
         public static object ConvertToBack(double value, ValueType parameter)

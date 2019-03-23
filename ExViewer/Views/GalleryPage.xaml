@@ -387,7 +387,7 @@
                            MaxHeight="200"
                            Source="{x:Bind Thumb, Mode=OneWay}"
                            ToolTipService.Placement="Right"
-                           ToolTipService.ToolTip="{x:Bind PageID, Mode=OneWay}" />
+                           ToolTipService.ToolTip="{x:Bind PageId, Mode=OneWay}" />
                   </DataTemplate>
                 </GridView.ItemTemplate>
               </GridView>

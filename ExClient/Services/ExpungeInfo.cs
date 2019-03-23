@@ -39,15 +39,15 @@ namespace ExClient.Services
             });
         }
 
-        public ExpungeInfo(GalleryInfo galleryInfo) => this.GalleryInfo = galleryInfo;
+        public ExpungeInfo(GalleryInfo galleryInfo) => GalleryInfo = galleryInfo;
 
         public GalleryInfo GalleryInfo { get; }
 
-        private Uri apiUri => new Uri($"gallerypopups.php?gid={this.GalleryInfo.ID}&t={this.GalleryInfo.Token.ToTokenString()}&act=expunge", UriKind.Relative);
+        private Uri apiUri => new Uri($"gallerypopups.php?gid={GalleryInfo.ID}&t={GalleryInfo.Token.ToString()}&act=expunge", UriKind.Relative);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ObservableList<ExpungeRecord> records = new ObservableList<ExpungeRecord>();
-        public ObservableListView<ExpungeRecord> Records => this.records.AsReadOnly();
+        public ObservableListView<ExpungeRecord> Records => records.AsReadOnly();
 
         private static readonly Regex infoRegex = new Regex($@"^\s*\+(?<{nameof(ExpungeRecord.Power)}>\d+)\s*(?<{nameof(ExpungeRecord.Reason)}>\w+)\s*on\s*(?<{nameof(ExpungeRecord.Posted)}>.+?)\s*UTC\s*by\s*(?<{nameof(ExpungeRecord.Author)}>.+?)\s*$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
@@ -69,7 +69,7 @@ namespace ExClient.Services
                     var votes = form.SelectNodes("descendant::div[@class='c1']");
                     if (votes is null)
                     {
-                        this.records.Clear();
+                        records.Clear();
                         return;
                     }
                     var data = new List<ExpungeRecord>();
@@ -86,7 +86,7 @@ namespace ExClient.Services
                             int.Parse(match.Groups[nameof(ExpungeRecord.Power)].Value)
                             ));
                     }
-                    this.records.Update(data);
+                    records.Update(data);
                 }
                 catch (Exception ex)
                 {

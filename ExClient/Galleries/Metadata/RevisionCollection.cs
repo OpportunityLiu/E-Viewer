@@ -1,8 +1,10 @@
 ﻿using ExClient.Api;
 using HtmlAgilityPack;
 using Opportunity.Helpers.Universal.AsyncHelpers;
+using Opportunity.MvvmUniverse;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 
@@ -12,25 +14,27 @@ namespace ExClient.Galleries.Metadata
     {
         internal RevisionInfo(GalleryInfo gallery, DateTimeOffset updatedTime)
         {
-            this.Gallery = gallery;
-            this.UpdatedTime = updatedTime;
+            Gallery = gallery;
+            UpdatedTime = updatedTime;
         }
 
         public GalleryInfo Gallery { get; }
         public DateTimeOffset UpdatedTime { get; }
     }
 
-    public class RevisionCollection
+    public class RevisionCollection : ObservableObject
     {
-        internal RevisionCollection(Gallery owner, HtmlDocument doc)
+        internal RevisionCollection(Gallery owner)
         {
-            this.Owner = owner;
+            Owner = owner;
+        }
+
+        internal void Analyze(HtmlDocument doc)
+        {
             var gdd = doc.GetElementbyId("gdd");
             var parentNode = gdd.FirstChild.ChildNodes[1].Descendants("a").FirstOrDefault();
             if (parentNode != null)
-            {
-                this.ParentInfo = GalleryInfo.Parse(parentNode.GetAttribute("href", default(Uri)));
-            }
+                ParentInfo = GalleryInfo.Parse(parentNode.GetAttribute("href", default(Uri)));
 
             var descendantsNode = doc.GetElementbyId("gnd");
             if (descendantsNode != null)
@@ -45,17 +49,23 @@ namespace ExClient.Galleries.Metadata
                     var dto = DateTimeOffset.ParseExact(textNode.GetInnerText(), "', added' yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                     descendants[i] = new RevisionInfo(GalleryInfo.Parse(link), dto);
                 }
-                this.DescendantsInfo = descendants;
+                DescendantsInfo = descendants;
             }
             else
             {
-                this.DescendantsInfo = Array.Empty<RevisionInfo>();
+                DescendantsInfo = Array.Empty<RevisionInfo>();
             }
         }
 
-        internal Gallery Owner { get; }
-        public GalleryInfo? ParentInfo { get; }
-        public IReadOnlyList<RevisionInfo> DescendantsInfo { get; }
+        public Gallery Owner { get; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private GalleryInfo? _ParentInfo;
+        public GalleryInfo? ParentInfo { get => _ParentInfo; private set => Set(ref _ParentInfo, value); }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private IReadOnlyList<RevisionInfo> _DescendantsInfo;
+        public IReadOnlyList<RevisionInfo> DescendantsInfo { get => _DescendantsInfo; private set => Set(ref _DescendantsInfo, value); }
 
         public IAsyncOperation<Gallery> FetchParentAsync()
         {
@@ -69,12 +79,12 @@ namespace ExClient.Galleries.Metadata
 
         public IAsyncOperation<Gallery> FetchLatestRevisionAsync()
         {
-            if (this.DescendantsInfo.Count == 0)
+            if (DescendantsInfo.Count == 0)
             {
-                return AsyncOperation<Gallery>.CreateCompleted(this.Owner);
+                return AsyncOperation<Gallery>.CreateCompleted(Owner);
             }
 
-            return this.DescendantsInfo.Last().Gallery.FetchGalleryAsync();
+            return DescendantsInfo.Last().Gallery.FetchGalleryAsync();
         }
     }
 }

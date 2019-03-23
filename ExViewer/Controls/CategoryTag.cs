@@ -28,14 +28,14 @@ namespace ExViewer.Controls
 
         public CategoryTag()
         {
-            this.DefaultStyleKey = typeof(CategoryTag);
+            DefaultStyleKey = typeof(CategoryTag);
         }
 
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.TextPresenter = (TextBlock)this.GetTemplateChild(nameof(this.TextPresenter));
-            setValue(this.Category);
+            TextPresenter = (TextBlock)GetTemplateChild(nameof(TextPresenter));
+            setValue(Category);
         }
 
         private void setValue(Category cat)
@@ -43,17 +43,17 @@ namespace ExViewer.Controls
 #if DEBUG
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
-                if (this.TextPresenter != null)
+                if (TextPresenter != null)
                 {
-                    this.TextPresenter.Text = "TESTVALUE";
+                    TextPresenter.Text = "TESTVALUE";
                 }
 
                 return;
             }
 #endif
-            if (this.TextPresenter != null)
+            if (TextPresenter != null)
             {
-                this.TextPresenter.Text = cat.ToFriendlyNameString().ToUpper();
+                TextPresenter.Text = cat.ToFriendlyNameString().ToUpper();
             }
         }
 

@@ -11,7 +11,7 @@ namespace ExClient.Internal
     {
         public RedirectFilter(IHttpFilter innerFilter)
         {
-            this.inner = innerFilter;
+            inner = innerFilter;
         }
 
         IHttpFilter inner;
@@ -24,7 +24,7 @@ namespace ExClient.Internal
 
             private void current_Completed(IHttpAsyncOperation asyncInfo, AsyncStatus asyncStatus)
             {
-                if(asyncInfo != this.current)
+                if(asyncInfo != current)
                 {
                     return;
                 }
@@ -39,28 +39,28 @@ namespace ExClient.Internal
                         sendRequest();
                     }
                 }
-                this.Status = asyncStatus;
+                Status = asyncStatus;
                 if(asyncStatus != AsyncStatus.Started)
                 {
-                    this.Completed?.Invoke(this, asyncStatus);
+                    Completed?.Invoke(this, asyncStatus);
                 }
             }
 
             private void sendRequest()
             {
-                this.current = this.parent.inner.SendRequestAsync(this.request);
-                this.current.Progress = this.current_Progress;
-                this.current.Completed = this.current_Completed;
+                current = parent.inner.SendRequestAsync(request);
+                current.Progress = current_Progress;
+                current.Completed = current_Completed;
             }
 
             private void current_Progress(IHttpAsyncOperation asyncInfo, HttpProgress progressInfo)
             {
-                if(asyncInfo != this.current)
+                if(asyncInfo != current)
                 {
                     return;
                 }
 
-                this.Progress?.Invoke(this, progressInfo);
+                Progress?.Invoke(this, progressInfo);
             }
 
             public HttpAsyncOperation(RedirectFilter parent, HttpRequestMessage request)
@@ -73,7 +73,7 @@ namespace ExClient.Internal
             private void buildNewRequest(HttpResponseMessage response)
             {
                 var newRequest = new HttpRequestMessage { RequestUri = response.Headers.Location };
-                var oldRequest = this.request;
+                var oldRequest = request;
                 if((response.StatusCode == HttpStatusCode.Found || response.StatusCode == HttpStatusCode.SeeOther) && oldRequest.Method == HttpMethod.Post)
                 {
                     newRequest.Method = HttpMethod.Get;
@@ -91,7 +91,7 @@ namespace ExClient.Internal
                 {
                     newRequest.Properties.Add(item);
                 }
-                this.request = newRequest;
+                request = newRequest;
             }
 
             private static bool needRedirect(HttpResponseMessage response)
@@ -110,9 +110,9 @@ namespace ExClient.Internal
                 set;
             }
 
-            public Exception ErrorCode => this.current?.ErrorCode;
+            public Exception ErrorCode => current?.ErrorCode;
 
-            public uint Id => this.current.Id;
+            public uint Id => current.Id;
 
             public AsyncOperationProgressHandler<HttpResponseMessage, HttpProgress> Progress
             {
@@ -128,20 +128,20 @@ namespace ExClient.Internal
 
             public void Cancel()
             {
-                this.current.Cancel();
-                this.Status = AsyncStatus.Canceled;
+                current.Cancel();
+                Status = AsyncStatus.Canceled;
             }
 
             public void Close()
             {
-                this.current?.Close();
-                this.parent = null;
-                this.request = null;
+                current?.Close();
+                parent = null;
+                request = null;
             }
 
             public HttpResponseMessage GetResults()
             {
-                return this.current.GetResults();
+                return current.GetResults();
             }
         }
 
@@ -155,14 +155,14 @@ namespace ExClient.Internal
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!this.disposedValue)
+            if(!disposedValue)
             {
                 if(disposing)
                 {
-                    this.inner.Dispose();
+                    inner.Dispose();
                 }
-                this.inner = null;
-                this.disposedValue = true;
+                inner = null;
+                disposedValue = true;
             }
         }
 

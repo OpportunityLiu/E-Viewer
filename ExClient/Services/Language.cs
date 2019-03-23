@@ -8,13 +8,13 @@ namespace ExClient.Services
 {
     public static class LanguageExtension
     {
-        private static readonly string[] technicalTags = new[]
+        private static readonly string[] _TechnicalTags = new[]
         {
             "rewrite",
             "translated"
         };
 
-        private static readonly string[] naTags = new[]
+        private static readonly string[] _NaTags = new[]
         {
             "speechless",
             "text cleaned"
@@ -27,7 +27,7 @@ namespace ExClient.Services
                 return default;
 
             var modi = LanguageModifier.None;
-            var firstLang = LanguageName.Japanese;
+            var firstLang = default(LanguageName?);
             var language = default(List<LanguageName>);
             var lanNA = false;
             foreach (var item in tags[Namespace.Language])
@@ -43,7 +43,7 @@ namespace ExClient.Services
                     modi = LanguageModifier.Translated;
                     continue;
                 default:
-                    if (naTags.Contains(item.Content.Content))
+                    if (_NaTags.Contains(item.Content.Content))
                     {
                         lanNA = true;
                     }
@@ -51,25 +51,26 @@ namespace ExClient.Services
                     {
                         if (!Enum.TryParse<LanguageName>(item.Content.Content, true, out var currentLang))
                             currentLang = LanguageName.Other;
-                        if (language is null)
-                        {
-                            language = new List<LanguageName>(1);
+                        if (firstLang is null)
                             firstLang = currentLang;
-                        }
                         else
+                        {
+                            if (language is null)
+                                language = new List<LanguageName>(1);
                             language.Add(currentLang);
+                        }
                     }
                     continue;
                 }
             }
             if (lanNA)
                 return new Language(default, null, modi);
-            else if (language is null)
+            else if (firstLang is null)
                 return new Language(LanguageName.Japanese, Array.Empty<LanguageName>(), modi);
-            else if (language.Count == 0)
-                return new Language(firstLang, Array.Empty<LanguageName>(), modi);
+            else if (language is null)
+                return new Language(firstLang.Value, Array.Empty<LanguageName>(), modi);
             else
-                return new Language(firstLang, language.ToArray(), modi);
+                return new Language(firstLang.Value, language.ToArray(), modi);
         }
     }
 
@@ -77,37 +78,37 @@ namespace ExClient.Services
     {
         internal Language(LanguageName firstName, LanguageName[] otherNames, LanguageModifier modifier)
         {
-            this.firstName = firstName;
-            this.otherNames = otherNames;
-            this.Modifier = modifier;
+            _FirstName = firstName;
+            _OtherNames = otherNames;
+            Modifier = modifier;
         }
 
         public LanguageModifier Modifier { get; }
-        private readonly LanguageName firstName;
-        private readonly LanguageName[] otherNames;
+        private readonly LanguageName _FirstName;
+        private readonly LanguageName[] _OtherNames;
 
         public IEnumerable<LanguageName> Names
         {
             get
             {
-                if (this.otherNames is null)
+                if (_OtherNames is null)
                     yield break;
-                yield return this.firstName;
-                foreach (var item in this.otherNames)
+                yield return _FirstName;
+                foreach (var item in _OtherNames)
                     yield return item;
             }
         }
 
         public override string ToString()
         {
-            if (this.otherNames is null) // rare
+            if (_OtherNames is null) // rare
                 return LocalizedStrings.Language.Names.NotApplicable;
 
             string name;
-            if (this.otherNames.Length == 0) // most cases
-                name = this.firstName.ToFriendlyNameString();
+            if (_OtherNames.Length == 0) // most cases
+                name = _FirstName.ToFriendlyNameString();
             else // very rare
-                name = string.Join(", ", this.Names.Select(LanguageNameExtension.ToFriendlyNameString));
+                name = string.Join(", ", Names.Select(LanguageNameExtension.ToFriendlyNameString));
 
             switch (Modifier)
             {
@@ -122,16 +123,16 @@ namespace ExClient.Services
 
         public bool Equals(Language other)
         {
-            if (this.Modifier != other.Modifier)
+            if (Modifier != other.Modifier)
                 return false;
-            if (this.firstName != other.firstName)
+            if (_FirstName != other._FirstName)
                 return false;
-            if (this.otherNames is null)
-                return other.otherNames is null;
-            if (other.otherNames is null)
+            if (_OtherNames is null)
+                return other._OtherNames is null;
+            if (other._OtherNames is null)
                 return false;
 
-            return this.otherNames.SequenceEqual(other.otherNames);
+            return _OtherNames.SequenceEqual(other._OtherNames);
         }
 
         public override bool Equals(object obj) => obj is Language l && Equals(l);
@@ -141,9 +142,9 @@ namespace ExClient.Services
 
         public override int GetHashCode()
         {
-            var hash = this.Modifier.GetHashCode() + (int)this.firstName * 237;
-            if (this.otherNames != null)
-                foreach (var item in this.otherNames)
+            var hash = Modifier.GetHashCode() + (int)_FirstName * 237;
+            if (_OtherNames != null)
+                foreach (var item in _OtherNames)
                     hash = unchecked(hash * 7 ^ item.GetHashCode());
             return hash;
         }

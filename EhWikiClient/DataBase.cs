@@ -9,10 +9,10 @@ namespace EhWikiClient
     {
         internal DataBase()
         {
-            this.db = new WikiDb();
+            db = new WikiDb();
         }
 
-        public IQueryable<Record> Tags => this.db.Table.AsNoTracking();
+        public IQueryable<Record> Tags => db.Table.AsNoTracking();
 
         private WikiDb db;
 
@@ -21,14 +21,14 @@ namespace EhWikiClient
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!this.disposedValue)
+            if(!disposedValue)
             {
                 if(disposing)
                 {
-                    this.db.Dispose();
+                    db.Dispose();
                 }
-                this.db = null;
-                this.disposedValue = true;
+                db = null;
+                disposedValue = true;
             }
         }
 

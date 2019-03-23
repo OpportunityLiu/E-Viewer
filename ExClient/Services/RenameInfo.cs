@@ -38,12 +38,12 @@ namespace ExClient.Services
             });
         }
 
-        private RenameInfo(GalleryInfo galleryInfo) => this.GalleryInfo = galleryInfo;
+        private RenameInfo(GalleryInfo galleryInfo) => GalleryInfo = galleryInfo;
 
         public GalleryInfo GalleryInfo { get; }
 
-        public ObservableListView<RenameRecord> RomanRecords => this.rmnRecords.AsReadOnly();
-        public ObservableListView<RenameRecord> JapaneseRecords => this.jpnRecords.AsReadOnly();
+        public ObservableListView<RenameRecord> RomanRecords => rmnRecords.AsReadOnly();
+        public ObservableListView<RenameRecord> JapaneseRecords => jpnRecords.AsReadOnly();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ObservableList<RenameRecord> rmnRecords = new ObservableList<RenameRecord>();
@@ -54,35 +54,35 @@ namespace ExClient.Services
         private string originalRmn;
         public string OriginalRomanTitle
         {
-            get => this.originalRmn;
-            private set => Set(ref this.originalRmn, value);
+            get => originalRmn;
+            private set => Set(ref originalRmn, value);
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string originalJpn;
         public string OriginalJapaneseTitle
         {
-            get => this.originalJpn;
-            private set => Set(ref this.originalJpn, value);
+            get => originalJpn;
+            private set => Set(ref originalJpn, value);
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private RenameRecord votedRmn;
         public RenameRecord VotedRoman
         {
-            get => this.votedRmn;
-            private set => Set(ref this.votedRmn, value);
+            get => votedRmn;
+            private set => Set(ref votedRmn, value);
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private RenameRecord votedJpn;
         public RenameRecord VotedJapanese
         {
-            get => this.votedJpn;
-            private set => Set(ref this.votedJpn, value);
+            get => votedJpn;
+            private set => Set(ref votedJpn, value);
         }
 
-        private Uri apiUri => new Uri($"gallerypopups.php?gid={this.GalleryInfo.ID}&t={this.GalleryInfo.Token.ToTokenString()}&act=rename", UriKind.Relative);
+        private Uri apiUri => new Uri($"gallerypopups.php?gid={GalleryInfo.ID}&t={GalleryInfo.Token.ToString()}&act=rename", UriKind.Relative);
 
         public IAsyncAction RefreshAsync()
         {
@@ -102,12 +102,12 @@ namespace ExClient.Services
             var tables = doc.DocumentNode.Descendants("table").ToList();
             IReadOnlyList<RenameRecord> romanRec, japaneseRec;
             RenameRecord romanV, japaneseV;
-            (romanV, romanRec, this.OriginalRomanTitle) = analyzeTable(tables[0]);
-            (japaneseV, japaneseRec, this.OriginalJapaneseTitle) = analyzeTable(tables[1]);
-            this.rmnRecords.Update(romanRec, default(IEqualityComparer<RenameRecord>), (o, n) => o.Power = n.Power);
-            this.jpnRecords.Update(japaneseRec, default(IEqualityComparer<RenameRecord>), (o, n) => o.Power = n.Power);
-            this.VotedRoman = romanV;
-            this.VotedJapanese = japaneseV;
+            (romanV, romanRec, OriginalRomanTitle) = analyzeTable(tables[0]);
+            (japaneseV, japaneseRec, OriginalJapaneseTitle) = analyzeTable(tables[1]);
+            rmnRecords.Update(romanRec, default(IEqualityComparer<RenameRecord>), (o, n) => o.Power = n.Power);
+            jpnRecords.Update(japaneseRec, default(IEqualityComparer<RenameRecord>), (o, n) => o.Power = n.Power);
+            VotedRoman = romanV;
+            VotedJapanese = japaneseV;
 
             var errorNode = doc.DocumentNode.SelectSingleNode("//p[@class='br']");
             if (errorNode != null)

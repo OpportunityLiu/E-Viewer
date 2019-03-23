@@ -13,8 +13,8 @@ namespace ExViewer.ViewModels
     {
         public PopularVM()
         {
-            this.Refresh.Tag = this;
-            this.Open.Tag = this;
+            Refresh.Tag = this;
+            Open.Tag = this;
         }
 
         public PopularCollection Galleries => Client.Current.Popular;
@@ -25,7 +25,7 @@ namespace ExViewer.ViewModels
             Command<Gallery>.Create(async (sender, g) =>
             {
                 GalleryVM.GetVM(g);
-                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.Id);
             }, (sender, g) => g != null));
     }
 }

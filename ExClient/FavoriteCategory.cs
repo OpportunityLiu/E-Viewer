@@ -17,7 +17,7 @@ namespace ExClient
     {
         internal FavoriteCategory(int index, string name)
         {
-            this.Index = index;
+            Index = index;
             this.name = name;
         }
 
@@ -32,31 +32,31 @@ namespace ExClient
         {
             get
             {
-                if (this.Index < 0)
+                if (Index < 0)
                 {
-                    return this.name;
+                    return name;
                 }
                 else
                 {
-                    return Client.Current.Settings.FavoriteCategoryNames[this.Index];
+                    return Client.Current.Settings.FavoriteCategoryNames[Index];
                 }
             }
         }
 
-        internal void OnNameChanged() => OnPropertyChanged(nameof(this.Name));
+        internal void OnNameChanged() => OnPropertyChanged(nameof(Name));
 
         private readonly string name;
 
-        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> postAddFav(long gId, ulong gToken, string note)
+        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> postAddFav(long gId, EToken gToken, string note)
         {
             IEnumerable<KeyValuePair<string, string>> getInfo()
             {
                 yield return new KeyValuePair<string, string>("apply", "Apply+Changes");
-                yield return new KeyValuePair<string, string>("favcat", this.Index < 0 ? "favdel" : this.Index.ToString());
+                yield return new KeyValuePair<string, string>("favcat", Index < 0 ? "favdel" : Index.ToString());
                 yield return new KeyValuePair<string, string>("favnote", note);
                 yield return new KeyValuePair<string, string>("update", "1");
             }
-            var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken.ToTokenString()}&act=addfav", UriKind.Relative);
+            var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken.ToString()}&act=addfav", UriKind.Relative);
             return Client.Current.HttpClient.PostAsync(requestUri, getInfo());
         }
 
@@ -67,7 +67,7 @@ namespace ExClient
         {
             return Run(async token =>
             {
-                var response = await this.postAddFav(gallery.ID, gallery.Token, note);
+                var response = await postAddFav(gallery.Id, gallery.Token, note);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var match = favNoteMatcher.Match(responseContent, 1300);
                 if (match.Success)
@@ -79,13 +79,13 @@ namespace ExClient
                     gallery.FavoriteNote = null;
                 }
 
-                if (this.Index >= 0)
+                if (Index >= 0)
                 {
                     var match2 = favNameMatcher.Match(responseContent, 1300);
                     if (match2.Success)
                     {
                         var settings = Client.Current.Settings;
-                        settings.FavoriteCategoryNames[this.Index] = HtmlEntity.DeEntitize(match2.Groups[1].Value);
+                        settings.FavoriteCategoryNames[Index] = HtmlEntity.DeEntitize(match2.Groups[1].Value);
                         settings.StoreCache();
                     }
                 }
@@ -103,7 +103,7 @@ namespace ExClient
 
         public override string ToString()
         {
-            return this.Name;
+            return Name;
         }
     }
 }

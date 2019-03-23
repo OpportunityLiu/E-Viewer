@@ -26,18 +26,18 @@ namespace ExClient.Api
                     return null;
                 }
 
-                long gid = 0;
-                ulong token = 0;
+                var gid = 0L;
+                var token = default(EToken);
                 reader.Read();
                 do
                 {
                     switch (reader.Value.ToString())
                     {
                     case "gid":
-                        gid = reader.ReadAsInt32().GetValueOrDefault();
+                        gid = (long)reader.ReadAsDouble().GetValueOrDefault();
                         break;
                     case "token":
-                        token = reader.ReadAsString().ToToken();
+                        token = EToken.Parse(reader.ReadAsString());
                         break;
                     default:
                         break;
@@ -53,7 +53,7 @@ namespace ExClient.Api
                 var v = (GalleryInfo)value;
                 writer.WriteStartArray();
                 writer.WriteValue(v.ID);
-                writer.WriteValue(v.Token.ToTokenString());
+                writer.WriteValue(v.Token.ToString());
                 writer.WriteEndArray();
             }
         }
@@ -62,28 +62,30 @@ namespace ExClient.Api
         {
             return Run<IReadOnlyList<GalleryInfo>>(async token =>
             {
-                var res = await new GalleryTokenRequest(pageList).GetResponseAsync();
+                var res = await new GalleryTokenRequest(pageList).GetResponseAsync(token);
                 return res.TokenList;
             });
         }
 
-        private static readonly string[] galleryPaths = new[] { "g", "mpv", };
+        private static readonly string[] _GalleryPaths = new[] { "g", "mpv", };
 
         internal static bool TryParseGallery(UriHandlerData data, out GalleryInfo info)
         {
             info = default;
             if (data.Paths.Count < 3)
                 return false;
-            if (!Array.Exists(galleryPaths, s => data.Path0.Equals(s, StringComparison.OrdinalIgnoreCase)))
+            if (!Array.Exists(_GalleryPaths, s => data.Path0.Equals(s, StringComparison.OrdinalIgnoreCase)))
                 return false;
             if (!long.TryParse(data.Paths[1], out var gId))
                 return false;
+            if(!EToken.TryParse(data.Paths[2], out var token))
+                return false;
 
-            info = new GalleryInfo(gId, data.Paths[2].ToToken());
+            info = new GalleryInfo(gId, token);
             return true;
         }
 
-        private static readonly string[] popups = new[] { "gallerytorrents.php", "gallerypopups.php", "stats.php", "archiver.php", };
+        private static readonly string[] _Popups = new[] { "gallerytorrents.php", "gallerypopups.php", "stats.php", "archiver.php", };
 
         internal static bool TryParseGalleryPopup(UriHandlerData data, out GalleryInfo info, out GalleryLaunchStatus type)
         {
@@ -91,15 +93,15 @@ namespace ExClient.Api
             type = default;
             if (data.Paths.Count < 1)
                 return false;
-            if (!Array.Exists(popups, s => data.Path0.Equals(s, StringComparison.OrdinalIgnoreCase)))
+            if (!Array.Exists(_Popups, s => data.Path0.Equals(s, StringComparison.OrdinalIgnoreCase)))
                 return false;
             if (!long.TryParse(data.Queries.GetString("gid"), out var gId))
                 return false;
 
-            var token = data.Queries.GetString("t") + data.Queries.GetString("token");
-            if (token.IsNullOrWhiteSpace())
+            var tokenstr = data.Queries.GetString("t") + data.Queries.GetString("token");
+            if (!EToken.TryParse(tokenstr, out var token))
                 return false;
-            info = new GalleryInfo(gId, token.ToToken());
+            info = new GalleryInfo(gId, token);
             type = GalleryLaunchStatus.Default;
             switch (data.Path0)
             {
@@ -149,10 +151,10 @@ namespace ExClient.Api
             throw new FormatException();
         }
 
-        public GalleryInfo(long id, ulong token)
+        public GalleryInfo(long id, EToken token)
         {
-            this.ID = id;
-            this.Token = token;
+            ID = id;
+            Token = token;
         }
 
         public IAsyncOperation<Gallery> FetchGalleryAsync()
@@ -167,18 +169,18 @@ namespace ExClient.Api
 
         public long ID { get; }
 
-        public ulong Token { get; }
+        public EToken Token { get; }
 
-        public Uri Uri => new Uri(Client.Current.Uris.RootUri, $"g/{ID.ToString()}/{Token.ToTokenString()}/");
+        public Uri Uri => new Uri(Client.Current.Uris.RootUri, $"g/{ID.ToString()}/{Token.ToString()}/");
 
         public override int GetHashCode()
-            => this.ID.GetHashCode() * 19 ^ this.Token.GetHashCode();
+            => ID.GetHashCode() * 19 ^ Token.GetHashCode();
 
         public override bool Equals(object obj) => obj is GalleryInfo info && Equals(info);
 
         public bool Equals(GalleryInfo other)
-            => this.ID == other.ID
-            && this.Token == other.Token;
+            => ID == other.ID
+            && Token == other.Token;
 
         public static bool operator ==(in GalleryInfo left, in GalleryInfo right) => left.Equals(right);
 
@@ -188,7 +190,7 @@ namespace ExClient.Api
         {
             if (gallery is null)
                 return default;
-            return new GalleryInfo(gallery.ID, gallery.Token);
+            return new GalleryInfo(gallery.Id, gallery.Token);
         }
     }
 }

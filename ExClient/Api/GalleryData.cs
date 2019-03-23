@@ -18,7 +18,7 @@ namespace ExClient.Api
 
         public GalleryDataRequest(IReadOnlyList<GalleryInfo> list, int startIndex, int count)
         {
-            this.GalleryIDList = new RangedListView<GalleryInfo>(list, startIndex, count);
+            GalleryIDList = new RangedListView<GalleryInfo>(list, startIndex, count);
         }
     }
 

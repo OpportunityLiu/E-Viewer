@@ -21,7 +21,7 @@ namespace ExViewer.ViewModels
             SetQueryWithSearchResult();
         }
 
-        public string SearchQuery => this.SearchResult.SearchUri.ToString();
+        public string SearchQuery => SearchResult.SearchUri.ToString();
 
         public Command<Gallery> Open => Commands.GetOrAdd(() =>
             Command<Gallery>.Create(async (sender, g) =>
@@ -29,7 +29,7 @@ namespace ExViewer.ViewModels
                 var that = (SearchResultVM<T>)sender.Tag;
                 that.SelectedGallery = g;
                 GalleryVM.GetVM(g);
-                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.ID);
+                await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.Id);
             }, (sender, g) => g != null));
 
         public Command<string> Search => Commands.Get<Command<string>>();
@@ -37,19 +37,19 @@ namespace ExViewer.ViewModels
         private T searchResult;
         public T SearchResult
         {
-            get => this.searchResult;
-            protected set => Set(ref this.searchResult, value);
+            get => searchResult;
+            protected set => Set(ref searchResult, value);
         }
 
         public virtual void SetQueryWithSearchResult()
         {
-            this.Keyword = this.SearchResult.Keyword;
+            Keyword = SearchResult.Keyword;
         }
 
         private Gallery selectedGallery;
-        public Gallery SelectedGallery { get => this.selectedGallery; protected set => Set(ref this.selectedGallery, value); }
+        public Gallery SelectedGallery { get => selectedGallery; protected set => Set(ref selectedGallery, value); }
 
         private string keyword;
-        public string Keyword { get => this.keyword; set => Set(ref this.keyword, value); }
+        public string Keyword { get => keyword; set => Set(ref keyword, value); }
     }
 }

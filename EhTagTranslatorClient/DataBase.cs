@@ -5,38 +5,29 @@ using System.Linq;
 
 namespace EhTagTranslatorClient
 {
-    public class DataBase : IDisposable
+    public sealed class DataBase : IDisposable
     {
-        internal DataBase()
+        static DataBase()
         {
-            this.db = new TranslateDb();
-        }
-
-        public IQueryable<Record> Tags => this.db.Table.AsNoTracking();
-
-        private TranslateDb db;
-
-        #region IDisposable Support
-        private bool disposedValue = false; // 要检测冗余调用
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if(!this.disposedValue)
+            using (var db = new TranslateDb())
             {
-                if(disposing)
-                {
-                    this.db.Dispose();
-                }
-                this.db = null;
-                this.disposedValue = true;
+                db.Database.Migrate();
             }
         }
 
+        internal DataBase() => Db = new TranslateDb();
+
+        public IQueryable<Record> Tags => Db.Table.AsNoTracking();
+
+        internal TranslateDb Db { get; private set; }
+
         void IDisposable.Dispose()
         {
-            Dispose(true);
+            if (Db is TranslateDb db)
+            {
+                db.Dispose();
+                Db = null;
+            }
         }
-        #endregion
-
     }
 }

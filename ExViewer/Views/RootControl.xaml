@@ -272,7 +272,7 @@
                             Height="32" />
                 </controls:SplitViewTab.Icon>
               </controls:SplitViewTab>
-              <Grid MinHeight="48" />
+              <Grid MinHeight="12" />
               <ListView.Footer>
                 <controls:SplitViewTab x:Uid="Views/RootControl/SettingsSplitViewTab"
                                        x:Name="svt_Settings"

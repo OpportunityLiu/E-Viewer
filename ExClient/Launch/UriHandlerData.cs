@@ -11,14 +11,14 @@ namespace ExClient.Launch
     {
         public UriHandlerData(Uri uri)
         {
-            this.Uri = uri ?? throw new ArgumentNullException(nameof(uri));
-            this.Paths = uri.Segments.Skip(1)
+            Uri = uri ?? throw new ArgumentNullException(nameof(uri));
+            Paths = uri.Segments.Skip(1)
                 .Select(s => s.EndsWith("/") ? s.Substring(0, s.Length - 1) : s)
                 .ToArray();
-            if (this.Paths.Count != 0)
-                this.Path0 = this.Paths[0].ToLowerInvariant();
+            if (Paths.Count != 0)
+                Path0 = Paths[0].ToLowerInvariant();
             else
-                this.Path0 = "";
+                Path0 = "";
         }
 
         public Uri Uri { get; }
@@ -27,6 +27,6 @@ namespace ExClient.Launch
 
         private WwwFormUrlDecoder queries;
         public WwwFormUrlDecoder Queries
-            => LazyInitializer.EnsureInitialized(ref this.queries, () => new WwwFormUrlDecoder(Uri.Query.CoalesceNullOrWhiteSpace("?")));
+            => LazyInitializer.EnsureInitialized(ref queries, () => new WwwFormUrlDecoder(Uri.Query.CoalesceNullOrWhiteSpace("?")));
     }
 }

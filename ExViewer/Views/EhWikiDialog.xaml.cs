@@ -21,8 +21,8 @@ namespace ExViewer.Views
     {
         public EhWikiDialog()
         {
-            this.InitializeComponent();
-            this.RegisterPropertyChangedCallback(RequestedThemeProperty, requestedThemeChanged);
+            InitializeComponent();
+            RegisterPropertyChangedCallback(RequestedThemeProperty, requestedThemeChanged);
         }
 
         private static void requestedThemeChanged(DependencyObject sender, DependencyProperty dp)
@@ -86,32 +86,32 @@ namespace ExViewer.Views
 
         private async void refresh(string title, string previousTitle)
         {
-            this.reinRefresh++;
+            reinRefresh++;
             try
             {
-                this.wv.Visibility = Visibility.Collapsed;
-                this.pb.Visibility = Visibility.Visible;
-                this.loadRecord?.Cancel();
+                wv.Visibility = Visibility.Collapsed;
+                pb.Visibility = Visibility.Visible;
+                loadRecord?.Cancel();
                 if (title.IsNullOrEmpty())
                 {
-                    this.wv.NavigateToString("");
+                    wv.NavigateToString("");
                     return;
                 }
                 var str = (string)null;
                 try
                 {
-                    this.loadRecord = getRecord(title);
-                    var record = await this.loadRecord;
-                    this.loadRecord = null;
+                    loadRecord = getRecord(title);
+                    var record = await loadRecord;
+                    loadRecord = null;
                     if (record?.DetialHtml is null)
                     {
                         str = Strings.Resources.Views.EhWikiDialog.TagNotFound;
                     }
                     else if (getRedirect(record, out var rd))
                     {
-                        this.wv.NavigateToString("");
-                        if (!this.navigate(new Uri(eww, rd)) && !previousTitle.IsNullOrEmpty())
-                            this.WikiTag = previousTitle;
+                        wv.NavigateToString("");
+                        if (!navigate(new Uri(eww, rd)) && !previousTitle.IsNullOrEmpty())
+                            WikiTag = previousTitle;
                         return;
                     }
                     else
@@ -128,19 +128,19 @@ namespace ExViewer.Views
                     str = $@"<p style='color:red;'>{HtmlAgilityPack.HtmlEntity.Entitize(ex.GetMessage(), true, true)}</p>";
                     Telemetry.LogException(ex);
                 }
-                if (this.style is null)
+                if (style is null)
                 {
-                    this.initStyle();
+                    initStyle();
                 }
 
-                this.wv.NavigateToString(this.style + str);
+                wv.NavigateToString(style + str);
             }
             finally
             {
-                if (--this.reinRefresh == 0)
+                if (--reinRefresh == 0)
                 {
-                    this.wv.Visibility = Visibility.Visible;
-                    this.pb.Visibility = Visibility.Collapsed;
+                    wv.Visibility = Visibility.Visible;
+                    pb.Visibility = Visibility.Collapsed;
                 }
             }
         }
@@ -149,10 +149,10 @@ namespace ExViewer.Views
 
         private void initStyle()
         {
-            var background = ((SolidColorBrush)this.Background);
-            var foreground = ((SolidColorBrush)this.Foreground);
-            var link = ((SolidColorBrush)this.BorderBrush);
-            this.style = $@"
+            var background = ((SolidColorBrush)Background);
+            var foreground = ((SolidColorBrush)Foreground);
+            var link = ((SolidColorBrush)BorderBrush);
+            style = $@"
 <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' />
 <style type='text/css'>
     html {{
@@ -237,8 +237,8 @@ namespace ExViewer.Views
                 if (!isValidTitle(tag))
                     return false;
 
-                this.WikiTag = tag.Replace('_', ' ');
-                Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Ehwiki navigated", new Dictionary<string, string> { ["Tag"] = this.WikiTag });
+                WikiTag = tag.Replace('_', ' ');
+                Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Ehwiki navigated", new Dictionary<string, string> { ["Tag"] = WikiTag });
                 uri = null;
                 return true;
             }
@@ -263,7 +263,7 @@ namespace ExViewer.Views
 
         private void MyContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
-            Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Ehwiki opened", new Dictionary<string, string> { ["Tag"] = this.WikiTag.ToString() });
+            Microsoft.AppCenter.Analytics.Analytics.TrackEvent("Ehwiki opened", new Dictionary<string, string> { ["Tag"] = WikiTag.ToString() });
         }
     }
 }

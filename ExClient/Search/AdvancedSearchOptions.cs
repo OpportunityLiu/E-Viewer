@@ -25,29 +25,29 @@ namespace ExClient.Search
             bool disableDefaultLanguageFilters = false,
             bool disableDefaultUploaderFilters = false)
         {
-            this.SearchName = searchName;
-            this.SearchTags = searchTags;
-            this.SearchDescription = searchDescription;
-            this.SearchTorrentFilenames = searchTorrentFilenames;
-            this.GalleriesWithTorrentsOnly = galleriesWithTorrentsOnly;
-            this.SearchLowPowerTags = searchLowPowerTags;
-            this.SearchDownvotedTags = searchDownvotedTags;
-            this.ShowExpungedGalleries = showExpungedGalleries;
-            this.SearchMinimumRating = searchMinimumRating;
-            this.MinimumRating = minimumRating;
-            this.SkipMasterTags = skipMasterTags;
-            this.DisableDefaultLanguageFilters = disableDefaultLanguageFilters;
-            this.DisableDefaultUploaderFilters = disableDefaultUploaderFilters;
+            SearchName = searchName;
+            SearchTags = searchTags;
+            SearchDescription = searchDescription;
+            SearchTorrentFilenames = searchTorrentFilenames;
+            GalleriesWithTorrentsOnly = galleriesWithTorrentsOnly;
+            SearchLowPowerTags = searchLowPowerTags;
+            SearchDownvotedTags = searchDownvotedTags;
+            ShowExpungedGalleries = showExpungedGalleries;
+            SearchMinimumRating = searchMinimumRating;
+            MinimumRating = minimumRating;
+            SkipMasterTags = skipMasterTags;
+            DisableDefaultLanguageFilters = disableDefaultLanguageFilters;
+            DisableDefaultUploaderFilters = disableDefaultUploaderFilters;
         }
 
         internal AdvancedSearchOptions(ulong data)
         {
-            this.Data = data;
+            Data = data;
         }
 
         internal string ToSearchQuery()
         {
-            if (this.Data == default)
+            if (Data == default)
             {
                 return "&advsearch=1&f_sname=1&f_stags=1";
             }
@@ -154,7 +154,7 @@ namespace ExClient.Search
         {
             unchecked
             {
-                return ((this.Data >> (pos + offset)) & 1UL) == 1UL;
+                return ((Data >> (pos + offset)) & 1UL) == 1UL;
             }
         }
 
@@ -165,11 +165,11 @@ namespace ExClient.Search
                 pos += offset;
                 if (value)
                 {
-                    this.Data |= 1UL << pos;
+                    Data |= 1UL << pos;
                 }
                 else
                 {
-                    this.Data &= ~(1UL << pos);
+                    Data &= ~(1UL << pos);
                 }
             }
         }
@@ -263,7 +263,7 @@ namespace ExClient.Search
         private const string MinimumRatingTag = "f_srdd";
         public int MinimumRating
         {
-            get => (int)(this.Data & 0b11UL) + 2;
+            get => (int)(Data & 0b11UL) + 2;
             set
             {
                 if (value > 5)
@@ -278,8 +278,8 @@ namespace ExClient.Search
                 value -= 2;
                 unchecked
                 {
-                    this.Data &= ~0b11UL;
-                    this.Data |= (uint)value;
+                    Data &= ~0b11UL;
+                    Data |= (uint)value;
                 }
             }
         }
@@ -287,6 +287,6 @@ namespace ExClient.Search
         public override bool Equals(object obj) => obj is AdvancedSearchOptions op && this.Data == op.Data;
         public bool Equals(AdvancedSearchOptions other) => other is AdvancedSearchOptions op && this.Data == op.Data;
 
-        public override int GetHashCode() => this.Data.GetHashCode();
+        public override int GetHashCode() => Data.GetHashCode();
     }
 }

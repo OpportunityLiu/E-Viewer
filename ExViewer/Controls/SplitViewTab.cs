@@ -8,7 +8,7 @@ namespace ExViewer.Controls
     {
         public SplitViewTab()
         {
-            this.DefaultStyleKey = typeof(SplitViewTab);
+            DefaultStyleKey = typeof(SplitViewTab);
         }
 
         public bool IsChecked

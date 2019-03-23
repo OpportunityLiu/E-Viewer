@@ -47,41 +47,29 @@ namespace ExClient.Search
         private FavoritesSearchResult(string keyword, FavoriteCategory category)
             : base(keyword)
         {
-            this.Category = category;
-            this.SearchUri = new Uri(SearchBaseUri, getUriQuery());
+            Category = category;
+            SearchUri = new Uri(SearchBaseUri, _GetUriQuery());
         }
 
         public FavoriteCategory Category { get; }
 
         public override Uri SearchUri { get; }
 
-        private string getUriQuery()
+        private string _GetUriQuery()
         {
-            //?favcat=all&f_search=&f_apply=Search+Favorites
+            // ?favcat=all&f_search=d&sn=on&st=on&sf=off
             return
-                $"?favcat={(this.Category.Index < 0 ? "all" : this.Category.Index.ToString())}" +
-                $"&f_search={Uri.EscapeDataString(this.Keyword)}" +
-                $"&f_apply=Search+Favorites";
-        }
-
-        protected override void HandleAdditionalInfo(HtmlNode dataNode, Gallery gallery, bool isList)
-        {
-            base.HandleAdditionalInfo(dataNode, gallery, isList);
-            if (isList)
-            {
-                var favNode = dataNode.ChildNodes[2].LastChild;
-                var favNote = favNode.GetInnerText();
-                gallery.FavoriteNote = favNote.StartsWith("Note: ") ? favNote.Substring(6) : "";
-            }
+                $"?favcat={(Category.Index < 0 ? "all" : Category.Index.ToString())}" +
+                $"&f_search={Uri.EscapeDataString(Keyword)}" +
+                $"&sn=1&st=1&sf=1";
         }
 
         protected override void LoadPageOverride(HtmlDocument doc)
         {
             var noselNode = doc.DocumentNode
-                .Element("html")
-                .Element("body")
-                .Element("div")
-                .Elements("div").First();
+                .Element("html").Element("body")
+                .Element("div", "ido")
+                .Element("div", "nosel");
             var fpNodes = noselNode.Elements("div").Take(10);
             foreach (var n in fpNodes)
             {
@@ -105,12 +93,12 @@ namespace ExClient.Search
             return AsyncInfo.Run(async token =>
             {
                 var ddact = categoty.Index < 0 ? "delete" : $"fav{categoty.Index}";
-                var post = Client.Current.HttpClient.PostAsync(this.SearchUri, getParameters());
+                var post = Client.Current.HttpClient.PostAsync(SearchUri, getParameters());
                 token.Register(post.Cancel);
                 var r = await post;
                 if (categoty.Index < 0)
                 {
-                    this.Reset();
+                    Reset();
                 }
                 else
                 {
@@ -130,7 +118,7 @@ namespace ExClient.Search
                     {
                         for (var i = range.FirstIndex; i <= range.LastIndex; i++)
                         {
-                            yield return new KeyValuePair<string, string>("modifygids[]", this[i].ID.ToString());
+                            yield return new KeyValuePair<string, string>("modifygids[]", this[i].Id.ToString());
                         }
                     }
                 }
