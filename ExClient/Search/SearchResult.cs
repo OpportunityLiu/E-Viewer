@@ -34,7 +34,7 @@ namespace ExClient.Search
             PageCount = 1;
         }
 
-        private static readonly Regex _RecordCountMatcher = new Regex(@"Showing.+?-\s*[0-9,]+\s*of\s*([0-9,]+)", RegexOptions.Compiled);
+        private static readonly Regex _RecordCountMatcher = new Regex(@"Showing page\s*[0-9,]+\s*of\s*([0-9,]+)\s*result", RegexOptions.Compiled);
 
         private void _UpdatePageCount(HtmlDocument doc)
         {
@@ -65,70 +65,11 @@ namespace ExClient.Search
             }
         }
 
-        private static readonly Regex _GLinkMatcher = new Regex(@".+?/g/(\d+)/([0-9a-f]+).+?", RegexOptions.Compiled);
-
-        protected virtual void HandleAdditionalInfo(HtmlNode dataNode, Gallery gallery, bool isList)
-        {
-            if (isList)
-            {
-                var infoNode = dataNode.ChildNodes[2].FirstChild;
-                var attributeNode = infoNode.ChildNodes[1]; //class = it3
-                var favNode = attributeNode.ChildNodes.FirstOrDefault(n => n.Id.StartsWith("favicon"));
-                gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(favNode);
-                gallery.Rating.AnalyzeNode(infoNode.LastChild.FirstChild);
-            }
-            else
-            {
-                var infoNode = dataNode.Element("div", "id4");
-                gallery.Rating.AnalyzeNode(infoNode.Element("div", "id43"));
-                var attributeNode = infoNode.Element("div", "id44").Element("div");
-                var favNode = attributeNode.ChildNodes.FirstOrDefault(n => n.Id.StartsWith("favicon"));
-                gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(favNode);
-            }
-        }
-
         protected virtual void LoadPageOverride(HtmlDocument doc) { }
 
         private async Task<IList<Gallery>> _LoadPage(HtmlDocument doc, CancellationToken token)
         {
-            var isList = true;
-            var dataRoot = doc.DocumentNode.Descendants("table").SingleOrDefault(node => node.HasClass("itg"));
-            if (dataRoot is null)
-            {
-                isList = false;
-                dataRoot = doc.DocumentNode.Descendants("div").SingleOrDefault(node => node.HasClass("itg"));
-            }
-            var gInfoList = new List<GalleryInfo>(dataRoot.ChildNodes.Count);
-            var dataNodeList = new List<HtmlNode>(dataRoot.ChildNodes.Count);
-            if (isList)
-            {
-                foreach (var node in dataRoot.Elements("tr").Skip(1))//skip table header
-                {
-                    var infoNode = node.ChildNodes[2].FirstChild;
-                    var detailNode = infoNode.ChildNodes[2]; //class = it5
-                    var match = _GLinkMatcher.Match(detailNode.FirstChild.GetAttribute("href", ""));
-                    dataNodeList.Add(node);
-                    gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), EToken.Parse(match.Groups[2].Value)));
-                }
-            }
-            else
-            {
-                foreach (var node in dataRoot.Elements("div", "id1"))
-                {
-                    var link = node.Element("div", "id2").Element("a");
-                    var match = _GLinkMatcher.Match(link.GetAttribute("href", ""));
-                    dataNodeList.Add(node);
-                    gInfoList.Add(new GalleryInfo(long.Parse(match.Groups[1].Value), EToken.Parse(match.Groups[2].Value)));
-                }
-            }
-            var getG = Gallery.FetchGalleriesAsync(gInfoList);
-            token.Register(getG.Cancel);
-            var galleries = await getG;
-            token.ThrowIfCancellationRequested();
-            for (var i = 0; i < galleries.Count; i++)
-            {
-                HandleAdditionalInfo(dataNodeList[i], galleries[i], isList);
-            }
+            var galleries = await GalleryListParser.Parse(doc, token);
             LoadPageOverride(doc);
             return galleries;
         }

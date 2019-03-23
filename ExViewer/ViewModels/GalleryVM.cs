@@ -158,7 +158,7 @@ namespace ExViewer.ViewModels
                 {
                     await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), info.ID);
                 }
-            }, (sender, c) => c != null && c.DescendantsInfo.Count != 0));
+            }, (sender, c) => (c?.DescendantsInfo?.Count).GetValueOrDefault() != 0));
 
         public Command<GalleryImage> Share => Commands.GetOrAdd(() =>
             Command<GalleryImage>.Create(async (sender, image) =>

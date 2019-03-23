@@ -64,24 +64,12 @@ namespace ExClient.Search
                 $"&sn=1&st=1&sf=1";
         }
 
-        protected override void HandleAdditionalInfo(HtmlNode dataNode, Gallery gallery, bool isList)
-        {
-            base.HandleAdditionalInfo(dataNode, gallery, isList);
-            if (isList)
-            {
-                var favNode = dataNode.ChildNodes[2].LastChild;
-                var favNote = favNode.GetInnerText();
-                gallery.FavoriteNote = favNote.StartsWith("Note: ") ? favNote.Substring(6) : "";
-            }
-        }
-
         protected override void LoadPageOverride(HtmlDocument doc)
         {
             var noselNode = doc.DocumentNode
-                .Element("html")
-                .Element("body")
-                .Element("div")
-                .Elements("div").First();
+                .Element("html").Element("body")
+                .Element("div", "ido")
+                .Element("div", "nosel");
             var fpNodes = noselNode.Elements("div").Take(10);
             foreach (var n in fpNodes)
             {

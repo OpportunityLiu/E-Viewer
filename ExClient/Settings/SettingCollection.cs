@@ -246,9 +246,6 @@ namespace ExClient.Settings
                 settings["qb"] = "0";
                 // Thumbnail Size - Large
                 settings["ts"] = "1";
-                // Popular Right Now - Display
-                if (Owner.owner.Type == HostType.EHentai)
-                    settings["pp"] = "0";
 
                 settings["xr"] = ((int)ResampledImageSize).ToString();
                 settings["cs"] = ((int)CommentsOrder).ToString();
