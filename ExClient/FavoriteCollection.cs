@@ -13,7 +13,8 @@ namespace ExClient
 {
     public sealed class FavoriteCollection : IReadOnlyList<FavoriteCategory>, IList
     {
-        private static readonly Regex favStyleMatcher = new Regex(@"background-position:\s*0\s*px\s+-(\d+)\s*px", RegexOptions.Compiled);
+        private static readonly Regex _FavStyleMatcher1 = new Regex(@"background-position:\s*0\s*px\s+-(\d+)\s*px", RegexOptions.Compiled);
+        private static readonly Regex _FavStyleMatcher2 = new Regex(@"border-color:\s*#([A-Fa-f0-9]+)", RegexOptions.Compiled);
 
         internal FavoriteCategory GetCategory(HtmlNode favoriteIconNode)
         {
@@ -24,16 +25,40 @@ namespace ExClient
             if (favName is null)
                 return Removed;
 
-            var favStyle = favoriteIconNode.GetAttribute("style", "");
-            var mat = favStyleMatcher.Match(favStyle);
-            if (!mat.Success)
-                return Removed;
+            int favIndex;
 
-            var favImgOffset = int.Parse(mat.Groups[1].Value);
-            var favIdx = favImgOffset / 19;
-            var fav = this[favIdx];
+            var favStyle = favoriteIconNode.GetAttribute("style", "");
+            var match1 = _FavStyleMatcher1.Match(favStyle);
+            if (!match1.Success)
+            {
+                var match2 = _FavStyleMatcher2.Match(favStyle);
+                if (!match2.Success)
+                    return Removed;
+                switch (match2.Groups[1].Value.ToLowerInvariant())
+                {
+                case "000": favIndex = 0; break;
+                case "f00": favIndex = 1; break;
+                case "fa0": favIndex = 2; break;
+                case "dd0": favIndex = 3; break;
+                case "080": favIndex = 4; break;
+                case "9f4": favIndex = 5; break;
+                case "4bf": favIndex = 6; break;
+                case "00f": favIndex = 7; break;
+                case "508": favIndex = 8; break;
+                case "e8e": favIndex = 9; break;
+                default:
+                    return Removed;
+                }
+            }
+            else
+            {
+                var favImgOffset = int.Parse(match1.Groups[1].Value);
+                favIndex = favImgOffset / 19;
+            }
+
+            var fav = this[favIndex];
             var settings = Client.Current.Settings;
-            settings.FavoriteCategoryNames[favIdx] = favName;
+            settings.FavoriteCategoryNames[favIndex] = favName;
             settings.StoreCache();
             return fav;
         }
