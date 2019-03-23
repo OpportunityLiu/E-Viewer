@@ -29,10 +29,10 @@ namespace ExViewer.Controls
             }
 
             private GalleryTag selected;
-            public GalleryTag SelectedTag { get => this.selected; set => Set(ref this.selected, value); }
+            public GalleryTag SelectedTag { get => selected; set => Set(ref selected, value); }
 
             private TagCollection tags;
-            public TagCollection Tags { get => this.tags; set => Set(ref this.tags, value); }
+            public TagCollection Tags { get => tags; set => Set(ref tags, value); }
 
             public static bool CanVoteUp(TagState state) => state.GetVoteState() == TagState.NotPresented && !state.IsSlave();
             public static bool CanVoteDown(TagState state) => state.GetVoteState() == TagState.NotPresented;
@@ -92,9 +92,9 @@ namespace ExViewer.Controls
 
         public TagPresenter()
         {
-            this.InitializeComponent();
-            this.resetNewTagState();
-            this.VM.SubmitTag.Executed += (s, e) =>
+            InitializeComponent();
+            resetNewTagState();
+            VM.SubmitTag.Executed += (s, e) =>
             {
                 resetNewTagState();
             };
@@ -120,36 +120,36 @@ namespace ExViewer.Controls
 
         private void gvTagGroup_ItemClick(object sender, ItemClickEventArgs e)
         {
-            this.VM.SelectedTag = (GalleryTag)e.ClickedItem;
+            VM.SelectedTag = (GalleryTag)e.ClickedItem;
             var s = (ListViewBase)sender;
             var container = (SelectorItem)s.ContainerFromItem(e.ClickedItem);
-            this.mfoTag.ShowAt(container);
+            mfoTag.ShowAt(container);
         }
 
         private void resetNewTagState()
         {
-            this.btnStartNew.Visibility = Visibility.Visible;
-            if (this.asbNewTags is null)
+            btnStartNew.Visibility = Visibility.Visible;
+            if (asbNewTags is null)
                 return;
-            this.asbNewTags.Visibility = Visibility.Collapsed;
-            this.asbNewTags.Text = "";
-            TagSuggestionService.IncreaseStateCode(this.asbNewTags);
+            asbNewTags.Visibility = Visibility.Collapsed;
+            asbNewTags.Text = "";
+            TagSuggestionService.IncreaseStateCode(asbNewTags);
         }
 
         private async void btnStartNew_Click(object sender, RoutedEventArgs e)
         {
             resetNewTagState();
-            if (this.asbNewTags is null)
-                FindName(nameof(this.asbNewTags));
-            this.asbNewTags.Visibility = Visibility.Visible;
-            await this.Dispatcher.YieldIdle();
-            this.btnStartNew.Visibility = Visibility.Collapsed;
-            this.asbNewTags.Focus(FocusState.Programmatic);
+            if (asbNewTags is null)
+                FindName(nameof(asbNewTags));
+            asbNewTags.Visibility = Visibility.Visible;
+            await Dispatcher.YieldIdle();
+            btnStartNew.Visibility = Visibility.Collapsed;
+            asbNewTags.Focus(FocusState.Programmatic);
         }
 
         private void asbNewTags_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(this.asbNewTags.Text))
+            if (string.IsNullOrWhiteSpace(asbNewTags.Text))
             {
                 resetNewTagState();
             }
@@ -157,7 +157,7 @@ namespace ExViewer.Controls
 
         private void btnStartNew_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (this.btnStartNew.FocusState == FocusState.Keyboard)
+            if (btnStartNew.FocusState == FocusState.Keyboard)
             {
                 btnStartNew_Click(sender, e);
             }

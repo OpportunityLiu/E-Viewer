@@ -8,7 +8,7 @@ A Client for e-hentai.org on Windows 10.
 | master | [![Build status](https://ci.appveyor.com/api/projects/status/fcfmss6sltiub0sb/branch/master?svg=true)](https://ci.appveyor.com/project/OpportunityLiu/exviewer/branch/master) |
 | dev    | [![Build status](https://ci.appveyor.com/api/projects/status/fcfmss6sltiub0sb/branch/dev?svg=true)](https://ci.appveyor.com/project/OpportunityLiu/exviewer/branch/dev) |
 
-[![](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Images/Screenshots/0.png)](https://github.com/OpportunityLiu/E-Viewer/wiki)
+[![](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Images/Screenshots/1.png)](https://github.com/OpportunityLiu/E-Viewer/wiki)
 [More screenshots](https://github.com/OpportunityLiu/E-Viewer/wiki/Home)  
 
 ## Releases 

@@ -7,12 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 
 namespace ExClient.Search
 {
     public sealed class PopularCollection : IncrementalLoadingList<Gallery>
     {
+        private static readonly Uri _PopularUri = new Uri("/popular", UriKind.Relative);
+
         internal PopularCollection() { }
 
         protected override void ClearItems()
@@ -39,53 +43,16 @@ namespace ExClient.Search
             }
         }
 
-        public override bool HasMoreItems => this.Count == 0;
+        public override bool HasMoreItems => Count == 0;
 
-        private void handleAdditionalInfo(HtmlNode trNode, Gallery gallery)
+        private async Task<LoadItemsResult<Gallery>> _LoadCore(CancellationToken token)
         {
-            var infoNode = trNode.ChildNodes[2].LastChild.FirstChild;
-            var favNode = infoNode.ChildNodes.FirstOrDefault(n => n.Id.StartsWith("favicon"));
-            gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(favNode);
-            gallery.Rating.AnalyzeNode(trNode.ChildNodes[2].ChildNodes[2]);
-        }
-
-        private IAsyncOperation<LoadItemsResult<Gallery>> loadCore(bool reIn)
-        {
-            return AsyncInfo.Run(async token =>
-            {
-                var doc = await Client.Current.HttpClient.GetDocumentAsync(DomainProvider.Eh.RootUri);
-                var pp = doc.GetElementbyId("pp");
-                if (pp is null) // Disabled popular
-                {
-                    if (reIn)
-                    {
-                        return LoadItemsResult.Empty<Gallery>();
-                    }
-                    else
-                    {
-                        await DomainProvider.Eh.Settings.FetchAsync();
-                        await DomainProvider.Eh.Settings.SendAsync();
-                        return await loadCore(true);
-                    }
-                }
-                var nodes = (from div in pp.Elements("div")
-                             where div.HasClass("id1")
-                             select div).ToList();
-                var ginfo = nodes.Select(n =>
-                {
-                    var link = n.Descendants("a").First().GetAttribute("href", default(Uri));
-                    return GalleryInfo.Parse(link);
-                }).ToList();
-                var galleries = await Gallery.FetchGalleriesAsync(ginfo);
-                for (var i = 0; i < ginfo.Count; i++)
-                {
-                    handleAdditionalInfo(nodes[i], galleries[i]);
-                }
-                return LoadItemsResult.Create(0, galleries);
-            });
+            var doc = await Client.Current.HttpClient.GetDocumentAsync(_PopularUri);
+            var galleries = await GalleryListParser.Parse(doc, token);
+            return LoadItemsResult.Create(0, galleries);
         }
 
         protected override IAsyncOperation<LoadItemsResult<Gallery>> LoadItemsAsync(int count)
-            => loadCore(false);
+            => AsyncInfo.Run(token => _LoadCore(token));
     }
 }

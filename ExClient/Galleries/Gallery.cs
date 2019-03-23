@@ -32,7 +32,7 @@ using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 namespace ExClient.Galleries
 {
     [JsonObject]
-    [System.Diagnostics.DebuggerDisplay(@"\{ID = {ID} Count = {Count}\}")]
+    [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count}\}")]
     public class Gallery : FixedLoadingList<GalleryImage>
     {
         public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
@@ -69,7 +69,7 @@ namespace ExClient.Galleries
             {
                 return Run<IList<Gallery>>(async token =>
                 {
-                    var re = await new GalleryDataRequest(galleryInfo, 0, galleryInfo.Count).GetResponseAsync();
+                    var re = await new GalleryDataRequest(galleryInfo, 0, galleryInfo.Count).GetResponseAsync(token);
                     var data = re.GalleryMetaData;
                     data.ForEach(async g => await g.InitAsync());
                     return data;
@@ -85,7 +85,7 @@ namespace ExClient.Galleries
                     {
                         var pageSize = MathHelper.GetSizeOfPage(galleryInfo.Count, 25, i);
                         var startIndex = MathHelper.GetStartIndexOfPage(25, i);
-                        var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync();
+                        var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync(token);
                         var data = re.GalleryMetaData;
                         data.ForEach(async g => await g.InitAsync());
                         result.AddRange(data);
@@ -95,14 +95,14 @@ namespace ExClient.Galleries
             }
         }
 
-        private static readonly IReadOnlyDictionary<string, Category> categoriesForRestApi = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
+        private static readonly IReadOnlyDictionary<string, Category> _CategoriesForRestApi = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
             ["Doujinshi"] = Category.Doujinshi,
             ["Manga"] = Category.Manga,
-            ["Artist CG Sets"] = Category.ArtistCG,
-            ["Game CG Sets"] = Category.GameCG,
+            ["Artist CG"] = Category.ArtistCG,
+            ["Game CG"] = Category.GameCG,
             ["Western"] = Category.Western,
-            ["Image Sets"] = Category.ImageSet,
+            ["Image Set"] = Category.ImageSet,
             ["Non-H"] = Category.NonH,
             ["Cosplay"] = Category.Cosplay,
             ["Asian Porn"] = Category.AsianPorn,
@@ -114,13 +114,13 @@ namespace ExClient.Galleries
             return Run<SaveGalleryProgress>((token, progress) => Task.Run(async () =>
             {
                 await Task.Yield();
-                progress.Report(new SaveGalleryProgress(-1, this.Count));
-                var loadOP = LoadItemsAsync(0, this.Count);
+                progress.Report(new SaveGalleryProgress(-1, Count));
+                var loadOP = LoadItemsAsync(0, Count);
                 token.Register(loadOP.Cancel);
                 await loadOP;
                 token.ThrowIfCancellationRequested();
                 var loadedCount = 0;
-                progress.Report(new SaveGalleryProgress(loadedCount, this.Count));
+                progress.Report(new SaveGalleryProgress(loadedCount, Count));
 
                 using (var semaphore = new SemaphoreSlim(10, 10))
                 {
@@ -128,7 +128,7 @@ namespace ExClient.Galleries
                     {
                         try
                         {
-                            Debug.WriteLine($"Start {i.PageID}");
+                            Debug.WriteLine($"Start {i.PageId}");
                             token.ThrowIfCancellationRequested();
                             var firstFailed = false;
                             try
@@ -138,33 +138,33 @@ namespace ExClient.Galleries
                                 var c = await Task.WhenAny(Task.Delay(30_000), firstTask);
                                 if (c != firstTask)
                                 {
-                                    Debug.WriteLine($"Timeout 1st {i.PageID}");
+                                    Debug.WriteLine($"Timeout 1st {i.PageId}");
                                     firstFailed = true;
                                     firstChance.Cancel();
                                 }
                             }
                             catch (Exception)
                             {
-                                Debug.WriteLine($"Fail 1st {i.PageID}");
+                                Debug.WriteLine($"Fail 1st {i.PageId}");
                                 firstFailed = true;
                             }
                             if (firstFailed)
                             {
-                                Debug.WriteLine($"Retry {i.PageID}");
+                                Debug.WriteLine($"Retry {i.PageId}");
                                 token.ThrowIfCancellationRequested();
                                 await i.LoadImageAsync(true, strategy, true).AsTask(token);
                             }
-                            progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), this.Count));
-                            Debug.WriteLine($"Success {i.PageID}");
+                            progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), Count));
+                            Debug.WriteLine($"Success {i.PageId}");
                         }
                         finally
                         {
                             semaphore.Release();
-                            Debug.WriteLine($"End {i.PageID}");
+                            Debug.WriteLine($"End {i.PageId}");
                         }
                     }
 
-                    var pendingTasks = new List<Task>(this.Count);
+                    var pendingTasks = new List<Task>(Count);
                     await Task.Run(async () =>
                     {
                         foreach (var item in this)
@@ -179,7 +179,7 @@ namespace ExClient.Galleries
 
                 using (var db = new GalleryDb())
                 {
-                    var gid = this.ID;
+                    var gid = Id;
                     var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == gid);
                     if (myModel is null)
                     {
@@ -194,39 +194,39 @@ namespace ExClient.Galleries
             }));
         }
 
-        private Gallery(long id, ulong token, int recordCount)
+        private Gallery(long id, EToken token, int recordCount)
             : base(recordCount)
         {
-            this.ID = id;
-            this.Token = token;
-            this.Rating = new RatingStatus(this);
-            this.GalleryUri = new GalleryInfo(id, token).Uri;
+            Id = id;
+            Token = token;
+            Rating = new RatingStatus(this);
+            GalleryUri = new GalleryInfo(id, token).Uri;
             if (Client.Current.Settings.RawSettings.TryGetValue("tr", out var trv))
             {
                 switch (trv)
                 {
-                case "1": this.pageSize = 50; break;
-                case "2": this.pageSize = 100; break;
-                case "3": this.pageSize = 200; break;
-                default: this.pageSize = 20; break;
+                case "1": _PageSize = 50; break;
+                case "2": _PageSize = 100; break;
+                case "3": _PageSize = 200; break;
+                default: _PageSize = 20; break;
                 }
             }
         }
 
         internal Gallery(GalleryModel model)
-            : this(model.GalleryModelId, model.Token, model.RecordCount)
+            : this(model.GalleryModelId, new EToken(model.Token), model.RecordCount)
         {
-            this.Available = model.Available;
-            this.Title = model.Title;
-            this.TitleJpn = model.TitleJpn;
-            this.Category = model.Category;
-            this.Uploader = model.Uploader;
-            this.Posted = model.Posted;
-            this.FileSize = model.FileSize;
-            this.Expunged = model.Expunged;
-            this.Rating.AverageScore = model.Rating;
-            this.Tags = new TagCollection(this, JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)));
-            this.ThumbUri = new Uri(model.ThumbUri);
+            Available = model.Available;
+            Title = model.Title;
+            TitleJpn = model.TitleJpn;
+            Category = model.Category;
+            Uploader = model.Uploader;
+            Posted = model.Posted;
+            FileSize = model.FileSize;
+            Expunged = model.Expunged;
+            Rating.AverageScore = model.Rating;
+            Tags = new TagCollection(this, JsonConvert.DeserializeObject<IList<string>>(model.Tags).Select(t => Tag.Parse(t)));
+            ThumbUri = new Uri(model.ThumbUri);
         }
 
         [JsonConstructor]
@@ -246,29 +246,27 @@ namespace ExClient.Galleries
             string rating = null,
             string torrentcount = null,
             string[] tags = null)
-            : this(gid, token?.ToToken() ?? 0, int.Parse(filecount, NumberStyles.Integer, CultureInfo.InvariantCulture))
+            : this(gid, EToken.Parse(token.CoalesceNullOrWhiteSpace("0")), int.Parse(filecount, NumberStyles.Integer, CultureInfo.InvariantCulture))
         {
             if (error != null)
             {
                 throw new Exception(error);
             }
-            this.Available = !expunged;
-            this.Title = HtmlEntity.DeEntitize(title);
-            this.TitleJpn = HtmlEntity.DeEntitize(title_jpn);
-            if (!categoriesForRestApi.TryGetValue(category, out var ca))
-            {
+            Available = !expunged;
+            Title = HtmlEntity.DeEntitize(title);
+            TitleJpn = HtmlEntity.DeEntitize(title_jpn);
+            if (!_CategoriesForRestApi.TryGetValue(category, out var ca))
                 ca = Category.Unspecified;
-            }
 
-            this.Category = ca;
-            this.Uploader = HtmlEntity.DeEntitize(uploader);
-            this.Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, NumberStyles.Integer, CultureInfo.InvariantCulture));
-            this.FileSize = filesize;
-            this.Expunged = expunged;
-            this.Rating.AverageScore = double.Parse(rating, NumberStyles.Number, CultureInfo.InvariantCulture);
-            this.TorrentCount = int.Parse(torrentcount, NumberStyles.Integer, CultureInfo.InvariantCulture);
-            this.Tags = new TagCollection(this, tags.Select(tag => Tag.Parse(tag)));
-            this.ThumbUri = ThumbClient.FormatThumbUri(thumb);
+            Category = ca;
+            Uploader = HtmlEntity.DeEntitize(uploader);
+            Posted = DateTimeOffset.FromUnixTimeSeconds(long.Parse(posted, NumberStyles.Integer, CultureInfo.InvariantCulture));
+            FileSize = filesize;
+            Expunged = expunged;
+            Rating.AverageScore = double.Parse(rating, NumberStyles.Number, CultureInfo.InvariantCulture);
+            TorrentCount = int.Parse(torrentcount, NumberStyles.Integer, CultureInfo.InvariantCulture);
+            Tags = new TagCollection(this, tags.Select(tag => Tag.Parse(tag)));
+            ThumbUri = ThumbClient.FormatThumbUri(thumb);
         }
 
         protected IAsyncAction InitAsync()
@@ -282,7 +280,7 @@ namespace ExClient.Galleries
             {
                 using (var db = new GalleryDb())
                 {
-                    var gid = this.ID;
+                    var gid = Id;
                     var myModel = db.GallerySet.SingleOrDefault(model => model.GalleryModelId == gid);
                     if (myModel is null)
                         db.GallerySet.Add(new GalleryModel().Update(this));
@@ -300,11 +298,11 @@ namespace ExClient.Galleries
 
         #region MetaData
 
-        public long ID { get; }
+        public long Id { get; }
 
         public bool Available { get; protected set; }
 
-        public ulong Token { get; }
+        public EToken Token { get; }
 
         public string Title { get; protected set; }
 
@@ -312,19 +310,21 @@ namespace ExClient.Galleries
 
         public Category Category { get; protected set; }
 
-        private readonly WeakReference<ImageSource> thumbImage = new WeakReference<ImageSource>(null);
+        internal string ShowKey { get; set; }
+
+        private readonly WeakReference<ImageSource> _ThumbImage = new WeakReference<ImageSource>(null);
         public ImageSource Thumb
         {
             get
             {
-                if (this.thumbImage.TryGetTarget(out var img))
+                if (_ThumbImage.TryGetTarget(out var img))
                     return img;
                 this.GetThumbAsync().ContinueWith(t =>
                 {
                     var r = t.Result;
                     if (r is null)
                         return;
-                    this.thumbImage.SetTarget(r);
+                    _ThumbImage.SetTarget(r);
                     OnPropertyChanged(nameof(Thumb));
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
                 return ThumbHelper.DefaultThumb;
@@ -339,8 +339,8 @@ namespace ExClient.Galleries
 
         public long FileSize { get; }
 
-        private int pageSize;
-        public int PageSize { get => this.pageSize; set => Set(ref this.pageSize, value); }
+        private int _PageSize;
+        public int PageSize { get => _PageSize; set => Set(ref _PageSize, value); }
 
         public bool Expunged { get; }
 
@@ -350,30 +350,30 @@ namespace ExClient.Galleries
 
         public TagCollection Tags { get; }
 
-        private FavoriteCategory favoriteCategory;
+        private FavoriteCategory _FavoriteCategory;
         public FavoriteCategory FavoriteCategory
         {
-            get => this.favoriteCategory;
-            protected internal set => Set(ref this.favoriteCategory, value);
+            get => _FavoriteCategory;
+            protected internal set => Set(ref _FavoriteCategory, value);
         }
 
-        private string favoriteNote;
+        private string _FavoriteNote;
         public string FavoriteNote
         {
-            get => this.favoriteNote;
-            protected internal set => Set(ref this.favoriteNote, value);
+            get => _FavoriteNote;
+            protected internal set => Set(ref _FavoriteNote, value);
         }
 
-        private RevisionCollection revisions;
+        private RevisionCollection _Revisions;
         public RevisionCollection Revisions
         {
-            get => this.revisions;
-            private set => Set(ref this.revisions, value);
+            get => _Revisions;
+            private set => Set(ref _Revisions, value);
         }
 
 
-        private CommentCollection comments;
-        public CommentCollection Comments => LazyInitializer.EnsureInitialized(ref this.comments, () => new CommentCollection(this));
+        private CommentCollection _Comments;
+        public CommentCollection Comments => LazyInitializer.EnsureInitialized(ref _Comments, () => new CommentCollection(this));
         #endregion
 
         internal void RefreshMetaData(HtmlDocument doc)
@@ -383,18 +383,15 @@ namespace ExClient.Galleries
             if (favNode != null)
             {
                 var favContentNode = favNode.Element("div");
-                this.FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
+                FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
             }
-            this.Rating.AnalyzeDocument(doc);
-            if (this.Revisions is null)
-            {
-                this.Revisions = new RevisionCollection(this, doc);
-            }
-
-            this.Tags.Update(doc);
+            Rating.AnalyzeDocument(doc);
+            Revisions = Revisions ?? new RevisionCollection(this);
+            Revisions.Analyze(doc);
+            Tags.Update(doc);
         }
 
-        public IAsyncAction RefreshMetaDataAsync() => this.Comments.FetchAsync(false);
+        public IAsyncAction RefreshMetaDataAsync() => Comments.FetchAsync(false);
 
         protected override IAsyncOperation<LoadItemsResult<GalleryImage>> LoadItemAsync(int index)
         {
@@ -423,8 +420,8 @@ namespace ExClient.Galleries
                         }
 
                         var pId = int.Parse(tokens[tokens.Length - 1], NumberStyles.Integer);
-                        var imageKey = tokens[tokens.Length - 3].ToToken();
-                        var gId = this.ID;
+                        var imageKey = EToken.Parse(tokens[tokens.Length - 3]);
+                        var gId = Id;
                         var imageModel = db.GalleryImageSet
                             .Include(gi => gi.Image)
                             .FirstOrDefault(gi => gi.GalleryId == gId && gi.PageId == pId);
@@ -444,16 +441,16 @@ namespace ExClient.Galleries
 
                 async Task<HtmlDocument> getDoc(int imageIndex, CancellationToken cancellationToken, bool reIn = false)
                 {
-                    var pageIndex = imageIndex / this.pageSize;
-                    var needLoadComments = !this.Comments.IsLoaded;
-                    var uri = new Uri(this.GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
+                    var pageIndex = imageIndex / _PageSize;
+                    var needLoadComments = !Comments.IsLoaded;
+                    var uri = new Uri(GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
                     var docOp = Client.Current.HttpClient.GetDocumentAsync(uri);
                     cancellationToken.Register(docOp.Cancel);
                     var doc = await docOp;
                     RefreshMetaData(doc);
                     if (needLoadComments)
                     {
-                        this.Comments.AnalyzeDocument(doc);
+                        Comments.AnalyzeDocument(doc);
                     }
                     if (reIn)
                     {
@@ -463,14 +460,14 @@ namespace ExClient.Galleries
                     var rows = doc.GetElementbyId("gdo2").Elements("div", "ths").Last().GetInnerText();
                     rows = rows.Substring(0, rows.IndexOf(' '));
                     var rowCount = int.Parse(rows);
-                    this.PageSize = rowCount * 5;
+                    PageSize = rowCount * 5;
                     if (doc.GetElementbyId("gdo4").Elements("div", "ths").Last().InnerText != "Large")
                     {
                         // 切换到大图模式
                         await Client.Current.HttpClient.GetAsync(new Uri("/?inline_set=ts_l", UriKind.Relative));
                         doc = await getDoc(imageIndex, cancellationToken, true);
                     }
-                    else if (pageIndex != imageIndex / this.pageSize)
+                    else if (pageIndex != imageIndex / _PageSize)
                     {
                         doc = await getDoc(imageIndex, cancellationToken, true);
                     }
@@ -483,7 +480,7 @@ namespace ExClient.Galleries
         {
             return Run(async token =>
             {
-                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={this.ID}&t={this.Token.ToTokenString()}&act=addfav", UriKind.Relative));
+                var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={Id}&t={Token.ToString()}&act=addfav", UriKind.Relative));
                 var favdel = doc.GetElementbyId("favdel");
                 if (favdel != null)
                 {
@@ -497,18 +494,18 @@ namespace ExClient.Galleries
                         settings.StoreCache();
                         if (!favSet && favNode.GetAttribute("checked", false))
                         {
-                            this.FavoriteCategory = Client.Current.Favorites[i];
+                            FavoriteCategory = Client.Current.Favorites[i];
                             favSet = true;
                         }
                     }
-                    this.FavoriteNote = doc.DocumentNode.Descendants("textarea").First().GetInnerText();
+                    FavoriteNote = doc.DocumentNode.Descendants("textarea").First().GetInnerText();
                 }
                 else
                 {
-                    this.FavoriteCategory = Client.Current.Favorites.Removed;
-                    this.FavoriteNote = "";
+                    FavoriteCategory = Client.Current.Favorites.Removed;
+                    FavoriteNote = "";
                 }
-                return this.FavoriteNote;
+                return FavoriteNote;
             });
         }
 
@@ -516,7 +513,7 @@ namespace ExClient.Galleries
         {
             return Task.Run(async () =>
             {
-                var gid = this.ID;
+                var gid = Id;
                 using (var db = new GalleryDb())
                 {
                     var toDelete = db.GalleryImageSet
@@ -531,7 +528,7 @@ namespace ExClient.Galleries
                         {
                             var i = item.PageId - 1;
                             var file = default(StorageFile);
-                            if (i < this.Count)
+                            if (i < Count)
                             {
                                 file = this[i].ImageFile;
                             }
@@ -551,7 +548,7 @@ namespace ExClient.Galleries
                     }
                     await db.SaveChangesAsync();
                 }
-                for (var i = 0; i < this.Count; i++)
+                for (var i = 0; i < Count; i++)
                 {
                     UnloadAt(i);
                 }

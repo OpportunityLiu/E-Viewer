@@ -14,31 +14,29 @@ namespace ExClient
     public readonly struct SHA1Value : IEquatable<SHA1Value>, IFormattable
     {
         private const int HASH_SIZE = 20;
-        private static readonly HashAlgorithmProvider sha1compute = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
+        private static readonly HashAlgorithmProvider _Sha1Compute = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
 
         public static SHA1Value Compute(byte[] data)
         {
-            return new SHA1Value(sha1compute.HashData(data.AsBuffer()));
+            return new SHA1Value(_Sha1Compute.HashData(data.AsBuffer()));
         }
 
         public static SHA1Value Compute(IBuffer data)
         {
-            return new SHA1Value(sha1compute.HashData(data));
+            return new SHA1Value(_Sha1Compute.HashData(data));
         }
 
         public static IAsyncOperation<SHA1Value> ComputeAsync(IRandomAccessStream stream)
         {
             if (stream is null)
-            {
                 throw new ArgumentNullException(nameof(stream));
-            }
 
             return Task.Run(async () =>
             {
                 stream.Seek(0);
                 var buf = new Windows.Storage.Streams.Buffer((uint)stream.Size);
                 await stream.ReadAsync(buf, (uint)stream.Size, InputStreamOptions.None);
-                return new SHA1Value(sha1compute.HashData(buf));
+                return new SHA1Value(_Sha1Compute.HashData(buf));
             }).AsAsyncOperation();
         }
 
@@ -71,7 +69,7 @@ namespace ExClient
 
             public unsafe bool Equals(DataPack other)
             {
-                fixed (byte* pThis = this.Data)
+                fixed (byte* pThis = Data)
                 {
                     var pOther = other.Data;
                     for (var i = 0; i < HASH_SIZE; i++)
@@ -93,7 +91,7 @@ namespace ExClient
             get
             {
                 var values = new byte[HASH_SIZE];
-                fixed (void* pThis = this.data.Data, pValue = &values[0])
+                fixed (void* pThis = data.Data, pValue = &values[0])
                 {
                     System.Buffer.MemoryCopy(pThis, pValue, HASH_SIZE, HASH_SIZE);
                 }
@@ -102,15 +100,15 @@ namespace ExClient
             }
         }
 
-        public ulong ToToken()
+        public EToken ToToken()
         {
-            var data = this.Data;
-            return
+            var data = Data;
+            return new EToken(
                 (ulong)data[0] << 32 |
                 (ulong)data[1] << 24 |
                 (ulong)data[2] << 16 |
                 (ulong)data[3] << 8 |
-                (ulong)data[4] << 0;
+                (ulong)data[4] << 0);
         }
 
         public SHA1Value(IBuffer values)
@@ -131,14 +129,14 @@ namespace ExClient
 
         public bool Equals(SHA1Value other)
         {
-            return this.data.Equals(other.data);
+            return data.Equals(other.data);
         }
 
         public override bool Equals(object obj)
         {
             if (obj is SHA1Value sha)
             {
-                return this.Equals(sha);
+                return Equals(sha);
             }
             return false;
         }
@@ -158,25 +156,27 @@ namespace ExClient
             return r;
         }
 
+        public unsafe string ToString(string format) => ToString(format, null);
+
         public unsafe string ToString(string format, IFormatProvider formatProvider)
         {
             var fmt = string.IsNullOrEmpty(format) ? 'x' : format[0];
             switch (fmt)
             {
             case 'x':
-                return toStringL(HASH_SIZE);
+                return _ToStringL(HASH_SIZE);
             case 'X':
-                return toStringU(HASH_SIZE);
+                return _ToStringU(HASH_SIZE);
             case 't':
-                return toStringL(TokenExtension.TOKEN_LENGTH);
+                return _ToStringL(EToken.TOKEN_BYTE_LENGTH);
             case 'T':
-                return toStringU(TokenExtension.TOKEN_LENGTH);
+                return _ToStringU(EToken.TOKEN_BYTE_LENGTH);
             default:
                 throw new FormatException("Unknown format specifier.");
             }
         }
 
-        private unsafe string toStringL(int length)
+        private unsafe string _ToStringL(int length)
         {
             var str = stackalloc char[length * 2];
             fixed (void* p = &this)
@@ -186,14 +186,14 @@ namespace ExClient
                 for (var i = 0; i < length; i++)
                 {
                     var b = data[i];
-                    getHexValueL(pStr++, b >> 4);
-                    getHexValueL(pStr++, b & 0xF);
+                    _GetHexValueL(pStr++, b >> 4);
+                    _GetHexValueL(pStr++, b & 0xF);
                 }
             }
             return new string(str, 0, length * 2);
         }
 
-        private unsafe string toStringU(int length)
+        private unsafe string _ToStringU(int length)
         {
             var str = stackalloc char[length * 2];
             fixed (void* p = &this)
@@ -203,14 +203,14 @@ namespace ExClient
                 for (var i = 0; i < length; i++)
                 {
                     var b = data[i];
-                    getHexValueU(pStr++, b >> 4);
-                    getHexValueU(pStr++, b & 0xF);
+                    _GetHexValueU(pStr++, b >> 4);
+                    _GetHexValueU(pStr++, b & 0xF);
                 }
             }
             return new string(str, 0, length * 2);
         }
 
-        private static unsafe void getHexValueL(char* p, int i)
+        private static unsafe void _GetHexValueL(char* p, int i)
         {
             if (i < 10)
             {
@@ -222,7 +222,7 @@ namespace ExClient
             }
         }
 
-        private static unsafe void getHexValueU(char* p, int i)
+        private static unsafe void _GetHexValueU(char* p, int i)
         {
             if (i < 10)
             {
@@ -234,9 +234,7 @@ namespace ExClient
             }
         }
 
-        public override string ToString() => toStringL(HASH_SIZE);
-
-        public string ToTokenString() => toStringL(TokenExtension.TOKEN_LENGTH);
+        public override string ToString() => _ToStringL(HASH_SIZE);
 
         public static bool operator ==(SHA1Value left, SHA1Value right)
             => left.Equals(right);

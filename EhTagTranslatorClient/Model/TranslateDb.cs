@@ -2,21 +2,13 @@
 
 namespace EhTagTranslatorClient.Model
 {
-    class TranslateDb : DbContext
+    internal class TranslateDb : DbContext
     {
-        public static void Migrate()
-        {
-            using (var db = new TranslateDb())
-            {
-                db.Database.Migrate();
-            }
-        }
-
         public DbSet<Record> Table { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=EhTagTranslatorClient.db");
+            optionsBuilder.UseSqlite("Data Source=EhTagTranslatorClient.v2.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,8 +21,6 @@ namespace EhTagTranslatorClient.Model
             modelBuilder.Entity<Record>()
                 .Property(r => r.Original)
                 .ValueGeneratedNever();
-            modelBuilder.Entity<Record>()
-                .Ignore(r => r.ExternalLinks);
         }
     }
 }

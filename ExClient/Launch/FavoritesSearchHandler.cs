@@ -17,25 +17,15 @@ namespace ExClient.Launch
         {
             var keyword = UnescapeKeyword(data.Queries.GetString("f_search") ?? "");
             var category = Client.Current.Favorites.All;
-            var ap = data.Queries.GetBoolean("f_apply");
+            var cat = data.Queries.GetString("favcat") ?? "all";
+            if (cat != "all")
             {
-                var cat = data.Queries.GetString("favcat") ?? "all";
-                if (cat != "all")
-                {
-                    var index = cat.QueryValueAsInt32();
-                    index = Math.Max(0, index);
-                    index = Math.Min(9, index);
-                    category = Client.Current.Favorites[index];
-                }
+                var index = cat.QueryValueAsInt32();
+                index = Math.Max(0, index);
+                index = Math.Min(9, index);
+                category = Client.Current.Favorites[index];
             }
-            if (!ap)
-            {
-                return new SearchLaunchResult(category.Search(""));
-            }
-            else
-            {
-                return new SearchLaunchResult(category.Search(keyword));
-            }
+            return new SearchLaunchResult(category.Search(keyword));
         }
     }
 }

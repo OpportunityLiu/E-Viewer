@@ -12,35 +12,35 @@ namespace ExClient.Galleries.Rating
     [DebuggerDisplay(@"\{{userScore} - {averageScore}({ratingCount})\}")]
     public class RatingStatus : ObservableObject
     {
-        private readonly Gallery owner;
-
         internal RatingStatus(Gallery owner)
         {
-            this.owner = owner;
+            Owner = owner;
         }
 
-        private double averageScore;
-        public double AverageScore { get => this.averageScore; internal set => Set(ref this.averageScore, value); }
+        private double _AverageScore;
+        public double AverageScore { get => _AverageScore; internal set => Set(ref _AverageScore, value); }
 
-        private Score userScore;
-        public Score UserScore { get => this.userScore; private set => Set(ref this.userScore, value); }
+        private Score _UserScore;
+        public Score UserScore { get => _UserScore; private set => Set(ref _UserScore, value); }
 
-        private long ratingCount = -1;
-        public long RatingCount { get => this.ratingCount; private set => Set(ref this.ratingCount, value); }
+        private long _RatingCount = -1;
+        public long RatingCount { get => _RatingCount; private set => Set(ref _RatingCount, value); }
 
-        private static Regex regAvg = new Regex(@"var\s+average_rating\s*=\s*([\.\d]+)", RegexOptions.Compiled);
-        private static Regex regDisp = new Regex(@"var\s+display_rating\s*=\s*([\.\d]+)", RegexOptions.Compiled);
+        public Gallery Owner { get; }
+
+        private static Regex _RegAvg = new Regex(@"var\s+average_rating\s*=\s*([\.\d]+)", RegexOptions.Compiled);
+        private static Regex _RegDisp = new Regex(@"var\s+display_rating\s*=\s*([\.\d]+)", RegexOptions.Compiled);
 
         internal void AnalyzeDocument(HtmlDocument doc)
         {
             var avgS = 0d;
-            var avg = regAvg.Match(doc.DocumentNode.OuterHtml);
+            var avg = _RegAvg.Match(doc.DocumentNode.OuterHtml);
             if (avg.Success)
             {
                 avgS = double.Parse(avg.Groups[1].Value);
             }
 
-            var disp = regDisp.Match(doc.DocumentNode.OuterHtml);
+            var disp = _RegDisp.Match(doc.DocumentNode.OuterHtml);
             var dispS = 0d;
             if (disp.Success)
             {
@@ -57,10 +57,10 @@ namespace ExClient.Galleries.Rating
                 ratingCount = c;
             }
 
-            analyzeData(avgS, dispS, rImageClass, ratingCount);
+            _AnalyzeData(avgS, dispS, rImageClass, ratingCount);
         }
 
-        private static Regex regPos = new Regex(@"background-position\s*:\s*([-\d]+)\s*px\s+([-\d]+)\s*px", RegexOptions.Compiled);
+        private static Regex _RegPos = new Regex(@"background-position\s*:\s*([-\d]+)\s*px\s+([-\d]+)\s*px", RegexOptions.Compiled);
 
         internal void AnalyzeNode(HtmlNode ratingImageDivNode)
         {
@@ -75,13 +75,13 @@ namespace ExClient.Galleries.Rating
                 return;
             }
 
-            if (!userRated(divClass))
+            if (!_UserRated(divClass))
             {
                 return;
             }
 
             var style = ratingImageDivNode.GetAttributeValue("style", "");
-            var pos = regPos.Match(style);
+            var pos = _RegPos.Match(style);
             if (!pos.Success)
             {
                 return;
@@ -89,24 +89,24 @@ namespace ExClient.Galleries.Rating
 
             var x = int.Parse(pos.Groups[1].Value);
             var y = int.Parse(pos.Groups[2].Value);
-            this.UserScore = (Score)((x + 80) / 8 - (y < -10 ? 1 : 0));
+            UserScore = (Score)((x + 80) / 8 - (y < -10 ? 1 : 0));
         }
 
-        private static bool userRated(string classes)
+        private static bool _UserRated(string classes)
             => (classes.Contains("irr") || classes.Contains("irg") || classes.Contains("irb"));
 
-        private void analyzeData(double averageScore, double displayScore, string ratingImageClass, long ratingCount)
+        private void _AnalyzeData(double averageScore, double displayScore, string ratingImageClass, long ratingCount)
         {
-            this.AverageScore = averageScore;
-            this.RatingCount = ratingCount;
+            AverageScore = averageScore;
+            RatingCount = ratingCount;
 
-            if (ratingImageClass != null && userRated(ratingImageClass))
+            if (ratingImageClass != null && _UserRated(ratingImageClass))
             {
-                this.UserScore = displayScore.ToScore();
+                UserScore = displayScore.ToScore();
             }
             else
             {
-                this.UserScore = Score.NotSet;
+                UserScore = Score.NotSet;
             }
         }
 
@@ -114,11 +114,9 @@ namespace ExClient.Galleries.Rating
         {
             return AsyncInfo.Run(async token =>
             {
-                var reqInfo = new RatingRequest(this.owner, rating);
-                var r = reqInfo.GetResponseAsync();
-                token.Register(r.Cancel);
-                var result = await r;
-                analyzeData(result.AverageScore, result.UserScore, result.RatingImageClass, result.RatingCount);
+                var reqInfo = new RatingRequest(Owner, rating);
+                var result = await reqInfo.GetResponseAsync(token);
+                _AnalyzeData(result.AverageScore, result.UserScore, result.RatingImageClass, result.RatingCount);
             });
         }
     }

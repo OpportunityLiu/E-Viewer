@@ -12,11 +12,11 @@ namespace ExClient.Services
     {
         internal ExpungeRecord(ExpungeReason reason, string explanation, string author, DateTimeOffset posted, int power)
         {
-            this.Reason = reason;
-            this.Explanation = explanation;
-            this.Author = author;
-            this.Posted = posted;
-            this.Power = power;
+            Reason = reason;
+            Explanation = explanation;
+            Author = author;
+            Posted = posted;
+            Power = power;
         }
 
         public ExpungeReason Reason { get; }
@@ -26,11 +26,11 @@ namespace ExClient.Services
         public int Power { get; }
 
         public bool Equals(ExpungeRecord other)
-            => this.Posted == other.Posted
-            && this.Power == other.Power
-            && this.Author == other.Author
-            && this.Reason == other.Reason
-            && this.Explanation == other.Explanation;
+            => Posted == other.Posted
+            && Power == other.Power
+            && Author == other.Author
+            && Reason == other.Reason
+            && Explanation == other.Explanation;
 
         public override bool Equals(object obj) => obj is ExpungeRecord r && this.Equals(r);
 

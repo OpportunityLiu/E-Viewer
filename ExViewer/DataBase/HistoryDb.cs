@@ -149,8 +149,8 @@ namespace ExViewer.Database
         private string uri;
         public Uri Uri
         {
-            get => this.uri.IsNullOrEmpty() ? null : new Uri(this.uri);
-            set => this.uri = (value ?? throw new ArgumentNullException(nameof(value))).ToString();
+            get => uri.IsNullOrEmpty() ? null : new Uri(uri);
+            set => uri = (value ?? throw new ArgumentNullException(nameof(value))).ToString();
         }
 
         public string Title { get; set; }
@@ -162,19 +162,19 @@ namespace ExViewer.Database
 
         public void UpdateTime()
         {
-            this.TimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            TimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
 
         public bool Equals(HistoryRecord other)
         {
             if (other is null)
                 return false;
-            if (this.Id != other.Id)
+            if (Id != other.Id)
                 return false;
-            if (this.Id > 0)
+            if (Id > 0)
                 return true;
 
-            return this.uri == other.uri;
+            return uri == other.uri;
         }
 
         public override bool Equals(object obj)
@@ -186,14 +186,14 @@ namespace ExViewer.Database
 
         public override int GetHashCode()
         {
-            if (this.Id > 0)
-                return this.Id;
-            return this.uri?.GetHashCode() ?? -1;
+            if (Id > 0)
+                return Id;
+            return uri?.GetHashCode() ?? -1;
         }
 
         public override string ToString()
         {
-            return this.Title ?? "";
+            return Title ?? "";
         }
 
         public string ToDisplayString()
@@ -216,7 +216,7 @@ namespace ExViewer.Database
                 case HistoryRecordType.Image:
                 {
                     var data = ImageInfo.Parse(Uri);
-                    return resource.Image(title, data.PageID);
+                    return resource.Image(title, data.PageId);
                 }
                 default:
                     return resource.Default(title);

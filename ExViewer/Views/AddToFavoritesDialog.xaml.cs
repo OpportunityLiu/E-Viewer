@@ -17,12 +17,12 @@ namespace ExViewer.Views
     {
         public AddToFavoritesDialog()
         {
-            this.InitializeComponent();
-            this.PrimaryButtonText = Strings.Resources.General.OK;
-            this.CloseButtonText = Strings.Resources.General.Cancel;
+            InitializeComponent();
+            PrimaryButtonText = Strings.Resources.General.OK;
+            CloseButtonText = Strings.Resources.General.Cancel;
             foreach (var item in Client.Current.Favorites)
             {
-                this.categories.Add(item);
+                categories.Add(item);
             }
         }
 
@@ -39,14 +39,14 @@ namespace ExViewer.Views
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            this.pbLoading.IsIndeterminate = true;
-            this.tbInfo.Text = "";
+            pbLoading.IsIndeterminate = true;
+            tbInfo.Text = "";
             var def = args.GetDeferral();
             try
             {
-                if (this.cbCategory.SelectedItem is FavoriteCategory cat)
+                if (cbCategory.SelectedItem is FavoriteCategory cat)
                 {
-                    await cat.AddAsync(this.Gallery, this.tbNote.Text);
+                    await cat.AddAsync(Gallery, tbNote.Text);
                 }
                 else
                 {
@@ -55,29 +55,29 @@ namespace ExViewer.Views
             }
             catch (Exception ex)
             {
-                this.tbInfo.Text = ex.GetMessage();
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
                 args.Cancel = true;
             }
             finally
             {
                 def.Complete();
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
         }
 
         private async void MyContentDialog_Loading(FrameworkElement sender, object args)
         {
-            if (this.Gallery is null)
+            if (Gallery is null)
             {
                 throw new InvalidOperationException("Property AddToFavoritesDialog.Gallery is null.");
             }
 
-            var galleryInFavorites = this.Gallery.FavoriteCategory is null ? null : (bool?)(this.Gallery.FavoriteCategory.Index >= 0);
-            this.tbInfo.Text = "";
-            this.tbNote.Text = this.Gallery.FavoriteNote ?? "";
-            this.cbCategory.SelectedItem = this.cbCategory.Items.FirstOrDefault();
-            this.Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
+            var galleryInFavorites = Gallery.FavoriteCategory is null ? null : (bool?)(Gallery.FavoriteCategory.Index >= 0);
+            tbInfo.Text = "";
+            tbNote.Text = Gallery.FavoriteNote ?? "";
+            cbCategory.SelectedItem = cbCategory.Items.FirstOrDefault();
+            Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
             await Dispatcher.YieldIdle();
             if (galleryInFavorites is null)
             {
@@ -86,30 +86,30 @@ namespace ExViewer.Views
                     return;
                 }
 
-                galleryInFavorites = this.Gallery.FavoriteCategory.Index >= 0;
-                this.Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
+                galleryInFavorites = Gallery.FavoriteCategory.Index >= 0;
+                Title = galleryInFavorites == true ? strings.ModifyTitle : strings.AddTitle;
             }
             if (galleryInFavorites == true)
             {
-                if (this.categories.Count == 10)
+                if (categories.Count == 10)
                 {
-                    this.categories.Add(Client.Current.Favorites.Removed);
+                    categories.Add(Client.Current.Favorites.Removed);
                 }
 
-                this.cbCategory.SelectedIndex = this.Gallery.FavoriteCategory.Index;
-                if (this.Gallery.FavoriteNote is null)
+                cbCategory.SelectedIndex = Gallery.FavoriteCategory.Index;
+                if (Gallery.FavoriteNote is null)
                 {
                     await loadNotesAsync();
                 }
             }
             else
             {
-                if (this.categories.Count == 11)
+                if (categories.Count == 11)
                 {
-                    this.categories.RemoveAt(10);
+                    categories.RemoveAt(10);
                 }
 
-                this.cbCategory.SelectedIndex = 0;
+                cbCategory.SelectedIndex = 0;
             }
         }
 
@@ -118,19 +118,19 @@ namespace ExViewer.Views
             var success = false;
             try
             {
-                this.pbLoading.IsIndeterminate = true;
-                this.tbNote.Text = await this.Gallery.FetchFavoriteNoteAsync();
-                this.cbCategory.SelectedIndex = this.Gallery.FavoriteCategory.Index;
+                pbLoading.IsIndeterminate = true;
+                tbNote.Text = await Gallery.FetchFavoriteNoteAsync();
+                cbCategory.SelectedIndex = Gallery.FavoriteCategory.Index;
                 success = true;
             }
             catch (Exception ex)
             {
-                this.tbInfo.Text = ex.GetMessage();
+                tbInfo.Text = ex.GetMessage();
                 Telemetry.LogException(ex);
             }
             finally
             {
-                this.pbLoading.IsIndeterminate = false;
+                pbLoading.IsIndeterminate = false;
             }
             return success;
         }
@@ -140,12 +140,12 @@ namespace ExViewer.Views
 
         private void tbNote_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.tbInfo.Text = "";
+            tbInfo.Text = "";
         }
 
         private void cbCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.tbInfo.Text = "";
+            tbInfo.Text = "";
         }
 
         private async void MyContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

@@ -1,6 +1,10 @@
-﻿using EhTagTranslatorClient.Model;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using EhTagTranslatorClient.Model;
+using ExClient.Tagging;
 
 namespace EhTagTranslatorClient.Migrations
 {
@@ -10,7 +14,7 @@ namespace EhTagTranslatorClient.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.1.2");
+                .HasAnnotation("ProductVersion", "1.1.6");
 
             modelBuilder.Entity("EhTagTranslatorClient.Record", b =>
                 {
@@ -18,13 +22,9 @@ namespace EhTagTranslatorClient.Migrations
 
                     b.Property<string>("Original");
 
-                    b.Property<string>("ExternalLinksRaw");
+                    b.Property<string>("Introduction");
 
-                    b.Property<string>("IntroductionRaw");
-
-                    b.Property<string>("TranslatedRaw");
-
-                    b.Property<string>("TranslatedStr");
+                    b.Property<string>("Translated");
 
                     b.HasKey("Namespace", "Original");
 

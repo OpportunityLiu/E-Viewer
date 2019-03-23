@@ -26,7 +26,7 @@ namespace ExClient.Tagging
                 var r = tag.GetEhTagTranslatorRecord();
                 if (r != null)
                 {
-                    return AsyncOperation<string>.CreateCompleted(r.Translated.Text);
+                    return AsyncOperation<string>.CreateCompleted(r.Translated);
                 }
             }
             if (settings.UseJapaneseTagTranslation)

@@ -1,4 +1,5 @@
 ﻿using ExClient.Tagging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,78 +11,23 @@ using Windows.Storage.Streams;
 
 namespace EhTagTranslatorClient
 {
-    [DebuggerDisplay(@"\{{Original} => {Translated.RawString}\}")]
     public class Record
     {
-        private static Regex lineRegex = new Regex(
-            $@"
-            ^\s*(?<!\\)\|?\s*
-            (?<{nameof(Original)}>.*?)
-		    \s*(?<!\\)\|\s*
-		    (?<{nameof(Translated)}>.*?)
-		    \s*(?<!\\)\|\s*
-		    (?<{nameof(Introduction)}>.*?)
-		    \s*(?<!\\)\|\s*
-		    (?<{nameof(ExternalLinks)}>.*?)
-		    \s*(?<!\\)\|?\s*$", RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace);
-
-        public static IEnumerable<Record> Analyze(IInputStream stream, Namespace @namespace)
-        {
-            var skipcount = 0;
-            var reader = new StreamReader(stream.AsStreamForRead());
-            while (!reader.EndOfStream)
-            {
-                var r = AnalyzeLine(reader.ReadLine(), @namespace);
-                if (r != null)
-                {
-                    if (skipcount >= 2)
-                    {
-                        yield return r;
-                    }
-                    else
-                    {
-                        skipcount++;
-                    }
-                }
-            }
-        }
-
-        internal static Record AnalyzeLine(string line, Namespace @namespace)
-        {
-            var match = lineRegex.Match(line);
-            if (!match.Success)
-            {
-                return null;
-            }
-
-            var ori = match.Groups[nameof(Original)].Value;
-            if (string.IsNullOrEmpty(ori))
-            {
-                return null;
-            }
-
-            var tra = match.Groups[nameof(Translated)].Value;
-            var intro = match.Groups[nameof(Introduction)].Value;
-            var link = match.Groups[nameof(ExternalLinks)].Value;
-            return new Record(@namespace, unescape(ori), unescape(tra), unescape(intro), unescape(link));
-        }
-
-        private static string unescape(string value)
-        {
-            if (value.Contains("<br>") || value.Contains(@"\"))
-            {
-                var sb = new StringBuilder(value);
-                sb.Replace(@"\|", @"|");
-                sb.Replace(@"\~", @"~");
-                sb.Replace(@"\*", @"*");
-                sb.Replace(@"\\", @"\");
-                sb.Replace("<br>", Environment.NewLine);
-                return sb.ToString();
-            }
-            return value;
-        }
-
         internal Record() { }
+
+        [JsonConstructor]
+        internal Record(string name, string intro)
+        {
+            Translated = name;
+            Introduction = intro;
+        }
+
+        internal Record(Namespace @namespace, string raw, string name, string intro)
+            : this(name, intro)
+        {
+            Namespace = @namespace;
+            Original = raw;
+        }
 
         internal static Record Combine(Record r1, Record r2)
         {
@@ -96,58 +42,39 @@ namespace EhTagTranslatorClient
             }
 
             string translated, intro;
-            if (r1.TranslatedRaw == r2.TranslatedRaw)
+            if (r1.Translated == r2.Translated)
             {
-                translated = r1.TranslatedRaw;
+                translated = r1.Translated;
             }
             else
             {
-                translated = $@"{r1.TranslatedRaw} | {r2.TranslatedRaw}";
+                translated = $@"{r1.Translated} | {r2.Translated}";
             }
-            if (string.IsNullOrWhiteSpace(r1.IntroductionRaw))
+            if (string.IsNullOrWhiteSpace(r1.Introduction))
             {
-                intro = r2.IntroductionRaw;
+                intro = r2.Introduction;
             }
-            else if (string.IsNullOrWhiteSpace(r2.IntroductionRaw))
+            else if (string.IsNullOrWhiteSpace(r2.Introduction))
             {
-                intro = r1.IntroductionRaw;
+                intro = r1.Introduction;
             }
             else
             {
-                intro = $"{r1.IntroductionRaw}<hr>{r2.IntroductionRaw}";
+                intro = $"{r1.Introduction}{Environment.NewLine}{Environment.NewLine}{r2.Introduction}";
             }
 
-            return new Record(r1.Namespace, r1.Original, translated, intro, $"{r1.ExternalLinksRaw} {r2.ExternalLinksRaw}");
-        }
-
-        private Record(Namespace @namespace, string original, string translated, string introduction, string externalLinks)
-        {
-            this.Namespace = @namespace;
-            this.Original = original;
-            this.TranslatedRaw = translated;
-            this.IntroductionRaw = introduction;
-            this.TranslatedStr = this.Translated.Text;
-            this.ExternalLinksRaw = externalLinks;
+            return new Record(r1.Namespace, r1.Original, translated, intro);
         }
 
         public string Original { get; internal set; }
 
-        public string TranslatedRaw { get; internal set; }
+        public string Translated { get; internal set; }
 
-        public string TranslatedStr { get; internal set; }
-
-        public MarkdownText Translated => new MarkdownText(TranslatedRaw);
-
-        public string IntroductionRaw { get; internal set; }
-
-        public MarkdownText Introduction => new MarkdownText(IntroductionRaw);
-
-        public string ExternalLinksRaw { get; internal set; }
-
-        public IEnumerable<MarkdownLink> ExternalLinks => new MarkdownText(ExternalLinksRaw).Tokens.OfType<MarkdownLink>();
+        public string Introduction { get; internal set; }
 
         public Namespace Namespace { get; internal set; }
 
-        public Tag ToTag() => new Tag(this.Namespace, this.Original);
+
+        public Tag ToTag() => new Tag(Namespace, Original);
     }
 }

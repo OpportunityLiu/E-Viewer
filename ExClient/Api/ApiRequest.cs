@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 
 namespace ExClient.Api
@@ -19,18 +21,18 @@ namespace ExClient.Api
             ApiKey = apiKey;
         }
 
-        private static Regex regUid = new Regex(@"var\s+apiuid\s*=\s*(\d+)", RegexOptions.Compiled);
-        private static Regex regKey = new Regex(@"var\s+apikey\s*=\s*""([A-Fa-f0-9]+)""", RegexOptions.Compiled);
+        private static Regex _RegUid = new Regex(@"var\s+apiuid\s*=\s*(\d+)", RegexOptions.Compiled);
+        private static Regex _RegKey = new Regex(@"var\s+apikey\s*=\s*""([A-Fa-f0-9]+)""", RegexOptions.Compiled);
 
         public static void Update(string html)
         {
-            var mUid = regUid.Match(html);
+            var mUid = _RegUid.Match(html);
             if (mUid.Success)
             {
                 UserID = long.Parse(mUid.Groups[1].Value);
             }
 
-            var mKey = regKey.Match(html);
+            var mKey = _RegKey.Match(html);
             if (mKey.Success)
             {
                 ApiKey = mKey.Groups[1].Value;
@@ -53,36 +55,33 @@ namespace ExClient.Api
     internal abstract class ApiRequest<TResponse> : ApiRequest
         where TResponse : ApiResponse
     {
-        public IAsyncOperation<TResponse> GetResponseAsync()
+        public async Task<TResponse> GetResponseAsync(CancellationToken token)
         {
-            return AsyncInfo.Run(async token =>
+            var reqStr = JsonConvert.SerializeObject(this);
+            var resStr = default(string);
+            try
             {
-                var reqStr = JsonConvert.SerializeObject(this);
-                var resStr = default(string);
-                try
+                var req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
+                token.Register(() => req?.Cancel());
+                resStr = await req;
+                if (resStr.IsNullOrEmpty() || resStr[0] == '<')
                 {
-                    var req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
-                    token.Register(() => req?.Cancel());
+                    // sometimes apis returns HTML, try a second time
+                    req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
+                    token.Register(() => req.Cancel());
                     resStr = await req;
-                    if (resStr.IsNullOrEmpty() || resStr[0] == '<')
-                    {
-                        // sometimes apis returns HTML, try a second time
-                        req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
-                        token.Register(() => req.Cancel());
-                        resStr = await req;
-                    }
-                    var resobj = JsonConvert.DeserializeObject<TResponse>(resStr);
-                    resobj.CheckResponse(this);
-                    return resobj;
                 }
-                catch (Exception ex)
-                {
-                    ex.AddData("ApiRequest", reqStr);
-                    if (resStr != null)
-                        ex.AddData("ApiResponse", resStr);
-                    throw;
-                }
-            });
+                var resobj = JsonConvert.DeserializeObject<TResponse>(resStr);
+                resobj.CheckResponse(this);
+                return resobj;
+            }
+            catch (Exception ex)
+            {
+                ex.AddData("ApiRequest", reqStr);
+                if (resStr != null)
+                    ex.AddData("ApiResponse", resStr);
+                throw;
+            }
         }
     }
 
@@ -91,8 +90,8 @@ namespace ExClient.Api
     {
         public GalleryRequest(Gallery gallery)
         {
-            this.GalleryID = gallery.ID;
-            this.GalleryToken = gallery.Token.ToTokenString();
+            GalleryID = gallery.Id;
+            GalleryToken = gallery.Token.ToString();
         }
 
         [JsonProperty("gid")]

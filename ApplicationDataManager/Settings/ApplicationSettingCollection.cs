@@ -15,14 +15,14 @@ namespace ApplicationDataManager.Settings
         protected ApplicationSettingCollection(string containerName)
         {
             var data = ApplicationData.Current;
-            this.localStorage = data.LocalSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
-            this.roamingStorage = data.RoamingSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
-            this.groupedSettings = new Lazy<ReadOnlyCollection<GroupedSettings>>(this.loadGroupedSettings, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+            localStorage = data.LocalSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
+            roamingStorage = data.RoamingSettings.CreateContainer(containerName, ApplicationDataCreateDisposition.Always).Values;
+            groupedSettings = new Lazy<ReadOnlyCollection<GroupedSettings>>(loadGroupedSettings, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         private ReadOnlyCollection<GroupedSettings> loadGroupedSettings()
         {
-            var properties = from property in this.GetType().GetRuntimeProperties()
+            var properties = from property in GetType().GetRuntimeProperties()
                              let attr = property.GetCustomAttribute<SettingAttribute>()
                              where attr != null
                              select new SettingInfo(property, this, attr);
@@ -35,7 +35,7 @@ namespace ApplicationDataManager.Settings
 
         private readonly Lazy<ReadOnlyCollection<GroupedSettings>> groupedSettings;
 
-        public IReadOnlyList<GroupedSettings> GroupedSettings => this.groupedSettings.Value;
+        public IReadOnlyList<GroupedSettings> GroupedSettings => groupedSettings.Value;
 
         private readonly IPropertySet localStorage;
         private readonly IPropertySet roamingStorage;
@@ -84,24 +84,24 @@ namespace ApplicationDataManager.Settings
             => GetLocal(default(T), key);
 
         protected T GetLocal<T>(T @default, [CallerMemberName]string key = null)
-            => get(this.localStorage, @default, key);
+            => get(localStorage, @default, key);
 
         protected void SetLocal<T>(T value, [CallerMemberName]string key = null)
-            => set(this.localStorage, value, key, false);
+            => set(localStorage, value, key, false);
 
         protected void ForceSetLocal<T>(T value, [CallerMemberName]string key = null)
-            => set(this.localStorage, value, key, true);
+            => set(localStorage, value, key, true);
 
         protected T GetRoaming<T>(string key)
             => GetRoaming(default(T), key);
 
         protected T GetRoaming<T>(T @default, [CallerMemberName]string key = null)
-            => get(this.roamingStorage, @default, key);
+            => get(roamingStorage, @default, key);
 
         protected void SetRoaming<T>(T value, [CallerMemberName]string key = null)
-            => set(this.roamingStorage, value, key, false);
+            => set(roamingStorage, value, key, false);
 
         protected void ForceSetRoaming<T>(T value, [CallerMemberName]string key = null)
-            => set(this.roamingStorage, value, key, true);
+            => set(roamingStorage, value, key, true);
     }
 }

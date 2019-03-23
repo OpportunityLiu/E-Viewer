@@ -62,7 +62,7 @@ namespace ExViewer.ViewModels
         private SearchVM(CategorySearchResult searchResult)
             : base(searchResult)
         {
-            this.Commands.Add(nameof(Search), Command<string>.Create(async (sender, queryText) =>
+            Commands.Add(nameof(Search), Command<string>.Create(async (sender, queryText) =>
             {
                 var that = (SearchVM)sender.Tag;
                 if (SettingCollection.Current.SaveLastSearch)
@@ -78,31 +78,31 @@ namespace ExViewer.ViewModels
         public override void SetQueryWithSearchResult()
         {
             base.SetQueryWithSearchResult();
-            this.Category = this.SearchResult.Category;
-            this.AdvancedSearch = (this.SearchResult as AdvancedSearchResult)?.AdvancedSearch ?? new AdvancedSearchOptions();
-            this.FileSearch = this.SearchResult as FileSearchResult;
+            Category = SearchResult.Category;
+            AdvancedSearch = (SearchResult as AdvancedSearchResult)?.AdvancedSearch ?? new AdvancedSearchOptions();
+            FileSearch = SearchResult as FileSearchResult;
         }
 
         private Category category;
 
         public Category Category
         {
-            get => this.category;
-            set => Set(ref this.category, value);
+            get => category;
+            set => Set(ref category, value);
         }
 
         private AdvancedSearchOptions advancedSearch;
         public AdvancedSearchOptions AdvancedSearch
         {
-            get => this.advancedSearch;
-            private set => Set(ref this.advancedSearch, value);
+            get => advancedSearch;
+            private set => Set(ref advancedSearch, value);
         }
 
         private FileSearchResult fileSearch;
         public FileSearchResult FileSearch
         {
-            get => this.fileSearch;
-            private set => Set(ref this.fileSearch, value);
+            get => fileSearch;
+            private set => Set(ref fileSearch, value);
         }
     }
 }

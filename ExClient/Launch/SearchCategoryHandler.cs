@@ -9,7 +9,7 @@ namespace ExClient.Launch
     {
         public static SearchCategoryHandler Instance { get; } = new SearchCategoryHandler();
 
-        private static Dictionary<string, Category> categoryDic = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, Category> _CategoryDic = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
         {
             ["Doujinshi"] = Category.Doujinshi,
             ["Manga"] = Category.Manga,
@@ -25,12 +25,12 @@ namespace ExClient.Launch
 
         public override bool CanHandle(UriHandlerData data)
         {
-            return data.Paths.Count >= 1 && (categoryDic.ContainsKey(data.Path0) || uint.TryParse(data.Path0, out _));
+            return data.Paths.Count >= 1 && (_CategoryDic.ContainsKey(data.Path0) || uint.TryParse(data.Path0, out _));
         }
 
         public override SearchLaunchResult Handle(UriHandlerData data)
         {
-            categoryDic.TryGetValue(data.Path0, out var cate0);
+            _CategoryDic.TryGetValue(data.Path0, out var cate0);
             uint.TryParse(data.Path0, out var cate1ui);
             if (cate1ui == 0) cate1ui = uint.MaxValue;
             var cate1 = (~(Category)cate1ui) & Category.All;

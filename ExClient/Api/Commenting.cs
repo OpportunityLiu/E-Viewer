@@ -11,7 +11,7 @@ namespace ExClient.Api
             : base(comment.Owner.Owner)
         {
             var gallery = comment.Owner.Owner;
-            this.Id = comment.Id;
+            Id = comment.Id;
         }
 
         [JsonProperty("comment_id")]
@@ -27,7 +27,7 @@ namespace ExClient.Api
             {
                 throw new ArgumentOutOfRangeException(nameof(vote));
             }
-            this.Vote = vote;
+            Vote = vote;
         }
 
         public override string Method => "votecomment";
@@ -61,7 +61,7 @@ namespace ExClient.Api
 
         protected override void CheckResponseOverride(ApiRequest request)
         {
-            if (this.Id != ((CommentVoteRequest)request).Id || !Vote.IsDefined())
+            if (Id != ((CommentVoteRequest)request).Id || !Vote.IsDefined())
             {
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse);
             }

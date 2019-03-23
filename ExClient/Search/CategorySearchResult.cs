@@ -7,7 +7,7 @@ namespace ExClient.Search
 {
     public abstract class CategorySearchResult : SearchResult
     {
-        private static readonly SearchHandlerBase[] handlers = new SearchHandlerBase[]
+        private static readonly SearchHandlerBase[] _Handlers = new SearchHandlerBase[]
         {
             SearchHandler.Instance,
             SearchCategoryHandler.Instance,
@@ -20,7 +20,7 @@ namespace ExClient.Search
             if (uri is null)
                 return false;
             var data = new UriHandlerData(uri);
-            foreach (var handler in handlers)
+            foreach (var handler in _Handlers)
             {
                 if (!handler.CanHandle(data))
                     continue;
@@ -40,19 +40,6 @@ namespace ExClient.Search
         public static Uri SearchBaseUri => Client.Current.Uris.RootUri;
 
         public static readonly Category DefaultFliter = Category.All;
-        private static readonly IReadOnlyDictionary<Category, string> searchFliterNames = new Dictionary<Category, string>()
-        {
-            [Category.Doujinshi] = "f_doujinshi",
-            [Category.Manga] = "f_manga",
-            [Category.ArtistCG] = "f_artistcg",
-            [Category.GameCG] = "f_gamecg",
-            [Category.Western] = "f_western",
-            [Category.NonH] = "f_non-h",
-            [Category.ImageSet] = "f_imageset",
-            [Category.Cosplay] = "f_cosplay",
-            [Category.AsianPorn] = "f_asianporn",
-            [Category.Misc] = "f_misc"
-        };
 
         protected CategorySearchResult(string keyword, Category category)
             : base(keyword)
@@ -62,21 +49,17 @@ namespace ExClient.Search
                 category = DefaultFliter;
             }
 
-            this.Category = category;
+            Category = category;
         }
 
         public Category Category { get; }
 
-        public override Uri SearchUri => new Uri(SearchBaseUri, $"?{new HttpFormUrlEncodedContent(getUriQuery())}");
+        public override Uri SearchUri => new Uri(SearchBaseUri, $"?{new HttpFormUrlEncodedContent(_GetUriQuery())}");
 
-        private IEnumerable<KeyValuePair<string, string>> getUriQuery()
+        private IEnumerable<KeyValuePair<string, string>> _GetUriQuery()
         {
-            yield return new KeyValuePair<string, string>("f_search", this.Keyword);
-            foreach (var item in searchFliterNames)
-            {
-                yield return new KeyValuePair<string, string>(item.Value, this.Category.HasFlag(item.Key) ? "1" : "0");
-            }
-            yield return new KeyValuePair<string, string>("f_apply", "Apply Filter");
+            yield return new KeyValuePair<string, string>("f_search", Keyword);
+            yield return new KeyValuePair<string, string>("f_cats", (Category.All - Category).ToString());
         }
     }
 }

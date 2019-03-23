@@ -89,7 +89,7 @@ namespace ExViewer
                     {
                         var page = RootControl.RootController.Frame.Content;
                         var vm = await GalleryVM.GetVMAsync(g.GalleryInfo);
-                        if (!(page is GalleryPage gPage && gPage.ViewModel.Gallery.ID == g.GalleryInfo.ID))
+                        if (!(page is GalleryPage gPage && gPage.ViewModel.Gallery.Id == g.GalleryInfo.ID))
                         {
                             await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.GalleryInfo.ID);
                             await Task.Delay(500);

@@ -20,8 +20,8 @@ namespace ExViewer.Views
     {
         public PopularPage()
         {
-            this.InitializeComponent();
-            this.ViewModel = new PopularVM();
+            InitializeComponent();
+            ViewModel = new PopularVM();
         }
 
         public new PopularVM ViewModel
@@ -38,19 +38,19 @@ namespace ExViewer.Views
             base.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.Back)
             {
-                if (await ViewHelper.ScrollAndFocus(this.lv, this.opened))
+                if (await ViewHelper.ScrollAndFocus(lv, opened))
                 {
                     return;
                 }
             }
             await Dispatcher.YieldIdle();
-            if (this.lv.Items.Count != 0)
+            if (lv.Items.Count != 0)
             {
-                this.lv.Focus(FocusState.Programmatic);
+                lv.Focus(FocusState.Programmatic);
             }
             else
             {
-                this.cb_top.Focus(FocusState.Programmatic);
+                cb_top.Focus(FocusState.Programmatic);
             }
         }
 
@@ -68,7 +68,7 @@ namespace ExViewer.Views
             switch (e.Key)
             {
             case Windows.System.VirtualKey.GamepadY:
-                this.cb_top.Focus(FocusState.Keyboard);
+                cb_top.Focus(FocusState.Keyboard);
                 break;
             case Windows.System.VirtualKey.GamepadMenu:
             case Windows.System.VirtualKey.Application:
@@ -83,15 +83,15 @@ namespace ExViewer.Views
         private void lv_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (Gallery)e.ClickedItem;
-            if (this.ViewModel.Open.Execute(item))
+            if (ViewModel.Open.Execute(item))
             {
-                this.opened = item;
+                opened = item;
             }
         }
 
         public void CloseAll()
         {
-            this.cb_top.IsOpen = false;
+            cb_top.IsOpen = false;
         }
     }
 }
