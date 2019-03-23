@@ -23,22 +23,26 @@ namespace ExClient.Internal
 
         private static void _HandleAdditionalInfo(HtmlNode dataNode, Gallery gallery)
         {
-            //if (isList)
-            //{
-            //    var infoNode = dataNode.ChildNodes[2].FirstChild;
-            //    var attributeNode = infoNode.ChildNodes[1]; //class = it3
-            //    var favNode = attributeNode.ChildNodes.FirstOrDefault(n => n.Id.StartsWith("favicon"));
-            //    gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(favNode);
-            //    gallery.Rating.AnalyzeNode(infoNode.LastChild.FirstChild);
-            //}
-            //else
-            //{
-            //    var infoNode = dataNode.Element("div", "id4");
-            //    gallery.Rating.AnalyzeNode(infoNode.Element("div", "id43"));
-            //    var attributeNode = infoNode.Element("div", "id44").Element("div");
-            //    var favNode = attributeNode.ChildNodes.FirstOrDefault(n => n.Id.StartsWith("favicon"));
-            //    gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(favNode);
-            //}
+            var postedId = "posted_" + gallery.Id.ToString();
+            var postedTag = dataNode.Descendants("div").FirstOrDefault(d => d.Id == postedId);
+            if (postedTag != null)
+                gallery.FavoriteCategory = Client.Current.Favorites.GetCategory(postedTag);
+
+            var noteId = "favnote_" + gallery.Id.ToString();
+            var noteTag = dataNode.Descendants("div").FirstOrDefault(d => d.Id == noteId);
+            if (noteTag != null)
+            {
+                var str = noteTag.GetInnerText();
+                if(str.StartsWith("note:", StringComparison.OrdinalIgnoreCase))
+                {
+                    str = str.Substring("note:".Length).Trim();
+                    gallery.FavoriteNote = str;
+                }
+            }
+
+            var ratingNode = dataNode.Descendants("div").FirstOrDefault(d => d.HasClass("ir"));
+            if(ratingNode!=null)
+            gallery.Rating.AnalyzeNode(ratingNode);
         }
 
         private static readonly Regex _GLinkMatcher = new Regex(@".+?/g/(\d+)/([0-9a-f]+).+?", RegexOptions.Compiled);
