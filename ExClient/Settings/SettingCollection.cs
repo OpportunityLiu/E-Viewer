@@ -52,16 +52,16 @@ namespace ExClient.Settings
             loadSettingsDic();
         }
 
-        private readonly Dictionary<string, string> settings = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _Settings = new Dictionary<string, string>();
 
-        public IReadOnlyDictionary<string, string> RawSettings => settings;
+        public IReadOnlyDictionary<string, string> RawSettings => _Settings;
 
         private const string CACHE_NAME = "SettingsCache";
 
         internal void StoreCache()
         {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
-            storage.Values[owner.Type + CACHE_NAME] = JsonConvert.SerializeObject(settings);
+            storage.Values[owner.Type + CACHE_NAME] = JsonConvert.SerializeObject(_Settings);
         }
 
         private void loadCache()
@@ -69,33 +69,25 @@ namespace ExClient.Settings
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
             storage.Values.TryGetValue(owner.Type + CACHE_NAME, out var r);
             var value = r + "";
-            settings.Clear();
+            _Settings.Clear();
             if (string.IsNullOrEmpty(value))
             {
                 return;
             }
-            JsonConvert.PopulateObject(value, settings);
+            JsonConvert.PopulateObject(value, _Settings);
         }
 
         private void updateSettingsDic(HtmlDocument doc)
         {
-            if (doc.ParseErrors.Any())
-            {
-                var html = doc.ParsedText;
-                html = html.Replace("<td></div></td>", ""); // HOTFIX: HTML1509: 不匹配的结束标记。
-                doc.LoadHtml(html);
-            }
-            var settings = doc.GetElementbyId("settings_outer");
-            if (settings is null)
-            {
+            var outer = doc.GetElementbyId("outer");
+            if (outer is null)
                 return;
-            }
 
-            this.settings.Clear();
-            foreach (var item in settings.Descendants("input").Concat(settings.Descendants("textarea")))
+            _Settings.Clear();
+            foreach (var item in outer.Descendants("input").Concat(outer.Descendants("textarea")))
             {
                 var name = item.GetAttribute("name", default(string));
-                if (name is null)
+                if (name is null || name.StartsWith("profile"))
                 {
                     continue;
                 }
@@ -105,14 +97,14 @@ namespace ExClient.Settings
                 case "radio":
                     if (item.GetAttribute("checked", "") == "checked")
                     {
-                        this.settings[name] = item.GetAttribute("value", "");
+                        _Settings[name] = item.GetAttribute("value", "");
                     }
 
                     break;
                 case "checkbox":
                     if (item.GetAttribute("checked", "") == "checked")
                     {
-                        this.settings[name] = item.GetAttribute("value", "on");
+                        _Settings[name] = item.GetAttribute("value", "on");
                     }
 
                     break;
@@ -121,7 +113,7 @@ namespace ExClient.Settings
                 //case "submit":
                 //textarea
                 default:
-                    this.settings[name] = item.GetAttribute("value", item.GetInnerText());
+                    _Settings[name] = item.GetAttribute("value", item.GetInnerText());
                     break;
                 }
             }
@@ -150,7 +142,7 @@ namespace ExClient.Settings
         {
             foreach (var item in items.Values)
             {
-                item.DataChanged(settings);
+                item.DataChanged(_Settings);
             }
             StoreCache();
             OnPropertyReset();
@@ -162,12 +154,12 @@ namespace ExClient.Settings
             {
                 try
                 {
-                    if (settings.Count == 0)
+                    if (_Settings.Count == 0)
                     {
                         await FetchAsync();
                     }
 
-                    var postDic = new Dictionary<string, string>(settings);
+                    var postDic = new Dictionary<string, string>(_Settings);
                     foreach (var item in items.Values)
                     {
                         item.ApplyChanges(postDic);

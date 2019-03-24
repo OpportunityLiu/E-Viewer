@@ -339,7 +339,7 @@ namespace ExClient.Galleries
 
         public long FileSize { get; }
 
-        private int _PageSize;
+        private int _PageSize = 20;
         public int PageSize { get => _PageSize; set => Set(ref _PageSize, value); }
 
         public bool Expunged { get; }
