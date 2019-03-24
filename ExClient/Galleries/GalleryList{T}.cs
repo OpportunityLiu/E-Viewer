@@ -9,7 +9,7 @@ namespace ExClient.Galleries
     internal abstract class GalleryList<TGallery, TModel> : ObservableList<Gallery>, IItemsRangeInfo
          where TGallery : Gallery
     {
-        private int loadedCount;
+        private int _LoadedCount;
 
         internal GalleryList(List<TModel> models)
             : base(Enumerable.Repeat<TGallery>(null, models.Count))
@@ -19,26 +19,26 @@ namespace ExClient.Galleries
             {
                 this[i] = Load(models[i]);
                 models[i] = default;
-                loadedCount++;
+                _LoadedCount++;
             }
-            this.models = models;
+            this._Models = models;
         }
 
-        private readonly List<TModel> models;
+        private readonly List<TModel> _Models;
 
         protected override void ClearItems()
         {
-            models.Clear();
-            loadedCount = 0;
+            _Models.Clear();
+            _LoadedCount = 0;
             base.ClearItems();
         }
 
         protected override void RemoveItem(int index)
         {
-            models.RemoveAt(index);
+            _Models.RemoveAt(index);
             if (this[index] != null)
             {
-                loadedCount--;
+                _LoadedCount--;
             }
 
             base.RemoveItem(index);
@@ -46,7 +46,7 @@ namespace ExClient.Galleries
 
         void IItemsRangeInfo.RangesChanged(ItemIndexRange visibleRange, IReadOnlyList<ItemIndexRange> trackedItems)
         {
-            if (loadedCount == models.Count)
+            if (_LoadedCount == _Models.Count)
             {
                 return;
             }
@@ -70,9 +70,9 @@ namespace ExClient.Galleries
                     continue;
                 }
 
-                this[i] = Load(models[i]);
-                models[i] = default;
-                loadedCount++;
+                this[i] = Load(_Models[i]);
+                _Models[i] = default;
+                _LoadedCount++;
             }
         }
 

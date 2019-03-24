@@ -87,21 +87,21 @@ namespace ExViewer.Controls
                 tbTag.ClearValue(TextBlock.ForegroundProperty);
             }
 
-            var indicators = "";
-            if (data.IsBlocked && data.IsSlaved)
-            {
-                indicators = BlockedAndSlavedIndicator;
-            }
-            else if (data.IsBlocked)
-            {
-                indicators = BlockedIndicator;
-            }
-            else if (data.IsSlaved)
-            {
-                indicators = SlavedIndicator;
-            }
+            //var indicators = "";
+            //if (data.IsBlocked && data.IsSlaved)
+            //{
+            //    indicators = BlockedAndSlavedIndicator;
+            //}
+            //else if (data.IsBlocked)
+            //{
+            //    indicators = BlockedIndicator;
+            //}
+            //else if (data.IsSlaved)
+            //{
+            //    indicators = SlavedIndicator;
+            //}
 
-            tbStatus.Text = indicators;
+            //tbStatus.Text = indicators;
         }
 
         private static readonly string BlockedAndSlavedIndicator = Strings.Resources.Controls.TaggingRecordPresenter.BlockedAndSlavedIndicator;

@@ -24,14 +24,14 @@ namespace ExClient.Forums
                 token.Register(doctask.Cancel);
                 var doc = await doctask;
                 token.ThrowIfCancellationRequested();
-                topic.Md5 = md5Regex.Match(doc.DocumentNode.InnerHtml).Groups[1].Value;
-                topic.ForumId = int.Parse(forumIdRegex.Match(doc.DocumentNode.InnerHtml).Groups[1].Value);
+                topic.Md5 = _Md5Regex.Match(doc.DocumentNode.InnerHtml).Groups[1].Value;
+                topic.ForumId = int.Parse(_ForumIdRegex.Match(doc.DocumentNode.InnerHtml).Groups[1].Value);
                 return topic;
             });
         }
 
-        private static readonly Regex md5Regex = new Regex(@"var\s+ipb_md5_check\s*=\s*""([a-f0-9]+)"";", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex forumIdRegex = new Regex(@"var\s+ipb_input_f\s*=\s*""([0-9]+)"";", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _Md5Regex = new Regex(@"var\s+ipb_md5_check\s*=\s*""([a-f0-9]+)"";", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _ForumIdRegex = new Regex(@"var\s+ipb_input_f\s*=\s*""([0-9]+)"";", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private Topic(long id)
         {
