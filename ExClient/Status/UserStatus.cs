@@ -98,7 +98,8 @@ namespace ExClient.Status
             if (doc is null)
                 throw new ArgumentNullException(nameof(doc));
             var contentDivs = doc.DocumentNode
-               .Element("html").Element("body").Element("div")
+               .Element("html").Element("body")
+               .Element("div", "stuffbox")
                .Elements("div", "homebox").ToList();
             if (contentDivs.Count != 5)
                 throw new InvalidOperationException("Wrong `homebox` count");

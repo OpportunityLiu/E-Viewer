@@ -11,14 +11,11 @@ namespace ExClient.Status
         internal TaggingRecord(HtmlNode trNode)
         {
             var td = trNode.Elements("td").ToList();
-            Tag = Tag.Parse(td[0].GetInnerText());
-            Score = int.Parse(td[1].GetInnerText());
-            var uri = td[2].Element("a").GetAttribute("href", default(Uri));
+            Tag = Tag.Parse(td[1].GetInnerText());
+            Score = int.Parse(td[2].GetInnerText());
+            var uri = td[3].Element("a").GetAttribute("href", default(Uri));
             GalleryInfo = GalleryInfo.Parse(uri);
-            Timestamp = DateTimeOffset.Parse(td[3].GetInnerText(), null, System.Globalization.DateTimeStyles.AssumeUniversal);
-            UsageCount = long.Parse(td[4].GetInnerText());
-            IsBlocked = td[5].GetInnerText() == "B";
-            IsSlaved = td[6].GetInnerText() == "S";
+            Timestamp = DateTimeOffset.Parse(td[4].GetInnerText(), null, System.Globalization.DateTimeStyles.AssumeUniversal);
         }
 
         public Tag Tag { get; }
@@ -29,12 +26,6 @@ namespace ExClient.Status
 
         public DateTimeOffset Timestamp { get; }
 
-        public long UsageCount { get; }
-
-        public bool IsBlocked { get; }
-
-        public bool IsSlaved { get; }
-
         public static bool operator ==(in TaggingRecord left, in TaggingRecord right) => left.Equals(right);
         public static bool operator !=(in TaggingRecord left, in TaggingRecord right) => !left.Equals(right);
 
@@ -42,12 +33,9 @@ namespace ExClient.Status
             => Tag == other.Tag
             && GalleryInfo == other.GalleryInfo
             && Timestamp == other.Timestamp
-            && Score == other.Score
-            && UsageCount == other.UsageCount
-            && IsBlocked == other.IsBlocked
-            && IsSlaved == other.IsSlaved;
+            && Score == other.Score;
 
-        public override bool Equals(object obj) => obj is TaggingRecord other && this.Equals(other);
+        public override bool Equals(object obj) => obj is TaggingRecord other && Equals(other);
 
         public override int GetHashCode() => Timestamp.GetHashCode() * 17 ^ Tag.GetHashCode();
     }

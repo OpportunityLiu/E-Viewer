@@ -16,7 +16,7 @@ namespace ExClient.Forums
     /// </summary>
     public class UserInfo
     {
-        private const string CacheFileName = "UserInfo";
+        private const string CACHE_FILE_NAME = "UserInfo";
 
         /// <summary>
         /// Fetch user info from forum.e-hentai.org/index?showuser={<paramref name="userID"/>}.
@@ -75,7 +75,7 @@ namespace ExClient.Forums
             return Run(async token =>
             {
                 var str = JsonConvert.SerializeObject(this);
-                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(CacheFileName, CreationCollisionOption.ReplaceExisting);
+                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(CACHE_FILE_NAME, CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(file, str);
             });
         }
@@ -87,7 +87,7 @@ namespace ExClient.Forums
         {
             return Run(async token =>
             {
-                var file = await ApplicationData.Current.LocalFolder.TryGetFileAsync(CacheFileName);
+                var file = await ApplicationData.Current.LocalFolder.TryGetFileAsync(CACHE_FILE_NAME);
                 if (file is null)
                     return null;
 
