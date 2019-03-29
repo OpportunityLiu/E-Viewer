@@ -27,7 +27,7 @@ namespace ExViewer.ViewModels
                 var uri = new Uri(query);
 
                 var handle = ExClient.Launch.UriLauncher.HandleAsync(uri);
-                search = (FavoritesSearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
+                search = (FavoritesSearchResult)((ExClient.Launch.SearchLaunchResult)handle.Result).Data;
             }
             var vm = new FavoritesVM(search);
             HistoryDb.Add(new HistoryRecord

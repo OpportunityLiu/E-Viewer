@@ -1,6 +1,7 @@
 ﻿using ExClient.Search;
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.Foundation;
 
 namespace ExClient.Launch
@@ -17,8 +18,8 @@ namespace ExClient.Launch
 
         public abstract SearchLaunchResult Handle(UriHandlerData data);
 
-        public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
-            => AsyncOperation<LaunchResult>.CreateCompleted(Handle(data));
+        public override Task<LaunchResult> HandleAsync(UriHandlerData data)
+            => Task.FromResult<LaunchResult>(Handle(data));
 
         protected static Category GetCategory(UriHandlerData data)
         {

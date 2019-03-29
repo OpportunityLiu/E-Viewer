@@ -27,9 +27,9 @@ namespace EhTagTranslatorClient
         {
             var ns = tag.Namespace;
             var key = tag.Content;
-            using (var db = new TranslateDb())
+            using (var db = CreateDatabase())
             {
-                return db.Table.AsNoTracking()
+                return db.Tags
                     .SingleOrDefault(r => r.Namespace == ns && r.Original == key);
             }
         }

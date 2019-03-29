@@ -32,7 +32,7 @@ namespace ExViewer.ViewModels
                 var uri = new Uri(query);
 
                 var handle = ExClient.Launch.UriLauncher.HandleAsync(uri);
-                search = (CategorySearchResult)((ExClient.Launch.SearchLaunchResult)handle.GetResults()).Data;
+                search = (CategorySearchResult)((ExClient.Launch.SearchLaunchResult)handle.Result).Data;
             }
             var vm = new SearchVM(search);
             HistoryDb.Add(new HistoryRecord
