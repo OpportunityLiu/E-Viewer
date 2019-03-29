@@ -44,4 +44,11 @@ namespace ExClient.Launch
 
         public SearchResult Data { get; }
     }
+
+    public sealed class PopularLaunchResult: LaunchResult
+    {
+        private PopularLaunchResult() { }
+
+        internal static PopularLaunchResult Instance { get; } = new PopularLaunchResult();
+    }
 }

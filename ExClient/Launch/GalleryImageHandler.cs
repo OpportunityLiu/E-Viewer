@@ -1,5 +1,6 @@
 ﻿using ExClient.Api;
 using System;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
@@ -12,14 +13,11 @@ namespace ExClient.Launch
             return ImageInfo.TryParse(data, out var info);
         }
 
-        public override IAsyncOperation<LaunchResult> HandleAsync(UriHandlerData data)
+        public override async Task<LaunchResult> HandleAsync(UriHandlerData data)
         {
             ImageInfo.TryParse(data, out var info);
-            return Run(async token =>
-            {
-                var gInfo = await info.FetchGalleryInfoAsync();
-                return (LaunchResult)new GalleryLaunchResult(gInfo, info.PageId - 1, GalleryLaunchStatus.Image);
-            });
+            var gInfo = await info.FetchGalleryInfoAsync();
+            return new GalleryLaunchResult(gInfo, info.PageId - 1, GalleryLaunchStatus.Image);
         }
     }
 }

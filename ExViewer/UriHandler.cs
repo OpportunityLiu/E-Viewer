@@ -122,6 +122,9 @@ namespace ExViewer
                             return;
                         }
                         throw new InvalidOperationException();
+                    case PopularLaunchResult pr:
+                        await RootControl.RootController.Navigator.NavigateAsync(typeof(PopularPage));
+                        return;
                     }
                 }
                 catch (Exception e)

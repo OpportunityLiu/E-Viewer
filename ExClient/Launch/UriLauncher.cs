@@ -1,6 +1,7 @@
 ﻿using ExClient.Internal;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.Foundation;
 
 namespace ExClient.Launch
@@ -50,7 +51,7 @@ namespace ExClient.Launch
             return false;
         }
 
-        public static IAsyncOperation<LaunchResult> HandleAsync(Uri uri)
+        public static Task<LaunchResult> HandleAsync(Uri uri)
         {
             if (uri is null)
                 throw new ArgumentNullException(nameof(uri));
