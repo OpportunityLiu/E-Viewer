@@ -6,12 +6,12 @@ namespace ExClient.Launch
 {
     internal static class UriHelper
     {
-        public static bool QueryValueAsBoolean(this string value)
+        private static bool _QueryValueAsBoolean(string value)
         {
             return value != "0" && value != "";
         }
 
-        public static int QueryValueAsInt32(this string value)
+        private static int _QueryValueAsInt32(string value)
         {
             if (int.TryParse(value, out var r))
             {
@@ -51,7 +51,7 @@ namespace ExClient.Launch
         {
             try
             {
-                return query.GetFirstValueByName(key).QueryValueAsInt32();
+                return _QueryValueAsInt32(query.GetFirstValueByName(key));
             }
             catch (ArgumentException)
             {
@@ -63,7 +63,7 @@ namespace ExClient.Launch
         {
             try
             {
-                return query.GetFirstValueByName(key).QueryValueAsBoolean();
+                return _QueryValueAsBoolean(query.GetFirstValueByName(key));
             }
             catch (ArgumentException)
             {

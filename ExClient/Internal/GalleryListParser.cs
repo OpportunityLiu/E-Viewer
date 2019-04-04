@@ -16,6 +16,7 @@ namespace ExClient.Internal
         private enum ListType
         {
             Minimal,
+            MinimalPlus,
             Compact,
             Extended,
             Thumbnail,
