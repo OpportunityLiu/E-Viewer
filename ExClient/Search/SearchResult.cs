@@ -34,7 +34,7 @@ namespace ExClient.Search
             PageCount = 1;
         }
 
-        private static readonly Regex _RecordCountMatcher = new Regex(@"Showing page\s*[0-9,]+\s*of\s*([0-9,]+)\s*result", RegexOptions.Compiled);
+        private static readonly Regex _RecordCountMatcher = new Regex(@"Showing\s*[0-9,]+\s*result", RegexOptions.Compiled);
 
         private void _UpdatePageCount(HtmlDocument doc)
         {

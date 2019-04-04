@@ -20,7 +20,7 @@ namespace ExClient.Launch
             var cat = data.Queries.GetString("favcat") ?? "all";
             if (cat != "all")
             {
-                var index = cat.QueryValueAsInt32();
+                var index = data.Queries.GetInt32("favcat");
                 index = Math.Max(0, index);
                 index = Math.Min(9, index);
                 category = Client.Current.Favorites[index];
