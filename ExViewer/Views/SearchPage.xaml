@@ -132,8 +132,8 @@
                           MinWidth="0" />
             <controls:AdvancedSearchViewer x:Name="asvAdvancedSearch"
                                            Visibility="{x:Bind ts_Advanced.IsOn, Mode=OneWay}"
+                                           Margin="12,0,4,0"
                                            Data="{x:Bind ViewModel.AdvancedSearch, Mode=OneWay}"
-                                           Margin="20,0,-20,0"
                                            HorizontalAlignment="Center" />
             <StackPanel HorizontalAlignment="Stretch"
                         Visibility="{x:Bind xb:Visibility.OfBooleanInv(ts_Advanced.IsOn), Mode=OneWay}">
