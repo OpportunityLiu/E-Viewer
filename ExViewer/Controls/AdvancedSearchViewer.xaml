@@ -10,7 +10,7 @@
              d:DesignHeight="500"
              d:DesignWidth="320">
   <UserControl.Resources>
-    <x:Double x:Key="TextControlThemeMinWidth">48</x:Double>
+    <x:Double x:Key="TextControlThemeMinWidth">44</x:Double>
     <Thickness x:Key="TextControlThemePadding">4,3,4,5</Thickness>
     <Style x:Key="WrappedTextBlockStyle"
            TargetType="TextBlock">
@@ -39,41 +39,41 @@
                 XYFocusKeyboardNavigation="Enabled"
                 MaxWidth="800"
                 HorizontalAlignment="Center">
-    <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/NamesCheckBox"
               Content="Search gallery name"
               Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.SearchName, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <CheckBox x:Uid="Views/SearchPage/TagsCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/TagsCheckBox"
               Content="Search gallery tags"
               Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.SearchTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <CheckBox x:Uid="Views/SearchPage/DescriptionCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/DescriptionCheckBox"
               Content="Search gallery description"
               Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.SearchDescription, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <CheckBox x:Uid="Views/SearchPage/TorrentNamesCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/TorrentNamesCheckBox"
               Content="Search torrent filenames"
               Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.SearchTorrentFilenames, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <CheckBox x:Uid="Views/SearchPage/OnlyTorrentsCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/OnlyTorrentsCheckBox"
               Content="Only show galleries with torrents"
               Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.GalleriesWithTorrentsOnly, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <CheckBox x:Uid="Views/SearchPage/LowPowerTagsCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/LowPowerTagsCheckBox"
               Content="Search low-power tags"
               Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.SearchLowPowerTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <CheckBox x:Uid="Views/SearchPage/DownvotedTagsCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/DownvotedTagsCheckBox"
               Content="Search downvoted tags"
               Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <CheckBox x:Uid="Views/SearchPage/ShowExpungedCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/ShowExpungedCheckBox"
               Content="Show expunged galleries"
               Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
     <StackPanel Orientation="Horizontal"
                 Padding="0,0,24,0">
-      <CheckBox x:Uid="Views/SearchPage/MinRatingCheckBox"
+      <CheckBox x:Uid="Controls/AdvancedSearchViewer/MinRatingCheckBox"
                 Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
                 Content="Minimum rating: "
                 IsChecked="{x:Bind Data.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
@@ -88,28 +88,31 @@
     </StackPanel>
     <StackPanel Orientation="Horizontal"
                 Padding="0,0,24,0">
-      <CheckBox Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
+      <CheckBox x:Uid="Controls/AdvancedSearchViewer/PageCountCheckBox"
+                Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
                 Margin="0,0,4,0"
                 Content="Between"
                 IsChecked="{x:Bind Data.SearchPageCount, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-      <TextBox Text="{x:Bind Data.MinimumPageCount, Mode=TwoWay, Converter={StaticResource DefaultConverter}}"
+      <TextBox  Text="{x:Bind Data.MinimumPageCount, Mode=TwoWay, Converter={StaticResource DefaultConverter}}"
                InputScope="Number" />
-      <TextBlock Style="{StaticResource WrappedTextBlockStyle}"
+      <TextBlock x:Uid="Controls/AdvancedSearchViewer/PageCountTextBlock1"
+                 Style="{StaticResource WrappedTextBlockStyle}"
                  Text="and" />
       <TextBox Text="{x:Bind Data.MaximumPageCount, Mode=TwoWay, Converter={StaticResource DefaultConverter}}"
                InputScope="Number" />
-      <TextBlock Style="{StaticResource WrappedTextBlockStyle}"
+      <TextBlock x:Uid="Controls/AdvancedSearchViewer/PageCountTextBlock2"
+                 Style="{StaticResource WrappedTextBlockStyle}"
                  Text="pages" />
     </StackPanel>
-    <CheckBox x:Uid="Views/SearchPage/DisableDefaultLanguageFiltersCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/DisableDefaultLanguageFiltersCheckBox"
               Content="Disable default language filters"
               Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.DisableDefaultLanguageFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <CheckBox x:Uid="Views/SearchPage/DisableDefaultUploaderFiltersCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/DisableDefaultUploaderFiltersCheckBox"
               Content="Disable default uploader filters"
               Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.DisableDefaultUploaderFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <CheckBox x:Uid="Views/SearchPage/DisableDefaultUploaderFiltersCheckBox"
+    <CheckBox x:Uid="Controls/AdvancedSearchViewer/DisableDefaultTagsFiltersCheckBox"
               Content="Disable default tags filters"
               Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.DisableDefaultTagsFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
