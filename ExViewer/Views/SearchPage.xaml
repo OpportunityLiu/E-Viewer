@@ -25,13 +25,6 @@
     </TransitionCollection>
   </Page.Transitions>
   <Page.Resources>
-    <Style x:Name="AdvancedSearchOptionStyle"
-           TargetType="CheckBox">
-      <Setter Property="Margin"
-              Value="0,0,24,0" />
-      <Setter Property="MinWidth"
-              Value="0" />
-    </Style>
     <Style x:Name="FileSearchOptionStyle"
            TargetType="TextBlock">
       <Setter Property="Margin"
@@ -137,76 +130,11 @@
                           OnContent="Hide advanced options"
                           HorizontalAlignment="Center"
                           MinWidth="0" />
-            <tk:WrapPanel x:Name="wp_AdvancedSearch"
-                          TabFocusNavigation="Once"
-                          Orientation="Horizontal"
-                          XYFocusKeyboardNavigation="Enabled"
-                          Visibility="{x:Bind ts_Advanced.IsOn, Mode=OneWay}"
-                          Margin="20,0,-20,0"
-                          MaxWidth="800"
-                          HorizontalAlignment="Center">
-              <CheckBox x:Uid="Views/SearchPage/NamesCheckBox"
-                        XYFocusUp="{x:Bind ts_Advanced}"
-                        Content="Search gallery name"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.SearchName, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <CheckBox x:Uid="Views/SearchPage/TagsCheckBox"
-                        Content="Search gallery tags"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.SearchTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <CheckBox x:Uid="Views/SearchPage/DescriptionCheckBox"
-                        Content="Search gallery description"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.SearchDescription, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <CheckBox x:Uid="Views/SearchPage/TorrentNamesCheckBox"
-                        Content="Search torrent filenames"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.SearchTorrentFilenames, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <CheckBox x:Uid="Views/SearchPage/OnlyTorrentsCheckBox"
-                        Content="Only show galleries with torrents"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.GalleriesWithTorrentsOnly, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <CheckBox x:Uid="Views/SearchPage/LowPowerTagsCheckBox"
-                        Content="Search low-power tags"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.SearchLowPowerTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <CheckBox x:Uid="Views/SearchPage/DownvotedTagsCheckBox"
-                        Content="Search downvoted tags"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.SearchDownvotedTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <CheckBox x:Uid="Views/SearchPage/SkipMasterTagsCheckBox"
-                        Content="Skip master tags"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.SkipMasterTags, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <CheckBox x:Uid="Views/SearchPage/ShowExpungedCheckBox"
-                        Content="Show expunged galleries"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <StackPanel Orientation="Horizontal">
-                <CheckBox x:Uid="Views/SearchPage/MinRatingCheckBox"
-                          MinWidth="0"
-                          Content="Minimum rating: "
-                          IsChecked="{x:Bind ViewModel.AdvancedSearch.SearchMinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-                <ComboBox VerticalAlignment="Center"
-                          SelectedItem="{x:Bind ViewModel.AdvancedSearch.MinimumRating, Mode=TwoWay, Converter={StaticResource EmptyConverter}}"
-                          Margin="0,0,24,0"
-                          MinWidth="0"
-                          Width="60">
-                  <x:Int32>2</x:Int32>
-                  <x:Int32>3</x:Int32>
-                  <x:Int32>4</x:Int32>
-                  <x:Int32>5</x:Int32>
-                </ComboBox>
-              </StackPanel>
-              <CheckBox x:Uid="Views/SearchPage/DisableDefaultLanguageFiltersCheckBox"
-                        Content="Disable default language filters"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.DisableDefaultLanguageFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-              <CheckBox x:Uid="Views/SearchPage/DisableDefaultUploaderFiltersCheckBox"
-                        Content="Disable default uploader filters"
-                        Style="{StaticResource AdvancedSearchOptionStyle}"
-                        IsChecked="{x:Bind ViewModel.AdvancedSearch.DisableDefaultUploaderFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-            </tk:WrapPanel>
+            <controls:AdvancedSearchViewer x:Name="asvAdvancedSearch"
+                                           Visibility="{x:Bind ts_Advanced.IsOn, Mode=OneWay}"
+                                           Data="{x:Bind ViewModel.AdvancedSearch, Mode=OneWay}"
+                                           Margin="20,0,-20,0"
+                                           HorizontalAlignment="Center" />
             <StackPanel HorizontalAlignment="Stretch"
                         Visibility="{x:Bind xb:Visibility.OfBooleanInv(ts_Advanced.IsOn), Mode=OneWay}">
               <Button x:Name="btnFileSearch"
