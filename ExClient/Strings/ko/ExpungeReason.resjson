@@ -15,7 +15,6 @@
   },
   "Forbidden": {
     "Name": "금지된",
-    "Description": "This gallery contains either illicit content like child porn or anything else that has been banned."
     "Description": "이 갤러리는 아동 포르노와 같은 불법 콘텐츠나 금지된 내용이 포함되어 있습니다."
   }
 }

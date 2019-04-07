@@ -1,5 +1,5 @@
 ﻿{
-  "AppDescription": "E-Viewer 는 e-hentai.org 및 exhentai.org의 클라이언트입니다.",
+  "AppDescription": "E-Viewer 는 e-hentai.org 및 exhentai.org 의 클라이언트입니다.",
   "AppDisplayName": "E-Viewer",
   "Controls": {
     "AboutControl": {
@@ -116,7 +116,7 @@
     "CopyedToClipboard": "내용이 클립보드로 복사되었습니다.",
     "CopyToClipboard": "클립보드에 복사",
     "OpenInBrowser": "브라우저에서 열기",
-    "SetWallpaper": "배경으로 설정"",
+    "SetWallpaper": "배경으로 설정",
     "SetWallpaperFailed": "이미지를 배경으로 설정하지 못했습니다.",
     "SetWallpaperSucceeded": "이미지를 배경으로 설정했습니다."
   },

@@ -404,6 +404,9 @@
     <PRIResource Include="Strings\en\Settings.resJson" />
     <PRIResource Include="Strings\en\Exceptions.resJson" />
     <None Include="ExViewer_TemporaryKey.pfx" />
+    <PRIResource Include="Strings\ko\Exceptions.resJson" />
+    <PRIResource Include="Strings\ko\Resources.resJson" />
+    <PRIResource Include="Strings\ko\Settings.resJson" />
     <None Include="Strings\Strings.resgenconfig" />
     <Content Include="Assets\Theme\Dark\ImageLoading.png" />
     <Content Include="Assets\Theme\Dark\UserBackground.png" />
@@ -479,6 +482,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Strings\ko\Dictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Strings\zh-hant\Dictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
