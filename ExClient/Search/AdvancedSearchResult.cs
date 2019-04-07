@@ -9,24 +9,20 @@ namespace ExClient.Search
             return new AdvancedSearchResult(keyword, category, advancedSearch);
         }
 
-        private string getQueryString() => new AdvancedSearchOptions(advSearchData).ToSearchQuery();
+        private string getQueryString() => _AdvSearchData.ToSearchQuery();
 
         private AdvancedSearchResult(string keyword, Category category, AdvancedSearchOptions advancedSearch)
             : base(keyword, category)
         {
-            if (advancedSearch != null)
-            {
-                advSearchData = advancedSearch.Data;
-            }
-
-            SearchUri = advSearchData == default
+            _AdvSearchData = advancedSearch is null ? new AdvancedSearchOptions() : advancedSearch.Clone();
+            SearchUri = _AdvSearchData == default
                 ? base.SearchUri
                 : new Uri(base.SearchUri.OriginalString + getQueryString());
         }
 
-        private readonly ulong advSearchData;
+        private readonly AdvancedSearchOptions _AdvSearchData;
 
-        public AdvancedSearchOptions AdvancedSearch => new AdvancedSearchOptions(advSearchData);
+        public AdvancedSearchOptions AdvancedSearch => _AdvSearchData.Clone();
 
         public override Uri SearchUri { get; }
     }
