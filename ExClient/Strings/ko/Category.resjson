@@ -1,0 +1,15 @@
+﻿{
+  // Category of galleries, see: https://ehwiki.org/wiki/Gallery_Categories
+  "All": "모두",
+  "ArtistCG": "아티스트 CG",
+  "AsianPorn": "아시아 포르노",
+  "Cosplay": "코스프레",
+  "Doujinshi": "동인지",
+  "GameCG": "게임 CG",
+  "ImageSet": "이미지 모음",
+  "Manga": "망가",
+  "Misc": "기타",
+  "NonH": "Non-H",
+  "Unspecified": "지정되지 않음",
+  "Western": "서양"
+}

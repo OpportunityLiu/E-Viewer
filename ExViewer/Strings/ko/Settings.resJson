@@ -1,0 +1,63 @@
+﻿{
+  "About": "정보",
+  "ApplicationTheme": {
+    "Dark": "어두운 테마",
+    "Light": "밝은 테마"
+  },
+  "BooleanByFavoritedTime": "즐겨찾기 시간순",
+  "BooleanByLastUpdatedTime": "갤러리 마지막 업데이트 시간순",
+  "BooleanDT": "기본 제목",
+  "BooleanEh": "E-hentai",
+  "BooleanEx": "Exhentai (계정의 권한 필요)",
+  "BooleanJT": "일본어 제목 (가능한 경우)",
+  "BooleanLeftToRight": "왼쪽에서 오른쪽으로",
+  "BooleanRightToLeft": "오른쪽에서 왼쪽으로",
+  "CommentsOrder": "댓글 정렬 순서",
+  "CommentsOrderValues": {
+    "ByTimeAscending": "가장 오래된 댓글부터",
+    "ByTimeDecending": "가장 최근 댓글부터",
+    "ByScore": "최고 점수 기준"
+  },
+  "CommentTranslationCode": "번역된 주석의 언어 코드",
+  "Connection": "연결",
+  "DefaultSearchCategory": "첫 페이지의 기본 카테고리",
+  "DefaultSearchString": "첫 페이지의 기본 키워드",
+  "ExcludedLanguages": "제외된 언어",
+  "ExcludedTagNamespaces": "제외된 태그 네임 스페이스",
+  "ExcludedUploaders": "제외된 업로더",
+  "FavoritesOrderByFavoritedTime": "즐겨찾기 정렬 순서",
+  "Global": "전역",
+  "ImageCacheFolder": "이미지 캐시 폴더",
+  "ImageSize": {
+    "Auto": "자동",
+    "H1280": "1280px",
+    "H1600": "1600px",
+    "H2400": "2400px",
+    "H780": "780px",
+    "H980": "980px"
+  },
+  "ImageViewOrientation": "뒤집기 방향",
+  "KeepScreenOn": "이미지를 보는 동안 내 화면 유지",
+  "LoadLofiOnAllInternetConnection": "항상 압축된 이미지 불러오기",
+  "LoadLofiOnMeteredInternetConnection": "트래픽에 따라 비용을 계산하는 인터넷을 사용하는 동안 압축된 이미지 불러오기",
+  "NeedVerify": "앱이 시작될 때 PIN 확인",
+  "OpenHVOnMonsterEncountered": "괴물을 만났을때 HentaiVerse 열기",
+  "ResampledImageSize": "리샘플링 된 이미지의 수평 해상도",
+  "ReverseFlowDirection": "수평 뒤집기 방향",
+  "SaveLastSearch": "가장 최근 검색을 기본값으로 저장",
+  "Searching": "검색 중",
+  "SlideInterval": "슬라이드쇼 간격 (초)",
+  "TapToFlip": "탭으로 페이지 넘기기 (터치 전용)",
+  "Theme": "앱의 테마",
+  "TriggerDawnOfDay": "백그라운드 작업으로 새로운 날의 새벽 이벤트 트리거",
+  "UseChineseTagTranslation": "태그의 중국어 번역 사용",
+  "UseJapaneseTagTranslation": "태그의 일본어 번역 사용",
+  "UseJapaneseTitle": "표시된 기본 제목",
+  "Viewing": "보기",
+  "ViewOrientation": {
+    "Auto": "웹툰의 경우 수직",
+    "Horizontal": "수평",
+    "Vertical": "수직"
+  },
+  "VisitEx": "방문할 사이트"
+}
