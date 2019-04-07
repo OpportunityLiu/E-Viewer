@@ -230,6 +230,12 @@
     <PRIResource Include="Strings\en\Language.resjson" />
     <PRIResource Include="Strings\en\Toplist.resjson" />
     <PRIResource Include="Strings\en\ExpungeReason.resjson" />
+    <PRIResource Include="Strings\ko\Category.resjson" />
+    <PRIResource Include="Strings\ko\ExpungeReason.resjson" />
+    <PRIResource Include="Strings\ko\Language.resjson" />
+    <PRIResource Include="Strings\ko\Namespace.resjson" />
+    <PRIResource Include="Strings\ko\Resources.resjson" />
+    <PRIResource Include="Strings\ko\Toplist.resjson" />
     <None Include="Strings\LocalizedStrings.resgenconfig" />
   </ItemGroup>
   <ItemGroup>

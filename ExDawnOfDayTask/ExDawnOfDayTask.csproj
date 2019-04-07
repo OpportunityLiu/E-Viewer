@@ -124,6 +124,7 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="Strings.resgenconfig" />
+    <PRIResource Include="Strings\ko\Resources.resjson" />
     <PRIResource Include="Strings\zh-hant\Resources.resjson" />
     <PRIResource Include="Strings\zh-hans\Resources.resjson" />
     <PRIResource Include="Strings\en\Resources.resjson" />

@@ -93,6 +93,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <PRIResource Include="Strings\ko\Resources.resJson" />
     <None Include="Strings\Strings.resgenconfig" />
     <PRIResource Include="Strings\zh-hant\Resources.resJson" />
     <PRIResource Include="Strings\zh-hans\Resources.resJson" />
