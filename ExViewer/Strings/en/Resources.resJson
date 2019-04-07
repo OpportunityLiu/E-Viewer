@@ -129,7 +129,7 @@
     },
     "Disabled": "Verification has been disabled by group policy. Please contact your administrator.",
     "FailedDialogTitle": "VERIFICATION FAILED",
-    "NotConfigured": "Please set up a PIN first. \n\nGo \"Settings -> Accounts - Sign-in options -> PIN -> Add\" to do this.",
+    "NotConfigured": "Please set up a PIN first. \n\nGo \"Settings -> Accounts -> Sign-in options -> PIN -> Add\" to do this.",
     "OtherFailure": "Plaese restart the app and try again.",
     "RetriesExhausted": "You have exceeded the allowed number of verification. Plaese restart the app and try again."
   },
