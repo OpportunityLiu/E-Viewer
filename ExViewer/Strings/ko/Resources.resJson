@@ -21,6 +21,19 @@
       "TagDatabaseTextBlock/Text": "태그 데이터베이스",
       "UpdateButton/Content": "지금 업데이트"
     },
+    "AdvancedSearchViewer": {
+      "DescriptionCheckBox/Content": "갤러리 설명 검색",
+      "DisableDefaultLanguageFiltersCheckBox/Content": "기본 언어 필터 사용 안 함",
+      "DisableDefaultUploaderFiltersCheckBox/Content": "기본 업로더 필터 사용 안 함",
+      "DownvotedTagsCheckBox/Content": "비추천 태그 검색",
+      "LowPowerTagsCheckBox/Content": "낮은 중요도 태그 검색",
+      "MinRatingCheckBox/Content": "최소 평가 :",
+      "NamesCheckBox/Content": "갤러리명 검색",
+      "OnlyTorrentsCheckBox/Content": "토렌트가 있는 갤러리만 표시",
+      "ShowExpungedCheckBox/Content": "삭제된 갤러리 표시",
+      "TagsCheckBox/Content": "갤러리 태그 검색",
+      "TorrentNamesCheckBox/Content": "토렌트 파일명 검색"
+    },
     "CommentViewer": {
       "ActionsButton/ToolTipService/ToolTip": "더보기",
       "EditedFormatString": "마지막으로 {0}에서 편집됨",
@@ -343,26 +356,14 @@
       "AdvancedToggleButton/OffContent": "고급 옵션 표시",
       "AdvancedToggleButton/OnContent": "고급 옵션 숨기기s",
       "AutoSuggestBox/PlaceholderText": "검색…",
-      "DescriptionCheckBox/Content": "갤러리 설명 검색",
-      "DisableDefaultLanguageFiltersCheckBox/Content": "기본 언어 필터 사용 안 함",
-      "DisableDefaultUploaderFiltersCheckBox/Content": "기본 업로더 필터 사용 안 함",
-      "DownvotedTagsCheckBox/Content": "비추천 태그 검색",
       "EmptyTextBlock/Text": "결과 없음",
       "FileSearchButton/Content": "파일 검색",
       "FileSearchNameFormatString": "다음 옵션을 사용하여 \"{0}\" 파일을 검색하십시오 : ",
       "LoadingMoreTextBlock/Text": "더 많은 갤러리를 불러오는 중…",
-      "LowPowerTagsCheckBox/Content": "낮은 중요도 태그 검색",
-      "MinRatingCheckBox/Content": "최소 평가 :",
-      "NamesCheckBox/Content": "갤러리명 검색",
       "OnlyCoversTextBlock/Text": "• 표지만 검색",
-      "OnlyTorrentsCheckBox/Content": "토렌트가 있는 갤러리만 표시",
       "SearchExactlyTextBlock/Text": "• 유사성 검사 비활성화",
       "SearchExpungedTextBlock/Text": "• 삭제된 갤러리 검색",
-      "SearchSimilarTextBlock/Text": "• 유사성 검사 활성화",
-      "ShowExpungedCheckBox/Content": "삭제된 갤러리 표시",
-      "SkipMasterTagsCheckBox/Content": "마스터 태그 건너뛰기",
-      "TagsCheckBox/Content": "갤러리 태그 검색",
-      "TorrentNamesCheckBox/Content": "토렌트 파일명 검색"
+      "SearchSimilarTextBlock/Text": "• 유사성 검사 활성화"
     },
     "ToplistPage": {
       "LoadingMoreTextBlock/Text": "더 많은 갤러리를 불러오는 중…",
