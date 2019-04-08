@@ -94,11 +94,13 @@ namespace ExClient.Search
 
                 if (pageIndex > FirstPage)
                 {
-                    for (var i = 0; i < list.Count; i++)
+                    for (var i = 0; i < list.Count;)
                     {
                         var id = list[i].Id;
                         if (this.Any(g => g.Id == id))
                             list.RemoveAt(i);
+                        else
+                            i++;
                     }
                 }
                 else if (pageIndex < FirstPage)
@@ -111,7 +113,6 @@ namespace ExClient.Search
                             Remove(ga);
                     }
                 }
-
                 return list;
             });
         }
