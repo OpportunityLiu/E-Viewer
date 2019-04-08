@@ -17,7 +17,7 @@
 | :--- | ---: |
 | [**모든 버전**](https://github.com/OpportunityLiu/E-Viewer/releases) | [![Github All Releases](https://img.shields.io/github/downloads/OpportunityLiu/E-Viewer/total.svg)](https://github.com/OpportunityLiu/E-Viewer/releases) |
 
-의존성 ([x86](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/ARM.zip))과 인증서(`.cer` 파일)를 먼저 설치하십시오.
+종속성 ([x86](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/ARM.zip))과 인증서(`.cer` 파일)를 먼저 설치하십시오.
 
 `.appxbundle` 또는 `.appx` 파일을 다운로드하여 설치하십시오.
 `.appxsym` 파일은 디버깅을 위한 심볼 파일입니다.
