@@ -48,11 +48,11 @@ namespace ExClient.Internal
                 }
                 var tail = match.Groups[5].Value;
                 return
-                    await loadThumbAsync(new Uri("https://ul.ehgt.org/" + tail), target) ||
-                    await loadThumbAsync(new Uri("https://ehgt.org/t/" + tail), target) ||
-                    await loadThumbAsync(new Uri("https://exhentai.org/t/" + tail), target) ||
-                    await loadThumbAsync(new Uri("https://ul.ehgt.org/t/" + tail), target) ||
                     await loadThumbAsync(new Uri("https://ehgt.org/" + tail), target) ||
+                    await loadThumbAsync(new Uri("https://ul.ehgt.org/" + tail), target) ||
+                    await loadThumbAsync(new Uri("https://exhentai.org/t/" + tail), target) ||
+                    await loadThumbAsync(new Uri("https://ehgt.org/t/" + tail), target) ||
+                    await loadThumbAsync(new Uri("https://ul.ehgt.org/t/" + tail), target) ||
                     false;
             });
         }
