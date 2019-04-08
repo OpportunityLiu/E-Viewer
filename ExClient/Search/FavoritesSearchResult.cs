@@ -66,6 +66,7 @@ namespace ExClient.Search
 
         protected override void LoadPageOverride(HtmlDocument doc)
         {
+            // read and update favcat names
             var noselNode = doc.DocumentNode
                 .Element("html").Element("body")
                 .Element("div", "ido")
