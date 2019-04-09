@@ -1,4 +1,6 @@
-> Other languages: [Simplified Chinese (简体中文)](/README.zh-hans.md)
+> Other languages:
+> * [Simplified Chinese (简体中文)](/README.zh-hans.md)
+> * [Korean (한국어)](/README.ko.md)
 
 # E-Viewer
 A Client for e-hentai.org on Windows 10.    
