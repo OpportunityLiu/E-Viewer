@@ -19,12 +19,12 @@
 
 종속성 ([x86](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/ARM.zip))과 인증서(`.cer` 파일)를 먼저 설치하십시오.
 
-`.appxbundle` 또는 `.appx` 파일을 다운로드하여 설치하십시오.
+`.appxbundle` 또는 `.appx` 파일을 다운로드하여 설치하십시오.
 `.appxsym` 파일은 디버깅을 위한 심볼 파일입니다.
 
 ## 자주 묻는 질문
-1. [설치 방법 (영문)](https://github.com/OpportunityLiu/E-Viewer/wiki/How-to-Install)
+1. [설치 방법](https://github.com/OpportunityLiu/E-Viewer/wiki/%EC%84%A4%EC%B9%98-%EB%B0%A9%EB%B2%95)
 
-2. [UWP 앱에서 네트워크 프록시를 사용하는 방법 (영문)](https://github.com/OpportunityLiu/E-Viewer/wiki/Resolve-Connection-Issues)
+2. [UWP 앱에서 네트워크 프록시를 사용하는 방법](https://github.com/OpportunityLiu/E-Viewer/wiki/%EC%97%B0%EA%B2%B0-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
 
-3. [키보드 또는 Xbox 컨트롤러 사용자를 위한 팁 (영문)](https://github.com/OpportunityLiu/E-Viewer/wiki/Tips)
+3. [키보드 또는 Xbox 컨트롤러 사용자를 위한 팁](https://github.com/OpportunityLiu/E-Viewer/wiki/%ED%8C%81)
