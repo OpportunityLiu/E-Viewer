@@ -1,5 +1,5 @@
 ﻿{
-  "AppDescription": "E-Viewer 는 e-hentai.org 및 exhentai.org 의 클라이언트입니다.",
+  "AppDescription": "E-Viewer는 e-hentai.org 및 exhentai.org의 클라이언트입니다.",
   "AppDisplayName": "E-Viewer",
   "Controls": {
     "AboutControl": {
@@ -30,6 +30,9 @@
       "MinRatingCheckBox/Content": "최소 평가 :",
       "NamesCheckBox/Content": "갤러리명 검색",
       "OnlyTorrentsCheckBox/Content": "토렌트가 있는 갤러리만 표시",
+      "PageCountCheckBox/Content": "페이지 수",
+      "PageCountTextBlock1/Text": "~",
+      "PageCountTextBlock2/Text": "",
       "ShowExpungedCheckBox/Content": "삭제된 갤러리 표시",
       "TagsCheckBox/Content": "갤러리 태그 검색",
       "TorrentNamesCheckBox/Content": "토렌트 파일명 검색"

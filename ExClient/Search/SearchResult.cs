@@ -46,23 +46,30 @@ namespace ExClient.Search
                 .FirstOrDefault(node => node.HasClass("ip"));
             var pttNode = idoNode.Descendants("table")
                 .FirstOrDefault(node => node.HasClass("ptt"));
+            var pageCount = 1;
             if (rcNode is null || pttNode is null)
             {
-                PageCount = 0;
+                pageCount = 0;
             }
             else if (_RecordCountMatcher.Match(rcNode.InnerText).Success)
             {
-                PageCount = pttNode.Descendants("td").Select(node =>
+                pageCount = pttNode.Descendants("td").Select(node =>
                 {
-                    if (!int.TryParse(node.GetInnerText(), out var i))
-                        i = -1;
-                    return i;
+                    var pageStr = node.GetInnerText();
+                    if (int.TryParse(pageStr, out var i))
+                        return i;
+                    if (pageStr.IndexOf('-') is var idx && idx > 0 && int.TryParse(pageStr.Substring(idx + 1), out var j))
+                        return j;
+                    return -1;
                 }).Max();
             }
             else
             {
-                PageCount = 0;
+                pageCount = 0;
             }
+
+            if (PageCount < pageCount)
+                PageCount = pageCount;
         }
 
         protected virtual void LoadPageOverride(HtmlDocument doc) { }
@@ -94,11 +101,13 @@ namespace ExClient.Search
 
                 if (pageIndex > FirstPage)
                 {
-                    for (var i = 0; i < list.Count; i++)
+                    for (var i = 0; i < list.Count;)
                     {
                         var id = list[i].Id;
                         if (this.Any(g => g.Id == id))
                             list.RemoveAt(i);
+                        else
+                            i++;
                     }
                 }
                 else if (pageIndex < FirstPage)
@@ -111,7 +120,6 @@ namespace ExClient.Search
                             Remove(ga);
                     }
                 }
-
                 return list;
             });
         }

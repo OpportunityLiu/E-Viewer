@@ -71,7 +71,7 @@ namespace ExViewer
             public PackageVersion Version { get; set; }
         }
 
-        public static Uri ReleaseUri { get; } = new Uri("https://api.github.com/repos/OpportunityLiu/ExViewer/releases/latest");
+        public static Uri ReleaseUri { get; } = new Uri("https://api.github.com/repos/OpportunityLiu/E-Viewer/releases/latest");
 
         public static IAsyncOperation<GitHubRelease> CheckAsync()
         {

@@ -12,6 +12,13 @@
   <UserControl.Resources>
     <x:Double x:Key="TextControlThemeMinWidth">44</x:Double>
     <Thickness x:Key="TextControlThemePadding">4,3,4,5</Thickness>
+    <Style x:Key="WrapperStackPanelStyle"
+           TargetType="StackPanel">
+      <Setter Property="Orientation"
+              Value="Horizontal" />
+      <Setter Property="Margin"
+              Value="0,0,24,0" />
+    </Style>
     <Style x:Key="WrappedTextBlockStyle"
            TargetType="TextBlock">
       <Setter Property="Margin"
@@ -37,6 +44,7 @@
                 TabFocusNavigation="Once"
                 Orientation="Horizontal"
                 XYFocusKeyboardNavigation="Enabled"
+                Margin="0,0,-24,0"
                 MaxWidth="800"
                 HorizontalAlignment="Center">
     <CheckBox x:Uid="Controls/AdvancedSearchViewer/NamesCheckBox"
@@ -71,8 +79,7 @@
               Content="Show expunged galleries"
               Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.ShowExpungedGalleries, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-    <StackPanel Orientation="Horizontal"
-                Padding="0,0,24,0">
+    <StackPanel Style="{StaticResource WrapperStackPanelStyle}">
       <CheckBox x:Uid="Controls/AdvancedSearchViewer/MinRatingCheckBox"
                 Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
                 Content="Minimum rating: "
@@ -86,14 +93,13 @@
         <x:Int32>5</x:Int32>
       </ComboBox>
     </StackPanel>
-    <StackPanel Orientation="Horizontal"
-                Padding="0,0,24,0">
+    <StackPanel Style="{StaticResource WrapperStackPanelStyle}">
       <CheckBox x:Uid="Controls/AdvancedSearchViewer/PageCountCheckBox"
                 Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
                 Margin="0,0,4,0"
                 Content="Between"
                 IsChecked="{x:Bind Data.SearchPageCount, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
-      <TextBox  Text="{x:Bind Data.MinimumPageCount, Mode=TwoWay, Converter={StaticResource DefaultConverter}}"
+      <TextBox Text="{x:Bind Data.MinimumPageCount, Mode=TwoWay, Converter={StaticResource DefaultConverter}}"
                InputScope="Number" />
       <TextBlock x:Uid="Controls/AdvancedSearchViewer/PageCountTextBlock1"
                  Style="{StaticResource WrappedTextBlockStyle}"
@@ -106,15 +112,15 @@
     </StackPanel>
     <CheckBox x:Uid="Controls/AdvancedSearchViewer/DisableDefaultLanguageFiltersCheckBox"
               Content="Disable default language filters"
-              Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
+              Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.DisableDefaultLanguageFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
     <CheckBox x:Uid="Controls/AdvancedSearchViewer/DisableDefaultUploaderFiltersCheckBox"
               Content="Disable default uploader filters"
-              Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
+              Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.DisableDefaultUploaderFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
     <CheckBox x:Uid="Controls/AdvancedSearchViewer/DisableDefaultTagsFiltersCheckBox"
               Content="Disable default tags filters"
-              Style="{StaticResource WrappedAdvancedSearchOptionStyle}"
+              Style="{StaticResource AdvancedSearchOptionStyle}"
               IsChecked="{x:Bind Data.DisableDefaultTagsFilters, Mode=TwoWay, Converter={StaticResource EmptyConverter}}" />
   </tk:WrapPanel>
 </UserControl>
