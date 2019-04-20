@@ -91,18 +91,15 @@ namespace EhTagTranslatorClient
         private static async Task<_Release> _GetReleaseAsync()
             => JsonConvert.DeserializeObject<_Release>(await HttpClient.GetStringAsync(_ReleaseApiUri));
 
-        public static IAsyncOperation<bool> NeedUpdateAsync()
+        public static async Task<bool> NeedUpdateAsync()
         {
-            return AsyncInfo.Run(async token =>
-            {
-                var release = await _GetReleaseAsync();
-                return release.id != CurrentVersion;
-            });
+            var release = await _GetReleaseAsync();
+            return release.id != CurrentVersion;
         }
 
-        public static IAsyncAction UpdateAsync()
+        public static Task UpdateAsync()
         {
-            return AsyncInfo.Run(async token =>
+            return Task.Run(async () =>
             {
                 var release = await _GetReleaseAsync();
                 var fileUri = release.assets.First(a => _ReleaseFileName.Equals(a.name, StringComparison.OrdinalIgnoreCase)).browser_download_url;
