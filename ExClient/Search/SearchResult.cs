@@ -68,7 +68,7 @@ namespace ExClient.Search
                 pageCount = 0;
             }
 
-            if (PageCount < pageCount)
+            if (PageCount < pageCount || PageCount == 1)
                 PageCount = pageCount;
         }
 

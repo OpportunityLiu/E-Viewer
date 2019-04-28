@@ -51,6 +51,8 @@ namespace ExClient.Internal
         public static async Task<IList<Gallery>> Parse(HtmlDocument doc, CancellationToken token)
         {
             var dataRoot = doc.DocumentNode.Descendants().SingleOrDefault(node => node.HasClass("itg"));
+            if (dataRoot is null)
+                return Array.Empty<Gallery>();
             var gInfoList = new List<GalleryInfo>(dataRoot.ChildNodes.Count);
             var dataNodeList = new List<HtmlNode>(dataRoot.ChildNodes.Count);
             foreach (var node in dataRoot.ChildNodes)
