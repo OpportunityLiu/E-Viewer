@@ -92,18 +92,21 @@ namespace ExViewer
                         if (!(page is GalleryPage gPage && gPage.ViewModel.Gallery.Id == g.GalleryInfo.ID))
                         {
                             await RootControl.RootController.Navigator.NavigateAsync(typeof(GalleryPage), g.GalleryInfo.ID);
-                            await Task.Delay(500);
                         }
                         switch (g.Status)
                         {
                         case GalleryLaunchStatus.Image:
+                            await Task.Delay(500);
                             vm.View.MoveCurrentToPosition(g.CurrentIndex);
+                            await Task.Delay(500);
                             await RootControl.RootController.Navigator.NavigateAsync(typeof(ImagePage), g.GalleryInfo.ID);
                             break;
                         case GalleryLaunchStatus.Torrent:
+                            await Task.Delay(500);
                             (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(2);
                             break;
                         default:
+                            await Task.Delay(500);
                             (RootControl.RootController.Frame.Content as GalleryPage)?.ChangePivotSelection(0);
                             break;
                         }
