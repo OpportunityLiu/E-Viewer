@@ -2,7 +2,7 @@
 
 namespace ExClient.Search
 {
-    public sealed class AdvancedSearchResult : CategorySearchResult
+    public class AdvancedSearchResult : CategorySearchResult
     {
         internal static AdvancedSearchResult Search(string keyword, Category category, AdvancedSearchOptions advancedSearch)
         {
@@ -11,7 +11,7 @@ namespace ExClient.Search
 
         private string getQueryString() => _AdvSearchData.ToSearchQuery();
 
-        private AdvancedSearchResult(string keyword, Category category, AdvancedSearchOptions advancedSearch)
+        protected AdvancedSearchResult(string keyword, Category category, AdvancedSearchOptions advancedSearch)
             : base(keyword, category)
         {
             _AdvSearchData = advancedSearch is null ? new AdvancedSearchOptions() : advancedSearch.Clone();

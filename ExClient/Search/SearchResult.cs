@@ -34,7 +34,7 @@ namespace ExClient.Search
             PageCount = 1;
         }
 
-        private static readonly Regex _RecordCountMatcher = new Regex(@"Showing\s*[0-9,]+\s*result", RegexOptions.Compiled);
+        private static readonly Regex _RecordCountMatcher = new Regex(@"Showing\s*[0-9,]+\s*results?", RegexOptions.Compiled);
 
         private void _UpdatePageCount(HtmlDocument doc)
         {
@@ -42,16 +42,17 @@ namespace ExClient.Search
                 .Element("html")
                 .Element("body")
                 .Element("div", "ido");
-            var rcNode = idoNode.Descendants("p")
-                .FirstOrDefault(node => node.HasClass("ip"));
+            var hasResult = idoNode.Descendants("p")
+                .Where(node => node.HasClass("ip"))
+                .Any(node => _RecordCountMatcher.Match(node.InnerText).Success);
             var pttNode = idoNode.Descendants("table")
                 .FirstOrDefault(node => node.HasClass("ptt"));
             var pageCount = 1;
-            if (rcNode is null || pttNode is null)
+            if (!hasResult || pttNode is null)
             {
                 pageCount = 0;
             }
-            else if (_RecordCountMatcher.Match(rcNode.InnerText).Success)
+            else
             {
                 pageCount = pttNode.Descendants("td").Select(node =>
                 {
@@ -62,10 +63,6 @@ namespace ExClient.Search
                         return j;
                     return -1;
                 }).Max();
-            }
-            else
-            {
-                pageCount = 0;
             }
 
             if (PageCount < pageCount || PageCount == 1)

@@ -3,8 +3,9 @@ using ExClient.Internal;
 using ExClient.Launch;
 using Newtonsoft.Json;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Api
 {
@@ -77,14 +78,11 @@ namespace ExClient.Api
             PageId = pageID;
         }
 
-        public IAsyncOperation<GalleryInfo> FetchGalleryInfoAsync()
+        public async Task<GalleryInfo> FetchGalleryInfoAsync(CancellationToken token = default)
         {
             var info = new[] { this };
-            return Run(async token =>
-            {
-                var result = await GalleryInfo.FetchGalleryInfoListAsync(info);
-                return result[0];
-            });
+            var result = await GalleryInfo.FetchGalleryInfoListAsync(info, token);
+            return result[0];
         }
 
         public long GalleryId { get; }

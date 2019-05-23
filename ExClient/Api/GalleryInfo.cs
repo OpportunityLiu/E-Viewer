@@ -4,6 +4,8 @@ using ExClient.Launch;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
@@ -58,13 +60,11 @@ namespace ExClient.Api
             }
         }
 
-        public static IAsyncOperation<IReadOnlyList<GalleryInfo>> FetchGalleryInfoListAsync(IEnumerable<ImageInfo> pageList)
+        public static async Task<IReadOnlyList<GalleryInfo>> FetchGalleryInfoListAsync(IEnumerable<ImageInfo> pageList,
+            CancellationToken token = default)
         {
-            return Run<IReadOnlyList<GalleryInfo>>(async token =>
-            {
-                var res = await new GalleryTokenRequest(pageList).GetResponseAsync(token);
-                return res.TokenList;
-            });
+            var res = await new GalleryTokenRequest(pageList).GetResponseAsync(token);
+            return res.TokenList;
         }
 
         private static readonly string[] _GalleryPaths = new[] { "g", "mpv", };
@@ -78,7 +78,7 @@ namespace ExClient.Api
                 return false;
             if (!long.TryParse(data.Paths[1], out var gId))
                 return false;
-            if(!EToken.TryParse(data.Paths[2], out var token))
+            if (!EToken.TryParse(data.Paths[2], out var token))
                 return false;
 
             info = new GalleryInfo(gId, token);

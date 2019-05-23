@@ -22,6 +22,17 @@ namespace ExClient
             => AdvancedSearchResult.Search(keyword, category, advancedSearch);
         #endregion Keyword search
 
+        #region Watched search
+        public WatchingSearchResult SearchWatched(string keyword)
+            => SearchWatched(keyword, Category.Unspecified);
+
+        public WatchingSearchResult SearchWatched(string keyword, Category category)
+            => SearchWatched(keyword, category, default);
+
+        public WatchingSearchResult SearchWatched(string keyword, Category category, AdvancedSearchOptions advancedSearch)
+            => WatchingSearchResult.Search(keyword, category, advancedSearch);
+        #endregion Keyword search
+
         #region Uploader search
         public AdvancedSearchResult Search(string uploader, string keyword)
             => Search(uploader, keyword, default);

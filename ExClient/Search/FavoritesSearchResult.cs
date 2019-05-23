@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml.Data;
 using Windows.Web.Http;
@@ -79,51 +81,42 @@ namespace ExClient.Search
             }
         }
 
-        public IAsyncAction AddToCategoryAsync(IReadOnlyList<ItemIndexRange> items, FavoriteCategory categoty)
+        public async Task AddToCategoryAsync(IReadOnlyList<ItemIndexRange> items, FavoriteCategory categoty, CancellationToken token = default)
         {
             if (categoty is null)
-            {
                 throw new ArgumentNullException(nameof(categoty));
-            }
-
             if (items is null || items.Count == 0)
+                return;
+
+            var ddact = categoty.Index < 0 ? "delete" : $"fav{categoty.Index}";
+            var post = Client.Current.HttpClient.PostAsync(SearchUri, getParameters());
+            token.Register(post.Cancel);
+            var r = await post;
+            if (categoty.Index < 0)
+                Reset();
+            else
             {
-                return AsyncAction.CreateCompleted();
+                foreach (var range in items)
+                {
+                    for (var i = range.FirstIndex; i <= range.LastIndex; i++)
+                    {
+                        this[i].FavoriteCategory = categoty;
+                    }
+                }
             }
 
-            return AsyncInfo.Run(async token =>
+            IEnumerable<KeyValuePair<string, string>> getParameters()
             {
-                var ddact = categoty.Index < 0 ? "delete" : $"fav{categoty.Index}";
-                var post = Client.Current.HttpClient.PostAsync(SearchUri, getParameters());
-                token.Register(post.Cancel);
-                var r = await post;
-                if (categoty.Index < 0)
+                yield return new KeyValuePair<string, string>("apply", "Apply");
+                yield return new KeyValuePair<string, string>("ddact", ddact);
+                foreach (var range in items)
                 {
-                    Reset();
-                }
-                else
-                {
-                    foreach (var range in items)
+                    for (var i = range.FirstIndex; i <= range.LastIndex; i++)
                     {
-                        for (var i = range.FirstIndex; i <= range.LastIndex; i++)
-                        {
-                            this[i].FavoriteCategory = categoty;
-                        }
+                        yield return new KeyValuePair<string, string>("modifygids[]", this[i].Id.ToString());
                     }
                 }
-                IEnumerable<KeyValuePair<string, string>> getParameters()
-                {
-                    yield return new KeyValuePair<string, string>("apply", "Apply");
-                    yield return new KeyValuePair<string, string>("ddact", ddact);
-                    foreach (var range in items)
-                    {
-                        for (var i = range.FirstIndex; i <= range.LastIndex; i++)
-                        {
-                            yield return new KeyValuePair<string, string>("modifygids[]", this[i].Id.ToString());
-                        }
-                    }
-                }
-            });
+            }
         }
     }
 }

@@ -252,7 +252,7 @@ namespace ExViewer.Views
             var cat = (FavoriteCategory)cbCategory2.SelectedItem ?? Client.Current.Favorites.Removed;
             var task = ViewModel.SearchResult.AddToCategoryAsync(lv.SelectedRanges.ToList(), cat);
             lv.SelectionMode = ListViewSelectionMode.None;
-            RootControl.RootController.TrackAsyncAction(task, (s, args) =>
+            RootControl.RootController.TrackAsyncAction(task.AsAsyncAction(), (s, args) =>
             {
                 if (args == AsyncStatus.Completed)
                 {

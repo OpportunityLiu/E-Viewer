@@ -55,7 +55,7 @@ namespace ExClient.Api
     internal abstract class ApiRequest<TResponse> : ApiRequest
         where TResponse : ApiResponse
     {
-        public async Task<TResponse> GetResponseAsync(CancellationToken token)
+        public async Task<TResponse> GetResponseAsync(CancellationToken token = default)
         {
             var reqStr = JsonConvert.SerializeObject(this);
             var resStr = default(string);

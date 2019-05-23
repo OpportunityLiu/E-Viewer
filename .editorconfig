@@ -1,0 +1,280 @@
+# 如果要从更高级别的目录继承 .editorconfig 设置，请删除以下行
+root = true
+
+# c# 文件
+[*.cs]
+
+#### Core EditorConfig 选项 ####
+
+# 缩进和间距
+indent_size = 4
+indent_style = space
+tab_width = 4
+
+# 新行首选项
+end_of_line = crlf
+insert_final_newline = false
+
+#### .NET 编码约定 ####
+
+# 组织 Using
+dotnet_separate_import_directive_groups = true
+dotnet_sort_system_directives_first = false
+
+# this. 和 Me. 首选项
+dotnet_style_qualification_for_event = false:suggestion
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+
+# 语言关键字与 bcl 类型首选项
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
+
+# 括号首选项
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:suggestion
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary:silent
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:suggestion
+
+# 修饰符首选项
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:silent
+
+# 表达式级首选项
+csharp_style_deconstructed_variable_declaration = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_throw_expression = true:suggestion
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_explicit_tuple_names = true:warning
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_prefer_auto_properties = true:suggestion
+dotnet_style_prefer_compound_assignment = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:silent
+dotnet_style_prefer_conditional_expression_over_return = true:silent
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+
+# 字段首选项
+dotnet_style_readonly_field = true:suggestion
+
+# 参数首选项
+dotnet_code_quality_unused_parameters = all:silent
+
+#### c# 编码约定 ####
+
+# var 首选项
+csharp_style_var_elsewhere = true:silent
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+
+# Expression-bodied 成员
+csharp_style_expression_bodied_accessors = true:suggestion
+csharp_style_expression_bodied_constructors = when_on_single_line:silent
+csharp_style_expression_bodied_indexers = true:suggestion
+csharp_style_expression_bodied_lambdas = when_on_single_line:suggestion
+csharp_style_expression_bodied_local_functions = when_on_single_line:suggestion
+csharp_style_expression_bodied_methods = when_on_single_line:silent
+csharp_style_expression_bodied_operators = when_on_single_line:silent
+csharp_style_expression_bodied_properties = true:suggestion
+
+# 模式匹配首选项
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+
+# Null 检查首选项
+csharp_style_conditional_delegate_call = true:suggestion
+
+# 修饰符首选项
+csharp_prefer_static_local_function = true:suggestion
+csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async
+
+# 代码块首选项
+csharp_prefer_braces = false:silent
+csharp_prefer_simple_using_statement = true:suggestion
+
+# 表达式级首选项
+csharp_prefer_simple_default_expression = true:suggestion
+csharp_style_pattern_local_over_anonymous_function = true:suggestion
+csharp_style_prefer_index_operator = true:suggestion
+csharp_style_prefer_range_operator = true:suggestion
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion
+csharp_style_unused_value_expression_statement_preference = discard_variable:silent
+
+# "using" 指令首选项
+csharp_using_directive_placement = outside_namespace:suggestion
+
+#### C# 格式规则 ####
+
+# 新行首选项
+csharp_new_line_before_catch = true
+csharp_new_line_before_else = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_open_brace = all
+csharp_new_line_between_query_expression_clauses = true
+
+# 缩进首选项
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+csharp_indent_case_contents = true
+csharp_indent_case_contents_when_block = false
+csharp_indent_labels = one_less_than_current
+csharp_indent_switch_labels = false
+
+# 空格键首选项
+csharp_space_after_cast = false
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_after_comma = true
+csharp_space_after_dot = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_after_semicolon_in_for_statement = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_around_declaration_statements = false
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_before_comma = false
+csharp_space_before_dot = false
+csharp_space_before_open_square_brackets = false
+csharp_space_before_semicolon_in_for_statement = false
+csharp_space_between_empty_square_brackets = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
+csharp_space_between_square_brackets = false
+
+# 包装首选项
+csharp_preserve_single_line_blocks = true
+csharp_preserve_single_line_statements = true
+
+#### 命名样式 ####
+
+# 命名规则
+
+dotnet_naming_rule.接口_should_be_ipascalcase.severity = suggestion
+dotnet_naming_rule.接口_should_be_ipascalcase.symbols = 接口
+dotnet_naming_rule.接口_should_be_ipascalcase.style = ipascalcase
+
+dotnet_naming_rule.类型_should_be_pascalcase.severity = suggestion
+dotnet_naming_rule.类型_should_be_pascalcase.symbols = 类型
+dotnet_naming_rule.类型_should_be_pascalcase.style = pascalcase
+
+dotnet_naming_rule.公共或受保护的字段_should_be_pascalcase.severity = suggestion
+dotnet_naming_rule.公共或受保护的字段_should_be_pascalcase.symbols = 公共或受保护的字段
+dotnet_naming_rule.公共或受保护的字段_should_be_pascalcase.style = pascalcase
+
+dotnet_naming_rule.公共或保护成员_should_be_pascalcase.severity = suggestion
+dotnet_naming_rule.公共或保护成员_should_be_pascalcase.symbols = 公共或保护成员
+dotnet_naming_rule.公共或保护成员_should_be_pascalcase.style = pascalcase
+
+dotnet_naming_rule.公共或保护静态成员_should_be_pascalcase.severity = suggestion
+dotnet_naming_rule.公共或保护静态成员_should_be_pascalcase.symbols = 公共或保护静态成员
+dotnet_naming_rule.公共或保护静态成员_should_be_pascalcase.style = pascalcase
+
+dotnet_naming_rule.参数_should_be_camelcase.severity = suggestion
+dotnet_naming_rule.参数_should_be_camelcase.symbols = 参数
+dotnet_naming_rule.参数_should_be_camelcase.style = camelcase
+
+dotnet_naming_rule.常量字段_should_be_train_case.severity = suggestion
+dotnet_naming_rule.常量字段_should_be_train_case.symbols = 常量字段
+dotnet_naming_rule.常量字段_should_be_train_case.style = train_case
+
+dotnet_naming_rule.私有方法_should_be__pascalcase.severity = suggestion
+dotnet_naming_rule.私有方法_should_be__pascalcase.symbols = 私有方法
+dotnet_naming_rule.私有方法_should_be__pascalcase.style = _pascalcase
+
+dotnet_naming_rule.私有或内部字段_should_be__pascalcase.severity = suggestion
+dotnet_naming_rule.私有或内部字段_should_be__pascalcase.symbols = 私有或内部字段
+dotnet_naming_rule.私有或内部字段_should_be__pascalcase.style = _pascalcase
+
+dotnet_naming_rule.私有或内部静态字段_should_be__pascalcase.severity = suggestion
+dotnet_naming_rule.私有或内部静态字段_should_be__pascalcase.symbols = 私有或内部静态字段
+dotnet_naming_rule.私有或内部静态字段_should_be__pascalcase.style = _pascalcase
+
+dotnet_naming_rule.类型参数_should_be_tpascalcase.severity = suggestion
+dotnet_naming_rule.类型参数_should_be_tpascalcase.symbols = 类型参数
+dotnet_naming_rule.类型参数_should_be_tpascalcase.style = tpascalcase
+
+# 符号规范
+
+dotnet_naming_symbols.接口.applicable_kinds = interface
+dotnet_naming_symbols.接口.applicable_accessibilities = public, internal, private, protected, protected_internal
+dotnet_naming_symbols.接口.required_modifiers = 
+
+dotnet_naming_symbols.私有方法.applicable_kinds = method
+dotnet_naming_symbols.私有方法.applicable_accessibilities = private
+dotnet_naming_symbols.私有方法.required_modifiers = 
+
+dotnet_naming_symbols.公共或受保护的字段.applicable_kinds = field
+dotnet_naming_symbols.公共或受保护的字段.applicable_accessibilities = public, protected
+dotnet_naming_symbols.公共或受保护的字段.required_modifiers = 
+
+dotnet_naming_symbols.私有或内部字段.applicable_kinds = field
+dotnet_naming_symbols.私有或内部字段.applicable_accessibilities = internal, private
+dotnet_naming_symbols.私有或内部字段.required_modifiers = 
+
+dotnet_naming_symbols.私有或内部静态字段.applicable_kinds = field
+dotnet_naming_symbols.私有或内部静态字段.applicable_accessibilities = internal, private
+dotnet_naming_symbols.私有或内部静态字段.required_modifiers = static
+
+dotnet_naming_symbols.类型.applicable_kinds = class, struct, interface, enum
+dotnet_naming_symbols.类型.applicable_accessibilities = public, internal, private, protected, protected_internal
+dotnet_naming_symbols.类型.required_modifiers = 
+
+dotnet_naming_symbols.公共或保护成员.applicable_kinds = property, field, event, class, struct, interface, enum, delegate, method
+dotnet_naming_symbols.公共或保护成员.applicable_accessibilities = public, internal, protected, protected_internal
+dotnet_naming_symbols.公共或保护成员.required_modifiers = 
+
+dotnet_naming_symbols.公共或保护静态成员.applicable_kinds = property, field, event, class, struct, interface, enum, delegate, method
+dotnet_naming_symbols.公共或保护静态成员.applicable_accessibilities = public, internal, protected, protected_internal
+dotnet_naming_symbols.公共或保护静态成员.required_modifiers = static
+
+dotnet_naming_symbols.参数.applicable_kinds = parameter
+dotnet_naming_symbols.参数.applicable_accessibilities = public, internal, private, protected, protected_internal
+dotnet_naming_symbols.参数.required_modifiers = 
+
+dotnet_naming_symbols.常量字段.applicable_kinds = *
+dotnet_naming_symbols.常量字段.applicable_accessibilities = *
+dotnet_naming_symbols.常量字段.required_modifiers = const
+
+dotnet_naming_symbols.类型参数.applicable_kinds = type_parameter
+dotnet_naming_symbols.类型参数.applicable_accessibilities = *
+dotnet_naming_symbols.类型参数.required_modifiers = 
+
+# 命名样式
+
+dotnet_naming_style.pascalcase.required_prefix = 
+dotnet_naming_style.pascalcase.required_suffix = 
+dotnet_naming_style.pascalcase.word_separator = 
+dotnet_naming_style.pascalcase.capitalization = pascal_case
+
+dotnet_naming_style.ipascalcase.required_prefix = I
+dotnet_naming_style.ipascalcase.required_suffix = 
+dotnet_naming_style.ipascalcase.word_separator = 
+dotnet_naming_style.ipascalcase.capitalization = pascal_case
+
+dotnet_naming_style.camelcase.required_prefix = 
+dotnet_naming_style.camelcase.required_suffix = 
+dotnet_naming_style.camelcase.word_separator = 
+dotnet_naming_style.camelcase.capitalization = camel_case
+
+dotnet_naming_style._pascalcase.required_prefix = _
+dotnet_naming_style._pascalcase.required_suffix = 
+dotnet_naming_style._pascalcase.word_separator = 
+dotnet_naming_style._pascalcase.capitalization = pascal_case
+
+dotnet_naming_style.train_case.required_prefix = 
+dotnet_naming_style.train_case.required_suffix = 
+dotnet_naming_style.train_case.word_separator = _
+dotnet_naming_style.train_case.capitalization = all_upper
+
+dotnet_naming_style.tpascalcase.required_prefix = T
+dotnet_naming_style.tpascalcase.required_suffix = 
+dotnet_naming_style.tpascalcase.word_separator = 
+dotnet_naming_style.tpascalcase.capitalization = pascal_case
