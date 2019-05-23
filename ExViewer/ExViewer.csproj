@@ -297,6 +297,7 @@
     <Compile Include="ViewModels\SavedVM.cs" />
     <Compile Include="ViewModels\GalleryVM.cs" />
     <Compile Include="ViewModels\SearchResultVM{T}.cs" />
+    <Compile Include="ViewModels\WatchedVM.cs" />
     <Compile Include="ViewModels\SearchVM.cs" />
     <Compile Include="Controls\AboutControl.xaml.cs">
       <DependentUpon>AboutControl.xaml</DependentUpon>
@@ -329,6 +330,9 @@
     </Compile>
     <Compile Include="Views\PopularPage.xaml.cs">
       <DependentUpon>PopularPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WatchedPage.xaml.cs">
+      <DependentUpon>WatchedPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ToplistPage.xaml.cs">
       <DependentUpon>ToplistPage.xaml</DependentUpon>
@@ -392,6 +396,9 @@
     <Content Include="Assets\JumpList\Search.contrast-black.png" />
     <Content Include="Assets\JumpList\Search.contrast-white.png" />
     <Content Include="Assets\JumpList\Search.png" />
+    <Content Include="Assets\JumpList\Watched.constract-black.png" />
+    <Content Include="Assets\JumpList\Watched.constract-white.png" />
+    <Content Include="Assets\JumpList\Watched.png" />
     <Content Include="Assets\ShareTarget\CopyToClipboard.png" />
     <Content Include="Assets\ShareTarget\MicrosoftEdge.png" />
     <Content Include="Assets\ShareTarget\Settings.png" />
@@ -575,6 +582,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\WatchedPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ToplistPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -711,11 +722,7 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties Strings_4zh-hant_4Resources_1resJson__JSONSchema="" />
-    </VisualStudio>
-  </ProjectExtensions>
+  <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

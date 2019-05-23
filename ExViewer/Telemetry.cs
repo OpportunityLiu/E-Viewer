@@ -140,6 +140,9 @@ namespace ExViewer
                 case SearchPage sp:
                     AddtionalInfo(sb, sp);
                     break;
+                case WatchedPage wp:
+                    AddtionalInfo(sb, wp);
+                    break;
                 case FavoritesPage fp:
                     AddtionalInfo(sb, fp);
                     break;
@@ -307,6 +310,15 @@ Please check attchments, and remove anything that you wouldn't like to send.
                 return;
             }
             AddtionalInfo(sb, sp.ViewModel);
+        }
+
+        private static void AddtionalInfo(StringBuilder sb, WatchedPage wp)
+        {
+            if (wp.ViewModel is null)
+            {
+                return;
+            }
+            AddtionalInfo(sb, wp.ViewModel);
         }
 
         private static void AddtionalInfo(StringBuilder sb, GalleryPage gp)

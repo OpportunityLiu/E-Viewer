@@ -11,6 +11,7 @@ namespace ExClient.Launch
         private static readonly UriHandler[] handlers = new UriHandler[]
         {
             SearchHandler.Instance,
+            WatchedHandler.Instance,
             SearchCategoryHandler.Instance,
             SearchUploaderAndTagHandler.Instance,
             FavoritesSearchHandler.Instance,

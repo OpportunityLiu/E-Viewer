@@ -123,7 +123,8 @@
     <Compile Include="Internal\GalleryListParser.cs" />
     <Compile Include="Internal\ThumbClient.cs" />
     <Compile Include="Launch\PopularHandler.cs" />
-    <Compile Include="Search\WatchingSearchResult.cs" />
+    <Compile Include="Launch\WatchedHandler.cs" />
+    <Compile Include="Search\WatchedSearchResult.cs" />
     <Compile Include="Services\ExpungeInfo.cs" />
     <Compile Include="Services\ExpungeReason.cs" />
     <Compile Include="Services\ExpungeRecord.cs" />

@@ -140,6 +140,7 @@ namespace ExViewer.Database
         Favorites,
         Gallery,
         Image,
+        Watched,
     }
 
     internal class HistoryRecord : IEquatable<HistoryRecord>
@@ -218,6 +219,8 @@ namespace ExViewer.Database
                     var data = ImageInfo.Parse(Uri);
                     return resource.Image(title, data.PageId);
                 }
+                case HistoryRecordType.Watched:
+                    return resource.Watched(title);
                 default:
                     return resource.Default(title);
                 }

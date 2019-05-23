@@ -125,7 +125,8 @@
         "$Favorites": "{searchTerm} - {searchCategory}",
         "$Gallery": "{galleryName}",
         "$Image": "{galleryName} - 第\u00a0{currentPage}\u00a0頁",
-        "$Search": "{searchTerm} - 搜尋"
+        "$Search": "{searchTerm} - 搜尋",
+        "$Watched": "{searchTerm} - 關注"
       }
     }
   },
@@ -346,7 +347,8 @@
       "SearchSplitViewTab/Content": "搜尋",
       "SettingsSplitViewTab/Content": "設定",
       "ToplistSplitViewTab/Content": "榜單",
-      "UserInfoButton/ToolTipService/ToolTip": "使用者資訊"
+      "UserInfoButton/ToolTipService/ToolTip": "使用者資訊",
+      "WatchedSplitViewTab/Content": "關注"
     },
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "刪除全部",
@@ -381,6 +383,13 @@
         "SecondaryButtonText": "在 GitHub 上檢視",
         "Title": "新版本"
       }
+    },
+    "WatchedPage": {
+      "AdvancedToggleButton/OffContent": "顯示高階選項",
+      "AdvancedToggleButton/OnContent": "隱藏高階選項",
+      "AutoSuggestBox/PlaceholderText": "搜尋…",
+      "EmptyTextBlock/Text": "沒有結果",
+      "LoadingMoreTextBlock/Text": "正在載入更多畫廊…"
     }
   }
 }

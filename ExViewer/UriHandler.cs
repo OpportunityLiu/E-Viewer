@@ -64,7 +64,7 @@ namespace ExViewer
                     return true;
                 }
 
-                var ignore = Launcher.LaunchUriAsync(uri, new LauncherOptions
+                _ = Launcher.LaunchUriAsync(uri, new LauncherOptions
                 {
                     DesiredRemainingView = Windows.UI.ViewManagement.ViewSizePreference.UseMore,
                     IgnoreAppUriHandlers = true,
@@ -115,14 +115,24 @@ namespace ExViewer
                     case SearchLaunchResult sr:
                         switch (sr.Data)
                         {
+                        case WatchedSearchResult wr:
+                        {
+                            var vm = SearchVM.GetVM(wr);
+                            await RootControl.RootController.Navigator.NavigateAsync(typeof(WatchedPage), vm.SearchQuery);
+                            return;
+                        }
                         case CategorySearchResult ksr:
+                        {
                             var vm = SearchVM.GetVM(ksr);
                             await RootControl.RootController.Navigator.NavigateAsync(typeof(SearchPage), vm.SearchQuery);
                             return;
+                        }
                         case FavoritesSearchResult fsr:
-                            var fvm = FavoritesVM.GetVM(fsr);
-                            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), fvm.SearchQuery);
+                        {
+                            var vm = FavoritesVM.GetVM(fsr);
+                            await RootControl.RootController.Navigator.NavigateAsync(typeof(FavoritesPage), vm.SearchQuery);
                             return;
+                        }
                         }
                         throw new InvalidOperationException();
                     case PopularLaunchResult pr:

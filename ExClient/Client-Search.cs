@@ -23,14 +23,14 @@ namespace ExClient
         #endregion Keyword search
 
         #region Watched search
-        public WatchingSearchResult SearchWatched(string keyword)
+        public WatchedSearchResult SearchWatched(string keyword)
             => SearchWatched(keyword, Category.Unspecified);
 
-        public WatchingSearchResult SearchWatched(string keyword, Category category)
+        public WatchedSearchResult SearchWatched(string keyword, Category category)
             => SearchWatched(keyword, category, default);
 
-        public WatchingSearchResult SearchWatched(string keyword, Category category, AdvancedSearchOptions advancedSearch)
-            => WatchingSearchResult.Search(keyword, category, advancedSearch);
+        public WatchedSearchResult SearchWatched(string keyword, Category category, AdvancedSearchOptions advancedSearch)
+            => WatchedSearchResult.Search(keyword, category, advancedSearch);
         #endregion Keyword search
 
         #region Uploader search

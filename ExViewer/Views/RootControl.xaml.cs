@@ -27,24 +27,26 @@ namespace ExViewer.Views
         {
             InitializeComponent();
 
-            manager.Handlers.Add(fm_inner.AsNavigationHandler());
+            _Manager.Handlers.Add(fm_inner.AsNavigationHandler());
 
-            tabs = new Dictionary<Controls.SplitViewTab, Type>()
+            _Tabs = new Dictionary<Controls.SplitViewTab, Type>()
             {
                 [svt_Saved] = typeof(SavedPage),
                 [svt_Cached] = typeof(CachedPage),
                 [svt_Search] = typeof(SearchPage),
+                [svt_Watched] = typeof(WatchedPage),
                 [svt_Favorites] = typeof(FavoritesPage),
                 [svt_Popular] = typeof(PopularPage),
                 [svt_Toplist] = typeof(ToplistPage),
                 [svt_Settings] = typeof(SettingsPage)
             };
 
-            pages = new Dictionary<Type, Controls.SplitViewTab>()
+            _Pages = new Dictionary<Type, Controls.SplitViewTab>()
             {
                 [typeof(CachedPage)] = svt_Cached,
                 [typeof(SavedPage)] = svt_Saved,
                 [typeof(SearchPage)] = svt_Search,
+                [typeof(WatchedPage)] = svt_Watched,
                 [typeof(FavoritesPage)] = svt_Favorites,
                 [typeof(PopularPage)] = svt_Popular,
                 [typeof(ToplistPage)] = svt_Toplist,
@@ -71,10 +73,10 @@ namespace ExViewer.Views
             };
         }
 
-        private readonly Dictionary<Controls.SplitViewTab, Type> tabs;
-        private readonly Dictionary<Type, Controls.SplitViewTab> pages;
+        private readonly Dictionary<Controls.SplitViewTab, Type> _Tabs;
+        private readonly Dictionary<Type, Controls.SplitViewTab> _Pages;
 
-        private bool layoutLoaded;
+        private bool _LayoutLoaded;
 
         public UserInfo UserInfo
         {
@@ -86,24 +88,24 @@ namespace ExViewer.Views
         public static readonly DependencyProperty UserInfoProperty =
             DependencyProperty.Register("UserInfo", typeof(UserInfo), typeof(RootControl), new PropertyMetadata(null));
 
-        private readonly Navigator manager = Navigator.GetOrCreateForCurrentView();
+        private readonly Navigator _Manager = Navigator.GetOrCreateForCurrentView();
 
         private async void Control_Loading(FrameworkElement sender, object args)
         {
-            if (!layoutLoaded)
+            if (!_LayoutLoaded)
             {
                 RootController.SetRoot(this);
             }
             else
             {
-                await manager.NavigateAsync(typeof(SearchPage));
+                await _Manager.NavigateAsync(typeof(WatchedPage));
             }
         }
 
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            var temp = layoutLoaded;
-            layoutLoaded = true;
+            var temp = _LayoutLoaded;
+            _LayoutLoaded = true;
             if (!temp)
             {
                 UserInfo = await UserInfo.LoadFromCache();
@@ -123,7 +125,7 @@ namespace ExViewer.Views
         private void fm_inner_Navigated(object sender, NavigationEventArgs e)
         {
             var pageType = fm_inner.Content.GetType();
-            if (pages.TryGetValue(pageType, out var tab))
+            if (_Pages.TryGetValue(pageType, out var tab))
             {
                 tab.IsChecked = true;
             }
@@ -138,7 +140,7 @@ namespace ExViewer.Views
             }
 
             var pageType = content.GetType();
-            if (pages.TryGetValue(pageType, out var tab))
+            if (_Pages.TryGetValue(pageType, out var tab))
             {
                 tab.IsChecked = false;
             }
@@ -150,7 +152,7 @@ namespace ExViewer.Views
             if (s.IsChecked)
                 return;
             RootController.SwitchSplitView(false);
-            await manager.NavigateAsync(tabs[s]);
+            await _Manager.NavigateAsync(_Tabs[s]);
         }
 
         private async void btn_UserInfo_Click(object sender, RoutedEventArgs e)
@@ -158,7 +160,7 @@ namespace ExViewer.Views
             if (!(fm_inner.Content is InfoPage))
             {
                 RootController.SwitchSplitView(false);
-                await manager.NavigateAsync(typeof(InfoPage));
+                await _Manager.NavigateAsync(typeof(InfoPage));
             }
         }
 

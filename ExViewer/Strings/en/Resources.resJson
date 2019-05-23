@@ -125,7 +125,8 @@
         "$Favorites": "{searchTerm} - {searchCategory}",
         "$Gallery": "{galleryName}",
         "$Image": "{galleryName} - Page\u00a0{currentPage}",
-        "$Search": "{searchTerm} - Search"
+        "$Search": "{searchTerm} - Search",
+        "$Watched": "{searchTerm} - Watched"
       }
     }
   },
@@ -346,7 +347,8 @@
       "SearchSplitViewTab/Content": "Search",
       "SettingsSplitViewTab/Content": "Settings",
       "ToplistSplitViewTab/Content": "Toplists",
-      "UserInfoButton/ToolTipService/ToolTip": "User info"
+      "UserInfoButton/ToolTipService/ToolTip": "User info",
+      "WatchedSplitViewTab/Content": "Watched"
     },
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "Delete all",
@@ -381,6 +383,13 @@
         "SecondaryButtonText": "View in GitHub",
         "Title": "NEW VERSION"
       }
+    },
+    "WatchedPage": {
+      "AdvancedToggleButton/OffContent": "Show advanced options",
+      "AdvancedToggleButton/OnContent": "Hide advanced options",
+      "AutoSuggestBox/PlaceholderText": "Search…",
+      "EmptyTextBlock/Text": "No hits found",
+      "LoadingMoreTextBlock/Text": "Loading more galleries…"
     }
   }
 }

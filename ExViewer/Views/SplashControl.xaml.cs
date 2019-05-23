@@ -170,7 +170,7 @@ namespace ExViewer.Views
                 if (!client.NeedLogOn)
                 {
                     SettingCollection.Current.Apply();
-                    var initSearchTask = SearchVM.InitAsync();
+                    var initSearchTask = WatchedVM.InitAsync();
                     var waitTime = 0;
                     while (waitTime < 7000)
                     {

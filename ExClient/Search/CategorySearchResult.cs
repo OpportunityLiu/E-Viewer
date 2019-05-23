@@ -12,6 +12,7 @@ namespace ExClient.Search
             SearchHandler.Instance,
             SearchCategoryHandler.Instance,
             SearchUploaderAndTagHandler.Instance,
+            WatchedHandler.Instance,
         };
 
         public static bool TryParse(Uri uri, out CategorySearchResult result)

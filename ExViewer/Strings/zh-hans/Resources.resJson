@@ -125,7 +125,8 @@
         "$Favorites": "{searchTerm} - {searchCategory}",
         "$Gallery": "{galleryName}",
         "$Image": "{galleryName} - 第\u00a0{currentPage}\u00a0页",
-        "$Search": "{searchTerm} - 搜索"
+        "$Search": "{searchTerm} - 搜索",
+        "$Watched": "{searchTerm} - 关注"
       }
     }
   },
@@ -346,7 +347,8 @@
       "SearchSplitViewTab/Content": "搜索",
       "SettingsSplitViewTab/Content": "设置",
       "ToplistSplitViewTab/Content": "榜单",
-      "UserInfoButton/ToolTipService/ToolTip": "用户信息"
+      "UserInfoButton/ToolTipService/ToolTip": "用户信息",
+      "WatchedSplitViewTab/Content": "关注"
     },
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "删除全部",
@@ -381,6 +383,13 @@
         "SecondaryButtonText": "在 GitHub 上查看",
         "Title": "新版本"
       }
+    },
+    "WatchedPage": {
+      "AdvancedToggleButton/OffContent": "显示高级选项",
+      "AdvancedToggleButton/OnContent": "隐藏高级选项",
+      "AutoSuggestBox/PlaceholderText": "搜索…",
+      "EmptyTextBlock/Text": "没有结果",
+      "LoadingMoreTextBlock/Text": "正在加载更多画廊…"
     }
   }
 }

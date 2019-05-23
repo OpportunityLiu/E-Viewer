@@ -177,7 +177,7 @@ namespace ExViewer.Views
                 SetFullScreen(!IsFullScreen);
             }
 
-            public static Navigator Navigator => Parent.manager;
+            public static Navigator Navigator => Parent._Manager;
 
             public static Frame Frame => Parent?.fm_inner;
 
@@ -219,7 +219,7 @@ namespace ExViewer.Views
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
                 }
 
-                Parent.manager.IsBackEnabled = true;
+                Parent._Manager.IsBackEnabled = true;
             }
 
             internal static void HandleUriLaunch()
@@ -287,8 +287,8 @@ namespace ExViewer.Views
                     Parent.sv_root.IsPaneOpen = true;
                     OpenSplitViewPane.Begin();
                     Themes.ThemeExtention.SetStatusBarInfoVisibility(Visibility.Visible);
-                    Parent.manager.IsBackEnabled = false;
-                    var currentTab = Parent.tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? Parent.svt_Search;
+                    Parent._Manager.IsBackEnabled = false;
+                    var currentTab = Parent._Tabs.Keys.FirstOrDefault(t => t.IsChecked) ?? Parent.svt_Search;
                     currentTab.Focus(FocusState.Programmatic);
                 }
                 else
@@ -430,8 +430,8 @@ namespace ExViewer.Views
                 Parent.FindName(nameof(Parent.rp_Disable));
                 Parent.sv_root.IsEnabled = false;
 
-                Parent.manager.IsBackEnabled = false;
-                Parent.manager.IsForwardEnabled = false;
+                Parent._Manager.IsBackEnabled = false;
+                Parent._Manager.IsForwardEnabled = false;
 
                 Parent.rp_Disable.Visibility = Visibility.Visible;
 
@@ -453,8 +453,8 @@ namespace ExViewer.Views
 
                 Parent.sv_root.IsEnabled = true;
 
-                Parent.manager.IsBackEnabled = true;
-                Parent.manager.IsForwardEnabled = true;
+                Parent._Manager.IsBackEnabled = true;
+                Parent._Manager.IsForwardEnabled = true;
 
                 Parent.rp_Disable.Visibility = Visibility.Collapsed;
 

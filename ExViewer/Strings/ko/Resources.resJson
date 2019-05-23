@@ -24,6 +24,7 @@
     "AdvancedSearchViewer": {
       "DescriptionCheckBox/Content": "갤러리 설명 검색",
       "DisableDefaultLanguageFiltersCheckBox/Content": "기본 언어 필터 사용 안 함",
+      "DisableDefaultTagsFiltersCheckBox/Content": "Disable default tags filters",
       "DisableDefaultUploaderFiltersCheckBox/Content": "기본 업로더 필터 사용 안 함",
       "DownvotedTagsCheckBox/Content": "비추천 태그 검색",
       "LowPowerTagsCheckBox/Content": "낮은 중요도 태그 검색",
@@ -124,7 +125,8 @@
         "$Favorites": "{searchTerm} - {searchCategory}",
         "$Gallery": "{galleryName}",
         "$Image": "{galleryName} - 페이지\u00a0{currentPage}",
-        "$Search": "{searchTerm} - 검색"
+        "$Search": "{searchTerm} - 검색",
+        "$Watched": "{searchTerm} - Watched"
       }
     }
   },
@@ -345,7 +347,8 @@
       "SearchSplitViewTab/Content": "검색",
       "SettingsSplitViewTab/Content": "설정",
       "ToplistSplitViewTab/Content": "탑 리스트",
-      "UserInfoButton/ToolTipService/ToolTip": "사용자 정보"
+      "UserInfoButton/ToolTipService/ToolTip": "사용자 정보",
+      "WatchedSplitViewTab/Content": "Watched"
     },
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "모두 삭제",
@@ -380,6 +383,13 @@
         "SecondaryButtonText": "GitHub에서 보기",
         "Title": "새 버전"
       }
+    },
+    "WatchedPage": {
+      "AdvancedToggleButton/OffContent": "고급 옵션 표시",
+      "AdvancedToggleButton/OnContent": "고급 옵션 숨기기s",
+      "AutoSuggestBox/PlaceholderText": "검색…",
+      "EmptyTextBlock/Text": "결과 없음",
+      "LoadingMoreTextBlock/Text": "더 많은 갤러리를 불러오는 중…"
     }
   }
 }
