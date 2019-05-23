@@ -21,8 +21,8 @@ namespace ExClient.Api
             ApiKey = apiKey;
         }
 
-        private static Regex _RegUid = new Regex(@"var\s+apiuid\s*=\s*(\d+)", RegexOptions.Compiled);
-        private static Regex _RegKey = new Regex(@"var\s+apikey\s*=\s*""([A-Fa-f0-9]+)""", RegexOptions.Compiled);
+        private static readonly Regex _RegUid = new Regex(@"var\s+apiuid\s*=\s*(\d+)", RegexOptions.Compiled);
+        private static readonly Regex _RegKey = new Regex(@"var\s+apikey\s*=\s*""([A-Fa-f0-9]+)""", RegexOptions.Compiled);
 
         public static void Update(string html)
         {
@@ -68,7 +68,6 @@ namespace ExClient.Api
                 {
                     // sometimes apis returns HTML, try a second time
                     req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
-                    token.Register(() => req.Cancel());
                     resStr = await req;
                 }
                 var resobj = JsonConvert.DeserializeObject<TResponse>(resStr);

@@ -378,7 +378,6 @@ namespace ExClient.Galleries
 
         internal void RefreshMetaData(HtmlDocument doc)
         {
-            ApiToken.Update(doc.DocumentNode.OuterHtml);
             var favNode = doc.GetElementbyId("fav");
             if (favNode != null)
             {

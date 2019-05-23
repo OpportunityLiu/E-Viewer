@@ -1,4 +1,5 @@
-﻿using ExClient.HentaiVerse;
+﻿using ExClient.Api;
+using ExClient.HentaiVerse;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -161,10 +162,8 @@ namespace ExClient.Internal
                 var doc = new HtmlDocument();
                 var response = await request;
                 _CheckSadPanda(response);
-                using (var stream = (await response.Content.ReadAsInputStreamAsync()).AsStreamForRead())
-                {
-                    doc.Load(stream);
-                }
+                var resstr = await response.Content.ReadAsStringAsync();
+                doc.LoadHtml(resstr);
                 var rootNode = doc.DocumentNode;
                 if (rootNode.ChildNodes.Count == 1 && rootNode.FirstChild.NodeType == HtmlNodeType.Text)
                     _CheckStringResponse(rootNode.FirstChild.InnerText);
@@ -197,6 +196,7 @@ namespace ExClient.Internal
                 } while (false);
                 response.EnsureSuccessStatusCode();
                 HentaiVerseInfo.AnalyzePage(doc);
+                ApiToken.Update(resstr);
                 return doc;
             });
         }
