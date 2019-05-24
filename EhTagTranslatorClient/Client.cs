@@ -94,7 +94,10 @@ namespace EhTagTranslatorClient
         public static async Task<bool> NeedUpdateAsync()
         {
             var release = await _GetReleaseAsync();
-            return release.id != CurrentVersion;
+            var needUpdate = release.id != CurrentVersion;
+            if (!needUpdate)
+                LastUpdate = DateTimeOffset.Now;
+            return needUpdate;
         }
 
         public static Task UpdateAsync()
