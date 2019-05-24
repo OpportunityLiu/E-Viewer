@@ -25,9 +25,6 @@ namespace ExViewer.Views
             InitializeComponent();
         }
 
-        private Button _btnExpandButton;
-        private Button btnExpandButton => System.Threading.LazyInitializer.EnsureInitialized(ref _btnExpandButton, () => ab.Descendants<Button>("ExpandButton").FirstOrDefault());
-
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             TagSuggestionService.IncreaseStateCode(asb);
@@ -36,6 +33,7 @@ namespace ExViewer.Views
             ViewModel.SetQueryWithSearchResult();
             ViewModel.Search.Executed += Search_Executed;
             await Dispatcher.YieldIdle();
+            var btnExpandButton = ab.Descendants<Button>("ExpandButton").FirstOrDefault();
             if (e.NavigationMode == NavigationMode.New)
             {
                 if (e.Parameter != null) // for the pre-load page
