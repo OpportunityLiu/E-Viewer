@@ -396,8 +396,8 @@
     <Content Include="Assets\JumpList\Search.contrast-black.png" />
     <Content Include="Assets\JumpList\Search.contrast-white.png" />
     <Content Include="Assets\JumpList\Search.png" />
-    <Content Include="Assets\JumpList\Watched.constract-black.png" />
-    <Content Include="Assets\JumpList\Watched.constract-white.png" />
+    <Content Include="Assets\JumpList\Watched.contrast-black.png" />
+    <Content Include="Assets\JumpList\Watched.contrast-white.png" />
     <Content Include="Assets\JumpList\Watched.png" />
     <Content Include="Assets\ShareTarget\CopyToClipboard.png" />
     <Content Include="Assets\ShareTarget\MicrosoftEdge.png" />

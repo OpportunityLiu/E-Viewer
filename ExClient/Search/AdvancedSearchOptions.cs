@@ -111,24 +111,29 @@ namespace ExClient.Search
 
         internal static AdvancedSearchOptions ParseUri(UriHandlerData data)
         {
-            return new AdvancedSearchOptions(
-                searchName: data.Queries.GetBoolean(_SearchNameTag),
-                searchTags: data.Queries.GetBoolean(_SearchTagsTag),
-                searchDescription: data.Queries.GetBoolean(_SearchDescriptionTag),
-                searchTorrentFilenames: data.Queries.GetBoolean(_SearchTorrentFilenamesTag),
-                galleriesWithTorrentsOnly: data.Queries.GetBoolean(_GalleriesWithTorrentsOnlyTag),
-                searchLowPowerTags: data.Queries.GetBoolean(_SearchLowPowerTagsTag),
-                searchDownvotedTags: data.Queries.GetBoolean(_SearchDownvotedTagsTag),
-                showExpungedGalleries: data.Queries.GetBoolean(_ShowExpungedGalleriesTag),
-                searchMinimumRating: data.Queries.GetBoolean(_SearchMinimumRatingTag),
-                minimumRating: data.Queries.GetInt32(_MinimumRatingTag),
-                searchPageCount: data.Queries.GetBoolean(_SearchPageCountTag),
-                minimumPageCount: data.Queries.GetInt32(_MinimumPageCountTag),
-                maximumPageCount: data.Queries.GetInt32(_MaximumPageCountTag),
-                disableDefaultLanguageFilters: data.Queries.GetBoolean(_DisableDefaultLanguageFiltersTag),
-                disableDefaultUploaderFilters: data.Queries.GetBoolean(_DisableDefaultUploaderFiltersTag),
-                disableDefaultTagsFilters: data.Queries.GetBoolean(_DisableDefaultTagsFiltersTag)
-            );
+            if (data.Queries.GetBoolean("advsearch"))
+            {
+                return new AdvancedSearchOptions(
+                    searchName: data.Queries.GetBoolean(_SearchNameTag),
+                    searchTags: data.Queries.GetBoolean(_SearchTagsTag),
+                    searchDescription: data.Queries.GetBoolean(_SearchDescriptionTag),
+                    searchTorrentFilenames: data.Queries.GetBoolean(_SearchTorrentFilenamesTag),
+                    galleriesWithTorrentsOnly: data.Queries.GetBoolean(_GalleriesWithTorrentsOnlyTag),
+                    searchLowPowerTags: data.Queries.GetBoolean(_SearchLowPowerTagsTag),
+                    searchDownvotedTags: data.Queries.GetBoolean(_SearchDownvotedTagsTag),
+                    showExpungedGalleries: data.Queries.GetBoolean(_ShowExpungedGalleriesTag),
+                    searchMinimumRating: data.Queries.GetBoolean(_SearchMinimumRatingTag),
+                    minimumRating: data.Queries.GetInt32(_MinimumRatingTag),
+                    searchPageCount: data.Queries.GetBoolean(_SearchPageCountTag),
+                    minimumPageCount: data.Queries.GetInt32(_MinimumPageCountTag),
+                    maximumPageCount: data.Queries.GetInt32(_MaximumPageCountTag),
+                    disableDefaultLanguageFilters: data.Queries.GetBoolean(_DisableDefaultLanguageFiltersTag),
+                    disableDefaultUploaderFilters: data.Queries.GetBoolean(_DisableDefaultUploaderFiltersTag),
+                    disableDefaultTagsFilters: data.Queries.GetBoolean(_DisableDefaultTagsFiltersTag)
+                );
+            }
+            else
+                return new AdvancedSearchOptions();
         }
 
         private const string _SearchNameTag = "f_sname";
