@@ -211,7 +211,7 @@
                                      AccessKey="W"
                                      XYFocusUp="{x:Bind btn_UserInfo}">
                 <controls:SplitViewTab.Icon>
-                  <FontIcon Glyph="&#xEBE6;"
+                  <FontIcon Glyph="&#xE7B3;"
                             FontSize="16" />
                 </controls:SplitViewTab.Icon>
               </controls:SplitViewTab>
@@ -255,7 +255,7 @@
                                      AccessKey="T">
                 <controls:SplitViewTab.Icon>
                   <FontIcon FontFamily="Segoe MDL2 Assets"
-                            Glyph="&#xEC24;" />
+                            Glyph="&#xE789;" />
                 </controls:SplitViewTab.Icon>
               </controls:SplitViewTab>
               <controls:SplitViewTab x:Uid="Views/RootControl/SavedSplitViewTab"
