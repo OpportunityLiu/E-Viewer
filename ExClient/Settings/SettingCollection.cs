@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
 
@@ -49,7 +51,7 @@ namespace ExClient.Settings
                 item.Owner = this;
             }
             loadCache();
-            loadSettingsDic();
+            _LoadSettingsDic();
         }
 
         private readonly Dictionary<string, string> _Settings = new Dictionary<string, string>();
@@ -133,12 +135,12 @@ namespace ExClient.Settings
                 }
                 finally
                 {
-                    loadSettingsDic();
+                    _LoadSettingsDic();
                 }
             });
         }
 
-        private void loadSettingsDic()
+        private void _LoadSettingsDic()
         {
             foreach (var item in items.Values)
             {
@@ -148,22 +150,37 @@ namespace ExClient.Settings
             OnPropertyReset();
         }
 
-        public IAsyncAction SendAsync()
+        public async Task SendAsync(CancellationToken token = default)
         {
-            return AsyncInfo.Run(async token =>
+            try
             {
-                try
-                {
-                    if (_Settings.Count == 0)
-                    {
-                        await FetchAsync();
-                    }
+                if (_Settings.Count == 0)
+                    await FetchAsync();
 
-                    var postDic = new Dictionary<string, string>(_Settings);
-                    foreach (var item in items.Values)
+                var postDic = new Dictionary<string, string>(_Settings);
+                foreach (var item in items.Values)
+                {
+                    item.ApplyChanges(postDic);
+                }
+                var isSame = true;
+                if(postDic.Count == _Settings.Count)
+                {
+                    foreach (var item in postDic)
                     {
-                        item.ApplyChanges(postDic);
+                        if (_Settings.TryGetValue(item.Key, out var ov) && ov == item.Value)
+                            continue;
+                        else
+                        {
+                            isSame = false;
+                            break;
+                        }
                     }
+                }
+                else
+                    isSame = false;
+
+                if (!isSame)
+                {
                     var postData = Client.Current.HttpClient.PostAsync(configUri, postDic);
                     token.Register(postData.Cancel);
                     var r = await postData;
@@ -171,11 +188,11 @@ namespace ExClient.Settings
                     doc.LoadHtml(await r.Content.ReadAsStringAsync());
                     updateSettingsDic(doc);
                 }
-                finally
-                {
-                    loadSettingsDic();
-                }
-            });
+            }
+            finally
+            {
+                _LoadSettingsDic();
+            }
         }
 
         private readonly Dictionary<string, SettingProvider> items = new Dictionary<string, SettingProvider>
@@ -187,46 +204,74 @@ namespace ExClient.Settings
             [nameof(FavoriteCategoryNames)] = new FavoriteCategoryNamesSettingProvider(),
         };
 
-        private SettingProvider getProvider([System.Runtime.CompilerServices.CallerMemberName]string key = null)
+        private SettingProvider _GetProvider([System.Runtime.CompilerServices.CallerMemberName]string key = null)
         {
             return items[key];
         }
 
-        public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)getProvider();
-        public ExcludedUploadersSettingProvider ExcludedUploaders => (ExcludedUploadersSettingProvider)getProvider();
+        public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)_GetProvider();
+        public ExcludedUploadersSettingProvider ExcludedUploaders => (ExcludedUploadersSettingProvider)_GetProvider();
         public Tagging.Namespace ExcludedTagNamespaces
         {
-            get => ((ExcludedTagNamespacesSettingProvider)getProvider()).Value;
+            get => ((ExcludedTagNamespacesSettingProvider)_GetProvider()).Value;
             set
             {
-                ((ExcludedTagNamespacesSettingProvider)getProvider()).Value = value;
+                ((ExcludedTagNamespacesSettingProvider)_GetProvider()).Value = value;
                 OnPropertyChanged();
             }
         }
 
         public ImageSize ResampledImageSize
         {
-            get => ((DefaultSettingProvider)getProvider("Default")).ResampledImageSize;
+            get => ((DefaultSettingProvider)_GetProvider("Default")).ResampledImageSize;
             set
             {
-                ((DefaultSettingProvider)getProvider("Default")).ResampledImageSize = value;
+                ((DefaultSettingProvider)_GetProvider("Default")).ResampledImageSize = value;
                 OnPropertyChanged();
             }
         }
 
         public CommentsOrder CommentsOrder
         {
-            get => ((DefaultSettingProvider)getProvider("Default")).CommentsOrder;
-            set => ((DefaultSettingProvider)getProvider("Default")).CommentsOrder = value;
+            get => ((DefaultSettingProvider)_GetProvider("Default")).CommentsOrder;
+            set
+            {
+                ((DefaultSettingProvider)_GetProvider("Default")).CommentsOrder = value;
+                OnPropertyChanged();
+            }
         }
 
         public FavoritesOrder FavoritesOrder
         {
-            get => ((DefaultSettingProvider)getProvider("Default")).FavoritesOrder;
-            set => ((DefaultSettingProvider)getProvider("Default")).FavoritesOrder = value;
+            get => ((DefaultSettingProvider)_GetProvider("Default")).FavoritesOrder;
+            set
+            {
+                ((DefaultSettingProvider)_GetProvider("Default")).FavoritesOrder = value;
+                OnPropertyChanged();
+            }
         }
 
-        public FavoriteCategoryNamesSettingProvider FavoriteCategoryNames => (FavoriteCategoryNamesSettingProvider)getProvider();
+        public int TagFilteringThreshold
+        {
+            get => ((DefaultSettingProvider)_GetProvider("Default")).TagFilteringThreshold;
+            set
+            {
+                ((DefaultSettingProvider)_GetProvider("Default")).TagFilteringThreshold = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int TagWatchingThreshold
+        {
+            get => ((DefaultSettingProvider)_GetProvider("Default")).TagWatchingThreshold;
+            set
+            {
+                ((DefaultSettingProvider)_GetProvider("Default")).TagWatchingThreshold = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public FavoriteCategoryNamesSettingProvider FavoriteCategoryNames => (FavoriteCategoryNamesSettingProvider)_GetProvider();
 
         private sealed class DefaultSettingProvider : SettingProvider
         {
@@ -242,6 +287,9 @@ namespace ExClient.Settings
                 settings["xr"] = ((int)ResampledImageSize).ToString();
                 settings["cs"] = ((int)CommentsOrder).ToString();
                 settings["fs"] = ((int)FavoritesOrder).ToString();
+
+                settings["wt"] = _Wt.ToString();
+                settings["ft"] = _Ft.ToString();
             }
 
             internal override void DataChanged(Dictionary<string, string> settings)
@@ -256,6 +304,23 @@ namespace ExClient.Settings
                 setEnum(ref ResampledImageSize, "xr", ImageSize.Auto);
                 setEnum(ref CommentsOrder, "cs", CommentsOrder.ByTimeAscending);
                 setEnum(ref FavoritesOrder, "fs", FavoritesOrder.ByLastUpdatedTime);
+
+                void setInt(ref int field, string key, int def)
+                {
+                    if (!settings.TryGetValue(key, out var value)
+                        || !int.TryParse(value, out field))
+                        field = def;
+                }
+                setInt(ref _Ft, "ft", 0);
+                setInt(ref _Wt, "wt", 0);
+            }
+            private static int _Clamp(int value, int v1, int v2)
+            {
+                if (value < v1)
+                    return v1;
+                if (value > v2)
+                    return v2;
+                return value;
             }
 
             public ImageSize ResampledImageSize;
@@ -263,6 +328,19 @@ namespace ExClient.Settings
             public CommentsOrder CommentsOrder;
 
             public FavoritesOrder FavoritesOrder;
+
+            private int _Ft, _Wt;
+            public int TagFilteringThreshold
+            {
+                get => _Ft;
+                set => _Ft = _Clamp(value, -9999, 0);
+            }
+
+            public int TagWatchingThreshold
+            {
+                get => _Wt;
+                set => _Wt = _Clamp(value, 0, 9999);
+            }
         }
     }
 }

@@ -47,6 +47,8 @@
   "SaveLastSearch": "保存最后一次搜索为默认",
   "Searching": "搜索",
   "SlideInterval": "幻灯片放映的间隔时间（秒）",
+  "TagFilteringThreshold": "过滤标签阈值 (-9999 ~ 0)",
+  "TagWatchingThreshold": "关注标签阈值 (0 ~ 9999)",
   "TapToFlip": "轻触屏幕两侧翻页（仅触摸）",
   "Theme": "应用主题",
   "TriggerDawnOfDay": "使用后台任务触发“崭新的一天”事件",

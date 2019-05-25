@@ -90,17 +90,22 @@ namespace ApplicationDataManager.Settings
 
         public ValueRepresentAttribute ValueRepresent { get; }
 
+        public Type PropertyType => PropertyInfo.PropertyType;
+
         public object Value
         {
             get => PropertyInfo.GetValue(settingCollection);
             set
             {
-                if (value is null)
+                try
                 {
-                    return;
+                    var tv = Convert.ChangeType(value, PropertyType);
+                    PropertyInfo.SetValue(settingCollection, tv);
                 }
-
-                PropertyInfo.SetValue(settingCollection, value);
+                catch (Exception)
+                {
+                    OnPropertyChanged(nameof(Value));
+                }
             }
         }
     }

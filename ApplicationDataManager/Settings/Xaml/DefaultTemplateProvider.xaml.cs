@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -20,7 +21,7 @@ namespace ApplicationDataManager.Settings.Xaml
 
         public DataTemplate GetTemplateOf(ValueType type)
         {
-            switch(type)
+            switch (type)
             {
             case ValueType.Int32:
             case ValueType.Int64:
@@ -41,9 +42,46 @@ namespace ApplicationDataManager.Settings.Xaml
         }
     }
 
-    internal sealed class EmptyConverter : IValueConverter
+    internal sealed class InputScopeConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, string language) => value;
-        public object ConvertBack(object value, Type targetType, object parameter, string language) => value;
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var t = value as Type;
+            if (t == typeof(int)
+                || t == typeof(long)
+                || t == typeof(float)
+                || t == typeof(double))
+            {
+                return new InputScope
+                {
+                    Names =
+                    {
+                        new InputScopeName(InputScopeNameValue.Number)
+                    }
+                };
+            }
+            else
+            {
+                return new InputScope
+                {
+                    Names =
+                    {
+                        new InputScopeName(InputScopeNameValue.AlphanumericHalfWidth),
+                        new InputScopeName(InputScopeNameValue.ChineseHalfWidth),
+                        new InputScopeName(InputScopeNameValue.KatakanaHalfWidth),
+                        new InputScopeName(InputScopeNameValue.HangulHalfWidth),
+                    }
+                };
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+    }
+
+    internal sealed class DefaultConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+            => System.Convert.ChangeType(value, targetType);
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+            => System.Convert.ChangeType(value, targetType);
     }
 }

@@ -36,20 +36,19 @@ namespace ExViewer.Settings
 
         private void ClientSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            OnPropertyChanged(nameof(ExcludedTagNamespaces), nameof(ExcludedLanguages), nameof(ResampledImageSize),
-                nameof(ExcludedUploaders));
+            OnObjectReset();
         }
 
-        private void update()
+        private async void _Update()
         {
-            var task = Client.Current.Settings.SendAsync();
-            task.Completed = (s, e) =>
+            try
             {
-                if (e == Windows.Foundation.AsyncStatus.Error)
-                {
-                    Views.RootControl.RootController.SendToast(s.ErrorCode, null);
-                }
-            };
+                await Client.Current.Settings.SendAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Views.RootControl.RootController.SendToast(ex, null);
+            }
         }
 
         public void Apply()
@@ -195,7 +194,7 @@ namespace ExViewer.Settings
                     Client.Current.Settings.FavoritesOrder = FavoritesOrder.ByLastUpdatedTime;
                 }
 
-                update();
+                _Update();
             }
         }
 
@@ -207,7 +206,31 @@ namespace ExViewer.Settings
             set
             {
                 Client.Current.Settings.ExcludedTagNamespaces = value;
-                update();
+                _Update();
+            }
+        }
+
+        [Setting("Searching", Index = 1450)]
+        [TextTemplate]
+        public int TagFilteringThreshold
+        {
+            get => Client.Current.Settings.TagFilteringThreshold;
+            set
+            {
+                Client.Current.Settings.TagFilteringThreshold = value;
+                _Update();
+            }
+        }
+
+        [Setting("Searching", Index = 1470)]
+        [TextTemplate]
+        public int TagWatchingThreshold
+        {
+            get => Client.Current.Settings.TagWatchingThreshold;
+            set
+            {
+                Client.Current.Settings.TagWatchingThreshold = value;
+                _Update();
             }
         }
 
@@ -221,7 +244,7 @@ namespace ExViewer.Settings
                 var el = Client.Current.Settings.ExcludedLanguages;
                 el.Clear();
                 el.AddRange(ExcludedLanguagesSettingProvider.FromString(value));
-                update();
+                _Update();
             }
         }
 
@@ -238,7 +261,7 @@ namespace ExViewer.Settings
                 {
                     eu.Add(item);
                 }
-                update();
+                _Update();
             }
         }
 
@@ -266,7 +289,7 @@ namespace ExViewer.Settings
             set
             {
                 Client.Current.Settings.CommentsOrder = value;
-                update();
+                _Update();
             }
         }
 
@@ -312,7 +335,7 @@ namespace ExViewer.Settings
         }
 
         [Setting("Viewing", Index = 2500)]
-        [Range(1,16, ApplicationDataManager.Settings.ValueType.Double, Large = 5, Small = 0.1, Tick = 1)]
+        [Range(1, 16, ApplicationDataManager.Settings.ValueType.Double, Large = 5, Small = 0.1, Tick = 1)]
         public double SlideInterval
         {
             get => GetLocal(5.0);
@@ -327,7 +350,7 @@ namespace ExViewer.Settings
             set
             {
                 Client.Current.Settings.ResampledImageSize = value;
-                update();
+                _Update();
             }
         }
 

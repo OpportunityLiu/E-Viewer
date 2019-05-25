@@ -47,6 +47,8 @@
   "SaveLastSearch": "가장 최근 검색을 기본값으로 저장",
   "Searching": "검색 중",
   "SlideInterval": "슬라이드쇼 간격 (초)",
+  "TagFilteringThreshold": "Tag Filtering Threshold (-9999 ~ 0)",
+  "TagWatchingThreshold": "Tag Watching Threshold (0 ~ 9999)",
   "TapToFlip": "탭으로 페이지 넘기기 (터치 전용)",
   "Theme": "앱의 테마",
   "TriggerDawnOfDay": "백그라운드 작업으로 새로운 날의 새벽 이벤트 트리거",
