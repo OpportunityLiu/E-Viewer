@@ -147,6 +147,8 @@ namespace ExViewer.Views
 
         private bool effectLoaded, applicationLoaded;
 
+        private bool oobe;
+
         private async void loadEffect()
         {
             await Dispatcher.YieldIdle();
@@ -201,6 +203,7 @@ namespace ExViewer.Views
             await loadingTask;
             if (Client.Current.NeedLogOn)
             {
+                oobe = true;
                 await RootControl.RootController.RequestLogOn();
             }
             if (effectLoaded)
@@ -217,7 +220,8 @@ namespace ExViewer.Views
         {
             try
             {
-                await Client.Current.RefreshCookiesAsync();
+                if (!oobe)
+                    await Client.Current.RefreshCookiesAsync();
             }
             catch (Exception)
             {
