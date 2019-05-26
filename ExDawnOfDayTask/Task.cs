@@ -83,7 +83,7 @@ namespace ExDawnOfDayTask
                     var topic = await Topic.FetchAsync(201268);
                     var content = new[] { "每日签到", "签到~", "簽到 ._.", " :D 签到", "新的一天开始了" };
                     var index = new Random().Next(content.Length);
-                    await topic.SendPost(content[index], false, true, true);
+                    await topic.SendPostAsync(content[index], false, true, true);
                 }
             }
             catch { }

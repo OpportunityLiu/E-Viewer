@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
@@ -13,21 +14,15 @@ namespace ExClient.Forums
 {
     public sealed class Topic : ObservableObject
     {
-        public static IAsyncOperation<Topic> FetchAsync(long id)
+        public static async Task<Topic> FetchAsync(long id, CancellationToken token = default)
         {
             if (id <= 0)
                 throw new ArgumentOutOfRangeException(nameof(id));
-            return AsyncInfo.Run(async token =>
-            {
-                var topic = new Topic(id);
-                var doctask = Client.Current.HttpClient.GetDocumentAsync(topic.Uri);
-                token.Register(doctask.Cancel);
-                var doc = await doctask;
-                token.ThrowIfCancellationRequested();
-                topic.Md5 = _Md5Regex.Match(doc.DocumentNode.InnerHtml).Groups[1].Value;
-                topic.ForumId = int.Parse(_ForumIdRegex.Match(doc.DocumentNode.InnerHtml).Groups[1].Value);
-                return topic;
-            });
+            var topic = new Topic(id);
+            var doc = await Client.Current.HttpClient.GetDocumentAsync(topic.Uri).AsTask(token);
+            topic.Md5 = _Md5Regex.Match(doc.DocumentNode.InnerHtml).Groups[1].Value;
+            topic.ForumId = int.Parse(_ForumIdRegex.Match(doc.DocumentNode.InnerHtml).Groups[1].Value);
+            return topic;
         }
 
         private static readonly Regex _Md5Regex = new Regex(@"var\s+ipb_md5_check\s*=\s*""([a-f0-9]+)"";", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -46,12 +41,13 @@ namespace ExClient.Forums
 
         internal string Md5 { get; private set; }
 
-        public IAsyncAction SendPost(string content, bool enableTrack, bool enableEmoji, bool enableSignature)
+        public async Task SendPostAsync(string content, bool enableTrack, bool enableEmoji, bool enableSignature, CancellationToken token = default)
         {
             if (content.IsNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(content));
             Client.Current.CheckLogOn();
-            return Client.Current.HttpClient.PostAsync(Client.ForumsUri, getContent()).AsAsyncAction();
+            await Client.Current.HttpClient.PostAsync(Client.ForumsUri, getContent()).AsTask(token);
+            return;
 
             IEnumerable<KeyValuePair<string, string>> getContent()
             {

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
@@ -21,19 +22,18 @@ namespace ExClient.Forums
         /// <summary>
         /// Fetch user info from forum.e-hentai.org/index?showuser={<paramref name="userID"/>}.
         /// </summary>
-        public static Task<UserInfo> FeachAsync(long userID)
+        public static Task<UserInfo> FeachAsync(long userID, CancellationToken token = default)
         {
             if (userID <= 0)
                 throw new ArgumentOutOfRangeException(nameof(userID));
 
             return Task.Run(async () =>
             {
-                var document = await Current.HttpClient.GetDocumentAsync(new Uri(ForumsUri, $"index.php?showuser={userID}"));
+                var document = await Current.HttpClient.GetDocumentAsync(new Uri(ForumsUri, $"index.php?showuser={userID}"))
+                    .AsTask(token).ConfigureAwait(false);
                 var profileName = document.GetElementbyId("profilename");
                 if (profileName is null)
-                {
                     return null;
-                }
 
                 var profileRoot = profileName.ParentNode;
                 var profiles = profileRoot.ChildNodes.Where(n => n.Name == "div").ToList();
@@ -47,13 +47,9 @@ namespace ExClient.Forums
                         out var register))
                 {
                     if (groupAndJoin.LastChild.InnerText.Contains("Today"))
-                    {
                         register = DateTimeOffset.UtcNow;
-                    }
                     else if (groupAndJoin.LastChild.InnerText.Contains("Yesterday"))
-                    {
                         register = DateTimeOffset.UtcNow.AddDays(-1);
-                    }
                 }
                 return new UserInfo
                 {
@@ -70,34 +66,28 @@ namespace ExClient.Forums
         /// <summary>
         /// Serialize current instance to ms-appdata:///local/UserInfo.
         /// </summary>
-        public IAsyncAction SaveToCache()
+        public async Task SaveToCacheAsync()
         {
-            return Run(async token =>
-            {
-                var str = JsonConvert.SerializeObject(this);
-                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(CACHE_FILE_NAME, CreationCollisionOption.ReplaceExisting);
-                await FileIO.WriteTextAsync(file, str);
-            });
+            var str = JsonConvert.SerializeObject(this);
+            var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(CACHE_FILE_NAME, CreationCollisionOption.ReplaceExisting);
+            await FileIO.WriteTextAsync(file, str);
         }
 
         /// <summary>
         /// Deserialize file ms-appdata:///local/UserInfo to a instance.
         /// </summary>
-        public static IAsyncOperation<UserInfo> LoadFromCache()
+        public static async Task<UserInfo> LoadFromCacheAsync()
         {
-            return Run(async token =>
-            {
-                var file = await ApplicationData.Current.LocalFolder.TryGetFileAsync(CACHE_FILE_NAME);
-                if (file is null)
-                    return null;
+            var file = await ApplicationData.Current.LocalFolder.TryGetFileAsync(CACHE_FILE_NAME);
+            if (file is null)
+                return null;
 
-                var str = await FileIO.ReadTextAsync(file);
-                var obj = JsonConvert.DeserializeObject<UserInfo>(str);
-                if (obj is null)
-                    return null;
+            var str = await FileIO.ReadTextAsync(file);
+            var obj = JsonConvert.DeserializeObject<UserInfo>(str);
+            if (obj is null)
+                return null;
 
-                return obj;
-            });
+            return obj;
         }
 
         private UserInfo() { }

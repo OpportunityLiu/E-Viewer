@@ -108,7 +108,7 @@ namespace ExViewer.Views
             _LayoutLoaded = true;
             if (!temp)
             {
-                UserInfo = await UserInfo.LoadFromCache();
+                UserInfo = await UserInfo.LoadFromCacheAsync();
                 RootController.UpdateUserInfo(false);
             }
             else

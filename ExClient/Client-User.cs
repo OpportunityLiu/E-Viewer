@@ -90,8 +90,9 @@ namespace ExClient
             var backup = GetLogOnInfo();
             try
             {
-                await refreshCookieAndSettings();
-                await refreshHathPerks();
+                await _RefreshCookieAndSettings();
+                await _RefreshHathPerks();
+                await UserStatus?.RefreshAsync();
             }
             catch (Exception)
             {
@@ -126,7 +127,7 @@ namespace ExClient
             CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Ex, "/") { Value = "1" });
         }
 
-        private async Task refreshCookieAndSettings()
+        private async Task _RefreshCookieAndSettings()
         {
             foreach (var item in CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(c => !isKeyCookie(c)))
                 CookieManager.DeleteCookie(item);
@@ -167,11 +168,11 @@ namespace ExClient
 
             try
             {
-                await refreshCookieAndSettings();
+                await _RefreshCookieAndSettings();
                 try
                 {
                     await UserStatus?.RefreshAsync();
-                    await refreshHathPerks();
+                    await _RefreshHathPerks();
                 }
                 catch { }
 
@@ -185,15 +186,15 @@ namespace ExClient
             }
         }
 
-        private static readonly Uri hathperksUri = new Uri(DomainProvider.Eh.RootUri, "hathperks.php");
+        private static readonly Uri _HathperksUri = new Uri(DomainProvider.Eh.RootUri, "hathperks.php");
 
-        private async Task refreshHathPerks()
+        private async Task _RefreshHathPerks()
         {
             var cookie = CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.HathPerks);
             if (cookie != null)
                 CookieManager.DeleteCookie(cookie);
 
-            await HttpClient.GetAsync(hathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
+            await HttpClient.GetAsync(_HathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
             CheckLogOn();
             ResetExCookie();
         }

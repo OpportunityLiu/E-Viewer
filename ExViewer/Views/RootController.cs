@@ -323,11 +323,11 @@ namespace ExViewer.Views
                 try
                 {
                     info = await Client.Current.FetchCurrentUserInfoAsync();
-                    await info.SaveToCache();
+                    await info.SaveToCacheAsync();
                 }
                 catch (Exception)
                 {
-                    info = await UserInfo.LoadFromCache();
+                    info = await UserInfo.LoadFromCacheAsync();
                 }
                 if (Available)
                     Parent.UserInfo = info;
