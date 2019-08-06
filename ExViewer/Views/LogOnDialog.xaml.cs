@@ -35,10 +35,11 @@ namespace ExViewer.Views
                     if (!long.TryParse(MemberId, out var uid))
                         return;
                     var hash = PassHash;
+                    var igenous = Igneous;
 
                     try
                     {
-                        await Client.Current.LogOnAsync(uid, hash);
+                        await Client.Current.LogOnAsync(uid, hash, igenous);
                     }
                     catch (Exception ex)
                     {
@@ -70,7 +71,10 @@ namespace ExViewer.Views
 
             public bool IsPrimaryButtonEnabled => _UseCookieLogOn ? CanLogOn && !LogOn.IsExecuting : !LogOn.IsExecuting;
 
-            public bool CanLogOn => !Succeed && long.TryParse(MemberId, out _) && Regex.IsMatch(PassHash ?? "", @"^[0-9a-fA-F]{32}$");
+            public bool CanLogOn => !Succeed 
+                && long.TryParse(MemberId, out _) 
+                && Regex.IsMatch(PassHash ?? "", @"^[0-9a-fA-F]{32}$")
+                && Regex.IsMatch(Igneous ?? "", @"^[0-9a-fA-F]{0,32}$");
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private bool _Succeed;
@@ -105,6 +109,14 @@ namespace ExViewer.Views
             }
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+            private string _Igneous;
+            public string Igneous
+            {
+                get => _Igneous;
+                set => Set(nameof(CanLogOn), nameof(IsPrimaryButtonEnabled), ref _Igneous, value);
+            }
+
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private string _ErrorMsg;
             public string ErrorMsg { get => _ErrorMsg; private set => Set(ref _ErrorMsg, value); }
 
@@ -122,6 +134,7 @@ namespace ExViewer.Views
 
                 MemberId = "";
                 PassHash = "";
+                Igneous = "";
             }
         }
 
@@ -217,6 +230,7 @@ namespace ExViewer.Views
             }
             VM.MemberId = data[0];
             VM.PassHash = data[1];
+            VM.Igneous = "";
             VM.LogOn.Execute();
         }
 

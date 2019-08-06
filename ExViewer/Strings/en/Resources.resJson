@@ -311,6 +311,7 @@
       "ToplistsHeaderTextBlock/Text": "Toplists"
     },
     "LogOnDialog": {
+      "IgneousTextBox/Header": "Cookie value of \"igneous\"",
       "LogOnButtonText": "Log on",
       "MemberIdTextBox/Header": "Cookie value of \"ipb_member_id\"",
       "PassHashTextBox/Header": "Cookie value of \"ipb_pass_hash\"",

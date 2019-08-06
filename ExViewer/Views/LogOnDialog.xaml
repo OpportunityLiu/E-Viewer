@@ -82,6 +82,14 @@
                tke:TextBoxRegex.Regex="^[0-9a-fA-F]{32}$"
                Header="ipb_pass_hash"
                Text="{x:Bind VM.PassHash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+               Margin="0,12,0,0"
+               TextChanged="cookie_TextChanged" />
+      <TextBox x:Name="tbIgneous"
+               x:Uid="Views/LogOnDialog/IgneousTextBox"
+               tke:TextBoxRegex.ValidationMode="Normal"
+               tke:TextBoxRegex.Regex="^[0-9a-fA-F]{0,32}$"
+               Header="igneous"
+               Text="{x:Bind VM.Igneous, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                Margin="0,12"
                TextChanged="cookie_TextChanged" />
       <TextBlock x:Name="tbErrMsg"

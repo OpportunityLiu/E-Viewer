@@ -311,6 +311,7 @@
       "ToplistsHeaderTextBlock/Text": "排行榜"
     },
     "LogOnDialog": {
+      "IgneousTextBox/Header": "\"igneous\" cookie 的值",
       "LogOnButtonText": "登入",
       "MemberIdTextBox/Header": "\"ipb_member_id\" cookie 的值",
       "PassHashTextBox/Header": "\"ipb_pass_hash\" cookie 的值",
