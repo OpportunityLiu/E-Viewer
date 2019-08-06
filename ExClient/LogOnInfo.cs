@@ -7,11 +7,13 @@ namespace ExClient
 {
     public sealed class LogOnInfo
     {
-        internal List<HttpCookie> Cookies { get; }
+        internal List<HttpCookie> EhCookies { get; }
+        internal List<HttpCookie> ExCookies { get; }
 
         internal LogOnInfo(Client client)
         {
-            Cookies = client.CookieManager.GetCookies(DomainProvider.Eh.RootUri).ToList();
+            EhCookies = client.CookieManager.GetCookies(DomainProvider.Eh.RootUri).ToList();
+            ExCookies = client.CookieManager.GetCookies(DomainProvider.Ex.RootUri).ToList();
         }
     }
 }

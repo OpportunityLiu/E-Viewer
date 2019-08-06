@@ -19,7 +19,7 @@ namespace ExClient
             httpFilter.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
             CookieManager = httpFilter.CookieManager;
             HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));
-            setDefaultCookies();
+            _SetDefaultCookies();
 
             if (NeedLogOn)
                 ClearLogOnInfo();
