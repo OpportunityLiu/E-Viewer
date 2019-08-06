@@ -211,7 +211,7 @@
                                      AccessKey="W"
                                      XYFocusUp="{x:Bind btn_UserInfo}">
                 <controls:SplitViewTab.Icon>
-                  <FontIcon Glyph="&#xE7B3;"
+                  <FontIcon Glyph="&#xE006;"
                             FontSize="16" />
                 </controls:SplitViewTab.Icon>
               </controls:SplitViewTab>
