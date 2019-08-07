@@ -63,18 +63,18 @@ namespace ExClient
 
         private void _SetCookieEh(string name, string value)
         {
-            CookieManager.SetCookie(new HttpCookie(name, Domains.Eh, "/") { Value = value });
+            CookieManager.SetCookie(new HttpCookie(name, Domains.Eh, "/") { Value = value, Expires = DateTimeOffset.Now.AddYears(1) });
         }
 
         private void _SetCookieEx(string name, string value)
         {
-            CookieManager.SetCookie(new HttpCookie(name, Domains.Ex, "/") { Value = value });
+            CookieManager.SetCookie(new HttpCookie(name, Domains.Ex, "/") { Value = value, Expires = DateTimeOffset.Now.AddYears(1) });
         }
 
         private void _SetCookieAll(string name, string value)
         {
-            CookieManager.SetCookie(new HttpCookie(name, Domains.Eh, "/") { Value = value });
-            CookieManager.SetCookie(new HttpCookie(name, Domains.Ex, "/") { Value = value });
+            CookieManager.SetCookie(new HttpCookie(name, Domains.Eh, "/") { Value = value, Expires = DateTimeOffset.Now.AddYears(1) });
+            CookieManager.SetCookie(new HttpCookie(name, Domains.Ex, "/") { Value = value, Expires = DateTimeOffset.Now.AddYears(1) });
         }
 
         internal async Task ResetExCookieAsync()
@@ -139,7 +139,8 @@ namespace ExClient
             async Task refresh(DomainProvider domain, CancellationToken t)
             {
                 var cookie = CookieManager.GetCookies(domain.RootUri).SingleOrDefault(c => c.Name == CookieNames.SettingsKey);
-                CookieManager.DeleteCookie(cookie);
+                if (cookie != null)
+                    CookieManager.DeleteCookie(cookie);
                 try
                 {
                     await domain.Settings.FetchAsync(t);
@@ -147,7 +148,8 @@ namespace ExClient
                 }
                 catch
                 {
-                    CookieManager.SetCookie(cookie);
+                    if (cookie != null)
+                        CookieManager.SetCookie(cookie);
                     throw;
                 }
             }

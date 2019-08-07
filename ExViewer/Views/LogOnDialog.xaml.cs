@@ -24,6 +24,18 @@ namespace ExViewer.Views
         public LogOnDialog()
         {
             InitializeComponent();
+            VM.PropertyChanged += VM_PropertyChanged;
+        }
+
+        private void VM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(VM.ShowErrorMsg) || e.PropertyName == nameof(VM.ErrorMsg))
+            {
+                if (VM.ShowErrorMsg && !string.IsNullOrEmpty(VM.ErrorMsg))
+                {
+                    showErrorMsgInWv(VM.ErrorMsg, "");
+                }
+            }
         }
 
         private class VMData : ObservableObject
@@ -57,7 +69,7 @@ namespace ExViewer.Views
                 LogOn.PropertyChanged += (s, e) => OnPropertyChanged(nameof(IsPrimaryButtonEnabled));
             }
 
-            public LogOnInfo LogOnInfoBackup { get; } = Client.Current.GetLogOnInfo();
+            public LogOnInfo LogOnInfoBackup { get; set; }
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private bool _UseCookieLogOn;
@@ -71,8 +83,8 @@ namespace ExViewer.Views
 
             public bool IsPrimaryButtonEnabled => _UseCookieLogOn ? CanLogOn && !LogOn.IsExecuting : !LogOn.IsExecuting;
 
-            public bool CanLogOn => !Succeed 
-                && long.TryParse(MemberId, out _) 
+            public bool CanLogOn => !Succeed
+                && long.TryParse(MemberId, out _)
                 && Regex.IsMatch(PassHash ?? "", @"^[0-9a-fA-F]{32}$")
                 && Regex.IsMatch(Igneous ?? "", @"^[0-9a-fA-F]{0,32}$");
 
@@ -158,6 +170,7 @@ namespace ExViewer.Views
         {
             VM.Reset();
 
+            VM.ShowErrorMsg = false;
             wv.NavigateToString("");
             await Dispatcher.YieldIdle();
             wv.Navigate(Client.LogOnUri);
@@ -196,10 +209,7 @@ namespace ExViewer.Views
     }}
 }})();
 " });
-            string escape(string value)
-            {
-                return value.Replace(@"\", @"\\").Replace("'", @"\'");
-            }
+            string escape(string value) => value.Replace(@"\", @"\\").Replace("'", @"\'");
         }
 
         private async Task injectOtherPage()
@@ -231,19 +241,24 @@ namespace ExViewer.Views
             VM.MemberId = data[0];
             VM.PassHash = data[1];
             VM.Igneous = "";
+            wv.NavigateToString("");
             VM.LogOn.Execute();
         }
 
         private void cd_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Client.Current.NeedLogOn)
-                CloseButtonText = Strings.Resources.General.Exit;
-            else
-                CloseButtonText = Strings.Resources.General.Cancel;
         }
 
         private void cd_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
         {
+            if (Client.Current.NeedLogOn)
+                CloseButtonText = Strings.Resources.General.Exit;
+            else
+                CloseButtonText = Strings.Resources.General.Cancel;
+
+            VM.LogOnInfoBackup = Client.Current.GetLogOnInfo();
+            Client.Current.ClearLogOnInfo();
+
             reset();
         }
 
@@ -268,7 +283,7 @@ namespace ExViewer.Views
             }
         }
 
-        private void wv_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
+        private void showErrorMsgInWv(string line1, string line2)
         {
             wv.NavigateToString($@"
 <html>
@@ -277,15 +292,19 @@ namespace ExViewer.Views
 </head>
 <body style='background:{Color((SolidColorBrush)Background)}; font-family: sans-serif;'>
     <div>
-        <p style='color:red;'>
-            {(int)e.WebErrorStatus} ({e.WebErrorStatus.ToString()})
+        <p style='color:red;white-space:pre-wrap;'>{System.Net.WebUtility.HtmlEncode(line1)}</p>
+        <p>
+            <small style='color:{Color((SolidColorBrush)Foreground)};white-space:pre-wrap;'>{System.Net.WebUtility.HtmlEncode(line2)}</small>
         </p>
-        <small style='color:{Color((SolidColorBrush)Foreground)}'>
-            {e.Uri}
-        </small>
     </div>
 </body>
 </html>");
+
+        }
+
+        private void wv_NavigationFailed(object sender, WebViewNavigationFailedEventArgs e)
+        {
+            showErrorMsgInWv($"{System.Net.WebUtility.HtmlEncode(e.WebErrorStatus.ToString())} ({(int)e.WebErrorStatus})", e.Uri.ToString());
         }
 
         private void wv_ScriptNotify(object sender, NotifyEventArgs e)

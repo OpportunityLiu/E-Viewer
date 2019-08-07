@@ -311,7 +311,7 @@
       "ToplistsHeaderTextBlock/Text": "탑 리스트"
     },
     "LogOnDialog": {
-      "IgneousTextBox/Header": "\"igneous\"의 쿠키값",
+      "IgneousTextBox/Header": "Cookie value of \"igneous\" (optional)",
       "LogOnButtonText": "로그온",
       "MemberIdTextBox/Header": "\"ipb_member_id\"의 쿠키값",
       "PassHashTextBox/Header": "\"ipb_pass_hash\"의 쿠키값",
