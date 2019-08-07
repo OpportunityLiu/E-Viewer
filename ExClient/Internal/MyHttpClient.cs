@@ -33,7 +33,7 @@ namespace ExClient.Internal
         {
             if (response.Content.Headers.ContentDisposition?.FileName == "sadpanda.jpg")
             {
-                _Owner.ResetExCookie();
+                _ = _Owner.ResetExCookieAsync();
                 throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
             }
         }

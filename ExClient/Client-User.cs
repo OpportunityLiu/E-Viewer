@@ -4,6 +4,7 @@ using ExClient.Status;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
@@ -30,12 +31,12 @@ namespace ExClient
         {
             public const string MemberID = "ipb_member_id";
             public const string PassHash = "ipb_pass_hash";
-            public const string S = "s";
-            public const string SK = "sk";
+            public const string SettingsKey = "sk";
             public const string HathPerks = "hath_perks";
             public const string NeverWarn = "nw";
             public const string LastEventRefreshTime = "event";
             public const string Igneous = "igneous";
+            public const string Yay = "yay";
         }
 
         internal static class Domains
@@ -58,24 +59,15 @@ namespace ExClient
             return true;
         }
 
-        internal async Task ResetExCookie()
+        internal async Task ResetExCookieAsync()
         {
             foreach (var item in CookieManager.GetCookies(DomainProvider.Ex.RootUri))
                 CookieManager.DeleteCookie(item);
 
             await HttpClient.GetAsync(DomainProvider.Ex.RootUri, HttpCompletionOption.ResponseHeadersRead, true);
-            _CopyCookie(CookieNames.S);
-            _CopyCookie(CookieNames.SK);
+            _CopyCookie(CookieNames.SettingsKey);
             _CopyCookie(CookieNames.HathPerks);
             _SetDefaultCookies();
-        }
-
-        private static bool _IsKeyCookie(HttpCookie cookie)
-        {
-            var name = cookie?.Name;
-            return name == CookieNames.MemberID
-                || name == CookieNames.PassHash
-                || name == CookieNames.Igneous;
         }
 
         public LogOnInfo GetLogOnInfo()
@@ -88,18 +80,11 @@ namespace ExClient
             if (NeedLogOn)
                 throw new InvalidOperationException("Must log on first.");
 
-            var backup = GetLogOnInfo();
-            try
-            {
-                await _RefreshSettings();
-                await _RefreshHathPerks();
-                await UserStatus?.RefreshAsync();
-            }
-            catch (Exception)
-            {
-                RestoreLogOnInfo(backup);
-                throw;
-            }
+            _SetDefaultCookies();
+            var t1 = _RefreshSettingsAsync();
+            var t2 = _RefreshHathPerksAsync();
+            var t3 = UserStatus?.RefreshAsync();
+            await Task.WhenAll(t1, t2, t3);
         }
 
         public void RestoreLogOnInfo(LogOnInfo info)
@@ -128,24 +113,17 @@ namespace ExClient
             CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Eh, "/") { Value = "1" });
             CookieManager.SetCookie(new HttpCookie(CookieNames.LastEventRefreshTime, Domains.Eh, "/") { Value = "1" });
             CookieManager.SetCookie(new HttpCookie(CookieNames.NeverWarn, Domains.Ex, "/") { Value = "1" });
+            CookieManager.DeleteCookie(new HttpCookie(CookieNames.Yay, Domains.Ex, "/"));
         }
 
-        private async Task _RefreshSettings()
+        private async Task _RefreshSettingsAsync(CancellationToken token = default)
         {
-            foreach (var item in CookieManager.GetCookies(DomainProvider.Eh.RootUri).Where(c => !_IsKeyCookie(c)))
-                CookieManager.DeleteCookie(item);
-            foreach (var item in CookieManager.GetCookies(DomainProvider.Ex.RootUri).Where(c => !_IsKeyCookie(c)))
-                CookieManager.DeleteCookie(item);
+            var f1 = DomainProvider.Eh.Settings.FetchAsync(token)
+                .ContinueWith(t => DomainProvider.Eh.Settings.SendAsync(token), token).Unwrap();
+            var f2 = DomainProvider.Ex.Settings.FetchAsync(token)
+                .ContinueWith(t => DomainProvider.Ex.Settings.SendAsync(token), token).Unwrap();
 
-            var f1 = DomainProvider.Eh.Settings.FetchAsync();
-            var f2 = DomainProvider.Ex.Settings.FetchAsync();
-            await f1;
-            await f2;
-
-            var a1 = DomainProvider.Eh.Settings.SendAsync();
-            var a2 = DomainProvider.Ex.Settings.SendAsync();
-            await a1;
-            await a2;
+            await Task.WhenAll(f1, f2);
         }
 
         /// <summary>
@@ -184,16 +162,14 @@ namespace ExClient
                     CookieManager.SetCookie(new HttpCookie(CookieNames.Igneous, Domains.Ex, "/") { Value = igneous, Expires = DateTimeOffset.UtcNow.AddYears(5) });
                 }
                 else
-                { 
+                {
                     // otherwise, visit ex once to get them
-                    await ResetExCookie();
+                    await ResetExCookieAsync();
                 }
 
-                await _RefreshSettings();
                 try
                 {
-                    await UserStatus?.RefreshAsync();
-                    await _RefreshHathPerks();
+                    await RefreshCookiesAsync();
                 }
                 catch { }
 
@@ -209,20 +185,12 @@ namespace ExClient
 
         private static readonly Uri _HathperksUri = new Uri(DomainProvider.Eh.RootUri, "hathperks.php");
 
-        private async Task _RefreshHathPerks()
+        private async Task _RefreshHathPerksAsync()
         {
             CheckLogOn();
-            var cookie = CookieManager.GetCookies(DomainProvider.Eh.RootUri).SingleOrDefault(c => c.Name == CookieNames.HathPerks);
-            if (cookie != null)
-                CookieManager.DeleteCookie(cookie);
             try
             {
                 await HttpClient.GetAsync(_HathperksUri, HttpCompletionOption.ResponseHeadersRead, true);
-                CheckLogOn();
-            }
-            catch
-            {
-                CookieManager.SetCookie(cookie);
             }
             finally
             {

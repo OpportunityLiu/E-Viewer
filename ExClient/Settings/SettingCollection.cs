@@ -121,23 +121,20 @@ namespace ExClient.Settings
             }
         }
 
-        public IAsyncAction FetchAsync()
+        public async Task FetchAsync(CancellationToken token = default)
         {
             Client.Current.CheckLogOn();
-            return AsyncInfo.Run(async token =>
+            try
             {
-                try
-                {
-                    var getDoc = Client.Current.HttpClient.GetDocumentAsync(configUri);
-                    token.Register(getDoc.Cancel);
-                    var doc = await getDoc;
-                    updateSettingsDic(doc);
-                }
-                finally
-                {
-                    _LoadSettingsDic();
-                }
-            });
+                var getDoc = Client.Current.HttpClient.GetDocumentAsync(configUri);
+                token.Register(getDoc.Cancel);
+                var doc = await getDoc;
+                updateSettingsDic(doc);
+            }
+            finally
+            {
+                _LoadSettingsDic();
+            }
         }
 
         private void _LoadSettingsDic()
@@ -163,7 +160,7 @@ namespace ExClient.Settings
                     item.ApplyChanges(postDic);
                 }
                 var isSame = true;
-                if(postDic.Count == _Settings.Count)
+                if (postDic.Count == _Settings.Count)
                 {
                     foreach (var item in postDic)
                     {
