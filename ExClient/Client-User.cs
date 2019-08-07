@@ -136,13 +136,23 @@ namespace ExClient
 
         private async Task _RefreshSettingsAsync(CancellationToken token = default)
         {
-            async Task refresh(Settings.SettingCollection setting, CancellationToken t)
+            async Task refresh(DomainProvider domain, CancellationToken t)
             {
-                await setting.FetchAsync(t);
-                await setting.SendAsync(t);
+                var cookie = CookieManager.GetCookies(domain.RootUri).SingleOrDefault(c => c.Name == CookieNames.SettingsKey);
+                CookieManager.DeleteCookie(cookie);
+                try
+                {
+                    await domain.Settings.FetchAsync(t);
+                    await domain.Settings.SendAsync(t);
+                }
+                catch
+                {
+                    CookieManager.SetCookie(cookie);
+                    throw;
+                }
             }
 
-            await Task.WhenAll(refresh(DomainProvider.Eh.Settings, token), refresh(DomainProvider.Ex.Settings, token));
+            await Task.WhenAll(refresh(DomainProvider.Eh, token), refresh(DomainProvider.Ex, token));
         }
 
         /// <summary>
@@ -185,8 +195,6 @@ namespace ExClient
                 if (!string.IsNullOrEmpty(igneous))
                 {
                     // with igneous, set cookies directly
-                    _CopyCookie(CookieNames.MemberID);
-                    _CopyCookie(CookieNames.PassHash);
                     _SetCookieEx(CookieNames.Igneous, igneous);
                 }
                 else
@@ -194,6 +202,8 @@ namespace ExClient
                     // otherwise, visit ex once to get them
                     await ResetExCookieAsync();
                 }
+                _CopyCookie(CookieNames.PassHash);
+                _CopyCookie(CookieNames.MemberID);
 
                 try
                 {
