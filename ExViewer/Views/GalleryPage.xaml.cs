@@ -510,24 +510,26 @@ namespace ExViewer.Views
 
     internal sealed class GalleryPagePanel : Panel
     {
-        private Grid gdPvContentHeaderPresenter;
+        private Grid _GdPvContentHeaderPresenter;
 
         protected override Size MeasureOverride(Size availableSize)
         {
             var height = availableSize.Height;
             var width = availableSize.Width;
-            var infoH = height - this.Ancestors<GalleryPage>().First().VisibleBounds.Bottom;
+            var gp = this.Ancestors<GalleryPage>().FirstOrDefault();
+            var infoH = height - (gp is null ? 0 : gp.VisibleBounds.Bottom);
             if (InputPane.GetForCurrentView().OccludedRect.Height == 0)
             {
-                if (gdPvContentHeaderPresenter is null)
+                if (_GdPvContentHeaderPresenter is null)
                 {
-                    gdPvContentHeaderPresenter = Children[1].Descendants<Grid>("HeaderPresenter").FirstOrDefault();
+                    _GdPvContentHeaderPresenter = Children[1].Descendants<Grid>("HeaderPresenter").FirstOrDefault();
                 }
-                if (gdPvContentHeaderPresenter != null)
+                if (_GdPvContentHeaderPresenter != null)
                 {
-                    infoH -= gdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
+                    infoH -= _GdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
                 }
             }
+            Strings.Resources.Views.GalleryPage.Uploader()
             infoH = Math.Max(80, Math.Min(infoH, 360));
             Children[0].Measure(new Size(width, infoH));
             Children[1].Measure(availableSize);

@@ -229,6 +229,7 @@
     },
     "GalleryPage": {
       "$TorrentDownloaded": "다운로드 완료, {path}에 토렌트 파일 저장됨",
+      "$Uploader": "Uploader：{uploader}",
       "AppBarButtonAddComment/Label": "새 댓글 달기",
       "AppBarButtonLatestRevision/Label": "최신 개정판으로 이동",
       "CommentsEmptyTextBlock/Text": "댓글 없음",
@@ -240,7 +241,7 @@
       "PivotHeaderTorrentsTextBlock/Text": "토렌트",
       "RenameAppBarButton/Label": "이름 변경 요청",
       "SaveAppBarButton/Label": "이 갤러리 저장",
-      "SearchUploaderAppBarButton/Label": "업로더의 모든 갤러리 검색",
+      "SearchUploaderAppBarButton/ToolTipService/ToolTip": "업로더의 모든 갤러리 검색",
       "ShareAppBarButton/Label": "공유",
       "TorrentDownloadButton/ToolTipService/ToolTip": "다운로드",
       "TorrentDownloading": "다운로드 시작…",

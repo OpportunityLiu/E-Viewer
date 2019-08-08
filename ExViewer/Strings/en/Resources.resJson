@@ -229,6 +229,7 @@
     },
     "GalleryPage": {
       "$TorrentDownloaded": "Download finished, torrent file saved to {path}",
+      "$Uploader": "Uploader：{uploader}",
       "AppBarButtonAddComment/Label": "Post new comment",
       "AppBarButtonLatestRevision/Label": "Go to latest revision",
       "CommentsEmptyTextBlock/Text": "No comments",
@@ -240,7 +241,7 @@
       "PivotHeaderTorrentsTextBlock/Text": "Torrents",
       "RenameAppBarButton/Label": "Petition to rename",
       "SaveAppBarButton/Label": "Save this gallery",
-      "SearchUploaderAppBarButton/Label": "Search all galleries of the uploader",
+      "SearchUploaderAppBarButton/ToolTipService/ToolTip": "Search all galleries of the uploader",
       "ShareAppBarButton/Label": "Share",
       "TorrentDownloadButton/ToolTipService/ToolTip": "Download",
       "TorrentDownloading": "Start downloading…",

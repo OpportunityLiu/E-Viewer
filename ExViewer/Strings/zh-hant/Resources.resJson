@@ -229,6 +229,7 @@
     },
     "GalleryPage": {
       "$TorrentDownloaded": "種子下載完成，已儲存至 {path}",
+      "$Uploader": "上傳者：{uploader}",
       "AppBarButtonAddComment/Label": "發表新評論",
       "AppBarButtonLatestRevision/Label": "轉到最新版本",
       "CommentsEmptyTextBlock/Text": "沒有評論",
@@ -240,7 +241,7 @@
       "PivotHeaderTorrentsTextBlock/Text": "種子",
       "RenameAppBarButton/Label": "請求重新命名畫廊",
       "SaveAppBarButton/Label": "儲存此畫廊",
-      "SearchUploaderAppBarButton/Label": "搜尋該上傳者的所有畫廊",
+      "SearchUploaderAppBarButton/ToolTipService/ToolTip": "搜尋該上傳者的所有畫廊",
       "ShareAppBarButton/Label": "共享",
       "TorrentDownloadButton/ToolTipService/ToolTip": "下載",
       "TorrentDownloading": "開始下載種子…",

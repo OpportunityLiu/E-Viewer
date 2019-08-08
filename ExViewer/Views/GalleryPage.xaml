@@ -19,6 +19,7 @@
                 x:Name="page"
                 xmlns:xb="using:Opportunity.UWP.Converters.XBind"
                 xmlns:sys="using:System"
+                xmlns:ev="using:ExViewer"
                 Loading="page_Loading"
                 Loaded="page_Loaded"
                 Unloaded="page_Unloaded"
@@ -566,7 +567,8 @@
         <AppBarButton x:Uid="Views/GalleryPage/SearchUploaderAppBarButton"
                       Command="{x:Bind xb:Command.Delay(ViewModel.SearchUploader, 250), Mode=OneWay}"
                       Icon="ContactInfo"
-                      Label="Search uploader" />
+                      Label="{x:Bind ev:Strings.Resources.Views.GalleryPage.Uploader(ViewModel.Gallery.Uploader), Mode=OneWay}"
+                      ToolTipService.ToolTip="Search uploader" />
         <AppBarButton x:Uid="Views/GalleryPage/RenameAppBarButton"
                       Command="{x:Bind ViewModel.Rename, Mode=OneWay}"
                       Icon="Rename"

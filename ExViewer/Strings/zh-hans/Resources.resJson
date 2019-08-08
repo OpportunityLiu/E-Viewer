@@ -229,6 +229,7 @@
     },
     "GalleryPage": {
       "$TorrentDownloaded": "种子下载完成，已保存至 {path}",
+      "$Uploader": "上传者：{uploader}",
       "AppBarButtonAddComment/Label": "发表新评论",
       "AppBarButtonLatestRevision/Label": "转到最新版本",
       "CommentsEmptyTextBlock/Text": "没有评论",
@@ -240,7 +241,7 @@
       "PivotHeaderTorrentsTextBlock/Text": "种子",
       "RenameAppBarButton/Label": "请求重命名画廊",
       "SaveAppBarButton/Label": "保存此画廊",
-      "SearchUploaderAppBarButton/Label": "搜索该上传者的所有画廊",
+      "SearchUploaderAppBarButton/ToolTipService/ToolTip": "搜索该上传者的所有画廊",
       "ShareAppBarButton/Label": "共享",
       "TorrentDownloadButton/ToolTipService/ToolTip": "下载",
       "TorrentDownloading": "开始下载种子…",
