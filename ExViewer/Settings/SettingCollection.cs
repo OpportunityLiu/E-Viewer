@@ -419,6 +419,14 @@ namespace ExViewer.Settings
             }
         }
 
+        [Setting("Connection", Index = 9500)]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.YesNo)]
+        public bool UsePersonalizedTorrent
+        {
+            get => GetLocal(true);
+            set => SetLocal(value);
+        }
+
         [Setting("About", Index = int.MaxValue)]
         [CustomTemplate("AboutContentTemplate")]
         public object AboutContent

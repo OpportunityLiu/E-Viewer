@@ -25,7 +25,8 @@ namespace ExClient.Services
 
     public readonly struct TorrentInfo : IEquatable<TorrentInfo>
     {
-        private static readonly Regex infoMatcher = new Regex(@"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+", RegexOptions.Compiled);
+        private static readonly Regex _InfoMatcher = new Regex(@"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+", RegexOptions.Compiled);
+        private static readonly Regex _UrlMatcher = new Regex(@"document\.location='([^']+?)'", RegexOptions.Compiled);
 
         internal static IAsyncOperation<ReadOnlyCollection<TorrentInfo>> FetchAsync(GalleryInfo galleryInfo)
         {
@@ -35,22 +36,36 @@ namespace ExClient.Services
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(torrentUri);
                 if (doc.DocumentNode.ChildNodes.Count == 1 && doc.DocumentNode.FirstChild.NodeType == HtmlNodeType.Text)
                     throw new InvalidOperationException(doc.DocumentNode.FirstChild.InnerText);
-                var nodes = from n in doc.DocumentNode.Descendants("table")
-                            where n.GetAttribute("style", "") == "width:99%"
-                            let reg = infoMatcher.Match(n.GetInnerText())
-                            let name = n.Descendants("tr").Last()
-                            let link = name.Descendants("a").SingleOrDefault()
-                            select new TorrentInfo(
-                                name.GetInnerText().Trim(),
-                                DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
-                                parseSize(reg.Groups[2].Value),
-                                int.Parse(reg.Groups[3].Value),
-                                int.Parse(reg.Groups[4].Value),
-                                int.Parse(reg.Groups[5].Value),
-                                reg.Groups[6].Value,
-                                link?.GetAttribute("href", default(Uri))
-                            );
-                return nodes.ToList().AsReadOnly();
+                return doc.DocumentNode.Descendants("table")
+                    .Where(n => n.GetAttribute("style", "") == "width:99%")
+                    .Select(n =>
+                    {
+                        var reg = _InfoMatcher.Match(n.GetInnerText());
+                        var name = n.Descendants("tr").Last();
+                        var link = name.Descendants("a").SingleOrDefault();
+                        var url = default(Uri);
+                        var onclick = link?.GetAttribute("onclick", default(string));
+                        if (!string.IsNullOrEmpty(onclick))
+                        {
+                            var match = _UrlMatcher.Match(onclick);
+                            if (match.Success)
+                                Uri.TryCreate(match.Groups[1].Value, UriKind.Absolute, out url);
+                        }
+                        if (url is null)
+                        {
+                            url = link?.GetAttribute("href", default(Uri));
+                        }
+
+                        return new TorrentInfo(
+                            name.GetInnerText().Trim(),
+                            DateTimeOffset.Parse(reg.Groups[1].Value, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.AssumeUniversal),
+                            parseSize(reg.Groups[2].Value),
+                            int.Parse(reg.Groups[3].Value),
+                            int.Parse(reg.Groups[4].Value),
+                            int.Parse(reg.Groups[5].Value),
+                            reg.Groups[6].Value,
+                            url);
+                    }).ToList().AsReadOnly();
 
                 long parseSize(string sizeStr)
                 {
@@ -82,7 +97,7 @@ namespace ExClient.Services
             Peers = peers;
             Downloads = downloads;
             Uploader = uploader;
-            TorrentUri = torrentUri;
+            _TorrentUri = torrentUri;
         }
 
         public string Name { get; }
@@ -99,16 +114,25 @@ namespace ExClient.Services
 
         public string Uploader { get; }
 
-        public Uri TorrentUri { get; }
+        private readonly Uri _TorrentUri;
 
-        public bool IsExpunged => TorrentUri is null;
+        public Uri GetTorrentUri(bool personalized = true)
+        {
+            if (personalized)
+                return _TorrentUri;
+            else
+                return new Uri(_TorrentUri.GetComponents(UriComponents.HttpRequestUrl & ~UriComponents.Query, UriFormat.SafeUnescaped));
+        }
 
-        public IAsyncOperation<StorageFile> DownloadTorrentAsync()
+        public bool IsExpunged => _TorrentUri is null;
+
+        public IAsyncOperation<StorageFile> DownloadTorrentAsync(bool personalized = true)
         {
             if (IsExpunged)
                 throw new InvalidOperationException(LocalizedStrings.Resources.ExpungedTorrent);
-            var uri = TorrentUri;
-            var name = Name + ".torrent";
+            var uri = GetTorrentUri(personalized);
+            var prefix = (personalized ? "{EHT PERSONALIZED TORRENT - DO NOT REDISTRIBUTE} " : "");
+            var name = prefix + Name + ".torrent";
             return AsyncInfo.Run(async token =>
             {
                 using (var client = new HttpClient())
@@ -122,7 +146,7 @@ namespace ExClient.Services
                     }
                     catch (Exception)
                     {
-                        return await StorageFile.CreateStreamedFileAsync("gallery.torrent", dataRequested, null);
+                        return await StorageFile.CreateStreamedFileAsync(prefix + "gallery.torrent", dataRequested, null);
                     }
 
                     async void dataRequested(StreamedFileDataRequest stream)
@@ -149,7 +173,7 @@ namespace ExClient.Services
             && Seeds == other.Seeds
             && Peers == other.Peers
             && Downloads == other.Downloads
-            && TorrentUri == other.TorrentUri
+            && _TorrentUri == other._TorrentUri
             && Name == other.Name
             && Uploader == other.Uploader;
 

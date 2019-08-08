@@ -572,7 +572,7 @@ namespace ExViewer.ViewModels
                 RootControl.RootController.SendToast(Strings.Resources.Views.GalleryPage.TorrentDownloading, null);
                 try
                 {
-                    var file = await torrent.DownloadTorrentAsync();
+                    var file = await torrent.DownloadTorrentAsync(SettingCollection.Current.UsePersonalizedTorrent);
                     if (torrentfolder is null)
                         await loadTorrentFolder();
 

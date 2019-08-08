@@ -55,6 +55,7 @@
   "UseChineseTagTranslation": "标签汉语翻译",
   "UseJapaneseTagTranslation": "标签日语翻译",
   "UseJapaneseTitle": "默认显示的画廊标题",
+  "UsePersonalizedTorrent": "使用私有种子以统计 Torrent 流量",
   "Viewing": "浏览",
   "ViewOrientation": {
     "Auto": "仅对 WebToon 使用垂直滚动",
