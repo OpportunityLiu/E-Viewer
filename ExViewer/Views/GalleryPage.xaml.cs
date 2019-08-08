@@ -529,7 +529,7 @@ namespace ExViewer.Views
                     infoH -= _GdPvContentHeaderPresenter.ActualHeight + 24/*this.btn_Scroll.ActualHeight*/;
                 }
             }
-            Strings.Resources.Views.GalleryPage.Uploader()
+
             infoH = Math.Max(80, Math.Min(infoH, 360));
             Children[0].Measure(new Size(width, infoH));
             Children[1].Measure(availableSize);
