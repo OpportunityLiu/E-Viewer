@@ -120,9 +120,11 @@ namespace ExViewer.Views
             var tb = (TextBox)sender;
             var focused = tb.FocusState;
             var lv = tb.Ancestors<ListView>().First();
-            var source = (IList<RenameRecord>)lv.ItemsSource;
-            var item = source.FirstOrDefault(r => r.Title == tb.Text);
-            lv.SelectedItem = item;
+            if (lv.ItemsSource is IList<RenameRecord> source)
+            {
+                var item = source.FirstOrDefault(r => r.Title == tb.Text);
+                lv.SelectedItem = item;
+            }
             if (focused != FocusState.Unfocused)
                 tb.Focus(focused);
         }

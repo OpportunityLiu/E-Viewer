@@ -390,7 +390,7 @@ namespace ExClient.Galleries
             Tags.Update(doc);
         }
 
-        public IAsyncAction RefreshMetaDataAsync() => Comments.FetchAsync(false);
+        public Task RefreshMetaDataAsync() => Comments.FetchAsync(false);
 
         protected override IAsyncOperation<LoadItemsResult<GalleryImage>> LoadItemAsync(int index)
         {

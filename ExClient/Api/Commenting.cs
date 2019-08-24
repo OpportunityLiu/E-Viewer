@@ -61,10 +61,15 @@ namespace ExClient.Api
 
         protected override void CheckResponseOverride(ApiRequest request)
         {
-            if (Id != ((CommentVoteRequest)request).Id || !Vote.IsDefined())
+            if (Error is null)
             {
-                throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse);
+                if (Id != ((CommentVoteRequest)request).Id || !Vote.IsDefined())
+                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse);
+                return;
             }
+
+            if (Error == "You have been banned from voting on comments")
+                throw new InvalidOperationException(LocalizedStrings.Resources.BannedVotingComments);
         }
     }
 

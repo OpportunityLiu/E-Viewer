@@ -7,6 +7,8 @@ using Opportunity.MvvmUniverse;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
@@ -18,13 +20,11 @@ namespace ExClient
         internal FavoriteCategory(int index, string name)
         {
             Index = index;
-            this.name = name;
+            _Name = name;
         }
 
         public FavoritesSearchResult Search(string keyword)
-        {
-            return FavoritesSearchResult.Search(keyword, this);
-        }
+            => FavoritesSearchResult.Search(keyword, this);
 
         public int Index { get; }
 
@@ -33,21 +33,17 @@ namespace ExClient
             get
             {
                 if (Index < 0)
-                {
-                    return name;
-                }
+                    return _Name;
                 else
-                {
                     return Client.Current.Settings.FavoriteCategoryNames[Index];
-                }
             }
         }
 
         internal void OnNameChanged() => OnPropertyChanged(nameof(Name));
 
-        private readonly string name;
+        private readonly string _Name;
 
-        private IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> postAddFav(long gId, EToken gToken, string note)
+        private async Task<string> _PostAddFav(long gId, EToken gToken, string note, CancellationToken token)
         {
             IEnumerable<KeyValuePair<string, string>> getInfo()
             {
@@ -57,48 +53,41 @@ namespace ExClient
                 yield return new KeyValuePair<string, string>("update", "1");
             }
             var requestUri = new Uri($"/gallerypopups.php?gid={gId}&t={gToken.ToString()}&act=addfav", UriKind.Relative);
-            return Client.Current.HttpClient.PostAsync(requestUri, getInfo());
+            var post = Client.Current.HttpClient.PostAsync(requestUri, new HttpFormUrlEncodedContent(getInfo()));
+            token.Register(post.Cancel);
+            var res = await post;
+            return await res.Content.ReadAsStringAsync();
         }
 
-        private static readonly Regex favNoteMatcher = new Regex(@"fn\.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
-        private static readonly Regex favNameMatcher = new Regex(@"fi\.title\s*=\s*'(.*?)';", RegexOptions.Compiled);
+        private static readonly Regex _FavNoteMatcher = new Regex(@"fn\.innerHTML\s*=\s*'(?:Note: )?(.*?) ';", RegexOptions.Compiled);
+        private static readonly Regex _FavNameMatcher = new Regex(@"fi\.title\s*=\s*'(.*?)';", RegexOptions.Compiled);
 
-        public IAsyncAction AddAsync(Gallery gallery, string note)
+        public async Task AddAsync(Gallery gallery, string note, CancellationToken token = default)
         {
-            return Run(async token =>
-            {
-                var response = await postAddFav(gallery.Id, gallery.Token, note);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var match = favNoteMatcher.Match(responseContent, 1300);
-                if (match.Success)
-                {
-                    gallery.FavoriteNote = HtmlEntity.DeEntitize(match.Groups[1].Value);
-                }
-                else
-                {
-                    gallery.FavoriteNote = null;
-                }
+            var response = await _PostAddFav(gallery.Id, gallery.Token, note, token);
+            var start = response.Length > 1300 ? 1300 : 0;
+            var match = _FavNoteMatcher.Match(response, start);
+            if (match.Success)
+                gallery.FavoriteNote = HtmlEntity.DeEntitize(match.Groups[1].Value);
+            else
+                gallery.FavoriteNote = null;
 
-                if (Index >= 0)
+            if (Index >= 0)
+            {
+                var match2 = _FavNameMatcher.Match(response, start);
+                if (match2.Success)
                 {
-                    var match2 = favNameMatcher.Match(responseContent, 1300);
-                    if (match2.Success)
-                    {
-                        var settings = Client.Current.Settings;
-                        settings.FavoriteCategoryNames[Index] = HtmlEntity.DeEntitize(match2.Groups[1].Value);
-                        settings.StoreCache();
-                    }
+                    var settings = Client.Current.Settings;
+                    settings.FavoriteCategoryNames[Index] = HtmlEntity.DeEntitize(match2.Groups[1].Value);
+                    settings.StoreCache();
                 }
-                gallery.FavoriteCategory = this;
-            });
+            }
+            gallery.FavoriteCategory = this;
         }
 
-        public IAsyncAction AddAsync(GalleryInfo gallery, string note)
+        public async Task AddAsync(GalleryInfo gallery, string note, CancellationToken token = default)
         {
-            return Run(async token =>
-            {
-                var response = await postAddFav(gallery.ID, gallery.Token, note);
-            });
+            _ = await _PostAddFav(gallery.ID, gallery.Token, note, token);
         }
 
         public override string ToString()

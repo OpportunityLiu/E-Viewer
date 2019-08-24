@@ -21,12 +21,21 @@ namespace ExClient.Internal
      * */
     internal class MyHttpClient : IDisposable
     {
-        private static void _CheckStringResponse(string responseString)
+        private void _CheckStringResponse(string responseString)
         {
-            if (responseString.Equals("This gallery is currently unavailable.", StringComparison.OrdinalIgnoreCase))
+            if (responseString.Length > 200)
+                return;
+            if (responseString.Contains("This gallery is currently unavailable."))
                 throw new InvalidOperationException(LocalizedStrings.Resources.GalleryRemoved);
-            if (responseString.StartsWith("Your IP address has been temporarily banned for excessive pageloads"))
+            if (responseString.Contains("Your IP address has been temporarily banned for excessive pageloads"))
                 throw new InvalidOperationException(LocalizedStrings.Resources.IPBannedOfPageLoad);
+            if (responseString.Contains("This page is currently not available, as your account has been suspended."))
+                throw new InvalidOperationException(LocalizedStrings.Resources.AccountSuspended);
+            if (responseString.Contains("https://exhentai.org/img/kokomade.jpg"))
+            {
+                _ = _Owner.ResetExCookieAsync();
+                throw new InvalidOperationException(LocalizedStrings.Resources.Kokomade);
+            }
         }
 
         private void _CheckSadPanda(HttpResponseMessage response)
@@ -163,10 +172,9 @@ namespace ExClient.Internal
                 var response = await request;
                 _CheckSadPanda(response);
                 var resstr = await response.Content.ReadAsStringAsync();
+                _CheckStringResponse(resstr);
                 doc.LoadHtml(resstr);
                 var rootNode = doc.DocumentNode;
-                if (rootNode.ChildNodes.Count == 1 && rootNode.FirstChild.NodeType == HtmlNodeType.Text)
-                    _CheckStringResponse(rootNode.FirstChild.InnerText);
 
                 do
                 {
@@ -216,12 +224,12 @@ namespace ExClient.Internal
             return _Inner.PostAsync(uri, new HttpFormUrlEncodedContent(content));
         }
 
-        public IAsyncOperationWithProgress<string, HttpProgress> PostStringAsync(Uri uri, string content)
+        public IAsyncOperationWithProgress<string, HttpProgress> PostStringAsync(Uri uri, IHttpContent content)
         {
             _ReformUri(ref uri);
             return Run<string, HttpProgress>(async (token, progress) =>
             {
-                var op = PostAsync(uri, content is null ? null : new HttpStringContent(content));
+                var op = PostAsync(uri, content);
                 token.Register(op.Cancel);
                 op.Progress = (sender, value) => progress.Report(value);
                 var res = await op;

@@ -15,6 +15,8 @@ namespace ExClient.Api
         {
             if (!LogIn.IsNullOrEmpty())
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongAccountInfo);
+            if (Error.IsNullOrWhiteSpace())
+                Error = null;
             CheckResponseOverride(request);
             if (!Error.IsNullOrEmpty())
                 throw new InvalidOperationException(Error);

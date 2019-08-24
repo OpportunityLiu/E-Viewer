@@ -47,11 +47,11 @@ namespace ExViewer.Views
                     if (!long.TryParse(MemberId, out var uid))
                         return;
                     var hash = PassHash;
-                    var igenous = Igneous;
+                    var igneous = Igneous;
 
                     try
                     {
-                        await Client.Current.LogOnAsync(uid, hash, igenous);
+                        await Client.Current.LogOnAsync(uid, hash, igneous);
                     }
                     catch (Exception ex)
                     {
@@ -86,7 +86,7 @@ namespace ExViewer.Views
             public bool CanLogOn => !Succeed
                 && long.TryParse(MemberId, out _)
                 && Regex.IsMatch(PassHash ?? "", @"^[0-9a-fA-F]{32}$")
-                && Regex.IsMatch(Igneous ?? "", @"^[0-9a-fA-F]{0,32}$");
+                && Regex.IsMatch(Igneous ?? "", @"^[0-9a-fA-F]*$");
 
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private bool _Succeed;

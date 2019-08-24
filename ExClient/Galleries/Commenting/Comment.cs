@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Web.Http;
 
@@ -37,8 +39,6 @@ namespace ExClient.Galleries.Commenting
             }
         }
 
-        private static readonly Regex voteRegex = new Regex(@"^(.+?)\s+([+-]\d+)$", RegexOptions.Compiled | RegexOptions.Singleline);
-
         private Comment(CommentCollection owner, int id, HtmlNode commentNode)
         {
             Owner = owner;
@@ -61,7 +61,7 @@ namespace ExClient.Galleries.Commenting
 
             if (!IsUploaderComment)
             {
-                score = int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
+                _Score = int.Parse(document.GetElementbyId($"comment_score_{id}").InnerText);
                 var actionNode = commentNode.Descendants("div").FirstOrDefault(node => node.HasClass("c4") && node.HasClass("nosel"));
                 if (actionNode != null)
                 {
@@ -71,26 +71,26 @@ namespace ExClient.Galleries.Commenting
                     {
                         if (vuNode.GetAttribute("style", "").Contains("color:blue"))
                         {
-                            status = CommentStatus.VotedUp;
+                            _Status = CommentStatus.VotedUp;
                         }
                         else if (vdNode.GetAttribute("style", "").Contains("color:blue"))
                         {
-                            status = CommentStatus.VotedDown;
+                            _Status = CommentStatus.VotedDown;
                         }
                         else
                         {
-                            status = CommentStatus.Votable;
+                            _Status = CommentStatus.Votable;
                         }
                     }
                     else if (actionNode.InnerText == "[Edit]")
                     {
-                        status = CommentStatus.Editable;
+                        _Status = CommentStatus.Editable;
                     }
                 }
             }
         }
 
-        private static HttpClient transClient = new HttpClient();
+        private static readonly HttpClient _TransClient = new HttpClient();
 
         public IAsyncOperation<HtmlNode> TranslateAsync(string targetLangCode)
         {
@@ -102,7 +102,7 @@ namespace ExClient.Galleries.Commenting
                     var data = item.GetInnerText();
                     var uri = $"https://translate.google.cn/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8"
                         + $"&sl=auto&tl={targetLangCode}&q={Uri.EscapeDataString(data)}";
-                    var transRetHtml = await transClient.GetStringAsync(new Uri(uri));
+                    var transRetHtml = await _TransClient.GetStringAsync(new Uri(uri));
                     var obj = JsonConvert.DeserializeObject<JArray>(transRetHtml);
                     var objarr = (JArray)obj[0];
                     var translated = string.Concat(objarr.Select(a => a[0].ToString()));
@@ -123,124 +123,110 @@ namespace ExClient.Galleries.Commenting
 
         public DateTimeOffset Posted { get; }
 
-        private DateTimeOffset? edited;
+        private DateTimeOffset? _Edited;
         public DateTimeOffset? Edited
         {
-            get => edited;
-            internal set => Set(ref edited, value);
+            get => _Edited;
+            internal set => Set(ref _Edited, value);
         }
 
-        private HtmlNode content;
+        private HtmlNode _Content;
         public HtmlNode Content
         {
-            get => content;
-            internal set => Set(ref content, value);
+            get => _Content;
+            internal set => Set(ref _Content, value);
         }
 
-        private HtmlNode translatedContent;
+        private HtmlNode _TranslatedContent;
         public HtmlNode TranslatedContent
         {
-            get => translatedContent;
-            internal set => Set(ref translatedContent, value);
+            get => _TranslatedContent;
+            internal set => Set(ref _TranslatedContent, value);
         }
 
-        private int score;
+        private int _Score;
         public int Score
         {
-            get => score;
-            internal set => Set(ref score, value);
+            get => _Score;
+            internal set => Set(ref _Score, value);
         }
 
-        public bool CanVote => (status & CommentStatus.Votable) == CommentStatus.Votable;
+        public bool CanVote => (_Status & CommentStatus.Votable) == CommentStatus.Votable;
 
-        public IAsyncAction VoteAsync(VoteState command)
+        public async Task VoteAsync(VoteState command, CancellationToken token = default)
         {
             if (command == VoteState.Default)
             {
                 // Withdraw votes
-                if (status == CommentStatus.VotedDown)
-                {
+                if (_Status == CommentStatus.VotedDown)
                     command = VoteState.Down;
-                }
-                else if (status == CommentStatus.VotedUp)
-                {
+                else if (_Status == CommentStatus.VotedUp)
                     command = VoteState.Up;
-                }
             }
             if (command != VoteState.Down && command != VoteState.Up)
-            {
                 throw new ArgumentOutOfRangeException(nameof(command), LocalizedStrings.Resources.VoteOutOfRange);
-            }
             if (!CanVote)
             {
                 if (IsUploaderComment)
-                {
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteStateUploader);
-                }
                 else
-                {
                     throw new InvalidOperationException(LocalizedStrings.Resources.WrongVoteState);
-                }
             }
             var request = new CommentVoteRequest(this, command);
-            return AsyncInfo.Run(async token =>
+            var r = await request.GetResponseAsync(token);
+            switch (r.Vote)
             {
-                var r = await request.GetResponseAsync(token);
-                switch (r.Vote)
-                {
-                case VoteState.Default:
-                    Status = CommentStatus.Votable;
-                    break;
-                case VoteState.Up:
-                    Status = CommentStatus.VotedUp;
-                    break;
-                case VoteState.Down:
-                    Status = CommentStatus.VotedDown;
-                    break;
-                default:
-                    Debug.Assert(false);
-                    break;
-                }
-                Score = r.Score;
-            });
+            case VoteState.Default:
+                Status = CommentStatus.Votable;
+                break;
+            case VoteState.Up:
+                Status = CommentStatus.VotedUp;
+                break;
+            case VoteState.Down:
+                Status = CommentStatus.VotedDown;
+                break;
+            default:
+                Debug.Assert(false);
+                break;
+            }
+            Score = r.Score;
         }
 
-        public bool CanEdit => status == CommentStatus.Editable;
+        public bool CanEdit => _Status == CommentStatus.Editable;
 
-        public IAsyncOperation<string> FetchEditableAsync()
+        private void _CheckEdit()
         {
             if (!CanEdit)
-            {
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
-            }
+        }
+
+        public async Task<string> FetchEditableAsync(CancellationToken token = default)
+        {
+            _CheckEdit();
+
             var request = new CommentEditRequest(this);
-            return AsyncInfo.Run(async token =>
+            var r = await request.GetResponseAsync(token);
+            var doc = HtmlNode.CreateNode(r.Editable.Trim());
+            var textArea = doc.Descendants("textarea").FirstOrDefault();
+            if (textArea is null)
             {
-                var r = await request.GetResponseAsync(token);
-                var doc = HtmlNode.CreateNode(r.Editable.Trim());
-                var textArea = doc.Descendants("textarea").FirstOrDefault();
-                if (textArea is null)
-                {
-                    return "";
-                }
-                return textArea.GetInnerText();
-            });
-        }
-
-        public IAsyncAction EditAsync(string content)
-        {
-            if (!CanEdit)
-            {
-                throw new InvalidOperationException(LocalizedStrings.Resources.WrongEditState);
+                return "";
             }
-            return Owner.PostFormAsync(content, this);
+            return textArea.GetInnerText();
         }
 
-        private CommentStatus status;
+        public Task EditAsync(string content, CancellationToken token = default)
+        {
+            _CheckEdit();
+
+            return Owner.PostFormAsync(content, this, token);
+        }
+
+        private CommentStatus _Status;
         public CommentStatus Status
         {
-            get => status;
-            internal set => Set(nameof(CanVote), nameof(CanEdit), ref status, value);
+            get => _Status;
+            internal set => Set(nameof(CanVote), nameof(CanEdit), ref _Status, value);
         }
     }
 }

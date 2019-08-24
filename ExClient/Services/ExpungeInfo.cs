@@ -11,32 +11,28 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Web.Http;
 
 namespace ExClient.Services
 {
     public static class ExpungeExtensions
     {
-        public static IAsyncOperation<ExpungeInfo> FetchExpungeInfoAsync(this GalleryInfo galleryInfo)
-            => ExpungeInfo.FetchAsync(galleryInfo);
-        public static IAsyncOperation<ExpungeInfo> FetchExpungeInfoAsync(this Gallery gallery)
-            => ExpungeInfo.FetchAsync(gallery);
+        public static Task<ExpungeInfo> FetchExpungeInfoAsync(this GalleryInfo galleryInfo, CancellationToken token = default)
+            => ExpungeInfo.FetchAsync(galleryInfo, token);
+        public static Task<ExpungeInfo> FetchExpungeInfoAsync(this Gallery gallery, CancellationToken token = default)
+            => ExpungeInfo.FetchAsync(gallery, token);
     }
 
     public sealed class ExpungeInfo : ObservableObject
     {
-        public static IAsyncOperation<ExpungeInfo> FetchAsync(GalleryInfo galleryInfo)
+        public static async Task<ExpungeInfo> FetchAsync(GalleryInfo galleryInfo, CancellationToken token = default)
         {
-            return AsyncInfo.Run(async token =>
-            {
-                var r = new ExpungeInfo(galleryInfo);
-                var u = r.RefreshAsync();
-                token.Register(u.Cancel);
-                await u;
-                token.ThrowIfCancellationRequested();
-                return r;
-            });
+            var r = new ExpungeInfo(galleryInfo);
+            await r.RefreshAsync(token);
+            return r;
         }
 
         public ExpungeInfo(GalleryInfo galleryInfo) => GalleryInfo = galleryInfo;
@@ -46,93 +42,89 @@ namespace ExClient.Services
         private Uri apiUri => new Uri($"gallerypopups.php?gid={GalleryInfo.ID}&t={GalleryInfo.Token.ToString()}&act=expunge", UriKind.Relative);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly ObservableList<ExpungeRecord> records = new ObservableList<ExpungeRecord>();
-        public ObservableListView<ExpungeRecord> Records => records.AsReadOnly();
+        private readonly ObservableList<ExpungeRecord> _Records = new ObservableList<ExpungeRecord>();
+        public ObservableListView<ExpungeRecord> Records => _Records.AsReadOnly();
 
-        private static readonly Regex infoRegex = new Regex($@"^\s*\+(?<{nameof(ExpungeRecord.Power)}>\d+)\s*(?<{nameof(ExpungeRecord.Reason)}>\w+)\s*on\s*(?<{nameof(ExpungeRecord.Posted)}>.+?)\s*UTC\s*by\s*(?<{nameof(ExpungeRecord.Author)}>.+?)\s*$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex _InfoRegex = new Regex($@"^\s*\+(?<{nameof(ExpungeRecord.Power)}>\d+)\s*(?<{nameof(ExpungeRecord.Reason)}>\w+)\s*on\s*(?<{nameof(ExpungeRecord.Posted)}>.+?)\s*UTC\s*by\s*(?<{nameof(ExpungeRecord.Author)}>.+?)\s*$", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
-        public IAsyncAction RefreshAsync()
+        public async Task RefreshAsync(CancellationToken token = default)
         {
-            return Task.Run(async () =>
+            var post = Client.Current.HttpClient.PostStringAsync(apiUri, new HttpFormUrlEncodedContent(new[]{
+                new KeyValuePair<string, string>("log", "Show Expunge Log")
+            }));
+            token.Register(post.Cancel);
+            var response = await post;
+
+            try
             {
-                var response = await Client.Current.HttpClient.PostAsync(apiUri, new KeyValuePair<string, string>("log", "Show Expunge Log"));
-                var responseStr = await response.Content.ReadAsStringAsync();
-                try
+                var doc = new HtmlDocument();
+                doc.LoadHtml(response);
+                var form = doc.GetElementbyId("galpop");
+                if (form is null)
                 {
-                    var doc = new HtmlDocument();
-                    doc.LoadHtml(responseStr);
-                    var form = doc.GetElementbyId("galpop");
-                    if (form is null)
-                    {
-                        throw new InvalidOperationException("Form id=`galpop` not found.");
-                    }
-                    var votes = form.SelectNodes("descendant::div[@class='c1']");
-                    if (votes is null)
-                    {
-                        records.Clear();
-                        return;
-                    }
-                    var data = new List<ExpungeRecord>();
-                    foreach (var item in votes)
-                    {
-                        var match = infoRegex.Match(item.FirstChild.GetInnerText());
-                        if (!match.Success)
-                            throw new InvalidOperationException("infoRegex matches failed.");
-                        data.Add(new ExpungeRecord(
-                            (ExpungeReason)Enum.Parse(typeof(ExpungeReason), match.Groups[nameof(ExpungeRecord.Reason)].Value, true),
-                            item.LastChild.GetInnerText(),
-                            match.Groups[nameof(ExpungeRecord.Author)].Value,
-                            DateTimeOffset.Parse(match.Groups[nameof(ExpungeRecord.Posted)].Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AllowWhiteSpaces),
-                            int.Parse(match.Groups[nameof(ExpungeRecord.Power)].Value)
-                            ));
-                    }
-                    records.Update(data);
+                    throw new InvalidOperationException("Form id=`galpop` not found.");
                 }
-                catch (Exception ex)
+                var votes = form.SelectNodes("descendant::div[@class='c1']");
+                if (votes is null)
                 {
-                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse, ex)
-                        .AddData("RequestUri", response.RequestMessage.RequestUri.ToString())
-                        .AddData("Response", responseStr);
+                    _Records.Clear();
+                    return;
                 }
-            }).AsAsyncAction();
+                var data = new List<ExpungeRecord>();
+                foreach (var item in votes)
+                {
+                    var match = _InfoRegex.Match(item.FirstChild.GetInnerText());
+                    if (!match.Success)
+                        throw new InvalidOperationException("infoRegex matches failed.");
+                    data.Add(new ExpungeRecord(
+                        (ExpungeReason)Enum.Parse(typeof(ExpungeReason), match.Groups[nameof(ExpungeRecord.Reason)].Value, true),
+                        item.LastChild.GetInnerText(),
+                        match.Groups[nameof(ExpungeRecord.Author)].Value,
+                        DateTimeOffset.Parse(match.Groups[nameof(ExpungeRecord.Posted)].Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AllowWhiteSpaces),
+                        int.Parse(match.Groups[nameof(ExpungeRecord.Power)].Value)
+                        ));
+                }
+                _Records.Update(data);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse, ex)
+                    .AddData("RequestUri", apiUri.ToString())
+                    .AddData("Response", response);
+            }
         }
 
-        public IAsyncAction VoteAsync(ExpungeReason reason, string explanation)
+        public async Task VoteAsync(ExpungeReason reason, string explanation, CancellationToken token = default)
         {
             if (reason == ExpungeReason.None)
                 explanation = null;
-            return AsyncInfo.Run(async token =>
+
+            var post = Client.Current.HttpClient.PostStringAsync(apiUri, new HttpFormUrlEncodedContent(new[]
             {
-                var post = Client.Current.HttpClient.PostAsync(apiUri,
-                    new KeyValuePair<string, string>("expungecat", ((int)reason + 1).ToString()),
-                    new KeyValuePair<string, string>("expungexpl", explanation.IsNullOrWhiteSpace() ? " " : explanation.Trim()),
-                    new KeyValuePair<string, string>("pet", "Petition to Expunge")
-                );
-                token.Register(post.Cancel);
-                var res = await post;
-                var resStr = await res.Content.ReadAsStringAsync();
-                using (var stm = (await res.Content.ReadAsInputStreamAsync()).AsStreamForRead())
-                {
-                    try
-                    {
-                        var doc = new HtmlDocument();
-                        doc.Load(stm);
-                        var form = doc.GetElementbyId("galpop");
-                        if (form is null)
-                            throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse);
-                        var text = form.GetInnerText();
-                        if (!text.Contains("The requested action has been performed."))
-                            throw new InvalidOperationException(form.GetInnerText());
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.AddData("RequestUri", res.RequestMessage.RequestUri.ToString());
-                        ex.AddData("Response", resStr);
-                        throw;
-                    }
-                }
-                await RefreshAsync();
-            });
+                new KeyValuePair<string, string>("expungecat", ((int)reason + 1).ToString()),
+                new KeyValuePair<string, string>("expungexpl", explanation.IsNullOrWhiteSpace() ? " " : explanation.Trim()),
+                new KeyValuePair<string, string>("pet", "Petition to Expunge"),
+            }));
+            token.Register(post.Cancel);
+            var res = await post;
+            try
+            {
+                var doc = new HtmlDocument();
+                doc.LoadHtml(res);
+                var form = doc.GetElementbyId("galpop");
+                if (form is null)
+                    throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse);
+                var text = form.GetInnerText();
+                if (!text.Contains("The requested action has been performed."))
+                    throw new InvalidOperationException(form.GetInnerText());
+            }
+            catch (Exception ex)
+            {
+                ex.AddData("RequestUri", apiUri.ToString());
+                ex.AddData("Response", res);
+                throw;
+            }
+            await RefreshAsync(token);
         }
     }
 }

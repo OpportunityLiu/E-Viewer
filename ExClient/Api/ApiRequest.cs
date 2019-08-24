@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Web.Http;
 
 namespace ExClient.Api
 {
@@ -61,13 +62,13 @@ namespace ExClient.Api
             var resStr = default(string);
             try
             {
-                var req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
+                var req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, new HttpStringContent(reqStr));
                 token.Register(() => req?.Cancel());
                 resStr = await req;
                 if (resStr.IsNullOrEmpty() || resStr[0] == '<')
                 {
                     // sometimes apis returns HTML, try a second time
-                    req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, reqStr);
+                    req = Client.Current.HttpClient.PostStringAsync(Client.Current.Uris.ApiUri, new HttpStringContent(reqStr));
                     resStr = await req;
                 }
                 var resobj = JsonConvert.DeserializeObject<TResponse>(resStr);

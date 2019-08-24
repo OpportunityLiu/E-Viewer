@@ -51,9 +51,10 @@ namespace ExClient.Api
         protected override void CheckResponseOverride(ApiRequest request)
         {
             if (Error is null)
-            {
                 return;
-            }
+
+            if (Error == "You have been banned from tagging galleries")
+                throw new InvalidOperationException(LocalizedStrings.Resources.BannedTagging);
 
             var validMatch = tagNotValid.Match(Error);
             if (validMatch.Success)

@@ -87,7 +87,7 @@
       <TextBox x:Name="tbIgneous"
                x:Uid="Views/LogOnDialog/IgneousTextBox"
                tke:TextBoxRegex.ValidationMode="Normal"
-               tke:TextBoxRegex.Regex="^[0-9a-fA-F]{0,32}$"
+               tke:TextBoxRegex.Regex="^[0-9a-fA-F]*$"
                Header="igneous"
                Text="{x:Bind VM.Igneous, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                Margin="0,12"
