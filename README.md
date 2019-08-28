@@ -34,8 +34,8 @@ Please download `.appxbundle` or `.appx` file to install.
 Here is a simple introduction for those who would like to build this project by themselves.
 
 ### Prerequisite
-- Visual Studio 2019 16.1
-- Windows SDK 10.0.17763
+- Visual Studio 2019 16.2
+- Windows SDK 10.0.18362
 
 ### Procedure
 - Clone the repository to local
