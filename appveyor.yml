@@ -1,6 +1,6 @@
 version: Build - {build}
 skip_tags: true
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 platform:
 - x86
@@ -31,7 +31,8 @@ before_build:
 build:
   verbosity: minimal
 artifacts:
-- path: /ExViewer/AppPackages/*/*.appx*
+- path: /ExViewer/AppPackages/*/*.appxsym
+- path: /ExViewer/AppPackages/*/*.msix
 - path: /ExViewer/AppPackages/*/*.cer
 deploy:
 - provider: GitHub
