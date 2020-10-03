@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -21,13 +22,11 @@ namespace ExClient.Models
             optionsBuilder
                 .ConfigureWarnings(warnings => warnings
                     .Throw(
-                        RelationalEventId.QueryClientEvaluationWarning,
                         RelationalEventId.AmbientTransactionWarning,
-                        RelationalEventId.PossibleUnintendedUseOfEqualsWarning)
+                        RelationalEventId.QueryPossibleUnintendedUseOfEqualsWarning)
                     .Throw(
-                        CoreEventId.IncludeIgnoredWarning,
-                        CoreEventId.SensitiveDataLoggingEnabledWarning,
-                        CoreEventId.ModelValidationWarning));
+                        CoreEventId.SensitiveDataLoggingEnabledWarning)
+                );
 #endif
         }
 

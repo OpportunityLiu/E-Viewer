@@ -17,7 +17,7 @@ namespace EhTagTranslatorClient
 
         internal DataBase() => Db = new TranslateDb();
 
-        public IQueryable<Record> Tags => Db.Table.AsNoTracking();
+        public DbSet<Record> Tags => Db.Table;
 
         internal TranslateDb Db { get; private set; }
 

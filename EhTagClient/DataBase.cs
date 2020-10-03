@@ -12,7 +12,7 @@ namespace EhTagClient
             db = new TagDb();
         }
 
-        public IQueryable<TagRecord> Tags => db.TagTable.AsNoTracking();
+        public DbSet<TagRecord> Tags => db.TagTable;
 
         private TagDb db;
 

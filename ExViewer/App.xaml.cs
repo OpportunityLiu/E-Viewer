@@ -38,7 +38,7 @@ namespace ExViewer
             //ElementSoundPlayer.State = ElementSoundPlayerState.On;
         }
 
-        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             var ex = e.Exception;
             switch (ex)

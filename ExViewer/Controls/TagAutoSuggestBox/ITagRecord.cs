@@ -146,17 +146,19 @@ namespace ExViewer.Controls.TagSuggestion
                 var r = default(List<TransRecord>);
                 if (ns == Namespace.Unknown || ns == Namespace.Misc)
                 {
-                    r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
-                                          WHERE Original LIKE {0} COLLATE nocase 
-                                            Or Translated LIKE {0} COLLATE nocase", $"%{highlight}%")
+                    r = db.Tags.FromSqlRaw(@"SELECT * FROM 'Table' 
+                                             WHERE Original LIKE {0} COLLATE nocase 
+                                               Or Translated LIKE {0} COLLATE nocase", $"%{highlight}%")
+                        .AsNoTracking()
                         .ToList();
                 }
                 else
                 {
-                    r = db.Tags.FromSql(@"SELECT * FROM 'Table' 
-                                          WHERE Original LIKE {0} COLLATE nocase 
-                                            Or Translated LIKE {0} COLLATE nocase", $"%{highlight}%")
+                    r = db.Tags.FromSqlRaw(@"SELECT * FROM 'Table' 
+                                             WHERE Original LIKE {0} COLLATE nocase 
+                                               Or Translated LIKE {0} COLLATE nocase", $"%{highlight}%")
                         .Where(t => t.Namespace == ns)
+                        .AsNoTracking()
                         .ToList();
                 }
 
@@ -171,15 +173,17 @@ namespace ExViewer.Controls.TagSuggestion
                 var r = default(List<EhTagClient.TagRecord>);
                 if (ns == Namespace.Unknown || ns == Namespace.Misc)
                 {
-                    r = db.Tags.FromSql(@"SELECT * FROM 'TagTable' 
-                                          WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")
+                    r = db.Tags.FromSqlRaw(@"SELECT * FROM 'TagTable' 
+                                             WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")
+                               .AsNoTracking()
                                .ToList();
                 }
                 else
                 {
-                    r = db.Tags.FromSql(@"SELECT * FROM 'TagTable' 
-                                          WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")
+                    r = db.Tags.FromSqlRaw(@"SELECT * FROM 'TagTable' 
+                                             WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")
                                .Where(t => t.TagNamespace == ns)
+                               .AsNoTracking()
                                .ToList();
                 }
 

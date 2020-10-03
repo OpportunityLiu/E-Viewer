@@ -30,6 +30,7 @@ namespace EhTagTranslatorClient
             using (var db = CreateDatabase())
             {
                 return db.Tags
+                    .AsNoTracking()
                     .SingleOrDefault(r => r.Namespace == ns && r.Original == key);
             }
         }
