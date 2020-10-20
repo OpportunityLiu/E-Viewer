@@ -52,12 +52,12 @@ namespace ExClient.Galleries.Commenting
             var editNode = commentNode.Descendants("div").FirstOrDefault(node => node.HasClass("c8"));
             if (editNode != null)
             {
-                Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm 'UTC'", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
+                Edited = DateTimeOffset.ParseExact(editNode.Element("strong").InnerText, "dd MMMM yyyy, HH:mm", culture, System.Globalization.DateTimeStyles.AssumeUniversal);
             }
 
             var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.HasClass("c3"));
             Author = postedAndAuthorNode.Element("a").GetInnerText();
-            Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'UTC by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm ' by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
 
             if (!IsUploaderComment)
             {
