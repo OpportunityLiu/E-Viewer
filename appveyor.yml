@@ -12,8 +12,10 @@ environment:
     secure: jamZ7Amcuj5QZeiKqfmrig==
 install:
 - ps: |
-    $certfile = Get-Item "${Env:APPVEYOR_BUILD_FOLDER}/ExViewer/ExViewer_TemporaryKey.pfx"
-    Import-PfxCertificate $certfile -Password (ConvertTo-SecureString -AsPlainText "$Env:GITHUB_PASS" -Force) -CertStoreLocation Cert:\CurrentUser\My\
+    if($Env:GITHUB_PASS) {
+      $certfile = Get-Item "${Env:APPVEYOR_BUILD_FOLDER}/ExViewer/ExViewer_TemporaryKey.pfx"
+      Import-PfxCertificate $certfile -Password (ConvertTo-SecureString -AsPlainText "$Env:GITHUB_PASS" -Force) -CertStoreLocation Cert:\CurrentUser\My\
+    }
 before_build:
 - ps: |
     nuget restore
