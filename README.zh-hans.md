@@ -14,7 +14,7 @@
 
 首先安装依赖包 ([x86](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/ARM.zip)) 和证书（`.cer` 文件）。
  
-下载 `.appxbundle` 或 `.appx` 安装包来安装。
+下载 `.msix` 安装包来安装。
 `.appxsym` 文件是用于调试的符号信息。
 
 ## 常见问题
