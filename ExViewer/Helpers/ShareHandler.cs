@@ -1,11 +1,14 @@
 ﻿using ExViewer.Views;
+
 using Opportunity.MvvmUniverse;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.DataTransfer;
@@ -21,6 +24,20 @@ namespace ExViewer.Helpers
 {
     public static class ShareHandler
     {
+        static ShareHandler()
+        {
+            if (!IsShareSupported)
+            {
+                return;
+            }
+            var manager = DataTransferManager.GetForCurrentView();
+            manager.DataRequested += _DataRequested;
+            if (CustomHandlers.Instance != null)
+            {
+                manager.ShareProvidersRequested += CustomHandlers.Instance.ShareProvidersRequested;
+            }
+        }
+
         public static bool IsShareSupported => DataTransferManager.IsSupported();
 
         public static void Share(TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler)
@@ -29,8 +46,7 @@ namespace ExViewer.Helpers
             {
                 return;
             }
-
-            new ShareHandlerStorage(handler);
+            _CurrentHandler = handler;
             if (ExApiInfo.RS3)
             {
                 DataTransferManager.ShowShareUI(new ShareUIOptions { Theme = Settings.SettingCollection.Current.Theme == Windows.UI.Xaml.ApplicationTheme.Dark ? ShareUITheme.Dark : ShareUITheme.Light });
@@ -128,54 +144,27 @@ namespace ExViewer.Helpers
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
-        private class ShareHandlerStorage
+
+        private static TypedEventHandler<DataTransferManager, DataRequestedEventArgs> _CurrentHandler;
+
+        private static void _DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
         {
-            public ShareHandlerStorage(TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler)
+            var d = args.Request.Data;
+            d.Properties.Title = Package.Current.DisplayName;
+            d.Properties.ApplicationName = Package.Current.DisplayName;
+            d.Properties.PackageFamilyName = Package.Current.Id.FamilyName;
+            if(_CurrentHandler != null)
             {
-                this.handler = handler;
-                var t = DataTransferManager.GetForCurrentView();
-                t.DataRequested += T_DataRequested;
-                if (CustomHandlers.Instance != null)
-                {
-                    t.ShareProvidersRequested += T_ShareProvidersRequested;
-                }
-            }
-
-            private void T_ShareProvidersRequested(DataTransferManager sender, ShareProvidersRequestedEventArgs args)
-            {
-                sender.ShareProvidersRequested -= T_ShareProvidersRequested;
-
-                args.Providers.Add(CustomHandlers.Instance.CopyProvider);
-
-                if (args.Data.Contains(StandardDataFormats.WebLink))
-                {
-                    args.Providers.Add(CustomHandlers.Instance.OpenLinkProvider);
-                }
-
-                if (args.Data.Contains(StandardDataFormats.StorageItems))
-                {
-                    args.Providers.Add(CustomHandlers.Instance.SetWallpaperProvider);
-                }
-            }
-
-            private readonly TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler;
-
-            private void T_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
-            {
-                sender.DataRequested -= T_DataRequested;
-                var d = args.Request.Data;
-                d.Properties.Title = Package.Current.DisplayName;
-                d.Properties.ApplicationName = Package.Current.DisplayName;
-                d.Properties.PackageFamilyName = Package.Current.Id.FamilyName;
-                handler?.Invoke(sender, args);
+                _CurrentHandler?.Invoke(sender, args);
+                _CurrentHandler = null;
             }
         }
 
         private class CustomHandlers
         {
-            public static CustomHandlers Instance { get; } = create();
+            public static CustomHandlers Instance { get; } = _Create();
 
-            private static CustomHandlers create()
+            private static CustomHandlers _Create()
             {
                 if (!ExApiInfo.ShareProviderSupported)
                 {
@@ -184,6 +173,22 @@ namespace ExViewer.Helpers
 
                 return new CustomHandlers();
             }
+
+            public void ShareProvidersRequested(DataTransferManager sender, ShareProvidersRequestedEventArgs args)
+            {
+                args.Providers.Add(CopyProvider);
+
+                if (args.Data.Contains(StandardDataFormats.WebLink))
+                {
+                    args.Providers.Add(OpenLinkProvider);
+                }
+
+                if (args.Data.Contains(StandardDataFormats.StorageItems))
+                {
+                    args.Providers.Add(SetWallpaperProvider);
+                }
+            }
+
             public ShareProvider OpenLinkProvider { get; }
                 = new ShareProvider(Strings.Resources.Sharing.OpenInBrowser
                     , RandomAccessStreamReference.CreateFromUri(new Uri(@"ms-appx:///Assets/ShareTarget/MicrosoftEdge.png"))

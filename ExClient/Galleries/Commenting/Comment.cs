@@ -57,7 +57,7 @@ namespace ExClient.Galleries.Commenting
 
             var postedAndAuthorNode = commentNode.Descendants("div").First(node => node.HasClass("c3"));
             Author = postedAndAuthorNode.Element("a").GetInnerText();
-            Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm ' by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+            Posted = DateTimeOffset.ParseExact(postedAndAuthorNode.FirstChild.InnerText, "'Posted on' dd MMMM yyyy, HH:mm 'by: &nbsp;'", culture, System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AllowWhiteSpaces);
 
             if (!IsUploaderComment)
             {
