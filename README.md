@@ -20,7 +20,7 @@ A Client for e-hentai.org on Windows 10.
 
 Install dependencies ([x86](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x86.zip)|[x64](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/x64.zip)|[ARM](https://raw.github.com/wiki/OpportunityLiu/E-Viewer/Dependencies/ARM.zip)) and signature (`.cer` file) first.     
 
-Please download `.appxbundle` or `.appx` file to install.
+Please download `.msix` file to install.
 `.appxsym` files are symbol files for debugging.    
 
 ## FAQ 
