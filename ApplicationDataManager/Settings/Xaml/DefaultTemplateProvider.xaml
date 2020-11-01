@@ -9,8 +9,7 @@
                 x:DataType="settings:SettingInfo">
     <TextBox Text="{x:Bind Value, Mode=TwoWay, Converter={StaticResource Conv}}"
              InputScope="{x:Bind PropertyType, Converter={StaticResource InputScopeConverter}}"
-             AcceptsReturn="{x:Bind ((settings:TextTemplateAttribute)ValueRepresent).MultiLine, FallbackValue=false}"
-             MinHeight="50">
+             AcceptsReturn="{x:Bind ((settings:TextTemplateAttribute)ValueRepresent).MultiLine, FallbackValue=false}">
       <TextBox.Header>
         <TextBlock Text="{x:Bind FriendlyName}"
                    TextWrapping="WrapWholeWords" />

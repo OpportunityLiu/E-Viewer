@@ -324,7 +324,7 @@ namespace ExClient.Galleries
                             }
                         }));
 
-                        if (imageLoadResponse.Content.Headers.ContentType.MediaType == "text/html")
+                        if (imageLoadResponse.Content.Headers.ContentType?.MediaType == "text/html")
                         {
                             var error = HtmlUtilities.ConvertToText(imageLoadResponse.Content.ToString());
                             if (error.StartsWith("You have exceeded your image viewing limits."))

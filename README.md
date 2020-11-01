@@ -34,8 +34,8 @@ Please download `.msix` file to install.
 Here is a simple introduction for those who would like to build this project by themselves.
 
 ### Prerequisite
-- Visual Studio 2019 16.6
-- Windows SDK 10.0.18362
+- Visual Studio 2019 16.7
+- Windows SDK 10.0.19041
 
 ### Procedure
 - Clone the repository to local

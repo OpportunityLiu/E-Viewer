@@ -3,7 +3,7 @@
                     xmlns:rs3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
                     xmlns:prers3="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
                     xmlns:tk="using:Microsoft.Toolkit.Uwp.UI.Controls">
-  
+
   <Style TargetType="PivotHeaderItem">
     <Setter Property="Height"
             Value="Auto" />
@@ -14,10 +14,6 @@
     <Setter Property="VerticalContentAlignment"
             Value="Center" />
   </Style>
-
-  <Thickness x:Key="PivotItemMargin">0</Thickness>
-
-  <Thickness x:Key="PivotNavButtonMargin">0</Thickness>
   <Style TargetType="Pivot">
     <Setter Property="Margin"
             Value="0" />
@@ -198,6 +194,9 @@
                 <Setter Property="Background"
                         Value="Transparent" />
               </Style>
+
+              <Thickness x:Key="PivotItemMargin">0</Thickness>
+              <Thickness x:Key="PivotNavButtonMargin">0</Thickness>
             </Grid.Resources>
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="Orientation">
