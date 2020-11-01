@@ -534,24 +534,6 @@
                            Style="{StaticResource BodyTextBlockStyle}"
                            Text="{x:Bind ViewModel.CurrentInfo, Mode=OneWay}" />
               </StackPanel>
-              <Flyout.FlyoutPresenterStyle>
-                <Style TargetType="FlyoutPresenter">
-                  <Setter Property="Template">
-                    <Setter.Value>
-                      <ControlTemplate TargetType="FlyoutPresenter">
-                        <Border Margin="{TemplateBinding Margin}"
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                          <ContentPresenter Content="{TemplateBinding Content}"
-                                            Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}" />
-                        </Border>
-                      </ControlTemplate>
-                    </Setter.Value>
-                  </Setter>
-                </Style>
-              </Flyout.FlyoutPresenterStyle>
             </Flyout>
           </AppBarButton.Flyout>
         </AppBarButton>
