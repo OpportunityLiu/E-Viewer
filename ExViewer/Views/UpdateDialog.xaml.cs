@@ -38,7 +38,7 @@ namespace ExViewer.Views
         private long currentDownloaded = 0;
         private long totalDownloaded = 0;
 
-        private static string[] downloadExt = new[] { ".cer", "msix", ".appx", ".appxbundle" };
+        private static string[] downloadExt = new[] { ".cer", ".msix", ".appx", ".appxbundle" };
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
