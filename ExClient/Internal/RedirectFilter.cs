@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+
 using Windows.Foundation;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
+
 using IHttpAsyncOperation = Windows.Foundation.IAsyncOperationWithProgress<Windows.Web.Http.HttpResponseMessage, Windows.Web.Http.HttpProgress>;
 
 namespace ExClient.Internal
@@ -24,7 +27,7 @@ namespace ExClient.Internal
 
             private void current_Completed(IHttpAsyncOperation asyncInfo, AsyncStatus asyncStatus)
             {
-                if(asyncInfo != current)
+                if (asyncInfo != current)
                 {
                     return;
                 }
@@ -32,7 +35,7 @@ namespace ExClient.Internal
                 if (asyncStatus == AsyncStatus.Completed)
                 {
                     var response = asyncInfo.GetResults();
-                    if(needRedirect(response))
+                    if (needRedirect(response))
                     {
                         asyncStatus = AsyncStatus.Started;
                         buildNewRequest(response);
@@ -40,7 +43,7 @@ namespace ExClient.Internal
                     }
                 }
                 Status = asyncStatus;
-                if(asyncStatus != AsyncStatus.Started)
+                if (asyncStatus != AsyncStatus.Started)
                 {
                     Completed?.Invoke(this, asyncStatus);
                 }
@@ -55,7 +58,7 @@ namespace ExClient.Internal
 
             private void current_Progress(IHttpAsyncOperation asyncInfo, HttpProgress progressInfo)
             {
-                if(asyncInfo != current)
+                if (asyncInfo != current)
                 {
                     return;
                 }
@@ -74,7 +77,7 @@ namespace ExClient.Internal
             {
                 var newRequest = new HttpRequestMessage { RequestUri = response.Headers.Location };
                 var oldRequest = request;
-                if((response.StatusCode == HttpStatusCode.Found || response.StatusCode == HttpStatusCode.SeeOther) && oldRequest.Method == HttpMethod.Post)
+                if ((response.StatusCode == HttpStatusCode.Found || response.StatusCode == HttpStatusCode.SeeOther) && oldRequest.Method == HttpMethod.Post)
                 {
                     newRequest.Method = HttpMethod.Get;
                 }
@@ -87,7 +90,7 @@ namespace ExClient.Internal
                 {
                     newRequest.Headers.Add(item);
                 }
-                foreach(var item in oldRequest.Properties.ToList())
+                foreach (var item in oldRequest.Properties.ToList())
                 {
                     newRequest.Properties.Add(item);
                 }
@@ -145,8 +148,23 @@ namespace ExClient.Internal
             }
         }
 
+        private static Dictionary<string, string> _Host = new Dictionary<string, string>
+        {
+            ["exhentai.org"] = "178.175.128.252",
+            ["e-hentai.org"] = "104.20.27.25",
+            ["api.e-hentai.org"] = "37.48.89.16",
+        };
+
         public IHttpAsyncOperation SendRequestAsync(HttpRequestMessage request)
         {
+            var uri = request.RequestUri;
+            request.Headers.Host = new Windows.Networking.HostName(uri.Host);
+            if (_Host.TryGetValue(uri.Host, out var ip))
+            {
+                var newUri = new UriBuilder(uri);
+                newUri.Host = ip;
+                request.RequestUri = newUri.Uri;
+            }
             return new HttpAsyncOperation(this, request);
         }
 
@@ -155,9 +173,9 @@ namespace ExClient.Internal
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!disposedValue)
+            if (!disposedValue)
             {
-                if(disposing)
+                if (disposing)
                 {
                     inner.Dispose();
                 }

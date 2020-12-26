@@ -16,6 +16,7 @@ namespace ExClient
         private Client()
         {
             var httpFilter = new HttpBaseProtocolFilter { AllowAutoRedirect = false };
+            httpFilter.IgnorableServerCertificateErrors.Add(Windows.Security.Cryptography.Certificates.ChainValidationResult.InvalidName);
             httpFilter.CacheControl.WriteBehavior = HttpCacheWriteBehavior.NoCache;
             CookieManager = httpFilter.CookieManager;
             HttpClient = new MyHttpClient(this, new HttpClient(new RedirectFilter(httpFilter)));

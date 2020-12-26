@@ -10,7 +10,7 @@ namespace ExClient.HentaiVerse
 {
     public static class HentaiVerseInfo
     {
-        public static Uri RootUri { get; } = new Uri("http://hentaiverse.org/");
+        public static Uri RootUri { get; } = new Uri("https://hentaiverse.org/");
 
         public static Uri LogOnUri => new Uri(RootUri, $"login.php?ipb_member_id={Client.Current.UserId}&ipb_pass_hash={Client.Current.PassHash}");
 
