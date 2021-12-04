@@ -77,15 +77,17 @@ namespace ExViewer.Controls.TagSuggestion
         private static readonly Dictionary<Namespace, int> nsFactor = new Dictionary<Namespace, int>()
         {
             [Namespace.Unknown] = 1,
-            [Namespace.Reclass] = 4,
+            [Namespace.Reclass] = 2,
             [Namespace.Language] = 25,
+            [Namespace.Other] = 30,
             [Namespace.Parody] = 15,
             [Namespace.Character] = 8,
             [Namespace.Group] = 4,
             [Namespace.Artist] = 4,
+            [Namespace.Cosplayer] = 4,
             [Namespace.Male] = 20,
             [Namespace.Female] = 20,
-            [Namespace.Misc] = 20
+            [Namespace.Mixed] = 20
         };
 
         private static TagRecord<Tag> getRecord(TransRecord tag, string highlight)
@@ -144,7 +146,7 @@ namespace ExViewer.Controls.TagSuggestion
             using (var db = TransClient.CreateDatabase())
             {
                 var r = default(List<TransRecord>);
-                if (ns == Namespace.Unknown || ns == Namespace.Misc)
+                if (ns == Namespace.Unknown || ns == Namespace.Temp)
                 {
                     r = db.Tags.FromSqlRaw(@"SELECT * FROM 'Table' 
                                              WHERE Original LIKE {0} COLLATE nocase 
@@ -171,7 +173,7 @@ namespace ExViewer.Controls.TagSuggestion
             using (var db = EhTagClient.Client.CreateDatabase())
             {
                 var r = default(List<EhTagClient.TagRecord>);
-                if (ns == Namespace.Unknown || ns == Namespace.Misc)
+                if (ns == Namespace.Unknown || ns == Namespace.Temp)
                 {
                     r = db.Tags.FromSqlRaw(@"SELECT * FROM 'TagTable' 
                                              WHERE TagConetnt LIKE {0} COLLATE nocase", $"%{highlight}%")

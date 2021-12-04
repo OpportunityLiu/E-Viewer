@@ -17,7 +17,7 @@ namespace ExViewer.Controls
             InitializeComponent();
             foreach (var item in EnumExtension.GetDefinedValues<Namespace>())
             {
-                if (item.Value == Namespace.Unknown || item.Value >= Namespace.Misc)
+                if (item.Value == Namespace.Unknown || item.Value >= Namespace.Temp)
                 {
                     continue;
                 }
@@ -34,7 +34,7 @@ namespace ExViewer.Controls
 
         // Using a DependencyProperty as the backing store for ExcludedTagNamespaces.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ExcludedTagNamespacesProperty =
-            DependencyProperty.Register("ExcludedTagNamespaces", typeof(Namespace), typeof(ExcludedTagNamespacesSelector), new PropertyMetadata(Namespace.Misc, ExcludedTagNamespacesChanged));
+            DependencyProperty.Register("ExcludedTagNamespaces", typeof(Namespace), typeof(ExcludedTagNamespacesSelector), new PropertyMetadata(Namespace.Temp, ExcludedTagNamespacesChanged));
 
         private static void ExcludedTagNamespacesChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {

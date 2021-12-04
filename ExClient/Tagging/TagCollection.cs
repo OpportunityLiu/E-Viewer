@@ -21,13 +21,15 @@ namespace ExClient.Tagging
         {
             Reclass,
             Language,
+            Other,
             Parody,
             Character,
             Group,
             Artist,
+            Cosplayer,
             Male,
             Female,
-            Misc
+            Mixed,
         };
 
         private int _GetIndexOfKey(Namespace key)

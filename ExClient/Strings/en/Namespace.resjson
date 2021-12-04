@@ -1,12 +1,14 @@
 ﻿{
   // Namespaces of tags, see: https://ehwiki.org/wiki/namespace
   "Artist": "Artist",
+  "Cosplayer": "Cosplayer",
   "Character": "Character",
   "Female": "Female",
   "Group": "Group",
   "Language": "Language",
   "Male": "Male",
-  "Misc": "Misc",
+  "Mixed": "Mixed",
+  "Other": "Other",
   "Parody": "Parody",
   "Reclass": "Reclass",
   "Unknown": "Unknown"

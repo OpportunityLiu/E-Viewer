@@ -371,7 +371,7 @@ namespace ExViewer.Controls
             var splited = lastterm.Split(tagSplit, 2);
             if (splited.Length == 1)
             {
-                lastwordNs = Namespace.Misc;
+                lastwordNs = Namespace.Temp;
                 lastword = lastterm;
             }
             else

@@ -1,12 +1,14 @@
 ﻿{
   // Namespaces of tags, see: https://ehwiki.org/wiki/namespace
   "Artist": "艺术家",
+  "Cosplayer": "Coser",
   "Character": "角色",
   "Female": "女性",
   "Group": "团队",
   "Language": "语言",
   "Male": "男性",
-  "Misc": "杂项",
+  "Mixed": "混合",
+  "Other": "其他",
   "Parody": "原作",
   "Reclass": "重新分类",
   "Unknown": "未知"

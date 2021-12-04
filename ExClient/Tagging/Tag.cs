@@ -1,4 +1,5 @@
 ﻿using ExClient.Search;
+
 using System;
 
 namespace ExClient.Tagging
@@ -11,6 +12,8 @@ namespace ExClient.Tagging
 
         public static Tag Parse(string content)
         {
+            if (content.IsNullOrWhiteSpace())
+                throw new ArgumentNullException(nameof(content));
             var splited = content.Split(split, 2);
             if (splited.Length == 2)
             {
@@ -18,34 +21,27 @@ namespace ExClient.Tagging
             }
             else
             {
-                return new Tag(Namespace.Misc, content);
+                return new Tag(Namespace.Temp, content);
             }
         }
 
         public static bool TryParse(string content, out Tag result)
         {
             result = default;
+            if (content.IsNullOrWhiteSpace())
+                return false;
+
             var splited = content.Split(split, 2);
-            Namespace ns;
             if (splited.Length == 2)
             {
-                content = splited[1];
-                if (!NamespaceExtention.TryParse(splited[0], out ns))
-                {
+                if (!NamespaceExtention.TryParse(splited[0], out var ns))
                     return false;
-                }
+                result = new Tag(ns, splited[1]);
+                return true;
             }
             else
             {
-                ns = Namespace.Misc;
-            }
-            if (content.IsNullOrWhiteSpace())
-            {
-                return false;
-            }
-            else
-            {
-                result = new Tag(Namespace.Misc, content);
+                result = new Tag(Namespace.Temp, content);
                 return true;
             }
         }
@@ -67,15 +63,15 @@ namespace ExClient.Tagging
 
         public string ToSearchTerm()
         {
-            if (Namespace != Namespace.Misc)
+            if (Namespace != Namespace.Temp)
             {
                 if (Content.IndexOf(' ') == -1)
                 {
-                    return $"{Namespace.ToSearchString()}:{Content}$";
+                    return $"{Namespace.ToSearchString(true)}:{Content}$";
                 }
                 else
                 {
-                    return $"{Namespace.ToSearchString()}:\"{Content}$\"";
+                    return $"{Namespace.ToSearchString(true)}:\"{Content}$\"";
                 }
             }
             else
@@ -106,9 +102,9 @@ namespace ExClient.Tagging
 
         public override string ToString()
         {
-            if (Namespace == Namespace.Misc)
+            if (Namespace == Namespace.Temp)
                 return Content;
-            return $"{Namespace.ToShortString()}:{Content}";
+            return $"{Namespace.ToSearchString(true)}:{Content}";
         }
 
         public bool Equals(Tag other)

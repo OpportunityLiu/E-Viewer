@@ -148,23 +148,23 @@ namespace ExClient.Internal
             }
         }
 
-        private static Dictionary<string, string> _Host = new Dictionary<string, string>
-        {
-            ["exhentai.org"] = "178.175.128.252",
-            ["e-hentai.org"] = "104.20.27.25",
-            ["api.e-hentai.org"] = "37.48.89.16",
-        };
+        //private static Dictionary<string, string> _Host = new Dictionary<string, string>
+        //{
+        //    ["exhentai.org"] = "178.175.128.252",
+        //    ["e-hentai.org"] = "104.20.27.25",
+        //    ["api.e-hentai.org"] = "37.48.89.16",
+        //};
 
         public IHttpAsyncOperation SendRequestAsync(HttpRequestMessage request)
         {
-            var uri = request.RequestUri;
-            request.Headers.Host = new Windows.Networking.HostName(uri.Host);
-            if (_Host.TryGetValue(uri.Host, out var ip))
-            {
-                var newUri = new UriBuilder(uri);
-                newUri.Host = ip;
-                request.RequestUri = newUri.Uri;
-            }
+            //var uri = request.RequestUri;
+            //request.Headers.Host = new Windows.Networking.HostName(uri.Host);
+            //if (_Host.TryGetValue(uri.Host, out var ip))
+            //{
+            //    var newUri = new UriBuilder(uri);
+            //    newUri.Host = ip;
+            //    request.RequestUri = newUri.Uri;
+            //}
             return new HttpAsyncOperation(this, request);
         }
 

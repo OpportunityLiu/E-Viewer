@@ -450,7 +450,7 @@ namespace ExViewer.Views
                 panel.Orientation = Orientation.Vertical;
                 break;
             case ViewOrientation.Auto:
-                if (ViewModel.Gallery.Tags[ExClient.Tagging.Namespace.Misc].Any(t => t.Content.Content == "webtoon"))
+                if (ViewModel.Gallery.Tags[ExClient.Tagging.Namespace.Other].Any(t => t.Content.Content == "webtoon"))
                 {
                     panel.Orientation = Orientation.Vertical;
                 }

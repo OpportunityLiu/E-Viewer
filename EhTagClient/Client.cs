@@ -23,9 +23,9 @@ namespace EhTagClient
 
         private const string LAST_UPDATE = "EhTagClient.LastUpdate";
 
-        private static readonly Regex reg = new Regex(@"<a href=""https://e-hentai\.org/tools\.php\?act=taggroup&amp;mastertag=(\d+)"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
+        private static readonly Regex reg = new Regex(@"<a href=""https://repo\.e-hentai\.org/tools\.php\?act=taggroup&amp;mastertag=(\d+)"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
 
-        private static readonly string DbUri = "https://e-hentai.org/tools.php?act=taggroup&show={0}";
+        private static readonly string DbUri = "https://repo.e-hentai.org/tools.php?act=taggroup&show={0}";
 
         public static DateTimeOffset LastUpdate
         {
@@ -56,10 +56,10 @@ namespace EhTagClient
                             using (var client = new HttpClient(c))
                             using (var db = new TagDb())
                             {
-                                var htmlTasks = new Task<string>[9];
-                                for (var i = 0; i < 9; i++)
+                                var htmlTasks = new Task<string>[11];
+                                for (var i = 0; i < 11; i++)
                                 {
-                                    var uri = new Uri(string.Format(DbUri, i));
+                                    var uri = new Uri(string.Format(DbUri, i + 1));
                                     htmlTasks[i] = client.GetStringAsync(uri).AsTask();
                                 }
                                 var htmls = await Task.WhenAll(htmlTasks);

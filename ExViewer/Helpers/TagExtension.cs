@@ -87,7 +87,8 @@ namespace ExClient.Tagging
                 return wiki.Type.HasFlag(EhWikiClient.TagType.Creator);
             case Namespace.Male:
             case Namespace.Female:
-            case Namespace.Misc:
+            case Namespace.Other:
+            case Namespace.Mixed:
                 return wiki.Type.HasFlag(EhWikiClient.TagType.Fetish);
             default:
                 return true;
