@@ -1,11 +1,14 @@
 ﻿using HtmlAgilityPack;
+
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
+
 using System;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using Windows.Foundation;
 
 namespace ExClient.Status
@@ -14,7 +17,6 @@ namespace ExClient.Status
     {
         internal TaggingStatistics() { }
 
-        public int Count { get; set; } = 0;
         public double StartedAccuracy { get; set; } = double.NaN;
         public int StartedCount { get; set; } = 0;
         public double VotedAccuracy { get; set; } = double.NaN;
@@ -23,7 +25,7 @@ namespace ExClient.Status
         private readonly ObservableList<TaggingRecord> records = new ObservableList<TaggingRecord>();
         public ObservableListView<TaggingRecord> Records => records.AsReadOnly();
 
-        private static readonly Regex regex = new Regex(@"Tags:\s*(\d+)\s*\(\d+\s*recent\)\s*Started Accuracy\s*=\s*(\S+)\s*of\s*(\d+)\s*Voted Accuracy\s*=\s*(\S+)\s*of\s*(\d+)", RegexOptions.Compiled);
+        private static readonly Regex _StatsRegex = new(@"^\s*([\d.]+%)\s*\((\d+)\)\s*$", RegexOptions.Compiled);
 
         public IAsyncAction RefreshAsync()
         {
@@ -37,27 +39,33 @@ namespace ExClient.Status
                 var page = await getPage;
                 var body = page.DocumentNode.Element("html").Element("body");
 
-                var overall = body.Element("div").Elements("div").Last().GetInnerText();
-                var match = regex.Match(overall);
-                if (match.Success)
+                var tagstats = page.GetElementbyId("tagstats")?.Elements("tr")?.ToArray();
+                if (tagstats != null && tagstats.Length == 3)
                 {
-                    Count = int.Parse(match.Groups[1].Value);
-                    StartedAccuracy = parsePercetage(match.Groups[2].Value);
-                    StartedCount = int.Parse(match.Groups[3].Value);
-                    VotedAccuracy = parsePercetage(match.Groups[4].Value);
-                    VotedCount = int.Parse(match.Groups[5].Value);
+                    var stared = _StatsRegex.Match(tagstats[1].LastChild?.GetInnerText() ?? "");
+                    var voted = _StatsRegex.Match(tagstats[2].LastChild?.GetInnerText() ?? "");
+                    if (stared.Success)
+                    {
+                        StartedAccuracy = _ParsePercetage(stared.Groups[1].Value);
+                        StartedCount = int.Parse(stared.Groups[2].Value);
+                    }
+                    if (voted.Success)
+                    {
+                        VotedAccuracy = _ParsePercetage(voted.Groups[1].Value);
+                        VotedCount = int.Parse(voted.Groups[2].Value);
+                    }
                 }
 
                 var table = body.Element("table");
                 if (table != null)
                     records.Update(table.Elements("tr").Skip(1).Select(item => new TaggingRecord(item)).ToList());
-                else if (match.Success)
+                else if(tagstats != null)
                     records.Clear();
                 OnPropertyChanged(default(string));
             }, token));
         }
 
-        private static double parsePercetage(string str)
+        private static double _ParsePercetage(string str)
         {
             if (string.IsNullOrWhiteSpace(str))
                 return double.NaN;

@@ -244,11 +244,6 @@
                          Grid.Column="2"
                          Style="{StaticResource CaptionTextBlockStyle}"
                          Text="{x:Bind ViewModel.Status.ImageUsageLimit, Mode=OneWay}" />
-              <TextBlock Grid.Row="2"
-                         Grid.Column="9"
-                         Style="{StaticResource CaptionTextBlockStyle}"
-                         HorizontalAlignment="Right"
-                         Text="{x:Bind ViewModel.Status.ImageUsageRegenerateRatePerMinute, Mode=OneWay, Converter={StaticResource FormatConverter}, ConverterParameter='ms-resource:Views/InfoPage/RegenerateFormatString'}" />
             </Grid>
             <ProgressBar  Margin="8,0,8,4"
                           Value="{x:Bind ViewModel.Status.ImageUsage, Mode=OneWay, Converter={StaticResource DefaultConverter}}"

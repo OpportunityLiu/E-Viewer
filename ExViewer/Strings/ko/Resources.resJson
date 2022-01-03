@@ -300,7 +300,6 @@
       "OpenHistoryMenuFlyoutItem/Text": "열기",
       "OverviewPivotItem/Header": "개요",
       "RefreshAppBarButton/Label": "새로고침",
-      "RegenerateFormatString": "-{0}/분",
       "SearchTagMenuFlyoutItem/Text": "이 태그가 있는 갤러리 표시",
       "TaggingCountFormatString": "{0} 태그",
       "TaggingHistoryHeaderTextBlock/Text": "히스토리",

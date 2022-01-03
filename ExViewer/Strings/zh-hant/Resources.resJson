@@ -300,7 +300,6 @@
       "OpenHistoryMenuFlyoutItem/Text": "打開",
       "OverviewPivotItem/Header": "總覽",
       "RefreshAppBarButton/Label": "重新整理",
-      "RegenerateFormatString": "-{0}/分鐘",
       "SearchTagMenuFlyoutItem/Text": "搜尋含有此標籤的畫廊",
       "TaggingCountFormatString": "{0} 個標籤",
       "TaggingHistoryHeaderTextBlock/Text": "歷史",

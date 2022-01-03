@@ -300,7 +300,6 @@
       "OpenHistoryMenuFlyoutItem/Text": "Open",
       "OverviewPivotItem/Header": "OVERVIEW",
       "RefreshAppBarButton/Label": "Refresh",
-      "RegenerateFormatString": "-{0}/min",
       "SearchTagMenuFlyoutItem/Text": "Show galleries with this tag",
       "TaggingCountFormatString": "{0} tag(s)",
       "TaggingHistoryHeaderTextBlock/Text": "History",

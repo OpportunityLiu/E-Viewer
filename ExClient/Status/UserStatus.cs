@@ -50,12 +50,11 @@ namespace ExClient.Status
         private void analyzeImageLimit(HtmlNode imageLimitDiv)
         {
             var values = imageLimitDiv.Descendants("strong").Select(deEntitizeAndParse).ToList();
-            if (values.Count != 4)
+            if (values.Count != 3)
                 throw new InvalidOperationException("Wrong values.Count from analyzeImageLimit");
             ImageUsage = values[0];
             ImageUsageLimit = values[1];
-            ImageUsageRegenerateRatePerMinute = values[2];
-            ImageUsageResetCost = values[3];
+            ImageUsageResetCost = values[2];
         }
 
         private void analyzeModPower(HtmlNode modPowerDiv)
@@ -113,7 +112,6 @@ namespace ExClient.Status
         #region Image Limits
         private int imageUsage;
         private int imageUsageLimit = 5000;
-        private int imageUsageRegenerateRatePerMinute = 3;
         private int imageUsageResetCost;
         public int ImageUsage
         {
@@ -122,10 +120,6 @@ namespace ExClient.Status
         public int ImageUsageLimit
         {
             get => imageUsageLimit; private set => Set(ref imageUsageLimit, value);
-        }
-        public int ImageUsageRegenerateRatePerMinute
-        {
-            get => imageUsageRegenerateRatePerMinute; private set => Set(ref imageUsageRegenerateRatePerMinute, value);
         }
         public int ImageUsageResetCost
         {
