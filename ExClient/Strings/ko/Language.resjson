@@ -2,8 +2,8 @@
   // Language tags, see: https://ehwiki.org/wiki/language
   "Modifiers": {
     // Technical tags for language, make sure the localization string to be short.
-    "Translated": "번역",
-    "Rewrite": "변경"
+    "Translated": "번역됨",
+    "Rewrite": "재작성"
   },
   "Names": {
     "Albanian": "알바니아어",
@@ -31,7 +31,7 @@
     "Mongolian": "몽골어",
     "Norwegian": "노르웨이어",
     "NotApplicable": "N/A",
-    "Other": "기타",
+    "Other": "그 외",
     "Polish": "폴란드어",
     "Portuguese": "포르투갈어",
     "Romanian": "루마니아어",

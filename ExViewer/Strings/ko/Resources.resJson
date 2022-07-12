@@ -10,13 +10,13 @@
       "EHTextBlock/Text": "E-Hentai.org",
       "EHWikiTextBlock/Text": "EHWiki.org",
       "ForumsHyperlinkButton/Content": "E-Hentai 포럼",
-      "HelpTranslateTagsHyperlinkButton/Content": "태그를 중국어로 번역하는데 도움",
+      "HelpTranslateTagsHyperlinkButton/Content": "태그 중국어 번역 도움",
       "HentaiVerseHyperlinkButton/Content": "HentaiVerse",
       "JapaneseTagProviderTextBlock/Text": "태그 일본어 번역",
-      "LastUpdate": "마지막 업데이트 : {0}",
+      "LastUpdate": "마지막 업데이트: {0}",
       "LicenceTextBlock/Text": "라이선스",
       "OnlineContentsTextBlock/Text": "온라인 콘텐츠",
-      "SendLogHyperlinkButton/Content": "이메일로 충돌 기록 보내기",
+      "SendLogHyperlinkButton/Content": "이메일로 충돌 기록 전송",
       "SourceCodeHyperlinkButton/Content": "피드백 & 소스코드",
       "TagDatabaseTextBlock/Text": "태그 데이터베이스",
       "UpdateButton/Content": "지금 업데이트"
@@ -24,11 +24,11 @@
     "AdvancedSearchViewer": {
       "DescriptionCheckBox/Content": "갤러리 설명 검색",
       "DisableDefaultLanguageFiltersCheckBox/Content": "기본 언어 필터 사용 안 함",
-      "DisableDefaultTagsFiltersCheckBox/Content": "Disable default tags filters",
+      "DisableDefaultTagsFiltersCheckBox/Content": "기본 태그 필터 사용 안 함",
       "DisableDefaultUploaderFiltersCheckBox/Content": "기본 업로더 필터 사용 안 함",
       "DownvotedTagsCheckBox/Content": "비추천 태그 검색",
       "LowPowerTagsCheckBox/Content": "낮은 중요도 태그 검색",
-      "MinRatingCheckBox/Content": "최소 평가 :",
+      "MinRatingCheckBox/Content": "최소 평가:",
       "NamesCheckBox/Content": "갤러리명 검색",
       "OnlyTorrentsCheckBox/Content": "토렌트가 있는 갤러리만 표시",
       "PageCountCheckBox/Content": "페이지 수",
@@ -43,7 +43,7 @@
       "EditedFormatString": "마지막으로 {0}에서 편집됨",
       "EditMenuFlyoutItem/Text": "편집",
       "IsUploaderCommentTextBlock/Text": "업로더 댓글",
-      "PostedFormatString": "게시 날짜 : {0}",
+      "PostedFormatString": "게시 날짜: {0}",
       "ReplyMenuFlyoutItem/Text": "답글",
       "ScoreFormatString": "점수 {0:+#0;-#0}",
       "TranslateMenuFlyoutItem/Text": "번역",
@@ -52,7 +52,7 @@
       "WithdrawVoteMenuFlyoutItem/Text": "투표 철회"
     },
     "ExcludedLanguagesSelector": {
-      "AllTextBlock/Text": "모두",
+      "AllTextBlock/Text": "전부",
       // Space for "AllTextBlock/Text", "OriginalTextBlock/Text", "RewriteTextBlock/Text" and "TranslatedTextBlock/Text"
       "CellColumnDefination/MinWidth": "80",
       "OriginalTextBlock/Text": "원본",
@@ -126,7 +126,7 @@
         "$Gallery": "{galleryName}",
         "$Image": "{galleryName} - 페이지\u00a0{currentPage}",
         "$Search": "{searchTerm} - 검색",
-        "$Watched": "{searchTerm} - Watched"
+        "$Watched": "{searchTerm} - 주시됨"
       }
     }
   },
@@ -153,7 +153,7 @@
   },
   "Views": {
     "AddToFavoritesDialog": {
-      "AddTitle": "즐겨찾기에 추가",
+      "AddTitle": "즐겨찾기 추가",
       "FavoriteCategoryUnselected": "하나의 카테고리를 선택하십시오.",
       "ModifyTitle": "즐겨찾기 수정",
       "NoteTextBox/Header": "즐겨찾기 메모"
@@ -162,7 +162,7 @@
       "DeleteAllAppBarButton/Label": "모두 삭제",
       "DeleteMenuFlyout/Text": "삭제",
       "DeleteSwipeItem/Text": "삭제",
-      "EmptyTextBlock/Text": "캐시된 갤러리가 없음",
+      "EmptyTextBlock/Text": "캐시된 갤러리 없음",
       "GalleryDeleted": "선택한 갤러리가 삭제되었습니다.",
       "LoadingMoreTextBlock/Text": "더 많은 갤러리를 불러오는 중…",
       "RefreshAppBarButton/Label": "새로고침"
@@ -176,7 +176,7 @@
       "Title": "경고"
     },
     "CommentDialog": {
-      "AddTitle": "댓글 달기",
+      "AddTitle": "댓글 작성",
       "AppBarButtonBold/Label": "굵게",
       "AppBarButtonBold/ToolTipService/ToolTip": "굵게 (Ctrl + B)",
       "AppBarButtonItalic/Label": "기울임",
@@ -188,7 +188,7 @@
       "AppBarButtonUnderline/Label": "밑줄",
       "AppBarButtonUnderline/ToolTipService/ToolTip": "밑줄 (Ctrl + U)",
       "ContentDialog": {
-        "PrimaryButtonText": "게시",
+        "PrimaryButtonText": "작성",
         "CloseButtonText": "취소"
       },
       "EditTitle": "댓글 수정"
@@ -256,7 +256,7 @@
       "TorrentUploaderTextBlock/Text": "업로더"
     },
     "ImagePage": {
-      "$ImageFileInfo": "파일 유형 : {fileType}\n크기 : {size}\n해상도 : {width} × {height}",
+      "$ImageFileInfo": "파일 유형: {fileType}\n크기: {size}\n해상도: {width} × {height}",
       "BackToWindow": "창으로 돌아가기",
       "CounterSeparatorTextBlock/Text": "/",
       "FullScreen": "전체 화면",
@@ -295,7 +295,7 @@
       "MoreButton/Content": "추가 정보…",
       "NoHistoryTextBlock/Text": "여기에 히스토리가 표시됩니다.",
       "NoTaggingHistoryTextBlock/Text": "최근 태그 지정 기록이 없습니다.",
-      "NoToplistsTextBlock/Text": "현재 어떠한 탑 리스트에도 등장하지 않았습니다.",
+      "NoToplistsTextBlock/Text": "현재 어떠한 상위 목록에도 등장하지 않았습니다.",
       "OpenGalleryMenuFlyoutItem/Text": "갤러리 열기",
       "OpenHistoryMenuFlyoutItem/Text": "열기",
       "OverviewPivotItem/Header": "개요",
@@ -308,21 +308,21 @@
       "TaggingStaticsHeaderTextBlock/Text": "통계",
       "TaggingVotedHeaderTextBlock/Text": "정확도 투표",
       "ToplistItemRankFormatString": "#{0}",
-      "ToplistsHeaderTextBlock/Text": "탑 리스트"
+      "ToplistsHeaderTextBlock/Text": "상위 목록"
     },
     "LogOnDialog": {
-      "IgneousTextBox/Header": "Cookie value of \"igneous\" (optional)",
-      "LogOnButtonText": "로그온",
+      "IgneousTextBox/Header": "\"igneous\"의 쿠키값 (선택사항)",
+      "LogOnButtonText": "로그인",
       "MemberIdTextBox/Header": "\"ipb_member_id\"의 쿠키값",
       "PassHashTextBox/Header": "\"ipb_pass_hash\"의 쿠키값",
       "RegisterHyperlinkButton/Content": "등록",
       "ResetButtonText": "재설정",
-      "TitleTextBlock/Text": "로그온",
-      "UseCookieButton/Content": "쿠키 로그온 사용",
-      "UseWebpageButton/Content": "웹 페이지 로그온 사용"
+      "TitleTextBlock/Text": "로그인",
+      "UseCookieButton/Content": "쿠키 로그인 사용",
+      "UseWebpageButton/Content": "웹 페이지 로그인 사용"
     },
     "PopularPage": {
-      "LoadingMoreTextBlock/Text": "인기있는 갤러리 불러오는 중…",
+      "LoadingMoreTextBlock/Text": "인기 있는 갤러리 불러오는 중…",
       "RefreshAppBarButton/Label": "새로고침"
     },
     "QRCodeDialog": {
@@ -343,13 +343,13 @@
       "CachedSplitViewTab/Content": "캐시된 갤러리",
       "DisableInfoTextBlock/Text": "진행 중인 작업, 잠시만 기다려주세요…",
       "FavoritesSplitViewTab/Content": "즐겨찾기",
-      "PopularSplitViewTab/Content": "인기있는 갤러리",
+      "PopularSplitViewTab/Content": "인기 있는 갤러리",
       "SavedSplitViewTab/Content": "저장된 갤러리",
       "SearchSplitViewTab/Content": "검색",
       "SettingsSplitViewTab/Content": "설정",
-      "ToplistSplitViewTab/Content": "탑 리스트",
+      "ToplistSplitViewTab/Content": "상위 목록",
       "UserInfoButton/ToolTipService/ToolTip": "사용자 정보",
-      "WatchedSplitViewTab/Content": "Watched"
+      "WatchedSplitViewTab/Content": "주시됨"
     },
     "SavedPage": {
       "DeleteAllAppBarButton/Label": "모두 삭제",
@@ -361,11 +361,11 @@
     },
     "SearchPage": {
       "AdvancedToggleButton/OffContent": "고급 옵션 표시",
-      "AdvancedToggleButton/OnContent": "고급 옵션 숨기기s",
+      "AdvancedToggleButton/OnContent": "고급 옵션 숨기기",
       "AutoSuggestBox/PlaceholderText": "검색…",
       "EmptyTextBlock/Text": "결과 없음",
       "FileSearchButton/Content": "파일 검색",
-      "FileSearchNameFormatString": "다음 옵션을 사용하여 \"{0}\" 파일을 검색하십시오 : ",
+      "FileSearchNameFormatString": "다음 옵션을 사용하여 \"{0}\" 파일 검색: ",
       "LoadingMoreTextBlock/Text": "더 많은 갤러리를 불러오는 중…",
       "OnlyCoversTextBlock/Text": "• 표지만 검색",
       "SearchExactlyTextBlock/Text": "• 유사성 검사 비활성화",
@@ -387,7 +387,7 @@
     },
     "WatchedPage": {
       "AdvancedToggleButton/OffContent": "고급 옵션 표시",
-      "AdvancedToggleButton/OnContent": "고급 옵션 숨기기s",
+      "AdvancedToggleButton/OnContent": "고급 옵션 숨기기",
       "AutoSuggestBox/PlaceholderText": "검색…",
       "EmptyTextBlock/Text": "결과 없음",
       "LoadingMoreTextBlock/Text": "더 많은 갤러리를 불러오는 중…"

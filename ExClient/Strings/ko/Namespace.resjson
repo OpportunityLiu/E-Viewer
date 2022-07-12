@@ -1,16 +1,16 @@
 ﻿{
   // Namespaces of tags, see: https://ehwiki.org/wiki/namespace
   "Artist": "아티스트",
-  "Cosplayer": "Cosplayer",
+  "Cosplayer": "코스어",
   "Character": "캐릭터",
   "Female": "여성",
   "Group": "그룹",
   "Language": "언어",
   "Male": "남성",
-  "Mixed": "Mixed",
-  "Other": "Other",
+  "Mixed": "혼합",
+  "Other": "기타",
   "Parody": "패러디",
   "Reclass": "재분류",
-  "Temp": "Temp",
+  "Temp": "임시",
   "Unknown": "알 수 없음"
 }
