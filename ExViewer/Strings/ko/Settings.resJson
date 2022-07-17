@@ -42,8 +42,8 @@
   "LoadLofiOnMeteredInternetConnection": "종량형 요금제 인터넷을 사용하는 동안 압축된 이미지 불러오기",
   "NeedVerify": "앱이 시작될 때 PIN 확인",
   "OpenHVOnMonsterEncountered": "몬스터 조우 시 HentaiVerse 열기",
-  "ResampledImageSize": "리샘플링 된 이미지의 수평 해상도",
-  "ReverseFlowDirection": "수평 전환 방향",
+  "ResampledImageSize": "리샘플링 된 이미지의 가로 해상도",
+  "ReverseFlowDirection": "가로 전환 방향",
   "SaveLastSearch": "가장 최근 검색을 기본값으로 저장",
   "Searching": "검색 중",
   "SlideInterval": "슬라이드쇼 간격 (초)",
@@ -58,9 +58,9 @@
   "UsePersonalizedTorrent": "개인 설정된 토렌트 사용",
   "Viewing": "보기",
   "ViewOrientation": {
-    "Auto": "웹툰의 경우 수직",
-    "Horizontal": "수평",
-    "Vertical": "수직"
+    "Auto": "웹툰의 경우 세로",
+    "Horizontal": "가로",
+    "Vertical": "세로"
   },
   "VisitEx": "방문할 사이트"
 }
