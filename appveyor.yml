@@ -6,6 +6,7 @@ platform:
 - x86
 - x64
 - ARM
+- ARM64
 environment:
   GITHUB_USER: OpportunityLiu
   GITHUB_PASS:
