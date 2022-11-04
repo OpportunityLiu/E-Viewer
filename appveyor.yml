@@ -35,6 +35,7 @@ build:
   verbosity: minimal
 artifacts:
 - path: /ExViewer/AppPackages/*/*.appxsym
+- path: /ExViewer/AppPackages/*/*.msix
 - path: /ExViewer/AppPackages/*/*.appx
 - path: /ExViewer/AppPackages/*/*.cer
 deploy:
