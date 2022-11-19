@@ -1,16 +1,20 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
 using ExClient.Internal;
+
 using HtmlAgilityPack;
+
 using Opportunity.MvvmUniverse.Collections;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Windows.Foundation;
+
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Search
@@ -34,39 +38,17 @@ namespace ExClient.Search
             PageCount = 1;
         }
 
-        private static readonly Regex _RecordCountMatcher = new Regex(@"Showing\s*[0-9,]+\s*results?", RegexOptions.Compiled);
-
         private void _UpdatePageCount(HtmlDocument doc)
         {
-            var idoNode = doc.DocumentNode
-                .Element("html")
-                .Element("body")
-                .Element("div", "ido");
-            var hasResult = idoNode.Descendants("p")
-                .Where(node => node.HasClass("ip"))
-                .Any(node => _RecordCountMatcher.Match(node.InnerText).Success);
-            var pttNode = idoNode.Descendants("table")
-                .FirstOrDefault(node => node.HasClass("ptt"));
-            var pageCount = 1;
-            if (!hasResult || pttNode is null)
+            var nextLink = doc.GetElementbyId("unext");
+            if (nextLink is null)
             {
-                pageCount = 0;
+                PageCount = 0;
             }
-            else
+            else if (nextLink.Name is "a")
             {
-                pageCount = pttNode.Descendants("td").Select(node =>
-                {
-                    var pageStr = node.GetInnerText();
-                    if (int.TryParse(pageStr, out var i))
-                        return i;
-                    if (pageStr.IndexOf('-') is var idx && idx > 0 && int.TryParse(pageStr.Substring(idx + 1), out var j))
-                        return j;
-                    return -1;
-                }).Max();
+                PageCount++;
             }
-
-            if (PageCount < pageCount || PageCount == 1)
-                PageCount = pageCount;
         }
 
         protected virtual void LoadPageOverride(HtmlDocument doc) { }
@@ -82,8 +64,7 @@ namespace ExClient.Search
         {
             return Run(async token =>
             {
-                var listCount = Count;
-                var uri = new Uri($"{SearchUri}&page={pageIndex.ToString()}");
+                var uri = Count == 0 ? SearchUri : new Uri($"{SearchUri}&next={this.Last().Id}");
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(uri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
