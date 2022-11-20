@@ -18,32 +18,9 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.0.2
 
-      - name: Restore nuget cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.nuget/packages
-          key: nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            nuget-
-
       - name: Restore the application
         run: |
           nuget restore
-
-      - name: Prepare certificate
-        run: |
-          $certKey = "${{ secrets.CERT_PASS }}"
-          if ($certKey) {
-            $certFile = Get-Item "./ExViewer/ExViewer_TemporaryKey.pfx"
-            $certPass = ConvertTo-SecureString -AsPlainText $certKey -Force
-            Write-Output "Using exist certificate"
-            Import-PfxCertificate $certFile -Password $certPass -CertStoreLocation Cert:\CurrentUser\My\
-          } else {
-            $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=Opportunity" -CertStoreLocation Cert:\CurrentUser\My\
-            ((Get-Content -Raw "./ExViewer/ExViewer.csproj") -replace 'AC82A857467374ACB64C3F8A542446485164DD50',$cert.Thumbprint) | Set-Content "./ExViewer/ExViewer.csproj"
-            Write-Output "Using new certificate"
-            Write-Output $cert
-          }
 
       - name: Generate string files
         run: |
@@ -62,6 +39,21 @@ jobs:
           } }
           "@ > ./ExViewer/Github.cs
           Get-Content ./ExViewer/Github.cs
+
+      - name: Prepare certificate
+        run: |
+          $certKey = "${{ secrets.CERT_PASS }}"
+          if ($certKey) {
+            $certFile = Get-Item "./ExViewer/ExViewer_TemporaryKey.pfx"
+            $certPass = ConvertTo-SecureString -AsPlainText $certKey -Force
+            Write-Output "Using exist certificate"
+            Import-PfxCertificate $certFile -Password $certPass -CertStoreLocation Cert:\CurrentUser\My\
+          } else {
+            $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=Opportunity" -CertStoreLocation Cert:\CurrentUser\My\
+            ((Get-Content -Raw "./ExViewer/ExViewer.csproj") -replace 'AC82A857467374ACB64C3F8A542446485164DD50',$cert.Thumbprint) | Set-Content "./ExViewer/ExViewer.csproj"
+            Write-Output "Using new certificate"
+            Write-Output $cert
+          }
 
       - name: Build the application
         run: msbuild ExViewer.sln /p:Configuration=Release /p:Platform=${{ matrix.arch }}
