@@ -2,62 +2,62 @@ name: Build
 
 on:
   push:
-    branches: [ "dev" ]
-  pull_request:
-    branches: [ "dev" ]
 
 jobs:
-
   build:
+    runs-on: windows-latest
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
-    env:
-      Solution_Name: ExViewer.sln 
+    strategy:
+      matrix:
+        arch: [x86, x64, arm, arm64]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.0.2
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
+      - name: Install the pfx
+        run: |
+          $certfile = Get-Item "./ExViewer/ExViewer_TemporaryKey.pfx"
+          Import-PfxCertificate $certfile -Password (ConvertTo-SecureString -AsPlainText "${{ secrets.CERT_PASS }}" -Force) -CertStoreLocation Cert:\CurrentUser\My\
 
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
-      run: |
-        $certfile = Get-Item "./ExViewer/ExViewer_TemporaryKey.pfx"
-        Import-PfxCertificate $certfile -Password (ConvertTo-SecureString -AsPlainText "${{ secrets.CERT_PASS }}" -Force) -CertStoreLocation Cert:\CurrentUser\My\
+      - name: Restore nuget cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            nuget-
 
-    - name: Restore the application
-      run: |
-        nuget restore
-        $NugetPackage = nuget locals global-packages -list
-        $NugetPackage = $NugetPackage.SubString(17)
-        $ToolVersions = (Get-ChildItem (Join-Path $NugetPackage 'Opportunity.ResourceGenerator') | Sort-Object Name -Descending)[0]
-        $ToolPath = Join-Path $ToolVersions.FullName '/tools/Opportunity.ResourceGenerator.Generator.exe'
-        &$ToolPath "./ExViewer.sln"
-        @"
-        namespace ExViewer { class Github {
-        public const string BRANCH = "${{ github.ref_name }}";
-        public const string COMMIT = "${{ github.sha }}";
-        }}
-        "@ > ./ExViewer/Github.cs
+      - name: Restore the application
+        run: |
+          nuget restore
 
-    # Create the app package by building and packaging the Windows Application Packaging project
-    - name: Build the application
-      run: msbuild $env:Solution_Name /p:Configuration=Release
+      - name: Generate string files
+        run: |
+          $NugetPackage = nuget locals global-packages -list
+          $NugetPackage = $NugetPackage.SubString(17)
+          $ToolVersions = (Get-ChildItem (Join-Path $NugetPackage 'Opportunity.ResourceGenerator') | Sort-Object Name -Descending)[0]
+          $ToolPath = Join-Path $ToolVersions.FullName '/tools/Opportunity.ResourceGenerator.Generator.exe'
+          &$ToolPath "./ExViewer.sln"
 
-    # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: MSIX Package
-        path: ExViewer/AppPackages
+      - name: Generate env files
+        run: |
+          @"
+          namespace ExViewer { class Github {
+          public const string BRANCH = "${{ github.ref_name }}";
+          public const string COMMIT = "${{ github.sha }}";
+          } }
+          "@ > ./ExViewer/Github.cs
+          Get-Content ./ExViewer/Github.cs
+
+      - name: Build the application
+        run: msbuild ExViewer.sln /p:Configuration=Release /p:Platform=$${{ matrix.arch }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: MSIX Package
+          path: ExViewer/AppPackages
