@@ -18,10 +18,12 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.0.2
 
-      - name: Install the pfx
+      - name: Prepare certificate
+        # run: |
+        #   $certfile = Get-Item "./ExViewer/ExViewer_TemporaryKey.pfx"
+        #   Import-PfxCertificate $certfile -Password (ConvertTo-SecureString -AsPlainText "${{ secrets.CERT_PASS }}" -Force) -CertStoreLocation Cert:\CurrentUser\My\
         run: |
-          $certfile = Get-Item "./ExViewer/ExViewer_TemporaryKey.pfx"
-          Import-PfxCertificate $certfile -Password (ConvertTo-SecureString -AsPlainText "${{ secrets.CERT_PASS }}" -Force) -CertStoreLocation Cert:\CurrentUser\My\
+          New-SelfSignedCertificate -Subject "CN=Opportunity" -CertStoreLocation Cert:\CurrentUser\My\
 
       - name: Restore nuget cache
         uses: actions/cache@v3
