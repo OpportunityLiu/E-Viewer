@@ -54,7 +54,7 @@ jobs:
           Get-Content ./ExViewer/Github.cs
 
       - name: Build the application
-        run: msbuild ExViewer.sln /p:Configuration=Release /p:Platform=$${{ matrix.arch }}
+        run: msbuild ExViewer.sln /p:Configuration=Release /p:Platform=${{ matrix.arch }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
