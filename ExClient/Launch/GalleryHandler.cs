@@ -1,7 +1,6 @@
 ﻿using ExClient.Api;
-using Opportunity.Helpers.Universal.AsyncHelpers;
+
 using System.Threading.Tasks;
-using Windows.Foundation;
 
 namespace ExClient.Launch
 {

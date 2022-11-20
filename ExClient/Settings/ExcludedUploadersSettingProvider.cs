@@ -1,8 +1,9 @@
 ﻿using Opportunity.MvvmUniverse.Collections;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+
 using Windows.UI.Xaml.Interop;
 
 namespace ExClient.Settings

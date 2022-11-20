@@ -59,7 +59,7 @@ namespace ExClient.Status
                 var table = body.Element("table");
                 if (table != null)
                     records.Update(table.Elements("tr").Skip(1).Select(item => new TaggingRecord(item)).ToList());
-                else if(tagstats != null)
+                else if (tagstats != null)
                     records.Clear();
                 OnPropertyChanged(default(string));
             }, token));

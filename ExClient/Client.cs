@@ -1,9 +1,9 @@
 ﻿using ExClient.Internal;
 using ExClient.Settings;
 using ExClient.Status;
+
 using Opportunity.MvvmUniverse;
-using System;
-using System.Threading.Tasks;
+
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 

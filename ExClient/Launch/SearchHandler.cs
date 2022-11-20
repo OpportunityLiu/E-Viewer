@@ -1,9 +1,7 @@
 ﻿using ExClient.Search;
-using Opportunity.Helpers.Universal.AsyncHelpers;
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Windows.Foundation;
 
 namespace ExClient.Launch
 {

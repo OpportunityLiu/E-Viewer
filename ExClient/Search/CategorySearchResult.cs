@@ -1,6 +1,8 @@
 ﻿using ExClient.Launch;
+
 using System;
 using System.Collections.Generic;
+
 using Windows.Web.Http;
 
 namespace ExClient.Search

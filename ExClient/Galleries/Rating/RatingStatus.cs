@@ -1,10 +1,13 @@
 ﻿using ExClient.Api;
+
 using HtmlAgilityPack;
+
 using Opportunity.MvvmUniverse;
-using System;
+
 using System.Diagnostics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
+
 using Windows.Foundation;
 
 namespace ExClient.Galleries.Rating

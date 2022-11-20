@@ -45,7 +45,7 @@ namespace ExClient.Launch
         public SearchResult Data { get; }
     }
 
-    public sealed class PopularLaunchResult: LaunchResult
+    public sealed class PopularLaunchResult : LaunchResult
     {
         private PopularLaunchResult() { }
 

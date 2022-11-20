@@ -1,12 +1,11 @@
 ﻿using ExClient.Forums;
 using ExClient.Internal;
-using ExClient.Status;
+
 using System;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
+
 using Windows.Web.Http;
 
 namespace ExClient

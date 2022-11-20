@@ -1,8 +1,7 @@
 ﻿using ExClient.Api;
+
 using System;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Launch
 {

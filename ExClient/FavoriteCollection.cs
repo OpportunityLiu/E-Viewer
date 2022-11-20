@@ -1,13 +1,10 @@
-﻿using ExClient.Api;
-using ExClient.Galleries;
-using ExClient.Search;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Windows.Foundation;
 
 namespace ExClient
 {

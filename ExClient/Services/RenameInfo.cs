@@ -1,9 +1,11 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
-using ExClient.Internal;
+
 using HtmlAgilityPack;
+
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+
 using Windows.Foundation;
 
 namespace ExClient.Services

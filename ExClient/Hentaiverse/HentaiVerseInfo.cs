@@ -1,8 +1,11 @@
 ﻿using HtmlAgilityPack;
+
 using Opportunity.Helpers.Universal.AsyncHelpers;
+
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using Windows.Foundation;
 using Windows.Web.Http;
 

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
-using Windows.Graphics.Display;
+
 using Windows.Storage;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace ExClient
 {

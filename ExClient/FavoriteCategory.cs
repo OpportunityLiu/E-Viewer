@@ -1,17 +1,18 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
-using ExClient.Internal;
 using ExClient.Search;
+
 using HtmlAgilityPack;
+
 using Opportunity.MvvmUniverse;
+
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
+
 using Windows.Web.Http;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient
 {

@@ -1,6 +1,8 @@
 ﻿using ExClient.Search;
+
 using System;
 using System.Collections.Generic;
+
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Web.Http;

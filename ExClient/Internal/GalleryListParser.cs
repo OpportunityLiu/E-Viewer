@@ -1,10 +1,11 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
+
 using HtmlAgilityPack;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace ExClient.Internal
             if (noteTag != null)
             {
                 var str = noteTag.GetInnerText();
-                if(str.StartsWith("note:", StringComparison.OrdinalIgnoreCase))
+                if (str.StartsWith("note:", StringComparison.OrdinalIgnoreCase))
                 {
                     str = str.Substring("note:".Length).Trim();
                     gallery.FavoriteNote = str;
@@ -42,8 +43,8 @@ namespace ExClient.Internal
             }
 
             var ratingNode = dataNode.Descendants("div").FirstOrDefault(d => d.HasClass("ir"));
-            if(ratingNode!=null)
-            gallery.Rating.AnalyzeNode(ratingNode);
+            if (ratingNode != null)
+                gallery.Rating.AnalyzeNode(ratingNode);
         }
 
         private static readonly Regex _GLinkMatcher = new Regex(@".+?/g/(\d+)/([0-9a-f]+).+?", RegexOptions.Compiled);

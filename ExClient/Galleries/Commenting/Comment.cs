@@ -1,16 +1,20 @@
 ﻿using ExClient.Api;
+
 using HtmlAgilityPack;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using Opportunity.MvvmUniverse;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Windows.Foundation;
 using Windows.Web.Http;
 

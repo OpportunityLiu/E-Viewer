@@ -23,14 +23,14 @@ namespace ExClient
         {
             if (string.IsNullOrWhiteSpace(str))
                 goto FAIL;
-            if(!ulong.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out var v))
+            if (!ulong.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out var v))
                 goto FAIL;
-            if(v > TOKEN_MAX_VALUE)
+            if (v > TOKEN_MAX_VALUE)
                 goto FAIL;
             value = new EToken(v);
             return true;
 
-            FAIL:
+        FAIL:
             value = default;
             return false;
         }
@@ -51,7 +51,7 @@ namespace ExClient
 
         public static bool Equals(EToken t1, EToken t2) => t1.Value == t2.Value;
 
-        public bool Equals(EToken other) => Equals(this, other); 
+        public bool Equals(EToken other) => Equals(this, other);
 
         public override bool Equals(object obj) => obj is EToken o && Equals(o);
 

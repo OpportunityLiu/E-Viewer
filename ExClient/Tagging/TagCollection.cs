@@ -1,15 +1,19 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
+
 using HtmlAgilityPack;
+
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+
 using Windows.Foundation;
+
 using static ExClient.Tagging.Namespace;
 
 namespace ExClient.Tagging

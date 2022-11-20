@@ -1,14 +1,10 @@
-﻿using Opportunity.Helpers.Universal.AsyncHelpers;
-using Opportunity.MvvmUniverse;
+﻿using Opportunity.MvvmUniverse;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
 
 namespace ExClient.Forums
 {

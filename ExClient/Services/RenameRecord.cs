@@ -1,4 +1,5 @@
 ﻿using Opportunity.MvvmUniverse;
+
 using System;
 using System.Diagnostics;
 

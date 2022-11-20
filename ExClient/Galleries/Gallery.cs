@@ -5,28 +5,28 @@ using ExClient.Galleries.Rating;
 using ExClient.Internal;
 using ExClient.Models;
 using ExClient.Tagging;
+
 using HtmlAgilityPack;
+
 using Microsoft.EntityFrameworkCore;
+
 using Newtonsoft.Json;
+
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse.Collections;
+
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
+
 using Windows.Foundation;
-using Windows.Graphics.Imaging;
 using Windows.Storage;
-using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Web.Http;
+
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Galleries

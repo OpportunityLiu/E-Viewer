@@ -1,13 +1,15 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
-using ExClient.Internal;
+
 using HtmlAgilityPack;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Web.Http;

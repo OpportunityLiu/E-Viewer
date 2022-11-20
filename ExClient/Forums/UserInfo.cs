@@ -1,14 +1,16 @@
 ﻿using HtmlAgilityPack;
+
 using Newtonsoft.Json;
+
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
+
 using Windows.Storage;
+
 using static ExClient.Client;
-using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
 namespace ExClient.Forums
 {

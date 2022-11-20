@@ -1,16 +1,14 @@
-﻿using ExClient.Galleries;
-using ExClient.Launch;
+﻿using ExClient.Launch;
+
 using HtmlAgilityPack;
-using Opportunity.Helpers.Universal.AsyncHelpers;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
+
 using Windows.UI.Xaml.Data;
-using Windows.Web.Http;
 
 namespace ExClient.Search
 {

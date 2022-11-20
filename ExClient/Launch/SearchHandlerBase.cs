@@ -1,8 +1,6 @@
 ﻿using ExClient.Search;
-using Opportunity.Helpers.Universal.AsyncHelpers;
-using System.Collections.Generic;
+
 using System.Threading.Tasks;
-using Windows.Foundation;
 
 namespace ExClient.Launch
 {

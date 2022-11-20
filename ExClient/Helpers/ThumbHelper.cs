@@ -1,13 +1,13 @@
 ﻿using ExClient.Galleries;
 using ExClient.Internal;
 using ExClient.Models;
+
 using Microsoft.EntityFrameworkCore;
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+
 using Windows.ApplicationModel.Core;
 using Windows.Graphics.Display;
 using Windows.Storage;

@@ -1,19 +1,19 @@
 ﻿using ExClient.Api;
 using ExClient.Galleries;
-using ExClient.Internal;
+
 using HtmlAgilityPack;
+
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
+
 using Windows.Web.Http;
 
 namespace ExClient.Services

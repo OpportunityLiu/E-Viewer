@@ -1,5 +1,4 @@
-﻿using System;
-using Windows.Networking.Connectivity;
+﻿using Windows.Networking.Connectivity;
 
 namespace ExClient
 {

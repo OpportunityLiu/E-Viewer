@@ -1,8 +1,11 @@
 ﻿using ExViewer.Controls;
+
 using Opportunity.Helpers.Universal;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Networking.BackgroundTransfer;
@@ -52,44 +55,50 @@ namespace ExViewer.Views
             var folder = await DownloadsFolder.CreateFolderAsync(StorageHelper.ToValidFileName(release.tag_name), CreationCollisionOption.GenerateUniqueName);
             try
             {
-                var arch = Package.Current.Id.Architecture.ToString();
+                var arch = Package.Current.Id.Architecture switch
+                {
+                    ProcessorArchitecture.Arm => "ARM",
+                    ProcessorArchitecture.Arm64 or ProcessorArchitecture.X86OnArm64 => "ARM64",
+                    ProcessorArchitecture.X86 => "x86",
+                    ProcessorArchitecture.X64 or _ => "x64",
+                };
                 if (release.assets.IsNullOrEmpty())
                     throw new InvalidOperationException("Find appx file failed.");
                 var assets = (from asset in release.assets
-                              where asset.name.IndexOf(arch, StringComparison.OrdinalIgnoreCase) > 0 && downloadExt.Any(e => asset.name.EndsWith(e))
+                              where (asset.name.Contains($"_{arch}_", StringComparison.OrdinalIgnoreCase) 
+                                    || asset.name.Contains($"_{arch}.", StringComparison.OrdinalIgnoreCase))
+                                    && downloadExt.Any(e => asset.name.EndsWith(e))
                               select asset).ToList();
 
                 if (assets.IsEmpty())
                     throw new InvalidOperationException("Find appx file failed.");
                 var files = new List<StorageFile>();
                 var fileLaunched = false;
-                using (var client = new HttpClient())
+                using var client = new HttpClient();
+                try
                 {
-                    try
+                    totalDownloaded = assets.Sum(a => (long)a.size);
+                    foreach (var item in assets)
                     {
-                        totalDownloaded = assets.Sum(a => (long)a.size);
-                        foreach (var item in assets)
-                        {
-                            var op = client.GetBufferAsync(new Uri(item.browser_download_url));
-                            ReportProgress(op, default);
-                            op.Progress = ReportProgress;
-                            var buf = await op;
-                            var file = await folder.CreateFileAsync(item.name, CreationCollisionOption.ReplaceExisting);
-                            await FileIO.WriteBufferAsync(file, buf);
-                            currentDownloaded += item.size;
-                            files.Add(file);
-                        }
-                        foreach (var item in files)
-                        {
-                            fileLaunched = fileLaunched || await Launcher.LaunchFileAsync(item);
-                        }
+                        var op = client.GetBufferAsync(new Uri(item.browser_download_url));
+                        ReportProgress(op, default);
+                        op.Progress = ReportProgress;
+                        var buf = await op;
+                        var file = await folder.CreateFileAsync(item.name, CreationCollisionOption.ReplaceExisting);
+                        await FileIO.WriteBufferAsync(file, buf);
+                        currentDownloaded += item.size;
+                        files.Add(file);
                     }
-                    finally
+                    foreach (var item in files)
                     {
-                        if ((assets.Count > 1 || !fileLaunched) && !await Launcher.LaunchFolderAsync(folder))
-                        {
-                            throw new InvalidOperationException("Launch download folder failed.");
-                        }
+                        fileLaunched = fileLaunched || await Launcher.LaunchFileAsync(item);
+                    }
+                }
+                finally
+                {
+                    if ((assets.Count > 1 || !fileLaunched) && !await Launcher.LaunchFolderAsync(folder))
+                    {
+                        throw new InvalidOperationException("Launch download folder failed.");
                     }
                 }
             }

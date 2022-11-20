@@ -1,6 +1,4 @@
-﻿using Opportunity.Helpers.Universal.AsyncHelpers;
-using System;
-using Windows.Foundation;
+﻿using System;
 
 namespace ExClient.Launch
 {

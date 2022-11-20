@@ -1,6 +1,8 @@
 ﻿using ExClient.Galleries;
 using ExClient.Galleries.Rating;
+
 using Newtonsoft.Json;
+
 using System;
 
 namespace ExClient.Api

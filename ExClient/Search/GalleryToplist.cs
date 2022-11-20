@@ -1,16 +1,15 @@
-﻿using ExClient.Api;
-using ExClient.Galleries;
+﻿using ExClient.Galleries;
 using ExClient.Internal;
 using ExClient.Status;
-using HtmlAgilityPack;
+
 using Opportunity.MvvmUniverse.Collections;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Windows.Foundation;
 
 namespace ExClient.Search
@@ -34,7 +33,7 @@ namespace ExClient.Search
             return await GalleryListParser.Parse(doc, token);
         }
 
-        protected override IAsyncOperation<IEnumerable<Gallery>> LoadItemsAsync(int pageIndex) 
+        protected override IAsyncOperation<IEnumerable<Gallery>> LoadItemsAsync(int pageIndex)
             => AsyncInfo.Run(token => _LoadCore(pageIndex, token));
     }
 }

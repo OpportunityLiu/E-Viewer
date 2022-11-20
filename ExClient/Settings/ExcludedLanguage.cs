@@ -1,4 +1,5 @@
 ﻿using System;
+
 using static ExClient.Settings.ExcludedLanguageExtension;
 
 namespace ExClient.Settings

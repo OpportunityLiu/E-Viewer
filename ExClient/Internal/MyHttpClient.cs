@@ -1,17 +1,20 @@
 ﻿using ExClient.Api;
 using ExClient.HentaiVerse;
+
 using HtmlAgilityPack;
+
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
+
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
+
 using IHttpAsyncOperation = Windows.Foundation.IAsyncOperationWithProgress<Windows.Web.Http.HttpResponseMessage, Windows.Web.Http.HttpProgress>;
 
 namespace ExClient.Internal

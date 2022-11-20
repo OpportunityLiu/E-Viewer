@@ -1,7 +1,6 @@
 ﻿using ExClient.Tagging;
-using Opportunity.Helpers.Universal.AsyncHelpers;
+
 using System;
-using Windows.Foundation;
 
 namespace ExClient.Launch
 {

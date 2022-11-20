@@ -1,11 +1,15 @@
 ﻿using ExClient.Api;
+
 using HtmlAgilityPack;
+
 using Opportunity.Helpers.Universal.AsyncHelpers;
 using Opportunity.MvvmUniverse;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using Windows.Foundation;
 
 namespace ExClient.Galleries.Metadata

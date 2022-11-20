@@ -1,4 +1,5 @@
 ﻿using Opportunity.MvvmUniverse;
+
 using Windows.Foundation;
 
 namespace ExClient.Tagging
