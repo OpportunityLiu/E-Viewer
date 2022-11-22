@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: windows-latest
@@ -17,7 +21,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v1.0.2
+        uses: microsoft/setup-msbuild@v1
 
       - name: Restore the application
         run: |
@@ -86,7 +90,7 @@ jobs:
             appcenter crashes upload-symbols --disable-telemetry --appxsym "$_"
           }
       - name: Publish to github release
-        uses: ncipollo/release-action@v1.11.2
+        uses: ncipollo/release-action@v1
         with:
           draft: true
           omitDraftDuringUpdate: true
