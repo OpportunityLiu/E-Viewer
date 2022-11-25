@@ -86,7 +86,9 @@ jobs:
           APPCENTER_ACCESS_TOKEN: ${{ secrets.APPCENTER_ACCESS_TOKEN }}
         run: |
           yarn global add appcenter-cli
+          $env:Path = "$env:Path;$(yarn global bin)"
           Get-ChildItem **/*.appxsym | ForEach-Object {
+            Write-Output "Uploading $($_.Name)"
             appcenter crashes upload-symbols --disable-telemetry --appxsym "$_"
           }
       - name: Publish to github release
