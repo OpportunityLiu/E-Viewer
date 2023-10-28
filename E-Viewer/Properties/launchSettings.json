@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "E-Viewer": {
+      "commandName": "MsixPackage"
+    }
+  }
+}
