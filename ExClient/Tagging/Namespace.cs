@@ -70,6 +70,10 @@ namespace ExClient.Tagging
 
                 ["X"] = Namespace.Mixed,
                 ["Mixed"] = Namespace.Mixed,
+
+                ["T"] = Namespace.Temp,
+                ["Temp"] = Namespace.Temp,
+                ["Temporary"] = Namespace.Temp,
             };
 
         private static readonly Dictionary<Namespace, string> _SearchDic

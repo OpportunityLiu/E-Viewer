@@ -105,22 +105,36 @@ namespace ExClient.Galleries.Commenting
 
         private static readonly HttpClient _TransClient = new HttpClient();
 
+        private static async Task<string> _TranslateAsync(string source, string targetLangCode, CancellationToken token)
+        {
+            if (Uri.TryCreate(source, UriKind.Absolute, out var urlContent) && (urlContent.Scheme == "http" || urlContent.Scheme == "https"))
+            {
+                // Do not translate url
+                return source;
+            }
+            var uri = $"https://clients5.google.com/translate_a/t?client=dict-chrome-ex"
+                + $"&sl=auto&tl={Uri.EscapeDataString(targetLangCode)}&q={Uri.EscapeDataString(source)}";
+            var transTask = _TransClient.GetStringAsync(new(uri));
+            var transRetHtml = await transTask.AsTask(token);
+            var obj = JsonConvert.DeserializeObject<List<string>[]>(transRetHtml);
+            var first = obj[0];
+            first.RemoveAt(first.Count - 1);
+            return string.Concat(first);
+        }
+
         public IAsyncOperation<HtmlNode> TranslateAsync(string targetLangCode)
         {
             return AsyncInfo.Run(async token =>
             {
                 var node = HtmlNode.CreateNode(Content.OuterHtml);
-                foreach (var item in node.Descendants("#text"))
+                var textNodes = node.Descendants("#text").ToList();
+                var tasks = textNodes.Select(async node =>
                 {
-                    var data = item.GetInnerText();
-                    var uri = $"https://translate.google.cn/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8"
-                        + $"&sl=auto&tl={targetLangCode}&q={Uri.EscapeDataString(data)}";
-                    var transRetHtml = await _TransClient.GetStringAsync(new Uri(uri));
-                    var obj = JsonConvert.DeserializeObject<JArray>(transRetHtml);
-                    var objarr = (JArray)obj[0];
-                    var translated = string.Concat(objarr.Select(a => a[0].ToString()));
-                    item.InnerHtml = HtmlEntity.Entitize(translated);
-                }
+                    var data = node.GetInnerText();
+                    var translated = await _TranslateAsync(data, targetLangCode, token);
+                    node.InnerHtml = HtmlEntity.Entitize(translated);
+                });
+                await Task.WhenAll(tasks);
                 TranslatedContent = node;
                 return node;
             });

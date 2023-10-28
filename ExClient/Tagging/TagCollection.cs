@@ -56,8 +56,7 @@ namespace ExClient.Tagging
         {
             var rawData = items.OrderBy(t => t.tag.Namespace)
                 // put low-power tags to the end
-                .ThenByDescending(t => t.ts & TagState.NormalPower)
-                .ThenBy(t => t.tag.Content)
+                .ThenByDescending(t => t.ts.GetPowerState())
                 .ToList();
             var data = new Tag[rawData.Count];
             var state = new TagState[rawData.Count];

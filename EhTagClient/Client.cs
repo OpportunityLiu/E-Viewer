@@ -23,9 +23,9 @@ namespace EhTagClient
 
         private const string LAST_UPDATE = "EhTagClient.LastUpdate";
 
-        private static readonly Regex reg = new Regex(@"<a href=""https://repo\.e-hentai\.org/tools\.php\?act=taggroup&amp;mastertag=(\d+)"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
+        private static readonly Regex _Reg = new Regex(@"<a href=""https://repo\.e-hentai\.org/tools/taggroup\?mastertag=(\d+)"">([^<]+)</a>", RegexOptions.Singleline | RegexOptions.Compiled);
 
-        private static readonly string DbUri = "https://repo.e-hentai.org/tools.php?act=taggroup&show={0}";
+        private static readonly string DbUri = "https://repo.e-hentai.org/tools/taggroup?show={0}";
 
         public static DateTimeOffset LastUpdate
         {
@@ -86,7 +86,7 @@ namespace EhTagClient
 
         private static async Task updateDbAsync(TagDb db, string html, CancellationToken token)
         {
-            var matches = reg.Matches(html);
+            var matches = _Reg.Matches(html);
             var toAdd = new List<TagRecord>(matches.Count);
             foreach (var item in matches.Cast<Match>())
             {

@@ -80,9 +80,7 @@ namespace ExClient.Galleries
                     doc.LoadHtml(res.i3);
                     analyzeI3Node(doc.DocumentNode);
                     doc.LoadHtml(res.i6);
-                    analyzeI6Node(doc.DocumentNode);
-                    doc.LoadHtml(res.i7);
-                    analyzeI7Node(doc.DocumentNode);
+                    analyzeI6Node(doc.DocumentNode); 
                 }
                 catch (ArgumentException)
                 {
@@ -98,8 +96,7 @@ namespace ExClient.Galleries
 
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(loadPageUri).AsTask(token);
                 analyzeI3Node(doc.GetElementbyId("i3"));
-                analyzeI6Node(doc.GetElementbyId("i6"));
-                analyzeI7Node(doc.GetElementbyId("i7"));
+                analyzeI6Node(doc.GetElementbyId("i6")); 
                 Owner.ShowKey = doc.DocumentNode.Descendants("script").Select(n =>
                 {
                     var match = _ShowKeyMatcher.Match(n.GetInnerText());
@@ -124,13 +121,13 @@ namespace ExClient.Galleries
             }
             void analyzeI6Node(HtmlNode i6)
             {
-                var hashNode = i6.Element("a");
-                ImageHash = SHA1Value.Parse(_HashMatcher.Match(hashNode.GetAttribute("href", "")).Groups[1].Value);
-            }
-            void analyzeI7Node(HtmlNode i7)
-            {
-                var origNode = i7.Element("a");
-                originalImageUri = origNode?.GetAttribute("href", default(Uri));
+                var links = i6.Descendants("a").Select(a => a.GetAttribute("href", "")).ToList();
+
+                var hashLink = links.First(l => l.Contains("f_shash="));
+                ImageHash = SHA1Value.Parse(_HashMatcher.Match(hashLink).Groups[1].Value);
+
+                var originalLink = links.FirstOrDefault(l => l.Contains("fullimg"));
+                originalImageUri = originalLink.IsNullOrEmpty() ? null : new Uri(originalLink);
             }
         }
 

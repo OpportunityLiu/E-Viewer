@@ -29,7 +29,7 @@ namespace ExClient.Tagging
         /// <summary>
         /// Mod-power &gt;= 100.
         /// </summary>
-        HighPower = 0b0111_0000_0000
+        HighPower = 0b0111_0000_0000,
     }
 
     public static class TagStateExtension

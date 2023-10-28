@@ -34,7 +34,6 @@ namespace ExClient.Api
                 throw new ArgumentException("Key mismatch");
         }
 
-#pragma warning disable IDE0051 // 删除未使用的私有成员
 #pragma warning disable IDE1006 // 命名样式
         [JsonProperty] internal int p { get; set; }
         [JsonProperty] internal string s { get; set; }
@@ -44,11 +43,9 @@ namespace ExClient.Api
         [JsonProperty] internal string i3 { get; set; }
         [JsonProperty] internal string i5 { get; set; }
         [JsonProperty] internal string i6 { get; set; }
-        [JsonProperty] internal string i7 { get; set; }
         [JsonProperty] internal int si { get; set; }
         [JsonProperty] internal string x { get; set; }
         [JsonProperty] internal string y { get; set; }
-#pragma warning restore IDE0051 // 删除未使用的私有成员
 #pragma warning restore IDE1006 // 命名样式
     }
 }

@@ -4,21 +4,20 @@ using ExClient.Tagging;
 using HtmlAgilityPack;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ExClient.Status
 {
     public readonly struct TaggingRecord : IEquatable<TaggingRecord>
     {
-        internal TaggingRecord(HtmlNode trNode)
+        internal TaggingRecord(GalleryInfo gallery, List<HtmlNode> tdNodes)
         {
-            var td = trNode.Elements("td").ToList();
-            Tag = Tag.Parse(td[1].GetInnerText());
-            Score = int.Parse(td[2].GetInnerText());
-            var uri = td[3].Element("a").GetAttribute("href", default(Uri));
-            GalleryInfo = GalleryInfo.Parse(uri);
-            Timestamp = DateTimeOffset.Parse(td[4].GetInnerText(), null, System.Globalization.DateTimeStyles.AssumeUniversal);
-        }
+            GalleryInfo = gallery; 
+            Timestamp = DateTimeOffset.Parse(tdNodes[0].GetInnerText(), null, System.Globalization.DateTimeStyles.AssumeUniversal);
+            Score = int.Parse(tdNodes[1].GetInnerText());
+            Tag = Tag.Parse(tdNodes[2].GetInnerText()); 
+        } 
 
         public Tag Tag { get; }
 

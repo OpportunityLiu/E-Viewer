@@ -456,19 +456,18 @@ namespace ExClient.Galleries
                         return doc;
                     }
 
-                    var rows = doc.GetElementbyId("gdo2").Elements("div", "ths").Last().GetInnerText();
-                    rows = rows.Substring(0, rows.IndexOf(' '));
-                    var rowCount = int.Parse(rows);
-                    PageSize = rowCount * 5;
-                    if (doc.GetElementbyId("gdo4").Elements("div", "ths").Last().InnerText != "Large")
+                    var content = doc.GetElementbyId("gdt");
+                    if(content.Element("div", "gdts") is not null)
                     {
                         // 切换到大图模式
                         await Client.Current.HttpClient.GetAsync(new Uri("/?inline_set=ts_l", UriKind.Relative));
-                        doc = await getDoc(imageIndex, cancellationToken, true);
+                        return await getDoc(imageIndex, cancellationToken, true);
                     }
-                    else if (pageIndex != imageIndex / _PageSize)
+                    var items = content.Elements("div", "gdtl").ToList();
+                    PageSize = items.Count;
+                    if (pageIndex != imageIndex / _PageSize)
                     {
-                        doc = await getDoc(imageIndex, cancellationToken, true);
+                       return await getDoc(imageIndex, cancellationToken, true);
                     }
                     return doc;
                 }

@@ -1,9 +1,12 @@
-﻿using HtmlAgilityPack;
+﻿using ExClient.Api;
+
+using HtmlAgilityPack;
 
 using Opportunity.MvvmUniverse;
 using Opportunity.MvvmUniverse.Collections;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
@@ -34,10 +37,9 @@ namespace ExClient.Status
                 var uid = Client.Current.UserId;
                 if (uid < 0)
                     throw new InvalidOperationException("Hasn't log in");
-                var getPage = Client.Current.HttpClient.GetDocumentAsync(new Uri($"https://e-hentai.org/tools.php?act=taglist&uid={uid}"));
+                var getPage = Client.Current.HttpClient.GetDocumentAsync(new Uri($"https://repo.e-hentai.org/tools.php?act=taglist&uid={uid}"));
                 token.Register(getPage.Cancel);
                 var page = await getPage;
-                var body = page.DocumentNode.Element("html").Element("body");
 
                 var tagstats = page.GetElementbyId("tagstats")?.Elements("tr")?.ToArray();
                 if (tagstats != null && tagstats.Length == 3)
@@ -56,9 +58,25 @@ namespace ExClient.Status
                     }
                 }
 
-                var table = body.Element("table");
-                if (table != null)
-                    records.Update(table.Elements("tr").Skip(1).Select(item => new TaggingRecord(item)).ToList());
+                var usertaglist = page.GetElementbyId("usertaglist");
+                if (usertaglist != null)
+                {
+                    var list = new List<TaggingRecord>();
+                    var gallary = default(GalleryInfo);
+                    foreach (var row in usertaglist.Elements("tr"))
+                    {
+                        var cells = row.Elements("td").ToList();
+                        if (cells.Count == 1)
+                        {
+                            gallary = GalleryInfo.Parse(cells[0].Descendants("a").Last().GetAttribute("href", default(Uri)));
+                        }
+                        else
+                        {
+                            list.Add(new TaggingRecord(gallary, cells));
+                        }
+                    }
+                    records.Update(list);
+                }
                 else if (tagstats != null)
                     records.Clear();
                 OnPropertyChanged(default(string));

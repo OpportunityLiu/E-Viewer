@@ -27,7 +27,7 @@ namespace ExClient.Services
 
     public readonly struct TorrentInfo : IEquatable<TorrentInfo>
     {
-        private static readonly Regex _InfoMatcher = new Regex(@"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+", RegexOptions.Compiled);
+        private static readonly Regex _InfoMatcher = new Regex(@"\s+Posted:\s([-\d:\s]+)\s+Size:\s([\d\.]+\s+[KMG]?i?B)\s+Seeds:\s(\d+)\s+Peers:\s(\d+)\s+Downloads:\s(\d+)\s+Uploader:\s+(.+)\s+", RegexOptions.Compiled);
         private static readonly Regex _UrlMatcher = new Regex(@"document\.location='([^']+?)'", RegexOptions.Compiled);
 
         internal static IAsyncOperation<ReadOnlyCollection<TorrentInfo>> FetchAsync(GalleryInfo galleryInfo)
@@ -73,19 +73,14 @@ namespace ExClient.Services
                 {
                     var s = sizeStr.Split(' ');
                     var value = double.Parse(s[0]);
-                    switch (s[1])
+                    return s[1] switch
                     {
-                    case "B":
-                        return (long)value;
-                    case "KB":
-                        return (long)(value * (1 << 10));
-                    case "MB":
-                        return (long)(value * (1 << 20));
-                    case "GB":
-                        return (long)(value * (1 << 30));
-                    default:
-                        return 0;
-                    }
+                        "B" => (long)value,
+                        "KB" or "KiB" => (long)(value * (1 << 10)),
+                        "MB" or "MiB" => (long)(value * (1 << 20)),
+                        "GB" or "GiB" => (long)(value * (1 << 30)),
+                        _ => 0,
+                    };
                 }
             }).AsAsyncOperation();
         }
