@@ -299,7 +299,7 @@ M0.1,49.9h1.8l0.8-3.3h2.9L6,45.2H3.1l0.5-2.1h3.1l0.4-1.7h-5L0.1,49.9z M8,49.9l0.
     <HyperlinkButton Style="{StaticResource AboutControlHyperLinkButtonStyle}"
                      x:Uid="Controls/AboutControl/HelpTranslateTagsHyperlinkButton"
                      Content="Help translate tags into Chinese"
-                     NavigateUri="https://github.com/Mapaler/EhTagTranslator/wiki" />
+                     NavigateUri="https://github.com/EhTagTranslation/Editor/wiki" />
     <HyperlinkButton Style="{StaticResource AboutControlHyperLinkButtonStyle}"
                      x:Uid="Controls/AboutControl/ForumsHyperlinkButton"
                      Content="E-Hentai Forums"

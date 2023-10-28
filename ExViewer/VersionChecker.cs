@@ -103,7 +103,7 @@ namespace ExViewer
                             Build = subver[2],
                             Revision = subver.Length == 4 ? subver[3] : (ushort)0
                         };
-                        if (release.Version.CompareTo(currentVersion) > 0)
+                        if (release.Version.CompareTo(currentVersion) > 0 || (release.Version.CompareTo(currentVersion) == 0 && Package.Current.IsDevelopmentMode))
                         {
                             return release;
                         }
