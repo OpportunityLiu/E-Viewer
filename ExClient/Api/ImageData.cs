@@ -35,17 +35,17 @@ namespace ExClient.Api
         }
 
 #pragma warning disable IDE1006 // 命名样式
-        [JsonProperty] internal int p { get; set; }
-        [JsonProperty] internal string s { get; set; }
-        [JsonProperty] internal string n { get; set; }
-        [JsonProperty] internal string i { get; set; }
-        [JsonProperty] internal string k { get; set; }
+        //[JsonProperty] internal int p { get; set; }
+        //[JsonProperty] internal string s { get; set; }
+        //[JsonProperty] internal string n { get; set; }
+        //[JsonProperty] internal string i { get; set; }
+        //[JsonProperty] internal string k { get; set; }
         [JsonProperty] internal string i3 { get; set; }
         [JsonProperty] internal string i5 { get; set; }
         [JsonProperty] internal string i6 { get; set; }
-        [JsonProperty] internal int si { get; set; }
-        [JsonProperty] internal string x { get; set; }
-        [JsonProperty] internal string y { get; set; }
+        //[JsonProperty] internal int si { get; set; }
+        //[JsonProperty] internal string x { get; set; }
+        //[JsonProperty] internal string y { get; set; }
 #pragma warning restore IDE1006 // 命名样式
     }
 }
