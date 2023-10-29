@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "E-Viewer": {
+    "Default": {
       "commandName": "MsixPackage"
     }
   }
