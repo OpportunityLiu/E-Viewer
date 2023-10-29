@@ -55,7 +55,9 @@ jobs:
           }
 
       - name: Build the application
-        run: msbuild /p:Configuration=Release /p:Platform=${{ matrix.arch }} /p:GenerateAppxPackageOnBuild=true
+        run: |
+          msbuild /p:Configuration=Release /p:Platform=${{ matrix.arch }} /p:GenerateAppxPackageOnBuild=true
+          Get-ChildItem E-Viewer/out/*/Dependencies -Exclude "${{ matrix.arch }}" | Remove-Item -Recurse
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
