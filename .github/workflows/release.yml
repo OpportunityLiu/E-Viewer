@@ -1,0 +1,39 @@
+name: release
+
+on:
+  push:
+    tags: ["*"]
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+
+  publish:
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Packages
+          path: ./
+      - name: Upload symbols
+        env:
+          MOBILE_CENTER_CURRENT_APP: Opportunity/E-Viewer
+          APPCENTER_ACCESS_TOKEN: ${{ secrets.APPCENTER_ACCESS_TOKEN }}
+        run: |
+          npm install -g appcenter-cli
+          Get-ChildItem */*.msixsym | ForEach-Object {
+            Write-Output "Uploading $($_.Name)"
+            appcenter crashes upload-symbols --disable-telemetry --appxsym "$_"
+          }
+      - name: Publish to github release
+        uses: ncipollo/release-action@v1
+        with:
+          draft: true
+          omitDraftDuringUpdate: true
+          allowUpdates: true
+          artifacts: "*/*.msix,*/*.cer,*/*.msixsym"
+          replacesArtifacts: true

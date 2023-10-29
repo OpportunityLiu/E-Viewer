@@ -13,6 +13,7 @@
 # Build results
 bin/
 obj/
+out/
 
 # Visual Studio cache/options directory
 .vs/

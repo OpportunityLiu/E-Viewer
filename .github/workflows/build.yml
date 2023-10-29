@@ -1,0 +1,64 @@
+name: build
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        arch: [x64, arm64]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Restore the application
+        run: msbuild /p:Configuration=Release /p:Platform=${{ matrix.arch }} /t:restore
+
+      # - name: Generate string files
+      #   run: |
+      #     $NugetPackage = nuget locals global-packages -list
+      #     $NugetPackage = $NugetPackage.SubString(17)
+      #     $ToolVersions = (Get-ChildItem (Join-Path $NugetPackage 'Opportunity.ResourceGenerator') | Sort-Object Name -Descending)[0]
+      #     $ToolPath = Join-Path $ToolVersions.FullName '/tools/Opportunity.ResourceGenerator.Generator.exe'
+      #     &$ToolPath "./ExViewer.sln"
+
+      # - name: Generate env files
+      #   run: |
+      #     @"
+      #     namespace ExViewer { class Github {
+      #     public const string BRANCH = "${{ github.ref_name }}";
+      #     public const string COMMIT = "${{ github.sha }}";
+      #     } }
+      #     "@ > ./ExViewer/Github.cs
+      #     Get-Content ./ExViewer/Github.cs
+
+      - name: Prepare certificate
+        run: |
+          $certKey = "${{ secrets.CERT_PASS }}"
+          if ($certKey) {
+            $certFile = Get-Item "./E-Viewer/E-Viewer-Key.pfx"
+            $certPass = ConvertTo-SecureString -AsPlainText $certKey -Force
+            Write-Output "Using exist certificate"
+            Import-PfxCertificate $certFile -Password $certPass -CertStoreLocation Cert:\CurrentUser\My\
+          } else {
+            $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=Opportunity" -CertStoreLocation Cert:\CurrentUser\My\
+            ((Get-Content -Raw "./E-Viewer/E-Viewer.csproj") -replace 'AC82A857467374ACB64C3F8A542446485164DD50',$cert.Thumbprint) | Set-Content "./E-Viewer/E-Viewer.csproj"
+            Write-Output "Using new certificate"
+            Write-Output $cert
+          }
+
+      - name: Build the application
+        run: msbuild /p:Configuration=Release /p:Platform=${{ matrix.arch }} /p:GenerateAppxPackageOnBuild=true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Packages
+          path: E-Viewer/out
