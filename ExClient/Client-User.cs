@@ -261,11 +261,11 @@ namespace ExClient
             }
         }
 
-        public Task<UserInfo> FetchCurrentUserInfoAsync()
+        public async Task<UserInfo> FetchCurrentUserInfoAsync()
         {
             if (UserId < 0)
                 throw new InvalidOperationException("Hasn't log in");
-            return UserInfo.FeachAsync(UserId);
+            return await UserInfo.FetchAsync(UserId);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace ExClient.Forums
         /// <summary>
         /// Fetch user info from forum.e-hentai.org/index?showuser={<paramref name="userID"/>}.
         /// </summary>
-        public static Task<UserInfo> FeachAsync(long userID, CancellationToken token = default)
+        public static Task<UserInfo> FetchAsync(long userID, CancellationToken token = default)
         {
             if (userID <= 0)
                 throw new ArgumentOutOfRangeException(nameof(userID));
