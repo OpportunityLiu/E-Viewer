@@ -12,10 +12,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ExClient.Settings
-{
-    public enum ImageSize
-    {
+namespace ExClient.Settings {
+    public enum ImageSize {
         Auto = 0,
         H780 = 1,
         H980 = 2,
@@ -24,31 +22,26 @@ namespace ExClient.Settings
         H2400 = 5,
     }
 
-    public enum CommentsOrder
-    {
+    public enum CommentsOrder {
         ByTimeAscending = 0,
         ByTimeDecending = 1,
         ByScore = 2,
     }
 
-    public enum FavoritesOrder
-    {
+    public enum FavoritesOrder {
         ByLastUpdatedTime = 0,
         ByFavoritedTime = 1,
     }
 
-    public sealed class SettingCollection : ObservableObject
-    {
+    public sealed class SettingCollection : ObservableObject {
         private static readonly Uri configUriRaletive = new Uri("/uconfig.php", UriKind.Relative);
         private readonly Uri configUri;
         private readonly DomainProvider owner;
 
-        internal SettingCollection(DomainProvider domain)
-        {
+        internal SettingCollection(DomainProvider domain) {
             owner = domain;
             configUri = new Uri(domain.RootUri, configUriRaletive);
-            foreach (var item in items.Values)
-            {
+            foreach (var item in items.Values) {
                 item.Owner = this;
             }
             loadCache();
@@ -61,124 +54,111 @@ namespace ExClient.Settings
 
         private const string CACHE_NAME = "SettingsCache";
 
-        internal void StoreCache()
-        {
+        internal void StoreCache() {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
             storage.Values[owner.Type + CACHE_NAME] = JsonConvert.SerializeObject(_Settings);
         }
 
-        private void loadCache()
-        {
+        private void loadCache() {
             var storage = Windows.Storage.ApplicationData.Current.LocalSettings.CreateContainer("ExClient", Windows.Storage.ApplicationDataCreateDisposition.Always);
             storage.Values.TryGetValue(owner.Type + CACHE_NAME, out var r);
             var value = r + "";
             _Settings.Clear();
-            if (string.IsNullOrEmpty(value))
-            {
+            if (string.IsNullOrEmpty(value)) {
                 return;
             }
             JsonConvert.PopulateObject(value, _Settings);
         }
 
-        private void updateSettingsDic(HtmlDocument doc)
-        {
+        private void updateSettingsDic(HtmlDocument doc) {
+            // Ill formed HTML, can not get inner form
             var outer = doc.GetElementbyId("outer");
             if (outer is null)
                 return;
 
             _Settings.Clear();
-            foreach (var item in outer.Descendants("input").Concat(outer.Descendants("textarea")))
-            {
+            foreach (var item in outer.Descendants("select")) {
                 var name = item.GetAttribute("name", default(string));
-                if (name is null || name.StartsWith("profile"))
-                {
+                if (name is null || name.StartsWith("profile_"))
                     continue;
+
+                var selected = item.SelectSingleNode("./option[@selected]");
+                if (selected is not null) {
+                    _Settings[name] = selected.GetAttribute("value", "");
                 }
+            }
+            foreach (var item in outer.Descendants("input").Concat(outer.Descendants("textarea"))) {
+                var name = item.GetAttribute("name", default(string));
+                if (name is null || name.StartsWith("profile_"))
+                    continue;
 
-                switch (item.GetAttribute("type", default(string)))
-                {
-                case "radio":
-                    if (item.GetAttribute("checked", "") == "checked")
-                    {
-                        _Settings[name] = item.GetAttribute("value", "");
-                    }
+                switch (item.GetAttribute("type", default(string))) {
+                    case "radio":
+                        if (item.GetAttribute("checked", "") == "checked") {
+                            _Settings[name] = item.GetAttribute("value", "on");
+                        }
 
-                    break;
-                case "checkbox":
-                    if (item.GetAttribute("checked", "") == "checked")
-                    {
-                        _Settings[name] = item.GetAttribute("value", "on");
-                    }
+                        break;
+                    case "checkbox":
+                        if (item.GetAttribute("checked", "") == "checked") {
+                            _Settings[name] = item.GetAttribute("value", "on");
+                        }
 
-                    break;
-                //case "text":
-                //case "hidden":
-                //case "submit":
-                //textarea
-                default:
-                    _Settings[name] = item.GetAttribute("value", item.GetInnerText());
-                    break;
+                        break;
+                    //case "text":
+                    //case "hidden":
+                    //case "submit":
+                    //textarea
+                    default:
+                        _Settings[name] = item.GetAttribute("value", item.GetInnerText());
+                        break;
                 }
             }
         }
 
-        public async Task FetchAsync(CancellationToken token = default)
-        {
+        public async Task FetchAsync(CancellationToken token = default) {
             Client.Current.CheckLogOn();
-            try
-            {
+            try {
                 var getDoc = Client.Current.HttpClient.GetDocumentAsync(configUri);
                 token.Register(getDoc.Cancel);
                 var doc = await getDoc;
                 updateSettingsDic(doc);
-            }
-            finally
-            {
+            } finally {
                 _LoadSettingsDic();
             }
         }
 
-        private void _LoadSettingsDic()
-        {
-            foreach (var item in items.Values)
-            {
+        private void _LoadSettingsDic() {
+            foreach (var item in items.Values) {
                 item.DataChanged(_Settings);
             }
             StoreCache();
             OnPropertyReset();
         }
 
-        public async Task SendAsync(CancellationToken token = default)
-        {
-            try
-            {
+        public async Task SendAsync(CancellationToken token = default) {
+            try {
                 if (_Settings.Count == 0)
                     await FetchAsync();
 
                 var postDic = new Dictionary<string, string>(_Settings);
-                foreach (var item in items.Values)
-                {
+                foreach (var item in items.Values) {
                     item.ApplyChanges(postDic);
                 }
                 var isSame = true;
-                if (postDic.Count == _Settings.Count)
-                {
-                    foreach (var item in postDic)
-                    {
+                if (postDic.Count == _Settings.Count) {
+                    foreach (var item in postDic) {
                         if (_Settings.TryGetValue(item.Key, out var ov) && ov == item.Value)
                             continue;
-                        else
-                        {
+                        else {
                             isSame = false;
                             break;
                         }
                     }
-                }
-                else
+                } else
                     isSame = false;
 
-                if (!isSame)
-                {
+                if (!isSame) {
                     var postData = Client.Current.HttpClient.PostAsync(configUri, postDic);
                     token.Register(postData.Cancel);
                     var r = await postData;
@@ -186,15 +166,12 @@ namespace ExClient.Settings
                     doc.LoadHtml(await r.Content.ReadAsStringAsync());
                     updateSettingsDic(doc);
                 }
-            }
-            finally
-            {
+            } finally {
                 _LoadSettingsDic();
             }
         }
 
-        private readonly Dictionary<string, SettingProvider> items = new Dictionary<string, SettingProvider>
-        {
+        private readonly Dictionary<string, SettingProvider> items = new Dictionary<string, SettingProvider> {
             ["Default"] = new DefaultSettingProvider(),
             [nameof(ExcludedLanguages)] = new ExcludedLanguagesSettingProvider(),
             [nameof(ExcludedUploaders)] = new ExcludedUploadersSettingProvider(),
@@ -202,68 +179,55 @@ namespace ExClient.Settings
             [nameof(FavoriteCategoryNames)] = new FavoriteCategoryNamesSettingProvider(),
         };
 
-        private SettingProvider _GetProvider([System.Runtime.CompilerServices.CallerMemberName] string key = null)
-        {
+        private SettingProvider _GetProvider([System.Runtime.CompilerServices.CallerMemberName] string key = null) {
             return items[key];
         }
 
         public ExcludedLanguagesSettingProvider ExcludedLanguages => (ExcludedLanguagesSettingProvider)_GetProvider();
         public ExcludedUploadersSettingProvider ExcludedUploaders => (ExcludedUploadersSettingProvider)_GetProvider();
-        public Tagging.Namespace ExcludedTagNamespaces
-        {
+        public Tagging.Namespace ExcludedTagNamespaces {
             get => ((ExcludedTagNamespacesSettingProvider)_GetProvider()).Value;
-            set
-            {
+            set {
                 ((ExcludedTagNamespacesSettingProvider)_GetProvider()).Value = value;
                 OnPropertyChanged();
             }
         }
 
-        public ImageSize ResampledImageSize
-        {
+        public ImageSize ResampledImageSize {
             get => ((DefaultSettingProvider)_GetProvider("Default")).ResampledImageSize;
-            set
-            {
+            set {
                 ((DefaultSettingProvider)_GetProvider("Default")).ResampledImageSize = value;
                 OnPropertyChanged();
             }
         }
 
-        public CommentsOrder CommentsOrder
-        {
+        public CommentsOrder CommentsOrder {
             get => ((DefaultSettingProvider)_GetProvider("Default")).CommentsOrder;
-            set
-            {
+            set {
                 ((DefaultSettingProvider)_GetProvider("Default")).CommentsOrder = value;
                 OnPropertyChanged();
             }
         }
 
-        public FavoritesOrder FavoritesOrder
-        {
+        public FavoritesOrder FavoritesOrder {
             get => ((DefaultSettingProvider)_GetProvider("Default")).FavoritesOrder;
-            set
-            {
+            set {
                 ((DefaultSettingProvider)_GetProvider("Default")).FavoritesOrder = value;
                 OnPropertyChanged();
             }
         }
 
-        public int TagFilteringThreshold
-        {
+        public int TagFilteringThreshold {
             get => ((DefaultSettingProvider)_GetProvider("Default")).TagFilteringThreshold;
-            set
-            {
+            set {
                 ((DefaultSettingProvider)_GetProvider("Default")).TagFilteringThreshold = value;
                 OnPropertyChanged();
             }
         }
 
-        public int TagWatchingThreshold
-        {
+        public int TagWatchingThreshold {
             get => ((DefaultSettingProvider)_GetProvider("Default")).TagWatchingThreshold;
-            set
-            {
+            set {
                 ((DefaultSettingProvider)_GetProvider("Default")).TagWatchingThreshold = value;
                 OnPropertyChanged();
             }
@@ -271,10 +235,8 @@ namespace ExClient.Settings
 
         public FavoriteCategoryNamesSettingProvider FavoriteCategoryNames => (FavoriteCategoryNamesSettingProvider)_GetProvider();
 
-        private sealed class DefaultSettingProvider : SettingProvider
-        {
-            internal override void ApplyChanges(Dictionary<string, string> settings)
-            {
+        private sealed class DefaultSettingProvider : SettingProvider {
+            internal override void ApplyChanges(Dictionary<string, string> settings) {
                 // Original Images - Nope (Use local setting instead)
                 settings["oi"] = "0";
                 // Always use the Multi-Page Viewer - Nope 
@@ -290,11 +252,9 @@ namespace ExClient.Settings
                 settings["ft"] = _Ft.ToString();
             }
 
-            internal override void DataChanged(Dictionary<string, string> settings)
-            {
+            internal override void DataChanged(Dictionary<string, string> settings) {
                 void setEnum<T>(ref T field, string key, T def)
-                    where T : struct, Enum
-                {
+                    where T : struct, Enum {
                     if (!settings.TryGetValue(key, out var value)
                         || !Enum.TryParse<T>(value, true, out field))
                         field = def;
@@ -303,8 +263,7 @@ namespace ExClient.Settings
                 setEnum(ref CommentsOrder, "cs", CommentsOrder.ByTimeAscending);
                 setEnum(ref FavoritesOrder, "fs", FavoritesOrder.ByLastUpdatedTime);
 
-                void setInt(ref int field, string key, int def)
-                {
+                void setInt(ref int field, string key, int def) {
                     if (!settings.TryGetValue(key, out var value)
                         || !int.TryParse(value, out field))
                         field = def;
@@ -312,8 +271,7 @@ namespace ExClient.Settings
                 setInt(ref _Ft, "ft", 0);
                 setInt(ref _Wt, "wt", 0);
             }
-            private static int _Clamp(int value, int v1, int v2)
-            {
+            private static int _Clamp(int value, int v1, int v2) {
                 if (value < v1)
                     return v1;
                 if (value > v2)
@@ -328,14 +286,12 @@ namespace ExClient.Settings
             public FavoritesOrder FavoritesOrder;
 
             private int _Ft, _Wt;
-            public int TagFilteringThreshold
-            {
+            public int TagFilteringThreshold {
                 get => _Ft;
                 set => _Ft = _Clamp(value, -9999, 0);
             }
 
-            public int TagWatchingThreshold
-            {
+            public int TagWatchingThreshold {
                 get => _Wt;
                 set => _Wt = _Clamp(value, 0, 9999);
             }
