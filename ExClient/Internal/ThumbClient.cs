@@ -8,42 +8,40 @@ using Windows.Storage;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
 
-namespace ExClient.Internal
-{
-    internal static class ThumbClient
-    {
-        private static readonly HttpClient client = new HttpClient();
-        private static readonly Regex thumbUriRegex = new Regex(@"^(http|https)://(ehgt\.org(/t|)|exhentai\.org/t|ul\.ehgt\.org(/t|))/(.+)$", RegexOptions.Compiled | RegexOptions.Singleline);
+namespace ExClient.Internal {
+    internal static class ThumbClient {
+        private static readonly HttpClient _Client = new();
+        private static readonly Regex _ThumbUriRegex = new(@"^(http|https)://((ul\.|)ehgt\.org(/t|)|(s\.|)exhentai\.org/t)/(?<path>.+)$", RegexOptions.Compiled | RegexOptions.Singleline);
 
-        public static Uri FormatThumbUri(string uri)
-        {
+        private static string _GetTail(string uri) {
+            var match = _ThumbUriRegex.Match(uri);
+            if (!match.Success) {
+                return null;
+            }
+            return match.Groups["tail"].Value;
+        }
+
+        public static Uri FormatThumbUri(string uri) {
             if (uri.IsNullOrWhiteSpace())
                 return null;
-            var match = thumbUriRegex.Match(uri);
-            if (!match.Success)
-            {
+            var tail = _GetTail(uri);
+            if (tail.IsNullOrEmpty())
                 return new Uri(uri);
-            }
-            var tail = match.Groups[5].Value;
-            return new Uri("https://ul.ehgt.org/" + tail);
+            return new Uri("https://ehgt.org/" + tail);
         }
 
         public static Uri FormatThumbUri(Uri uri) => FormatThumbUri(uri?.ToString());
 
-        public static IAsyncOperation<bool> FetchThumbAsync(Uri source, BitmapImage target)
-        {
+        public static IAsyncOperation<bool> FetchThumbAsync(Uri source, BitmapImage target) {
             if (source is null)
                 throw new ArgumentNullException(nameof(source));
             if (target is null)
                 throw new ArgumentNullException(nameof(target));
-            return AsyncInfo.Run(async token =>
-            {
-                var match = thumbUriRegex.Match(source.ToString());
-                if (!match.Success)
-                {
+            return AsyncInfo.Run(async token => {
+                var tail = _GetTail(source.ToString());
+                if (tail.IsNullOrEmpty()) {
                     return await loadThumbAsync(source, target);
                 }
-                var tail = match.Groups[5].Value;
                 return
                     await loadThumbAsync(new Uri("https://ehgt.org/" + tail), target) ||
                     await loadThumbAsync(new Uri("https://ul.ehgt.org/" + tail), target) ||
@@ -54,18 +52,13 @@ namespace ExClient.Internal
             });
         }
 
-        private static async Task<bool> loadThumbAsync(Uri source, BitmapImage target)
-        {
-            try
-            {
-                var buf = await client.GetBufferAsync(source);
-                using (var stream = buf.AsRandomAccessStream())
-                {
+        private static async Task<bool> loadThumbAsync(Uri source, BitmapImage target) {
+            try {
+                var buf = await _Client.GetBufferAsync(source);
+                using (var stream = buf.AsRandomAccessStream()) {
                     await target.SetSourceAsync(stream);
                 }
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 return false;
             }
             return true;

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,23 +30,17 @@ using Windows.UI.Xaml.Media;
 
 using static System.Runtime.InteropServices.WindowsRuntime.AsyncInfo;
 
-namespace ExClient.Galleries
-{
+namespace ExClient.Galleries {
     [JsonObject]
     [System.Diagnostics.DebuggerDisplay(@"\{Id = {Id} Count = {Count}\}")]
-    public class Gallery : FixedLoadingList<GalleryImage>
-    {
-        public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId)
-        {
-            return Task.Run(async () =>
-            {
-                using (var db = new GalleryDb())
-                {
+    public class Gallery : FixedLoadingList<GalleryImage> {
+        public static IAsyncOperation<Gallery> TryLoadGalleryAsync(long galleryId) {
+            return Task.Run(async () => {
+                using (var db = new GalleryDb()) {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
                     var cm = db.SavedSet.SingleOrDefault(c => c.GalleryId == galleryId);
                     var gm = db.GallerySet.SingleOrDefault(g => g.GalleryModelId == galleryId);
-                    if (gm is null)
-                    {
+                    if (gm is null) {
                         return null;
                     }
 
@@ -58,31 +53,24 @@ namespace ExClient.Galleries
             }).AsAsyncOperation();
         }
 
-        public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo)
-        {
+        public static IAsyncOperation<IList<Gallery>> FetchGalleriesAsync(IReadOnlyList<GalleryInfo> galleryInfo) {
             if (galleryInfo is null)
                 throw new ArgumentNullException(nameof(galleryInfo));
             if (galleryInfo.Count <= 0)
                 return AsyncOperation<IList<Gallery>>.CreateCompleted(Array.Empty<Gallery>());
 
-            if (galleryInfo.Count <= 25)
-            {
-                return Run<IList<Gallery>>(async token =>
-                {
+            if (galleryInfo.Count <= 25) {
+                return Run<IList<Gallery>>(async token => {
                     var re = await new GalleryDataRequest(galleryInfo, 0, galleryInfo.Count).GetResponseAsync(token);
                     var data = re.GalleryMetaData;
                     data.ForEach(async g => await g.InitAsync());
                     return data;
                 });
-            }
-            else
-            {
-                return Run<IList<Gallery>>(async token =>
-                {
+            } else {
+                return Run<IList<Gallery>>(async token => {
                     var result = new List<Gallery>(galleryInfo.Count);
                     var pageCount = MathHelper.GetPageCount(galleryInfo.Count, 25);
-                    for (var i = 0; i < pageCount; i++)
-                    {
+                    for (var i = 0; i < pageCount; i++) {
                         var pageSize = MathHelper.GetSizeOfPage(galleryInfo.Count, 25, i);
                         var startIndex = MathHelper.GetStartIndexOfPage(25, i);
                         var re = await new GalleryDataRequest(galleryInfo, startIndex, pageSize).GetResponseAsync(token);
@@ -95,8 +83,7 @@ namespace ExClient.Galleries
             }
         }
 
-        private static readonly IReadOnlyDictionary<string, Category> _CategoriesForRestApi = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase)
-        {
+        private static readonly IReadOnlyDictionary<string, Category> _CategoriesForRestApi = new Dictionary<string, Category>(StringComparer.OrdinalIgnoreCase) {
             ["Doujinshi"] = Category.Doujinshi,
             ["Manga"] = Category.Manga,
             ["Artist CG"] = Category.ArtistCG,
@@ -109,10 +96,8 @@ namespace ExClient.Galleries
             ["Misc"] = Category.Misc
         };
 
-        public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveAsync(ConnectionStrategy strategy)
-        {
-            return Run<SaveGalleryProgress>((token, progress) => Task.Run(async () =>
-            {
+        public virtual IAsyncActionWithProgress<SaveGalleryProgress> SaveAsync(ConnectionStrategy strategy) {
+            return Run<SaveGalleryProgress>((token, progress) => Task.Run(async () => {
                 await Task.Yield();
                 progress.Report(new SaveGalleryProgress(-1, Count));
                 var loadOP = LoadItemsAsync(0, Count);
@@ -122,53 +107,41 @@ namespace ExClient.Galleries
                 var loadedCount = 0;
                 progress.Report(new SaveGalleryProgress(loadedCount, Count));
 
-                using (var semaphore = new SemaphoreSlim(10, 10))
-                {
-                    async Task loadSingleImage(GalleryImage i)
-                    {
-                        try
-                        {
+                using (var semaphore = new SemaphoreSlim(10, 10)) {
+                    async Task loadSingleImage(GalleryImage i) {
+                        try {
                             Debug.WriteLine($"Start {i.PageId}");
                             token.ThrowIfCancellationRequested();
                             var firstFailed = false;
-                            try
-                            {
+                            try {
                                 var firstChance = i.LoadImageAsync(false, strategy, true);
                                 var firstTask = firstChance.AsTask(token);
                                 var c = await Task.WhenAny(Task.Delay(30_000), firstTask);
-                                if (c != firstTask)
-                                {
+                                if (c != firstTask) {
                                     Debug.WriteLine($"Timeout 1st {i.PageId}");
                                     firstFailed = true;
                                     firstChance.Cancel();
                                 }
-                            }
-                            catch (Exception)
-                            {
+                            } catch (Exception) {
                                 Debug.WriteLine($"Fail 1st {i.PageId}");
                                 firstFailed = true;
                             }
-                            if (firstFailed)
-                            {
+                            if (firstFailed) {
                                 Debug.WriteLine($"Retry {i.PageId}");
                                 token.ThrowIfCancellationRequested();
                                 await i.LoadImageAsync(true, strategy, true).AsTask(token);
                             }
                             progress.Report(new SaveGalleryProgress(Interlocked.Increment(ref loadedCount), Count));
                             Debug.WriteLine($"Success {i.PageId}");
-                        }
-                        finally
-                        {
+                        } finally {
                             semaphore.Release();
                             Debug.WriteLine($"End {i.PageId}");
                         }
                     }
 
                     var pendingTasks = new List<Task>(Count);
-                    await Task.Run(async () =>
-                    {
-                        foreach (var item in this)
-                        {
+                    await Task.Run(async () => {
+                        foreach (var item in this) {
                             await semaphore.WaitAsync().ConfigureAwait(false);
                             pendingTasks.Add(loadSingleImage(item));
                         }
@@ -177,16 +150,12 @@ namespace ExClient.Galleries
                     await Task.WhenAll(pendingTasks).ConfigureAwait(false);
                 }
 
-                using (var db = new GalleryDb())
-                {
+                using (var db = new GalleryDb()) {
                     var gid = Id;
                     var myModel = db.SavedSet.SingleOrDefault(model => model.GalleryId == gid);
-                    if (myModel is null)
-                    {
+                    if (myModel is null) {
                         db.SavedSet.Add(new SavedGalleryModel().Update(this));
-                    }
-                    else
-                    {
+                    } else {
                         myModel.Update(this);
                     }
                     await db.SaveChangesAsync();
@@ -195,27 +164,23 @@ namespace ExClient.Galleries
         }
 
         private Gallery(long id, EToken token, int recordCount)
-            : base(recordCount)
-        {
+            : base(recordCount) {
             Id = id;
             Token = token;
             Rating = new RatingStatus(this);
             GalleryUri = new GalleryInfo(id, token).Uri;
-            if (Client.Current.Settings.RawSettings.TryGetValue("tr", out var trv))
-            {
-                switch (trv)
-                {
-                case "1": _PageSize = 50; break;
-                case "2": _PageSize = 100; break;
-                case "3": _PageSize = 200; break;
-                default: _PageSize = 20; break;
+            if (Client.Current.Settings.RawSettings.TryGetValue("tr", out var trv)) {
+                switch (trv) {
+                    case "1": _PageSize = 50; break;
+                    case "2": _PageSize = 100; break;
+                    case "3": _PageSize = 200; break;
+                    default: _PageSize = 20; break;
                 }
             }
         }
 
         internal Gallery(GalleryModel model)
-            : this(model.GalleryModelId, new EToken(model.Token), model.RecordCount)
-        {
+            : this(model.GalleryModelId, new EToken(model.Token), model.RecordCount) {
             Available = model.Available;
             Title = model.Title;
             TitleJpn = model.TitleJpn;
@@ -246,10 +211,8 @@ namespace ExClient.Galleries
             string rating = null,
             string torrentcount = null,
             string[] tags = null)
-            : this(gid, EToken.Parse(token.CoalesceNullOrWhiteSpace("0")), int.Parse(filecount, NumberStyles.Integer, CultureInfo.InvariantCulture))
-        {
-            if (error != null)
-            {
+            : this(gid, EToken.Parse(token.CoalesceNullOrWhiteSpace("0")), int.Parse(filecount, NumberStyles.Integer, CultureInfo.InvariantCulture)) {
+            if (error != null) {
                 throw new Exception(error);
             }
             Available = !expunged;
@@ -269,17 +232,13 @@ namespace ExClient.Galleries
             ThumbUri = ThumbClient.FormatThumbUri(thumb);
         }
 
-        protected IAsyncAction InitAsync()
-        {
+        protected IAsyncAction InitAsync() {
             return InitOverrideAsync();
         }
 
-        protected virtual IAsyncAction InitOverrideAsync()
-        {
-            return Task.Run(() =>
-            {
-                using (var db = new GalleryDb())
-                {
+        protected virtual IAsyncAction InitOverrideAsync() {
+            return Task.Run(() => {
+                using (var db = new GalleryDb()) {
                     var gid = Id;
                     var myModel = db.GallerySet.SingleOrDefault(model => model.GalleryModelId == gid);
                     if (myModel is null)
@@ -313,14 +272,11 @@ namespace ExClient.Galleries
         internal string ShowKey { get; set; }
 
         private readonly WeakReference<ImageSource> _ThumbImage = new WeakReference<ImageSource>(null);
-        public ImageSource Thumb
-        {
-            get
-            {
+        public ImageSource Thumb {
+            get {
                 if (_ThumbImage.TryGetTarget(out var img))
                     return img;
-                this.GetThumbAsync().ContinueWith(t =>
-                {
+                this.GetThumbAsync().ContinueWith(t => {
                     var r = t.Result;
                     if (r is null)
                         return;
@@ -351,22 +307,19 @@ namespace ExClient.Galleries
         public TagCollection Tags { get; }
 
         private FavoriteCategory _FavoriteCategory;
-        public FavoriteCategory FavoriteCategory
-        {
+        public FavoriteCategory FavoriteCategory {
             get => _FavoriteCategory;
             protected internal set => Set(ref _FavoriteCategory, value);
         }
 
         private string _FavoriteNote;
-        public string FavoriteNote
-        {
+        public string FavoriteNote {
             get => _FavoriteNote;
             protected internal set => Set(ref _FavoriteNote, value);
         }
 
         private RevisionCollection _Revisions;
-        public RevisionCollection Revisions
-        {
+        public RevisionCollection Revisions {
             get => _Revisions;
             private set => Set(ref _Revisions, value);
         }
@@ -376,11 +329,9 @@ namespace ExClient.Galleries
         public CommentCollection Comments => LazyInitializer.EnsureInitialized(ref _Comments, () => new CommentCollection(this));
         #endregion
 
-        internal void RefreshMetaData(HtmlDocument doc)
-        {
+        internal void RefreshMetaData(HtmlDocument doc) {
             var favNode = doc.GetElementbyId("fav");
-            if (favNode != null)
-            {
+            if (favNode != null) {
                 var favContentNode = favNode.Element("div");
                 FavoriteCategory = Client.Current.Favorites.GetCategory(favContentNode);
             }
@@ -392,29 +343,26 @@ namespace ExClient.Galleries
 
         public Task RefreshMetaDataAsync() => Comments.FetchAsync(false);
 
-        protected override IAsyncOperation<LoadItemsResult<GalleryImage>> LoadItemAsync(int index)
-        {
-            return Run(token => Task.Run(async () =>
-            {
+        protected override IAsyncOperation<LoadItemsResult<GalleryImage>> LoadItemAsync(int index) {
+            return Run(token => Task.Run(async () => {
                 var html = await getDoc(index, token);
                 token.ThrowIfCancellationRequested();
                 var picRoot = html.GetElementbyId("gdt");
                 var start = int.MaxValue;
                 var end = 0;
-                using (var db = new GalleryDb())
-                {
+                using (var db = new GalleryDb()) {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                    foreach (var page in picRoot.Elements("div", "gdtl"))
-                    {
-                        var nodeA = page.Element("a");
-                        var thumb = ThumbClient.FormatThumbUri(nodeA.Element("img").GetAttribute("src", ""));
+                    foreach (var page in picRoot.Elements("a")) {
+                        var nodeDiv = page.SelectSingleNode(".//div[@title][@style]");
+                        var style = nodeDiv.GetAttribute("style", "");
+                        var thumbUrl = Regex.Match(style, @"url\((https?://[^)]+)\)").Groups[1]?.Value;
+                        var thumb = ThumbClient.FormatThumbUri(thumbUrl);
                         if (thumb is null)
                             continue;
 
-                        var tokens = nodeA.GetAttribute("href", "").Split(new[] { '/', '-' });
+                        var tokens = page.GetAttribute("href", "").Split(new[] { '/', '-' });
 
-                        if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s")
-                        {
+                        if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s") {
                             continue;
                         }
 
@@ -438,8 +386,7 @@ namespace ExClient.Galleries
                 }
                 return LoadItemsResult.Create(start, this.Skip(start).Take(end - start), false);
 
-                async Task<HtmlDocument> getDoc(int imageIndex, CancellationToken cancellationToken, bool reIn = false)
-                {
+                async Task<HtmlDocument> getDoc(int imageIndex, CancellationToken cancellationToken, bool reIn = false) {
                     var pageIndex = imageIndex / _PageSize;
                     var needLoadComments = !Comments.IsLoaded;
                     var uri = new Uri(GalleryUri, $"?{(needLoadComments ? "hc=1&" : "")}p={pageIndex.ToString()}");
@@ -447,59 +394,48 @@ namespace ExClient.Galleries
                     cancellationToken.Register(docOp.Cancel);
                     var doc = await docOp;
                     RefreshMetaData(doc);
-                    if (needLoadComments)
-                    {
+                    if (needLoadComments) {
                         Comments.AnalyzeDocument(doc);
                     }
-                    if (reIn)
-                    {
+                    if (reIn) {
                         return doc;
                     }
 
                     var content = doc.GetElementbyId("gdt");
-                    if(content.Element("div", "gdts") is not null)
-                    {
+                    if (content.HasClass("gt200") is false) {
                         // 切换到大图模式
-                        await Client.Current.HttpClient.GetAsync(new Uri("/?inline_set=ts_l", UriKind.Relative));
+                        await Client.Current.HttpClient.GetAsync(new Uri("/?inline_set=ts_200", UriKind.Relative));
                         return await getDoc(imageIndex, cancellationToken, true);
                     }
-                    var items = content.Elements("div", "gdtl").ToList();
+                    var items = content.Elements("a").ToList();
                     PageSize = items.Count;
-                    if (pageIndex != imageIndex / _PageSize)
-                    {
-                       return await getDoc(imageIndex, cancellationToken, true);
+                    if (pageIndex != imageIndex / _PageSize) {
+                        return await getDoc(imageIndex, cancellationToken, true);
                     }
                     return doc;
                 }
             }, token));
         }
 
-        public IAsyncOperation<string> FetchFavoriteNoteAsync()
-        {
-            return Run(async token =>
-            {
+        public IAsyncOperation<string> FetchFavoriteNoteAsync() {
+            return Run(async token => {
                 var doc = await Client.Current.HttpClient.GetDocumentAsync(new Uri($"gallerypopups.php?gid={Id}&t={Token.ToString()}&act=addfav", UriKind.Relative));
                 var favdel = doc.GetElementbyId("favdel");
-                if (favdel != null)
-                {
+                if (favdel != null) {
                     var favSet = false;
-                    for (var i = 0; i < 10; i++)
-                    {
+                    for (var i = 0; i < 10; i++) {
                         var favNode = doc.GetElementbyId($"fav{i}");
                         var favNameNode = favNode.ParentNode.ParentNode.Elements("div").Skip(2).First();
                         var settings = Client.Current.Settings;
                         settings.FavoriteCategoryNames[i] = favNameNode.GetInnerText();
                         settings.StoreCache();
-                        if (!favSet && favNode.GetAttribute("checked", false))
-                        {
+                        if (!favSet && favNode.GetAttribute("checked", false)) {
                             FavoriteCategory = Client.Current.Favorites[i];
                             favSet = true;
                         }
                     }
                     FavoriteNote = doc.DocumentNode.Descendants("textarea").First().GetInnerText();
-                }
-                else
-                {
+                } else {
                     FavoriteCategory = Client.Current.Favorites.Removed;
                     FavoriteNote = "";
                 }
@@ -507,36 +443,28 @@ namespace ExClient.Galleries
             });
         }
 
-        public virtual IAsyncAction DeleteAsync()
-        {
-            return Task.Run(async () =>
-            {
+        public virtual IAsyncAction DeleteAsync() {
+            return Task.Run(async () => {
                 var gid = Id;
-                using (var db = new GalleryDb())
-                {
+                using (var db = new GalleryDb()) {
                     var toDelete = db.GalleryImageSet
                         .Include(gi => gi.Image)
                         .Where(gi => gi.GalleryId == gid)
                         .ToList();
-                    foreach (var item in toDelete)
-                    {
+                    foreach (var item in toDelete) {
                         var usingCount = db.GalleryImageSet
                             .Count(GalleryImageModel.FKEquals(item.ImageId));
-                        if (usingCount <= 1)
-                        {
+                        if (usingCount <= 1) {
                             var i = item.PageId - 1;
                             var file = default(StorageFile);
-                            if (i < Count)
-                            {
+                            if (i < Count) {
                                 file = this[i].ImageFile;
                             }
 
-                            if (file is null)
-                            {
+                            if (file is null) {
                                 file = await StorageHelper.ImageFolder.TryGetFileAsync(item.Image.FileName);
                             }
-                            if (file != null)
-                            {
+                            if (file != null) {
                                 await file.DeleteAsync();
                             }
 
@@ -546,8 +474,7 @@ namespace ExClient.Galleries
                     }
                     await db.SaveChangesAsync();
                 }
-                for (var i = 0; i < Count; i++)
-                {
+                for (var i = 0; i < Count; i++) {
                     UnloadAt(i);
                 }
             }).AsAsyncAction();

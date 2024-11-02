@@ -12,7 +12,7 @@ using Windows.Foundation;
 
 namespace ExClient.Galleries.Rating
 {
-    [DebuggerDisplay(@"\{{userScore} - {averageScore}({ratingCount})\}")]
+    [DebuggerDisplay(@"\{{_UserScore} - {_AverageScore}({_RatingCount})\}")]
     public class RatingStatus : ObservableObject
     {
         internal RatingStatus(Gallery owner)

@@ -11,30 +11,25 @@ using System.Threading.Tasks;
 
 using Windows.Foundation;
 
-namespace ExClient.Status
-{
-    public sealed class UserStatus : ObservableObject
-    {
+namespace ExClient.Status {
+    public sealed class UserStatus : ObservableObject {
         private static readonly Uri infoUri = new Uri(Internal.DomainProvider.Eh.RootUri, "home.php");
 
         internal UserStatus() { }
 
-        private static int deEntitizeAndParse(HtmlNode node)
-        {
-            return int.Parse(node.GetInnerText(), System.Globalization.NumberStyles.Integer);
+        private static int deEntitizeAndParse(HtmlNode node) {
+            // Use website locale, hardcode ","
+            return int.Parse(node.GetInnerText().Replace(",", ""), System.Globalization.NumberStyles.Integer);
         }
 
-        private void analyzeToplists(HtmlNode toplistsDiv)
-        {
+        private void analyzeToplists(HtmlNode toplistsDiv) {
             var table = toplistsDiv.Element("table").Descendants("table").FirstOrDefault();
-            if (table is null)
-            {
+            if (table is null) {
                 toplists.Clear();
                 return;
             }
             var newList = new List<ToplistItem>();
-            foreach (var toplistRecord in table.Elements("tr"))
-            {
+            foreach (var toplistRecord in table.Elements("tr")) {
                 var rankNode = toplistRecord.Descendants("strong").FirstOrDefault();
                 var listNode = toplistRecord.Descendants("a").FirstOrDefault();
                 if (rankNode is null)
@@ -49,8 +44,7 @@ namespace ExClient.Status
             toplists.Update(newList);
         }
 
-        private void analyzeImageLimit(HtmlNode imageLimitDiv)
-        {
+        private void analyzeImageLimit(HtmlNode imageLimitDiv) {
             var values = imageLimitDiv.Descendants("strong").Select(deEntitizeAndParse).ToList();
             if (values.Count != 3)
                 throw new InvalidOperationException("Wrong values.Count from analyzeImageLimit");
@@ -59,8 +53,7 @@ namespace ExClient.Status
             ImageUsageResetCost = values[2];
         }
 
-        private void analyzeModPower(HtmlNode modPowerDiv)
-        {
+        private void analyzeModPower(HtmlNode modPowerDiv) {
             ModerationPower = deEntitizeAndParse(modPowerDiv.Descendants("div").Last());
             var values = modPowerDiv.Descendants("td")
                 .Where(n => n.GetAttribute("style", "").Contains("font-weight:bold"))
@@ -81,21 +74,16 @@ namespace ExClient.Status
             ModerationPowerCaculated = values.Take(3).Sum() + Math.Min(values.Skip(3).Take(5).Sum(), 25);
         }
 
-        public async Task RefreshAsync()
-        {
+        public async Task RefreshAsync() {
             var doc = await Client.Current.HttpClient.GetDocumentAsync(infoUri);
-            try
-            {
+            try {
                 analyzeDoc(doc);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 throw new InvalidOperationException(LocalizedStrings.Resources.WrongApiResponse, ex);
             }
         }
 
-        private void analyzeDoc(HtmlDocument doc)
-        {
+        private void analyzeDoc(HtmlDocument doc) {
             if (doc is null)
                 throw new ArgumentNullException(nameof(doc));
             var contentDivs = doc.DocumentNode
@@ -115,35 +103,27 @@ namespace ExClient.Status
         private int imageUsage;
         private int imageUsageLimit = 5000;
         private int imageUsageResetCost;
-        public int ImageUsage
-        {
+        public int ImageUsage {
             get => imageUsage; private set => Set(ref imageUsage, value);
         }
-        public int ImageUsageLimit
-        {
+        public int ImageUsageLimit {
             get => imageUsageLimit; private set => Set(ref imageUsageLimit, value);
         }
-        public int ImageUsageResetCost
-        {
+        public int ImageUsageResetCost {
             get => imageUsageResetCost; private set => Set(ref imageUsageResetCost, value);
         }
 
-        public IAsyncAction ResetImageUsageAsync()
-        {
-            return AsyncInfo.Run(async token =>
-            {
+        public IAsyncAction ResetImageUsageAsync() {
+            return AsyncInfo.Run(async token => {
                 var p = Client.Current.HttpClient.PostAsync(infoUri, new KeyValuePair<string, string>("reset_imagelimit", "reset_imagelimit"));
                 token.Register(p.Cancel);
                 var r = await p;
                 var html = await r.Content.ReadAsStringAsync();
                 var doc = new HtmlDocument();
                 doc.LoadHtml(html);
-                try
-                {
+                try {
                     analyzeDoc(doc);
-                }
-                catch (Exception)
-                {
+                } catch (Exception) {
                     await RefreshAsync();
                 }
             });
@@ -166,44 +146,34 @@ namespace ExClient.Status
         private double moderationPowerForumActivity;
         private double moderationPowerUploadsAndHatH;
         private double moderationPowerAccountAge;
-        public double ModerationPower
-        {
+        public double ModerationPower {
             get => moderationPower; private set => Set(ref moderationPower, value);
         }
-        public double ModerationPowerCaculated
-        {
+        public double ModerationPowerCaculated {
             get => moderationPowerCaculated; private set => Set(ref moderationPowerCaculated, value);
         }
-        public double ModerationPowerBase
-        {
+        public double ModerationPowerBase {
             get => moderationPowerBase; private set => Set(ref moderationPowerBase, value);
         }
-        public double ModerationPowerAwards
-        {
+        public double ModerationPowerAwards {
             get => moderationPowerAwards; private set => Set(ref moderationPowerAwards, value);
         }
-        public double ModerationPowerTagging
-        {
+        public double ModerationPowerTagging {
             get => moderationPowerTagging; private set => Set(ref moderationPowerTagging, value);
         }
-        public double ModerationPowerLevel
-        {
+        public double ModerationPowerLevel {
             get => moderationPowerLevel; private set => Set(ref moderationPowerLevel, value);
         }
-        public double ModerationPowerDonations
-        {
+        public double ModerationPowerDonations {
             get => moderationPowerDonations; private set => Set(ref moderationPowerDonations, value);
         }
-        public double ModerationPowerForumActivity
-        {
+        public double ModerationPowerForumActivity {
             get => moderationPowerForumActivity; private set => Set(ref moderationPowerForumActivity, value);
         }
-        public double ModerationPowerUploadsAndHatH
-        {
+        public double ModerationPowerUploadsAndHatH {
             get => moderationPowerUploadsAndHatH; private set => Set(ref moderationPowerUploadsAndHatH, value);
         }
-        public double ModerationPowerAccountAge
-        {
+        public double ModerationPowerAccountAge {
             get => moderationPowerAccountAge; private set => Set(ref moderationPowerAccountAge, value);
         }
         #endregion
