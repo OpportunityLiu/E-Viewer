@@ -20,10 +20,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v2
 
       - name: Restore the application
         run: |
@@ -66,9 +66,9 @@ jobs:
         run: msbuild ExViewer.sln /p:Configuration=Release /p:Platform=${{ matrix.arch }}
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Packages
+          name: Packages-${{ matrix.arch }}
           path: ExViewer/AppPackages
 
   deploy:
@@ -78,10 +78,11 @@ jobs:
 
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v4.1.7
+        uses: actions/download-artifact@v4
         with:
-          name: Packages
+          pattern: Packages-*
           path: ./
+          merge-multiple: true
       - name: Upload symbols
         env:
           MOBILE_CENTER_CURRENT_APP: Opportunity/E-Viewer
