@@ -1,4 +1,4 @@
-﻿using ExClient;
+using ExClient;
 using ExClient.Api;
 using ExClient.Forums;
 using ExClient.Services;
@@ -113,9 +113,19 @@ namespace ExViewer.Views
                 await Helpers.VerificationManager.VerifyAsync();
             }
 
+            // igneous is optional; an expired one must not keep the app on ExHentai.
+            if (!Client.Current.NeedLogOn
+                && Client.Current.Host == HostType.ExHentai
+                && !Client.Current.HasValidIgneous)
+            {
+                SettingCollection.Current.VisitEx = false;
+                RootControl.RootController.SendToast(Strings.Resources.Views.LogOnDialog.NoIgneousFallback, null);
+            }
+
             ccHided.Content = null;
             Window.Current.Content = rootControl;
             rootControl = null;
+            RootControl.RootController.FlushPendingToast();
             afterActions();
         }
 
@@ -169,9 +179,10 @@ namespace ExViewer.Views
             var loadingTask = Task.Run(async () =>
             {
                 var client = Client.Current;
+                // Apply settings first, so that Host reflects VisitEx when NeedLogOn is evaluated.
+                SettingCollection.Current.Apply();
                 if (!client.NeedLogOn)
                 {
-                    SettingCollection.Current.Apply();
                     var initSearchTask = WatchedVM.InitAsync();
                     var waitTime = 0;
                     while (waitTime < 7000)

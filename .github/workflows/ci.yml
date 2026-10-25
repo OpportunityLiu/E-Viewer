@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     strategy:
       matrix:
@@ -74,7 +74,7 @@ jobs:
   deploy:
     needs: build
     if: startsWith(github.event.ref, 'refs/tags/')
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
       - name: Download build artifacts

@@ -1,4 +1,4 @@
-﻿{
+{
   "AppDescription": "E-Viewer 是一個 E-Hentai 和 ExHentai 的第三方客戶端。",
   "AppDisplayName": "E-Viewer",
   "Controls": {
@@ -311,15 +311,20 @@
       "ToplistsHeaderTextBlock/Text": "排行榜"
     },
     "LogOnDialog": {
-      "IgneousTextBox/Header": "\"igneous\" cookie 的值（可選）",
+      "IgneousTextBox/Header": "\"igneous\" cookie 的值（可選，僅存取裡站需要）",
       "LogOnButtonText": "登入",
       "MemberIdTextBox/Header": "\"ipb_member_id\" cookie 的值",
+      "NetworkError": "無法連線到伺服器，請檢查網路、代理或 hosts 設定。",
       "PassHashTextBox/Header": "\"ipb_pass_hash\" cookie 的值",
       "RegisterHyperlinkButton/Content": "註冊",
       "ResetButtonText": "重置",
       "TitleTextBlock/Text": "登入",
       "UseCookieButton/Content": "使用 cookie 登入",
-      "UseWebpageButton/Content": "使用網頁登入"
+      "UseWebpageButton/Content": "使用網頁登入",
+      "WebViewConnectionError": "網頁登入無法連線到伺服器。請確認 WebView2 的流量已走代理，或改用 Cookie 登入。",
+      "WebView2Unavailable": "WebView2 執行階段不可用。請安裝 Microsoft Edge WebView2 執行階段後再使用網頁登入，或改用 Cookie 登入。",
+      "IgneousNotAvailable": "網頁登入成功，但目前網路無法取得 igneous。可以直接點「登入」使用表站，或填寫瀏覽器中的 igneous 後存取裡站。",
+      "NoIgneousFallback": "未取得有效 igneous，已切換到表站。填寫有效 igneous 後可在設定中重新開啟裡站。"
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "正在載入熱門畫廊…",

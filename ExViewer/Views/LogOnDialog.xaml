@@ -1,8 +1,9 @@
-﻿<controls:MyContentDialog x:Class="ExViewer.Views.LogOnDialog"
+<controls:MyContentDialog x:Class="ExViewer.Views.LogOnDialog"
                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:local="using:ExViewer"
                           xmlns:controls="using:ExViewer.Controls"
+                          xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
                           xmlns:tke="using:Microsoft.Toolkit.Uwp.UI.Extensions"
                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,6 +15,7 @@
                           IsEnabled="{x:Bind VM.Succeed, Converter={StaticResource LogicalNotConverter}, Mode=OneWay}"
                           IsEnabledChanged="cd_IsEnabledChanged"
                           Closing="cd_Closing"
+                          Closed="cd_Closed"
                           PrimaryButtonText="{x:Bind VM.PrimaryButtonText, Mode=OneWay}"
                           IsPrimaryButtonEnabled="{x:Bind VM.IsPrimaryButtonEnabled, Mode=OneWay}"
                           PrimaryButtonClick="cd_PrimaryButtonClick"
@@ -61,12 +63,11 @@
     </Grid>
   </ContentDialog.Title>
   <Grid x:Name="gdContentRoot">
-    <WebView x:Name="wv"
-             Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
-             DefaultBackgroundColor="{x:Bind ((SolidColorBrush)cd.Background).Color, Mode=OneWay}"
-             DOMContentLoaded="wv_DOMContentLoaded"
-             NavigationFailed="wv_NavigationFailed"
-             ScriptNotify="wv_ScriptNotify" />
+    <muxc:WebView2 x:Name="wv"
+                   Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}"
+                   CoreWebView2Initialized="wv_CoreWebView2Initialized"
+                   NavigationCompleted="wv_NavigationCompleted"
+                   WebMessageReceived="wv_WebMessageReceived" />
     <StackPanel x:Name="spCookieLogOn"
                 Visibility="{x:Bind VM.UseCookieLogOn, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">
       <TextBox x:Name="tbMemberId"
@@ -87,7 +88,7 @@
       <TextBox x:Name="tbIgneous"
                x:Uid="Views/LogOnDialog/IgneousTextBox"
                tke:TextBoxRegex.ValidationMode="Normal"
-               tke:TextBoxRegex.Regex="^[0-9a-fA-F]*$"
+               tke:TextBoxRegex.Regex="^[0-9A-Za-z_-]*$"
                Header="igneous"
                Text="{x:Bind VM.Igneous, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                Margin="0,12"

@@ -1,4 +1,4 @@
-﻿{
+{
   "AppDescription": "E-Viewer는 e-hentai.org 및 exhentai.org의 클라이언트입니다.",
   "AppDisplayName": "E-Viewer",
   "Controls": {
@@ -311,15 +311,20 @@
       "ToplistsHeaderTextBlock/Text": "상위 목록"
     },
     "LogOnDialog": {
-      "IgneousTextBox/Header": "\"igneous\"의 쿠키값 (선택사항)",
+      "IgneousTextBox/Header": "\"igneous\"의 쿠키값 (선택 사항, ExHentai에만 필요)",
       "LogOnButtonText": "로그인",
       "MemberIdTextBox/Header": "\"ipb_member_id\"의 쿠키값",
+      "NetworkError": "서버에 연결할 수 없습니다. 네트워크, 프록시 또는 hosts 설정을 확인하세요.",
       "PassHashTextBox/Header": "\"ipb_pass_hash\"의 쿠키값",
       "RegisterHyperlinkButton/Content": "등록",
       "ResetButtonText": "재설정",
       "TitleTextBlock/Text": "로그인",
       "UseCookieButton/Content": "쿠키 로그인 사용",
-      "UseWebpageButton/Content": "웹 페이지 로그인 사용"
+      "UseWebpageButton/Content": "웹 페이지 로그인 사용",
+      "WebViewConnectionError": "웹 로그인 페이지가 서버에 연결할 수 없습니다. WebView2 트래픽이 프록시를 사용하는지 확인하거나 쿠키로 로그인하세요.",
+      "WebView2Unavailable": "WebView2 런타임을 사용할 수 없습니다. 웹 페이지 로그인을 사용하려면 Microsoft Edge WebView2 런타임을 설치하거나 쿠키로 로그인하세요.",
+      "IgneousNotAvailable": "웹 로그인은 성공했지만 현재 네트워크에서 igneous를 얻을 수 없습니다. 로그인하여 표면 사이트를 사용하거나 브라우저의 igneous 값을 입력하여 ExHentai에 접속할 수 있습니다.",
+      "NoIgneousFallback": "유효한 igneous가 없어 표면 사이트로 전환했습니다. 유효한 igneous를 입력한 뒤 설정에서 ExHentai를 다시 활성화하세요."
     },
     "PopularPage": {
       "LoadingMoreTextBlock/Text": "인기 있는 갤러리 불러오는 중…",

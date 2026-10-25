@@ -1,4 +1,4 @@
-﻿using ExClient.Api;
+using ExClient.Api;
 using ExClient.HentaiVerse;
 
 using HtmlAgilityPack;
@@ -33,14 +33,12 @@ namespace ExClient.Internal {
             if (responseString.Contains("This page is currently not available, as your account has been suspended."))
                 throw new InvalidOperationException(LocalizedStrings.Resources.AccountSuspended);
             if (responseString.Contains("https://exhentai.org/img/kokomade.jpg")) {
-                _ = _Owner.ResetExCookieAsync();
                 throw new InvalidOperationException(LocalizedStrings.Resources.Kokomade);
             }
         }
 
         private void _CheckSadPanda(HttpResponseMessage response) {
             if (response.Content.Headers.ContentDisposition?.FileName == "sadpanda.jpg") {
-                _ = _Owner.ResetExCookieAsync();
                 throw new InvalidOperationException(LocalizedStrings.Resources.SadPanda);
             }
         }
