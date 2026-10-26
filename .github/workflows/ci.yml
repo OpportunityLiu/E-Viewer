@@ -29,6 +29,10 @@ jobs:
         run: |
           nuget restore
 
+      - name: Run thumbnail regressions
+        if: matrix.arch == 'x64'
+        run: ./tests/ThumbnailRegression/Run.ps1
+
       - name: Generate string files
         run: |
           $NugetPackage = nuget locals global-packages -list

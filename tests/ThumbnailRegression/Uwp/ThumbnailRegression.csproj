@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">x64</Platform>
+    <ProjectGuid>{AEE1F7F4-D92E-42BA-92E6-93EEC9B80543}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <RootNamespace>ThumbnailRegression</RootNamespace>
+    <AssemblyName>ThumbnailRegression</AssemblyName>
+    <DefaultLanguage>en</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion>10.0.22621.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <ProjectTypeGuids>{A5A43C5B-DE2E-454B-9090-62AE609D7644};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <LangVersion>latest</LangVersion>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <AppxBundle>Never</AppxBundle>
+    <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+    <GenerateTestArtifacts>true</GenerateTestArtifacts>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.70" />
+    <Compile Include="App.xaml.cs"><DependentUpon>App.xaml</DependentUpon></Compile>
+    <Compile Include="..\Regression.cs"><Link>Regression.cs</Link></Compile>
+    <Compile Include="..\..\..\ExClient\Internal\ThumbnailSource.cs"><Link>Production\ThumbnailSource.cs</Link></Compile>
+    <Compile Include="..\..\..\ExClient\Internal\ThumbnailParser.cs"><Link>Production\ThumbnailParser.cs</Link></Compile>
+    <Compile Include="..\..\..\ExClient\Internal\ThumbnailLoadState.cs"><Link>Production\ThumbnailLoadState.cs</Link></Compile>
+    <Compile Include="..\..\..\ExClient\Internal\ThumbnailDownloadCache.cs"><Link>Production\ThumbnailDownloadCache.cs</Link></Compile>
+    <Compile Include="..\..\..\ExClient\Internal\ThumbnailBitmap.cs"><Link>Production\ThumbnailBitmap.cs</Link></Compile>
+    <ApplicationDefinition Include="App.xaml"><Generator>MSBuild:Compile</Generator></ApplicationDefinition>
+    <AppxManifest Include="Package.appxmanifest"><SubType>Designer</SubType></AppxManifest>
+    <Content Include="Assets\sprite.webp" />
+    <Content Include="..\..\..\ExViewer\Assets\Application\Store.scale-400.png"><Link>Assets\Store.scale-400.png</Link></Content>
+    <Content Include="..\..\..\ExViewer\Assets\Application\TaskBar.scale-400.png"><Link>Assets\TaskBar.scale-400.png</Link></Content>
+    <Content Include="..\..\..\ExViewer\Assets\Application\Medium.scale-400.png"><Link>Assets\Medium.scale-400.png</Link></Content>
+    <Content Include="..\..\..\ExViewer\Assets\Application\SplashScreen.scale-400.png"><Link>Assets\SplashScreen.scale-400.png</Link></Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+</Project>

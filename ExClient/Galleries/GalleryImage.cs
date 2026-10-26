@@ -44,7 +44,7 @@ namespace ExClient.Galleries
                 Progress = 100;
                 State = ImageLoadingState.Loaded;
             }
-            Init(hash.ToToken(), null);
+            Init(hash.ToToken(), _Thumb.Source);
         }
 
         internal GalleryImage(Gallery owner, int pageId)
@@ -53,10 +53,14 @@ namespace ExClient.Galleries
             PageId = pageId;
         }
 
-        internal void Init(EToken imageKey, Uri thumb)
+        internal void Init(EToken imageKey, ThumbnailSource thumb)
         {
             ImageKey = imageKey;
-            ThumbUri = thumb;
+            if (_Thumb.SetSource(thumb))
+            {
+                OnPropertyChanged(nameof(ThumbUri));
+                OnPropertyChanged(nameof(Thumb));
+            }
         }
 
         private static readonly Regex _FailTokenMatcher = new Regex(@"nl\(\s*['""](.+?)['""]\s*\)", RegexOptions.Compiled);
@@ -140,49 +144,40 @@ namespace ExClient.Galleries
             private set => Set(ref _State, value);
         }
 
-        private Uri _ThumbUri;
-        public Uri ThumbUri { get => _ThumbUri; private set => ForceSet(nameof(Thumb), ref _ThumbUri, value); }
+        public Uri ThumbUri => _Thumb.Source?.Uri;
 
-        private readonly WeakReference<BitmapImage> _Thumb = new WeakReference<BitmapImage>(null);
+        private readonly ThumbnailLoadState<BitmapImage> _Thumb = new ThumbnailLoadState<BitmapImage>();
         private async void _LoadThumb()
         {
-            var file = imageFile;
-            var uri = _ThumbUri;
-            if (file is null && uri is null)
+            if (!_Thumb.TryBegin(out var request))
                 return;
-
-            _Thumb.TryGetTarget(out var current);
-
-            var img = current;
-            if (img is null)
+            BitmapImage img = null;
+            try
             {
                 if (!CoreApplication.MainView.Dispatcher.HasThreadAccess)
                     await CoreApplication.MainView.Dispatcher.Yield();
-                img = new BitmapImage();
-            }
-            try
-            {
-                file = imageFile;
-                uri = _ThumbUri;
-                if (file != null)
+                var pending = new BitmapImage();
+                if (request.File is StorageFile file)
                 {
                     var size = (uint)(180 * ThumbHelper.Display.RawPixelsPerViewPixel);
                     using (var stream = await file.GetThumbnailAsync(ThumbnailMode.SingleItem, size, ThumbnailOptions.ResizeThumbnail))
                     {
-                        await img.SetSourceAsync(stream);
+                        await pending.SetSourceAsync(stream);
                     }
                 }
-                else if (!await ThumbClient.FetchThumbAsync(uri, img))
+                else if (!await ThumbClient.FetchThumbAsync(request.Source, pending))
                     return;
+                img = pending;
             }
             catch
             {
-                return;
             }
-            if (img != current)
+            finally
             {
-                _Thumb.SetTarget(img);
-                OnPropertyChanged(nameof(Thumb));
+                if (_Thumb.Complete(request, img, out var retry))
+                    OnPropertyChanged(nameof(Thumb));
+                if (retry)
+                    _LoadThumb();
             }
         }
 
@@ -190,7 +185,7 @@ namespace ExClient.Galleries
         {
             get
             {
-                if (_Thumb.TryGetTarget(out var thb))
+                if (_Thumb.TryGet(out var thb))
                     return thb;
                 _LoadThumb();
                 return ThumbHelper.DefaultThumb;
@@ -412,15 +407,15 @@ namespace ExClient.Galleries
         private Uri imageUri;
         private Uri originalImageUri;
 
-        private StorageFile imageFile;
         public StorageFile ImageFile
         {
-            get => imageFile;
+            get => _Thumb.File as StorageFile;
             private set
             {
-                Set(ref imageFile, value);
-                if (value != null && _Thumb.TryGetTarget(out _))
+                if (_Thumb.SetFile(value))
                 {
+                    OnPropertyChanged(nameof(ImageFile));
+                    OnPropertyChanged(nameof(Thumb));
                     _LoadThumb();
                 }
             }

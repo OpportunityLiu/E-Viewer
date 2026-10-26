@@ -352,22 +352,19 @@ namespace ExClient.Galleries {
                 var end = 0;
                 using (var db = new GalleryDb()) {
                     db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-                    foreach (var page in picRoot.Elements("a")) {
-                        var nodeDiv = page.SelectSingleNode(".//div[@title][@style]");
-                        var style = nodeDiv.GetAttribute("style", "");
-                        var thumbUrl = Regex.Match(style, @"url\((https?://[^)]+)\)").Groups[1]?.Value;
-                        var thumb = ThumbClient.FormatThumbUri(thumbUrl);
-                        if (thumb is null)
-                            continue;
-
+                    foreach (var page in picRoot?.Descendants("a") ?? Enumerable.Empty<HtmlNode>()) {
+                        var thumb = ThumbnailParser.Parse(page);
+                        if (thumb != null)
+                            thumb = thumb.WithUri(ThumbClient.FormatThumbUri(thumb.Uri));
                         var tokens = page.GetAttribute("href", "").Split(new[] { '/', '-' });
 
                         if (tokens.Length < 4 || tokens[tokens.Length - 4] != "s") {
                             continue;
                         }
 
-                        var pId = int.Parse(tokens[tokens.Length - 1], NumberStyles.Integer);
-                        var imageKey = EToken.Parse(tokens[tokens.Length - 3]);
+                        if (!int.TryParse(tokens[tokens.Length - 1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var pId)
+                            || pId < 1 || pId > Count || !EToken.TryParse(tokens[tokens.Length - 3], out var imageKey))
+                            continue;
                         var gId = Id;
                         var imageModel = db.GalleryImageSet
                             .Include(gi => gi.Image)
@@ -375,8 +372,7 @@ namespace ExClient.Galleries {
                         if (imageModel != null)
                             // Load cache
                             await this[pId - 1].PopulateCachedImageAsync(imageModel, imageModel.Image);
-                        else
-                            this[pId - 1].Init(imageKey, thumb);
+                        this[pId - 1].Init(imageKey, thumb);
 
                         if (pId - 1 < start)
                             start = pId - 1;
@@ -384,7 +380,9 @@ namespace ExClient.Galleries {
                             end = pId;
                     }
                 }
-                return LoadItemsResult.Create(start, this.Skip(start).Take(end - start), false);
+                return start == int.MaxValue
+                    ? LoadItemsResult.Create(index, Enumerable.Empty<GalleryImage>(), false)
+                    : LoadItemsResult.Create(start, this.Skip(start).Take(end - start), false);
 
                 async Task<HtmlDocument> getDoc(int imageIndex, CancellationToken cancellationToken, bool reIn = false) {
                     var pageIndex = imageIndex / _PageSize;

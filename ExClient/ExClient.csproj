@@ -122,6 +122,11 @@
     <Compile Include="Hentaiverse\EventArgs.cs" />
     <Compile Include="Internal\GalleryListParser.cs" />
     <Compile Include="Internal\ThumbClient.cs" />
+    <Compile Include="Internal\ThumbnailSource.cs" />
+    <Compile Include="Internal\ThumbnailParser.cs" />
+    <Compile Include="Internal\ThumbnailLoadState.cs" />
+    <Compile Include="Internal\ThumbnailDownloadCache.cs" />
+    <Compile Include="Internal\ThumbnailBitmap.cs" />
     <Compile Include="Launch\PopularHandler.cs" />
     <Compile Include="Launch\WatchedHandler.cs" />
     <Compile Include="Search\WatchedSearchResult.cs" />

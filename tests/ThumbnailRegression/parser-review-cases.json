@@ -1,0 +1,293 @@
+{
+  "scope": "Independent parser review cases. Browser-normalized geometry is an oracle, not UWP execution. Safe rejection is acceptable for unsupported complex styles, but parsing must never return the wrong URI or rectangle. Unsupported cases must not silently load the whole sheet.",
+  "valid": [
+    {
+      "name": "first",
+      "style": "width:100px;height:120px;background:transparent url(https://fixture.invalid/sprite.webp) 0 0 no-repeat",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "0px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        0,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "middle",
+      "style": "height:120px;background:url(https://fixture.invalid/sprite.webp) -500px 0px no-repeat;width:100px",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "-500px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        500,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "both-axes",
+      "style": "width:41px;height:63px;background:url(https://fixture.invalid/sprite.webp) -81px -11px no-repeat",
+      "width": "41px",
+      "height": "63px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "-81px",
+      "y": "-11px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        81,
+        11,
+        41,
+        63
+      ]
+    },
+    {
+      "name": "quoted-url",
+      "style": "width:100px;height:120px;background:url(\"https://fixture.invalid/sprite.webp\") -100px 0 no-repeat",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "-100px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        100,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "separate-last",
+      "style": "width:100px;height:120px;background-image:url(https://fixture.invalid/sprite.webp);background-position:-200px 0",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "-200px",
+      "y": "0px",
+      "size": "",
+      "repeat": "",
+      "expectedRegion": [
+        200,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "position-reset",
+      "style": "width:100px;height:120px;background-position:-200px 0;background:url(https://fixture.invalid/sprite.webp) 0 0 no-repeat",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "0px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        0,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "position-override",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.webp) -100px 0 no-repeat;background-position:-300px 0",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "-300px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        300,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "size-reset",
+      "style": "width:100px;height:120px;background-size:50px 60px;background:url(https://fixture.invalid/sprite.webp) -100px 0 no-repeat",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "-100px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        100,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "last-image-wins",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/old.jpg) -200px 0 no-repeat;background-image:url(https://fixture.invalid/sprite.webp)",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "-200px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        200,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "last-width-wins",
+      "style": "width:99px;width:100px;height:120px;background:url(https://fixture.invalid/sprite.webp) 0 0 no-repeat",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "0px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        0,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "quoted-semicolon",
+      "style": "width:100px;height:120px;background:url(\"https://fixture.invalid/sprite.webp?sig=a;b\") -100px 0 no-repeat",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp?sig=a;b\")",
+      "x": "-100px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        100,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "quoted-parentheses",
+      "style": "width:100px;height:120px;background:url(\"https://fixture.invalid/sprite.webp?page=(a)\") -100px 0 no-repeat",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp?page=(a)\")",
+      "x": "-100px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        100,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "quoted-comma",
+      "style": "width:100px;height:120px;background:url(\"https://fixture.invalid/sprite.webp?pages=1,2\") -100px 0 no-repeat",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp?pages=1,2\")",
+      "x": "-100px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        100,
+        0,
+        100,
+        120
+      ]
+    },
+    {
+      "name": "case-and-spaces",
+      "style": "WIDTH : 100PX ; HEIGHT : 120px ; BACKGROUND : url(https://fixture.invalid/sprite.webp) -100px 0px no-repeat",
+      "width": "100px",
+      "height": "120px",
+      "image": "url(\"https://fixture.invalid/sprite.webp\")",
+      "x": "-100px",
+      "y": "0px",
+      "size": "initial",
+      "repeat": "no-repeat",
+      "expectedRegion": [
+        100,
+        0,
+        100,
+        120
+      ]
+    }
+  ],
+  "reject": [
+    {
+      "name": "percentage-position",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) 50% 0 no-repeat"
+    },
+    {
+      "name": "relative-position",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) -2em 0 no-repeat"
+    },
+    {
+      "name": "scaled-background",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) -100px 0 no-repeat;background-size:500px 120px"
+    },
+    {
+      "name": "cover-background",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) -100px 0 no-repeat;background-size:cover"
+    },
+    {
+      "name": "one-axis-position",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) -100px no-repeat"
+    },
+    {
+      "name": "positive-x",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) 100px 0 no-repeat"
+    },
+    {
+      "name": "positive-y",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) 0 20px no-repeat"
+    },
+    {
+      "name": "multiple-layers",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) 0 0 no-repeat,url(https://fixture.invalid/other.png) -100px 0 no-repeat"
+    },
+    {
+      "name": "unitless-nonzero",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) -100 0 no-repeat"
+    },
+    {
+      "name": "missing-height",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) 0 0 no-repeat;height:0px"
+    },
+    {
+      "name": "negative-width",
+      "style": "height:120px;background:url(https://fixture.invalid/sprite.png) 0 0 no-repeat;width:-100px"
+    },
+    {
+      "name": "integer-overflow",
+      "style": "width:100px;height:120px;background:url(https://fixture.invalid/sprite.png) 0 0 no-repeat;width:9223372036854775808px"
+    }
+  ]
+}
