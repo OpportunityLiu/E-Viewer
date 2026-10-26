@@ -55,6 +55,7 @@ namespace ExViewer.Views
             Debug.Assert(e.Parameter != null, "e.Parameter != null");
             Navigator.GetForCurrentView().Handlers.Add(this);
             tapToFlip = SettingCollection.Current.TapToFlip;
+            fv.UseTouchAnimationsForAllNavigation = SettingCollection.Current.UsePageTurnAnimation;
             _SlideTimer.Interval = TimeSpan.FromSeconds(SettingCollection.Current.SlideInterval);
 
             base.OnNavigatedTo(e);

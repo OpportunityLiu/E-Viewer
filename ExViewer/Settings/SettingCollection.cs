@@ -327,6 +327,14 @@ namespace ExViewer.Settings
             set => SetLocal(value);
         }
 
+        [Setting("Viewing", Index = 2475)]
+        [ToggleSwitchRepresent(PredefinedToggleSwitchRepresent.EnabledDisabled)]
+        public bool UsePageTurnAnimation
+        {
+            get => GetLocal(true);
+            set => SetLocal(value);
+        }
+
         [Setting("Viewing", Index = 2500)]
         public bool KeepScreenOn
         {

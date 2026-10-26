@@ -55,6 +55,7 @@
   "UseChineseTagTranslation": "태그 중국어 번역 사용",
   "UseJapaneseTagTranslation": "태그 일본어 번역 사용",
   "UseJapaneseTitle": "표시된 기본 제목",
+  "UsePageTurnAnimation": "페이지 전환 애니메이션 사용 (터치 스와이프에는 항상 적용)",
   "UsePersonalizedTorrent": "개인 설정된 토렌트 사용",
   "Viewing": "보기",
   "ViewOrientation": {
